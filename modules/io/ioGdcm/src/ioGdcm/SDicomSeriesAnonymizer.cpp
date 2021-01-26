@@ -23,6 +23,8 @@
 #include "ioGdcm/SDicomSeriesAnonymizer.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/IJob.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
@@ -33,9 +35,6 @@
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
 
 #include <services/macros.hpp>
 

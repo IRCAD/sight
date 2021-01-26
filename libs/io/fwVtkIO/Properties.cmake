@@ -7,7 +7,6 @@ set( DEPENDENCIES
     data
     fwDataIO
     fwMath
-    fwJobs
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )

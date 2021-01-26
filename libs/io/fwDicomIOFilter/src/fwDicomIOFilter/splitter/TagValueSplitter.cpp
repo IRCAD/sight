@@ -82,7 +82,7 @@ bool TagValueSplitter::isConfigurationRequired() const
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const ::fwLog::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger) const
 {
     if(m_tag == DCM_UndefinedTagKey)
     {

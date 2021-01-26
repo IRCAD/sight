@@ -22,7 +22,7 @@
 
 #include "fwDataIO/writer/IObjectWriter.hpp"
 
-#include <fwJobs/IJob.hpp>
+#include <core/jobs/IJob.hpp>
 
 namespace fwDataIO
 {

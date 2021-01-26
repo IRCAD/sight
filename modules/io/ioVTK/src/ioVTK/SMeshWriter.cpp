@@ -26,6 +26,7 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
 
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
@@ -35,8 +36,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>

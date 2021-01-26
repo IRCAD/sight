@@ -29,7 +29,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 class Aggregator;
@@ -70,7 +70,7 @@ public:
                                 const data::DicomSeries::sptr& destination);
 
     /// Get job observer
-    FWGDCMIO_API SPTR(::fwJobs::Aggregator) getJob() const;
+    FWGDCMIO_API SPTR(core::jobs::Aggregator) getJob() const;
 
 protected:
 
@@ -84,7 +84,7 @@ protected:
     ::fwGdcmIO::reader::SeriesDB::sptr m_reader;
 
     /// Job observer
-    SPTR(::fwJobs::Aggregator) m_job;
+    SPTR(core::jobs::Aggregator) m_job;
 
 };
 

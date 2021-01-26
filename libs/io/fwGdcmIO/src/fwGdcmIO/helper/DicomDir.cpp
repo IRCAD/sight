@@ -25,14 +25,12 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 
 #include <core/exceptionmacros.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
+#include <core/log/Logger.hpp>
 #include <core/spyLog.hpp>
 
 #include <data/DicomSeries.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
-
-#include <fwLog/Logger.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -79,7 +77,7 @@ void processDirInformation(const std::filesystem::path& dicomdir,
                            const std::filesystem::path& rootDicomDirPath,
                            data::DicomSeries::sptr currentSeries,
                            std::map < std::string, data::DicomSeries::sptr >& dicomSeriesMap,
-                           const ::fwLog::Logger::sptr& logger,
+                           const core::log::Logger::sptr& logger,
                            std::function< void(std::uint64_t) >& progress,
                            std::function< bool() >& cancel,
                            double& p,
@@ -217,7 +215,7 @@ void processDirInformation(const std::filesystem::path& dicomdir,
 
 void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
                                    std::vector< SPTR(data::DicomSeries) >& seriesDB,
-                                   const ::fwLog::Logger::sptr& logger,
+                                   const core::log::Logger::sptr& logger,
                                    std::function< void(std::uint64_t) > progress,
                                    std::function< bool() > cancel)
 {

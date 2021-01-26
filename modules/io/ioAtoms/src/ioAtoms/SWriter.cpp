@@ -27,6 +27,8 @@
 #include <atoms/conversion/convert.hpp>
 
 #include <core/com/Signal.hxx>
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/Job.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Composite.hpp>
@@ -45,9 +47,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
@@ -392,8 +391,8 @@ void SWriter::updating()
     const unsigned int progressBarOffset = 10;
 
     // Convert data to atom : job 1
-    ::fwJobs::Job::sptr convertJob = ::fwJobs::Job::New("Writing " + extension + " file",
-                                                        [ =, &atom](::fwJobs::Job& runningJob)
+    core::jobs::Job::sptr convertJob = core::jobs::Job::New("Writing " + extension + " file",
+                                                            [ =, &atom](core::jobs::Job& runningJob)
         {
             runningJob.doneWork(progressBarOffset);
 
@@ -402,8 +401,8 @@ void SWriter::updating()
         }, m_associatedWorker );
 
     // Path atom : job 2
-    ::fwJobs::Job::sptr patchingJob = ::fwJobs::Job::New("Writing " + extension + " file",
-                                                         [ =, &atom](::fwJobs::Job& runningJob)
+    core::jobs::Job::sptr patchingJob = core::jobs::Job::New("Writing " + extension + " file",
+                                                             [ =, &atom](core::jobs::Job& runningJob)
         {
 
             atom->setMetaInfo("context", m_context);
@@ -425,8 +424,8 @@ void SWriter::updating()
 
             runningJob.done();
         },
-                                                         m_associatedWorker
-                                                         );
+                                                             m_associatedWorker
+                                                             );
 
     // Generate a temporary file name for saving the file.
     const std::filesystem::path tmpFolderPath = core::tools::System::getTemporaryFolder();
@@ -434,8 +433,8 @@ void SWriter::updating()
     const std::filesystem::path tmpFilename   = tmpFilePath.filename();
 
     // Writing file : job 3
-    ::fwJobs::Job::sptr writeJob = ::fwJobs::Job::New("Writing " + extension + " file",
-                                                      [ =, &atom](::fwJobs::Job& runningJob)
+    core::jobs::Job::sptr writeJob = core::jobs::Job::New("Writing " + extension + " file",
+                                                          [ =, &atom](core::jobs::Job& runningJob)
         {
             runningJob.doneWork(progressBarOffset);
             // Write atom
@@ -500,7 +499,7 @@ void SWriter::updating()
             runningJob.done();
         }, m_associatedWorker );
 
-    ::fwJobs::Aggregator::sptr jobs = ::fwJobs::Aggregator::New(extension + " writer");
+    core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(extension + " writer");
     jobs->add(convertJob);
     jobs->add(patchingJob);
     jobs->add(writeJob);

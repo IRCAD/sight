@@ -77,7 +77,7 @@ std::string SliceThicknessModifier::getDescription() const
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     const data::DicomSeries::sptr& series,
-    const ::fwLog::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
 

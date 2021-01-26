@@ -26,8 +26,7 @@
 #include "fwGui/dialog/ILoggerDialog.hpp"
 
 #include <core/base.hpp>
-
-#include <fwLog/Logger.hpp>
+#include <core/log/Logger.hpp>
 
 namespace fwGui
 {
@@ -53,7 +52,7 @@ public:
      * @return Returns true or false whether the user has selected the OK or CANCEL button
      */
     FWGUI_API static bool showLoggerDialog(const std::string& title, const std::string& message,
-                                           const ::fwLog::Logger::sptr& logger);
+                                           const core::log::Logger::sptr& logger);
 
     /// Constructor that will instantiate the concrete implementation
     FWGUI_API LoggerDialog();
@@ -68,7 +67,7 @@ public:
      * @param[in] logger Logger of the dialog
      */
     FWGUI_API LoggerDialog(const std::string& title, const std::string& message,
-                           const ::fwLog::Logger::sptr& logger);
+                           const core::log::Logger::sptr& logger);
 
     /**
      * @brief Set the dialog title.
@@ -86,7 +85,7 @@ public:
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    FWGUI_API virtual void setLogger(const ::fwLog::Logger::sptr& logger) override;
+    FWGUI_API virtual void setLogger(const core::log::Logger::sptr& logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button

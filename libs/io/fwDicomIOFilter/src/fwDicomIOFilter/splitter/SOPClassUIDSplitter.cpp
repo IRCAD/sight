@@ -83,7 +83,7 @@ bool SOPClassUIDSplitter::isConfigurationRequired() const
 
 SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const ::fwLog::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger) const
 {
     const DicomSeriesContainerType result = ::fwDicomIOFilter::splitter::TagValueSplitter::apply(series, logger);
 

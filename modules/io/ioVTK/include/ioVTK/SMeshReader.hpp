@@ -31,7 +31,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -68,7 +68,7 @@ public:
 
     fwCoreServiceMacro(SMeshReader,  ::fwIO::IReader)
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
     /// Constructor
     IOVTK_API SMeshReader() noexcept;

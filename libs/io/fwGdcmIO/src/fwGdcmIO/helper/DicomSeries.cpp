@@ -25,17 +25,16 @@
 #include "fwGdcmIO/helper/DicomDir.hpp"
 
 #include <core/exceptionmacros.hpp>
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Job.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/spyLog.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Equipment.hpp>
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -131,8 +130,8 @@ DicomSeries::~DicomSeries()
 // ----------------------------------------------------------------------------
 
 DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType& filenames,
-                                                        const SPTR(::fwJobs::Observer)& readerObserver,
-                                                        const SPTR(::fwJobs::Observer)& completeSeriesObserver)
+                                                        const SPTR(core::jobs::Observer)& readerObserver,
+                                                        const SPTR(core::jobs::Observer)& completeSeriesObserver)
 {
     DicomSeriesContainerType seriesDB = DicomSeries::splitFiles(filenames, readerObserver);
     DicomSeries::fillSeries(seriesDB, completeSeriesObserver);
@@ -141,7 +140,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::read(FilenameContainerType& f
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJobs::Observer)& completeSeriesObserver)
+void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::jobs::Observer)& completeSeriesObserver)
 {
     std::set< ::gdcm::Tag > selectedtags;
     selectedtags.insert( s_SpecificCharacterSetTag);
@@ -214,7 +213,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(::fwJo
 //------------------------------------------------------------------------------
 
 DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerType& filenames,
-                                                              const ::fwJobs::Observer::sptr& readerObserver)
+                                                              const core::jobs::Observer::sptr& readerObserver)
 {
     ::gdcm::Scanner seriesScanner;
     seriesScanner.AddTag(s_SpecificCharacterSetTag);
@@ -284,7 +283,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
 //------------------------------------------------------------------------------
 
 void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
-                             const ::fwJobs::Observer::sptr& completeSeriesObserver)
+                             const core::jobs::Observer::sptr& completeSeriesObserver)
 {
     m_patientMap.clear();
     m_studyMap.clear();

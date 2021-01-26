@@ -23,6 +23,8 @@
 #include "ioVTK/SImageWriter.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Job.hpp>
 #include <core/tools/Failed.hpp>
 
 #include <data/Image.hpp>
@@ -37,9 +39,6 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwIO/IWriter.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwVtkIO/BitmapImageWriter.hpp>
 #include <fwVtkIO/ImageWriter.hpp>

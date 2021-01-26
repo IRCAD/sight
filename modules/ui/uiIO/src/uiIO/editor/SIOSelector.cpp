@@ -455,7 +455,7 @@ void SIOSelector::setIOMode( IOMode _mode )
 
 //------------------------------------------------------------------------------
 
-void SIOSelector::forwardJob(::fwJobs::IJob::sptr iJob)
+void SIOSelector::forwardJob(core::jobs::IJob::sptr iJob)
 {
     m_sigJobCreated->emit(iJob);
 }

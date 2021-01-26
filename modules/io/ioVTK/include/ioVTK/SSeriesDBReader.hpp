@@ -37,7 +37,7 @@ namespace sight::data
 class SeriesDB;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -52,7 +52,7 @@ namespace ioVTK
  * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -75,7 +75,7 @@ class IOVTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 {
 
 public:
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.

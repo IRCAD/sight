@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwDataIO
     fwDicomIOFilter
     fwDicomTools
-    fwJobs
+    core
     fwMath
     data
     services

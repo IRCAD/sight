@@ -25,10 +25,10 @@
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 #include "fwVtkIO/vtk.hpp"
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
@@ -50,7 +50,7 @@ namespace fwVtkIO
 
 BitmapImageWriter::BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("Bitmap image writer"))
+    m_job(core::jobs::Observer::New("Bitmap image writer"))
 {
 }
 
@@ -128,7 +128,7 @@ std::string BitmapImageWriter::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr BitmapImageWriter::getJob() const
+::core::jobs::IJob::sptr BitmapImageWriter::getJob() const
 {
     return m_job;
 }

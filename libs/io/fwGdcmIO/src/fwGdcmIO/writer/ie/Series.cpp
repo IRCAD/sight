@@ -46,7 +46,7 @@ namespace ie
 Series::Series(const SPTR(::gdcm::Writer)& writer,
                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                const data::Series::csptr& series,
-               const ::fwLog::Logger::sptr& logger,
+               const core::log::Logger::sptr& logger,
                ProgressCallback progress,
                CancelRequestedCallback cancel) :
     ::fwGdcmIO::writer::ie::InformationEntity< data::Series>(writer, instance, series,

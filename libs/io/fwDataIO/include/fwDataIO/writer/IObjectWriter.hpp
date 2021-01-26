@@ -27,11 +27,10 @@
 #include "fwDataIO/writer/registry/detail.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/location/ILocation.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -130,7 +129,7 @@ public:
     FWDATAIO_API virtual void cancel();
 
     /// Returns the internal job, nullptr by default
-    virtual SPTR(::fwJobs::IJob) getJob() const
+    virtual SPTR(core::jobs::IJob) getJob() const
     {
         return nullptr;
     }

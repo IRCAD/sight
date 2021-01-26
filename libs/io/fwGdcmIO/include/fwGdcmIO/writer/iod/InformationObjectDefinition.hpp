@@ -25,9 +25,9 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
-#include <data/Series.hpp>
+#include <core/log/Logger.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/Series.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -60,9 +60,9 @@ public:
      */
     FWGDCMIO_API InformationObjectDefinition(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                              const std::filesystem::path& destinationPath,
-                                             const ::fwLog::Logger::sptr& logger = nullptr,
-                                             ProgressCallback progress           = nullptr,
-                                             CancelRequestedCallback cancel      = nullptr);
+                                             const core::log::Logger::sptr& logger = nullptr,
+                                             ProgressCallback progress             = nullptr,
+                                             CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationObjectDefinition();
@@ -79,7 +79,7 @@ protected:
     std::filesystem::path m_destinationPath;
 
     ///Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;

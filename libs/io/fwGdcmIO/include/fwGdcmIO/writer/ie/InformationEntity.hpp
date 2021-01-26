@@ -25,9 +25,9 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
-#include <data/Object.hpp>
+#include <core/log/Logger.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/Object.hpp>
 
 #include <gdcmWriter.h>
 
@@ -63,9 +63,9 @@ public:
     FWGDCMIO_API InformationEntity(const SPTR(::gdcm::Writer)& writer,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                    const CSPTR(DATATYPE)& object,
-                                   const ::fwLog::Logger::sptr& logger = nullptr,
-                                   ProgressCallback progress           = nullptr,
-                                   CancelRequestedCallback cancel      = nullptr);
+                                   const core::log::Logger::sptr& logger = nullptr,
+                                   ProgressCallback progress             = nullptr,
+                                   CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationEntity();
@@ -82,7 +82,7 @@ protected:
     CSPTR(DATATYPE) m_object;
 
     /// Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;
@@ -97,7 +97,7 @@ template< class DATATYPE >
 InformationEntity<DATATYPE>::InformationEntity(const SPTR(::gdcm::Writer)& writer,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const CSPTR(DATATYPE)& object,
-                                               const ::fwLog::Logger::sptr& logger,
+                                               const core::log::Logger::sptr& logger,
                                                ProgressCallback progress,
                                                CancelRequestedCallback cancel) :
     m_writer(writer),

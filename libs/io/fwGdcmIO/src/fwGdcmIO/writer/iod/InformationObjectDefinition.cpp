@@ -35,7 +35,7 @@ namespace iod
 
 InformationObjectDefinition::InformationObjectDefinition(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                          const std::filesystem::path& destinationPath,
-                                                         const ::fwLog::Logger::sptr& logger,
+                                                         const core::log::Logger::sptr& logger,
                                                          ProgressCallback progress,
                                                          CancelRequestedCallback cancel) :
     m_instance(instance),

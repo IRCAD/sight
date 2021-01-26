@@ -58,9 +58,9 @@ public:
                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                          const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
                          const data::ModelSeries::csptr& series,
-                         const ::fwLog::Logger::sptr& logger = nullptr,
-                         ProgressCallback progress           = nullptr,
-                         CancelRequestedCallback cancel      = nullptr);
+                         const core::log::Logger::sptr& logger = nullptr,
+                         ProgressCallback progress             = nullptr,
+                         CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Surface();

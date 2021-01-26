@@ -25,14 +25,13 @@
 #include "ioAtoms/config.hpp"
 
 #include <core/com/Signal.hpp>
+#include <core/jobs/IJob.hpp>
 
 #include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwIO/IWriter.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <set>
 
@@ -43,7 +42,7 @@ namespace ioAtoms
  * @brief Atoms writer. Service to write an fwData medical data converted in fwAtoms.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -96,7 +95,7 @@ public:
     fwCoreServiceMacro(SWriter, ::fwIO::IWriter)
 
     /// Signal type for job creation.
-    typedef core::com::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
 
     /// Does nothing
     IOATOMS_API SWriter();

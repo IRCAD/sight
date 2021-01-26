@@ -35,12 +35,12 @@ namespace sight::data
 class DicomSeries;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Observer;
 }
 
-namespace fwLog
+namespace sight::core::log
 {
 class Logger;
 }
@@ -70,7 +70,7 @@ public:
      */
     FWGDCMIO_API static void retrieveDicomSeries(const std::filesystem::path& dicomdir,
                                                  std::vector< SPTR(data::DicomSeries) >& seriesDB,
-                                                 const SPTR(::fwLog::Logger)& logger,
+                                                 const SPTR(core::log::Logger)& logger,
                                                  std::function< void(std::uint64_t) > progress = nullptr,
                                                  std::function< bool() > cancel                = nullptr);
 

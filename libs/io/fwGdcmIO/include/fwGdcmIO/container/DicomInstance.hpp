@@ -24,9 +24,8 @@
 
 #include "fwGdcmIO/config.hpp"
 
+#include <core/log/Logger.hpp>
 #include <core/macros.hpp>
-
-#include <fwLog/Logger.hpp>
 
 #include <gdcmMediaStorage.h>
 
@@ -70,8 +69,8 @@ public:
      * @param[in] logger Logger
      */
     FWGDCMIO_API DicomInstance(const CSPTR(data::Series)& series,
-                               const SPTR(::fwLog::Logger)& logger = nullptr,
-                               bool isMultiFiles                   = true);
+                               const SPTR(core::log::Logger)& logger = nullptr,
+                               bool isMultiFiles                     = true);
 
     /**
      * @brief Constructor
@@ -79,7 +78,7 @@ public:
      * @param[in] logger Logger
      */
     FWGDCMIO_API DicomInstance(const CSPTR(data::DicomSeries)& dicomSeries,
-                               const SPTR(::fwLog::Logger)& logger = nullptr);
+                               const SPTR(core::log::Logger)& logger = nullptr);
 
     /// Copy constructor
     FWGDCMIO_API DicomInstance(const DicomInstance& dicomInstance);
@@ -205,7 +204,7 @@ private:
     SOPInstanceUIDContainerType m_SOPInstanceUIDContainer;
 
     /// Logger
-    SPTR(::fwLog::Logger) m_logger;
+    SPTR(core::log::Logger) m_logger;
 };
 
 } //namespace container

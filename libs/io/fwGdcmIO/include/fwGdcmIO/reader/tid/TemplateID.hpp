@@ -25,9 +25,9 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
-#include <data/Object.hpp>
+#include <core/log/Logger.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/Object.hpp>
 
 #include <gdcmReader.h>
 
@@ -58,7 +58,7 @@ public:
                             const SPTR(::gdcm::Reader)& reader,
                             const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                             const SPTR(DATATYPE)& object,
-                            const ::fwLog::Logger::sptr& logger);
+                            const core::log::Logger::sptr& logger);
 
     /// Destructor
     FWGDCMIO_API virtual ~TemplateID();
@@ -78,7 +78,7 @@ protected:
     SPTR(DATATYPE) m_object;
 
     ///Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 };
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ TemplateID<DATATYPE>::TemplateID(const CSPTR(data::DicomSeries)& dicomSeries,
                                  const SPTR(::gdcm::Reader)& reader,
                                  const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                  const SPTR(DATATYPE)& object,
-                                 const ::fwLog::Logger::sptr& logger) :
+                                 const core::log::Logger::sptr& logger) :
     m_dicomSeries(dicomSeries),
     m_reader(reader),
     m_instance(instance),

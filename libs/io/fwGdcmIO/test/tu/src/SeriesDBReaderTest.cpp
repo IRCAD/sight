@@ -24,6 +24,7 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
+#include <core/log/Logger.hpp>
 #include <core/memory/BufferManager.hpp>
 
 #include <data/Color.hpp>
@@ -43,8 +44,6 @@
 #include <data/Vector.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwLog/Logger.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/DicomReaderTest.hpp>
@@ -899,7 +898,7 @@ void SeriesDBReaderTest::readDisabledSeries()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL( size_t( 0 ), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size_t(reader->getLogger()->count(::fwLog::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL( size_t( 1 ), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -925,7 +924,7 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDir()
 
     // Verify that the reading has succeed
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(::fwLog::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -996,7 +995,7 @@ void SeriesDBReaderTest::readCTWithSurviewSeries()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(::fwLog::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1021,7 +1020,7 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeries()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL( size_t( 4 ), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(::fwLog::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
@@ -1046,7 +1045,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL( size_t( 1 ), seriesDB->size());
-    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(::fwLog::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL( size_t( 0 ), size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
 }
 
 } // namespace ut

@@ -26,6 +26,9 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Job.hpp>
 
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
@@ -38,10 +41,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwIO/IReader.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwVtkIO/BitmapImageReader.hpp>
 #include <fwVtkIO/ImageReader.hpp>

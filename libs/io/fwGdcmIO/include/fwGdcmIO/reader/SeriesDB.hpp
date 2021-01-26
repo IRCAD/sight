@@ -25,6 +25,8 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
+#include <core/log/Logger.hpp>
+
 #include <data/DicomSeries.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/MultiFiles.hpp>
@@ -32,11 +34,9 @@
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
-#include <fwLog/Logger.hpp>
-
 #include <services/IService.hpp>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Aggregator;
 class IJob;
@@ -133,19 +133,19 @@ public:
     }
 
     /// Get Logger
-    const ::fwLog::Logger::sptr& getLogger() const
+    const core::log::Logger::sptr& getLogger() const
     {
         return m_logger;
     }
 
     ///Set Logger
-    void setLogger(const ::fwLog::Logger::sptr& logger)
+    void setLogger(const core::log::Logger::sptr& logger)
     {
         m_logger = logger;
     }
 
     /// Getter for reader's job
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
+    FWGDCMIO_API SPTR(core::jobs::IJob) getJob() const override;
 
     /// Enable buffer rotation
     void setBufferRotationEnabled(bool enabled)
@@ -187,19 +187,19 @@ private:
     SupportedSOPClassContainerType m_supportedSOPClassContainer;
 
     /// Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Observer managing all subjobs
-    SPTR(::fwJobs::Aggregator) m_job;
+    SPTR(core::jobs::Aggregator) m_job;
 
     /// Enable buffer rotation
     bool m_enableBufferRotation;
 
-    SPTR(::fwJobs::Observer) m_dicomdirFileLookupJob;
-    SPTR(::fwJobs::Observer) m_regularFileLookupJob;
-    SPTR(::fwJobs::Observer) m_readerJob;
-    SPTR(::fwJobs::Observer) m_completeDicomSeriesJob;
-    SPTR(::fwJobs::Observer) m_converterJob;
+    SPTR(core::jobs::Observer) m_dicomdirFileLookupJob;
+    SPTR(core::jobs::Observer) m_regularFileLookupJob;
+    SPTR(core::jobs::Observer) m_readerJob;
+    SPTR(core::jobs::Observer) m_completeDicomSeriesJob;
+    SPTR(core::jobs::Observer) m_converterJob;
 };
 
 }  // namespace reader

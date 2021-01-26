@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwDataIO
     fwDicomIOFilter
     fwDicomTools
-    fwLog
     services
     fwZip
     )

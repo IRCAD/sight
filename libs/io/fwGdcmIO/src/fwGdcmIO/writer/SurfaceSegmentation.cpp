@@ -24,6 +24,10 @@
 
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/Job.hpp>
+#include <core/jobs/Observer.hpp>
+
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -36,10 +40,6 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
-
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SurfaceSegmentation);
 
 namespace fwGdcmIO
@@ -51,8 +51,8 @@ namespace writer
 
 SurfaceSegmentation::SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key key) :
     data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_logger(::fwLog::Logger::New()),
-    m_writerJob(::fwJobs::Observer::New("Writing DICOM file"))
+    m_logger(core::log::Logger::New()),
+    m_writerJob(core::jobs::Observer::New("Writing DICOM file"))
 {
 }
 
@@ -149,14 +149,14 @@ std::string SurfaceSegmentation::extension()
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwJobs::IJob) SurfaceSegmentation::getJob() const
+SPTR(core::jobs::IJob) SurfaceSegmentation::getJob() const
 {
     return m_writerJob;
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwLog::Logger) SurfaceSegmentation::getLogger() const
+SPTR(core::log::Logger) SurfaceSegmentation::getLogger() const
 {
     return m_logger;
 }

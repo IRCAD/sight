@@ -25,6 +25,8 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <data/tools/helper/SeriesDB.hpp>
 
@@ -33,9 +35,6 @@
 #include <fwGui/dialog/LoggerDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <services/macros.hpp>
 
@@ -114,7 +113,7 @@ void SDicomSeriesConverter::updating()
         {
             reader->readFromDicomSeriesDB(dicomSeriesDB, this->getSptr());
 
-            ::fwLog::Logger::sptr logger = reader->getLogger();
+            core::log::Logger::sptr logger = reader->getLogger();
             logger->sort();
 
             std::stringstream ss;

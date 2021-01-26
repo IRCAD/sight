@@ -26,11 +26,10 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <vtkImageData.h>
 #include <vtkMetaImageWriter.h>
@@ -44,7 +43,7 @@ namespace fwVtkIO
 
 MetaImageWriter::MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
     data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("MetaImage writer"))
+    m_job(core::jobs::Observer::New("MetaImage writer"))
 {
 }
 
@@ -98,7 +97,7 @@ std::string MetaImageWriter::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr MetaImageWriter::getJob() const
+::core::jobs::IJob::sptr MetaImageWriter::getJob() const
 {
     return m_job;
 }

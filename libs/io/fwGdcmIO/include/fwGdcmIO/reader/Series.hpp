@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/reader/iod/InformationObjectDefinition.hpp"
 
-#include <fwLog/Logger.hpp>
+#include <core/log/Logger.hpp>
 
 namespace fwGdcmIO
 {
@@ -57,13 +57,13 @@ public:
     FWGDCMIO_API data::Series::sptr read(const data::DicomSeries::csptr& dicomSeries);
 
     /// Get Logger
-    const ::fwLog::Logger::sptr& getLogger() const
+    const core::log::Logger::sptr& getLogger() const
     {
         return m_logger;
     }
 
     /// Set Logger
-    void setLogger(const ::fwLog::Logger::sptr& logger)
+    void setLogger(const core::log::Logger::sptr& logger)
     {
         m_logger = logger;
     }
@@ -105,7 +105,7 @@ protected:
     SeriesContainerMapType m_seriesContainerMap;
 
     /// Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;

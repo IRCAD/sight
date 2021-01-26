@@ -52,7 +52,7 @@ namespace iod
 ComprehensiveSRIOD::ComprehensiveSRIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                        const std::filesystem::path& destinationPath,
                                        bool use3DSR,
-                                       const ::fwLog::Logger::sptr& logger,
+                                       const core::log::Logger::sptr& logger,
                                        ProgressCallback progress,
                                        CancelRequestedCallback cancel) :
     ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),

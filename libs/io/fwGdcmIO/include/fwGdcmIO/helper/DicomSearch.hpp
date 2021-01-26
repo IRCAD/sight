@@ -30,7 +30,7 @@
 #include <string>
 #include <vector>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Observer;
 }
@@ -57,7 +57,7 @@ public:
     FWGDCMIO_API static void searchRecursively(const std::filesystem::path& dirPath,
                                                std::vector< std::filesystem::path >& dicomFiles,
                                                bool checkIsDicom,
-                                               const SPTR(::fwJobs::Observer)& fileLookupObserver = nullptr);
+                                               const SPTR(core::jobs::Observer)& fileLookupObserver = nullptr);
 
 protected:
     /**
@@ -68,7 +68,7 @@ protected:
      */
     static void checkFilenameExtension(const std::filesystem::path& dirPath,
                                        std::vector< std::filesystem::path >& dicomFiles,
-                                       const SPTR(::fwJobs::Observer)& fileLookupObserver = nullptr);
+                                       const SPTR(core::jobs::Observer)& fileLookupObserver = nullptr);
 };
 
 } // namespace helper

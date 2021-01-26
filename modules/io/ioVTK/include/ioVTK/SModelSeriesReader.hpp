@@ -31,7 +31,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -44,7 +44,7 @@ namespace ioVTK
  * Accepted extensions: *.vtk *.vtp *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -69,7 +69,7 @@ class IOVTK_CLASS_API SModelSeriesReader : public ::fwIO::IReader
 public:
     fwCoreServiceMacro(SModelSeriesReader,  ::fwIO::IReader)
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.

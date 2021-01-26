@@ -35,7 +35,7 @@ namespace sight::data
 class Mesh;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -49,7 +49,7 @@ namespace ioVTK
  * Service writing a VTK Mesh using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -76,7 +76,7 @@ public:
 
     fwCoreServiceMacro(SMeshWriter,  ::fwIO::IWriter)
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.

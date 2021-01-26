@@ -26,6 +26,8 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <data/Material.hpp>
@@ -33,9 +35,6 @@
 #include <data/Reconstruction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
@@ -56,7 +55,7 @@ namespace fwVtkIO
 
 ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key) :
     data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("ModelSeries Writer"))
+    m_job(core::jobs::Observer::New("ModelSeries Writer"))
 {
 }
 
@@ -144,7 +143,7 @@ std::string ModelSeriesObjWriter::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr ModelSeriesObjWriter::getJob() const
+::core::jobs::IJob::sptr ModelSeriesObjWriter::getJob() const
 {
     return m_job;
 }

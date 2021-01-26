@@ -76,7 +76,7 @@ std::string ImagePositionPatientSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplitter::apply(
-    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger)
 const
 {
     DicomSeriesContainerType result;

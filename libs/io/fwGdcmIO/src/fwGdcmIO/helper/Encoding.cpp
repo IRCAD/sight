@@ -22,9 +22,8 @@
 
 #include "fwGdcmIO/helper/Encoding.hpp"
 
+#include <core/log/Logger.hpp>
 #include <core/spyLog.hpp>
-
-#include <fwLog/Logger.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -127,7 +126,7 @@ const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CH
 
 std::string Encoding::convertString(const std::string& source,
                                     const std::string& definedCharsetTerm,
-                                    const ::fwLog::Logger::sptr& logger)
+                                    const core::log::Logger::sptr& logger)
 {
     if(source.empty())
     {
@@ -184,7 +183,7 @@ std::string Encoding::convertString(const std::string& source,
 
 std::string Encoding::convertStringWithoutCodeExtensions(const std::string& source,
                                                          const std::string& definedTerm,
-                                                         const ::fwLog::Logger::sptr& logger)
+                                                         const core::log::Logger::sptr& logger)
 {
     std::string charset;
 
@@ -233,7 +232,7 @@ std::string Encoding::convertStringWithoutCodeExtensions(const std::string& sour
 
 void checkDefinedTermDeclaration(const std::string& definedTerm,
                                  const std::vector<std::string>& definedTermList,
-                                 const ::fwLog::Logger::sptr& logger)
+                                 const core::log::Logger::sptr& logger)
 {
     if(std::find(definedTermList.begin(), definedTermList.end(), definedTerm) == definedTermList.end())
     {
@@ -252,7 +251,7 @@ void checkDefinedTermDeclaration(const std::string& definedTerm,
 
 std::string Encoding::convertSequenceWithCodeExtensions(const std::string& sequence,
                                                         const std::vector<std::string>& definedTermList,
-                                                        const ::fwLog::Logger::sptr& logger)
+                                                        const core::log::Logger::sptr& logger)
 {
     // We need at least two more characters to determine the new character set
     FW_RAISE_IF("Cannot convert character set: Incomplete escape sequence.", sequence.size() < 2);

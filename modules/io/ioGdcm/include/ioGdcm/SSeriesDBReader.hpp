@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -48,7 +48,7 @@ namespace ioGdcm
  * @brief GDCM Reader (ImageSeries/ModelSeries)
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *
@@ -120,7 +120,7 @@ class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
 public:
     fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
     /**
      * @brief   constructor

@@ -26,11 +26,10 @@
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <vtkOBJReader.h>
 #include <vtkPolyData.h>
@@ -44,7 +43,7 @@ namespace fwVtkIO
 
 ObjMeshReader::ObjMeshReader(::fwDataIO::reader::IObjectReader::Key) :
     data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("OBJ Mesh reader"))
+    m_job(core::jobs::Observer::New("OBJ Mesh reader"))
 {
 }
 
@@ -104,7 +103,7 @@ std::string ObjMeshReader::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr ObjMeshReader::getJob() const
+::core::jobs::IJob::sptr ObjMeshReader::getJob() const
 {
     return m_job;
 }

@@ -26,11 +26,10 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <vtkImageData.h>
 #include <vtkMetaImageReader.h>
@@ -44,7 +43,7 @@ namespace fwVtkIO
 
 MetaImageReader::MetaImageReader(::fwDataIO::reader::IObjectReader::Key) :
     data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("Meta image reader"))
+    m_job(core::jobs::Observer::New("Meta image reader"))
 {
 }
 
@@ -110,7 +109,7 @@ std::string MetaImageReader::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr MetaImageReader::getJob() const
+::core::jobs::IJob::sptr MetaImageReader::getJob() const
 {
     return m_job;
 }

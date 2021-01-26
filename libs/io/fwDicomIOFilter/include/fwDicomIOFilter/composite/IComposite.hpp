@@ -50,7 +50,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const override;
+        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const override;
 
     /**
      * @brief Apply every filters without throwing any exceptions.
@@ -58,7 +58,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FWDICOMIOFILTER_API DicomSeriesContainerType forcedApply(
-        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
+        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const;
 
     /// Add a filter to the composite
     FWDICOMIOFILTER_API void addChild(

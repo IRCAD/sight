@@ -7,7 +7,6 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwGui
-    fwJobs
     services
     fwIO
 )

@@ -25,6 +25,8 @@
 #include <atoms/conversion/convert.hpp>
 
 #include <core/com/Signal.hxx>
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/Job.hpp>
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
@@ -44,9 +46,6 @@
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
@@ -239,8 +238,8 @@ void SReader::updating()
             const unsigned int progressBarOffset = 10;
 
             // Reading file : job 1
-            ::fwJobs::Job::sptr fileReadingJob = ::fwJobs::Job::New("Reading " + extension + " file",
-                                                                    [ =, &atom](::fwJobs::Job& runningJob)
+            core::jobs::Job::sptr fileReadingJob = core::jobs::Job::New("Reading " + extension + " file",
+                                                                        [ =, &atom](core::jobs::Job& runningJob)
                 {
                     runningJob.doneWork(progressBarOffset);
 
@@ -297,8 +296,8 @@ void SReader::updating()
                 }, m_associatedWorker);
 
             // patching atom : job 2
-            ::fwJobs::Job::sptr patchingJob = ::fwJobs::Job::New("Reading " + extension + " file",
-                                                                 [ =, &atom](::fwJobs::Job& runningJob)
+            core::jobs::Job::sptr patchingJob = core::jobs::Job::New("Reading " + extension + " file",
+                                                                     [ =, &atom](core::jobs::Job& runningJob)
                 {
                     if(runningJob.cancelRequested())
                     {
@@ -332,8 +331,9 @@ void SReader::updating()
             data::Object::sptr newData;
 
             // convert to fwData : job 3
-            ::fwJobs::Job::sptr atomToDataJob = ::fwJobs::Job::New("Reading " + extension + " file",
-                                                                   [ =, &newData, &atom](::fwJobs::Job& runningJob)
+            core::jobs::Job::sptr atomToDataJob = core::jobs::Job::New("Reading " + extension + " file",
+                                                                       [ =, &newData, &atom](
+                                                                           core::jobs::Job& runningJob)
                 {
                     runningJob.doneWork(progressBarOffset);
                     if(runningJob.cancelRequested())
@@ -356,7 +356,7 @@ void SReader::updating()
                     runningJob.done();
                 }, m_associatedWorker);
 
-            ::fwJobs::Aggregator::sptr jobs = ::fwJobs::Aggregator::New(extension + " reader");
+            core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(extension + " reader");
             jobs->add(fileReadingJob);
             jobs->add(patchingJob);
             jobs->add(atomToDataJob);
@@ -365,7 +365,7 @@ void SReader::updating()
 
             jobs->run().get();
 
-            if(jobs->getState() == ::fwJobs::IJob::CANCELED)
+            if(jobs->getState() == core::jobs::IJob::CANCELED)
             {
                 m_readFailed = true;
                 return;

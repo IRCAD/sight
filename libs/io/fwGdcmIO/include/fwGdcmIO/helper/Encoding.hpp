@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 
-namespace fwLog
+namespace sight::core::log
 {
 class Logger;
 }
@@ -61,7 +61,7 @@ public:
      */
     FWGDCMIO_API static std::string convertString(const std::string& source,
                                                   const std::string& definedCharsetTerm,
-                                                  const SPTR(::fwLog::Logger)& logger = nullptr);
+                                                  const SPTR(core::log::Logger)& logger = nullptr);
 
 private:
 
@@ -74,7 +74,7 @@ private:
      */
     static std::string convertStringWithoutCodeExtensions(const std::string& source,
                                                           const std::string& definedTerm,
-                                                          const SPTR(::fwLog::Logger)& logger);
+                                                          const SPTR(core::log::Logger)& logger);
     /**
      * @brief Convert string sequence with a code extension.
      * @param[in] sequence Sequence buffer
@@ -86,7 +86,7 @@ private:
      */
     static std::string convertSequenceWithCodeExtensions(const std::string& sequence,
                                                          const std::vector<std::string>& definedTermList,
-                                                         const SPTR(::fwLog::Logger)& logger);
+                                                         const SPTR(core::log::Logger)& logger);
 
     /**
      * @brief Map used to convert defined term to charset

@@ -36,7 +36,7 @@ namespace sight::data
 class Mesh;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -50,7 +50,7 @@ namespace ioVTK
  * Service writing a model series as .obj files using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -72,7 +72,7 @@ class IOVTK_CLASS_API SModelSeriesObjWriter : public ::fwIO::IWriter
 
 public:
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.

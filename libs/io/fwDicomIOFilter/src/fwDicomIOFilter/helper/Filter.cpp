@@ -32,7 +32,7 @@ namespace helper
 //------------------------------------------------------------------------------
 
 bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDicomIOFilter::IFilter::sptr filter,
-                         bool forcedApply, const ::fwLog::Logger::sptr& logger)
+                         bool forcedApply, const core::log::Logger::sptr& logger)
 {
     bool ignoredError = false;
     DicomSeriesContainerType result;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,13 +20,12 @@
  *
  ***********************************************************************/
 
-#ifndef __FWGDCMIO_HELPER_DICOMDATAREADER_HXX__
-#define __FWGDCMIO_HELPER_DICOMDATAREADER_HXX__
+#pragma once
 
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/helper/Encoding.hpp"
 
-#include <fwLog/Logger.hpp>
+#include <core/log/Logger.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDataSet.h>
@@ -59,8 +58,8 @@ public:
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static std::string getTagValue(const ::gdcm::DataSet& dataset,
-                                   const std::string& charset = "",
-                                   const ::fwLog::Logger::sptr& logger = nullptr)
+                                   const std::string& charset            = "",
+                                   const core::log::Logger::sptr& logger = nullptr)
     {
         std::string result = "";
 
@@ -116,8 +115,8 @@ public:
      */
     template< std::uint16_t GROUP, std::uint16_t ELEMENT >
     static std::string getTagValue(const std::string& buffer,
-                                   const std::string& charset = "",
-                                   const ::fwLog::Logger::sptr& logger = 0)
+                                   const std::string& charset            = "",
+                                   const core::log::Logger::sptr& logger = 0)
     {
         std::string result = "";
 
@@ -164,6 +163,3 @@ public:
 
 } // namespace helper
 } // namespace fwGdcmIO
-
-#endif // __FWGDCMIO_HELPER_DICOMDATAREADER_HXX__
-

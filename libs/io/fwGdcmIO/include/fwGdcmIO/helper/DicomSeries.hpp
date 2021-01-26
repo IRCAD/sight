@@ -45,7 +45,7 @@ class Study;
 class Equipment;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Observer;
 }
@@ -82,15 +82,15 @@ public:
      * @return container containing DicomSeries
      */
     FWGDCMIO_API DicomSeriesContainerType read(FilenameContainerType& filenames,
-                                               const SPTR(::fwJobs::Observer)& readerObserver         = nullptr,
-                                               const SPTR(::fwJobs::Observer)& completeSeriesObserver = nullptr);
+                                               const SPTR(core::jobs::Observer)& readerObserver         = nullptr,
+                                               const SPTR(core::jobs::Observer)& completeSeriesObserver = nullptr);
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
      * @param[in,out] seriesDB List of DicomSeries that must be completed with information
      * @param[in] completeSeriesObserver complete series observer
      */
     FWGDCMIO_API void complete(DicomSeriesContainerType& seriesDB,
-                               const SPTR(::fwJobs::Observer)& completeSeriesObserver);
+                               const SPTR(core::jobs::Observer)& completeSeriesObserver);
 
 protected:
 
@@ -99,7 +99,7 @@ protected:
      * @param[in,out] seriesDB List of DicomSeries that must be completed with information
      * @param[in] completeSeriesObserver complete series observer
      */
-    void fillSeries(DicomSeriesContainerType& seriesDB, const SPTR(::fwJobs::Observer)& completeSeriesObserver);
+    void fillSeries(DicomSeriesContainerType& seriesDB, const SPTR(core::jobs::Observer)& completeSeriesObserver);
 
     /**
      * @brief Create DicomSeries from list of files. Every instance is read in
@@ -108,7 +108,7 @@ protected:
      * @param[in] readerObserver reader observer
      */
     DicomSeriesContainerType splitFiles(FilenameContainerType& filenames,
-                                        const SPTR(::fwJobs::Observer)& readerObserver);
+                                        const SPTR(core::jobs::Observer)& readerObserver);
 
     /**
      * @brief Create a series from the dataset and store it in the series map

@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -46,7 +46,7 @@ namespace ioGdcm
  * @brief DICOM Writer (DicomSeries)
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *
@@ -63,7 +63,7 @@ class IOGDCM_CLASS_API SDicomSeriesWriter : public ::fwIO::IWriter
 {
 
 public:
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
     fwCoreServiceMacro(SDicomSeriesWriter,  ::fwIO::IWriter)
 

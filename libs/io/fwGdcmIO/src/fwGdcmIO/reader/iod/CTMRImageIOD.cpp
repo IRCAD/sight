@@ -44,7 +44,7 @@ namespace iod
 
 CTMRImageIOD::CTMRImageIOD(const data::DicomSeries::csptr& dicomSeries,
                            const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                           const ::fwLog::Logger::sptr& logger,
+                           const core::log::Logger::sptr& logger,
                            ProgressCallback progress,
                            CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel),

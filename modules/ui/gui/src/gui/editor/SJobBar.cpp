@@ -91,7 +91,7 @@ void SJobBar::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SJobBar::showJob( ::fwJobs::IJob::sptr iJob )
+void SJobBar::showJob( core::jobs::IJob::sptr iJob )
 {
     ::fwGui::dialog::ProgressDialog::sptr progressDialog = ::fwGui::dialog::ProgressDialog::New();
     progressDialog->setTitle(iJob->getName());
@@ -101,15 +101,15 @@ void SJobBar::showJob( ::fwJobs::IJob::sptr iJob )
         progressDialog->hideCancelButton();
     }
 
-    iJob->addDoneWorkHook( [ = ](::fwJobs::IJob& job, std::uint64_t oldDoneWork)
+    iJob->addDoneWorkHook( [ = ](core::jobs::IJob& job, std::uint64_t oldDoneWork)
             {
                 std::string msg = (job.getLogs().empty()) ? "" : job.getLogs().back();
                 (*progressDialog)( float(job.getDoneWorkUnits())/job.getTotalWorkUnits(), msg );
             });
 
-    iJob->addStateHook( [ = ](::fwJobs::IJob::State state)
+    iJob->addStateHook( [ = ](core::jobs::IJob::State state)
             {
-                if(state == ::fwJobs::IJob::CANCELED || state == ::fwJobs::IJob::FINISHED )
+                if(state == core::jobs::IJob::CANCELED || state == core::jobs::IJob::FINISHED )
                 {
                     m_sigEnded->emit();
                     m_associatedWorker->postTask< void >( [ = ]
@@ -117,16 +117,16 @@ void SJobBar::showJob( ::fwJobs::IJob::sptr iJob )
                         m_progressDialogs.erase(progressDialog);
                     });
                 }
-                else if( state == ::fwJobs::IJob::RUNNING)
+                else if( state == core::jobs::IJob::RUNNING)
                 {
                     m_sigStarted->emit();
                 }
             });
 
-    ::fwJobs::IJob::wptr wIJob = iJob;
+    core::jobs::IJob::wptr wIJob = iJob;
     progressDialog->setCancelCallback( [ = ]
             {
-                ::fwJobs::IJob::sptr job = wIJob.lock();
+                core::jobs::IJob::sptr job = wIJob.lock();
                 if(job)
                 {
                     job->cancel();

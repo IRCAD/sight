@@ -53,10 +53,10 @@ public:
     FWGDCMIO_API Document(const SPTR(::gdcm::Writer)& writer,
                           const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                           const data::Image::csptr& image,
-                          bool use3DSR                        = false,
-                          const ::fwLog::Logger::sptr& logger = nullptr,
-                          ProgressCallback progress           = nullptr,
-                          CancelRequestedCallback cancel      = nullptr);
+                          bool use3DSR                          = false,
+                          const core::log::Logger::sptr& logger = nullptr,
+                          ProgressCallback progress             = nullptr,
+                          CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Document();

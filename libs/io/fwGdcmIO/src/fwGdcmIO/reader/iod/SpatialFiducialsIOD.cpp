@@ -42,7 +42,7 @@ namespace iod
 
 SpatialFiducialsIOD::SpatialFiducialsIOD(const data::DicomSeries::csptr& dicomSeries,
                                          const ::fwGdcmIO::container::DicomInstance::sptr& instance,
-                                         const ::fwLog::Logger::sptr& logger,
+                                         const core::log::Logger::sptr& logger,
                                          ProgressCallback progress,
                                          CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)

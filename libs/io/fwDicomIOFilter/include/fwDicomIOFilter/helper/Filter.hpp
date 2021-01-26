@@ -48,7 +48,7 @@ public:
      */
     FWDICOMIOFILTER_API static bool applyFilter(DicomSeriesContainerType& dicomSeriesContainer,
                                                 ::fwDicomIOFilter::IFilter::sptr filter, bool forcedApply = false,
-                                                const ::fwLog::Logger::sptr& logger = ::fwLog::Logger::New());
+                                                const core::log::Logger::sptr& logger = core::log::Logger::New());
 
 };
 

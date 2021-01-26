@@ -8,6 +8,5 @@ set( DEPENDENCIES
     fwMath
     data
     fwGdcmIO
-    fwLog
 )
 set( REQUIREMENTS )

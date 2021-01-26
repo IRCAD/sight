@@ -8,8 +8,6 @@ set( DEPENDENCIES
     fwDataIO
     fwGdcmIO
     fwGui
-    fwLog
-    fwJobs
     services
     fwIO
     )

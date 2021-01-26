@@ -28,6 +28,7 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <data/location/Folder.hpp>
@@ -40,8 +41,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>

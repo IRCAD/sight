@@ -52,9 +52,9 @@ public:
     FWGDCMIO_API Image(const SPTR(::gdcm::Writer)& writer,
                        const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                        const data::Image::csptr& image,
-                       const ::fwLog::Logger::sptr& logger = nullptr,
-                       ProgressCallback progress           = nullptr,
-                       CancelRequestedCallback cancel      = nullptr);
+                       const core::log::Logger::sptr& logger = nullptr,
+                       ProgressCallback progress             = nullptr,
+                       CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Image();

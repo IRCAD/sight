@@ -54,9 +54,9 @@ public:
     FWGDCMIO_API SurfaceSegmentationIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                         const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
                                         const std::filesystem::path& destinationPath,
-                                        const ::fwLog::Logger::sptr& logger = ::fwLog::Logger::New(),
-                                        ProgressCallback progress           = nullptr,
-                                        CancelRequestedCallback cancel      = nullptr);
+                                        const core::log::Logger::sptr& logger = core::log::Logger::New(),
+                                        ProgressCallback progress             = nullptr,
+                                        CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SurfaceSegmentationIOD();

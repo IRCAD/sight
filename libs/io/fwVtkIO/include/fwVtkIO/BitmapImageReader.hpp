@@ -31,7 +31,7 @@
 
 #include <vector>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Observer;
 class IJob;
@@ -69,7 +69,7 @@ public:
     FWVTKIO_API std::string extension() override;
 
     /// @return internal job
-    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
+    FWVTKIO_API SPTR(core::jobs::IJob) getJob() const override;
 
     /// @return A vector of the available bitmap extensions for the vtkImageReader2 class
     FWVTKIO_API static void getAvailableExtensions(std::vector<std::string>& ext);
@@ -77,7 +77,7 @@ public:
 private:
 
     ///Internal job
-    SPTR(::fwJobs::Observer) m_job;
+    SPTR(core::jobs::Observer) m_job;
 
     /// Available file extensions for bitmap files
     std::string m_availableExtensions;

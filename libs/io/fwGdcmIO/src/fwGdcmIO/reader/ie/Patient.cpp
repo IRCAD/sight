@@ -40,7 +40,7 @@ Patient::Patient(const data::DicomSeries::csptr& dicomSeries,
                  const SPTR(::gdcm::Reader)& reader,
                  const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                  const data::Patient::sptr& patient,
-                 const ::fwLog::Logger::sptr& logger,
+                 const core::log::Logger::sptr& logger,
                  ProgressCallback progress,
                  CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::ie::InformationEntity< data::Patient >(dicomSeries, reader, instance, patient, logger,

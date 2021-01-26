@@ -47,7 +47,7 @@ IFilter::FilterType IComposite::getFilterType() const
 //-----------------------------------------------------------------------------
 
 IComposite::DicomSeriesContainerType IComposite::apply(
-    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
@@ -70,7 +70,7 @@ IComposite::DicomSeriesContainerType IComposite::apply(
 //-----------------------------------------------------------------------------
 
 IComposite::DicomSeriesContainerType IComposite::forcedApply(
-    const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);

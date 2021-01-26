@@ -25,6 +25,8 @@
 #include "ioVTK/SImageReader.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Job.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Os.hpp>
@@ -45,9 +47,6 @@
 
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwVtkIO/BitmapImageReader.hpp>
 

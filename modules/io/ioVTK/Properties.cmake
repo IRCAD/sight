@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwGui
     services
     fwVtkIO
-    fwJobs
     fwIO
 )
 set( REQUIREMENTS

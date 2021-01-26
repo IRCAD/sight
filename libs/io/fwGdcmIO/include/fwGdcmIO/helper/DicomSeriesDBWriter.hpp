@@ -36,7 +36,7 @@ namespace sight::data
 class SeriesDB;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Aggregator;
 }
@@ -72,7 +72,7 @@ public:
     FWGDCMIO_API std::string extension() override;
 
     /// Get job Aggregator
-    FWGDCMIO_API SPTR(::fwJobs::Aggregator) getAggregator();
+    FWGDCMIO_API SPTR(core::jobs::Aggregator) getAggregator();
 
     /// Set anonymizer (if anonymization required)
     FWGDCMIO_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);
@@ -89,7 +89,7 @@ public:
 private:
 
     /// Job observer
-    SPTR(::fwJobs::Aggregator) m_aggregator;
+    SPTR(core::jobs::Aggregator) m_aggregator;
 
     /// Optionnal anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;

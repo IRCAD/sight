@@ -40,7 +40,7 @@ namespace sight::data
 class ModelSeries;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Observer;
 }
@@ -79,12 +79,12 @@ public:
     FWVTKIO_API std::string extension() override;
 
     /// @return internal job
-    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const override;
+    FWVTKIO_API SPTR(core::jobs::IJob) getJob() const override;
 
 private:
 
     ///Internal job
-    SPTR(::fwJobs::Observer) m_job;
+    SPTR(core::jobs::Observer) m_job;
 };
 
 } // namespace fwVtkIO

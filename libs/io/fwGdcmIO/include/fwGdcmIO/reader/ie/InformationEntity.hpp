@@ -25,9 +25,9 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/container/DicomInstance.hpp"
 
-#include <data/Object.hpp>
+#include <core/log/Logger.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/Object.hpp>
 
 #include <gdcmReader.h>
 
@@ -71,9 +71,9 @@ public:
                                    const SPTR(::gdcm::Reader)& reader,
                                    const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                    const SPTR(DATATYPE)& object,
-                                   const ::fwLog::Logger::sptr& logger = nullptr,
-                                   const ProgressCallback progress     = nullptr,
-                                   CancelRequestedCallback cancel      = nullptr);
+                                   const core::log::Logger::sptr& logger = nullptr,
+                                   const ProgressCallback progress       = nullptr,
+                                   CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationEntity();
@@ -93,7 +93,7 @@ protected:
     SPTR(DATATYPE) m_object;
 
     ///Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;
@@ -109,7 +109,7 @@ InformationEntity<DATATYPE>::InformationEntity(const CSPTR(data::DicomSeries)& d
                                                const SPTR(::gdcm::Reader)& reader,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const SPTR(DATATYPE)& object,
-                                               const ::fwLog::Logger::sptr& logger,
+                                               const core::log::Logger::sptr& logger,
                                                ProgressCallback progress,
                                                CancelRequestedCallback cancel) :
     m_dicomSeries(dicomSeries),

@@ -25,13 +25,12 @@
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <data/DicomSeries.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <fwZip/WriteZipArchive.hpp>
 
@@ -49,7 +48,7 @@ namespace helper
 DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key) :
     data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     m_writeCount(0),
-    m_job(::fwJobs::Observer::New("Writing DICOM files"))
+    m_job(core::jobs::Observer::New("Writing DICOM files"))
 {
 }
 
@@ -229,7 +228,7 @@ std::string DicomSeriesWriter::extension()
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwJobs::IJob) DicomSeriesWriter::getJob() const
+SPTR(core::jobs::IJob) DicomSeriesWriter::getJob() const
 {
     return m_job;
 }

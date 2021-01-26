@@ -26,6 +26,8 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
 #include <data/DicomSeries.hpp>
@@ -39,9 +41,6 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwIO/IWriter.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <services/macros.hpp>
 

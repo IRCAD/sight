@@ -25,6 +25,8 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Job.hpp>
 
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
@@ -35,9 +37,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwVtkIO/SeriesDBReader.hpp>
 

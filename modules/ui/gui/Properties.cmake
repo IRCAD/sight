@@ -8,7 +8,6 @@ set( DEPENDENCIES
     fwDataTools
     fwGui
     services
-    fwJobs
     activities
 )
 set( REQUIREMENTS

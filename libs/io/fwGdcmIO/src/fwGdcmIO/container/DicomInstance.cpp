@@ -52,7 +52,7 @@ DicomInstance::DicomInstance() :
 //------------------------------------------------------------------------------
 
 DicomInstance::DicomInstance(const data::Series::csptr& series,
-                             const ::fwLog::Logger::sptr& logger,
+                             const core::log::Logger::sptr& logger,
                              bool isMultiFiles) :
     m_isMultiFiles(isMultiFiles),
     m_SOPClassUID(""),
@@ -74,7 +74,7 @@ DicomInstance::DicomInstance(const data::Series::csptr& series,
 //------------------------------------------------------------------------------
 
 DicomInstance::DicomInstance(const data::DicomSeries::csptr& dicomSeries,
-                             const ::fwLog::Logger::sptr& logger) :
+                             const core::log::Logger::sptr& logger) :
     m_isMultiFiles(dicomSeries->getDicomContainer().size() > 1),
     m_studyInstanceUID(dicomSeries->getStudy()->getInstanceUID()),
     m_seriesInstanceUID(dicomSeries->getInstanceUID()),

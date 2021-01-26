@@ -25,10 +25,9 @@
 #include "ioAtoms/config.hpp"
 
 #include <core/com/Signal.hpp>
+#include <core/jobs/IJob.hpp>
 
 #include <fwIO/IReader.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <map>
 #include <set>
@@ -45,7 +44,7 @@ namespace ioAtoms
  * @brief Atoms reader. Service to load data from Atoms format
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -107,7 +106,7 @@ class IOATOMS_CLASS_API SReader : public ::fwIO::IReader
 public:
 
     /// Signal type for job creation.
-    typedef core::com::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
 
     fwCoreServiceMacro(SReader, ::fwIO::IReader)
 

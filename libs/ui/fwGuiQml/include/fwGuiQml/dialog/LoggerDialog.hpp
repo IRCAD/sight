@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ public:
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    FWGUIQML_API virtual void setLogger(const ::fwLog::Logger::sptr& logger) override;
+    FWGUIQML_API virtual void setLogger(const core::log::Logger::sptr& logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
@@ -101,7 +101,7 @@ private:
     QString m_message;
 
     /// Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// get pushed button and clicked one
     bool m_isOk {false};

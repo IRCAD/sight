@@ -30,7 +30,7 @@
 
 #include <string>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Observer;
 class IJob;
@@ -83,7 +83,7 @@ public:
     FWGDCMIO_API std::string extension() override;
 
     /// Get job observer
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
+    FWGDCMIO_API SPTR(core::jobs::IJob) getJob() const override;
 
     /// Defines optional anonymizer.
     FWGDCMIO_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);
@@ -115,7 +115,7 @@ protected:
     int m_writeCount;
 
     /// Job observer
-    SPTR(::fwJobs::Observer) m_job;
+    SPTR(core::jobs::Observer) m_job;
 
     /// Optionnal anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;

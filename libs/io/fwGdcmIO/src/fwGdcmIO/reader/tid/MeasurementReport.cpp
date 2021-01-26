@@ -38,7 +38,7 @@ MeasurementReport::MeasurementReport(const data::DicomSeries::csptr& dicomSeries
                                      const SPTR(::gdcm::Reader)& reader,
                                      const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                                      const data::Image::sptr& image,
-                                     const ::fwLog::Logger::sptr& logger) :
+                                     const core::log::Logger::sptr& logger) :
     ::fwGdcmIO::reader::tid::TemplateID< data::Image >(dicomSeries, reader, instance, image, logger)
 {
 }

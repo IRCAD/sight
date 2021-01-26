@@ -26,20 +26,20 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
+#include <core/log/Logger.hpp>
+
 #include <data/ImageSeries.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/ModelSeries.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 
-#include <fwLog/Logger.hpp>
-
 namespace fwDicomData
 {
 class DicomSeries;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class Aggregator;
 class Observer;
@@ -76,18 +76,18 @@ public:
     FWGDCMIO_API std::string extension() override;
 
     /// Returns logger
-    FWGDCMIO_API SPTR(::fwLog::Logger) getLogger() const;
+    FWGDCMIO_API SPTR(core::log::Logger) getLogger() const;
 
     /// Getter for writer's job
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const override;
+    FWGDCMIO_API SPTR(core::jobs::IJob) getJob() const override;
 
 private:
 
     /// Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Writer job
-    SPTR(::fwJobs::Observer) m_writerJob;
+    SPTR(core::jobs::Observer) m_writerJob;
 
 };
 

@@ -23,6 +23,8 @@
 #include "ioGdcm/SDicomSeriesDBReader.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/mt/ObjectWriteLock.hpp>
@@ -37,9 +39,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwIO/IReader.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <services/macros.hpp>
 
@@ -200,7 +199,7 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
         reader->readDicomSeries();
 
         // Retrieve logger
-        ::fwLog::Logger::sptr logger = reader->getLogger();
+        core::log::Logger::sptr logger = reader->getLogger();
         logger->sort();
 
         // Display logger dialog if enabled

@@ -26,11 +26,10 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Slots.hpp>
+#include <core/jobs/IJob.hpp>
 
 #include <fwGui/editor/IDialogEditor.hpp>
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <services/IService.hpp>
 
@@ -63,7 +62,7 @@ public:
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of showJob slot
-    typedef core::com::Slot< void ( ::fwJobs::IJob::sptr ) >  ShowJobSlot;
+    typedef core::com::Slot< void ( core::jobs::IJob::sptr ) >  ShowJobSlot;
 
     /**
      * @brief Constructor. Do nothing.
@@ -99,7 +98,7 @@ protected:
     /**
      * @brief showJob slot's method
      */
-    GUI_API virtual void showJob( ::fwJobs::IJob::sptr iJob );
+    GUI_API virtual void showJob( core::jobs::IJob::sptr iJob );
 
     typedef std::set< SPTR(::fwGui::dialog::ProgressDialog) > ProgressDialogs;
     ProgressDialogs m_progressDialogs;

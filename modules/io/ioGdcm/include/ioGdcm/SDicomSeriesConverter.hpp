@@ -30,7 +30,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -43,7 +43,7 @@ namespace ioGdcm
  * and push result (ImageSeries, ModelSeries, ...) in target SeriesDB
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+ * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *
@@ -64,7 +64,7 @@ public:
 
     fwCoreServiceMacro(SDicomSeriesConverter,  ::fwGui::IActionSrv )
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
     /**
      * @brief Constructor

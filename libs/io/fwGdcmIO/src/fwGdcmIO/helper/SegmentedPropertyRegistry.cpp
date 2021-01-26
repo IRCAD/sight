@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwGdcmIO/helper/CsvIO.hpp"
 #include "fwGdcmIO/helper/DicomCodedAttribute.hpp"
 
-#include <fwLog/Logger.hpp>
+#include <core/log/Logger.hpp>
 
 #include <filesystem>
 
@@ -49,7 +49,7 @@ SegmentedPropertyRegistry::SegmentedPropertyRegistry()
 
 bool checkAndFormatEntry(const std::string& structureType,
                          SegmentedPropertyRegistry::EntryType& entry,
-                         const ::fwLog::Logger::sptr& logger)
+                         const core::log::Logger::sptr& logger)
 {
     bool result = true;
 
@@ -109,7 +109,7 @@ bool checkAndFormatEntry(const std::string& structureType,
 
 bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(const std::filesystem::path& filepath,
                                                                   bool omitFirstLine,
-                                                                  const ::fwLog::Logger::sptr& logger)
+                                                                  const core::log::Logger::sptr& logger)
 {
     const std::string filepathStr = filepath.string();
     if(std::filesystem::exists(filepath))
@@ -124,7 +124,7 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(const std::fil
 
 bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(std::istream& csvStream,
                                                                   bool omitFirstLine,
-                                                                  const ::fwLog::Logger::sptr& logger)
+                                                                  const core::log::Logger::sptr& logger)
 {
     bool result = true;
 

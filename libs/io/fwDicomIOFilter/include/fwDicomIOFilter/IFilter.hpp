@@ -27,11 +27,10 @@
 #include "fwDicomIOFilter/factory/new.hpp"
 #include "fwDicomIOFilter/registry/detail.hpp"
 
+#include <core/log/Logger.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/DicomSeries.hpp>
-
-#include <fwLog/Logger.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -85,7 +84,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const = 0;
+        const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const = 0;
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const = 0;

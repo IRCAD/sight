@@ -12,7 +12,6 @@ set( DEPENDENCIES
     data
     fwDataTools
     fwGui
-    fwJobs
     services
     fwZip
     fwIO

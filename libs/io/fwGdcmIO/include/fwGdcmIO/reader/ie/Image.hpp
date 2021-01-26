@@ -57,9 +57,9 @@ public:
                        const SPTR(::gdcm::Reader)& reader,
                        const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                        const data::Image::sptr& image,
-                       const ::fwLog::Logger::sptr& logger = nullptr,
-                       ProgressCallback progress           = nullptr,
-                       CancelRequestedCallback cancel      = nullptr);
+                       const core::log::Logger::sptr& logger = nullptr,
+                       ProgressCallback progress             = nullptr,
+                       CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~Image();

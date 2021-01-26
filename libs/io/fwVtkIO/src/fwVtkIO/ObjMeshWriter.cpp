@@ -29,8 +29,8 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <data/Mesh.hpp>
 #include <data/Material.hpp>
@@ -59,7 +59,7 @@ namespace fwVtkIO
 
 ObjMeshWriter::ObjMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("OBJ Mesh writer"))
+    m_job(core::jobs::Observer::New("OBJ Mesh writer"))
 {
 
 }
@@ -168,7 +168,7 @@ std::string ObjMeshWriter::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr ObjMeshWriter::getJob() const
+::core::jobs::IJob::sptr ObjMeshWriter::getJob() const
 {
     return m_job;
 }

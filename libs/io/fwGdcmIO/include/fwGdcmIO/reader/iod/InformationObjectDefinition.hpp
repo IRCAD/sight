@@ -26,9 +26,9 @@
 #include "fwGdcmIO/container/DicomInstance.hpp"
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <core/log/Logger.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <gdcmReader.h>
 
@@ -62,9 +62,9 @@ public:
      */
     FWGDCMIO_API InformationObjectDefinition(const data::DicomSeries::csptr& dicomSeries,
                                              const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                             const ::fwLog::Logger::sptr& logger = nullptr,
-                                             ProgressCallback progress           = nullptr,
-                                             CancelRequestedCallback cancel      = nullptr);
+                                             const core::log::Logger::sptr& logger = nullptr,
+                                             ProgressCallback progress             = nullptr,
+                                             CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~InformationObjectDefinition();
@@ -85,7 +85,7 @@ protected:
     data::DicomSeries::csptr m_dicomSeries;
 
     ///Logger
-    ::fwLog::Logger::sptr m_logger;
+    core::log::Logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;

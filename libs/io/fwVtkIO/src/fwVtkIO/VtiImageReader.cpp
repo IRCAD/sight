@@ -26,11 +26,10 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -45,7 +44,7 @@ namespace fwVtkIO
 
 VtiImageReader::VtiImageReader(::fwDataIO::reader::IObjectReader::Key) :
     data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("Vti image reader"))
+    m_job(core::jobs::Observer::New("Vti image reader"))
 {
 }
 
@@ -111,7 +110,7 @@ std::string VtiImageReader::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr VtiImageReader::getJob() const
+::core::jobs::IJob::sptr VtiImageReader::getJob() const
 {
     return m_job;
 }

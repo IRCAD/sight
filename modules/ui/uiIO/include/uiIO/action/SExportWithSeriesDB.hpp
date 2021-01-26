@@ -29,7 +29,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -47,11 +47,11 @@ namespace action
  * created SeriesDB with the given configuration.
  *
  * @section Signal Signal
- * - \b jobCreated(SPTR(::fwJobs::IJob)) : This signal is emitted by the slot 'forwardJob' to forward job process
+ * - \b jobCreated(SPTR(core::jobs::IJob)) : This signal is emitted by the slot 'forwardJob' to forward job process
  *   between SIOSelector service (jobCreated signal) and other services.
  *
  * @section Slot Slot
- * - \b forwardJob(SPTR(::fwJobs::IJob)) : This slot allows to forward job process between SIOSelector service
+ * - \b forwardJob(SPTR(core::jobs::IJob)) : This slot allows to forward job process between SIOSelector service
  *   and other services. It is connected to SIOSelector 'jobCreated' signal.
  *
  * @section XML XML Configuration
@@ -93,8 +93,8 @@ public:
      * @name Signal/Slot typedefs
      * @{
      */
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
-    typedef core::com::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Slot< void ( SPTR(core::jobs::IJob) ) > ForwardJobSlotType;
     /// @}
 
     UIIO_API SExportWithSeriesDB() noexcept;
@@ -122,7 +122,7 @@ protected:
 private:
 
     /// SLOT: Allows to forward job process between io selector service and other services.
-    void forwardJob(SPTR(::fwJobs::IJob) iJob);
+    void forwardJob(SPTR(core::jobs::IJob) iJob);
 
     std::string m_ioSelectorSrvConfig; ///< Configuration used for launched SIOSelector service
 

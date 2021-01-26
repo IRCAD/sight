@@ -47,7 +47,7 @@ Series::Series(const data::DicomSeries::csptr& dicomSeries,
                const SPTR(::gdcm::Reader)& reader,
                const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                const data::Series::sptr& series,
-               const ::fwLog::Logger::sptr& logger,
+               const core::log::Logger::sptr& logger,
                ProgressCallback progress,
                CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::ie::InformationEntity< data::Series >(dicomSeries, reader, instance, series,

@@ -31,7 +31,7 @@
 #include <filesystem>
 #include <string>
 
-namespace fwLog
+namespace sight::core::log
 {
 class Logger;
 }
@@ -76,8 +76,8 @@ public:
      * @param[in] logger Logger used to display errors
      */
     FWGDCMIO_API bool readSegmentedPropertyRegistryFile(const std::filesystem::path& filepath,
-                                                        bool omitFirstLine                  = false,
-                                                        const SPTR(::fwLog::Logger)& logger = 0);
+                                                        bool omitFirstLine                    = false,
+                                                        const SPTR(core::log::Logger)& logger = 0);
 
     /**
      * @brief Read an extract registry values from a CSV stream
@@ -94,8 +94,8 @@ public:
      * @param[in] logger Logger used to display errors
      */
     FWGDCMIO_API bool readSegmentedPropertyRegistryFile(std::istream& csvStream,
-                                                        bool omitFirstLine                  = false,
-                                                        const SPTR(::fwLog::Logger)& logger = 0);
+                                                        bool omitFirstLine                    = false,
+                                                        const SPTR(core::log::Logger)& logger = 0);
 
     /// Returns whether the registry is empty or not
     FWGDCMIO_API bool empty() const;

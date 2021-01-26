@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,17 +29,17 @@
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
-#include <filesystem>
 #include <gdcmAnonymizer.h>
 #include <gdcmDicts.h>
 #include <gdcmStringFilter.h>
 
+#include <filesystem>
 #include <iostream>
 #include <map>
 #include <set>
 #include <string>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 class Observer;
@@ -58,7 +58,7 @@ class FWGDCMIO_CLASS_API DicomAnonymizer
 {
 public:
 
-    fwCoreClassMacro(DicomAnonymizer);
+    fwCoreClassMacro(DicomAnonymizer)
 
     //------------------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ public:
                                            const std::filesystem::path& output);
 
     /// Get job observer
-    FWGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+    FWGDCMIO_API SPTR(core::jobs::IJob) getJob() const;
 
     /// Return next file index
     FWGDCMIO_API unsigned int getNextIndex();
@@ -210,7 +210,7 @@ private:
     static const unsigned int s_NUMBER_OF_TAGS;
 
     /// Job observer
-    SPTR(::fwJobs::Observer) m_observer;
+    SPTR(core::jobs::Observer) m_observer;
 
     /// Archiving boolean used to compute correct progress when archiving
     bool m_archiving;

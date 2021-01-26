@@ -37,7 +37,7 @@ namespace dialog
 //-----------------------------------------------------------------------------
 
 bool LoggerDialog::showLoggerDialog(
-    const std::string& title, const std::string& message, const ::fwLog::Logger::sptr& logger)
+    const std::string& title, const std::string& message, const core::log::Logger::sptr& logger)
 {
     ::fwGui::dialog::LoggerDialog dialog(title, message, logger);
     return dialog.show();
@@ -59,7 +59,7 @@ LoggerDialog::~LoggerDialog()
 
 //-----------------------------------------------------------------------------
 
-LoggerDialog::LoggerDialog(const std::string& title, const std::string& message, const ::fwLog::Logger::sptr& logger)
+LoggerDialog::LoggerDialog(const std::string& title, const std::string& message, const core::log::Logger::sptr& logger)
 {
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILoggerDialog::REGISTRY_KEY);
     m_implementation                    = ::fwGui::dialog::ILoggerDialog::dynamicCast(guiObj);
@@ -84,7 +84,7 @@ void LoggerDialog::setMessage(const std::string& message)
 
 //-----------------------------------------------------------------------------
 
-void LoggerDialog::setLogger(const ::fwLog::Logger::sptr& logger)
+void LoggerDialog::setLogger(const core::log::Logger::sptr& logger)
 {
     m_implementation->setLogger(logger);
 }

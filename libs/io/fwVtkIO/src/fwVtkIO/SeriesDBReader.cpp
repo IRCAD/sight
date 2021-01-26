@@ -27,6 +27,8 @@
 #include "fwVtkIO/vtk.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/memory/BufferObject.hpp>
 #include <core/memory/stream/in/IFactory.hpp>
 #include <core/tools/dateAndTime.hpp>
@@ -42,9 +44,6 @@
 #include <data/Study.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -97,7 +96,7 @@ void initSeries(data::Series::sptr series, const std::string& instanceUID)
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
     data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("SeriesDB reader")),
+    m_job(core::jobs::Observer::New("SeriesDB reader")),
     m_lazyMode(true)
 {
 }
@@ -110,7 +109,7 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 template <typename T, typename FILE>
-vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const ::fwJobs::Observer::sptr& job)
+vtkSmartPointer< vtkDataObject  > getObj(FILE& file, const core::jobs::Observer::sptr& job)
 {
     using namespace fwVtkIO::helper;
 
@@ -347,7 +346,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader >& reader, con
 //------------------------------------------------------------------------------
 
 template< typename DATA_READER >
-data::Image::sptr lazyRead( const std::filesystem::path& file, const ::fwJobs::Observer::sptr& job)
+data::Image::sptr lazyRead( const std::filesystem::path& file, const core::jobs::Observer::sptr& job)
 {
     vtkSmartPointer< DATA_READER > reader = vtkSmartPointer< DATA_READER >::New();
     reader->SetFileName(file.string().c_str());
@@ -473,7 +472,7 @@ std::string SeriesDBReader::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr SeriesDBReader::getJob() const
+::core::jobs::IJob::sptr SeriesDBReader::getJob() const
 {
     return m_job;
 }

@@ -74,7 +74,7 @@ void LoggerDialog::setMessage(const std::string& message)
 
 //------------------------------------------------------------------------------
 
-void LoggerDialog::setLogger(const ::fwLog::Logger::sptr& logger)
+void LoggerDialog::setLogger(const core::log::Logger::sptr& logger)
 {
     m_logger = logger;
 }
@@ -108,12 +108,12 @@ bool LoggerDialog::show()
 
     // Create icon
     QLabel* iconLabel = new QLabel();
-    if(m_logger->count(::fwLog::Log::CRITICAL) > 0)
+    if(m_logger->count(core::log::Log::CRITICAL) > 0)
     {
         const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/critical.png");
         iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
-    else if(m_logger->count(::fwLog::Log::WARNING) > 0)
+    else if(m_logger->count(core::log::Log::WARNING) > 0)
     {
         const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/warning.png");
         iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
@@ -128,9 +128,9 @@ bool LoggerDialog::show()
     // Create message
     std::stringstream ss;
     ss << m_message <<
-        "<br><br>" << "<b>Log report :</b> " << m_logger->count(::fwLog::Log::CRITICAL) << " critical, " <<
-        m_logger->count(::fwLog::Log::WARNING) << " warning and " <<
-        m_logger->count(::fwLog::Log::INFORMATION) << " information messages.";
+        "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::Log::CRITICAL) << " critical, " <<
+        m_logger->count(core::log::Log::WARNING) << " warning and " <<
+        m_logger->count(core::log::Log::INFORMATION) << " information messages.";
 
     QLabel* messageLabel = new QLabel(ss.str().c_str());
     messageLayout->addWidget(messageLabel);
@@ -168,26 +168,26 @@ bool LoggerDialog::show()
     m_logTableWidget->horizontalHeader()->setStretchLastSection(true);
 
     // Fill log table
-    ::fwLog::Logger::ConstIteratorType it = m_logger->begin();
-    int row = 0;
+    core::log::Logger::ConstIteratorType it = m_logger->begin();
+    int row                                 = 0;
     for(; it != m_logger->end(); ++it, ++row)
     {
         std::string levelString = "Unknown";
         QIcon levelIcon;
-        ::fwLog::Log::LevelType level = it->getLevel();
-        if (level == ::fwLog::Log::INFORMATION)
+        core::log::Log::LevelType level = it->getLevel();
+        if (level == core::log::Log::INFORMATION)
         {
             levelString = "Information";
             const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/information.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
-        else if (level == ::fwLog::Log::WARNING)
+        else if (level == core::log::Log::WARNING)
         {
             levelString = "Warning";
             const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/warning.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
-        else if (level == ::fwLog::Log::CRITICAL)
+        else if (level == core::log::Log::CRITICAL)
         {
             levelString = "Critical";
             const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/critical.png");

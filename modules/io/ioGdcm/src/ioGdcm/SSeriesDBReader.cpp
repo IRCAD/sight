@@ -23,6 +23,9 @@
 #include "ioGdcm/SSeriesDBReader.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
+#include <core/log/Logger.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
 #include <data/location/Folder.hpp>
@@ -41,11 +44,6 @@
 #include <fwGui/dialog/PulseProgressDialog.hpp>
 
 #include <fwIO/IReader.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
-
-#include <fwLog/Logger.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -266,7 +264,7 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::pat
         reader->read();
 
         // Retrieve logger
-        ::fwLog::Logger::sptr logger = reader->getLogger();
+        core::log::Logger::sptr logger = reader->getLogger();
         logger->sort();
 
         // Set default cursor

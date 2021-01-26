@@ -28,6 +28,10 @@
 #include "fwGdcmIO/helper/SOPClass.hpp"
 #include "fwGdcmIO/reader/Series.hpp"
 
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/Job.hpp>
+#include <core/jobs/Observer.hpp>
+
 #include <data/tools/helper/SeriesDB.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
@@ -35,10 +39,6 @@
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/IFilter.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <services/registry/ActiveWorkers.hpp>
 
@@ -62,14 +62,14 @@ SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
     data::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false),
     m_dicomFilterType(""),
-    m_logger(::fwLog::Logger::New()),
-    m_job(::fwJobs::Aggregator::New("DICOM reader")),
+    m_logger(core::log::Logger::New()),
+    m_job(core::jobs::Aggregator::New("DICOM reader")),
     m_enableBufferRotation(true),
-    m_dicomdirFileLookupJob(::fwJobs::Observer::New("Extracting information from DICOMDIR")),
-    m_regularFileLookupJob(::fwJobs::Observer::New("Looking for DICOM files")),
-    m_readerJob(::fwJobs::Observer::New("Reading DICOM files")),
-    m_completeDicomSeriesJob(::fwJobs::Observer::New("Completing series")),
-    m_converterJob(::fwJobs::Observer::New("DICOM data conversion"))
+    m_dicomdirFileLookupJob(core::jobs::Observer::New("Extracting information from DICOMDIR")),
+    m_regularFileLookupJob(core::jobs::Observer::New("Looking for DICOM files")),
+    m_readerJob(core::jobs::Observer::New("Reading DICOM files")),
+    m_completeDicomSeriesJob(core::jobs::Observer::New("Completing series")),
+    m_converterJob(core::jobs::Observer::New("DICOM data conversion"))
 {
 }
 
@@ -459,7 +459,7 @@ SeriesDB::DicomSeriesContainerType& SeriesDB::getDicomSeries()
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwJobs::IJob) SeriesDB::getJob() const
+SPTR(core::jobs::IJob) SeriesDB::getJob() const
 {
     return m_job;
 }

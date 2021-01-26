@@ -55,7 +55,7 @@ public:
                           const SPTR(::gdcm::Reader)& reader,
                           const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                           const data::Image::sptr& image,
-                          const ::fwLog::Logger::sptr& logger);
+                          const core::log::Logger::sptr& logger);
 
     /// Destructor
     FWGDCMIO_API virtual ~Fiducial();

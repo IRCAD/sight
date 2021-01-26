@@ -25,13 +25,13 @@
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/Job.hpp>
+#include <core/jobs/Observer.hpp>
+
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
@@ -49,7 +49,7 @@ namespace helper
 DicomSeriesDBWriter::DicomSeriesDBWriter(::fwDataIO::writer::IObjectWriter::Key key) :
     data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
     data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_aggregator(::fwJobs::Aggregator::New("Writing Dicom series")),
+    m_aggregator(core::jobs::Aggregator::New("Writing Dicom series")),
     m_enableZippedArchive(false)
 
 {
@@ -70,7 +70,7 @@ std::string DicomSeriesDBWriter::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::Aggregator::sptr DicomSeriesDBWriter::getAggregator()
+::core::jobs::Aggregator::sptr DicomSeriesDBWriter::getAggregator()
 {
     return m_aggregator;
 }
@@ -131,7 +131,8 @@ void DicomSeriesDBWriter::write()
     {
         const data::DicomSeries::sptr& dicomSeries = data::DicomSeries::dynamicCast(series);
 
-        ::fwJobs::Job::sptr job = ::fwJobs::Job::New("Write Dicom series", [&, dicomSeries](::fwJobs::Job& runningJob)
+        core::jobs::Job::sptr job =
+            core::jobs::Job::New("Write Dicom series", [&, dicomSeries](core::jobs::Job& runningJob)
                 {
                     if(!runningJob.cancelRequested())
                     {
@@ -142,13 +143,13 @@ void DicomSeriesDBWriter::write()
                         writer->setAnonymizer(m_anonymizer);
                         writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
 
-                        runningJob.addCancelHook([&](::fwJobs::IJob& subJob)
+                        runningJob.addCancelHook([&](core::jobs::IJob& subJob)
                         {
                             writer->getJob()->cancel();
                         }
                                                  );
 
-                        writer->getJob()->addDoneWorkHook([&](::fwJobs::IJob& subJob, std::uint64_t oldWork)
+                        writer->getJob()->addDoneWorkHook([&](core::jobs::IJob& subJob, std::uint64_t oldWork)
                         {
                             runningJob.doneWork(subJob.getDoneWorkUnits());
                         });
@@ -167,9 +168,9 @@ void DicomSeriesDBWriter::write()
                         }
                     }
                 },
-                                                     services::registry::ActiveWorkers::getDefaultWorker());
+                                 services::registry::ActiveWorkers::getDefaultWorker());
 
-        m_aggregator->addCancelHook([&](::fwJobs::IJob& subJob)
+        m_aggregator->addCancelHook([&](core::jobs::IJob& subJob)
                 {
                     job->cancel();
                 }

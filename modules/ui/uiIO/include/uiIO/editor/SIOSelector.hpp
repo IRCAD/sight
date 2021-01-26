@@ -26,10 +26,9 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
+#include <core/jobs/IJob.hpp>
 
 #include <fwGui/editor/IDialogEditor.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 namespace uiIO
 {
@@ -40,12 +39,12 @@ namespace editor
  * @brief  This service displays a list of available readers or writers and lets you select one to load or save a data.
  *
  * @section Signals Signals
- * - \b jobCreated(::fwJobs::IJob::sptr) : emitted when a job is created.
+ * - \b jobCreated(core::jobs::IJob::sptr) : emitted when a job is created.
  * - \b jobFailed() : emitted when the job has been cancelled by the user or has failed.
  * - \b jobSucceeded() : emitted when a job finishes correctly.
  *
  * @section Slots Slots
- * - \b forwardJob(::fwJobs::IJob::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
+ * - \b forwardJob(core::jobs::IJob::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
  *
  * @section XML XML Configuration
  *
@@ -102,11 +101,11 @@ public:
 
     fwCoreServiceMacro(SIOSelector,  ::fwGui::editor::IDialogEditor)
 
-    typedef core::com::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
     typedef core::com::Signal< void ( ) > JobFailedSignalType;
     typedef core::com::Signal< void ( ) > JobSucceededSignalType;
 
-    typedef core::com::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
+    typedef core::com::Slot< void ( core::jobs::IJob::sptr ) > ForwardJobSlotType;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -150,7 +149,7 @@ protected:
 
 private:
 
-    void forwardJob(::fwJobs::IJob::sptr iJob);
+    void forwardJob(core::jobs::IJob::sptr iJob);
 
     /// Configure the service as writer or reader.
     IOMode m_mode;

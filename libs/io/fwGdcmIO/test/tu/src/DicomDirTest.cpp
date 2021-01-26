@@ -24,9 +24,9 @@
 
 #include <fwGdcmIO/helper/DicomDir.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <core/log/Logger.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <data/DicomSeries.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/Slow.hpp>
@@ -80,7 +80,7 @@ void DicomDirTest::readDicomDir()
 
     std::vector< data::DicomSeries::sptr > seriesDB;
 
-    ::fwLog::Logger::sptr logger = ::fwLog::Logger::New();
+    core::log::Logger::sptr logger = core::log::Logger::New();
 
     // Read DICOMDIR file
     ::fwGdcmIO::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesDB, logger);

@@ -69,7 +69,7 @@ void LoggerDialog::setMessage(const std::string& message)
 
 //------------------------------------------------------------------------------
 
-void LoggerDialog::setLogger(const ::fwLog::Logger::sptr& logger)
+void LoggerDialog::setLogger(const core::log::Logger::sptr& logger)
 {
     m_logger = logger;
 }
@@ -111,11 +111,11 @@ bool LoggerDialog::show()
     auto critical =
         core::runtime::getLibraryResourceFilePath("fwGuiQml-" FWGUIQML_VER "/critical.svg");
     SLM_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
-    if (m_logger->count(::fwLog::Log::CRITICAL) > 0)
+    if (m_logger->count(core::log::Log::CRITICAL) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
     }
-    else if (m_logger->count(::fwLog::Log::WARNING) > 0)
+    else if (m_logger->count(core::log::Log::WARNING) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(warning.string())));
     }
@@ -126,9 +126,9 @@ bool LoggerDialog::show()
     // Create message
     std::stringstream ss;
     ss << m_message.toStdString() <<
-        "<br><br>" << "<b>Log report :</b> " << m_logger->count(::fwLog::Log::CRITICAL) << " critical, " <<
-        m_logger->count(::fwLog::Log::WARNING) << " warning and " <<
-        m_logger->count(::fwLog::Log::INFORMATION) << " information messages.";
+        "<br><br>" << "<b>Log report :</b> " << m_logger->count(core::log::Log::CRITICAL) << " critical, " <<
+        m_logger->count(core::log::Log::WARNING) << " warning and " <<
+        m_logger->count(core::log::Log::INFORMATION) << " information messages.";
     emitMessage(QString::fromStdString(ss.str()));
 
     // get the icon of the details checkbox
@@ -146,23 +146,23 @@ bool LoggerDialog::show()
     dialog->setProperty("critical", QUrl::fromLocalFile(QString::fromStdString(critical.string())));
 
     // Fill log table
-    ::fwLog::Logger::ConstIteratorType it = m_logger->begin();
+    core::log::Logger::ConstIteratorType it = m_logger->begin();
     model.addRole(Qt::UserRole + 1, "level");
     model.addRole(Qt::UserRole + 2, "message");
     for(; it != m_logger->end(); ++it)
     {
         QString levelString = "Unkown";
         QHash<QByteArray, QVariant> data;
-        ::fwLog::Log::LevelType level = it->getLevel();
-        if (level == ::fwLog::Log::INFORMATION)
+        core::log::Log::LevelType level = it->getLevel();
+        if (level == core::log::Log::INFORMATION)
         {
             levelString = "Information";
         }
-        else if (level == ::fwLog::Log::WARNING)
+        else if (level == core::log::Log::WARNING)
         {
             levelString = "Warning";
         }
-        else if (level == ::fwLog::Log::CRITICAL)
+        else if (level == core::log::Log::CRITICAL)
         {
             levelString = "Critical";
         }

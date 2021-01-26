@@ -26,11 +26,10 @@
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -44,7 +43,7 @@ namespace fwVtkIO
 
 VtpMeshWriter::VtpMeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
     data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("VTP Mesh writer"))
+    m_job(core::jobs::Observer::New("VTP Mesh writer"))
 {
 }
 
@@ -103,7 +102,7 @@ std::string VtpMeshWriter::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr VtpMeshWriter::getJob() const
+::core::jobs::IJob::sptr VtpMeshWriter::getJob() const
 {
     return m_job;
 }

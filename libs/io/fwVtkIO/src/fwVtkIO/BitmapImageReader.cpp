@@ -25,10 +25,10 @@
 #include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 #include "fwVtkIO/vtk.hpp"
 
-#include <fwDataIO/reader/registry/macros.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -47,7 +47,7 @@ namespace fwVtkIO
 
 BitmapImageReader::BitmapImageReader(::fwDataIO::reader::IObjectReader::Key) :
     data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
-    m_job(::fwJobs::Observer::New("Bitmap image reader"))
+    m_job(core::jobs::Observer::New("Bitmap image reader"))
 {
     /* Initialize the available extensions */
     std::vector<std::string> ext;
@@ -128,7 +128,7 @@ std::string BitmapImageReader::extension()
 
 //------------------------------------------------------------------------------
 
-::fwJobs::IJob::sptr BitmapImageReader::getJob() const
+::core::jobs::IJob::sptr BitmapImageReader::getJob() const
 {
     return m_job;
 }

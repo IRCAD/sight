@@ -28,11 +28,10 @@
 #include "fwGdcmIO/helper/tags.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/tools/System.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -60,7 +59,7 @@ const std::string c_MIN_DATE_STRING = "19000101";
 
 DicomAnonymizer::DicomAnonymizer() :
     m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
-    m_observer(::fwJobs::Observer::New("Anonymization process")),
+    m_observer(core::jobs::Observer::New("Anonymization process")),
     m_archiving(false),
     m_fileIndex(0),
     m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
@@ -754,7 +753,7 @@ void DicomAnonymizer::copyDirectory(const std::filesystem::path& input,
 
 //------------------------------------------------------------------------------
 
-SPTR(::fwJobs::IJob) DicomAnonymizer::getJob() const
+SPTR(core::jobs::IJob) DicomAnonymizer::getJob() const
 {
     return m_observer;
 }

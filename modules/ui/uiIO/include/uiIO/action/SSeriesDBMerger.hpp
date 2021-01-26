@@ -31,7 +31,7 @@
 
 #include <fwGui/IActionSrv.hpp>
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -45,10 +45,10 @@ namespace action
  * @brief This action allows to load a new SeriesDB and merge it with the current SeriesDB
  *
  * @section Slots Slots
- * - \b forwardJob(::fwJobs::IJob::sptr) : Called to forward a job.
+ * - \b forwardJob(core::jobs::IJob::sptr) : Called to forward a job.
  *
  * @section Signals Signals
- * - \b jobCreated(::fwJobs::IJob::sptr) : This signal is emitted when a job is created
+ * - \b jobCreated(core::jobs::IJob::sptr) : This signal is emitted when a job is created
  *
  * The available reader can be configured
  * @section XML XML Configuration
@@ -82,8 +82,8 @@ class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 public:
     fwCoreServiceMacro(SSeriesDBMerger,  ::fwGui::IActionSrv)
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
-    typedef core::com::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Slot< void ( SPTR(core::jobs::IJob) ) > ForwardJobSlotType;
 
     UIIO_API SSeriesDBMerger() noexcept;
 
@@ -114,7 +114,7 @@ protected:
     void info(std::ostream& _sstream ) override;
 
 private:
-    void forwardJob(SPTR(::fwJobs::IJob) iJob);
+    void forwardJob(SPTR(core::jobs::IJob) iJob);
 
     std::string m_ioSelectorSrvConfig;
 

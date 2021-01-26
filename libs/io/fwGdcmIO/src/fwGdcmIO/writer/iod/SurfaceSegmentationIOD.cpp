@@ -53,7 +53,7 @@ namespace iod
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
                                                const SPTR(::fwGdcmIO::container::DicomInstance)& imageInstance,
                                                const std::filesystem::path& destinationPath,
-                                               const ::fwLog::Logger::sptr& logger,
+                                               const core::log::Logger::sptr& logger,
                                                ProgressCallback progress,
                                                CancelRequestedCallback cancel) :
     ::fwGdcmIO::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),
@@ -130,7 +130,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
     // Write the file
     if((!m_cancelRequestedCallback || !m_cancelRequestedCallback()) &&
-       (!m_logger || !m_logger->count(::fwLog::Log::CRITICAL)))
+       (!m_logger || !m_logger->count(core::log::Log::CRITICAL)))
     {
         ::fwGdcmIO::helper::FileWriter::write(m_destinationPath, writer);
     }

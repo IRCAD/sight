@@ -55,7 +55,7 @@ Surface::Surface(const data::DicomSeries::csptr& dicomSeries,
                  const SPTR(::gdcm::Reader)& reader,
                  const ::fwGdcmIO::container::DicomInstance::sptr& instance,
                  const data::ModelSeries::sptr& series,
-                 const ::fwLog::Logger::sptr& logger,
+                 const core::log::Logger::sptr& logger,
                  ProgressCallback progress,
                  CancelRequestedCallback cancel) :
     ::fwGdcmIO::reader::ie::InformationEntity< data::ModelSeries >(dicomSeries, reader, instance, series,

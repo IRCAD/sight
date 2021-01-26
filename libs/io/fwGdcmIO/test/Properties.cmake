@@ -8,7 +8,6 @@ set( DEPENDENCIES
     utestData
     fwDataTools
     fwZip
-    fwLog
     fwDataIO
     )
 set( REQUIREMENTS )

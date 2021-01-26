@@ -23,14 +23,13 @@
 #include "fwGdcmIO/helper/DicomSeriesAnonymizer.hpp"
 
 #include <core/base.hpp>
+#include <core/jobs/Aggregator.hpp>
+#include <core/jobs/IJob.hpp>
+#include <core/jobs/Job.hpp>
+#include <core/jobs/Observer.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/SeriesDB.hpp>
-
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -40,7 +39,7 @@ namespace helper
 {
 
 DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
-    m_job(::fwJobs::Aggregator::New("Anonymization process"))
+    m_job(core::jobs::Aggregator::New("Anonymization process"))
 {
     m_writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();
     m_reader = ::fwGdcmIO::reader::SeriesDB::New();
@@ -128,7 +127,7 @@ void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source,
 
 //------------------------------------------------------------------------------
 
-::fwJobs::Aggregator::sptr DicomSeriesAnonymizer::getJob() const
+::core::jobs::Aggregator::sptr DicomSeriesAnonymizer::getJob() const
 {
     return m_job;
 }

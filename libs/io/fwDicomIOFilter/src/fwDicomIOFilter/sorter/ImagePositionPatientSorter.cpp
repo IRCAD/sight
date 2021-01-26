@@ -77,7 +77,7 @@ std::string ImagePositionPatientSorter::getDescription() const
 
 ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter::apply(
     const data::DicomSeries::sptr& series,
-    const ::fwLog::Logger::sptr& logger) const
+    const core::log::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
 

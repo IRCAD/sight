@@ -23,8 +23,7 @@
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 
 #include <core/base.hpp>
-
-#include <fwJobs/Observer.hpp>
+#include <core/jobs/Observer.hpp>
 
 #include <fstream>
 
@@ -50,7 +49,7 @@ bool isDICOM(const std::filesystem::path& filepath)
 void DicomSearch::searchRecursively(const std::filesystem::path& dirPath,
                                     std::vector< std::filesystem::path >& dicomFiles,
                                     bool checkIsDicom,
-                                    const ::fwJobs::Observer::sptr& readerObserver)
+                                    const core::jobs::Observer::sptr& readerObserver)
 {
     std::vector< std::filesystem::path > fileVect;
     checkFilenameExtension(dirPath, fileVect, readerObserver);
@@ -94,7 +93,7 @@ void DicomSearch::searchRecursively(const std::filesystem::path& dirPath,
 
 void DicomSearch::checkFilenameExtension(const std::filesystem::path& dirPath,
                                          std::vector< std::filesystem::path >& dicomFiles,
-                                         const ::fwJobs::Observer::sptr& fileLookupObserver)
+                                         const core::jobs::Observer::sptr& fileLookupObserver)
 {
     dicomFiles.clear();
 

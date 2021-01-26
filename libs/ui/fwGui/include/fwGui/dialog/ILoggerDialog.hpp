@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "fwGui/config.hpp"
 #include <fwGui/GuiBaseObject.hpp>
 
-#include <fwLog/Logger.hpp>
+#include <core/log/Logger.hpp>
 
 #include <string>
 #include <vector>
@@ -74,7 +74,7 @@ public:
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    FWGUI_API virtual void setLogger(const ::fwLog::Logger::sptr& logger) = 0;
+    FWGUI_API virtual void setLogger(const core::log::Logger::sptr& logger) = 0;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button

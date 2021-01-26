@@ -33,7 +33,7 @@ namespace iod
 
 InformationObjectDefinition::InformationObjectDefinition(const data::DicomSeries::csptr& dicomSeries,
                                                          const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                                         const ::fwLog::Logger::sptr& logger,
+                                                         const core::log::Logger::sptr& logger,
                                                          ProgressCallback progress,
                                                          CancelRequestedCallback cancel) :
     m_instance(instance),

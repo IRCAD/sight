@@ -61,9 +61,9 @@ public:
      */
     FWGDCMIO_API SurfaceSegmentationIOD(const data::DicomSeries::csptr& dicomSeries,
                                         const SPTR(::fwGdcmIO::container::DicomInstance)& instance,
-                                        const ::fwLog::Logger::sptr& logger = nullptr,
-                                        ProgressCallback progress           = nullptr,
-                                        CancelRequestedCallback cancel      = nullptr);
+                                        const core::log::Logger::sptr& logger = nullptr,
+                                        ProgressCallback progress             = nullptr,
+                                        CancelRequestedCallback cancel        = nullptr);
 
     /// Destructor
     FWGDCMIO_API virtual ~SurfaceSegmentationIOD();

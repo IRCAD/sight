@@ -34,7 +34,7 @@ namespace sight::data
 class Image;
 }
 
-namespace fwJobs
+namespace sight::core::jobs
 {
 class IJob;
 }
@@ -48,7 +48,7 @@ namespace ioVTK
  * Service writing an image series using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(::fwJobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -70,7 +70,7 @@ class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
 
 public:
 
-    typedef core::com::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.

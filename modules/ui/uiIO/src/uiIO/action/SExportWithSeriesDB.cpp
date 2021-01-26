@@ -25,6 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/jobs/IJob.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
@@ -32,8 +33,6 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwIO/ioTypes.hpp>
-
-#include <fwJobs/IJob.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -150,7 +149,7 @@ void SExportWithSeriesDB::stopping()
 
 //------------------------------------------------------------------------------
 
-void SExportWithSeriesDB::forwardJob(::fwJobs::IJob::sptr iJob)
+void SExportWithSeriesDB::forwardJob(core::jobs::IJob::sptr iJob)
 {
     m_sigJobCreated->emit(iJob);
 }

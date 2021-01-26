@@ -8,8 +8,6 @@ set( DEPENDENCIES
     fwDicomIOFilterQt
     fwGui
     fwGuiQt
-    fwJobs
-    fwLog
     services
     fwIO
     data
