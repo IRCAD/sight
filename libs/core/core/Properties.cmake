@@ -1,4 +1,3 @@
-
 set( NAME core )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )

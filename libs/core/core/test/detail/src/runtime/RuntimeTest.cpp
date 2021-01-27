@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "runtime/RuntimeTest.hpp"
+#include "RuntimeTest.hpp"
 
 #include <core/runtime/detail/dl/Posix.hpp>
 #include <core/runtime/detail/dl/Win32.hpp>

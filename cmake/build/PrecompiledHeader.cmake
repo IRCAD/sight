@@ -246,7 +246,7 @@ function(add_precompiled_header _target _input)
     get_filename_component(_name ${_input} NAME)
     set(_pch_header "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
     set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
-    set(_pchfile "${_pch_binary_dir}/${_input}")
+    set(_pchfile "${_pch_binary_dir}/include/${_target}/${_input}")
 
     if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         set(_outdir "${_pchfile}.pch")
@@ -374,14 +374,13 @@ function(use_precompiled_header _target _input)
         set(_pchfile "${_pch_binary_dir}/${_input}/include/${_input}/pch.hpp")
 
         if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-            set(_outdir "${_pchfile}.pch")
+            set(_output_cxx "${_pchfile}.pch")
         else()
-            set(_outdir "${_pchfile}.gch")
+            set(_output_cxx "${_pchfile}.gch")
 
             # Add the location of the pch as an include directory
             target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/${_input}/include/${_input} )
         endif()
-        set(_output_cxx "${_outdir}")
 
         assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})
 
