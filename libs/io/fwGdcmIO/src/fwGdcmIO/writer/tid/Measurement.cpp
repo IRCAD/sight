@@ -37,10 +37,9 @@
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -74,7 +73,7 @@ void Measurement::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)
                               bool useSCoord3D)
 {
     data::Vector::sptr distanceVector =
-        m_object->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        m_object->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
     if (distanceVector)
     {
         unsigned int id = 1;

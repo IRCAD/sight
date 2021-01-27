@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/IGuiContainerSrv.hpp>
+#include <gui/IGuiContainerSrv.hpp>
 
 #include <services/IService.hpp>
 
@@ -45,12 +45,12 @@ namespace fwRender
  *
  */
 
-class FWRENDER_CLASS_API IRender : public ::fwGui::IGuiContainerSrv
+class FWRENDER_CLASS_API IRender : public gui::IGuiContainerSrv
 {
 
 public:
 
-    fwCoreServiceMacro(IRender, ::fwGui::IGuiContainerSrv)
+    fwCoreServiceMacro(IRender, gui::IGuiContainerSrv)
 
 protected:
 

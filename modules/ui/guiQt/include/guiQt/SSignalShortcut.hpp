@@ -22,20 +22,20 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
 #include <services/IService.hpp>
 
 #include <QShortcut>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 /**
  * @brief   This service sends a signal when the associated shortcut is activated.
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." impl="::guiQt::SSignalShortcut" >
+   <service uid="..." impl="::modules::guiQt::SSignalShortcut" >
         <config shortcut="..." sid="..." />
    </service>
    @endcode
@@ -47,8 +47,8 @@ namespace guiQt
  * @section Signals Signals
  * - \b activated(): This signal is emitted when the shortcut is received.
  */
-class GUIQT_CLASS_API SSignalShortcut : public QObject,
-                                        public services::IService
+class MODULE_GUIQT_CLASS_API SSignalShortcut : public QObject,
+                                               public services::IService
 {
 Q_OBJECT
 public:
@@ -59,10 +59,10 @@ public:
     typedef core::com::Signal< void () > ActivatedShortcutSignalType;
 
     /// Constructor. Do nothing.
-    GUIQT_API SSignalShortcut() noexcept;
+    MODULE_GUIQT_API SSignalShortcut() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SSignalShortcut() noexcept;
+    MODULE_GUIQT_API virtual ~SSignalShortcut() noexcept;
 
 protected:
 
@@ -71,22 +71,22 @@ protected:
      */
 
     /// This method configures the service
-    GUIQT_API virtual void configuring() override;
+    MODULE_GUIQT_API virtual void configuring() override;
 
     /**
      * @brief This method enables the eventFilter
      */
-    GUIQT_API virtual void starting() override;
+    MODULE_GUIQT_API virtual void starting() override;
 
     /**
      * @brief This method deletes the eventFilter
      */
-    GUIQT_API virtual void stopping() override;
+    MODULE_GUIQT_API virtual void stopping() override;
 
     /**
      * @brief This method does nothing.
      */
-    GUIQT_API virtual void updating() override;
+    MODULE_GUIQT_API virtual void updating() override;
 
 private Q_SLOTS:
     void onActivation();

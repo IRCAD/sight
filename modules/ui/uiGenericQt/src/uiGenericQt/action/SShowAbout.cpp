@@ -46,7 +46,7 @@ namespace uiGenericQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiGenericQt::action::SShowAbout, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ void SShowAbout::info(std::ostream& _sstream )
 
 void SShowAbout::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 
     typedef SPTR (core::runtime::ConfigurationElement) ConfigurationElement;
 
@@ -160,14 +160,14 @@ void SShowAbout::updating( )
 
 void SShowAbout::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowAbout::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

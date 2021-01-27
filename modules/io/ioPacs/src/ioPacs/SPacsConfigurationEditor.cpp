@@ -27,11 +27,11 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwPacsIO/exceptions/Base.hpp>
+
+#include <gui/dialog/MessageDialog.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -66,7 +66,7 @@ SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 
 void SPacsConfigurationEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     const ConfigType configType = this->getConfigTree();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -86,8 +86,8 @@ void SPacsConfigurationEditor::starting()
 
     const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QGridLayout* gridLayout = new QGridLayout();
 
@@ -365,11 +365,11 @@ void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 
 void SPacsConfigurationEditor::showDialog(const std::string _title, const std::string _message)
 {
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle(_title);
     messageBox.setMessage(_message);
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

@@ -31,9 +31,9 @@ Example:
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="100" />
                     <view proportion="1" />

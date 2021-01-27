@@ -55,11 +55,11 @@ namespace sight::services
 
                  <!--
                      Description service of the GUI:
-                     The ::gui::frame::SDefaultFrame service automatically positions the various
+                     The modules::gui::frame::SDefaultFrame service automatically positions the various
                      containers in the application main window.
                      Here, it declares a container for the 3D rendering service.
                  -->
-                 <service uid="myFrame" impl="::gui::frame::SDefaultFrame">
+                 <service uid="myFrame" impl="::modules::gui::frame::SDefaultFrame">
                      <gui>
                          <frame>
                              <name>${appName}</name>
@@ -139,7 +139,7 @@ namespace sight::services
  *     - \b uid (optional): unique identifier of the service. If it is not defined, it will be automatically
  *       generated.
  *     - \b impl: service implementation
- *     - \b type (optional): service type (ex: ::fwGui::IFrameSrv)
+ *     - \b type (optional): service type (ex: gui::IFrameSrv)
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working object
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *
@@ -251,11 +251,11 @@ namespace sight::services
 
              <!--
                  Description service of the GUI:
-                 The ::gui::frame::SDefaultFrame service automatically positions the various
+                 The modules::gui::frame::SDefaultFrame service automatically positions the various
                  containers in the application main window.
                  Here, it declares a container for the 3D rendering service.
              -->
-             <service uid="myFrame" type="::gui::frame::SDefaultFrame">
+             <service uid="myFrame" type="::modules::gui::frame::SDefaultFrame">
                  <gui>
                      <frame>
                          <name>${appName}</name>

@@ -27,9 +27,8 @@
 
 #include <data/Landmarks.hpp>
 #include <data/String.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
 
@@ -100,7 +99,7 @@ void SPointToLandmarkDistance::updating()
             this->getLockedInOut< data::TransformationMatrix3D>("pointToLandmarkMatrix");
         auto pointToLandmarkMat          = pointToLandmarkMatLocked.get_shared();
         const auto distanceText          = this->getLockedInOut< data::String>("distanceText");
-        const ::glm::dmat4x4 pointMatrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(
+        const ::glm::dmat4x4 pointMatrix = data::tools::TransformationMatrix3D::getMatrixFromTF3D(
             pointMat.get_shared());
         const ::glm::dvec4 originPoint(0.0, 0.0, 0.0, 1.0);
         const ::glm::dvec3 point = ::glm::dvec3(pointMatrix*originPoint);
@@ -131,8 +130,8 @@ void SPointToLandmarkDistance::updating()
         cameraMatrix[1] = ::glm::dvec4(up, 0.0);
         cameraMatrix[2] = ::glm::dvec4(front, 0.0);
         cameraMatrix[3] = ::glm::dvec4(point, 1.0);
-        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(pointToLandmarkMat,
-                                                                 cameraMatrix);
+        data::tools::TransformationMatrix3D::setTF3DFromMatrix(pointToLandmarkMat,
+                                                               cameraMatrix);
         auto sig =
             pointToLandmarkMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         {

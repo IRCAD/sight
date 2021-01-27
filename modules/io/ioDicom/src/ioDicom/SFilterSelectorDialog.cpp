@@ -29,14 +29,13 @@
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
+#include <data/tools/helper/Composite.hpp>
 
 #include <fwDicomIOFilter/IFilter.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/Cursor.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -48,7 +47,7 @@ namespace ioDicom
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::sight::data::String )
+fwServicesRegisterMacro( ::sight::gui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::sight::data::String )
 
 static const services::IService::KeyType s_FILTER_INOUT = "filter";
 
@@ -164,7 +163,7 @@ void SFilterSelectorDialog::updating()
         // Selection of extension when availableFilterNames.size() > 1
         if ( availableFilterNames.size() > 1 )
         {
-            ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
+            gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
 
             selector->setTitle("Filter to use");
             selector->setSelections(availableFilterNames);
@@ -196,11 +195,11 @@ void SFilterSelectorDialog::updating()
     else
     {
         SLM_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Filter not found");
         messageBox.setMessage( "There is no available filter for this reader." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }

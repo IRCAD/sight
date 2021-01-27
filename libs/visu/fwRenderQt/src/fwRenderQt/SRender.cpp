@@ -32,9 +32,9 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwDataTools/Color.hpp>
+#include <data/tools/Color.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/helper/Config.hpp>
 #include <services/macros.hpp>
@@ -226,12 +226,12 @@ void SRender::stopping()
 
 void SRender::startContext()
 {
-    SPTR(::fwGuiQt::container::QtContainer) qtContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    SPTR(guiQt::container::QtContainer) qtContainer
+        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Convert the background color
     std::uint8_t color[4];
-    ::fwDataTools::Color::hexaStringToRGBA(m_background, color);
+    data::tools::Color::hexaStringToRGBA(m_background, color);
 
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
     m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));

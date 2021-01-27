@@ -28,9 +28,9 @@
 
 #include <data/Composite.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwRenderOgre/helper/Scene.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SLightEditor, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SLightEditor, ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ void SLightEditor::starting()
 {
     this->create();
 
-    const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    const guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer());
 
     m_lightNameLabel = new QLabel("No light selected");
@@ -486,7 +486,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 
 ::Ogre::ColourValue SLightEditor::editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 

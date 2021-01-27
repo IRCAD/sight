@@ -14,9 +14,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager" >
+                <layout type="::sight::gui::CardinalLayoutManager" >
                     <view align="center" />
                 </layout>
                 <toolBar />
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="flatIcon-0.1/icons/BlueLoad.svg" />

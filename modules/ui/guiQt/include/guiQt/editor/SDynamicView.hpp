@@ -22,7 +22,9 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <activities/registry/Activities.hpp>
 #include <activities/registry/ActivityMsg.hpp>
@@ -35,9 +37,7 @@
 
 #include <data/ActivitySeries.hpp>
 
-#include <fwGui/view/IActivityView.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <gui/view/IActivityView.hpp>
 
 #include <services/IAppConfigManager.hpp>
 
@@ -52,7 +52,7 @@ namespace sight::data
 {
 class Composite;
 }
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
@@ -81,7 +81,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::guiQt::editor::SDynamicView" autoConnect="yes" >
+   <service type="::modules::guiQt::editor::SDynamicView" autoConnect="yes" >
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
@@ -104,26 +104,26 @@ namespace editor
  * @subsection Configuration Configuration:
  *  - \b document (optional, default="true") : sets the document mode of the tab bar.
  */
-class GUIQT_CLASS_API SDynamicView : public QObject,
-                                     public ::fwGui::view::IActivityView
+class MODULE_GUIQT_CLASS_API SDynamicView : public QObject,
+                                            public gui::view::IActivityView
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SDynamicView, ::fwGui::view::IActivityView)
+    fwCoreServiceMacro(SDynamicView, gui::view::IActivityView)
 
     /// Constructor. Do nothing.
-    GUIQT_API SDynamicView() noexcept;
+    MODULE_GUIQT_API SDynamicView() noexcept;
 
     /// Destructor. Do nothing.
 
-    GUIQT_API virtual ~SDynamicView() noexcept;
+    MODULE_GUIQT_API virtual ~SDynamicView() noexcept;
 
     typedef core::com::Signal< void ( data::Object::sptr ) > ActivitySelectedSignalType;
-    GUIQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
+    MODULE_GUIQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
     typedef core::com::Signal< void () > NothingSelectedSignalType;
-    GUIQT_API static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SIG;
+    MODULE_GUIQT_API static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SIG;
 protected:
 
     /**
@@ -151,7 +151,7 @@ protected:
 
     /**
      * @brief Configure the view
-     * @see fwGui::IGuiContainerSrv::initialize()
+     * @see gui::IGuiContainerSrv::initialize()
      */
     virtual void configuring() override;
 
@@ -163,7 +163,7 @@ private:
 
     struct SDynamicViewInfo
     {
-        ::fwGuiQt::container::QtContainer::sptr container;
+        ::sight::guiQt::container::QtContainer::sptr container;
         services::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;

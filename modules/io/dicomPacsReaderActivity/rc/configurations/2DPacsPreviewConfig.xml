@@ -9,9 +9,9 @@
         <object uid="${objectID}" type="::sight::data::DicomSeries" src="ref" />
         <object uid="image" type="::sight::data::Image" src="deferred" />
         <object uid="${PACS_CONFIGURATION}" type="::fwPacsIO::data::PacsConfiguration" src="ref" />
-        <service uid="mainview" type="::gui::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
                 </layout>

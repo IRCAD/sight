@@ -22,11 +22,11 @@
 
 #include "guiQt/editor/SSlider.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -37,12 +37,12 @@
 
 #include <chrono>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSlider )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::sight::modules::guiQt::editor::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
@@ -154,8 +154,7 @@ void SSlider::configuring()
 void SSlider::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     m_valueSlider = new QSlider(Qt::Horizontal);
@@ -356,4 +355,4 @@ void SSlider::setMaxValue(int value)
 //------------------------------------------------------------------------------
 
 } //namespace editor
-} //namespace guiQt
+} //namespace sight::modules::guiQt

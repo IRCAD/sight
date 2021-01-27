@@ -28,7 +28,7 @@
 #include <core/macros.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
@@ -172,7 +172,7 @@ private:
         bool m_show { false };
     };
 
-    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
 
     /**
      * @brief SLOT: removes an entire group.

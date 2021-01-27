@@ -29,9 +29,9 @@
 
 #include <data/String.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/IService.hpp>
 
@@ -53,12 +53,12 @@ namespace uiVisuOgre
  * @subsection In-Out In-Out:
  * - \b reconstruction [data::Reconstruction]: reconstruction whose paremeters should be edited.
  */
-class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::fwGui::editor::IEditor
+class UIVISUOGRE_CLASS_API SShaderParameterEditor : public gui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SShaderParameterEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SShaderParameterEditor, gui::editor::IEditor)
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;
@@ -103,7 +103,7 @@ private:
     struct ShaderEditorInfo
     {
         std::string uuid;
-        ::fwGuiQt::container::QtContainer::sptr editorPanel;
+        guiQt::container::QtContainer::sptr editorPanel;
         services::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };

@@ -26,7 +26,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwDataTools/Color.hpp>
+#include <data/tools/Color.hpp>
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
@@ -160,7 +160,7 @@ void SVector::createVector()
 
     // Color
     std::uint8_t color[4];
-    ::fwDataTools::Color::hexaStringToRGBA(m_color, color);
+    data::tools::Color::hexaStringToRGBA(m_color, color);
     ::Ogre::ColourValue ogreColor(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
 
     // Draw

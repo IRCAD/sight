@@ -5,8 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     activities
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     data
     uiMeasurement
     uiMeasurementQt

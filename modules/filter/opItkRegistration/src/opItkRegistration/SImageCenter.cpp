@@ -28,10 +28,9 @@
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
 
@@ -82,7 +81,7 @@ void SImageCenter::updating()
 
     SLM_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
 
-    const bool imageValidity = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool imageValidity = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
 
     if(!imageValidity)
     {
@@ -97,7 +96,7 @@ void SImageCenter::updating()
 
     data::mt::ObjectWriteLock matLock(matrix);
 
-    ::fwDataTools::TransformationMatrix3D::identity(matrix);
+    data::tools::TransformationMatrix3D::identity(matrix);
 
     //compute the center
     const data::Image::Size size       = image->getSize2();

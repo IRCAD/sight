@@ -9,4 +9,4 @@ set( DEPENDENCIES
     services
     fwMDSemanticPatch
 )
-set( REQUIREMENTS data module_services ioAtoms gui guiQt patchMedicalData )
+set( REQUIREMENTS data module_services ioAtoms module_gui module_guiQt patchMedicalData )

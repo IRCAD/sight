@@ -71,21 +71,27 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
     // GUI
-    auto frameSrv         = m_appManager->addService("::gui::frame::SDefaultFrame", true, false);
-    auto menuBar          = m_appManager->addService("::gui::aspect::SDefaultMenuBar", "menuBar", true, false);
-    auto menuFile         = m_appManager->addService("::gui::aspect::SDefaultMenu", "menuFile", true, false);
-    auto menuMesher       = m_appManager->addService("::gui::aspect::SDefaultMenu", "menuMesher", true, false);
-    auto mainView         = m_appManager->addService("::gui::view::SDefaultView", "mainView", true, false);
-    auto multiViewOrgans  = m_appManager->addService("::gui::view::SDefaultView", "multiViewOrgans", true, false);
-    auto sceneEditorsView = m_appManager->addService("::gui::view::SDefaultView", "scenesceneEditorsView", true, false);
+    auto frameSrv        = m_appManager->addService("::modules::gui::frame::SDefaultFrame", true, false);
+    auto menuBar         = m_appManager->addService("::modules::gui::aspect::SDefaultMenuBar", "menuBar", true, false);
+    auto menuFile        = m_appManager->addService("::modules::gui::aspect::SDefaultMenu", "menuFile", true, false);
+    auto menuMesher      = m_appManager->addService("::modules::gui::aspect::SDefaultMenu", "menuMesher", true, false);
+    auto mainView        = m_appManager->addService("::modules::gui::view::SDefaultView", "mainView", true, false);
+    auto multiViewOrgans = m_appManager->addService("::modules::gui::view::SDefaultView", "multiViewOrgans", true,
+                                                    false);
+    auto sceneEditorsView = m_appManager->addService("::modules::gui::view::SDefaultView", "scenesceneEditorsView",
+                                                     true, false);
 
     // actions
-    auto actionOpenImage       = m_appManager->addService("::gui::action::SStarter", "actionOpenImage", true, false);
-    auto actionSaveModelSeries = m_appManager->addService("::gui::action::SStarter", "actionSaveModelSeries", false,
+    auto actionOpenImage = m_appManager->addService("::modules::gui::action::SStarter", "actionOpenImage", true,
+                                                    false);
+    auto actionSaveModelSeries = m_appManager->addService("::modules::gui::action::SStarter", "actionSaveModelSeries",
+                                                          false,
                                                           false);
-    auto actionCreateMesh50 = m_appManager->addService("::gui::action::SStarter", "actionCreateMesh50", true, false);
-    auto actionCreateMesh80 = m_appManager->addService("::gui::action::SStarter", "actionCreateMesh80", true, false);
-    auto actionQuit         = m_appManager->addService("::gui::action::SQuit", "actionQuit", true, false);
+    auto actionCreateMesh50 = m_appManager->addService("::modules::gui::action::SStarter", "actionCreateMesh50", true,
+                                                       false);
+    auto actionCreateMesh80 = m_appManager->addService("::modules::gui::action::SStarter", "actionCreateMesh80", true,
+                                                       false);
+    auto actionQuit = m_appManager->addService("::modules::gui::action::SQuit", "actionQuit", true, false);
 
     //readers/writers
     auto imageSeriesReader = m_appManager->addService("::uiIO::editor::SIOSelector", "imageSeriesReader", true, false);
@@ -97,9 +103,10 @@ void Plugin::initialize()
 
     //editors
     auto snapshotEditor  = m_appManager->addService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true, false);
-    auto sliceListEditor = m_appManager->addService("::guiQt::editor::SSelectionMenuButton",
+    auto sliceListEditor = m_appManager->addService("::modules::guiQt::editor::SSelectionMenuButton",
                                                     "sliceListEditor", true, false);
-    auto showScanEditor    = m_appManager->addService("::guiQt::editor::SSignalButton", "showScanEditor", true, false);
+    auto showScanEditor = m_appManager->addService("::modules::guiQt::editor::SSignalButton", "showScanEditor", true,
+                                                   false);
     auto sliderIndexEditor = m_appManager->addService("::uiImageQt::SliceIndexPositionEditor",
                                                       "sliderIndexEditor", true, false);
     auto listOrganEditor = m_appManager->addService("::uiMedDataQt::editor::SModelSeriesList",
@@ -108,7 +115,7 @@ void Plugin::initialize()
                                                         "organMaterialEditor", true, false);
     auto representationEditor = m_appManager->addService("::uiReconstructionQt::RepresentationEditor",
                                                          "representationEditor", true, false);
-    auto progressBar = m_appManager->addService("::gui::editor::SJobBar", true, false);
+    auto progressBar = m_appManager->addService("::modules::gui::editor::SJobBar", true, false);
 
     // meshers
     auto mesher50 = m_appManager->addService("::opVTKMesh::SVTKMesher", "mesher50", true, false);
@@ -197,7 +204,7 @@ void Plugin::initialize()
     // mainview
     services::IService::ConfigType mainViewConfig;
     services::IService::ConfigType mainViewLayoutConfig;
-    mainViewLayoutConfig.put("<xmlattr>.type", "::fwGui::CardinalLayoutManager");
+    mainViewLayoutConfig.put("<xmlattr>.type", "::gui::CardinalLayoutManager");
     services::IService::ConfigType mainView1Config;
     mainView1Config.put("<xmlattr>.align", "center");
     services::IService::ConfigType mainView2Config;
@@ -224,7 +231,7 @@ void Plugin::initialize()
     // multiViewOrgans
     services::IService::ConfigType multiViewOrgansConfig;
     services::IService::ConfigType multiViewOrgansLayoutConfig;
-    multiViewOrgansLayoutConfig.put("<xmlattr>.type", "::fwGui::ToolboxLayoutManager");
+    multiViewOrgansLayoutConfig.put("<xmlattr>.type", "::gui::ToolboxLayoutManager");
     services::IService::ConfigType multiViewOrgans1Config;
     multiViewOrgans1Config.put("<xmlattr>.caption", "Organs");
     multiViewOrgans1Config.put("<xmlattr>.expanded", true);
@@ -251,7 +258,7 @@ void Plugin::initialize()
     // sceneEditorsView
     services::IService::ConfigType sceneEditorsViewConfig;
     services::IService::ConfigType sceneEditorsViewLayoutConfig;
-    sceneEditorsViewLayoutConfig.put("<xmlattr>.type", "::fwGui::LineLayoutManager");
+    sceneEditorsViewLayoutConfig.put("<xmlattr>.type", "::gui::LineLayoutManager");
     services::IService::ConfigType editorsOrientation;
     editorsOrientation.put("<xmlattr>.value", "horizontal");
     sceneEditorsViewLayoutConfig.add_child("orientation", editorsOrientation);

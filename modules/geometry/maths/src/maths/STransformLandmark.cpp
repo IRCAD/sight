@@ -27,10 +27,9 @@
 
 #include <data/Exception.hpp>
 #include <data/Landmarks.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -116,10 +115,10 @@ void STransformLandmark::updating()
         }
         catch (data::Exception& e )
         {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
-                                                              "It is impossible to modify landmarks: "
-                                                              + std::string(e.what()),
-                                                              ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
+                                                          "It is impossible to modify landmarks: "
+                                                          + std::string(e.what()),
+                                                          gui::dialog::IMessageDialog::WARNING);
         }
     }
 }

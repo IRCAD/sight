@@ -61,4 +61,4 @@ private:
 
 };
 
-} // namespace guiQt
+} // namespace sight::modules::guiQt

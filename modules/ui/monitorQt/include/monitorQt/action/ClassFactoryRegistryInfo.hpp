@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "monitorQt/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -37,12 +37,12 @@ namespace action
 /**
  * @brief   Implements an action to show services registered in factory
  */
-class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::fwGui::IActionSrv
+class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(ClassFactoryRegistryInfo,  ::fwGui::IActionSrv );
+    fwCoreServiceMacro(ClassFactoryRegistryInfo,  gui::IActionSrv )
 
     /// Does nothing
     MONITORQT_API ClassFactoryRegistryInfo() noexcept;

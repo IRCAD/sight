@@ -26,9 +26,9 @@
 
 #include <core/com/Signals.hpp>
 
-#include <fwGui/IActionSrv.hpp>
-
 #include <fwRenderOgre/Layer.hpp>
+
+#include <gui/IActionSrv.hpp>
 
 namespace uiVisuOgre
 {
@@ -53,11 +53,11 @@ namespace uiVisuOgre
  * interlaced image pairs.
  *
  */
-class UIVISUOGRE_CLASS_API SStereoToggler : public ::fwGui::IActionSrv
+class UIVISUOGRE_CLASS_API SStereoToggler : public ::sight::gui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SStereoToggler, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SStereoToggler, ::sight::gui::IActionSrv)
 
     /// Constructor.
     UIVISUOGRE_API SStereoToggler();

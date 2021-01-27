@@ -30,7 +30,7 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -49,7 +49,7 @@ namespace editor
 const core::com::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
 const core::com::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::sight::data::Vector )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::sight::data::Vector )
 
 //-----------------------------------------------------------------------------
 
@@ -73,8 +73,8 @@ SShowVectorSize::~SShowVectorSize() noexcept
 void SShowVectorSize::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QHBoxLayout* layout = new QHBoxLayout();
 

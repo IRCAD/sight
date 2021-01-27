@@ -28,9 +28,9 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -75,11 +75,11 @@ void SCalibrationImagesWriter::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
 
@@ -121,8 +121,8 @@ void SCalibrationImagesWriter::updating()
             this->getInput< data::CalibrationInfo >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info input.", calibInfo);
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         size_t count(0);
         for(const auto& calibImg : calibInfo->getImageContainer())
@@ -155,9 +155,9 @@ void SCalibrationImagesWriter::updating()
             catch(const ::cv::Exception& e)
             {
                 m_writeFailed = true;
-                ::fwGui::dialog::MessageDialog::show("Error writing calibration images.",
-                                                     e.what(),
-                                                     ::fwGui::dialog::MessageDialog::CRITICAL);
+                gui::dialog::MessageDialog::show("Error writing calibration images.",
+                                                 e.what(),
+                                                 gui::dialog::MessageDialog::CRITICAL);
             }
         }
 

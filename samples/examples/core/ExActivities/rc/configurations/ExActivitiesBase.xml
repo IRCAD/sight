@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>

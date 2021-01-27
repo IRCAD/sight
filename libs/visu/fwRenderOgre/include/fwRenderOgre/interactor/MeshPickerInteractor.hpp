@@ -42,7 +42,7 @@ class FWRENDEROGRE_CLASS_API MeshPickerInteractor final : public ::fwRenderOgre:
 public:
 
     /// Defines the type of signal sent when a picking query succeeded.
-    using PointClickedSigType = core::com::Signal< void ( ::fwDataTools::PickingInfo ) >;
+    using PointClickedSigType = core::com::Signal< void ( data::tools::PickingInfo ) >;
 
     /// Initializes the picker.
     FWRENDEROGRE_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;
@@ -65,7 +65,7 @@ public:
 private:
 
     /**
-     * @brief Triggers a picking query and sends a signal with the corresponding @see fwDataTools::PickingInfo.
+     * @brief Triggers a picking query and sends a signal with the corresponding @see data::tools::PickingInfo.
      *
      * @param _button mouse button pressed.
      * @param _mods keyboard modifiers.

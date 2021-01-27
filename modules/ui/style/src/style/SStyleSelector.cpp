@@ -26,7 +26,7 @@
 #include <core/macros.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -119,8 +119,8 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
     if(path.empty())
     {
         qApp->setStyleSheet("");
-        ::fwPreferences::setPreference("THEME", "DEFAULT");
-        ::fwPreferences::savePreferences();
+        gui::preferences::setPreference("THEME", "DEFAULT");
+        gui::preferences::savePreferences();
         return;
     }
 
@@ -136,8 +136,8 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
         const QString style = styleIn.readAll();
         data.close();
         qApp->setStyleSheet(style);
-        ::fwPreferences::setPreference("THEME", _styleName);
-        ::fwPreferences::savePreferences();
+        gui::preferences::setPreference("THEME", _styleName);
+        gui::preferences::savePreferences();
     }
 }
 
@@ -146,7 +146,7 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 void SStyleSelector::updateFromPrefs()
 {
     // Apply previously saved style in preferences file.
-    const std::string value = ::fwPreferences::getPreference("THEME");
+    const std::string value = gui::preferences::getPreference("THEME");
     if(!value.empty())
     {
         this->changeStyle(value);

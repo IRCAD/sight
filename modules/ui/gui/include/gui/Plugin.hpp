@@ -22,24 +22,24 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 
 /**
  * @brief   This class is called when the gui module is loaded.
  */
 
-class GUI_CLASS_API Plugin : public core::runtime::Plugin
+class MODULE_GUI_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:
 
     ///@brief  Destructor. Do nothing.
-    GUI_API virtual ~Plugin() noexcept;
+    MODULE_GUI_API virtual ~Plugin() noexcept;
 
     /**
      * @brief This method is used by runtime to initialize the module.
@@ -49,13 +49,13 @@ public:
      * Register first basic services of type IAction, IEditor and IView.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
-    GUI_API void start();
+    MODULE_GUI_API void start();
 
     /**
      * @brief This method is used by runtime to close the module. Do nothing.
      */
-    GUI_API void stop() noexcept;
+    MODULE_GUI_API void stop() noexcept;
 
 };
 
-} // namespace gui
+} // namespace sight::modules::gui

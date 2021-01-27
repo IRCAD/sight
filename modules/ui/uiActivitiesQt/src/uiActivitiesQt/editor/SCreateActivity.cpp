@@ -37,10 +37,10 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -84,7 +84,7 @@ SCreateActivity::~SCreateActivity() noexcept
 
 void SCreateActivity::configuring()
 {
-    fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     const auto cfg = this->getConfigTree();
 
@@ -110,9 +110,9 @@ void SCreateActivity::configuring()
 
 void SCreateActivity::starting()
 {
-    ::fwGui::IGuiContainerSrv::create();
+    gui::IGuiContainerSrv::create();
 
-    fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QGroupBox* groupBox = new QGroupBox(tr("Activities") );
 

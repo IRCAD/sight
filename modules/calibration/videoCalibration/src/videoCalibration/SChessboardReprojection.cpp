@@ -37,11 +37,10 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -176,7 +175,7 @@ void SChessboardReprojection::updating()
         reprojRadius = std::max(reprojRadius, 1);
 
         data::mt::ObjectWriteLock imgLock(videoImage);
-        if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage))
+        if(!::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage))
         {
             return;
         }
@@ -273,19 +272,19 @@ void SChessboardReprojection::toggleDistortion()
 void SChessboardReprojection::updateChessboardSize()
 {
     unsigned long width(0), height(0);
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         width = std::stoul(widthStr);
     }
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         height = std::stoul(heightStr);
     }
 
     double squareSize(0.);
-    const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         squareSize = std::stod(squareSizeStr);

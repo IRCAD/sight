@@ -24,7 +24,7 @@
 
 #include <core/tools/NumericRoundCast.hxx>
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
@@ -87,7 +87,7 @@ void AlgoMeshDeformation::initSimu()
 
     if ( !m_mesh.lock()->hasPointColors() )
     {
-        ::fwDataTools::Mesh::colorizeMeshPoints( mesh );
+        data::tools::Mesh::colorizeMeshPoints( mesh );
     }
 
     const auto dumpLock = mesh->lock();
@@ -153,7 +153,7 @@ void AlgoMeshDeformation::computeSimu()
         pointsItr->point->z = origPointsItr->point->z;
     }
 
-    ::fwDataTools::Mesh::generatePointNormals( mesh );
+    data::tools::Mesh::generatePointNormals( mesh );
 }
 
 //-----------------------------------------------------------------------------

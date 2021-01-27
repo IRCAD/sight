@@ -29,11 +29,10 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/Image.hpp>
+#include <data/tools/helper/Vector.hpp>
 #include <data/Vector.hpp>
 
-#include <fwDataTools/helper/Vector.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -44,7 +43,7 @@
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SImagesSelector, ::sight::data::Vector)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiCalibration::SImagesSelector, ::sight::data::Vector)
 
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
@@ -71,7 +70,7 @@ SImagesSelector::~SImagesSelector() noexcept
 
 void SImagesSelector::configuring()
 {
-    fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -81,8 +80,8 @@ void SImagesSelector::starting()
     m_frameTL = this->getInput< data::FrameTL>("frameTL");
     SLM_ASSERT("Frame timeline is not found.", m_frameTL);
 
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     // Main container, VBox
     QVBoxLayout* vLayout = new QVBoxLayout();
@@ -151,7 +150,7 @@ void SImagesSelector::remove()
         data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
         data::Object::sptr obj    = vector->getContainer()[idx];
 
-        ::fwDataTools::helper::Vector vectorHelper(vector);
+        data::tools::helper::Vector vectorHelper(vector);
         vectorHelper.remove(obj);
         vectorHelper.notify();
 
@@ -165,7 +164,7 @@ void SImagesSelector::reset()
 {
     data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
-    ::fwDataTools::helper::Vector vectorHelper(vector);
+    data::tools::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
     vectorHelper.notify();
 
@@ -226,7 +225,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
-    ::fwDataTools::helper::Vector vectorHelper(vector);
+    data::tools::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);
     vectorHelper.notify();
 

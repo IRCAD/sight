@@ -32,7 +32,7 @@
 #include <services/registry/AppConfig.hpp>
 #include <services/registry/ObjectService.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -46,7 +46,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushField )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SPushField )
 
 //------------------------------------------------------------------------------
 
@@ -113,12 +113,12 @@ void SPushField::updateObjects()
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
 
-    this->::fwGui::IActionSrv::setIsExecutable( executable );
+    this->::sight::gui::IActionSrv::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SPushField::getAutoConnections() const
+services::IService::KeyConnectionsMap SPushField::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SOURCE_KEY, data::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );
@@ -131,4 +131,4 @@ void SPushField::updateObjects()
 
 } // namespace action
 
-} // namespace gui
+} // namespace sight::modules::gui

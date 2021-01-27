@@ -98,11 +98,11 @@ void SImagePicker::updating()
 
 //-----------------------------------------------------------------------------
 
-void SImagePicker::getInteraction(::fwDataTools::PickingInfo info)
+void SImagePicker::getInteraction(data::tools::PickingInfo info)
 {
-    if (info.m_modifierMask == ::fwDataTools::PickingInfo::CTRL)
+    if (info.m_modifierMask == data::tools::PickingInfo::CTRL)
     {
-        if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)
+        if (info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN)
         {
             const double x = info.m_worldPos[0];
             const double y = info.m_worldPos[1];
@@ -112,7 +112,7 @@ void SImagePicker::getInteraction(::fwDataTools::PickingInfo info)
 
             this->addPoint(position);
         }
-        else if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_DOWN)
+        else if (info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_DOWN)
         {
             this->removeLastPoint();
         }

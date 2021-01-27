@@ -26,7 +26,7 @@
 
 #include <core/com/Signals.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace uiVisuOgre
 {
@@ -52,11 +52,11 @@ namespace uiVisuOgre
  *   - \b current: select the screen on which the application is currently displayed.
  *   - \b neighbor: select a neighboring screen if there is one.
  */
-class UIVISUOGRE_CLASS_API SScreenSelector : public ::fwGui::IActionSrv
+class UIVISUOGRE_CLASS_API SScreenSelector : public ::sight::gui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SScreenSelector, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SScreenSelector, ::sight::gui::IActionSrv)
 
     /// Constructor.
     UIVISUOGRE_API SScreenSelector();

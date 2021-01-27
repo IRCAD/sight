@@ -24,7 +24,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <fwGui/dialog/ILoggerDialog.hpp>
+#include <gui/dialog/ILoggerDialog.hpp>
 
 #include <QObject>
 #include <QUrl>
@@ -41,7 +41,7 @@ namespace dialog
  * @brief   LoggerDialog allowing the choice of an element among severals (_selections)
  */
 class FWGUIQML_CLASS_API LoggerDialog : public QObject,
-                                        public ::fwGui::dialog::ILoggerDialog
+                                        public gui::dialog::ILoggerDialog
 {
 Q_OBJECT
 Q_PROPERTY(QUrl hidden MEMBER m_hidden WRITE emitHidden NOTIFY hiddenChanged)
@@ -51,10 +51,10 @@ Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
 
 public:
 
-    fwCoreClassMacro(LoggerDialog, ::fwGui::dialog::ILoggerDialog, ::fwGui::factory::New< LoggerDialog >)
+    fwCoreClassMacro(LoggerDialog, gui::dialog::ILoggerDialog, gui::factory::New< LoggerDialog >)
 
     /// Constructor
-    FWGUIQML_API LoggerDialog(::fwGui::GuiBaseObject::Key key);
+    FWGUIQML_API LoggerDialog(gui::GuiBaseObject::Key key);
 
     /// Destructor
     FWGUIQML_API virtual ~LoggerDialog();

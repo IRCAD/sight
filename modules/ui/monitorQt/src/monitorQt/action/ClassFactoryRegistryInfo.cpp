@@ -34,7 +34,8 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitorQt::action::ClassFactoryRegistryInfo,
+                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -73,14 +74,14 @@ void ClassFactoryRegistryInfo::updating( )
 
 void ClassFactoryRegistryInfo::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ClassFactoryRegistryInfo::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 
     QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
@@ -109,7 +110,7 @@ void ClassFactoryRegistryInfo::stopping()
     delete m_tree;
     delete m_dialog;
 
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

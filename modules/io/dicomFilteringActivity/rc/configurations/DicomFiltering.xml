@@ -17,9 +17,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                     <view align="right" minWidth="350" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="media-0.1/icons/Import.svg" />
@@ -59,9 +59,9 @@
         </service>
 
 
-        <service uid="centerView" type="::gui::view::SDefaultView" >
+        <service uid="centerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
@@ -73,9 +73,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::gui::view::SDefaultView" >
+        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Loaded Series" align="center" minWidth="200" />
                     <view caption="Loaded Preview" align="right" minWidth="200" />
@@ -87,9 +87,9 @@
             </registry>
         </service>
 
-        <service uid="rightView" type="::gui::view::SDefaultView" >
+        <service uid="rightView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Filters" align="center" minWidth="200" />
                 </layout>
@@ -100,7 +100,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="menuHelp" type="::gui::aspect::SDefaultMenu" >
+        <service uid="menuHelp" type="::sight::modules::gui::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Activity help" />
@@ -142,7 +142,7 @@
         </service>
 
         <!-- FILTERED SELECTION -->
-        <service uid="action_previewFilteredDicomSeries" type="::gui::action::SConfigLauncher">
+        <service uid="action_previewFilteredDicomSeries" type="::sight::modules::gui::action::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout key="SERIESDB" uid="filteredSeriesDB" />
             <parameter replace="ICON_PATH" by="media-0.1/icons/Preview.svg" />

@@ -33,10 +33,9 @@
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransferFunction.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
 
@@ -61,7 +60,7 @@ static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSl
 static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
-typedef ::fwDataTools::helper::MedicalImage MedicalImage;
+typedef data::tools::helper::MedicalImage MedicalImage;
 
 //-----------------------------------------------------------------------------
 
@@ -242,7 +241,7 @@ QImage* SNegato::createQImage()
 {
     data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
+    if (!::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
     {
         return nullptr;
     }

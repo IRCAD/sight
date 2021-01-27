@@ -7,7 +7,7 @@ set( REQUIREMENTS
     appXml                  # XML configurations
 
     preferences             # Start the module, load file location or window preferences
-    guiQt                   # Start the module, allow dark theme
+    module_guiQt                   # Start the module, allow dark theme
     patchMedicalData        # Patch old atoms data
     arPatchMedicalData      # Patch old atoms data
 
@@ -16,7 +16,7 @@ set( REQUIREMENTS
     data
 
     # UI declaration/Actions
-    gui
+    module_gui
     style
     flatIcon
     uiIO
@@ -42,14 +42,14 @@ set( REQUIREMENTS
     memory
     )
 
-moduleParam(guiQt
+moduleParam(module_guiQt
     PARAM_LIST
         resource
         stylesheet
     PARAM_VALUES
         style-0.1/flatdark.rcc
         style-0.1/flatdark.qss
-) # Allow dark theme via guiQt
+) # Allow dark theme via module_guiQt
 
 moduleParam(
         appXml

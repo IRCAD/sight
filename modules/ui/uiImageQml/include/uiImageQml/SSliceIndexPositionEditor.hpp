@@ -24,7 +24,7 @@
 
 #include "uiImageQml/config.hpp"
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
 #include <fwQml/IQmlEditor.hpp>
 
@@ -84,7 +84,7 @@ namespace uiImageQml
  * - \b image [data::Image]: image on which the slice index will be changed
  */
 class UIIMAGEQML_CLASS_QT_API SSliceIndexPositionEditor : public ::fwQml::IQmlEditor,
-                                                          public ::fwDataTools::helper::MedicalImage
+                                                          public data::tools::helper::MedicalImage
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
@@ -113,7 +113,7 @@ public Q_SLOTS:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using ::fwDataTools::helper::MedicalImage::Orientation;
+    using data::tools::helper::MedicalImage::Orientation;
 
     /// Update the infromation from the image
     UIIMAGEQML_QT_API virtual void starting() override;

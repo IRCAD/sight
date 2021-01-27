@@ -25,13 +25,12 @@
 #include <data/DicomSeries.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwNetworkIO/helper/Series.hpp>
 
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -79,15 +78,15 @@ void SQueryEditor::configuring()
         throw core::tools::Failed("'server' element not found");
     }
 
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SQueryEditor::starting()
 {
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     // Main Widget
     QGridLayout* layout = new QGridLayout();
@@ -148,12 +147,12 @@ void SQueryEditor::updating()
 
 void SQueryEditor::queryPatientName()
 {
-    const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);
+    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
-    const std::string port = ::fwPreferences::getValue(m_serverPortKey);
+    const std::string port = gui::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -219,12 +218,12 @@ void SQueryEditor::queryPatientName()
 
 void SQueryEditor::queryStudyDate()
 {
-    const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);
+    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
-    const std::string port = ::fwPreferences::getValue(m_serverPortKey);
+    const std::string port = gui::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -343,11 +342,11 @@ void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 
 void SQueryEditor::displayErrorMessage(const std::string& message) const
 {
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "JobTest.hpp"
+#include "jobs/JobTest.hpp"
 
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/exception/Waiting.hpp>
@@ -37,7 +37,7 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::jobs::ut::JobTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::core::jobs::ut::JobTest );
 
 namespace sight::core::jobs
 {
@@ -508,34 +508,35 @@ void JobTest::AggregationTest()
         auto jobs1 = core::jobs::Aggregator::New( "Aggregator1" );
         auto jobs2 = core::jobs::Aggregator::New( "Aggregator2" );
 
+        const double fNorm = static_cast<double>(norm);
         jobs1->add(job1, w1);
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(w1*norm), jobs1->getTotalWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(w1*fNorm), jobs1->getTotalWorkUnits());
 
         jobs1->add(job2, w2);
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t((w2+w1)*norm), jobs1->getTotalWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t((w2+w1)*fNorm), jobs1->getTotalWorkUnits());
 
         jobs2->add(job3, w3);
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm*w3), jobs2->getTotalWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(fNorm*w3), jobs2->getTotalWorkUnits());
 
         wu2 = 145;
         job2->setTotalWorkUnits(wu2);
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm*(w2+w1)), jobs1->getTotalWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(fNorm*(w2+w1)), jobs1->getTotalWorkUnits());
 
         double jobs1w = 2015;
         jobs2->add(jobs1, jobs1w);
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm * (jobs1w+w3)), jobs2->getTotalWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(fNorm * (jobs1w+w3)), jobs2->getTotalWorkUnits());
 
         wu3 = 1111;
         job3->setTotalWorkUnits(wu3);
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm * (jobs1w+w3)), jobs2->getTotalWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(fNorm * (jobs1w+w3)), jobs2->getTotalWorkUnits());
 
         jobs2->run();
         job2->done();
         job2->finish();
         jobs2->wait();
 
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm*(w2+w1)), jobs1->getDoneWorkUnits());
-        CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm*(jobs1w+w3)), jobs2->getDoneWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(fNorm*(w2+w1)), jobs1->getDoneWorkUnits());
+        CPPUNIT_ASSERT_EQUAL( std::uint64_t(fNorm*(jobs1w+w3)), jobs2->getDoneWorkUnits());
     }
 }
 
@@ -652,7 +653,8 @@ struct JobObserverCanceler : public JobObserver
 
 void JobTest::ObserverTest()
 {
-    std::uint64_t progress(100);
+    const std::uint64_t progress(100);
+    const double fProgress = static_cast<double>(progress);
     for (int i = 0; i < 10; ++i)
     {
         int loops = 100;
@@ -661,7 +663,7 @@ void JobTest::ObserverTest()
 
             auto f = [ =, &job](double d)
                      {
-                         job.doneWork(std::uint64_t(d * progress));
+                         job.doneWork(std::uint64_t(d * fProgress));
                      };
             algoMockObserver algo( new JobObserver( f ) );
 
@@ -677,7 +679,7 @@ void JobTest::ObserverTest()
                         {
                                  auto f = [ =, &job](double d)
                             {
-                                          job.doneWork(std::uint64_t(d* progress));
+                                          job.doneWork(std::uint64_t(d* fProgress));
                             };
                                  algoMockObserver algo( new JobObserver( f ) );
                                  algo.run(loops);
@@ -695,7 +697,7 @@ void JobTest::ObserverTest()
                         {
                                  auto f = [ =, &runningJob](double d)
                             {
-                                          runningJob.doneWork(std::uint64_t(d* progress));
+                                          runningJob.doneWork(std::uint64_t(d* fProgress));
                             };
                                  algoMockObserver algo( new JobObserver( f ) );
                                  runningJob.addSimpleCancelHook( [&]()
@@ -723,7 +725,7 @@ void JobTest::ObserverTest()
                         {
                                  auto f = [ =, &runningJob](double d)
                             {
-                                          runningJob.doneWork(std::uint64_t(d* progress));
+                                          runningJob.doneWork(std::uint64_t(d* fProgress));
                             };
                                  algoMockObserver algo( new JobObserverCanceler( f, runningJob.cancelRequested() ) );
                                  algo.run(loops);

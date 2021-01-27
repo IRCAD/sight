@@ -37,10 +37,9 @@
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -109,7 +108,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
-    if(m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId))
+    if(m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId))
     {
         // Create Fiducial Container
         SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) fiducialNode =
@@ -122,7 +121,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
     }
 
     // Add distances
-    if(m_object->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId))
+    if(m_object->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId))
     {
         // Create Imaging Measurements Container
         SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) imagingMeasurementsNode =

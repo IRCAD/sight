@@ -24,7 +24,7 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -59,12 +59,12 @@ namespace uiCalibration
    0   0   0   0
  */
 class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
-                                                     public ::fwGui::editor::IEditor
+                                                     public gui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOpticalCenterEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SOpticalCenterEditor, gui::editor::IEditor)
 
     /// Constructor.
     UICALIBRATION_API SOpticalCenterEditor() noexcept;

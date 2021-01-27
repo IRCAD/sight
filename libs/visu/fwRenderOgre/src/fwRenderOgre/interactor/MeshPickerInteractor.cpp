@@ -78,12 +78,12 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
         {
             ::Ogre::Vector3 click = m_picker.getIntersectionInWorldSpace();
 
-            ::fwDataTools::PickingInfo info;
+            data::tools::PickingInfo info;
             info.m_worldPos[0] = static_cast<double>(click.x);
             info.m_worldPos[1] = static_cast<double>(click.y);
             info.m_worldPos[2] = static_cast<double>(click.z);
 
-            using PickingEventType = ::fwDataTools::PickingInfo::Event;
+            using PickingEventType = data::tools::PickingInfo::Event;
             switch(_button)
             {
                 case MouseButton::LEFT:
@@ -102,11 +102,11 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
 
             if(static_cast<bool>(_mod & Modifier::CONTROL))
             {
-                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
+                info.m_modifierMask |= data::tools::PickingInfo::CTRL;
             }
             if(static_cast<bool>(_mod & Modifier::SHIFT))
             {
-                info.m_modifierMask |= ::fwDataTools::PickingInfo::SHIFT;
+                info.m_modifierMask |= data::tools::PickingInfo::SHIFT;
             }
 
             if(m_pointClickedSig)

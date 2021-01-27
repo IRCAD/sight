@@ -32,10 +32,9 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -193,19 +192,19 @@ void SChessBoardDetector::recordPoints()
 
 void SChessBoardDetector::updateChessboardSize()
 {
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
 
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
 
-    const std::string scaleStr = ::fwPreferences::getPreference(m_scaleKey);
+    const std::string scaleStr = gui::preferences::getPreference(m_scaleKey);
     if (!scaleStr.empty())
     {
         m_scale = std::stof(scaleStr);
@@ -226,7 +225,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
     SLM_ASSERT("Missing 'image' input.", img);
 
     data::mt::ObjectReadLock imgLock(img);
-    const bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+    const bool isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
 
     if(isValid)
     {

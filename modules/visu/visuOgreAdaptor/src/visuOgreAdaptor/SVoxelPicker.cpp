@@ -26,7 +26,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/Utils.hpp>
@@ -51,7 +51,7 @@ SVoxelPicker::SVoxelPicker() noexcept
 {
     newSlot(s_SLICETYPE_SLOT, &SVoxelPicker::changeSliceType, this);
 
-    m_pickedSig = newSignal< core::com::Signal< void ( ::fwDataTools::PickingInfo ) > >(s_PICKED_SIG);
+    m_pickedSig = newSignal< core::com::Signal< void ( data::tools::PickingInfo ) > >(s_PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -177,12 +177,12 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
             const ::Ogre::Vector3 intersection = result.second;
 
             // Create the picking information.
-            ::fwDataTools::PickingInfo info;
+            data::tools::PickingInfo info;
             info.m_worldPos[0] = static_cast<double>(intersection.x);
             info.m_worldPos[1] = static_cast<double>(intersection.y);
             info.m_worldPos[2] = static_cast<double>(intersection.z);
 
-            using PickingEventType = ::fwDataTools::PickingInfo::Event;
+            using PickingEventType = data::tools::PickingInfo::Event;
             switch(_button)
             {
                 case MouseButton::LEFT:
@@ -201,11 +201,11 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
 
             if(static_cast<bool>(_mod & Modifier::CONTROL))
             {
-                info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
+                info.m_modifierMask |= data::tools::PickingInfo::CTRL;
             }
             if(static_cast<bool>(_mod & Modifier::SHIFT))
             {
-                info.m_modifierMask |= ::fwDataTools::PickingInfo::SHIFT;
+                info.m_modifierMask |= data::tools::PickingInfo::SHIFT;
             }
 
             // Emit the picking info.
@@ -236,11 +236,11 @@ std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(con
                                                                              const Ogre::Vector3& _spacing)
 {
     const auto axialIdx =
-        _image->getField< data::Integer >(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+        _image->getField< data::Integer >(data::tools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
     const auto frontalIdx =
-        _image->getField< data::Integer >(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+        _image->getField< data::Integer >(data::tools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
     const auto sagittalIdx =
-        _image->getField< data::Integer >(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        _image->getField< data::Integer >(data::tools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
     const ::Ogre::Real axialIndex    = static_cast< ::Ogre::Real >(axialIdx);
     const ::Ogre::Real frontalIndex  = static_cast< ::Ogre::Real >(frontalIdx);

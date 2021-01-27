@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,21 +20,15 @@
  *
  ***********************************************************************/
 
-#ifndef __GUIQT_EDITOR_NAMESPACE_HPP__
-#define __GUIQT_EDITOR_NAMESPACE_HPP__
+#pragma once
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 /**
- * @brief       The namespace guiQt::editor contains a basic editor written with Qt.
- * @namespace   guiQt::editor
- *
- * @date        2009-2010.
- *
+ * @brief       The namespace sight::modules::guiQt::editor contains a basic editor written with Qt.
  */
 namespace editor
 {
 
 }
 }
-#endif /* __GUIQT_EDITOR_NAMESPACE_HPP__ */

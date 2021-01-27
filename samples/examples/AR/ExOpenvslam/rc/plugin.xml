@@ -1,6 +1,6 @@
 <plugin id="ExOpenvslam" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -23,7 +23,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <menuBar/>
                     <toolBar/>
@@ -39,7 +39,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -50,7 +50,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Load map (*.map)" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
@@ -104,9 +104,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="3" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -118,9 +118,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneViews" type="::gui::view::SDefaultView" >
+            <service uid="sceneViews" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -132,9 +132,9 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="::gui::view::SDefaultView" >
+            <service uid="videoView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -147,9 +147,9 @@
             </service>
 
 
-            <service uid="statusView" type="::gui::view::SDefaultView" >
+            <service uid="statusView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -163,9 +163,9 @@
                 </registry>
             </service>
 
-            <service uid="editorViews" type="::gui::view::SDefaultView" >
+            <service uid="editorViews" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                <layout type="::fwGui::ToolboxLayoutManager" >
+                <layout type="::sight::gui::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                         <view caption="Openvslam  Orb Parameters."  expanded="true" />
                         <view caption="Openvslam  initializer Parameters. (Advanced)" expanded="false" />
@@ -179,40 +179,40 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
 
-            <service uid="loadCalibAct" type="::gui::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
             </service>
 
-            <service uid="startOpenvslamAct" type="::gui::action::SSlotCaller" >
+            <service uid="startOpenvslamAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>frustumListAdp/clear</slot>
                     <slot>resetOpenvslamAct/show</slot>
@@ -226,58 +226,58 @@
                 </slots>
             </service>
 
-            <service uid="pauseOpenvslamAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseOpenvslamAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/pauseTracker</slot>
                 </slots>
             </service>
 
-            <service uid="showHidePointCloudAct" type="::gui::action::SSlotCaller" >
+            <service uid="showHidePointCloudAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>pointCloudAdp/toggleVisibility</slot>
                 </slots>
             </service>
 
-            <service uid="enableLocalizationAct" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="enableLocalizationAct" type="::sight::modules::gui::action::SBooleanSlotCaller" >
              <state active="false" />
                 <slots>
                     <slot>openvslamSrv/enableLocalization</slot>
                 </slots>
             </service>
 
-            <service uid="saveMapAct" type="::gui::action::SSlotCaller" >
+            <service uid="saveMapAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/saveMap</slot>
                 </slots>
             </service>
 
-            <service uid="saveTrajectoriesAct" type="::gui::action::SSlotCaller" >
+            <service uid="saveTrajectoriesAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/saveTrajectories</slot>
                 </slots>
             </service>
 
 
-            <service uid="loadMapAct" type="::gui::action::SSlotCaller" >
+            <service uid="loadMapAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/loadMap</slot>
                 </slots>
             </service>
 
-            <service uid="resetOpenvslamAct" type="::gui::action::SSlotCaller" >
+            <service uid="resetOpenvslamAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/resetPointCloud</slot>
                     <slot>frustumListAdp/clear</slot>
                 </slots>
             </service>
 
-            <service uid="savePCAct" type="::gui::action::SSlotCaller" >
+            <service uid="savePCAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>meshWriterSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="stopOpenvslamAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopOpenvslamAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>resetOpenvslamAct/hide</slot>
                     <slot>stopOpenvslamAct/hide</slot>
@@ -289,7 +289,7 @@
                 </slots>
             </service>
 
-            <service uid="HideAtStart" type="::gui::action::SSlotCaller" >
+            <service uid="HideAtStart" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>stopOpenvslamAct/hide</slot>
                     <slot>resetOpenvslamAct/hide</slot>
@@ -414,7 +414,7 @@
                 <green>Loaded</green>
             </service>
 
-            <service uid="openvslamOrbSrv" type="::guiQt::editor::SParameters" >
+            <service uid="openvslamOrbSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Number of features per image" key="nFeatures" defaultValue="2000" min="10" max="10000" />
                     <param type="double" name="Scale factor between levels in the scale pyramid" key="scaleFactor" defaultValue="1.2" min="1" max="10.0" />
@@ -427,7 +427,7 @@
                 <config sendAtStart="false" />
             </service>
 
-            <service uid="openvslamInitSrv" type="::guiQt::editor::SParameters" >
+            <service uid="openvslamInitSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Number of RANSAC Iterations" key="initializer.numRansacIterations" defaultValue="100" min="1" max="1000" />
                     <param type="int" name="Minimum number of triangulated points" key="initializer.minNumTriangulatedPts" defaultValue="50" min="10" max="200" />

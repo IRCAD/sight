@@ -27,7 +27,7 @@
 #include <data/List.hpp>
 #include <data/PointList.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -56,12 +56,12 @@ namespace uiCalibration
  * - \b calInfo2 [data::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
-                                                       public ::fwGui::editor::IEditor
+                                                       public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCalibrationInfoEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SCalibrationInfoEditor, gui::editor::IEditor)
 
     /**
      * @name Slots API

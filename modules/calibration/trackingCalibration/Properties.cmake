@@ -4,10 +4,9 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwDataTools
-    fwGuiQt
+    guiQt
     services
-    fwPreferences
+    gui
     fwMath
     eigenTools
     calibration3d

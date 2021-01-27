@@ -30,7 +30,7 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -41,7 +41,7 @@
 
 namespace uiHandEye
 {
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiHandEye::SHandEyeEditor)
+fwServicesRegisterMacro(gui::editor::IEditor, ::uiHandEye::SHandEyeEditor)
 
 const core::com::Slots::SlotKeyType SHandEyeEditor::s_ADD_SLOT = "add";
 const core::com::Slots::SlotKeyType SHandEyeEditor::s_REMOVE_SLOT        = "remove";
@@ -93,16 +93,16 @@ void SHandEyeEditor::updating()
 
 void SHandEyeEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SHandEyeEditor::starting()
 {
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast(getContainer());
 
     // Creation of the Qt elements
 

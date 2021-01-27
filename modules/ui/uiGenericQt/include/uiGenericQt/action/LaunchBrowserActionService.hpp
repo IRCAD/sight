@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace uiGenericQt
 {
@@ -37,12 +37,12 @@ namespace action
 /**
  * @brief   This action launch a browser on the url given in configuration.
  */
-class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IActionSrv
+class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(LaunchBrowserActionService, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(LaunchBrowserActionService, ::sight::gui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIGENERICQT_API LaunchBrowserActionService() noexcept;
@@ -55,7 +55,7 @@ protected:
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="::fwGui::IActionSrv" impl="::uiGenericQt::action::LaunchBrowserActionService" autoConnect="no">
+       <service type="::gui::IActionSrv" impl="::uiGenericQt::action::LaunchBrowserActionService" autoConnect="no">
         <url>http://www.ircad.fr</url>
        </service>
        @endcode

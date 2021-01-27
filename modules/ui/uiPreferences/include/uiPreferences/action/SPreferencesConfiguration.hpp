@@ -29,7 +29,7 @@
 
 #include <data/String.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -118,7 +118,7 @@ namespace action
  */
 class UIPREFERENCES_CLASS_API SPreferencesConfiguration final :
     public QObject,
-    public ::fwGui::IActionSrv
+    public ::sight::gui::IActionSrv
 {
 
 Q_OBJECT
@@ -126,7 +126,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPreferencesConfiguration, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SPreferencesConfiguration, ::sight::gui::IActionSrv)
 
     /// Initializes the signal.
     UIPREFERENCES_API SPreferencesConfiguration() noexcept;

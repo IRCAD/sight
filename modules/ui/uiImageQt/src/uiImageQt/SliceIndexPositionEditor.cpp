@@ -36,11 +36,10 @@
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -56,13 +55,13 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::sight::data::Image )
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-    &fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId,
-    &fwDataTools::fieldHelper::Image::m_frontalSliceIndexId,
-    &fwDataTools::fieldHelper::Image::m_axialSliceIndexId
+    &data::tools::fieldHelper::Image::m_sagittalSliceIndexId,
+    &data::tools::fieldHelper::Image::m_frontalSliceIndexId,
+    &data::tools::fieldHelper::Image::m_axialSliceIndexId
 };
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
@@ -91,20 +90,20 @@ void SliceIndexPositionEditor::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout( );
 
-    m_sliceSelectorPanel = new ::fwGuiQt::SliceSelector();
+    m_sliceSelectorPanel = new guiQt::SliceSelector();
     m_sliceSelectorPanel->setEnable(false);
 
-    ::fwGuiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
+    guiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
     changeIndexCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceIndexNotification, this,
                                      std::placeholders::_1);
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
-    ::fwGuiQt::SliceSelector::ChangeIndexCallback changeTypeCallback;
+    guiQt::SliceSelector::ChangeIndexCallback changeTypeCallback;
     changeTypeCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceTypeNotification, this,
                                     std::placeholders::_1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
@@ -146,15 +145,15 @@ void SliceIndexPositionEditor::configuring()
 
         if(orientation == "axial" )
         {
-            m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Z_AXIS);
+            m_helper.setOrientation(data::tools::helper::MedicalImage::Z_AXIS);
         }
         else if(orientation == "frontal" )
         {
-            m_helper.setOrientation(::fwDataTools::helper::MedicalImage::Y_AXIS);
+            m_helper.setOrientation(data::tools::helper::MedicalImage::Y_AXIS);
         }
         else if(orientation == "sagittal" )
         {
-            m_helper.setOrientation(::fwDataTools::helper::MedicalImage::X_AXIS);
+            m_helper.setOrientation(data::tools::helper::MedicalImage::X_AXIS);
         }
         else
         {
@@ -170,7 +169,7 @@ void SliceIndexPositionEditor::updating()
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
     m_helper.updateImageInfos(image);
     this->updateSliceIndexFromImg();
@@ -195,9 +194,9 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
 
     data::Integer::sptr indexesPtr[3];
     m_helper.getSliceIndex(indexesPtr);
-    image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
-    image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
-    image->setField( fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
+    image->setField( data::tools::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
+    image->setField( data::tools::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
+    image->setField( data::tools::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
     this->updateSliceIndexFromImg();
 }
 
@@ -229,7 +228,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
@@ -285,9 +284,9 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    SLM_ASSERT("Bad slice type "<<type, type == ::fwDataTools::helper::MedicalImage::X_AXIS ||
-               type == ::fwDataTools::helper::MedicalImage::Y_AXIS ||
-               type == ::fwDataTools::helper::MedicalImage::Z_AXIS );
+    SLM_ASSERT("Bad slice type "<<type, type == data::tools::helper::MedicalImage::X_AXIS ||
+               type == data::tools::helper::MedicalImage::Y_AXIS ||
+               type == data::tools::helper::MedicalImage::Z_AXIS );
 
     const int oldType = static_cast< int > (m_helper.getOrientation());
     // Change slice type

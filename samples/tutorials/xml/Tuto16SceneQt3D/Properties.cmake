@@ -7,14 +7,14 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     appXml                  # XML configurations
 
-    guiQt                   # Start the module, allow dark theme
+    module_guiQt                   # Start the module, allow dark theme
 
     # Objects declaration
     data
     module_services             # fwService
 
     # UI declaration/Actions
-    gui
+    module_gui
     style
     uiIO
 
@@ -27,14 +27,14 @@ set( REQUIREMENTS
     visuQt3DQt
 )
 
-moduleParam(guiQt
+moduleParam(module_guiQt
     PARAM_LIST
         resource
         stylesheet
     PARAM_VALUES
         style-0.1/flatdark.rcc
         style-0.1/flatdark.qss
-) # Allow dark theme via guiQt
+) # Allow dark theme via module_guiQt
 
 bundleParam(
         appXml

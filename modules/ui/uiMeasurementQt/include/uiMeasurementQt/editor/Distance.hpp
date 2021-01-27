@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -58,12 +58,12 @@ namespace editor
  * -\b image [data::Image]: Image in which we calculate the distance.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
-                                           public ::fwGui::editor::IEditor
+                                           public gui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(Distance, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(Distance, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;

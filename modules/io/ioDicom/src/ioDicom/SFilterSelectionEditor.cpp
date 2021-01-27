@@ -32,9 +32,9 @@
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/registry/detail.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -48,7 +48,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::sight::data::Vector )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::ioDicom::SFilterSelectionEditor, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ void SFilterSelectionEditor::info(std::ostream& _sstream )
 
 void SFilterSelectionEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -87,8 +87,8 @@ void SFilterSelectionEditor::starting()
     data::Vector::csptr dataVector = this->getInput< data::Vector >("selection");
     SLM_ASSERT("Vector object should not be null.", dataVector);
 
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setAlignment(Qt::AlignTop);
@@ -199,10 +199,10 @@ void SFilterSelectionEditor::onForceChecked(int state)
 {
     if(state == Qt::Checked)
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Be careful",
             "You asked to ignore reading errors, there are high risks of issues for resulting image.",
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -400,9 +400,9 @@ void SFilterSelectionEditor::applyFilters()
     SLM_ASSERT("Vector object should not be null.", vector);
 
     // Display the informations
-    ::fwGui::dialog::MessageDialog messageBox;
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    gui::dialog::MessageDialog messageBox;
+    messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesDB

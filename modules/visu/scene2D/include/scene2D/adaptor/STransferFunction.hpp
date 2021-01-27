@@ -24,9 +24,8 @@
 
 #include "scene2D/config.hpp"
 
+#include <data/tools/helper/MedicalImage.hpp>
 #include <data/TransferFunction.hpp>
-
-#include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderQt/IAdaptor.hpp>
 

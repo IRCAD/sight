@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -44,11 +44,11 @@ namespace action
      slot->asyncRun(timestamp);
    @endcode
  */
-class UITOOLS_CLASS_API STimestampSlotCaller : public ::fwGui::IActionSrv
+class UITOOLS_CLASS_API STimestampSlotCaller : public ::sight::gui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(STimestampSlotCaller, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(STimestampSlotCaller, ::sight::gui::IActionSrv)
 
     /// Constructor
     UITOOLS_API STimestampSlotCaller();
@@ -70,7 +70,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::fwGui::IActionSrv" impl="::uiTools::STimestampSlotCaller" autoConnect="no">
+        <service uid="..." type="::gui::IActionSrv" impl="::uiTools::STimestampSlotCaller" autoConnect="no">
             <slots>
               <slot>hasSlotsId/slotKey</slot>
               <slot>hasSlots2Id/slot2Key</slot>

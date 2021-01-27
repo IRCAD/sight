@@ -22,18 +22,18 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QPointer>
 #include <QPushButton>
 
 #include <filesystem>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -61,7 +61,7 @@ namespace editor
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." type="::guiQt::editor::SSignalButton" >
+   <service uid="..." type="::sight::modules::guiQt::editor::SSignalButton" >
        <config>
           <checkable>true|false</checkable>
           <text>...</text>
@@ -86,8 +86,8 @@ namespace editor
  * - \b iconWidth (optional, unsigned, default=0): icon width.
  * - \b iconHeight (optional, unsigned, default=0): icon height.
  */
-class GUIQT_CLASS_API SSignalButton : public QObject,
-                                      public ::fwGui::editor::IEditor
+class MODULE_GUIQT_CLASS_API SSignalButton : public QObject,
+                                             public gui::editor::IEditor
 {
 
 Q_OBJECT
@@ -95,27 +95,27 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSignalButton, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SSignalButton, ::sight::gui::editor::IEditor)
 
     /// Creates signals and slots.
-    GUIQT_API SSignalButton() noexcept;
+    MODULE_GUIQT_API SSignalButton() noexcept;
 
     /// Destroys the service.
-    GUIQT_API virtual ~SSignalButton() noexcept;
+    MODULE_GUIQT_API virtual ~SSignalButton() noexcept;
 
 protected:
 
     /// Configures the class parameters.
-    GUIQT_API void configuring() override;
+    MODULE_GUIQT_API void configuring() override;
 
     /// Launches the IEditor::starting method.
-    GUIQT_API void starting() override;
+    MODULE_GUIQT_API void starting() override;
 
     ///Does nothing.
-    GUIQT_API void updating() override;
+    MODULE_GUIQT_API void updating() override;
 
     /// Launches the IEditor::stopping method.
-    GUIQT_API void stopping() override;
+    MODULE_GUIQT_API void stopping() override;
 
 private Q_SLOTS:
 
@@ -196,4 +196,4 @@ private:
 };
 
 } // namespace editor.
-} // namespace gui.
+} // namespace sight::modules::gui.

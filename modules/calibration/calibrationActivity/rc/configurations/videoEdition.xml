@@ -20,10 +20,10 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
                 <toolBar/>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -50,7 +50,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="editionAct" type="::gui::action::SSlotCaller">
+        <service uid="editionAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>intrinsicEditionSrv/update</slot>
             </slots>

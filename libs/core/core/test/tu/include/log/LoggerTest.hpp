@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwLogTest
+namespace sight::log
 {
 namespace ut
 {
@@ -45,4 +45,4 @@ public:
 };
 
 } // namespace ut
-} // namespace fwLogTest
+} // namespace sight::log

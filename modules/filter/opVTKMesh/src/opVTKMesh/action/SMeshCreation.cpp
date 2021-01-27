@@ -52,7 +52,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::opVTKMesh::action::SMeshCreation )
 
 //-----------------------------------------------------------------------------
 

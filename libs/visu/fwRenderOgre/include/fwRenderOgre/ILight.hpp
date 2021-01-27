@@ -32,7 +32,7 @@
 #include <data/Color.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGui/container/fwContainer.hpp>
+#include <gui/container/fwContainer.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreLight.h>

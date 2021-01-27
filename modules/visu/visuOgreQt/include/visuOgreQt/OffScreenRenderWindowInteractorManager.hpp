@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
     VISUOGREQT_API virtual void requestRender() override;
 
     /// Creates the render window in the global OpenGL context, @see ::visuOgreQt::OpenGLContext.
-    VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr, bool, bool) override;
+    VISUOGREQT_API virtual void createContainer(gui::container::fwContainer::sptr, bool, bool) override;
 
     /// Does nothing.
     VISUOGREQT_API virtual void connectToContainer() override;

@@ -22,16 +22,16 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/IActionSrv.hpp>
 
 #include <core/tools/Failed.hpp>
-
-#include <fwGui/IActionSrv.hpp>
 
 #include <map>
 #include <set>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -42,25 +42,25 @@ namespace action
  * @section XML Configuration
  *
  * @code{.xml}
-       <service impl="::gui::action::SPushField">
+       <service impl="::modules::gui::action::SPushField">
            <inout key="source" uid="compositeId" />
            <out key="destination" uid="objectId" />
            <push field="item" />
        </service>
    @endcode
  */
-class GUI_CLASS_API SPushField : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SPushField : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SPushField, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SPushField, ::sight::gui::IActionSrv)
 
     /// Constructor. Do nothing.
-    GUI_API SPushField() noexcept;
+    MODULE_GUI_API SPushField() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SPushField() noexcept;
+    MODULE_GUI_API virtual ~SPushField() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -69,7 +69,7 @@ public:
      * Connect source Composite::s_ADDED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      * Connect source Composite::s_REMOVED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      */
-    GUI_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GUI_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
@@ -99,4 +99,4 @@ private:
 
 } // namespace action
 
-} // namespace gui
+} // namespace sight::modules::gui

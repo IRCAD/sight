@@ -1,7 +1,7 @@
 <plugin id="dicomFilteringActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

@@ -60,12 +60,15 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
 
-    const auto frameSrv       = m_appManager->addService("::gui::frame::SDefaultFrame", true, false);
-    const auto menuBar        = m_appManager->addService("::gui::aspect::SDefaultMenuBar", "menuBar", true, false);
-    const auto menu           = m_appManager->addService("::gui::aspect::SDefaultMenu", "menuFile", true, false);
-    const auto actionOpenMesh = m_appManager->addService("::gui::action::SStarter", "actionOpenMesh", true, false);
-    const auto actionQuit     = m_appManager->addService("::gui::action::SQuit", "actionQuit", true, false);
-    const auto mainView       = m_appManager->addService("::gui::view::SDefaultView", "mainView", true, false);
+    const auto frameSrv = m_appManager->addService("::modules::gui::frame::SDefaultFrame", true, false);
+    const auto menuBar  = m_appManager->addService("::modules::gui::aspect::SDefaultMenuBar", "menuBar", true,
+                                                   false);
+    const auto menu =
+        m_appManager->addService("::modules::gui::aspect::SDefaultMenu", "menuFile", true, false);
+    const auto actionOpenMesh = m_appManager->addService("::modules::gui::action::SStarter", "actionOpenMesh", true,
+                                                         false);
+    const auto actionQuit = m_appManager->addService("::modules::gui::action::SQuit", "actionQuit", true, false);
+    const auto mainView   = m_appManager->addService("::modules::gui::view::SDefaultView", "mainView", true, false);
 
     const auto meshReaderSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "meshReader", true, false);
     const auto renderSrv     = m_appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
@@ -115,7 +118,7 @@ void Plugin::initialize()
     // Defines main view configuration.
     services::IService::ConfigType mainViewConfig;
     services::IService::ConfigType mainViewLayoutConfig;
-    mainViewLayoutConfig.put("<xmlattr>.type", "::fwGui::CardinalLayoutManager");
+    mainViewLayoutConfig.put("<xmlattr>.type", "::gui::CardinalLayoutManager");
     services::IService::ConfigType mainView1;
     mainView1.put("<xmlattr>.align", "center");
     mainView1.put("<xmlattr>.minWidth", "1080");

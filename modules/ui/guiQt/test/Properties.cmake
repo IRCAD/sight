@@ -9,8 +9,7 @@ set( DEPENDENCIES
     services
 )
 set( REQUIREMENTS
-    data
     module_services
-    gui
-    guiQt
+    module_gui
+    module_guiQt
 )

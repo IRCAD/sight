@@ -32,9 +32,9 @@ Example:
         <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
         <object uid="${transferFunctionOutput}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="tfEditor" type="::gui::view::SDefaultView">
+        <service uid="tfEditor" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -48,7 +48,7 @@ Example:
         </service>
 
         <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
-        <service uid="fieldMgr" type="::gui::action::SPushField">
+        <service uid="fieldMgr" type="::sight::modules::gui::action::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />
@@ -63,9 +63,9 @@ Example:
             </config>
         </service>
 
-        <service uid="tfmTab" type="::gui::view::SDefaultView">
+        <service uid="tfmTab" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::TabLayoutManager">
+                <layout type="::sight::gui::TabLayoutManager">
                     <view caption="TF-Negato" />
                     <view caption="TF-Editor" />
                 </layout>

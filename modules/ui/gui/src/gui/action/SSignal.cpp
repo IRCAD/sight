@@ -22,20 +22,20 @@
 
 #include "gui/action/SSignal.hpp"
 
-#include <core/com/Signal.hxx>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <core/com/Signal.hxx>
 
 #include <services/macros.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSignal )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SSignal )
 
 static const core::com::Signals::SignalKeyType s_TRIGGERED_SIG = "triggered";
 static const core::com::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";
@@ -102,4 +102,4 @@ void SSignal::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

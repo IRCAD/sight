@@ -1,8 +1,5 @@
 # CMake script file launch at build time before the build of each module
 
-# set variables used in the configure_file command
-set(PROJECT_NAME ${PROJECT})
-
 if(PROJECT_REQUIREMENTS)
     string(REPLACE " " ";" PROJECT_REQUIREMENTS ${PROJECT_REQUIREMENTS})
 
@@ -173,17 +170,21 @@ if(EXTENSION_LIST)
     string(REPLACE ";" "\n" EXTENSION_LIST "${EXTENSION_LIST}")
 endif()
 
+# set variables used in the configure_file command
+string(REPLACE "module_" "" STRIPPED_MODULE_NAME ${PROJECT})
+set(PLUGIN_ID "::sight::modules::${STRIPPED_MODULE_NAME}")
+
 # retrieves the class representing the module executable part.
 if(PRJ_CPP_FILES)
-    set(PROJECT_CLASS "class=\"::${PROJECT_NAME}::Plugin\"")
-    set(PROJECT_LIBRARY "    <library name=\"${PROJECT_NAME}\" />")
+    set(PLUGIN_CLASS "class=\"::sight::modules::${STRIPPED_MODULE_NAME}::Plugin\"")
+    set(PROJECT_LIBRARY "    <library name=\"${PROJECT}\" />")
 endif()
 
 configure_file( "${CMAKE_SCRIPTS_DIR}/plugin.xml.in"
                 "${PLUGIN_OUTPUT_PATH}/plugin.xml")
 
 if(REGISTER_SERVICES)
-    list(APPEND INCLUDE_SERVICES "#include <fwServices/macros.hpp>")
+    list(APPEND INCLUDE_SERVICES "#include <services/macros.hpp>")
 
     string(REPLACE ";" "" REGISTER_SERVICES "${REGISTER_SERVICES}")
 endif()

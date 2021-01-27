@@ -27,19 +27,18 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
+#include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
-
-#include <fwGui/dialog/InputDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
+
+#include <gui/dialog/InputDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -62,7 +61,7 @@ static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiTF::TransferFunctionEditor)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiTF::TransferFunctionEditor)
 
 //------------------------------------------------------------------------------
 
@@ -117,8 +116,8 @@ void TransferFunctionEditor::starting()
     this->create();
 
     // Get the Qt container
-    ::fwGuiQt::container::QtContainer::sptr qtContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    guiQt::container::QtContainer::sptr qtContainer
+        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
@@ -226,15 +225,15 @@ void TransferFunctionEditor::presetChoice(int index)
 
 void TransferFunctionEditor::deleteTF()
 {
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Deleting confirmation");
     messageBox.setMessage("Are you sure you want to delete this transfer function?");
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::YES);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-    ::fwGui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(gui::dialog::IMessageDialog::YES);
+    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
+    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
+    if (answerCopy != gui::dialog::IMessageDialog::CANCEL)
     {
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
@@ -244,7 +243,7 @@ void TransferFunctionEditor::deleteTF()
             int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
-            ::fwDataTools::helper::Composite compositeHelper(poolTF);
+            data::tools::helper::Composite compositeHelper(poolTF);
             SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
 
@@ -264,10 +263,10 @@ void TransferFunctionEditor::deleteTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
-                ::fwGui::dialog::IMessageDialog::WARNING );
+                gui::dialog::IMessageDialog::WARNING );
         }
     }
 }
@@ -282,7 +281,7 @@ void TransferFunctionEditor::newTF()
         newName = this->createTransferFunctionName(newName);
     }
 
-    fwGui::dialog::InputDialog inputDialog;
+    gui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
     inputDialog.setInput( newName );
@@ -300,7 +299,7 @@ void TransferFunctionEditor::newTF()
             data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-            ::fwDataTools::helper::Composite compositeHelper(poolTF);
+            data::tools::helper::Composite compositeHelper(poolTF);
             compositeHelper.add(newName, pNewTransferFunction);
 
             m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
@@ -311,10 +310,10 @@ void TransferFunctionEditor::newTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                gui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -323,20 +322,20 @@ void TransferFunctionEditor::newTF()
 
 void TransferFunctionEditor::reinitializeTFPool()
 {
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Reinitializing confirmation");
     messageBox.setMessage("Are you sure you want to reinitialize all transfer functions?");
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::YES);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-    ::fwGui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(gui::dialog::IMessageDialog::YES);
+    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
+    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
+    if (answerCopy != gui::dialog::IMessageDialog::CANCEL)
     {
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-        ::fwDataTools::helper::Composite compositeHelper(poolTF);
+        data::tools::helper::Composite compositeHelper(poolTF);
         compositeHelper.clear();
         compositeHelper.notify();
 
@@ -353,7 +352,7 @@ void TransferFunctionEditor::renameTF()
     std::string str = m_pTransferFunctionPreset->currentText().toStdString();
     std::string newName(str);
 
-    fwGui::dialog::InputDialog inputDialog;
+    gui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
     inputDialog.setInput( newName );
@@ -370,7 +369,7 @@ void TransferFunctionEditor::renameTF()
             pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
             pTF->setName(newName);
 
-            ::fwDataTools::helper::Composite compositeHelper(poolTF);
+            data::tools::helper::Composite compositeHelper(poolTF);
             compositeHelper.remove(str);
             compositeHelper.add(newName, pTF);
             compositeHelper.notify();
@@ -382,21 +381,21 @@ void TransferFunctionEditor::renameTF()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog messageBox;
+            gui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage("This transfer function name already exists so you can not overwrite it.");
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(gui::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }
     if ( newName.empty() )
     {
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("You have to give a name to your transfer function.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -408,7 +407,7 @@ void TransferFunctionEditor::importTF()
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-    ::fwDataTools::helper::Composite compositeHelper(poolTF);
+    data::tools::helper::Composite compositeHelper(poolTF);
 
     data::TransferFunction::sptr tf = data::TransferFunction::New();
     ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
@@ -459,7 +458,7 @@ void TransferFunctionEditor::initTransferFunctions()
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-    ::fwDataTools::helper::Composite compositeHelper(poolTF);
+    data::tools::helper::Composite compositeHelper(poolTF);
 
     const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasTransferFunctionName(defaultTFName))

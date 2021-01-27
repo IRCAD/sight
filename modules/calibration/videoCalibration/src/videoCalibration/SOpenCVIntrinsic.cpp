@@ -35,12 +35,11 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -217,17 +216,17 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateChessboardSize()
 {
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoi(widthStr);
     }
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoi(heightStr);
     }
-    const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);

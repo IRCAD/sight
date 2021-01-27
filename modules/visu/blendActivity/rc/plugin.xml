@@ -1,7 +1,7 @@
 <plugin id="blendActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="scene2D" />
 
     <xi:include href="configurations/Blend.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

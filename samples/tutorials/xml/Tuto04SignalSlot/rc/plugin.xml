@@ -1,7 +1,7 @@
 <plugin id="Tuto04SignalSlot" version="@PROJECT_VERSION@" >
 
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto04SignalSlot_AppCfg</id>
@@ -14,7 +14,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto04SignalSlot</name>
@@ -29,7 +29,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -40,7 +40,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -56,16 +56,16 @@
 
             <!--
                 Default view service:
-                This service defines the view layout. The type '::fwGui::CardinalLayoutManager' represents a main
+                This service defines the view layout. The type '::sight::gui::CardinalLayoutManager' represents a main
                 central view and other views at the 'right', 'left', 'bottom' or 'top'.
                 Here the application contains a central view at the right.
 
                 Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
                 A minimum window height and a width are given to the two non-central views.
             -->
-            <service uid="containerView" type="::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager" >
+                    <layout type="::sight::gui::CardinalLayoutManager" >
                         <view align="center" />
                         <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
                         <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
@@ -80,11 +80,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="::gui::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 

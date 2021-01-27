@@ -6,10 +6,10 @@ set( DEPENDENCIES)
 set( REQUIREMENTS
     module_services
     data
-    gui
+    module_gui
     uiTF
     scene2D
-    guiQt
+    module_guiQt
     qtSceneConfig
     uiImageQt
     uiVisuOgre

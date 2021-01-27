@@ -26,8 +26,7 @@
 
 #include <data/Image.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <imageFilterOp/ImageExtruder.hpp>
 
@@ -89,7 +88,7 @@ void SImageExtruder::updating()
 {
     const auto image = this->getLockedInput< data::Image >(s_IMAGE_INPUT);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Copy the image into the output.
         {
@@ -122,7 +121,7 @@ void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorT
 {
     const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
     {
         for(const data::Reconstruction::csptr reconstruction : _reconstructions)
         {

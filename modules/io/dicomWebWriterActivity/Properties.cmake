@@ -9,8 +9,8 @@ set( REQUIREMENTS
     ctrlMemory
     ctrlSelection
     data
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     ioGdcm
     ioDicomWeb
     ioPacs

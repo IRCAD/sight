@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <fwGui/dialog/IMultiSelectorDialog.hpp>
+#include <gui/dialog/IMultiSelectorDialog.hpp>
 
 #include <QObject>
 #include <QString>
@@ -43,7 +43,7 @@ namespace dialog
  */
 
 class FWGUIQML_CLASS_API MultiSelectorDialog :  public QObject,
-                                                public ::fwGui::dialog::IMultiSelectorDialog
+                                                public gui::dialog::IMultiSelectorDialog
 
 {
 Q_OBJECT
@@ -51,10 +51,10 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog,
-                     ::fwGui::factory::New< MultiSelectorDialog >)
+    fwCoreClassMacro(MultiSelectorDialog, gui::dialog::IMultiSelectorDialog,
+                     gui::factory::New< MultiSelectorDialog >)
 
-    FWGUIQML_API MultiSelectorDialog(::fwGui::GuiBaseObject::Key key);
+    FWGUIQML_API MultiSelectorDialog(gui::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~MultiSelectorDialog();
 

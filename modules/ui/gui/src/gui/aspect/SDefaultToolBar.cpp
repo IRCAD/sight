@@ -24,9 +24,9 @@
 
 #include <services/macros.hpp>
 
-fwServicesRegisterMacro( ::fwGui::IToolBarSrv, ::gui::aspect::SDefaultToolBar )
+fwServicesRegisterMacro( ::sight::gui::IToolBarSrv, ::sight::modules::gui::aspect::SDefaultToolBar )
 
-namespace gui
+namespace sight::modules::gui
 {
 
 namespace aspect

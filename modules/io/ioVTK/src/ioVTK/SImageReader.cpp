@@ -36,16 +36,16 @@
 
 #include <fwDataIO/reader/IObjectReader.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <fwIO/IReader.hpp>
 
 #include <fwVtkIO/BitmapImageReader.hpp>
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ActiveWorkers.hpp>
@@ -101,15 +101,15 @@ void SImageReader::openLocationDialog()
         }
     }
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.addFilter("Bitmap image", availableExtensions);
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -170,8 +170,8 @@ void SImageReader::updating()
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
         try
         {
             // Notify other image services that a new image has been loaded.
@@ -276,10 +276,10 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
         ok = false;
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
@@ -289,18 +289,18 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
 

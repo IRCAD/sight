@@ -25,7 +25,7 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/tools/MemoryMonitorTools.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -36,7 +36,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitor::action::MemoryInfo, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -79,31 +79,31 @@ void MemoryInfo::updating( )
     stream << "DumpedBuffer size   = "  << dumpedBufferSize/mo << " Mo" << std::endl;
 
     // Information message box
-    ::fwGui::dialog::MessageDialog::show(
+    gui::dialog::MessageDialog::show(
         "MemoryInfo",
         stream.str(),
-        ::fwGui::dialog::IMessageDialog::INFO);
+        gui::dialog::IMessageDialog::INFO);
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <fwGui/dialog/IInputDialog.hpp>
+#include <gui/dialog/IInputDialog.hpp>
 
 #include <QObject>
 
@@ -41,7 +41,7 @@ namespace dialog
  *
  * Example of use:
  * @code
-   ::fwGui::dialog::InputDialog inputDlg;
+   gui::dialog::InputDialog inputDlg;
    inputDlg.setTitle("Identification dialog");
    inputDlg.setMessage("Enter Pin Code: ");
    inputDlg.setInput ("<Enter your code here>");
@@ -49,7 +49,7 @@ namespace dialog
    @endcode
  */
 class FWGUIQML_CLASS_API InputDialog : public QObject,
-                                       public ::fwGui::dialog::IInputDialog
+                                       public gui::dialog::IInputDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString input MEMBER m_input NOTIFY inputChanged)
@@ -57,9 +57,9 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(InputDialog, ::fwGui::dialog::IInputDialog, ::fwGui::factory::New< InputDialog >)
+    fwCoreClassMacro(InputDialog, gui::dialog::IInputDialog, gui::factory::New< InputDialog >)
 
-    FWGUIQML_API InputDialog(::fwGui::GuiBaseObject::Key key);
+    FWGUIQML_API InputDialog(gui::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~InputDialog();
 

@@ -10,8 +10,8 @@ set( DEPENDENCIES
 set( REQUIREMENTS # The modules used by this application
     data
     module_services
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     )
 set( PLUGINS
     QtQml

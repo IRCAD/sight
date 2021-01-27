@@ -7,12 +7,11 @@ set( DEPENDENCIES
     utestData
     data
     services
-    fwGui
     fwIO
 )
 set( REQUIREMENTS
     data
     module_services
-    gui
+    module_gui
     ioITK
 )

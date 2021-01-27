@@ -25,7 +25,7 @@
 #include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <QList>
 #include <QtNetwork>

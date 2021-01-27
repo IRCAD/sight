@@ -7,8 +7,8 @@ set( REQUIREMENTS
     module_services
     data
 
-    gui
-    guiQt
+    module_gui
+    module_guiQt
 
     activities
     appXml

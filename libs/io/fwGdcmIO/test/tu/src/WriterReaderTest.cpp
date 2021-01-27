@@ -40,10 +40,9 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Object.hpp>
@@ -191,26 +190,26 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     data::Image::sptr image = imgSeries->getImage();
 
     // Add landmarks
-    ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
+    data::tools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
     data::PointList::sptr landmarks =
-        image->getField< data::PointList >( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+        image->getField< data::PointList >( data::tools::fieldHelper::Image::m_imageLandmarksId);
     const data::Image::Spacing spacing = image->getSpacing2();
     const data::Image::Origin origin   = image->getOrigin2();
     const data::Point::sptr point      = data::Point::New(2.6 + origin[0],
                                                           1.2 + origin[1],
                                                           4.5 + origin[2]);
-    point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, data::String::New("Label1") );
+    point->setField( data::tools::fieldHelper::Image::m_labelId, data::String::New("Label1") );
     landmarks->getPoints().push_back(point);
     data::Point::sptr point2 = data::Point::New(1.2 + origin[0],
                                                 2.4 + origin[1],
                                                 0.3 + origin[2]);
-    point2->setField( ::fwDataTools::fieldHelper::Image::m_labelId, data::String::New("Label2") );
+    point2->setField( data::tools::fieldHelper::Image::m_labelId, data::String::New("Label2") );
     landmarks->getPoints().push_back(point2);
     const data::Image::Size size   = image->getSize2();
     const data::Point::sptr point3 = data::Point::New(1.2 + origin[0],
                                                       2.4 + origin[1],
                                                       static_cast<double>(size[2]-1) * spacing[2] + origin[2]);
-    point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, data::String::New("Label3") );
+    point3->setField( data::tools::fieldHelper::Image::m_labelId, data::String::New("Label3") );
     landmarks->getPoints().push_back(point3);
 
     // Add distance
@@ -224,7 +223,7 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 
     data::Vector::sptr vectDist;
     vectDist = image->setDefaultField< data::Vector >(
-        ::fwDataTools::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
+        data::tools::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
     vectDist->getContainer().push_back(pl);
 
     image->setField("ShowLandmarks", data::Boolean::New(true));

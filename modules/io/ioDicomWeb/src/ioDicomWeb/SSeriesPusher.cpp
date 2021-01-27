@@ -31,13 +31,12 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <fwNetworkIO/exceptions/Base.hpp>
 #include <fwNetworkIO/helper/Series.hpp>
 #include <fwNetworkIO/http/Request.hpp>
 
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -97,12 +96,12 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);
+    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
-    const std::string port = ::fwPreferences::getValue(m_serverPortKey);
+    const std::string port = gui::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -113,22 +112,22 @@ void SSeriesPusher::updating()
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "The service is already pushing data. Please wait until the pushing is done "
                                "before sending a new push request." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "Unable to push series, there is no series selected." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else
@@ -211,11 +210,11 @@ void SSeriesPusher::pushSeries()
 void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 {
     SLM_WARN_IF("Error: " + message, error);
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage( message );
-    messageBox.setIcon(error ? (::fwGui::dialog::IMessageDialog::CRITICAL): (::fwGui::dialog::IMessageDialog::INFO));
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(error ? (gui::dialog::IMessageDialog::CRITICAL): (gui::dialog::IMessageDialog::INFO));
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

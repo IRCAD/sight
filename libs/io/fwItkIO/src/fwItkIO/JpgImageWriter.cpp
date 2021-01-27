@@ -32,12 +32,11 @@
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
@@ -120,7 +119,7 @@ struct JpgITKSaverFunctor
         double min, max;
         data::Composite::sptr poolTF;
         poolTF =
-            image->getField< data::Composite>( ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId );
+            image->getField< data::Composite>( data::tools::fieldHelper::Image::m_transferFunctionCompositeId );
         if(poolTF)
         {
             data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
@@ -134,7 +133,7 @@ struct JpgITKSaverFunctor
         }
         else
         {
-            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
 
         rescaleFilter->SetWindowMinimum( min );

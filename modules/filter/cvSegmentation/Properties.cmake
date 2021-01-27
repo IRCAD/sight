@@ -5,7 +5,6 @@ set( DEPENDENCIES
     data
     fwMath
     services
-    fwDataTools
     colourImageMasking
     cvIO
     core

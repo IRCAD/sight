@@ -24,7 +24,7 @@
 
 #include "opVTKMesh/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace opVTKMesh
 {
@@ -58,12 +58,12 @@ namespace action
  * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)..
  */
-class OPVTKMESH_CLASS_API SMeshCreation : public ::fwGui::IActionSrv
+class OPVTKMESH_CLASS_API SMeshCreation : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SMeshCreation, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SMeshCreation, ::sight::gui::IActionSrv)
 
     OPVTKMESH_API SMeshCreation() noexcept;
 

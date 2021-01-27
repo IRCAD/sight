@@ -23,17 +23,18 @@
 #pragma once
 
 #include "gui/action/SSlotCaller.hpp"
-#include "gui/config.hpp"
+
+#include "module_gui/config.hpp"
+
+#include <gui/IActionSrv.hpp>
 
 #include <core/com/Slots.hpp>
-
-#include <fwGui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
 #include <vector>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -46,31 +47,31 @@ namespace action
  * @warning This action should be configured with style="check".
  */
 
-class GUI_CLASS_API SBooleanSlotCaller : public ::gui::action::SSlotCaller
+class MODULE_GUI_CLASS_API SBooleanSlotCaller : public modules::gui::action::SSlotCaller
 {
 
 public:
 
-    fwCoreServiceMacro(SBooleanSlotCaller, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SBooleanSlotCaller, ::sight::gui::IActionSrv)
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SBooleanSlotCaller() noexcept;
+    MODULE_GUI_API SBooleanSlotCaller() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SBooleanSlotCaller() noexcept;
+    MODULE_GUI_API virtual ~SBooleanSlotCaller() noexcept;
 
 protected:
 
     /**
      * @brief This method run the specified slots.
      */
-    GUI_API void updating() override;
+    MODULE_GUI_API void updating() override;
 
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

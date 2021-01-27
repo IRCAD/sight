@@ -28,14 +28,14 @@
 #include <services/macros.hpp>
 #include <services/registry/Proxy.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SConfigLauncher )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SConfigLauncher )
 
 const core::com::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 
@@ -90,7 +90,7 @@ void SConfigLauncher::configuring()
 
 void SConfigLauncher::setIsActive(bool isActive)
 {
-    this->::fwGui::IActionSrv::setIsActive(isActive);
+    this->::sight::gui::IActionSrv::setIsActive(isActive);
     if(isActive)
     {
         // Check if the config is already running, this avoids to start a running config.

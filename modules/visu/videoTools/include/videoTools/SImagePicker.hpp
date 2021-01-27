@@ -30,8 +30,7 @@
 
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-
-#include <fwDataTools/PickingInfo.hpp>
+#include <data/tools/PickingInfo.hpp>
 
 #include <services/IController.hpp>
 
@@ -41,7 +40,7 @@ namespace videoTools
  * @brief This service listens to a picking interaction and fills the clicked point list.
  *
  * @section Slots Slots
- * - \b getInteraction(::fwDataTools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
+ * - \b getInteraction(data::tools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
  *
  * @code{.xml}
    <service uid="..." type="::videoTools::SImagePicker" >
@@ -122,7 +121,7 @@ private:
     void removeLastPoint();
 
     /// Slot: retrieves the 2d coordinates from the interaction point.
-    void getInteraction(::fwDataTools::PickingInfo info);
+    void getInteraction(data::tools::PickingInfo info);
 
     /// Map that handles conversion between xml configuration string and VideoReferenceType
     std::map<std::string, VideoReferenceType > m_videoRefMap;

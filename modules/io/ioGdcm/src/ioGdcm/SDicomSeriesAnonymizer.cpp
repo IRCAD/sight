@@ -33,8 +33,8 @@
 
 #include <fwGdcmIO/helper/DicomSeriesAnonymizer.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/Cursor.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -85,22 +85,22 @@ void SDicomSeriesAnonymizer::updating()
 {
     data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
 
-    ::fwGui::dialog::MessageDialog dialog;
+    gui::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
 
     // If the selection is not empty
     if(!vector->empty())
     {
         dialog.setMessage( "Are you sure you want to anonymize the selected series ?" );
-        dialog.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-        dialog.addButton(::fwGui::dialog::IMessageDialog::YES);
-        dialog.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-        ::fwGui::dialog::IMessageDialog::Buttons answer = dialog.show();
+        dialog.setIcon(gui::dialog::IMessageDialog::QUESTION);
+        dialog.addButton(gui::dialog::IMessageDialog::YES);
+        dialog.addButton(gui::dialog::IMessageDialog::CANCEL);
+        gui::dialog::IMessageDialog::Buttons answer = dialog.show();
 
-        if ( answer == ::fwGui::dialog::IMessageDialog::YES )
+        if ( answer == gui::dialog::IMessageDialog::YES )
         {
-            ::fwGui::Cursor cursor;
-            cursor.setCursor(::fwGui::ICursor::BUSY);
+            gui::Cursor cursor;
+            cursor.setCursor(gui::ICursor::BUSY);
             this->anonymize();
             cursor.setDefaultCursor();
         }
@@ -109,8 +109,8 @@ void SDicomSeriesAnonymizer::updating()
     else
     {
         dialog.setMessage( "Please select which series you want to anonymize." );
-        dialog.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        dialog.addButton(::fwGui::dialog::IMessageDialog::OK);
+        dialog.setIcon(gui::dialog::IMessageDialog::INFO);
+        dialog.addButton(gui::dialog::IMessageDialog::OK);
         dialog.show();
     }
 }

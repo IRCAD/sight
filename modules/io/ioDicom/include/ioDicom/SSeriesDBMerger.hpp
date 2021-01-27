@@ -26,7 +26,7 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <filesystem>
 
@@ -50,11 +50,11 @@ namespace ioDicom
  * @subsection In-Out In-Out:
  * - \b seriesDB [data::SeriesDB]: SeriesDB where to put the series.
  */
-class IODICOM_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
+class IODICOM_CLASS_API SSeriesDBMerger : public ::sight::gui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SSeriesDBMerger,  ::fwGui::IActionSrv )
+    fwCoreServiceMacro(SSeriesDBMerger,  gui::IActionSrv )
 
     /// Constructor
     IODICOM_API SSeriesDBMerger() noexcept;

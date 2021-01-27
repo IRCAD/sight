@@ -26,13 +26,12 @@
 
 #include <data/Material.hpp>
 #include <data/String.hpp>
-
-#include <fwDataTools/helper/Field.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/tools/helper/Field.hpp>
 
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -51,7 +50,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::sight::data::Reconstruction)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::sight::data::Reconstruction)
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
@@ -77,8 +76,8 @@ void SMaterialSelector::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     // Selection
     QLabel* currentMaterial = new QLabel();
@@ -169,7 +168,7 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
     data::String::sptr string          = data::String::New();
     string->setValue(text.toStdString());
 
-    ::fwDataTools::helper::Field helper(material);
+    data::tools::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
 

@@ -3,7 +3,7 @@
 <plugin id="Tuto16SceneQt3D" version="@PROJECT_VERSION@" >
 
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="visuQt3DQt" />
 
     <extension implements="::sight::services::registry::ServiceConfig" >
@@ -34,7 +34,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainView" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto16SceneQt3D</name>
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -60,7 +60,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -104,7 +104,7 @@
                 <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="::ioVTK::SMeshReader" />
             </service>
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- ******************************* Start services ***************************************** -->
 

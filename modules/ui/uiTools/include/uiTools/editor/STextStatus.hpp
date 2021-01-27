@@ -24,7 +24,7 @@
 
 #include "uiTools/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QPointer>
 
@@ -64,13 +64,13 @@ namespace editor
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
 class UITOOLS_CLASS_API STextStatus final : public QObject,
-                                            public ::fwGui::editor::IEditor
+                                            public gui::editor::IEditor
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STextStatus, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(STextStatus, gui::editor::IEditor)
 
     /// Initializes slots and member.
     UITOOLS_API STextStatus();

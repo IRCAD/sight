@@ -32,10 +32,10 @@
 // Service associated data
 #include <data/Image.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <guiQt/container/QtContainer.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 // Services tools
 #include <services/macros.hpp>
@@ -44,13 +44,13 @@
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::basicRegistration::SImagesSubstract )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::basicRegistration::SImagesSubstract )
 
 namespace basicRegistration
 {
 
 SImagesSubstract::SImagesSubstract() noexcept :
-    ::fwGui::editor::IEditor(),
+    gui::editor::IEditor(),
     mpComputeButton(0)
 {
 
@@ -72,7 +72,7 @@ void SImagesSubstract::configuring()
 void SImagesSubstract::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -140,16 +140,16 @@ void SImagesSubstract::updating()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show("Warning",
-                                                 "Both images must have the same size.",
-                                                 ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::MessageDialog::show("Warning",
+                                             "Both images must have the same size.",
+                                             gui::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show("Warning",
-                                             "Both Images must have signed short as type.",
-                                             ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show("Warning",
+                                         "Both Images must have signed short as type.",
+                                         gui::dialog::IMessageDialog::WARNING);
     }
 }
 

@@ -27,7 +27,7 @@
 #include <data/ActivitySeries.hpp>
 #include <data/CameraSeries.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <services/helper/ConfigLauncher.hpp>
 
@@ -75,17 +75,19 @@ namespace uiCalibration
  *
  * @subsection Configuration Configuration:
  * - \b config: contains the appConfigs to launch for intrinsic and extrinsic calibration.
- *   - \b intrinsic: configuration to launch the intrinsic calibration config. @see ::gui::action::SConfigLauncher
- *   - \b extrinsic: configuration to launch the extrinsic calibration config. @see ::gui::action::SConfigLauncher
+ *   - \b intrinsic: configuration to launch the intrinsic calibration config. @see
+ * modules::gui::action::SConfigLauncher
+ *   - \b extrinsic: configuration to launch the extrinsic calibration config. @see
+ * modules::gui::action::SConfigLauncher
  *
  */
 class UICALIBRATION_CLASS_API SCameraConfigLauncher : public QObject,
-                                                      public ::fwGui::editor::IEditor
+                                                      public gui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SCameraConfigLauncher, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SCameraConfigLauncher, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UICALIBRATION_API SCameraConfigLauncher() noexcept;

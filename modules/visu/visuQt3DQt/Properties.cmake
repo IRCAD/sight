@@ -5,8 +5,8 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     core
-    fwGui
-    fwGuiQt
+    gui
+    guiQt
     fwRenderQt3D
 )
 set( REQUIREMENTS )

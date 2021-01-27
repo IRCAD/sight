@@ -1,6 +1,6 @@
 <plugin id="ExVideoFiltering" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -35,7 +35,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoFiltering</name>
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -70,9 +70,9 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::gui::view::SDefaultView" >
+            <service uid="cameraView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager" >
+                    <layout type="::sight::gui::CardinalLayoutManager" >
                         <view align="left" />
                         <view align="right" />
                         <view align="left" />
@@ -90,7 +90,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -98,7 +98,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -108,7 +108,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -118,7 +118,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -132,7 +132,7 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>

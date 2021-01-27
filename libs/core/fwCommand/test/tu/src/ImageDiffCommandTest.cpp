@@ -62,7 +62,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     const auto dumpLock = image->lock();
 
-    ::fwDataTools::ImageDiff diff(image->getType().sizeOf());
+    data::tools::ImageDiff diff(image->getType().sizeOf());
 
     std::uint8_t NEWVALUE = 1;
 
@@ -131,7 +131,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     const auto dumpLock = image->lock();
 
-    ::fwDataTools::ImageDiff diff(image->getType().sizeOf()*64);
+    data::tools::ImageDiff diff(image->getType().sizeOf()*64);
 
     std::uint8_t NEWVALUE = 1;
 

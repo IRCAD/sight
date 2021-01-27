@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QAction>
 #include <QObject>
@@ -36,7 +36,7 @@ class QMenu;
 class QActionGroup;
 class QPushButton;
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -80,21 +80,21 @@ namespace editor
  * - \b enable(): This slot allows to enable the button
  * - \b disable(): This slots allows to disable the button
  */
-class GUIQT_CLASS_API SSelectionMenuButton : public QObject,
-                                             public ::fwGui::editor::IEditor
+class MODULE_GUIQT_CLASS_API SSelectionMenuButton : public QObject,
+                                                    public gui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSelectionMenuButton, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SSelectionMenuButton, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
-    GUIQT_API SSelectionMenuButton() noexcept;
+    MODULE_GUIQT_API SSelectionMenuButton() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SSelectionMenuButton() noexcept;
+    MODULE_GUIQT_API virtual ~SSelectionMenuButton() noexcept;
 
 protected:
 
@@ -170,4 +170,4 @@ private:
 };
 
 } // namespace editor
-} // namespace guiQt
+} // namespace sight::modules::guiQt

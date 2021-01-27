@@ -33,10 +33,10 @@
 #include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
 
-#include <fwPreferences/helper.hpp>
-
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
+
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -45,7 +45,8 @@
 namespace preferences
 {
 
-fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::gui::preferences::IPreferences, ::preferences::SPreferences,
+                         ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
 
@@ -86,8 +87,8 @@ void SPreferences::load()
         const std::filesystem::path folderPath = m_prefFile.parent_path();
         const std::filesystem::path filename   = m_prefFile.filename();
 
-        data::Object::sptr data = this->getInOut< data::Object >(::fwPreferences::s_PREFERENCES_KEY);
-        SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", data);
+        data::Object::sptr data = this->getInOut< data::Object >(gui::preferences::s_PREFERENCES_KEY);
+        SLM_ASSERT("The inout key '" + gui::preferences::s_PREFERENCES_KEY + "' is not correctly set.", data);
 
         // Read atom
         ::fwZip::IReadArchive::sptr readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
@@ -114,8 +115,8 @@ void SPreferences::save()
     const std::filesystem::path folderPath = m_prefFile.parent_path();
     const std::filesystem::path filename   = m_prefFile.filename();
 
-    data::Object::sptr obj = this->getInOut< data::Object >(::fwPreferences::s_PREFERENCES_KEY);
-    SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
+    data::Object::sptr obj = this->getInOut< data::Object >(gui::preferences::s_PREFERENCES_KEY);
+    SLM_ASSERT("The inout key '" + gui::preferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
 
     // Mutex data lock
     data::reflection::visitor::RecursiveLock recursiveLock(obj);

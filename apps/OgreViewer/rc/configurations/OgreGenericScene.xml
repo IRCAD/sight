@@ -44,7 +44,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
                 <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100" >
                     <styleSheet>
@@ -64,7 +64,7 @@
                         ]]>
                     </styleSheet>
                 </slideView>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -87,10 +87,10 @@
             </registry>
         </service>
 
-        <service uid="topToolbarSliderView" type="::gui::view::SDefaultView">
+        <service uid="topToolbarSliderView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                 </layout>
             </gui>
@@ -99,7 +99,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="::gui::aspect::SDefaultToolBar">
+        <service uid="topToolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Fullscreen" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
@@ -115,9 +115,9 @@
             </registry>
         </service>
 
-        <service uid="topNegatoSlicerSliderView" type="::gui::view::SDefaultView">
+        <service uid="topNegatoSlicerSliderView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                 </layout>
@@ -127,9 +127,9 @@
             </registry>
         </service>
 
-        <service uid="bottomNegatoSlicerSliderView" type="::gui::view::SDefaultView">
+        <service uid="bottomNegatoSlicerSliderView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000"/>
@@ -140,9 +140,9 @@
             </registry>
         </service>
 
-        <service uid="bottomNegatoSlicerView" type="::gui::view::SDefaultView">
+        <service uid="bottomNegatoSlicerView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
@@ -154,7 +154,7 @@
             </registry>
         </service>
 
-        <service uid="notifierSrv" type="::guiQt::SNotifier" >
+        <service uid="notifierSrv" type="::sight::modules::guiQt::SNotifier" >
             <parent uid="mainview"/>
             <message>Default message</message>
             <maxNotifications>3</maxNotifications>
@@ -492,7 +492,7 @@
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="::gui::action::SSlotCaller">
+        <service uid="windowedAct" type="::sight::modules::gui::action::SSlotCaller">
             <state visible="false" />
             <slots>
                 <slot>genericSceneSrv/disableFullscreen</slot>
@@ -501,7 +501,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="::gui::action::SSlotCaller">
+        <service uid="snapshotAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>imageWriterSrv/update</slot>
             </slots>

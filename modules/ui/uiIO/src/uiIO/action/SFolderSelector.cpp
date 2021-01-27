@@ -26,7 +26,7 @@
 
 #include <data/location/Folder.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -35,7 +35,7 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SFolderSelector, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiIO::action::SFolderSelector, ::sight::data::Object )
 
 const core::com::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
 
@@ -71,11 +71,11 @@ void SFolderSelector::starting()
 void SFolderSelector::updating( )
 {
     static std::filesystem::path _sDefaultPath("");
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_dialogTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );

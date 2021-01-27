@@ -12,7 +12,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="dicomPreviewFrame" type="::gui::frame::SDefaultFrame" >
+        <service uid="dicomPreviewFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -26,9 +26,9 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager" >
+                <layout type="::sight::gui::CardinalLayoutManager" >
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
                 </layout>

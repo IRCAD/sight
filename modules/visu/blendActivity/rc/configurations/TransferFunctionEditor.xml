@@ -13,9 +13,9 @@
         <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
         <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="Negato" align="center" />
                     <view caption="TF selection" align="right" minWidth="450" />
                 </layout>
@@ -27,9 +27,9 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="::gui::view::SDefaultView">
+        <service uid="sceneView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -41,9 +41,9 @@
             </registry>
         </service>
 
-        <service uid="sceneView_bottom" type="::gui::view::SDefaultView">
+        <service uid="sceneView_bottom" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="1" />
@@ -57,9 +57,9 @@
 
         <service uid="snapshotEditor" type="::uiVisuQt::SnapshotEditor" />
 
-        <service uid="tfView" type="::gui::view::SDefaultView">
+        <service uid="tfView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -130,7 +130,7 @@
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="fieldMgr" type="::gui::action::SPushField">
+        <service uid="fieldMgr" type="::sight::modules::gui::action::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />

@@ -7,24 +7,24 @@ set( REQUIREMENTS
     appXml                  # XML configurations
 
     preferences             # Start the module, load file location or window preferences
-    guiQt                   # Start the module, allow dark theme
+    module_guiQt                   # Start the module, allow dark theme
 
     # Objects declaration
     module_services             # fwService
 
     # UI declaration/Actions
-    gui
+    module_gui
     style
 )
 
-moduleParam(guiQt
+moduleParam(module_guiQt
     PARAM_LIST
         resource
         stylesheet
     PARAM_VALUES
         style-0.1/flatdark.rcc
         style-0.1/flatdark.qss
-) # Allow dark theme via guiQt
+) # Allow dark theme via module_guiQt
 
 moduleParam(
         appXml

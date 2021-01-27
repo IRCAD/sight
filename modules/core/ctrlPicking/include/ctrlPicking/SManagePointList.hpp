@@ -25,8 +25,7 @@
 #include "ctrlPicking/config.hpp"
 
 #include <data/Point.hpp>
-
-#include <fwDataTools/PickingInfo.hpp>
+#include <data/tools/PickingInfo.hpp>
 
 #include <services/IController.hpp>
 
@@ -37,7 +36,7 @@ namespace ctrlPicking
  * @brief Add point in a data::PointList
  *
  * @section Slots Slots
- * - \b pick(::fwDataTools::PickingInfo): Add or remove the closest point to the picking position, actions occur when
+ * - \b pick(data::tools::PickingInfo): Add or remove the closest point to the picking position, actions occur when
  * `CTRL` is pressed.
  * - \b clearPoints(): Remove all points from the point lists.
 
@@ -95,7 +94,7 @@ private:
      * @brief SLOT: Add or remove a point from picking informations.
      * @param _info picking informations.
      */
-    void pick(::fwDataTools::PickingInfo _info) const;
+    void pick(data::tools::PickingInfo _info) const;
 
     /**
      * @brief Adds a point in the point list

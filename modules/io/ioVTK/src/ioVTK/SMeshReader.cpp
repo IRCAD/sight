@@ -32,15 +32,15 @@
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <fwVtkIO/MeshReader.hpp>
 #include <fwVtkIO/ObjMeshReader.hpp>
 #include <fwVtkIO/PlyMeshReader.hpp>
 #include <fwVtkIO/StlMeshReader.hpp>
 #include <fwVtkIO/VtpMeshReader.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -80,7 +80,7 @@ void SMeshReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
@@ -89,8 +89,8 @@ void SMeshReader::openLocationDialog()
     dialogFile.addFilter("STL File(.stl)", "*.stl");
     dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -194,10 +194,10 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
         ok = false;
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
@@ -207,20 +207,20 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
 
@@ -233,8 +233,8 @@ void SMeshReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         this->loadMesh(this->getFile());
         this->notificationOfUpdate();

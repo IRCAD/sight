@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Implements an action that dump all buffer (if possible)
-class MONITOR_CLASS_API SDumpAll : public ::fwGui::IActionSrv
+class MONITOR_CLASS_API SDumpAll : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDumpAll, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SDumpAll, ::sight::gui::IActionSrv)
 
     /// Does nothing
     MONITOR_API SDumpAll() noexcept;

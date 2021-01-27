@@ -28,8 +28,7 @@
 
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/TransformationMatrix3D.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
 
@@ -92,7 +91,7 @@ void SConcatenateMatrices::updating()
     {
         data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
 
-        ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
+        data::tools::TransformationMatrix3D::identity(outputMatrix);
 
         auto inverse = data::TransformationMatrix3D::New();
 
@@ -104,12 +103,12 @@ void SConcatenateMatrices::updating()
 
             if (invertCurrentMatrix)
             {
-                ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
-                ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
+                data::tools::TransformationMatrix3D::invert(inputMatrix, inverse);
+                data::tools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
             }
             else
             {
-                ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
+                data::tools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
             }
         }
     }

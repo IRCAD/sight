@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <map>
 #include <string>
@@ -44,12 +44,12 @@ namespace action
  * Send a 'snapped' signal containing the filename used to save the snapshot.
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
-class UIVISU_CLASS_API SSnapshot : public ::fwGui::IActionSrv
+class UIVISU_CLASS_API SSnapshot : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SSnapshot, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SSnapshot, ::sight::gui::IActionSrv)
 
     /// Constructor. Do nothing.
     UIVISU_API SSnapshot() noexcept;
@@ -76,7 +76,7 @@ protected:
     /**
      * @brief Configure action.
      * @code{.xml}
-       <service type="::fwGui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no" />
+       <service type="::gui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no" />
        @endcode
      */
     void configuring() override;

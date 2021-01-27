@@ -34,8 +34,8 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <openvslamIO/Helper.hpp>
 
@@ -484,11 +484,11 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
 void SOpenvslam::loadMap()
 {
     static std::filesystem::path sDefaultPath("");
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select openvslam map file");
     dialogFile.setDefaultLocation( data::location::Folder::New(sDefaultPath) );
     dialogFile.addFilter("openvlsam map files", "*.map");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
 
     const data::location::SingleFile::csptr result =
         data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -510,11 +510,11 @@ void SOpenvslam::saveMap()
 {
     static std::filesystem::path sDefaultPath("");
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to save Openvslam map");
     dialogFile.setDefaultLocation( data::location::Folder::New(sDefaultPath) );
     dialogFile.addFilter("openvslam files", "*.map");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
 
     const data::location::SingleFile::csptr result =
         data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -536,18 +536,18 @@ void SOpenvslam::saveMap()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog warning;
-        warning.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog warning;
+        warning.setIcon(gui::dialog::IMessageDialog::WARNING);
         warning.setTitle("Save Map offline");
         warning.setMessage(
             "OpenVSLAM is currently offline, map cannot be saved now.\
         file path can be stored and map will be automatically saved at next openvlsam stop (start/stop). ");
-        warning.addButton(::fwGui::dialog::IMessageDialog::Buttons::NO );
-        warning.addButton(::fwGui::dialog::IMessageDialog::Buttons::YES );
-        warning.setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons::NO );
+        warning.addButton(gui::dialog::IMessageDialog::Buttons::NO );
+        warning.addButton(gui::dialog::IMessageDialog::Buttons::YES );
+        warning.setDefaultButton(gui::dialog::IMessageDialog::Buttons::NO );
         const auto answer = warning.show();
 
-        if(answer == ::fwGui::dialog::IMessageDialog::Buttons::NO)
+        if(answer == gui::dialog::IMessageDialog::Buttons::NO)
         {
             m_saveMapPath.clear();
         }
@@ -560,12 +560,12 @@ void SOpenvslam::saveTrajectories()
 {
     static std::filesystem::path sDefaultPath("");
 
-    ::fwGui::dialog::LocationDialog dialogFolder;
+    gui::dialog::LocationDialog dialogFolder;
     dialogFolder.setTitle("Choose a folder & name to save trajectories files.");
     // Use SINGLE_FILE type, so we can use filters, only the basename of files will be used.
-    dialogFolder.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
+    dialogFolder.setType(gui::dialog::LocationDialog::SINGLE_FILE);
     dialogFolder.setDefaultLocation( data::location::Folder::New(sDefaultPath) );
-    dialogFolder.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFolder.setOption(gui::dialog::ILocationDialog::WRITE);
     // Use filter to store the format (matrix or vector & quaternions).
     dialogFolder.addFilter("Matrix Format", " KITTI");
     dialogFolder.addFilter("Vector & Quat Format", " TUM");
@@ -597,17 +597,17 @@ void SOpenvslam::saveTrajectories()
     // If Openvslam is offline we cannot save trajectories anymore.
     else
     {
-        ::fwGui::dialog::MessageDialog warning;
-        warning.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog warning;
+        warning.setIcon(gui::dialog::IMessageDialog::WARNING);
         warning.setTitle("Openvslam is offline");
         warning.setMessage(
             "OpenVSLAM is currently offline, trajectories cannot be saved now.\
         filenames can be stored and trajectories will be automatically saved at next openvlsam stop (start/stop). ");
-        warning.addButton(::fwGui::dialog::IMessageDialog::Buttons::NO );
-        warning.addButton(::fwGui::dialog::IMessageDialog::Buttons::YES );
-        warning.setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons::NO );
+        warning.addButton(gui::dialog::IMessageDialog::Buttons::NO );
+        warning.addButton(gui::dialog::IMessageDialog::Buttons::YES );
+        warning.setDefaultButton(gui::dialog::IMessageDialog::Buttons::NO );
         const auto answer = warning.show();
-        if(answer == ::fwGui::dialog::IMessageDialog::Buttons::NO)
+        if(answer == gui::dialog::IMessageDialog::Buttons::NO)
         {
             m_trajectoriesSavePath.reset();
             m_trajectoriesFormat = "KITTI"; // Default format.
@@ -807,9 +807,9 @@ void SOpenvslam::loadVocabulary(const std::string& _filePath)
 {
     if(_filePath.empty())
     {
-        ::fwGui::dialog::MessageDialog::show("Vocabulary",
-                                             "Vocabulary file : "+_filePath + " can not be loaded.",
-                                             ::fwGui::dialog::MessageDialog::WARNING);
+        gui::dialog::MessageDialog::show("Vocabulary",
+                                         "Vocabulary file : "+_filePath + " can not be loaded.",
+                                         gui::dialog::MessageDialog::WARNING);
         m_sigVocFileUnloaded->asyncEmit();
     }
     else

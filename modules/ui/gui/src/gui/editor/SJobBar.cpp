@@ -22,21 +22,21 @@
 
 #include "gui/editor/SJobBar.hpp"
 
+#include <gui/dialog/ProgressDialog.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hxx>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IDialogEditor, ::gui::editor::SJobBar )
+fwServicesRegisterMacro( ::sight::gui::editor::IDialogEditor, ::sight::modules::gui::editor::SJobBar )
 
 static const core::com::Slots::SlotKeyType SHOW_JOB_SLOT = "showJob";
 static const core::com::Signals::SignalKeyType STARTED_SIGNAL = "started";
@@ -93,7 +93,7 @@ void SJobBar::configuring()
 
 void SJobBar::showJob( core::jobs::IJob::sptr iJob )
 {
-    ::fwGui::dialog::ProgressDialog::sptr progressDialog = ::fwGui::dialog::ProgressDialog::New();
+    auto progressDialog = ::sight::gui::dialog::ProgressDialog::New();
     progressDialog->setTitle(iJob->getName());
 
     if(!iJob->isCancelable())
@@ -139,4 +139,4 @@ void SJobBar::showJob( core::jobs::IJob::sptr iJob )
 //-----------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace gui
+} // namespace sight::modules::gui

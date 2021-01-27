@@ -27,10 +27,10 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <QDesktopWidget>
 #include <QEvent>
@@ -84,12 +84,12 @@ void RenderWindowInteractorManager::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent,
+void RenderWindowInteractorManager::createContainer( gui::container::fwContainer::sptr _parent,
                                                      bool _renderOnDemand,
                                                      bool _fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
-    m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
+    m_parentContainer = guiQt::container::QtContainer::dynamicCast( _parent );
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_parentContainer->setLayout(layout);

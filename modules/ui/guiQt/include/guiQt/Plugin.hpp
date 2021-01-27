@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
@@ -31,12 +31,12 @@ namespace thread
 class Worker;
 } //namespace thread
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 /**
  * @brief   This class is called when the guiQt module is loaded.
  */
-class GUIQT_CLASS_API Plugin : public core::runtime::Plugin
+class MODULE_GUIQT_CLASS_API Plugin : public core::runtime::Plugin
 {
 
 public:
@@ -44,19 +44,19 @@ public:
     /**
      * @brief   destructor
      */
-    GUIQT_API ~Plugin() noexcept;
+    MODULE_GUIQT_API ~Plugin() noexcept;
 
     // Overrides
-    GUIQT_API void start();
+    MODULE_GUIQT_API void start();
 
     // Overrides
-    GUIQT_API void stop() noexcept;
+    MODULE_GUIQT_API void stop() noexcept;
 
-    GUIQT_API int run() noexcept;
+    MODULE_GUIQT_API int run() noexcept;
 
 protected:
 
-    GUIQT_API void loadStyleSheet();
+    MODULE_GUIQT_API void loadStyleSheet();
 
 private:
 
@@ -64,4 +64,4 @@ private:
 
 };
 
-} // namespace guiQt
+} // namespace sight::modules::guiQt

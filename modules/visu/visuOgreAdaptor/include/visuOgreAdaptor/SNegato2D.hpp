@@ -26,8 +26,8 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
+#include <data/tools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
@@ -77,7 +77,7 @@ class VISUOGREADAPTOR_CLASS_API SNegato2D final : public ::fwRenderOgre::IAdapto
 
 public:
 
-    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato2D, ::fwRenderOgre::IAdaptor)
@@ -186,7 +186,7 @@ private:
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     /// Helps interfacing with the transfer function input.
-    ::fwDataTools::helper::TransferFunction m_helperTF;
+    data::tools::helper::TransferFunction m_helperTF;
 
     /// Defines if the plane border is used or not.
     bool m_border { true };

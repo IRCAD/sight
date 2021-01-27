@@ -9,6 +9,5 @@ set( DEPENDENCIES
     fwZip
     atoms
     fwAtomsBoostIO
-    fwDataTools
 )
 set( REQUIREMENTS )

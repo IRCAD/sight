@@ -22,20 +22,20 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/editor/IDialogEditor.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Slots.hpp>
 #include <core/jobs/IJob.hpp>
 
-#include <fwGui/editor/IDialogEditor.hpp>
-#include <fwGui/IActionSrv.hpp>
-
 #include <services/IService.hpp>
 
 #include <set>
 
-namespace fwGui
+namespace sight::gui
 {
 namespace dialog
 {
@@ -43,7 +43,7 @@ class ProgressDialog;
 }
 }
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace editor
 {
@@ -52,12 +52,12 @@ namespace editor
  * @brief   Service displaying a progress bar.
  */
 
-class GUI_CLASS_API SJobBar : public ::fwGui::editor::IDialogEditor
+class MODULE_GUI_CLASS_API SJobBar : public ::sight::gui::editor::IDialogEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SJobBar, ::fwGui::editor::IDialogEditor)
+    fwCoreServiceMacro(SJobBar, ::sight::gui::editor::IDialogEditor)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -67,40 +67,40 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SJobBar() noexcept;
+    MODULE_GUI_API SJobBar() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SJobBar() noexcept;
+    MODULE_GUI_API virtual ~SJobBar() noexcept;
 
 protected:
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /**
      * @brief This method emit a signal.
      */
-    GUI_API void updating() override;
+    MODULE_GUI_API void updating() override;
 
     /**
      * @brief This method is used to configure the service.
      */
-    GUI_API void configuring() override;
+    MODULE_GUI_API void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /**
      * @brief showJob slot's method
      */
-    GUI_API virtual void showJob( core::jobs::IJob::sptr iJob );
+    MODULE_GUI_API virtual void showJob( core::jobs::IJob::sptr iJob );
 
-    typedef std::set< SPTR(::fwGui::dialog::ProgressDialog) > ProgressDialogs;
+    typedef std::set< SPTR(::sight::gui::dialog::ProgressDialog) > ProgressDialogs;
     ProgressDialogs m_progressDialogs;
 
     typedef core::com::Signal<void () > StartedSignalType;
@@ -112,4 +112,4 @@ protected:
 };
 
 } // namespace editor
-} // namespace gui
+} // namespace sight::modules::gui

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,13 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
-#include <filesystem>
 #include <QObject>
 #include <QSize>
 #include <QUrl>
+
+#include <filesystem>
 
 namespace uiGenericQt
 {
@@ -41,12 +42,12 @@ namespace action
  * @brief   This action show the about frame.
  */
 class UIGENERICQT_CLASS_API SShowAbout : public QObject,
-                                         public ::fwGui::IActionSrv
+                                         public ::sight::gui::IActionSrv
 {
 
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SShowAbout,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SShowAbout,  gui::IActionSrv)
 
     /**
      * @name Constructor/Destructor
@@ -61,7 +62,7 @@ protected:
      *
      * XML configuration sample:
        @code{.xml}
-       <service impl="::uiGenericQt::action::SShowAbout" type="::fwGui::IActionSrv">
+       <service impl="::uiGenericQt::action::SShowAbout" type="::gui::IActionSrv">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />

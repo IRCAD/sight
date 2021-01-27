@@ -1,7 +1,7 @@
 <plugin id="Tuto01DataServiceBasicCpp" class="::Tuto01DataServiceBasicCpp::Plugin"  version="@PROJECT_VERSION@" >
 
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <library name="Tuto01DataServiceBasicCpp" />
     

@@ -22,9 +22,9 @@
 
 #include "guiQt/editor/SImage.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <core/runtime/operations.hpp>
 
 #include <services/macros.hpp>
 
@@ -32,12 +32,12 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SImage )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::sight::modules::guiQt::editor::SImage )
 
 //-----------------------------------------------------------------------------
 
@@ -57,8 +57,7 @@ void SImage::starting()
 {
     this->create();
 
-    const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    const auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     QVBoxLayout* const layout = new QVBoxLayout();
     QLabel* const label       = new QLabel("");
@@ -126,4 +125,4 @@ void SImage::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace gui
+} // namespace sight::modules::gui

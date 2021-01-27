@@ -43,17 +43,16 @@
 #include <fwAtomsPatch/VersionsGraph.hpp>
 #include <fwAtomsPatch/VersionsManager.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
-
 #include <fwMDSemanticPatch/PatchLoader.hpp>
-
-#include <fwPreferences/helper.hpp>
 
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -276,7 +275,7 @@ bool SWriter::versionSelection()
                 }
             }
 
-            ::fwGui::dialog::SelectorDialog dialogVersion;
+            gui::dialog::SelectorDialog dialogVersion;
 
             dialogVersion.setTitle("Archive version");
             dialogVersion.setMessage("Select an archive version");
@@ -291,7 +290,7 @@ bool SWriter::versionSelection()
             std::string result = dialogVersion.show();
             if(selectAmongstAllVersions)
             {
-                ::fwGui::dialog::SelectorDialog dialogVersionAll;
+                gui::dialog::SelectorDialog dialogVersionAll;
 
                 dialogVersionAll.setTitle("Archive version");
                 dialogVersionAll.setMessage("Select an archive version");
@@ -328,8 +327,8 @@ void SWriter::updating()
     data::Object::csptr obj = this->getInput< data::Object >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
 
-    ::fwGui::Cursor cursor;
-    cursor.setCursor(::fwGui::ICursor::BUSY);
+    gui::Cursor cursor;
+    cursor.setCursor(gui::ICursor::BUSY);
 
     // Get the selected extension
     const std::filesystem::path& requestedFilePath = this->getFile();
@@ -346,9 +345,9 @@ void SWriter::updating()
         else
         {
             const std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
-            ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
-                                                 errorMessage,
-                                                 ::fwGui::dialog::IMessageDialog::CRITICAL);
+            gui::dialog::MessageDialog::show("Medical data writer failed",
+                                             errorMessage,
+                                             gui::dialog::IMessageDialog::CRITICAL);
             m_writeFailed = true;
             return;
         }
@@ -456,7 +455,7 @@ void SWriter::updating()
             else if ( extension == ".cpz" )
             {
                 writeArchive = ::fwZip::WriteZipArchive::New(tmpFilePath.string(), "",
-                                                             ::fwPreferences::getPassword());
+                                                             gui::preferences::getPassword());
                 archiveRootName = "root.json";
                 format          = ::fwAtomsBoostIO::JSON;
             }
@@ -521,9 +520,9 @@ void SWriter::updating()
 
         // Handle the error.
         SLM_ERROR(_e.what());
-        ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
-                                             _e.what(),
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Medical data writer failed",
+                                         _e.what(),
+                                         gui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
     catch(...)
@@ -535,9 +534,9 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        ::fwGui::dialog::MessageDialog::show("Medical data writer failed",
-                                             "Writing process aborted",
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Medical data writer failed",
+                                         "Writing process aborted",
+                                         gui::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
 
@@ -566,11 +565,11 @@ void SWriter::openLocationDialog()
 
     if( !m_useAtomsPatcher || versionSelection() )
     {
-        ::fwGui::dialog::LocationDialog dialogFile;
+        gui::dialog::LocationDialog dialogFile;
         dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
         dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-        dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);
+        dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+        dialogFile.setType(gui::dialog::LocationDialog::SINGLE_FILE);
 
         for(const std::string& ext :  m_allowedExts)
         {

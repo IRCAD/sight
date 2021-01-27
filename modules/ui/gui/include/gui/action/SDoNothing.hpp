@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -37,22 +37,22 @@ namespace action
  * @brief   This action does nothing.
  * @deprecated use SDefault instead
  */
-class GUI_CLASS_API SDoNothing : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SDoNothing : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDoNothing, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SDoNothing, ::sight::gui::IActionSrv)
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SDoNothing() noexcept;
+    MODULE_GUI_API SDoNothing() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SDoNothing() noexcept;
+    MODULE_GUI_API virtual ~SDoNothing() noexcept;
 
 protected:
 
@@ -63,25 +63,25 @@ protected:
     /**
      * @brief This method is used to configure the action.
      */
-    GUI_API virtual void configuring() override;
+    MODULE_GUI_API virtual void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /**
      * @brief Process the action. Do nothing.
      */
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
 
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

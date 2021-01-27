@@ -22,21 +22,21 @@
 
 #include "gui/action/SStarter.hpp"
 
-#include <core/base.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <core/base.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Get.hpp>
 
 #include <boost/range/adaptor/reversed.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SStarter )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SStarter )
 
 //-----------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ void SStarter::updating()
 
         if( action != DO_NOTHING)
         {
-            ::fwGui::LockAction lock(this->getSptr());
+            ::sight::gui::LockAction lock(this->getSptr());
 
             services::IService::sptr service = services::get( uid );
             SLM_ASSERT("service not found", service);
@@ -209,10 +209,10 @@ void SStarter::updating()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            ::sight::gui::dialog::MessageDialog::show(
                 "Service unavailable",
                 "The service is unavailable.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                ::sight::gui::dialog::IMessageDialog::WARNING);
 
             SLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
@@ -274,4 +274,4 @@ void SStarter::configuring()
 //-----------------------------------------------------------------------------
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

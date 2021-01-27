@@ -22,14 +22,14 @@
 
 #include "guiQt/SSignalShortcut.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 
-#include <fwGui/container/fwContainer.hpp>
-#include <fwGui/GuiRegistry.hpp>
-#include <fwGui/IGuiContainerSrv.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <gui/container/fwContainer.hpp>
+#include <gui/GuiRegistry.hpp>
+#include <gui/IGuiContainerSrv.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Get.hpp>
@@ -39,12 +39,12 @@
 
 #include <memory>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
-fwServicesRegisterMacro( ::sight::services::IService, ::guiQt::SSignalShortcut )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::guiQt::SSignalShortcut )
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ void SSignalShortcut::configuring()
 
 void SSignalShortcut::starting()
 {
-    ::fwGui::container::fwContainer::sptr fwc = nullptr;
+    gui::container::fwContainer::sptr fwc = nullptr;
 
     // Either get the container via a service id
     if(m_sid != "")
@@ -90,9 +90,9 @@ void SSignalShortcut::starting()
 
         if(sidExists)
         {
-            services::IService::sptr service = services::get( m_sid );
-            ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
-            fwc                                          = containerSrv->getContainer();
+            services::IService::sptr service         = services::get( m_sid );
+            gui::IGuiContainerSrv::sptr containerSrv = gui::IGuiContainerSrv::dynamicCast(service);
+            fwc = containerSrv->getContainer();
         }
         else
         {
@@ -102,7 +102,7 @@ void SSignalShortcut::starting()
     // or a window id
     else if(m_wid != "")
     {
-        fwc = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
+        fwc = gui::GuiRegistry::getWIDContainer(m_wid);
         if(!fwc)
         {
             SLM_ERROR("Invalid window id " << m_wid);
@@ -111,8 +111,7 @@ void SSignalShortcut::starting()
 
     if(fwc != nullptr)
     {
-        ::fwGuiQt::container::QtContainer::sptr qtc =
-            std::dynamic_pointer_cast< ::fwGuiQt::container::QtContainer >(fwc);
+        auto qtc = std::dynamic_pointer_cast< ::sight::guiQt::container::QtContainer >(fwc);
         if(qtc != nullptr)
         {
 
@@ -160,4 +159,4 @@ void SSignalShortcut::onActivation()
     this->signal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG)->asyncEmit();
 }
 
-} // namespace gui
+} // namespace sight::modules::gui

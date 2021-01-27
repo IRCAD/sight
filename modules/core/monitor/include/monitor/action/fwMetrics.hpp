@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace monitor
 namespace action
 {
 /// Implements an action for show metrics about Sight factories (number of data, message and service in factories).
-class MONITOR_CLASS_API fwMetrics : public ::fwGui::IActionSrv
+class MONITOR_CLASS_API fwMetrics : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(fwMetrics,  ::fwGui::IActionSrv )
+    fwCoreServiceMacro(fwMetrics,  gui::IActionSrv )
 
     /// Does nothing
     MONITOR_API fwMetrics() noexcept;

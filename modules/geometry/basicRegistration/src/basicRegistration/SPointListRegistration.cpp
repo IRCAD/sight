@@ -29,11 +29,10 @@
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -130,19 +129,19 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr
-           && firstPointReg->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId ) != nullptr)
+        if(firstPoint->getField< data::String >(data::tools::fieldHelper::Image::m_labelId ) != nullptr
+           && firstPointReg->getField< data::String >(data::tools::fieldHelper::Image::m_labelId ) != nullptr)
         {
             // ... Then match them according to that label.
             for( data::Point::sptr pointRef : referencePL->getPoints() )
             {
                 const std::string& labelRef =
-                    pointRef->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
+                    pointRef->getField< data::String >(data::tools::fieldHelper::Image::m_labelId )->value();
 
                 for( data::Point::sptr pointReg : registeredPL->getPoints() )
                 {
                     const std::string& labelReg =
-                        pointReg->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
+                        pointReg->getField< data::String >(data::tools::fieldHelper::Image::m_labelId )->value();
 
                     if(labelRef == labelReg)
                     {
@@ -238,16 +237,16 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            ::fwGui::dialog::MessageDialog::show("Error",
-                                                 "You must enter 3 or more points for the registration to work.",
-                                                 ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::MessageDialog::show("Error",
+                                             "You must enter 3 or more points for the registration to work.",
+                                             gui::dialog::IMessageDialog::WARNING);
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size());
-            ::fwGui::dialog::MessageDialog::show("Error", msg, ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::MessageDialog::show("Error", msg, gui::dialog::IMessageDialog::WARNING);
         }
     }
 }

@@ -18,9 +18,9 @@
         <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
         <object uid="localSelections" type="::sight::data::Vector" />
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="DICOM Query" align="left"/>
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
@@ -36,7 +36,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="media-0.1/icons/Settings.svg" style="check" />
@@ -51,9 +51,9 @@
             </registry>
         </service>
 
-        <service uid="leftView" type="::gui::view::SDefaultView" >
+        <service uid="leftView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view align="top" minWidth="350" />
                     <view align="center" />
@@ -65,9 +65,9 @@
             </registry>
         </service>
 
-        <service uid="queryEditorSpacerView" type="::gui::view::SDefaultView" >
+        <service uid="queryEditorSpacerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                 </layout>
             </gui>
@@ -75,9 +75,9 @@
             </registry>
         </service>
 
-        <service uid="centerView" type="::gui::view::SDefaultView" >
+        <service uid="centerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Pacs Information" align="center" minWidth="200" />
                     <view caption="Pacs Preview" align="right" minWidth="200" />
@@ -89,9 +89,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::gui::view::SDefaultView" >
+        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Local Series" align="center" minWidth="200" />
                     <view caption="Local Preview" align="right" minWidth="200" />
@@ -105,13 +105,13 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_editPacsConfiguration" type="::gui::action::SConfigLauncher">
+        <service uid="action_editPacsConfiguration" type="::sight::modules::gui::action::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
             <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
             <parameter replace="ICON_PATH" by="media-0.1/icons/Settings.svg"  />
         </service>
 
-        <service uid="action_pullSeries" type="::gui::action::SSlotCaller" >
+        <service uid="action_pullSeries" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>pullSeriesController/update</slot>
             </slots>

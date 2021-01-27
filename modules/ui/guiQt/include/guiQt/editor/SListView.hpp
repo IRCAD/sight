@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QListWidget>
 #include <QPointer>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -40,7 +40,7 @@ namespace editor
  * The currently selected item can be deleted by pressing on "del" key
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::guiQt::editor::SListView"/>
+    <service uid="..." type="::modules::guiQt::editor::SListView"/>
     </service>
    @endcode
  *
@@ -53,32 +53,32 @@ namespace editor
  * - \b insertItem(int, std::string): This slot allows to add an item with its index and text.
  * - \b removeItem(int): This slot allows to remove the element at the index.
  */
-class GUIQT_CLASS_API SListView : public QObject,
-                                  public ::fwGui::editor::IEditor
+class MODULE_GUIQT_CLASS_API SListView : public QObject,
+                                         public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SListView, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SListView, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
-    GUIQT_API SListView() noexcept;
+    MODULE_GUIQT_API SListView() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SListView() noexcept;
+    MODULE_GUIQT_API virtual ~SListView() noexcept;
 
     /**@name Signals API
      * @{
      */
 
-    GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_ADDED_SIG;
+    MODULE_GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_ADDED_SIG;
     typedef core::com::Signal<void (int)> ItemAddedSignalType;
 
-    GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_REMOVED_SIG;
+    MODULE_GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_REMOVED_SIG;
     typedef core::com::Signal<void (int)> ItemRemovedSignalType;
 
-    GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_DOUBLE_CLICKED_SIG;
+    MODULE_GUIQT_API static const core::com::Signals::SignalKeyType s_ITEM_DOUBLE_CLICKED_SIG;
     typedef core::com::Signal<void (int)> ItemDoubleClickedSignalType;
 
     /** @} */
@@ -88,8 +88,8 @@ public:
      * @{
      */
 
-    GUIQT_API static const core::com::Slots::SlotKeyType s_INSERT_ITEM_SLOT;
-    GUIQT_API static const core::com::Slots::SlotKeyType s_REMOVE_ITEM_SLOT;
+    MODULE_GUIQT_API static const core::com::Slots::SlotKeyType s_INSERT_ITEM_SLOT;
+    MODULE_GUIQT_API static const core::com::Slots::SlotKeyType s_REMOVE_ITEM_SLOT;
 
     /// SLOT : Called to insert an item at index.
     void insertItem( int index, std::string value );
@@ -132,4 +132,4 @@ private Q_SLOTS:
 };
 
 }//namespace editor
-}//namespace guiQt
+}//namespace sight::modules::guiQt

@@ -37,9 +37,9 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -196,7 +196,7 @@ std::string SScan::selectDevice()
     // Several devices found -> open a selector dialog.
     else if(device_count > 1)
     {
-        ::fwGui::dialog::SelectorDialog dial;
+        gui::dialog::SelectorDialog dial;
         dial.setTitle("Select realsense camera");
 
         std::vector< std::string > selections;
@@ -659,18 +659,18 @@ void SScan::record()
     // If file already exists, should we erase it ?
     if(std::filesystem::exists(m_recordingFileName))
     {
-        ::fwGui::dialog::MessageDialog warnDial;
-        warnDial.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog warnDial;
+        warnDial.setIcon(gui::dialog::IMessageDialog::WARNING);
         warnDial.setTitle("File already exists");
         warnDial.setMessage("File: " + m_recordingFileName
                             + " already exists, are you sure you want to erase it ?");
-        warnDial.addButton(::fwGui::dialog::IMessageDialog::Buttons::YES);
-        warnDial.addButton(::fwGui::dialog::IMessageDialog::Buttons::NO);
-        warnDial.setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons::NO);
+        warnDial.addButton(gui::dialog::IMessageDialog::Buttons::YES);
+        warnDial.addButton(gui::dialog::IMessageDialog::Buttons::NO);
+        warnDial.setDefaultButton(gui::dialog::IMessageDialog::Buttons::NO);
 
         const auto res = warnDial.show();
 
-        if(res == ::fwGui::dialog::IMessageDialog::Buttons::NO)
+        if(res == gui::dialog::IMessageDialog::Buttons::NO)
         {
             erase = false;
         }
@@ -706,10 +706,10 @@ void SScan::record()
 void SScan::configureRecordingPath()
 {
     // Ask user for a new file name.
-    ::fwGui::dialog::LocationDialog dial;
+    gui::dialog::LocationDialog dial;
     dial.setTitle("Name of recording file");
-    dial.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
-    dial.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dial.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
+    dial.setOption(gui::dialog::ILocationDialog::WRITE);
 
     dial.addFilter("Bag files", "*.bag");
 
@@ -943,8 +943,8 @@ void SScan::setDoubleParameter(double _value, std::string _key)
 
 void SScan::popMessageDialog(const std::string& _message)
 {
-    ::fwGui::dialog::MessageDialog::show(
-        "RealSense Error", _message, ::fwGui::dialog::IMessageDialog::CRITICAL);
+    gui::dialog::MessageDialog::show(
+        "RealSense Error", _message, gui::dialog::IMessageDialog::CRITICAL);
 }
 
 //-----------------------------------------------------------------------------

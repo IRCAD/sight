@@ -42,8 +42,8 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/IAppConfigManager.hpp>
 #include <services/macros.hpp>
@@ -113,7 +113,7 @@ void SActivityLauncher::stopping()
 
 void SActivityLauncher::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     m_parameters.clear();
@@ -310,9 +310,9 @@ void SActivityLauncher::updating()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show("Activity launcher",
-                                                 "Not available activity for the current selection.",
-                                                 ::fwGui::dialog::MessageDialog::WARNING);
+            gui::dialog::MessageDialog::show("Activity launcher",
+                                             "Not available activity for the current selection.",
+                                             gui::dialog::MessageDialog::WARNING);
         }
     }
 }
@@ -392,8 +392,8 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
     {
         const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
                                 "> failed.";
-        ::fwGui::dialog::MessageDialog::show( "Activity can not be launched", msg,
-                                              ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show( "Activity can not be launched", msg,
+                                          gui::dialog::IMessageDialog::WARNING);
         SLM_ERROR(msg);
         return;
     }
@@ -416,9 +416,9 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
                                                 validation.second;
-                    ::fwGui::dialog::MessageDialog::show("Activity launch",
-                                                         message,
-                                                         ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    gui::dialog::MessageDialog::show("Activity launch",
+                                                     message,
+                                                     gui::dialog::IMessageDialog::CRITICAL);
                     return;
                 }
             }
@@ -434,7 +434,7 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
     }
     else
     {
-        ::fwGui::LockAction lock(this->getSptr());
+        gui::LockAction lock(this->getSptr());
 
         const std::string viewConfigID                               = msg.getAppConfigID();
         activities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
@@ -483,10 +483,10 @@ void SActivityLauncher::sendConfig( const activities::registry::ActivityInfo& in
 
     if(!validation.first)
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Activity can not be launched",
             "The activity " + info.title + " can't be launched. Reason : " + validation.second,
-            ::fwGui::dialog::IMessageDialog::WARNING
+            gui::dialog::IMessageDialog::WARNING
             );
     }
     else
@@ -550,9 +550,9 @@ void SActivityLauncher::launchSeries(data::Series::sptr series)
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show("Activity launcher",
-                                                 "Not available activity for the current selection.",
-                                                 ::fwGui::dialog::MessageDialog::WARNING);
+            gui::dialog::MessageDialog::show("Activity launcher",
+                                             "Not available activity for the current selection.",
+                                             gui::dialog::MessageDialog::WARNING);
         }
     }
 }
@@ -582,9 +582,9 @@ void SActivityLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
                                                 validation.second;
-                    ::fwGui::dialog::MessageDialog::show("Activity launch",
-                                                         message,
-                                                         ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    gui::dialog::MessageDialog::show("Activity launch",
+                                                     message,
+                                                     gui::dialog::IMessageDialog::CRITICAL);
                     return;
                 }
             }

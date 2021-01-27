@@ -25,13 +25,13 @@
 #include <core/base.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwGui/GuiRegistry.hpp>
+#include <gui/GuiRegistry.hpp>
 
 #include <services/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::guiQt::SNotifier )
+fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::guiQt::SNotifier )
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 static const core::com::Slots::SlotKeyType s_POP_INFO_SLOT    = "popInfo";
@@ -45,13 +45,13 @@ static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumP
 SNotifier::SNotifier() noexcept
 {
     // Initialize map to do conversions.
-    m_positionMap["TOP_RIGHT"]       = ::fwGui::dialog::NotificationDialog::Position::TOP_RIGHT;
-    m_positionMap["TOP_LEFT"]        = ::fwGui::dialog::NotificationDialog::Position::TOP_LEFT;
-    m_positionMap["CENTERED_TOP"]    = ::fwGui::dialog::NotificationDialog::Position::CENTERED_TOP;
-    m_positionMap["CENTERED"]        = ::fwGui::dialog::NotificationDialog::Position::CENTERED;
-    m_positionMap["BOTTOM_RIGHT"]    = ::fwGui::dialog::NotificationDialog::Position::BOTTOM_RIGHT;
-    m_positionMap["BOTTOM_LEFT"]     = ::fwGui::dialog::NotificationDialog::Position::BOTTOM_LEFT;
-    m_positionMap["CENTERED_BOTTOM"] = ::fwGui::dialog::NotificationDialog::Position::CENTERED_BOTTOM;
+    m_positionMap["TOP_RIGHT"]       = gui::dialog::NotificationDialog::Position::TOP_RIGHT;
+    m_positionMap["TOP_LEFT"]        = gui::dialog::NotificationDialog::Position::TOP_LEFT;
+    m_positionMap["CENTERED_TOP"]    = gui::dialog::NotificationDialog::Position::CENTERED_TOP;
+    m_positionMap["CENTERED"]        = gui::dialog::NotificationDialog::Position::CENTERED;
+    m_positionMap["BOTTOM_RIGHT"]    = gui::dialog::NotificationDialog::Position::BOTTOM_RIGHT;
+    m_positionMap["BOTTOM_LEFT"]     = gui::dialog::NotificationDialog::Position::BOTTOM_LEFT;
+    m_positionMap["CENTERED_BOTTOM"] = gui::dialog::NotificationDialog::Position::CENTERED_BOTTOM;
 
     newSlot(s_POP_INFO_SLOT, &SNotifier::popInfo, this);
     newSlot(s_POP_SUCCESS_SLOT, &SNotifier::popSuccess, this);
@@ -99,11 +99,11 @@ void SNotifier::starting()
 
     if(!m_parentContainerID.empty())
     {
-        auto container = ::fwGui::GuiRegistry::getSIDContainer(m_parentContainerID);
+        auto container = gui::GuiRegistry::getSIDContainer(m_parentContainerID);
 
         if(!container)
         {
-            container = ::fwGui::GuiRegistry::getWIDContainer(m_parentContainerID);
+            container = gui::GuiRegistry::getWIDContainer(m_parentContainerID);
         }
 
         // If we have an SID/WID set the container.
@@ -155,26 +155,26 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
 
 void SNotifier::popInfo(std::string _message)
 {
-    this->showNotification(_message, ::fwGui::dialog::INotificationDialog::Type::INFO);
+    this->showNotification(_message, gui::dialog::INotificationDialog::Type::INFO);
 }
 
 //-----------------------------------------------------------------------------
 
 void SNotifier::popSuccess(std::string _message)
 {
-    this->showNotification(_message, ::fwGui::dialog::INotificationDialog::Type::SUCCESS);
+    this->showNotification(_message, gui::dialog::INotificationDialog::Type::SUCCESS);
 }
 
 //-----------------------------------------------------------------------------
 
 void SNotifier::popFailure(std::string _message)
 {
-    this->showNotification(_message, ::fwGui::dialog::INotificationDialog::Type::FAILURE);
+    this->showNotification(_message, gui::dialog::INotificationDialog::Type::FAILURE);
 }
 
 //-----------------------------------------------------------------------------
 
-void SNotifier::showNotification(const std::string& _message, fwGui::dialog::INotificationDialog::Type _type)
+void SNotifier::showNotification(const std::string& _message, gui::dialog::INotificationDialog::Type _type)
 {
     size_t indexOfCurrentNotif = 0;
     bool foundAPlace           = false;
@@ -214,8 +214,8 @@ void SNotifier::showNotification(const std::string& _message, fwGui::dialog::INo
         messageToShow = _message;
     }
 
-    ::fwGui::dialog::NotificationDialog::sptr notif =
-        ::fwGui::dialog::NotificationDialog::New();
+    gui::dialog::NotificationDialog::sptr notif =
+        gui::dialog::NotificationDialog::New();
 
     notif->setContainer(m_containerWhereToDisplayNotifs);
 

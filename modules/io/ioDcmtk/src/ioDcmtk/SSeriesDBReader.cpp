@@ -33,12 +33,12 @@
 
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-
 #include <fwIO/IReader.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -73,11 +73,11 @@ void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setType(gui::dialog::LocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );
@@ -198,20 +198,20 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
 
     if(myLoader->isDicomDirAvailable())
     {
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
         messageBox.setMessage( "There is a dicomdir file in the root folder. "
                                "Would you like to use it for the reading process ?" );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::YES_NO);
-        ::fwGui::dialog::IMessageDialog::Buttons button = messageBox.show();
+        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(gui::dialog::IMessageDialog::YES_NO);
+        gui::dialog::IMessageDialog::Buttons button = messageBox.show();
 
-        myLoader->setDicomdirActivated(button == ::fwGui::dialog::IMessageDialog::YES);
+        myLoader->setDicomdirActivated(button == gui::dialog::IMessageDialog::YES);
     }
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
+        gui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
@@ -219,13 +219,13 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::show(
-            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show(
+            "Warning", ss.str(), gui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::show(
-            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show(
+            "Warning", "Warning during loading", gui::dialog::IMessageDialog::WARNING);
     }
 
     return myLoader->getConcreteObject();
@@ -247,8 +247,8 @@ void SSeriesDBReader::updating()
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
-            ::fwGui::Cursor cursor;
-            cursor.setCursor(::fwGui::ICursor::BUSY);
+            gui::Cursor cursor;
+            cursor.setCursor(gui::ICursor::BUSY);
             this->notificationOfDBUpdate();
             cursor.setDefaultCursor();
 
@@ -257,9 +257,9 @@ void SSeriesDBReader::updating()
         else
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                gui::dialog::IMessageDialog::WARNING);
         }
     }
     else

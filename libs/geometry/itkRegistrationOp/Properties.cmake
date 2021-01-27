@@ -5,6 +5,5 @@ set( DEPENDENCIES
     fwItkIO
     data
     core
-    fwDataTools
 )
 set( REQUIREMENTS )

@@ -6,7 +6,6 @@ set( DEPENDENCIES
     utestData
     core
     data
-    fwDataTools
     fwVtkIO
     itkRegistrationOp
 )

@@ -32,6 +32,7 @@
 #include <data/Composite.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
+#include <data/tools/helper/Composite.hpp>
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
@@ -41,18 +42,15 @@
 
 #include <fwAtomsPatch/PatchingManager.hpp>
 
-#include <fwDataTools/helper/Composite.hpp>
-
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <fwMDSemanticPatch/PatchLoader.hpp>
-
-#include <fwPreferences/helper.hpp>
 
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -216,8 +214,8 @@ void SReader::updating()
         data::Object::sptr data = this->getInOut< data::Object >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", m_outputMode || data);
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         try
         {
@@ -263,7 +261,7 @@ void SReader::updating()
                     else if ( extension == ".cpz" )
                     {
                         readArchive = ::fwZip::ReadZipArchive::New(filePath.string(),
-                                                                   ::fwPreferences::getPassword());
+                                                                   gui::preferences::getPassword());
                         archiveRootName = "root.json";
                         format          = ::fwAtomsBoostIO::JSON;
                     }
@@ -409,14 +407,14 @@ void SReader::updating()
         {
             m_readFailed = true;
             SLM_ERROR( e.what() );
-            ::fwGui::dialog::MessageDialog::show("Atoms reader failed", e.what(),
-                                                 ::fwGui::dialog::MessageDialog::CRITICAL);
+            gui::dialog::MessageDialog::show("Atoms reader failed", e.what(),
+                                             gui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
             m_readFailed = true;
-            ::fwGui::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
-                                                 ::fwGui::dialog::MessageDialog::CRITICAL);
+            gui::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
+                                             gui::dialog::MessageDialog::CRITICAL);
         }
 
         cursor.setDefaultCursor();
@@ -462,12 +460,12 @@ void SReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(::fwGui::dialog::LocationDialog::FILE_MUST_EXIST);
+    dialogFile.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(gui::dialog::LocationDialog::FILE_MUST_EXIST);
 
     dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 

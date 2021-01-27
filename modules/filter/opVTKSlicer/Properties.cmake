@@ -4,7 +4,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwDataTools
     services
     fwVtkIO
 )

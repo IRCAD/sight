@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -37,7 +37,7 @@
 #include <QPushButton>
 #include <QSlider>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -51,7 +51,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::guiQt::editor::SSlider" autoConnect="no"/>
+    <service uid="..." type="::modules::guiQt::editor::SSlider" autoConnect="no"/>
         <editBox>false</editBox>
         <resetButton>false</resetButton>
         <defaultValue>200</defaultValue>
@@ -73,26 +73,26 @@ namespace editor
  * - \b setMinValue(int): This slot allows to set minimum value.
  * - \b setMaxValue(int): This slot allows to set maximum value.
  */
-class GUIQT_CLASS_API SSlider : public QObject,
-                                public ::fwGui::editor::IEditor
+class MODULE_GUIQT_CLASS_API SSlider : public QObject,
+                                       public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSlider, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SSlider, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
-    GUIQT_API SSlider() noexcept;
+    MODULE_GUIQT_API SSlider() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SSlider() noexcept;
+    MODULE_GUIQT_API virtual ~SSlider() noexcept;
 
     /**@name Signals API
      * @{
      */
 
-    GUIQT_API static const core::com::Signals::SignalKeyType s_VALUE_CHANGED_SIG;
+    MODULE_GUIQT_API static const core::com::Signals::SignalKeyType s_VALUE_CHANGED_SIG;
     typedef core::com::Signal<void (int)> ValueChangedSignalType;
 
     /** @} */
@@ -102,9 +102,9 @@ public:
      * @{
      */
 
-    GUIQT_API static const core::com::Slots::SlotKeyType s_SET_VALUE_SLIDER_SLOT;
-    GUIQT_API static const core::com::Slots::SlotKeyType s_SET_MIN_VALUE_SLIDER_SLOT;
-    GUIQT_API static const core::com::Slots::SlotKeyType s_SET_MAX_VALUE_SLIDER_SLOT;
+    MODULE_GUIQT_API static const core::com::Slots::SlotKeyType s_SET_VALUE_SLIDER_SLOT;
+    MODULE_GUIQT_API static const core::com::Slots::SlotKeyType s_SET_MIN_VALUE_SLIDER_SLOT;
+    MODULE_GUIQT_API static const core::com::Slots::SlotKeyType s_SET_MAX_VALUE_SLIDER_SLOT;
 
     ///@}
 

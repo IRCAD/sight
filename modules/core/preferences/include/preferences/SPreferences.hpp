@@ -24,7 +24,7 @@
 
 #include "preferences/config.hpp"
 
-#include <fwPreferences/IPreferences.hpp>
+#include <gui/preferences/IPreferences.hpp>
 
 #include <filesystem>
 
@@ -47,11 +47,11 @@ namespace preferences
  * @subsection Configuration Configuration
  * - \b filename : path to the preferences file
  */
-class PREFERENCES_CLASS_API SPreferences : public ::fwPreferences::IPreferences
+class PREFERENCES_CLASS_API SPreferences : public gui::preferences::IPreferences
 {
 
 public:
-    fwCoreServiceMacro(SPreferences, ::fwPreferences::IPreferences)
+    fwCoreServiceMacro(SPreferences, gui::preferences::IPreferences)
 
     ///Destructor
 

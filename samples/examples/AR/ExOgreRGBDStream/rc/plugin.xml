@@ -1,7 +1,7 @@
 <plugin id="ExOgreRGBDStream" version="@PROJECT_VERSION@" >
 
     <requirement id="scene2D" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -33,7 +33,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExOgreRGBDStream</name>
@@ -48,7 +48,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -70,9 +70,9 @@
             </service>
 
             <!-- Begin Scanning views -->
-            <service uid="scanningView" type="::gui::view::SDefaultView" >
+            <service uid="scanningView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="30" />
                         <view proportion="70" />
@@ -84,9 +84,9 @@
                 </registry>
             </service>
 
-            <service uid="TFView" type="::gui::view::SDefaultView" >
+            <service uid="TFView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="80" />
                         <view proportion="20" />
@@ -98,9 +98,9 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="::gui::view::SDefaultView" >
+            <service uid="RGBDView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -115,7 +115,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -123,7 +123,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -133,7 +133,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -143,7 +143,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -157,7 +157,7 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>

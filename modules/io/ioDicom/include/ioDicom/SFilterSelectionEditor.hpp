@@ -28,7 +28,7 @@
 
 #include <fwDicomIOFilter/IFilter.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -60,13 +60,13 @@ namespace ioDicom
  */
 
 class IODICOM_CLASS_API SFilterSelectionEditor : public QObject,
-                                                 public ::fwGui::editor::IEditor
+                                                 public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectionEditor,  ::fwGui::editor::IEditor )
+    fwCoreServiceMacro(SFilterSelectionEditor,  gui::editor::IEditor )
 
     typedef std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > FilterMapType;
 

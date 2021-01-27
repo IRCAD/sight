@@ -31,7 +31,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QAbstractItemView>
 #include <QObject>
@@ -77,7 +77,7 @@ namespace editor
  */
 class UIMEDDATAQT_CLASS_API SSelector final :
     public QObject,
-    public ::fwGui::editor::IEditor
+    public gui::editor::IEditor
 {
 
 Q_OBJECT
@@ -85,7 +85,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSelector, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SSelector, gui::editor::IEditor)
 
     /// Creates the signal and slots.
     UIMEDDATAQT_API SSelector();

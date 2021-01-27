@@ -28,7 +28,7 @@
 
 #include <data/Reconstruction.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QComboBox>
 #include <QLabel>
@@ -60,13 +60,13 @@ namespace uiVisuOgre
  * @brief
  */
 class UIVISUOGRE_CLASS_API SMaterialSelector : public QObject,
-                                               public ::fwGui::editor::IEditor
+                                               public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SMaterialSelector, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SMaterialSelector, gui::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() noexcept;

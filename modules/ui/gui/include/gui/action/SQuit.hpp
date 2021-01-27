@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -36,22 +36,22 @@ namespace action
 /**
  * @brief   This action tries to close the window and reset root object.
  */
-class GUI_CLASS_API SQuit : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SQuit : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SQuit, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SQuit, ::sight::gui::IActionSrv)
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SQuit() noexcept;
+    MODULE_GUI_API SQuit() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SQuit() noexcept;
+    MODULE_GUI_API virtual ~SQuit() noexcept;
 
 protected:
 
@@ -59,23 +59,23 @@ protected:
      * @brief This method is used to configure the service parameters: specifies which services must be started or
      * stopped
      */
-    GUI_API void configuring() override;
+    MODULE_GUI_API void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /**
      * @brief This method tries to close the window and reset root object.
      */
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
     /*
      * @brief This method gives information about the class.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

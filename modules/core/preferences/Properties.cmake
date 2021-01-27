@@ -9,7 +9,7 @@ set( DEPENDENCIES
     fwAtomsBoostIO
     fwZip
     atoms
-    fwPreferences
+    gui
 )
 set( REQUIREMENTS  )
 

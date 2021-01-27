@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Implements an action to show in a message box few memory information
-class MONITOR_CLASS_API MemoryInfo : public ::fwGui::IActionSrv
+class MONITOR_CLASS_API MemoryInfo : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(MemoryInfo,  ::fwGui::IActionSrv )
+    fwCoreServiceMacro(MemoryInfo,  gui::IActionSrv )
 
     /// Does nothing
     MONITOR_API MemoryInfo() noexcept;

@@ -27,7 +27,7 @@
 
 #include <data/Composite.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -147,7 +147,7 @@ void SActivitySequencer::goTo(int index)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        gui::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

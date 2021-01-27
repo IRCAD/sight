@@ -25,9 +25,8 @@
 #include <itkRegistrationOp/Resampler.hpp>
 
 #include <data/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -118,7 +117,7 @@ void ResamplerTest::translateTest()
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
     const auto inDumpLock = imageIn->lock();
 

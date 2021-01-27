@@ -6,12 +6,11 @@ set( DEPENDENCIES
     core
     activities
     data
-    fwGui
-    fwGuiQt
+    gui
     services
 )
 set( REQUIREMENTS
-    guiQt
+    module_guiQt
     data
     module_services
 )

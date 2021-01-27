@@ -2,7 +2,7 @@
 
     <requirement id="visuQt3DQt" />
     <requirement id="preferences" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
 
 

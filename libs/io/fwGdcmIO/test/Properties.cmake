@@ -6,7 +6,6 @@ set( DEPENDENCIES
     core
     data
     utestData
-    fwDataTools
     fwZip
     fwDataIO
     )

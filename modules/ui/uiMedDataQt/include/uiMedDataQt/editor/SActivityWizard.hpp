@@ -38,7 +38,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -103,12 +103,12 @@ namespace editor
 
  */
 class UIMEDDATAQT_CLASS_API SActivityWizard : public QObject,
-                                              public ::fwGui::editor::IEditor
+                                              public gui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SActivityWizard, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SActivityWizard, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SActivityWizard() noexcept;

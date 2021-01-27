@@ -2,7 +2,7 @@
 
     <activate id="::sight::modules::services" version="0.1" />
 
-    <activate id="gui" version="0.1" />
+    <activate id="::sight::modules::gui" version="0.1" />
 
     <activate id="ioAtoms" version="0.1" />
 

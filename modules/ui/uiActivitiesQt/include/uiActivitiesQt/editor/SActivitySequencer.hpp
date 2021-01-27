@@ -26,7 +26,7 @@
 
 #include <activities/IActivitySequencer.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -105,14 +105,14 @@ namespace editor
  * @todo listen the current activity data to notify when the next activity can be created
  */
 class UIACTIVITIESQT_CLASS_API SActivitySequencer : public QObject,
-                                                    public ::fwGui::editor::IEditor,
+                                                    public gui::editor::IEditor,
                                                     public activities::IActivitySequencer
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SActivitySequencer, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SActivitySequencer, gui::editor::IEditor)
 
     /// Initialize signals and slots
     UIACTIVITIESQT_API SActivitySequencer() noexcept;

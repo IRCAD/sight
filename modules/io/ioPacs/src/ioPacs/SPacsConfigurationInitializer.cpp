@@ -25,7 +25,7 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -118,7 +118,7 @@ void SPacsConfigurationInitializer::starting()
     // Set information from xml and update PacsConfiguration.
     if(!m_preferenceKey.empty())
     {
-        data::Composite::sptr prefs = ::fwPreferences::getPreferences();
+        data::Composite::sptr prefs = gui::preferences::getPreferences();
         if(prefs)
         {
             data::Composite::sptr config = data::Composite::dynamicCast((*prefs)[m_preferenceKey]);
@@ -187,7 +187,7 @@ void SPacsConfigurationInitializer::updating()
     // If a preference key is set, save the local var to the preferences
     if(!m_preferenceKey.empty())
     {
-        data::Composite::sptr prefs = ::fwPreferences::getPreferences();
+        data::Composite::sptr prefs = gui::preferences::getPreferences();
         if(prefs && (prefs->find(m_preferenceKey) == prefs->end() || !(*prefs)[m_preferenceKey]))
         {
             (*prefs)[m_preferenceKey] = data::Composite::New();
@@ -206,7 +206,7 @@ void SPacsConfigurationInitializer::updating()
             (*config)["RetrieveMethod"       ] =
                 data::String::New(::boost::lexical_cast<std::string>(m_retrieveMethod));
         }
-        ::fwPreferences::savePreferences();
+        gui::preferences::savePreferences();
     }
 }
 

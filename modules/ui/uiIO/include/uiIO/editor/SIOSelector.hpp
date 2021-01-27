@@ -28,7 +28,7 @@
 #include <core/com/Slot.hpp>
 #include <core/jobs/IJob.hpp>
 
-#include <fwGui/editor/IDialogEditor.hpp>
+#include <gui/editor/IDialogEditor.hpp>
 
 namespace uiIO
 {
@@ -87,7 +87,7 @@ namespace editor
  *      - \b id (mandatory) : the id of the configuration to use.
  *      - \b service (mandatory) :  the name of the service.
  */
-class UIIO_CLASS_API SIOSelector : public ::fwGui::editor::IDialogEditor
+class UIIO_CLASS_API SIOSelector : public gui::editor::IDialogEditor
 {
 
 public:
@@ -99,7 +99,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceMacro(SIOSelector,  ::fwGui::editor::IDialogEditor)
+    fwCoreServiceMacro(SIOSelector,  gui::editor::IDialogEditor)
 
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
     typedef core::com::Signal< void ( ) > JobFailedSignalType;

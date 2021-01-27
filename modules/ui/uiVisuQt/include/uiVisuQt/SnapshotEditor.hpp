@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -45,14 +45,14 @@ namespace uiVisuQt
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
 class UIVISUQT_CLASS_API SnapshotEditor : public QObject,
-                                          public ::fwGui::editor::IEditor
+                                          public gui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SnapshotEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SnapshotEditor, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIVISUQT_API SnapshotEditor() noexcept;

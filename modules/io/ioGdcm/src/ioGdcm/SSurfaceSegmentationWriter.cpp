@@ -33,13 +33,13 @@
 #include <fwGdcmIO/writer/Series.hpp>
 #include <fwGdcmIO/writer/SurfaceSegmentation.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
-
 #include <fwIO/IWriter.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -75,11 +75,11 @@ void SSurfaceSegmentationWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(gui::dialog::LocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );
@@ -123,15 +123,15 @@ void SSurfaceSegmentationWriter::updating()
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
-            ::fwGui::dialog::MessageDialog dialog;
+            gui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
                               "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
-            dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
-            dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
-            ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();
+            dialog.setIcon(gui::dialog::MessageDialog::QUESTION);
+            dialog.addButton( gui::dialog::MessageDialog::YES_NO );
+            gui::dialog::MessageDialog::Buttons button = dialog.show();
 
-            if(button == ::fwGui::dialog::MessageDialog::NO)
+            if(button == gui::dialog::MessageDialog::NO)
             {
                 m_writeFailed = true;
                 return;
@@ -148,9 +148,9 @@ void SSurfaceSegmentationWriter::updating()
         if(!model->getDicomReference())
         {
             m_writeFailed = true;
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Warning", "DICOM image reference is missing, DICOM Surface Segmentation cannot be generated",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                gui::dialog::IMessageDialog::WARNING);
             return;
         }
 
@@ -158,8 +158,8 @@ void SSurfaceSegmentationWriter::updating()
         std::filesystem::path outputPath = this->getFolder() / "imSeg";
 
         /* Write the data */
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
         saveSurfaceSegmentation( outputPath, model );
         cursor.setDefaultCursor();
     }
@@ -191,14 +191,14 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem:
         m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving: " << e.what();
-        ::fwGui::dialog::MessageDialog::show(
-            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show(
+            "Warning", ss.str(), gui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_writeFailed = true;
-        ::fwGui::dialog::MessageDialog::show(
-            "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show(
+            "Warning", "Warning during saving", gui::dialog::IMessageDialog::WARNING);
     }
 }
 

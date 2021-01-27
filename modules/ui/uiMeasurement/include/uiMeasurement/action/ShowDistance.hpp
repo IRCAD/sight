@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -52,11 +52,11 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [data::Image]: image containing the distances.
  */
-class UIMEASUREMENT_DEPRECATED_CLASS_API ShowDistance : public ::fwGui::IActionSrv
+class UIMEASUREMENT_DEPRECATED_CLASS_API ShowDistance : public ::sight::gui::IActionSrv
 {
 
 public:
-    fwCoreServiceMacro(ShowDistance,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(ShowDistance,  gui::IActionSrv)
 
     UIMEASUREMENT_API ShowDistance() noexcept;
 

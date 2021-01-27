@@ -28,9 +28,8 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <functional>
 
@@ -39,9 +38,9 @@ namespace uiImageQml
 
 const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-    &fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId,
-    &fwDataTools::fieldHelper::Image::m_frontalSliceIndexId,
-    &fwDataTools::fieldHelper::Image::m_axialSliceIndexId
+    &data::tools::fieldHelper::Image::m_sagittalSliceIndexId,
+    &data::tools::fieldHelper::Image::m_frontalSliceIndexId,
+    &data::tools::fieldHelper::Image::m_axialSliceIndexId
 };
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
@@ -110,9 +109,9 @@ void SSliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sag
 
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
-    image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
-    image->setField( fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+    image->setField( data::tools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+    image->setField( data::tools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+    image->setField( data::tools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
     this->updateSliceIndexFromImg();
 }
 
@@ -145,7 +144,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
 {
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];

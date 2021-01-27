@@ -22,19 +22,16 @@
 
 #include "gui/action/SQuit.hpp"
 
-#include <core/base.hpp>
-
-#include <fwGui/Application.hpp>
-#include <fwGui/Cursor.hpp>
+#include <gui/Application.hpp>
+#include <gui/Cursor.hpp>
 
 #include <services/macros.hpp>
 
-namespace gui
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SQuit )
+namespace sight::modules::gui
 {
 namespace action
 {
-
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SQuit )
 
 //-----------------------------------------------------------------------------
 
@@ -80,9 +77,9 @@ void SQuit::info(std::ostream& _sstream )
 
 void SQuit::updating()
 {
-    ::fwGui::Cursor cursor;
-    cursor.setCursor(::fwGui::ICursor::BUSY);
-    ::fwGui::Application::New()->exit(0);
+    ::sight::gui::Cursor cursor;
+    cursor.setCursor(::sight::gui::ICursor::BUSY);
+    ::sight::gui::Application::New()->exit(0);
     cursor.setDefaultCursor();
 }
 

@@ -1,0 +1,189 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "gui/dialog/MessageDialog.hpp"
+
+#include <services/registry/ActiveWorkers.hpp>
+
+#include <functional>
+
+namespace sight::gui
+{
+namespace dialog
+{
+
+//-----------------------------------------------------------------------------
+
+IMessageDialog::Buttons MessageDialog::show(
+    const std::string& title, const std::string& message, gui::dialog::IMessageDialog::Icons icon)
+{
+    gui::dialog::MessageDialog messageBox(title, message, icon);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    return messageBox.show();
+}
+
+//-----------------------------------------------------------------------------
+
+IMessageDialog::Buttons MessageDialog::showMessageDialog(
+    const std::string& title, const std::string& message, gui::dialog::IMessageDialog::Icons icon)
+{
+    return show(title, message, icon);
+}
+
+//-----------------------------------------------------------------------------
+
+MessageDialog::MessageDialog()
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                gui::GuiBaseObject::sptr guiObj = gui::factory::New(IMessageDialog::REGISTRY_KEY);
+                m_implementation = gui::dialog::IMessageDialog::dynamicCast(guiObj);
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+MessageDialog::MessageDialog(
+    const std::string& title, const std::string& message, gui::dialog::IMessageDialog::Icons icon)
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                gui::GuiBaseObject::sptr guiObj = gui::factory::New(IMessageDialog::REGISTRY_KEY);
+                m_implementation = gui::dialog::IMessageDialog::dynamicCast(guiObj);
+
+                if(m_implementation)
+                {
+                    m_implementation->setTitle(title);
+                    m_implementation->setMessage(message);
+                    m_implementation->setIcon(icon);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+MessageDialog::~MessageDialog()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::setTitle( const std::string& title )
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setTitle(title);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::setMessage( const std::string& msg )
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setMessage(msg);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::setIcon( gui::dialog::IMessageDialog::Icons icon )
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setIcon(icon);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::addButton( gui::dialog::IMessageDialog::Buttons button )
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->addButton(button);
+                }
+            } )).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::setDefaultButton( gui::dialog::IMessageDialog::Buttons button )
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->setDefaultButton(button);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
+{
+    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+            {
+                if(m_implementation)
+                {
+                    m_implementation->addCustomButton(label, clickedFn);
+                }
+            })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+gui::dialog::IMessageDialog::Buttons MessageDialog::show()
+{
+    if(m_implementation)
+    {
+        typedef gui::dialog::IMessageDialog::Buttons R;
+
+        std::function<R()> func = std::bind(&IMessageDialog::show, m_implementation);
+        std::shared_future<R> f = services::registry::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
+        f.wait();
+
+        return f.get();
+    }
+    else
+    {
+        return gui::dialog::IMessageDialog::NOBUTTON;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+} //namespace dialog
+} // namespace sight::gui

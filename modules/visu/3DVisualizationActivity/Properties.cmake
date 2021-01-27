@@ -6,8 +6,8 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     activities
     ctrlCamp
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     ctrlMemory
     ctrlSelection
     data

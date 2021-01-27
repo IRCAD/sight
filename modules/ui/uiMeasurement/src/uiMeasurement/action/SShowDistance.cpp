@@ -29,9 +29,8 @@
 #include <data/Boolean.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <services/macros.hpp>
 
@@ -63,14 +62,14 @@ SShowDistance::~SShowDistance() noexcept
 
 void SShowDistance::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowDistance::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -79,22 +78,22 @@ void SShowDistance::updating()
 {
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(!::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
-        this->::fwGui::IActionSrv::setIsActive(false);
+        this->::gui::IActionSrv::setIsActive(false);
     }
     else
     {
         const data::Boolean::sptr showDistances =
-            image->getField< data::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+            image->getField< data::Boolean >(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                                  true));
         const bool isShown = showDistances->value();
 
         const bool toShow = !isShown;
-        image->setField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
+        image->setField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // Manage hide/show from the field information.
-        this->::fwGui::IActionSrv::setIsActive(!toShow);
+        this->::gui::IActionSrv::setIsActive(!toShow);
 
         const auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
             data::Image::s_DISTANCE_DISPLAYED_SIG);
@@ -109,7 +108,7 @@ void SShowDistance::updating()
 
 void SShowDistance::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -129,10 +128,10 @@ void SShowDistance::showDistance(bool)
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     data::Boolean::sptr SShowDistances =
-        image->getField< data::Boolean >(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+        image->getField< data::Boolean >(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                              true));
 
-    this->::fwGui::IActionSrv::setIsActive( !(SShowDistances->value()) );
+    this->::gui::IActionSrv::setIsActive( !(SShowDistances->value()) );
 }
 
 //------------------------------------------------------------------------------

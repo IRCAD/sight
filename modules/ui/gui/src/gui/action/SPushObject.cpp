@@ -29,14 +29,13 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/Composite.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
+#include <data/tools/helper/Composite.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/AppConfig.hpp>
 #include <services/registry/ObjectService.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -48,7 +47,8 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SPushObject,
+                         ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -120,9 +120,9 @@ void SPushObject::updateObjects()
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
 
-    this->::fwGui::IActionSrv::setIsExecutable( executable );
+    this->::sight::gui::IActionSrv::setIsExecutable( executable );
 
-    if(executable && this->::fwGui::IActionSrv::getIsActive())
+    if(executable && this->::sight::gui::IActionSrv::getIsActive())
     {
         this->updating();
     }
@@ -130,7 +130,7 @@ void SPushObject::updateObjects()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SPushObject::getAutoConnections() const
+services::IService::KeyConnectionsMap SPushObject::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SOURCE_KEY, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT );
@@ -143,4 +143,4 @@ void SPushObject::updateObjects()
 
 } // namespace action
 
-} // namespace gui
+} // namespace sight::modules::gui

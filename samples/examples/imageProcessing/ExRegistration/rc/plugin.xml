@@ -56,7 +56,7 @@ Detail of the ToolBar
  -->
 <plugin id="ExRegistration" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -81,7 +81,7 @@ Detail of the ToolBar
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExRegistration</name>
@@ -94,9 +94,9 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager" >
+                    <layout type="::sight::gui::CardinalLayoutManager" >
                         <view align="center" />
                     </layout>
                     <toolBar/>
@@ -108,7 +108,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load image" icon="ExRegistration-0.1/icons/icon-load1.png" />
@@ -128,9 +128,9 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::gui::view::SDefaultView" >
+            <service uid="multiView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::TabLayoutManager" >
+                    <layout type="::sight::gui::TabLayoutManager" >
                         <view caption="Point List 1" selected="yes" border="5" backgroundColor="#2E3034" />
                         <view caption="Point List 2" border="5" backgroundColor="#2E3034" />
                         <view caption="Registration" border="5" backgroundColor="#2E3034" />
@@ -144,9 +144,9 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW    (Content of the first Tab)-->
-            <service uid="image1View" type="::gui::view::SDefaultView" >
+            <service uid="image1View" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -161,22 +161,22 @@ Detail of the ToolBar
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="openImageAct" type="::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="openMesh1Act" type="::gui::action::SStarter" >
+            <service uid="openMesh1Act" type="::sight::modules::gui::action::SStarter" >
                 <start uid="meshReader1Srv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 2 (Point list 2)    -->
-            <service uid="openMesh2Act" type="::gui::action::SStarter" >
+            <service uid="openMesh2Act" type="::sight::modules::gui::action::SStarter" >
                 <start uid="meshReader2Srv" />
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="registerAct" type="::gui::action::SSlotCaller" >
+            <service uid="registerAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>PLRegistrationSrv/update</slot>
                 </slots>

@@ -14,9 +14,9 @@
         <object uid="tfBackgroundImage" type="::sight::data::TransferFunction" src="deferred" />
         <object uid="tfFrontImage" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::TabLayoutManager">
+                <layout type="::sight::gui::TabLayoutManager">
                     <view caption="Blend" selected="yes" />
                     <view caption="Background image" />
                     <view caption="Front image" />

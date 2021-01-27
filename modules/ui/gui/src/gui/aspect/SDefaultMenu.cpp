@@ -24,9 +24,9 @@
 
 #include <services/macros.hpp>
 
-fwServicesRegisterMacro( ::fwGui::IMenuSrv, ::gui::aspect::SDefaultMenu )
+fwServicesRegisterMacro( ::sight::gui::IMenuSrv, ::sight::modules::gui::aspect::SDefaultMenu )
 
-namespace gui
+namespace sight::modules::gui
 {
 
 namespace aspect

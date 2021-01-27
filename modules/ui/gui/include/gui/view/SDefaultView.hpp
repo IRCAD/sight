@@ -22,32 +22,32 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/view/IView.hpp>
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/view/IView.hpp>
-
-namespace gui
+namespace sight::modules::gui
 {
 namespace view
 {
 
 /**
  * @brief Defines the generic layout for application.
- * @see ::fwGui::IGuiContainer for the service configuration
+ * @see gui::IGuiContainer for the service configuration
  */
-class GUI_CLASS_API SDefaultView : public ::fwGui::view::IView
+class MODULE_GUI_CLASS_API SDefaultView : public ::sight::gui::view::IView
 {
 public:
 
-    fwCoreServiceMacro(SDefaultView, ::fwGui::view::IView)
+    fwCoreServiceMacro(SDefaultView, ::sight::gui::view::IView)
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultView() noexcept;
+    MODULE_GUI_API SDefaultView() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultView() noexcept;
+    MODULE_GUI_API virtual ~SDefaultView() noexcept;
 
 protected:
 
@@ -58,34 +58,34 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters.
-     * @see ::fwGui::IGuiContainerSrv::initialize()
+     * @see gui::IGuiContainerSrv::initialize()
      */
-    GUI_API virtual void configuring() override;
+    MODULE_GUI_API virtual void configuring() override;
 
     /**
      * @brief Register a view with defined id.
-     * @see ::fwGui::IGuiContainerSrv::create()
+     * @see gui::IGuiContainerSrv::create()
      */
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
-     * @see ::fwGui::IGuiContainerSrv::destroy()
+     * @see gui::IGuiContainerSrv::destroy()
      */
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
     ///@}
 
 };
 
 } // namespace view
-} // namespace gui
+} // namespace sight::modules::gui

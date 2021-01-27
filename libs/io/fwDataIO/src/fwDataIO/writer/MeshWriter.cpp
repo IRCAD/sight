@@ -24,7 +24,7 @@
 
 #include "fwDataIO/writer/registry/macros.hpp"
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -59,7 +59,7 @@ void MeshWriter::write()
 
     data::Mesh::csptr mesh = this->getConcreteObject();
     FW_RAISE_IF("Can't convert this Mesh to Trian file",
-                !::fwDataTools::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
+                !::data::tools::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);

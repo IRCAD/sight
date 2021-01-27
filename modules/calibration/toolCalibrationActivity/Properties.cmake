@@ -5,8 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES )
 
 set( REQUIREMENTS
-        gui
-        guiQt
+        module_gui
+        module_guiQt
         ctrlSelection
         visuVTKAdaptor
         media

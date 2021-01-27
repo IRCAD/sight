@@ -30,7 +30,7 @@
 
 #include <data/location/SingleFile.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -41,7 +41,7 @@ namespace action
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::SSnapshot, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiVisu::action::SSnapshot, ::sight::data::Object )
 
 SSnapshot::SSnapshot() noexcept
 {
@@ -58,21 +58,21 @@ SSnapshot::~SSnapshot() noexcept
 
 void SSnapshot::starting()
 {
-    ::fwGui::IActionSrv::actionServiceStarting();
+    gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::stopping()
 {
-    ::fwGui::IActionSrv::actionServiceStopping();
+    gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::configuring()
 {
-    ::fwGui::IActionSrv::initialize();
+    gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ std::string SSnapshot::requestFileName()
 {
     std::string fileName = "";
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
     dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
@@ -114,7 +114,7 @@ std::string SSnapshot::requestFileName()
     dialogFile.addFilter("png", "*.png");
     dialogFile.addFilter("tiff", "*.tiff");
     dialogFile.addFilter("all", "*.*");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );

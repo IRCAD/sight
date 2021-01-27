@@ -24,9 +24,9 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwGui/GuiRegistry.hpp>
+#include <gui/GuiRegistry.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/op/Add.hpp>
 
@@ -60,7 +60,7 @@ SMesh::~SMesh() noexcept
 
 void SMesh::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -79,12 +79,12 @@ void SMesh::configuring()
 
 void SMesh::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer());
     const auto genericSceneId = this->getID() + "-genericScene";
-    ::fwGui::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
+    gui::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
     auto mesh = this->getLockedInput< data::Object>(s_MESH_INPUT);
 
@@ -171,7 +171,7 @@ void SMesh::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    ::fwGui::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
+    gui::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
     services::OSR::unregisterService(m_cameraSrv);
     services::OSR::unregisterService(m_meshSrv);

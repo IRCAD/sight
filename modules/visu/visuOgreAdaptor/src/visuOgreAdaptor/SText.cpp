@@ -25,8 +25,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/GenericFieldBase.hpp>
-
-#include <fwDataTools/Color.hpp>
+#include <data/tools/Color.hpp>
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
@@ -93,7 +92,7 @@ void SText::configuring()
 
     const auto hexaTextColor = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     std::array< std::uint8_t, 4 > textColor;
-    ::fwDataTools::Color::hexaStringToRGBA(hexaTextColor, textColor.data());
+    data::tools::Color::hexaStringToRGBA(hexaTextColor, textColor.data());
 
     const auto divideBy255 = std::bind(std::divides<float>(), std::placeholders::_1, 255.f);
     std::transform(textColor.begin(), textColor.end(), m_textColor.ptr(), divideBy255);

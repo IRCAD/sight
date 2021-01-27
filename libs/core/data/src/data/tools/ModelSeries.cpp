@@ -91,4 +91,4 @@ void ModelSeries::addReconstruction( const data::ModelSeries::sptr& _modelSeries
 
 //------------------------------------------------------------------------------
 
-} // end namespace fwDataTools
+} // end namespace sight::data::tools

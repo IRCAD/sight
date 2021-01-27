@@ -25,10 +25,9 @@
 #include "uiMeasurementQt/config.hpp"
 
 #include <data/Landmarks.hpp>
+#include <data/tools/PickingInfo.hpp>
 
-#include <fwDataTools/PickingInfo.hpp>
-
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -47,10 +46,10 @@ namespace editor
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - @deprecated \b addPickedPoint(::fwDataTools::PickingInfo): adds or removes picked landmark. call \b
- * pick(::fwDataTools::PickingInfo) instead.
+ * - @deprecated \b addPickedPoint(data::tools::PickingInfo): adds or removes picked landmark. call \b
+ * pick(data::tools::PickingInfo) instead.
  *
- * - \b pick(::fwDataTools::PickingInfo): adds or removes picked landmark.
+ * - \b pick(data::tools::PickingInfo): adds or removes picked landmark.
  * - \b addPoint(std::string): adds a point to editor.
  * - \b modifyPoint(std::string, size_t): updates the editor when a point has moved.
  * - \b selectPoint(std::string, size_t): selects a point in the editor.
@@ -84,14 +83,14 @@ namespace editor
  *      and groups with multiple points.
  */
 class UIMEASUREMENTQT_CLASS_API SLandmarks final : public QObject,
-                                                   public ::fwGui::editor::IEditor
+                                                   public gui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLandmarks, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SLandmarks, gui::editor::IEditor)
 
     /// Initializes slots.
     UIMEASUREMENTQT_API SLandmarks() noexcept;
@@ -196,11 +195,11 @@ public:
      * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new groupd to add it.
      * - CTRL + right mouse click: removes the landmark at the closest picking position.
      *
-     * @deprecated Uses pick(::fwDataTools::PickingInfo _info) instead.
+     * @deprecated Uses pick(data::tools::PickingInfo _info) instead.
      *
      * @param _pickingInfo Picking informations.
      */
-    void addPickedPoint(::fwDataTools::PickingInfo _pickingInfo);
+    void addPickedPoint(data::tools::PickingInfo _pickingInfo);
 
     /**
      * @brief SLOT: adds or removes a landmark from picking informations.
@@ -211,7 +210,7 @@ public:
      *
      * @param _info contains picking informations.
      */
-    void pick(::fwDataTools::PickingInfo _info);
+    void pick(data::tools::PickingInfo _info);
 
     /**
      * @brief SLOT: adds a point to the editor.

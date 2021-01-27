@@ -14,9 +14,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E3034" />
                 </layout>
@@ -27,10 +27,10 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
                 <toolBar/>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" />
                     <view proportion="1" backgroundColor="#2E3034" border="5" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="flatIcon-0.1/icons/BlueLoad.svg" />

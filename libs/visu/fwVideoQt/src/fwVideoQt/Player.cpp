@@ -28,7 +28,7 @@
 #include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <QAbstractVideoSurface>
 #include <QCameraViewfinderSettings>
@@ -149,7 +149,7 @@ void Player::play()
 
 void Player::onError(QMediaPlayer::Error error) const
 {
-    ::fwGui::dialog::MessageDialog::show("QMediaPlayer error", m_mediaPlayer->errorString().toStdString());
+    gui::dialog::MessageDialog::show("QMediaPlayer error", m_mediaPlayer->errorString().toStdString());
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 <plugin id="ExActivities" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="preferences" />
     <requirement id="activities" />

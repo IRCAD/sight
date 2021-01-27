@@ -31,7 +31,7 @@
 
 #include <data/Vector.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace activities
 {
@@ -44,7 +44,8 @@ namespace action
  * This action works on a data::Vector. It proposes all the available activity according to the selected data and
  * the given configuration. And then, send a signal with all the activity information.
  *
- * This action should be followed by the service '::guiQt::editor::SDynamicView' : this service listens the action
+ * This action should be followed by the service '::modules::guiQt::editor::SDynamicView' : this service listens the
+ * action
  * signals and launchs the activity in a new tab.
  *
  * @section Slots Slots
@@ -60,7 +61,7 @@ namespace action
  * @section Signal Signal
  * - \b activityLaunched(activities::registry::ActivityMsg) : This signal is emitted when the activity is created,
  *      it contains the activity information. It should be connected to the slot 'createTab' of the service
- *      '::guiQt::editor::SDynamicView'.
+ *      '::modules::guiQt::editor::SDynamicView'.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -98,7 +99,8 @@ namespace action
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
- *      chosen activity. The service '::guiQt::editor::SDynamicView' allows to launch the activity in a new tab. For
+ *      chosen activity. The service '::modules::guiQt::editor::SDynamicView' allows to launch the activity in a new
+ * tab. For
  *      that, it must listen the action signal.
  *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
  *      without creating a new tab, for example, to save the selected data.
@@ -126,12 +128,12 @@ namespace action
  *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
  *            Boolean object.
  */
-class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
+class ACTIVITIES_CLASS_API SActivityLauncher : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SActivityLauncher, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SActivityLauncher, ::sight::gui::IActionSrv)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SActivityLauncher() noexcept;
@@ -182,7 +184,7 @@ protected:
 
     /**
      * @brief Initialize the action.
-     * @see fwGui::IActionSrv::initialize()
+     * @see gui::IActionSrv::initialize()
      */
     virtual void configuring() override;
 

@@ -33,8 +33,8 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -139,11 +139,11 @@ void SMatricesReader::configureWithIHM()
 void SMatricesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter(".csv file", "*.csv");
 
     data::location::SingleFile::sptr result;
@@ -202,7 +202,7 @@ void SMatricesReader::readPrevious()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "MatricesReader", "No previous Matrices.");
         }
 
@@ -229,7 +229,7 @@ void SMatricesReader::readNext()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "MatricesReader", "No more matrices to read.");
         }
     }

@@ -28,9 +28,8 @@
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 #include <data/PointList.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Vector.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/helper/Vector.hpp>
 
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/ogre.hpp>
@@ -294,7 +293,7 @@ void SImageMultiDistances::addDistances()
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     const data::Vector::sptr distanceField = image->getField< data::Vector >(
-        ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        data::tools::fieldHelper::Image::m_imageDistancesId);
     if(distanceField)
     {
         for(const data::Object::sptr object : *distanceField)
@@ -335,7 +334,7 @@ void SImageMultiDistances::removeDistances()
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     const data::Vector::csptr distanceField
-        = image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        = image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
 
     std::vector< core::tools::fwID::IDType > foundId;
     if(distanceField)
@@ -371,7 +370,7 @@ void SImageMultiDistances::updateVisibilityFromField()
 
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+    const bool visibility = image->getField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                                 true))->value();
     m_isVisible = visibility;
 

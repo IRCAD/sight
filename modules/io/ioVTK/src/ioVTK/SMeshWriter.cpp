@@ -32,16 +32,16 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>
 #include <fwVtkIO/PlyMeshWriter.hpp>
 #include <fwVtkIO/StlMeshWriter.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -79,7 +79,7 @@ void SMeshWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("OBJ File(.obj)", "*.obj");
@@ -87,7 +87,7 @@ void SMeshWriter::openLocationDialog()
     dialogFile.addFilter("STL File(.stl)", "*.stl");
     dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -149,8 +149,8 @@ void SMeshWriter::updating()
         // Retrieve dataStruct associated with this service
         const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(::fwIO::s_DATA_KEY);
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         std::filesystem::path fileToWrite   = this->getFile();
         const std::string providedExtension = fileToWrite.extension().string();
@@ -210,10 +210,10 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                gui::dialog::IMessageDialog::WARNING);
             // Raise exception  for superior level
             FW_RAISE_EXCEPTION(e);
         }
@@ -223,18 +223,18 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                gui::dialog::IMessageDialog::WARNING);
         }
         catch( ... )
         {
             m_writeFailed = true;
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Warning",
                 "Warning during saving",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                gui::dialog::IMessageDialog::WARNING);
         }
 
         cursor.setDefaultCursor();

@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 
 #include <filesystem>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -41,7 +41,7 @@ namespace editor
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." type="::guiQt::editor::SImage" >
+   <service uid="..." type="::modules::guiQt::editor::SImage" >
         <path>...</path>
         <width>...</width>
         <height>...</height>
@@ -52,19 +52,19 @@ namespace editor
  * - \b width (optional): width of the image in pixels.
  * - \b height (optional): height of the image in pixels.
  */
-class GUIQT_CLASS_API SImage : public QObject,
-                               public ::fwGui::editor::IEditor
+class MODULE_GUIQT_CLASS_API SImage : public QObject,
+                                      public gui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SImage, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SImage, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
-    GUIQT_API SImage() noexcept;
+    MODULE_GUIQT_API SImage() noexcept;
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~SImage() noexcept override;
+    MODULE_GUIQT_API virtual ~SImage() noexcept override;
 
 protected:
 
@@ -74,20 +74,20 @@ protected:
     /**
      * @brief This method launches the IEditor::starting method.
      */
-    GUIQT_API virtual void starting() override;
+    MODULE_GUIQT_API virtual void starting() override;
 
     /**
      * @brief This method launches the IEditor::stopping method.
      */
-    GUIQT_API virtual void stopping() override;
+    MODULE_GUIQT_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUIQT_API virtual void updating() override;
+    MODULE_GUIQT_API virtual void updating() override;
 
     /// This method is used to configure the class parameters.
-    GUIQT_API virtual void configuring() override;
+    MODULE_GUIQT_API virtual void configuring() override;
 
     /** @} */
 private:

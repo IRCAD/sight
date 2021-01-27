@@ -25,9 +25,9 @@
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::sight::data::Image" src="deferred" />
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view align="center" />
                     <view align="right"  />
@@ -44,10 +44,10 @@
             </registry>
         </service>
 
-        <service uid="view_negato2_and_3" type="::gui::view::SDefaultView">
+        <service uid="view_negato2_and_3" type="::sight::modules::gui::view::SDefaultView">
             <in key="image" uid="optionalInputImage" />
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -59,7 +59,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="3D MPR Axial view" icon="media-0.1/icons/icon-axial.png" />
@@ -107,7 +107,7 @@
         </service>
 
 
-        <service uid="menu" type="::gui::aspect::SDefaultMenu">
+        <service uid="menu" type="::sight::modules::gui::aspect::SDefaultMenu">
             <gui>
                 <layout>
                     <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="media-0.1/icons/ManageOrgan.png" />
@@ -125,7 +125,7 @@
             </registry>
         </service>
 
-        <service uid="action_organManager" type="::gui::action::SConfigLauncher">
+        <service uid="action_organManager" type="::sight::modules::gui::action::SConfigLauncher">
             <appConfig id="ModelSeriesManagerWindow" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="${modelSeries}" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
@@ -146,14 +146,14 @@
             <parameter replace="setAxialCameraChannel" by="setAxialCameraChannel" />
         </service>
 
-        <service uid="action_SagittalViewMPR3D" type="::gui::action::SSignal" />
-        <service uid="action_FrontalViewMPR3D" type="::gui::action::SSignal" />
-        <service uid="action_AxialViewMPR3D" type="::gui::action::SSignal" />
+        <service uid="action_SagittalViewMPR3D" type="::sight::modules::gui::action::SSignal" />
+        <service uid="action_FrontalViewMPR3D" type="::sight::modules::gui::action::SSignal" />
+        <service uid="action_AxialViewMPR3D" type="::sight::modules::gui::action::SSignal" />
 
         <!-- Negato -->
 
         <!-- This service extracts the image if it exists from the optional image parameter. -->
-        <service uid="extractImage" type="::gui::action::SPushObject" >
+        <service uid="extractImage" type="::sight::modules::gui::action::SPushObject" >
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
             <push srcKey="OptionalInputImageKey" />
@@ -197,13 +197,13 @@
             <inout key="image" uid="optionalInputImage" />
         </service>
 
-        <service uid="ActionLoadLandmark" type="::gui::action::SSlotCaller" >
+        <service uid="ActionLoadLandmark" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>LoadLandmark/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionSaveLandmark" type="::gui::action::SSlotCaller" >
+        <service uid="ActionSaveLandmark" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>SaveLandmark/update</slot>
             </slots>
@@ -225,7 +225,7 @@
             <config id="LandmarksAtomsConfig" service="::ioAtoms::SWriter" />
         </service>
 
-        <service uid="ActionEditLandmark" type="::gui::action::SBooleanSlotCaller">
+        <service uid="ActionEditLandmark" type="::sight::modules::gui::action::SBooleanSlotCaller">
             <slots>
                 <slot>landmarksEditor/setVisible</slot>
             </slots>

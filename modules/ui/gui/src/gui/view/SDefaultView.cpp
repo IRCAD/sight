@@ -26,12 +26,12 @@
 
 #include <services/macros.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace view
 {
 
-fwServicesRegisterMacro( ::fwGui::view::IView, ::gui::view::SDefaultView)
+fwServicesRegisterMacro( ::sight::gui::view::IView, ::sight::modules::gui::view::SDefaultView)
 
 SDefaultView::SDefaultView() noexcept
 {

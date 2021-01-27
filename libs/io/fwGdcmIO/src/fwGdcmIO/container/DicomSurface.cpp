@@ -24,7 +24,7 @@
 
 #include "fwGdcmIO/exception/Failed.hpp"
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 namespace fwGdcmIO
 {
@@ -57,7 +57,7 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
     // Get mesh
     data::Mesh::csptr mesh = reconstruction->getMesh();
     FW_RAISE_EXCEPTION_IF(::fwGdcmIO::exception::Failed("Can't save this mesh. It must contain only triangles !"),
-                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
+                          !::data::tools::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
     auto itr       = mesh->begin< data::iterator::ConstPointIterator >();
     const auto end = mesh->end< data::iterator::ConstPointIterator >();
     // Coordinates

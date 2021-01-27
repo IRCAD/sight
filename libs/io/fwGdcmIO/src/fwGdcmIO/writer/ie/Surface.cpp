@@ -32,11 +32,10 @@
 
 #include <data/Reconstruction.hpp>
 #include <data/Series.hpp>
+#include <data/tools/Mesh.hpp>
 #include <data/types.hpp>
 
 #include <fwDataIO/reader/DictionaryReader.hpp>
-
-#include <fwDataTools/Mesh.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -471,7 +470,7 @@ void Surface::writeSurfaceSequence(const data::Reconstruction::csptr& reconstruc
 
     // Finite Volume (0x0066,0x000E) - Type 1
     surface->SetFiniteVolume(
-        ::fwDataTools::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES):
+        data::tools::Mesh::isClosed(reconstruction->getMesh()) ? (::gdcm::Surface::YES):
         (::gdcm::Surface::NO));
 
     // Manifold (0x0066,0x0010) - Type 1

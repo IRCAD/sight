@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/Cursor.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -75,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ void ShowHelpContents::configuring()
      * .qhcp/.qhc (source/binary): Contains information that is used to customize
      *                             the appearance and available features of Qt Assistant.
      */
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
@@ -130,11 +130,11 @@ void ShowHelpContents::updating()
     if (!helpEngine->setupData())
     {
         SLM_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( "Help file is missing or not correct." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
         // Setup help engine information failed.
         // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not correct.
@@ -161,14 +161,14 @@ void ShowHelpContents::updating()
 
 void ShowHelpContents::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowHelpContents::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

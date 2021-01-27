@@ -146,7 +146,7 @@ private:
 
         double progress() const
         {
-            return ( 0 == totalWork ) ? 1. : double(doneWork)/totalWork;
+            return ( 0 == totalWork ) ? 1. : static_cast<double>(doneWork)/ static_cast<double>(totalWork);
         }
     };
 

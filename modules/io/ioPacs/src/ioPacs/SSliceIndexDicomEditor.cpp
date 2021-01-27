@@ -28,14 +28,13 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/registry/ServiceConfig.hpp>
 
@@ -69,7 +68,7 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
@@ -121,8 +120,8 @@ void SSliceIndexDicomEditor::starting()
     m_sliceTriggerer->setOneShot(true);
 
     // Create the slider.
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -378,9 +377,9 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
         data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0]/2);
         data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1]/2);
 
-        image->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
-        image->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
-        image->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
+        image->setField(data::tools::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
+        image->setField(data::tools::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
+        image->setField(data::tools::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
 
         // Send the signal
         const auto sig = image->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);

@@ -24,7 +24,7 @@
 
 #include <data/Array.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -42,7 +42,7 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitor::action::MemoryConsumption, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 
@@ -62,10 +62,10 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
     {
         std::stringstream msg;
         msg << "Cannot allocate buffer ("<< memorySizeInBytes/(1024*1024) <<" Mo) :\n" << e.what() << std::endl;
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Action increase memory",
             msg.str(),
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+            gui::dialog::IMessageDialog::CRITICAL);
     }
 }
 
@@ -105,7 +105,7 @@ void MemoryConsumption::updating()
 
 void MemoryConsumption::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
@@ -128,13 +128,13 @@ void MemoryConsumption::configuring()
 
 void MemoryConsumption::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void MemoryConsumption::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

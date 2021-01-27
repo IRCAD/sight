@@ -30,9 +30,9 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/Cursor.hpp>
-
 #include <fwIO/ioTypes.hpp>
+
+#include <gui/Cursor.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -43,7 +43,7 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SExportWithSeriesDB, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiIO::action::SExportWithSeriesDB, ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
@@ -76,7 +76,7 @@ void SExportWithSeriesDB::info(std::ostream& _sstream )
 
 void SExportWithSeriesDB::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -90,7 +90,7 @@ void SExportWithSeriesDB::configuring()
 
 void SExportWithSeriesDB::updating( )
 {
-    ::fwGui::LockAction lock(this->getSptr());
+    gui::LockAction lock(this->getSptr());
 
     data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
     SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
@@ -134,7 +134,7 @@ void SExportWithSeriesDB::updating( )
 
 void SExportWithSeriesDB::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 
     data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
     SLM_FATAL_IF( "The associated object must be a data::Series.", !series);
@@ -144,7 +144,7 @@ void SExportWithSeriesDB::starting()
 
 void SExportWithSeriesDB::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

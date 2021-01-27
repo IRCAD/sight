@@ -38,18 +38,16 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/helper/Composite.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Composite.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwNetworkIO/exceptions/Base.hpp>
 
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ActiveWorkers.hpp>
@@ -84,7 +82,7 @@ SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 
 void SSliceIndexDicomPullerEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicomWeb::SPacsConfigurationInitializer must have "
@@ -129,8 +127,8 @@ void SSliceIndexDicomPullerEditor::configuring()
 
 void SSliceIndexDicomPullerEditor::starting()
 {
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -338,11 +336,11 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
         data::Image::sptr newImage      = imageSeries->getImage();
         const data::Image::Size newSize = newImage->getSize2();
 
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+        newImage->setField(data::tools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0]/2));
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+        newImage->setField(data::tools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast<int>(newSize[1]/2));
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+        newImage->setField(data::tools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
 
         this->setOutput("image", newImage);
     }
@@ -372,13 +370,13 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         throw core::tools::Failed("'server' element not found");
     }
 
-    const std::string hostname = ::fwPreferences::getValue(m_serverHostnameKey);
+    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
 
-    const std::string port = ::fwPreferences::getValue(m_serverPortKey);
+    const std::string port = gui::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -479,11 +477,11 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

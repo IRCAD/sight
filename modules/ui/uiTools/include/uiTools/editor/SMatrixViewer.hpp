@@ -24,7 +24,7 @@
 
 #include "uiTools/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -58,10 +58,10 @@ namespace editor
  */
 
 class UITOOLS_CLASS_API SMatrixViewer : public QObject,
-                                        public ::fwGui::editor::IEditor
+                                        public gui::editor::IEditor
 {
 public:
-    fwCoreServiceMacro(SMatrixViewer, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SMatrixViewer, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SMatrixViewer() noexcept;

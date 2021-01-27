@@ -26,9 +26,9 @@
 
 #include <data/Image.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwIO/IWriter.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <QPdfWriter>
 #include <QtWidgets>

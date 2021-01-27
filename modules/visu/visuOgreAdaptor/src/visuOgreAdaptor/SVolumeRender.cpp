@@ -28,15 +28,14 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/ogre.hpp>
+
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -220,7 +219,7 @@ void SVolumeRender::starting()
     bool isValid = false;
     {
         const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-        isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
     if(isValid)
     {
@@ -830,7 +829,7 @@ void SVolumeRender::toggleVREffect(::visuOgreAdaptor::SVolumeRender::VREffectTyp
     bool isValid = false;
     {
         const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-        isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
 
     // Volume illumination is only implemented for raycasting rendering

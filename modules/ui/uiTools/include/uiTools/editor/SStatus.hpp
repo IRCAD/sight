@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -95,12 +95,12 @@ namespace editor
  * status.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
-                                  public ::fwGui::editor::IEditor
+                                  public gui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SStatus, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SStatus, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SStatus() noexcept;

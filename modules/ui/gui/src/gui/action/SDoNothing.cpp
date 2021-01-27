@@ -26,11 +26,11 @@
 
 #include <services/macros.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SDoNothing )
 
 SDoNothing::SDoNothing() noexcept
 {

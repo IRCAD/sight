@@ -24,11 +24,12 @@
 
 #include <services/macros.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDefault )
+
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SDefault )
 
 SDefault::SDefault() noexcept
 {

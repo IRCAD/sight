@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -49,13 +49,13 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [data::Image]: image containing the distances.
  */
-class UIMEASUREMENT_CLASS_API SShowDistance final : public ::fwGui::IActionSrv
+class UIMEASUREMENT_CLASS_API SShowDistance final : public ::sight::gui::IActionSrv
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShowDistance,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SShowDistance,  gui::IActionSrv)
 
     /// Initialize slots.
     UIMEASUREMENT_API SShowDistance() noexcept;

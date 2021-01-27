@@ -30,7 +30,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -62,13 +62,13 @@ namespace uiCalibration
  * - \b key2 [data::Vector]: vector containing extracted images.
  */
 class UICALIBRATION_CLASS_API SImagesSelector : public QObject,
-                                                public ::fwGui::editor::IEditor
+                                                public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SImagesSelector, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SImagesSelector, gui::editor::IEditor)
 
     /// Constructor.
     UICALIBRATION_API SImagesSelector() noexcept;

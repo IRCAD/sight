@@ -33,12 +33,12 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-
 #include <fwVtkIO/SeriesDBReader.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -77,9 +77,9 @@ void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
+    dialogFile.setType(gui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
     dialogFile.addFilter("MetaImage files", "*.mhd");
@@ -90,8 +90,8 @@ void SSeriesDBReader::openLocationDialog()
     dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
     dialogFile.addFilter("VTU Image files", "*.vtu");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::MultiFiles::sptr result;
     result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
@@ -159,20 +159,20 @@ void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathTyp
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -187,8 +187,8 @@ void SSeriesDBReader::updating()
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 

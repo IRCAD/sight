@@ -4,7 +4,6 @@ set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
         data
-        arPreferences
-        fwGui
+        gui
 )
 set( REQUIREMENTS  )

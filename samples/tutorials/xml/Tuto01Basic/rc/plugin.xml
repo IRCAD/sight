@@ -5,7 +5,7 @@
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <!-- Defines the App-config -->
     <extension implements="::sight::services::registry::AppConfig" >
@@ -14,7 +14,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="myFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="myFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto01Basic</name>

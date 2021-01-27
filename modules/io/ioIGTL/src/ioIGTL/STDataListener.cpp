@@ -29,9 +29,8 @@
 #include <data/MatrixTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -103,21 +102,21 @@ void STDataListener::configuring()
 
 void STDataListener::runClient()
 {
-    ::fwGui::dialog::MessageDialog msgDialog;
+    gui::dialog::MessageDialog msgDialog;
 
     data::Composite::sptr composite = data::Composite::New();
 
     // 1. Connection
     try
     {
-        const std::uint16_t port   = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = ::fwPreferences::getValue(m_hostnameConfig);
+        const std::uint16_t port   = gui::preferences::getValue<std::uint16_t>(m_portConfig);
+        const std::string hostname = gui::preferences::getValue(m_hostnameConfig);
 
         if(!m_deviceNamesConfig.empty())
         {
             for(const auto& dn : m_deviceNamesConfig)
             {
-                const std::string dnKey = ::fwPreferences::getValue(dn->getValue());
+                const std::string dnKey = gui::preferences::getValue(dn->getValue());
                 m_client.addAuthorizedDevice(dnKey);
             }
             m_client.setFilteringByDeviceName(true);

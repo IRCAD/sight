@@ -26,7 +26,7 @@
 
 #include <data/Camera.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <QCamera>
 #include <QHBoxLayout>

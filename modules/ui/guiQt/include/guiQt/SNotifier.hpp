@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
-#include <fwGui/dialog/NotificationDialog.hpp>
+#include <gui/dialog/NotificationDialog.hpp>
 
 #include <services/IController.hpp>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 /**
  * @brief SNotifier is a general service used to display notification in a centralized way.
@@ -44,7 +44,7 @@ namespace guiQt
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::guiQt::SNotifier">
+        <service type="::modules::guiQt::SNotifier">
             <message>Default Message</message>
             <maxNotifications>3</maxNotifications>
             <position>TOP_RIGHT</position>
@@ -72,17 +72,17 @@ namespace guiQt
  * - \b parent (optional): UID of the gui Container where the notifications will be displayed (default the whole app),
  * NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
  */
-class GUIQT_CLASS_API SNotifier final : public services::IController
+class MODULE_GUIQT_CLASS_API SNotifier final : public services::IController
 {
 public:
 
     fwCoreServiceMacro(SNotifier, services::IController)
 
     /// Constructor, initializes position map & slots.
-    GUIQT_API SNotifier() noexcept;
+    MODULE_GUIQT_API SNotifier() noexcept;
 
     /// Destructor, clears the position map.
-    GUIQT_API virtual ~SNotifier() noexcept override;
+    MODULE_GUIQT_API virtual ~SNotifier() noexcept override;
 
 protected:
 
@@ -91,22 +91,22 @@ protected:
      */
 
     /// This method configures the service
-    GUIQT_API virtual void configuring() override;
+    MODULE_GUIQT_API virtual void configuring() override;
 
     /**
      * @brief Starts and setups the service optionnaly gets the parent container SID/WID if set.
      */
-    GUIQT_API virtual void starting() override;
+    MODULE_GUIQT_API virtual void starting() override;
 
     /**
      * @brief Stops & clears the service
      */
-    GUIQT_API virtual void stopping() override;
+    MODULE_GUIQT_API virtual void stopping() override;
 
     /**
      * @brief This method does nothing.
      */
-    GUIQT_API virtual void updating() override;
+    MODULE_GUIQT_API virtual void updating() override;
 
 private:
 
@@ -136,7 +136,7 @@ private:
      * @param _message message to display.
      * @param _type type of the notification.
      */
-    void showNotification(const std::string& _message, ::fwGui::dialog::NotificationDialog::Type _type);
+    void showNotification(const std::string& _message, gui::dialog::NotificationDialog::Type _type);
 
     /// Max number of displayed notifications.
     std::uint8_t m_maxStackedNotifs {3};
@@ -145,27 +145,27 @@ private:
     int m_durationInMs {3000};
 
     /// Set position once, all notifications of the app/config are displayed here.
-    ::fwGui::dialog::NotificationDialog::Position m_notifcationsPosition
-    {::fwGui::dialog::NotificationDialog::Position::TOP_RIGHT};
+    gui::dialog::NotificationDialog::Position m_notifcationsPosition
+    {gui::dialog::NotificationDialog::Position::TOP_RIGHT};
 
     /// Map to convert string position like "TOP_RIGHT" to NotificationDialog::Position.
-    std::map< std::string, ::fwGui::dialog::NotificationDialog::Position> m_positionMap;
+    std::map< std::string, gui::dialog::NotificationDialog::Position> m_positionMap;
 
     /// Default message (if message in slot are empty), the default message can be configured in xml.
     std::string m_defaultMessage = "Notification";
 
     /// Vector of displayed NotificationDialog, resized with "m_maxStackedNotifs" at start.
-    std::vector< ::fwGui::dialog::NotificationDialog::sptr > m_popups {};
+    std::vector< gui::dialog::NotificationDialog::sptr > m_popups {};
 
     /// Queue of index in m_popups to remove oldest if m_maxStackedNotifs is reached.
     std::queue< size_t > m_indexQueue;
 
     /// fwContainer where notifications will be displayed in, nullptr by default.
-    ::fwGui::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};
+    gui::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};
 
     /// Parent containner ID (SID or WID), empty by default.
     std::string m_parentContainerID;
 
 };
 
-} //namespace guiQt
+} //namespace sight::modules::guiQt

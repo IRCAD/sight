@@ -357,7 +357,7 @@ void Module::loadRequirements()
         RequirementContainer::const_iterator iter;
         for(const RequirementContainer::value_type& requirement : m_requirements)
         {
-            auto module = rntm.findModule(requirement);
+            auto module = rntm.findModuleByPath(requirement);
 
             // Ensure that a module has been retrieved.
             if( module == nullptr )

@@ -7,7 +7,7 @@
     <requirement id="preferences" />
     <requirement id="activities" />
     <requirement id="filterUnknownSeries" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <xi:include href="configurations/ARCalibrationActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

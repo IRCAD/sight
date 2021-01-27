@@ -29,7 +29,7 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace sight::core::jobs
 {
@@ -77,10 +77,10 @@ namespace action
  * @subsection In-Out In-Out
  * - \b seriesDB [data::SeriesDB]: the SeriesDB to merge.
  */
-class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
+class UIIO_CLASS_API SSeriesDBMerger : public ::sight::gui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SSeriesDBMerger,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SSeriesDBMerger,  gui::IActionSrv)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
     typedef core::com::Slot< void ( SPTR(core::jobs::IJob) ) > ForwardJobSlotType;

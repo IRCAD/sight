@@ -1,7 +1,7 @@
 <plugin id="dicomPacsWriterActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="visuVTKQt" />
     <requirement id="ioPacs" />
 

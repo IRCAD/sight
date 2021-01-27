@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace visuOgreAdaptor
  * provided by this service.
  *
  * @section Signals Signals
- * - \b picked(::fwDataTools::PickingInfo): emitted when a picking query is successful.
+ * - \b picked(data::tools::PickingInfo): emitted when a picking query is successful.
  *
  * @section XML XML Configuration
  * @code{.xml}

@@ -26,9 +26,8 @@
 #include "fwCommand/ICommand.hpp"
 
 #include <data/Image.hpp>
-
-#include <fwDataTools/Image.hpp>
-#include <fwDataTools/ImageDiff.hpp>
+#include <data/tools/Image.hpp>
+#include <data/tools/ImageDiff.hpp>
 
 namespace fwCommand
 {
@@ -38,7 +37,7 @@ class FWCOMMAND_CLASS_API ImageDiffCommand : public ICommand
 public:
 
     /// Constructor, uses an image and a change list for that image.
-    FWCOMMAND_API ImageDiffCommand(const data::Image::sptr& img, ::fwDataTools::ImageDiff diff);
+    FWCOMMAND_API ImageDiffCommand(const data::Image::sptr& img, data::tools::ImageDiff diff);
 
     /// The diff size.
     FWCOMMAND_API virtual size_t getSize() const;
@@ -58,7 +57,7 @@ private:
 
     data::Image::BufferModifiedSignalType::sptr m_modifSig;
 
-    ::fwDataTools::ImageDiff m_diff;
+    data::tools::ImageDiff m_diff;
 
 };
 

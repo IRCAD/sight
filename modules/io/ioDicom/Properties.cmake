@@ -6,12 +6,11 @@ set( DEPENDENCIES
     core
     fwDicomIOFilter
     fwDicomIOFilterQt
-    fwGui
-    fwGuiQt
+    gui
+    guiQt
     services
     fwIO
     data
-    fwDataTools
     )
 set( REQUIREMENTS
     data

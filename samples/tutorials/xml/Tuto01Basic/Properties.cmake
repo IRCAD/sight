@@ -5,12 +5,12 @@ set( DEPENDENCIES  )        # For an application we have no dependencies (librar
 set( REQUIREMENTS           # The modules used by this application
     fwlauncher              # Needed to build the launcher
     appXml                  # XML configurations
-    guiQt                   # Start the module, load qt implementation of gui
+    module_guiQt            # Start the module, load qt implementation of module_gui
 
-    module_services             # fwService
+    module_services
 
     # UI declaration/Actions
-    gui
+    module_gui
 )
 
 moduleParam(

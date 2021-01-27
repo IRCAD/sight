@@ -25,7 +25,7 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwItkIO/itk.hpp>
 
@@ -110,7 +110,7 @@ void Flipper::flip(const data::Image::csptr& _inImage,
                    const std::array<bool, 3>& _inFlipAxes)
 {
     // If the image is valid, process it, otherwise copy it in the output image
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_inImage))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(_inImage))
     {
         Parameters params;
         params.i_image    = _inImage;

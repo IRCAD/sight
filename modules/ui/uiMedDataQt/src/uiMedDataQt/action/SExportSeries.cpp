@@ -35,7 +35,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGui/dialog/InputDialog.hpp>
+#include <gui/dialog/InputDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -46,7 +46,7 @@ namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::sight::data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
@@ -82,7 +82,7 @@ SExportSeries::~SExportSeries() noexcept
 
 void SExportSeries::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void SExportSeries::updating()
         }
     }
 
-    description = ::fwGui::dialog::InputDialog::showInputDialog(
+    description = gui::dialog::InputDialog::showInputDialog(
         "Export activity", "Enter the series description", description);
 
     if(!description.empty())

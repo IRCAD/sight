@@ -22,13 +22,13 @@
 
 #include "guiQt/editor/SParameters.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 #include <core/tools/Object.hpp>
 
-#include <fwDataTools/Color.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/tools/Color.hpp>
 
 #include <services/macros.hpp>
 
@@ -42,7 +42,7 @@
 #include <QString>
 #include <QStyle>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -76,7 +76,7 @@ static const core::com::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "se
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SParameters )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::sight::modules::guiQt::editor::SParameters )
 
 //-----------------------------------------------------------------------------
 
@@ -131,7 +131,7 @@ void SParameters::starting()
 {
     this->create();
 
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     QGridLayout* layout = new QGridLayout();
 
@@ -334,7 +334,7 @@ void SParameters::starting()
 
 void SParameters::updating()
 {
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* widget  = qtContainer->getQtContainer();
 
     services::IService::ConfigType config               = this->getConfigTree();
@@ -512,7 +512,7 @@ void SParameters::onColorButton()
     QObject* sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = ::sight::guiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -935,13 +935,13 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     {
         std::uint8_t color[4];
 
-        ::fwDataTools::Color::hexaStringToRGBA(defaultValue, color);
+        data::tools::Color::hexaStringToRGBA(defaultValue, color);
 
         colorStr = defaultValue;
     }
 
     std::uint8_t color[4];
-    ::fwDataTools::Color::hexaStringToRGBA(colorStr, color);
+    data::tools::Color::hexaStringToRGBA(colorStr, color);
 
     const int iconSize = colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
     QPixmap pix(iconSize, iconSize);
@@ -1701,7 +1701,7 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 
 QWidget* SParameters::getParamWidget(const std::string& key)
 {
-    auto qtContainer      = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer      = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer());
     const QWidget* widget = qtContainer->getQtContainer();
 
     QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
@@ -1713,4 +1713,4 @@ QWidget* SParameters::getParamWidget(const std::string& key)
 //-----------------------------------------------------------------------------
 
 }   //namespace editor
-}   //namespace guiQt
+}   //namespace sight::modules::guiQt

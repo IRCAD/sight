@@ -27,7 +27,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -60,12 +60,12 @@ namespace editor
  * - \b composite [data::Composite]: composite.
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
-                                                   public ::fwGui::editor::IEditor
+                                                   public gui::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOrganTransformation, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SOrganTransformation, gui::editor::IEditor)
 
     /// constructor
     UIMEDDATAQT_API SOrganTransformation() noexcept;

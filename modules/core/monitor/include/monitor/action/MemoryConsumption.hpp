@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MONITOR_CLASS_API MemoryConsumption : public ::fwGui::IActionSrv
+class MONITOR_CLASS_API MemoryConsumption : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(MemoryConsumption,   ::fwGui::IActionSrv )
+    fwCoreServiceMacro(MemoryConsumption,   gui::IActionSrv )
 
     /// Does nothing
     MONITOR_API MemoryConsumption() noexcept;
@@ -53,7 +53,7 @@ protected:
      * Sample of declaration configuration :
      *
      * @code{.xml}
-         <service uid="myIncMemConsum"  type="::fwGui::IActionSrv"
+         <service uid="myIncMemConsum"  type="::gui::IActionSrv"
             implementation="::monitor::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>

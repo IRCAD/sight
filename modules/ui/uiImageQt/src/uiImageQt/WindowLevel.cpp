@@ -32,14 +32,13 @@
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Composite.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGuiQt/widget/QRangeSlider.hpp>
+#include <guiQt/container/QtContainer.hpp>
+#include <guiQt/widget/QRangeSlider.hpp>
 
 #include <services/macros.hpp>
 
@@ -61,7 +60,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::WindowLevel, ::sight::data::Image)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::WindowLevel, ::sight::data::Image)
 
 static const services::IService::KeyType s_IMAGE_INOUT = "image";
 static const services::IService::KeyType s_TF_INOUT = "tf";
@@ -118,7 +117,7 @@ void WindowLevel::starting()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QGridLayout* const layout = new QGridLayout();
@@ -131,7 +130,7 @@ void WindowLevel::starting()
     QDoubleValidator* const maxValidator = new QDoubleValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
 
-    m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider();
+    m_rangeSlider = new guiQt::widget::QRangeSlider();
 
     m_toggleTFButton = new QToolButton();
     QIcon ico;
@@ -208,7 +207,7 @@ void WindowLevel::updating()
     SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
     const data::mt::ObjectReadLock imgLock(image);
 
-    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     this->setEnabled(imageIsValid);
 
     if(imageIsValid)
@@ -216,7 +215,7 @@ void WindowLevel::updating()
         if(m_autoWindowing)
         {
             double min, max;
-            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
             this->updateImageWindowLevel(min, max);
         }
 
@@ -376,7 +375,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
         case 4:         // Fit Image Range
         {
             const data::mt::ObjectReadLock imgLock(image);
-            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
         break;
         case 5:         // Custom : TODO
@@ -462,7 +461,7 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
         data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
         double min, max;
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         this->updateImageWindowLevel(min, max);
         this->onImageWindowLevelChanged(min, max);
     }

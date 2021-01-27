@@ -6,7 +6,7 @@
 
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgreQt" />
 
@@ -23,7 +23,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto07GenericScene</name>
@@ -39,9 +39,9 @@
             </service>
 
             <!-- Status bar used to display the progress bar for reading -->
-            <service uid="progressBarView" type="::gui::editor::SJobBar" />
+            <service uid="progressBarView" type="::sight::modules::gui::editor::SJobBar" />
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -52,7 +52,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
@@ -71,9 +71,9 @@
             </service>
 
             <!-- main view -->
-            <service uid="containerView" type="::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="no" backgroundColor="#3E4453" />
@@ -86,9 +86,9 @@
             </service>
 
             <!-- View for editors to update image visualization -->
-            <service uid="editorsView" type="::gui::view::SDefaultView" >
+            <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -148,20 +148,20 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Actions to call readers -->
-            <service uid="openImageAct" type="::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::gui::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="openTextureAct" type="::gui::action::SStarter" >
+            <service uid="openTextureAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="textureReaderSrv" />
             </service>
 
             <!-- Quit action -->
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -191,7 +191,7 @@
 
                 Here, this editor is used to show or hide the image. It is connected to the image adaptor.
             -->
-            <service uid="showNegatoSrv" type="::guiQt::editor::SSignalButton" >
+            <service uid="showNegatoSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
                     <icon>flatIcon-0.1/icons/RedCross.svg</icon>
@@ -208,7 +208,7 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="snapshotSrv" type="::guiQt::editor::SSignalButton" >
+            <service uid="snapshotSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>

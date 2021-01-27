@@ -14,9 +14,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="organView" type="::gui::view::SDefaultView" >
+        <service uid="organView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::ToolboxLayoutManager" >
+                <layout type="::sight::gui::ToolboxLayoutManager" >
                     <view caption="Organs" expanded="true"  />
                     <view caption="Material" expanded="true" />
                     <view caption="Representation" expanded="true" />

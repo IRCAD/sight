@@ -34,7 +34,7 @@
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
 
-#include <fwDataTools/Color.hpp>
+#include <data/tools/Color.hpp>
 
 #include <services/registry/ObjectService.hpp>
 
@@ -259,14 +259,14 @@ void Layer::createScene()
         ::Ogre::Pass* pass                           = material->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
 
-        ::fwDataTools::Color::hexaStringToRGBA(m_topColor, color);
+        data::tools::Color::hexaStringToRGBA(m_topColor, color);
         ::Ogre::ColourValue ogreTopColor(color[0] / 255.f,
                                          color[1] / 255.f,
                                          color[2] / 255.f,
                                          1.f);
         params->setNamedConstant("topColour", ogreTopColor);
 
-        ::fwDataTools::Color::hexaStringToRGBA(m_bottomColor, color);
+        data::tools::Color::hexaStringToRGBA(m_bottomColor, color);
         ::Ogre::ColourValue ogreBotColor(color[0] / 255.f,
                                          color[1] / 255.f,
                                          color[2] / 255.f,

@@ -8,7 +8,7 @@ This example shows the possibilities of SParameters:
 
     <requirement id="::sight::modules::services" />
     <requirement id="preferences" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>ExSParameters_AppCfg</id>
@@ -16,7 +16,7 @@ This example shows the possibilities of SParameters:
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExSParameters</name>
@@ -29,9 +29,9 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="mainview" type="::gui::view::SDefaultView" >
+            <service uid="mainview" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -43,9 +43,9 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="parametersView" type="::gui::view::SDefaultView" >
+            <service uid="parametersView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -57,9 +57,9 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="minmaxParametersSrvView" type="::gui::view::SDefaultView" >
+            <service uid="minmaxParametersSrvView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -73,7 +73,7 @@ This example shows the possibilities of SParameters:
 
             <!-- ******************************* Services ******************************* -->
 
-            <service uid="parameters1Srv" type="::guiQt::editor::SParameters" >
+            <service uid="parameters1Srv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="true" depends="enable" />
@@ -90,7 +90,7 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
-            <service uid="parameters2Srv" type="::guiQt::editor::SParameters" >
+            <service uid="parameters2Srv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="false" depends="enable"  />
@@ -107,7 +107,7 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
-            <service uid="minParametersSrv" type="::guiQt::editor::SParameters" >
+            <service uid="minParametersSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.2" min="0." max="0.8" />
                     <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0." min="0." max="80." />
@@ -120,7 +120,7 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
-            <service uid="maxParametersSrv" type="::guiQt::editor::SParameters" >
+            <service uid="maxParametersSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.7" min="0.2" max="1." />
                     <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="75.3" min="35." max="150." />

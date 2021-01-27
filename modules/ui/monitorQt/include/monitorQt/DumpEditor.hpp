@@ -28,7 +28,7 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QFutureWatcher>
 #include <QPointer>
@@ -54,13 +54,13 @@ namespace monitorQt
  * @brief   Editor to dump or restore selected buffer.
  */
 class MONITORQT_CLASS_API DumpEditor : public QObject,
-                                       public ::fwGui::editor::IEditor
+                                       public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(DumpEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(DumpEditor, gui::editor::IEditor)
 
     /// Constructor. Does nothing.
     MONITORQT_API DumpEditor() noexcept;

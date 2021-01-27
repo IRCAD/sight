@@ -27,7 +27,7 @@
 #include <activities/registry/Activities.hpp>
 #include <activities/registry/ActivityMsg.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QButtonGroup>
 #include <QObject>
@@ -71,13 +71,13 @@ namespace editor
  *    - \b id: id of the activity
  */
 class UIACTIVITIESQT_CLASS_API SCreateActivity : public QObject,
-                                                 public ::fwGui::editor::IEditor
+                                                 public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCreateActivity, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SCreateActivity, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQT_API SCreateActivity() noexcept;

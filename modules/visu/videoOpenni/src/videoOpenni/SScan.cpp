@@ -28,7 +28,7 @@
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -209,10 +209,10 @@ void SScan::startCamera()
     if (m_status != ::openni::STATUS_OK)
     {
         SLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Sense Error",
             "Sense device is not available. Please check if it is plugged in.",
-            ::fwGui::dialog::IMessageDialog::CRITICAL);
+            gui::dialog::IMessageDialog::CRITICAL);
         return;
     }
 

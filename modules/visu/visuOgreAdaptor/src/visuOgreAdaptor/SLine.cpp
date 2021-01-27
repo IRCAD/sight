@@ -26,7 +26,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <fwDataTools/Color.hpp>
+#include <data/tools/Color.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/ogre.hpp>
@@ -83,7 +83,7 @@ void SLine::configuring()
 
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
     std::uint8_t rgba[4];
-    ::fwDataTools::Color::hexaStringToRGBA(color, rgba);
+    data::tools::Color::hexaStringToRGBA(color, rgba);
     m_color.r = static_cast<float>(rgba[0]) / 255.f;
     m_color.g = static_cast<float>(rgba[1]) / 255.f;
     m_color.b = static_cast<float>(rgba[2]) / 255.f;

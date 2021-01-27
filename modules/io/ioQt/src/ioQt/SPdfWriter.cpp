@@ -30,11 +30,11 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/GuiRegistry.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/GuiRegistry.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -103,12 +103,12 @@ void SPdfWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("pdf", "*.pdf");
 
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -205,19 +205,19 @@ void SPdfWriter::starting()
 
     for(const auto& id : m_containersIDs)
     {
-        ::fwGuiQt::container::QtContainer::sptr containerElt;
-        ::fwGui::container::fwContainer::sptr fwContainerFromConfig;
-        if ( ::fwGui::GuiRegistry::hasSIDContainer( id ) )
+        guiQt::container::QtContainer::sptr containerElt;
+        gui::container::fwContainer::sptr fwContainerFromConfig;
+        if ( gui::GuiRegistry::hasSIDContainer( id ) )
         {
-            fwContainerFromConfig = ::fwGui::GuiRegistry::getSIDContainer( id );
+            fwContainerFromConfig = gui::GuiRegistry::getSIDContainer( id );
         }
         else
         {
-            fwContainerFromConfig = ::fwGui::GuiRegistry::getWIDContainer( id );
+            fwContainerFromConfig = gui::GuiRegistry::getWIDContainer( id );
         }
         if (fwContainerFromConfig)
         {
-            containerElt = ::fwGuiQt::container::QtContainer::dynamicCast(fwContainerFromConfig);
+            containerElt = guiQt::container::QtContainer::dynamicCast(fwContainerFromConfig);
             m_containersToExport.push_back(containerElt->getQtContainer());
         }
     }

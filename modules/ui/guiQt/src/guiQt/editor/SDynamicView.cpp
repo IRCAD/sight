@@ -37,8 +37,8 @@
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/GuiRegistry.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/GuiRegistry.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/AppConfig.hpp>
@@ -51,7 +51,7 @@
 
 #include <regex>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
@@ -61,7 +61,7 @@ static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SDynamicView )
+fwServicesRegisterMacro( ::sight::gui::view::IActivityView, ::sight::modules::guiQt::editor::SDynamicView )
 
 //------------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ SDynamicView::~SDynamicView() noexcept
 
 void SDynamicView::configuring()
 {
-    this->::fwGui::view::IActivityView::configuring();
+    this->gui::view::IActivityView::configuring();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
@@ -118,10 +118,9 @@ void SDynamicView::configuring()
 
 void SDynamicView::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr parentContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto parentContainer = ::sight::guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable( true );
@@ -209,10 +208,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
     if (iter != m_activityIds.end())
     {
-        ::fwGui::dialog::MessageDialog::show("Launch Activity",
-                                             "The current activity is already launched. \n"
-                                             "It cannot be launched twice.",
-                                             ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show("Launch Activity",
+                                         "The current activity is already launched. \n"
+                                         "It cannot be launched twice.",
+                                         gui::dialog::IMessageDialog::WARNING);
         return;
     }
 
@@ -228,10 +227,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     QString finalTitle = QString("%1 %2").arg( info.title.c_str(), "(%1)" ).arg( m_titleToCount[ info.title ] );
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
-    ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
-    QWidget* widget = new QWidget(m_tabWidget);
+    auto subContainer = ::sight::guiQt::container::QtContainer::New();
+    QWidget* widget   = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
-    ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
+    ::sight::gui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
     info.replaceMap[ "WID_PARENT" ] = info.wid;
     std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
@@ -253,9 +252,9 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     }
     catch( std::exception& e )
     {
-        ::fwGui::dialog::MessageDialog::show("Activity launch failed",
-                                             e.what(),
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Activity launch failed",
+                                         e.what(),
+                                         gui::dialog::IMessageDialog::CRITICAL);
         SLM_ERROR(e.what());
         return;
     }
@@ -321,7 +320,7 @@ void SDynamicView::closeTab( int index, bool forceClose )
         m_currentWidget = 0;
         m_tabWidget->removeTab(index);
 
-        ::fwGui::GuiRegistry::unregisterWIDContainer(info.wid);
+        gui::GuiRegistry::unregisterWIDContainer(info.wid);
 
         info.container->destroyContainer();
         info.container.reset();
@@ -330,9 +329,9 @@ void SDynamicView::closeTab( int index, bool forceClose )
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show("Close tab",
-                                             "The tab " + info.title + " can not be closed.",
-                                             ::fwGui::dialog::IMessageDialog::INFO);
+        gui::dialog::MessageDialog::show("Close tab",
+                                         "The tab " + info.title + " can not be closed.",
+                                         gui::dialog::IMessageDialog::INFO);
     }
 }
 
@@ -455,4 +454,4 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
 //------------------------------------------------------------------------------
 
 }// namespace editor
-}// namespace guiQt
+}// namespace sight::modules::guiQt

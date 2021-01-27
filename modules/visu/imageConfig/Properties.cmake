@@ -9,8 +9,8 @@ set( REQUIREMENTS
         qtSceneConfig
         data
         module_services
-        gui
-        guiQt
+        module_gui
+        module_guiQt
         ctrlSelection
         uiImageQt
         uiTF

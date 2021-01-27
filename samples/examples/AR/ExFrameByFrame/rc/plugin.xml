@@ -1,6 +1,6 @@
 <plugin id="ExFrameByFrame" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -20,7 +20,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -58,31 +58,31 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="previousImageAct" type="::gui::action::SSlotCaller" >
+            <service uid="previousImageAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/previousImage</slot>
                 </slots>
             </service>
 
-            <service uid="nextImageAct" type="::gui::action::SSlotCaller" >
+            <service uid="nextImageAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/nextImage</slot>
                 </slots>

@@ -29,12 +29,11 @@
 
 #include <data/Boolean.hpp>
 #include <data/Image.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -46,7 +45,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageTransparency, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::ImageTransparency, ::sight::data::Image )
 
 static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -64,9 +63,9 @@ ImageTransparency::~ImageTransparency() noexcept
 
 void ImageTransparency::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
@@ -113,7 +112,7 @@ void ImageTransparency::stopping()
 
 void ImageTransparency::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 
     //<shortcut value="X"/>
     std::vector < ConfigurationType > vectCfg = m_configuration->find("shortcut");
@@ -132,7 +131,7 @@ void ImageTransparency::updating()
     data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
-    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+    bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
     m_valueSlider->setEnabled(imageIsValid);
     m_valueCheckBox->setEnabled(imageIsValid);
     if (imageIsValid)

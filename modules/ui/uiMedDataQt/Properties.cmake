@@ -6,10 +6,9 @@ set( DEPENDENCIES
     activities
     core
     data
-    fwGui
-    fwGuiQt
+    gui
+    guiQt
     services
-    fwDataTools
     fwIO
     )
 set( REQUIREMENTS

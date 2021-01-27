@@ -1,6 +1,6 @@
 <plugin id="ExIgtl" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -27,7 +27,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <toolBar/>
                     <frame>
@@ -41,7 +41,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -70,17 +70,17 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="loadMeshAct" type="::gui::action::SSlotCaller" >
+            <service uid="loadMeshAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>meshReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="startServerAct" type="::gui::action::SStarter" >
+            <service uid="startServerAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="matrixNetworkSenderSrv" />
             </service>
 
-            <service uid="stopServerAct" type="::gui::action::SStarter" >
+            <service uid="stopServerAct" type="::sight::modules::gui::action::SStarter" >
                 <stop uid="matrixNetworkSenderSrv" />
                 <state visible="false" />
             </service>
@@ -94,11 +94,11 @@
                 </preference>
             </service>
 
-            <service uid="startClientAct" type="::gui::action::SStarter" >
+            <service uid="startClientAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="matrixNetworkListenerSrv" />
             </service>
 
-            <service uid="stopClientAct" type="::gui::action::SStarter" >
+            <service uid="stopClientAct" type="::sight::modules::gui::action::SStarter" >
                 <stop uid="matrixNetworkListenerSrv" />
                 <state visible="false" />
             </service>

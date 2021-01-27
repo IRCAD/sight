@@ -6,10 +6,8 @@ set( DEPENDENCIES
     calibration3d
     core
     data
-    fwDataTools
-    fwGui
+    gui
     services
-    fwPreferences
     cvIO
 )
 set( REQUIREMENTS data module_services )

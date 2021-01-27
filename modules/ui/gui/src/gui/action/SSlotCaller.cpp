@@ -22,19 +22,19 @@
 
 #include "gui/action/SSlotCaller.hpp"
 
+#include <gui/dialog/MessageDialog.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <regex>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -43,7 +43,7 @@ static const services::IService::KeyType s_SLOT_KEY        = "slot";
 static const services::IService::KeyType s_SLOTS_KEY       = "slots";
 static const services::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SSlotCaller )
 
 //-----------------------------------------------------------------------------
 
@@ -152,4 +152,4 @@ void SSlotCaller::configuring()
 //-----------------------------------------------------------------------------
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

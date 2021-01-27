@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <data/tools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/IGraphicsWorker.hpp>
@@ -361,7 +361,7 @@ private:
     void updateClippingTM3D();
 
     /// Helps to manage the optional volume TF.
-    ::fwDataTools::helper::TransferFunction m_helperVolumeTF;
+    data::tools::helper::TransferFunction m_helperVolumeTF;
 
     /// Implements a simple GPU ray-tracing renderer.
     ::fwRenderOgre::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };

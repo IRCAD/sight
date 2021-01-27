@@ -4,7 +4,7 @@
 
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="scene2D" />
     <requirement id="patchMedicalData" />
@@ -64,7 +64,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainView" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Ogre Viewer</name>
@@ -77,9 +77,9 @@
                 </registry>
             </service>
 
-            <service uid="mainContainerView" type="::gui::view::SDefaultView" >
+            <service uid="mainContainerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" topBorder="5" bottomBorder="5" backgroundColor="#2E2F30" />
                     </layout>
@@ -89,10 +89,10 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
                     <toolBar align="left" />
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
@@ -119,10 +119,10 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarSliderView" type="::gui::view::SDefaultView">
+            <service uid="rightToolbarSliderView" type="::sight::modules::gui::view::SDefaultView">
                 <gui>
                     <toolBar backgroundColor="#3E4453" />
-                    <layout type="::fwGui::LineLayoutManager">
+                    <layout type="::sight::gui::LineLayoutManager">
                         <orientation value="vertical" />
                     </layout>
                 </gui>
@@ -131,7 +131,7 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarView" type="::gui::aspect::SDefaultToolBar">
+            <service uid="rightToolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
                         <spacer />
@@ -143,10 +143,10 @@
                 </registry>
             </service>
 
-            <service uid="parameterView" type="::gui::view::SDefaultView" >
+            <service uid="parameterView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
                     <toolBar/>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
@@ -165,7 +165,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterToolBarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="parameterToolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="flatIcon-0.1/icons/Volume.svg" style="check" />
@@ -187,9 +187,9 @@
                 </registry>
             </service>
 
-            <service uid="volumeParameterView" type="::gui::view::SDefaultView" >
+            <service uid="volumeParameterView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <spacer />
@@ -200,9 +200,9 @@
                 </registry>
             </service>
 
-            <service uid="landmarksParameterView" type="::gui::view::SDefaultView" >
+            <service uid="landmarksParameterView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <spacer />
@@ -213,9 +213,9 @@
                 </registry>
             </service>
 
-            <service uid="lightParameterView" type="::gui::view::SDefaultView" >
+            <service uid="lightParameterView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -229,7 +229,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load series" icon="flatIcon-0.1/icons/BlueLoad.svg" />
@@ -289,14 +289,14 @@
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="::gui::action::SSignal" />
+            <service uid="negatoViewAct" type="::sight::modules::gui::action::SSignal" />
 
-            <service uid="volumeViewAct" type="::gui::action::SSignal" >
+            <service uid="volumeViewAct" type="::sight::modules::gui::action::SSignal" >
                 <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
-            <service uid="volumeManagerAct" type="::gui::action::SModifyLayout" >
+            <service uid="volumeManagerAct" type="::sight::modules::gui::action::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -306,7 +306,7 @@
                 </config>
             </service>
 
-            <service uid="organsManagerAct" type="::gui::action::SModifyLayout" >
+            <service uid="organsManagerAct" type="::sight::modules::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <show wid="organsParameterView" />
@@ -316,7 +316,7 @@
                 </config>
             </service>
 
-            <service uid="landmarksManagerAct" type="::gui::action::SModifyLayout" >
+            <service uid="landmarksManagerAct" type="::sight::modules::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -326,7 +326,7 @@
                 </config>
             </service>
 
-            <service uid="lightManagerAct" type="::gui::action::SModifyLayout" >
+            <service uid="lightManagerAct" type="::sight::modules::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -336,7 +336,7 @@
                 </config>
             </service>
 
-            <service uid="extrudedMeshesManagerAct" type="::gui::action::SModifyLayout" >
+            <service uid="extrudedMeshesManagerAct" type="::sight::modules::gui::action::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -347,7 +347,7 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="::gui::action::SSlotCaller" >
+            <service uid="hideParameterAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <sync>true</sync>
                 <slots>
                     <slot>parameterView/hide</slot>
@@ -355,7 +355,7 @@
                 </slots>
              </service>
 
-            <service uid="showParameterAct" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="showParameterAct" type="::sight::modules::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>parameterView/show</slot>
                     <slot>rightToolbarSliderView/hide</slot>
@@ -364,7 +364,7 @@
             </service>
 
             <!-- TF manager -->
-            <service uid="volumeTFAct" type="::gui::action::SConfigLauncher" >
+            <service uid="volumeTFAct" type="::sight::modules::gui::action::SConfigLauncher" >
                 <appConfig id="OgreViewer_TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
                 <parameter replace="WINDOW_ICON" by="OgreViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
@@ -378,7 +378,7 @@
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="::gui::action::SConfigLauncher" >
+            <service uid="pacsAct" type="::sight::modules::gui::action::SConfigLauncher" >
                 <appConfig id="OgreViewer_PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="OgreViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
@@ -388,35 +388,35 @@
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="::gui::action::SSignal" >
+            <service uid="volumeVisibilityAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="::gui::action::SSignal" >
+            <service uid="negato3DVisibilityAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="::gui::action::SSignal" >
+            <service uid="meshVisibilityAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="::gui::action::SSignal" >
+            <service uid="boxWidgetVisibilityAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="::gui::action::SSignal" >
+            <service uid="boxWidgetResetAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="::gui::action::SSignal" >
+            <service uid="shapeExtruderAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="::gui::action::SSignal" >
+            <service uid="shapeExtruderRevertAct" type="::sight::modules::gui::action::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="::gui::action::SSignal" />
+            <service uid="axisVisibilityAct" type="::sight::modules::gui::action::SSignal" />
 
             <!-- Manage distance -->
             <service uid="addDistanceAct" type="::uiMeasurement::action::SAddDistance">
@@ -500,7 +500,7 @@
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volumeParameterSrv" type="::guiQt::editor::SParameters" >
+            <service uid="volumeParameterSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />

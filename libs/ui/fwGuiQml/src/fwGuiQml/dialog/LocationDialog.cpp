@@ -28,11 +28,11 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwGui/dialog/InputDialog.hpp>
-#include <fwGui/registry/macros.hpp>
-
 #include <fwQml/QmlEngine.hpp>
+
+#include <gui/dialog/ILocationDialog.hpp>
+#include <gui/dialog/InputDialog.hpp>
+#include <gui/registry/macros.hpp>
 
 #include <QDir>
 #include <QGuiApplication>
@@ -40,7 +40,7 @@
 #include <filesystem>
 #include <functional>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQml::dialog::LocationDialog, ::sight::gui::dialog::ILocationDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -49,7 +49,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key)
+LocationDialog::LocationDialog(gui::GuiBaseObject::Key key)
 {
 }
 
@@ -62,10 +62,10 @@ data::location::ILocation::sptr LocationDialog::show()
     // sight issue: https://git.ircad.fr/Sight/sight/issues/365
     // for more information: https://bugreports.qt.io/browse/QTBUG-77781
 #ifdef __APPLE__
-    if ( !(m_style& ::fwGui::dialog::ILocationDialog::READ) &&
-         !(m_style& ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
+    if ( !(m_style& gui::dialog::ILocationDialog::READ) &&
+         !(m_style& gui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
-        const std::string& result = ::fwGui::dialog::InputDialog::showInputDialog(
+        const std::string& result = gui::dialog::InputDialog::showInputDialog(
             this->getTitle(), "This is a temporary dialog to save file under macOS. Write below the path of the file you want to save:",
             QDir::homePath().toStdString());
         std::filesystem::path bpath( result);
@@ -96,8 +96,8 @@ data::location::ILocation::sptr LocationDialog::show()
     dialog->setProperty("nameFilters", filter);
 
     // check each option to set the property
-    if ( (m_style& ::fwGui::dialog::ILocationDialog::READ) ||
-         (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST))
+    if ( (m_style& gui::dialog::ILocationDialog::READ) ||
+         (m_style & gui::dialog::ILocationDialog::FILE_MUST_EXIST))
     {
         dialog->setProperty("selectExisting", true);
     }
@@ -106,14 +106,14 @@ data::location::ILocation::sptr LocationDialog::show()
         dialog->setProperty("selectExisting", false);
     }
 
-    if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
+    if (m_type == gui::dialog::ILocationDialog::MULTI_FILES)
     {
-        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
+        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & gui::dialog::ILocationDialog::READ);
         dialog->setProperty("selectFolder", false);
         dialog->setProperty("selectMultiple", true);
         QStringList files;
     }
-    else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
+    else if (m_type == gui::dialog::ILocationDialog::FOLDER)
     {
         dialog->setProperty("selectExisting", true);
         dialog->setProperty("selectFolder", true);
@@ -158,7 +158,7 @@ void LocationDialog::resultDialog(const QVariant& msg)
     if (!files.isEmpty() && !files.first().isEmpty())
     {
         // convert all selected location into boost filesystem and add it in m_location
-        if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
+        if (m_type == gui::dialog::ILocationDialog::MULTI_FILES)
         {
             data::location::MultiFiles::sptr multifiles = data::location::MultiFiles::New();
             std::vector< std::filesystem::path > paths;
@@ -170,8 +170,8 @@ void LocationDialog::resultDialog(const QVariant& msg)
             multifiles->setPaths(paths);
             m_location = multifiles;
         }
-        else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE ||
-                 m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
+        else if (m_type == gui::dialog::ILocationDialog::SINGLE_FILE ||
+                 m_type == gui::dialog::ILocationDialog::FOLDER)
         {
             std::filesystem::path bpath( files.first().toLocalFile().toStdString());
             m_location = data::location::SingleFile::New(bpath);
@@ -181,46 +181,46 @@ void LocationDialog::resultDialog(const QVariant& msg)
 
 //------------------------------------------------------------------------------
 
-void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
+void LocationDialog::setType( gui::dialog::ILocationDialog::Types type )
 {
     m_type = type;
 }
 
 //------------------------------------------------------------------------------
 
-::fwGui::dialog::ILocationDialog&  LocationDialog::setOption( ::fwGui::dialog::ILocationDialog::Options option)
+::gui::dialog::ILocationDialog&  LocationDialog::setOption( gui::dialog::ILocationDialog::Options option)
 {
     switch (option)
     {
-        case ::fwGui::dialog::ILocationDialog::WRITE:
+        case gui::dialog::ILocationDialog::WRITE:
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style &
-                                                                         ~::fwGui::dialog::ILocationDialog::READ);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style &
+                                                                     ~::gui::dialog::ILocationDialog::READ);
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
-                                                                         ::fwGui::dialog::ILocationDialog::WRITE);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style |
+                                                                     gui::dialog::ILocationDialog::WRITE);
             break;
-        case ::fwGui::dialog::ILocationDialog::READ:
+        case gui::dialog::ILocationDialog::READ:
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style &
-                                                                         ~::fwGui::dialog::ILocationDialog::WRITE);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style &
+                                                                     ~::gui::dialog::ILocationDialog::WRITE);
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
-                                                                         ::fwGui::dialog::ILocationDialog::READ);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style |
+                                                                     gui::dialog::ILocationDialog::READ);
             break;
-        case ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST:
+        case gui::dialog::ILocationDialog::FILE_MUST_EXIST:
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
-                                                                         ::fwGui::dialog::ILocationDialog::
-                                                                         FILE_MUST_EXIST);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style |
+                                                                     gui::dialog::ILocationDialog::
+                                                                     FILE_MUST_EXIST);
             break;
         default:
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style &
-                                                                         ~::fwGui::dialog::ILocationDialog::READ);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style &
+                                                                     ~::gui::dialog::ILocationDialog::READ);
             m_style =
-                static_cast< ::fwGui::dialog::ILocationDialog::Options >(m_style |
-                                                                         ::fwGui::dialog::ILocationDialog::WRITE);
+                static_cast< gui::dialog::ILocationDialog::Options >(m_style |
+                                                                     gui::dialog::ILocationDialog::WRITE);
             break;
     }
     return *this;

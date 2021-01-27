@@ -24,7 +24,7 @@
 
 #include <calibration3d/helper.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -318,7 +318,7 @@ void helperTest::toolCalibrationBasic()
         matrix = ::glm::translate(matrix, translation);
 
         data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
-        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
+        data::tools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
     }
@@ -373,7 +373,7 @@ void helperTest::toolCalibration()
         matrix              = ::glm::translate(matrix, translation);
 
         data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
-        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
+        data::tools::TransformationMatrix3D::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
     }

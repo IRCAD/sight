@@ -22,27 +22,27 @@
 
 #include "guiQt/editor/Code.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+#include <guiQt/highlighter/CppHighlighter.hpp>
+#include <guiQt/highlighter/PythonHighlighter.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
 #include <data/String.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGuiQt/highlighter/CppHighlighter.hpp>
-#include <fwGuiQt/highlighter/PythonHighlighter.hpp>
-
 #include <services/macros.hpp>
 
 #include <QHBoxLayout>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::Code, ::sight::data::String )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::sight::modules::guiQt::editor::Code, ::sight::data::String )
 
 //------------------------------------------------------------------------------
 
@@ -68,10 +68,9 @@ Code::~Code() noexcept
 
 void Code::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     data::String::sptr stringObj = this->getInOut< data::String >(s_STRING_INOUT);
 
@@ -81,11 +80,11 @@ void Code::starting()
 
     if(m_language == s_PYTHON )
     {
-        m_highlighter = new ::fwGuiQt::highlighter::PythonHighlighter(m_valueCtrl->document());
+        m_highlighter = new ::sight::guiQt::highlighter::PythonHighlighter(m_valueCtrl->document());
     }
     else if(m_language == s_CPP )
     {
-        m_highlighter = new ::fwGuiQt::highlighter::CppHighlighter(m_valueCtrl->document());
+        m_highlighter = new ::sight::guiQt::highlighter::CppHighlighter(m_valueCtrl->document());
     }
     else
     {
@@ -112,7 +111,7 @@ void Code::stopping()
 
 void Code::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->gui::IGuiContainerSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
     if(!vectConfig.empty())
     {
@@ -175,7 +174,7 @@ void Code::onModifyValue()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap Code::getAutoConnections() const
+services::IService::KeyConnectionsMap Code::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_STRING_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
@@ -187,4 +186,4 @@ void Code::onModifyValue()
 
 } // namespace editor
 
-} // namespace guiQt
+} // namespace sight::modules::guiQt

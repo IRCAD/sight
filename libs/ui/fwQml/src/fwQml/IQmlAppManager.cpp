@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "fwQml/IQmlAppManager.hpp"
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 namespace fwQml
 {
@@ -51,9 +51,9 @@ void IQmlAppManager::initialize()
     {
         const std::string msg = "All the required inputs are not present, '" +this->getID() +
                                 "' activity will not be launched";
-        ::fwGui::dialog::MessageDialog::show("Manager Initialization",
-                                             msg,
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Manager Initialization",
+                                         msg,
+                                         gui::dialog::IMessageDialog::CRITICAL);
     }
 }
 

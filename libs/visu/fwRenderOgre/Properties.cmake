@@ -4,8 +4,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    fwDataTools
-    fwGui
+    gui
     fwRender
     services
 )

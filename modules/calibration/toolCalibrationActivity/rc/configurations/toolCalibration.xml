@@ -14,9 +14,9 @@
 
         <!-- *************************** Begin Layouts *************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -31,9 +31,9 @@
             </registry>
         </service>
 
-        <service uid="footer" type="::gui::view::SDefaultView">
+        <service uid="footer" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start Tracker client" icon="media-0.1/icons/Network-Receiving.svg" />
@@ -68,17 +68,17 @@
 
         <!-- *************************** Begin Actions *************************** -->
 
-        <service uid="actionStartOpenIGTLinkClient" type="::gui::action::SStarter">
+        <service uid="actionStartOpenIGTLinkClient" type="::sight::modules::gui::action::SStarter">
             <state active="true" visible="true" />
             <start uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionStopOpenIGTLinkClient" type="::gui::action::SStarter">
+        <service uid="actionStopOpenIGTLinkClient" type="::sight::modules::gui::action::SStarter">
             <state active="true" visible="false" />
             <stop uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionAddPoint" type="::gui::action::SSlotCaller" >
+        <service uid="actionAddPoint" type="::sight::modules::gui::action::SSlotCaller" >
            <slots>
                <slot>markerToPoint/addPoint</slot>
                <slot>manageVector/addCopy</slot>
@@ -91,7 +91,7 @@
            </slots>
         </service>
 
-        <service uid="actionExportMatrix" type="::gui::action::SSlotCaller">
+        <service uid="actionExportMatrix" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>calibrationMatrixWriter/update</slot>
             </slots>

@@ -2,7 +2,7 @@
 <plugin id="Tuto03DataService" version="@PROJECT_VERSION@" >
 
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto03DataService_AppCfg</id>
@@ -20,7 +20,7 @@
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="yes"' attribute.
             -->
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto03DataService</name>
@@ -43,7 +43,7 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -65,7 +65,7 @@
                 In this tutorial, the attribute 'specialAction' has the value "QUIT". On MS Windows, there's no
                 impact, but on Linux this value installs the default 'Quit' system icon in the menuItem.
             -->
-            <service uid="menuView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -83,18 +83,18 @@
 
             <!--
                 Quit action:
-                The action service (::gui::action::SQuit) is a generic action that will close the application
+                The action service (::sight::modules::gui::action::SQuit) is a generic action that will close the application
                 when the user click on the menuItem "Quit".
             -->
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!--
                 Open file action:
-                This service (::gui::action::SStarter) is a generic action, it starts and updates the
+                This service (::sight::modules::gui::action::SStarter) is a generic action, it starts and updates the
                 services given in the configuration when the user clicks on the action.
                 Here, the reader selector will be called when the action is clicked.
             -->
-            <service uid="openImageAct" type="::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 

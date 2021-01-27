@@ -4,13 +4,13 @@
     <requirement id="::sight::modules::services"/>
     
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
+        <type>::sight::gui::IActionSrv</type>
         <service>::uiVisu::action::CrossTypeAction</service>
         <object>::sight::data::Image</object>
     </extension>
     
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
+        <type>::sight::gui::IActionSrv</type>
         <service>::uiVisu::action::SSnapshot</service>
         <object>::sight::data::Object</object>
     </extension>

@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QComboBox>
 #include <QLabel>
@@ -54,12 +54,12 @@ namespace uiCalibration
  * - \b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class UICALIBRATION_CLASS_API SCameraInformationEditor : public QObject,
-                                                         public ::fwGui::editor::IEditor
+                                                         public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraInformationEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SCameraInformationEditor, gui::editor::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

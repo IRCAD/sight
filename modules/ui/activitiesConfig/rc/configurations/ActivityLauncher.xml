@@ -81,9 +81,9 @@
 
         <!-- ************************************* Begin layouts declaration *************************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -98,9 +98,9 @@
             </registry>
         </service>
 
-        <service uid="stepperView" type="::gui::view::SDefaultView">
+        <service uid="stepperView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -121,7 +121,7 @@
 
         <!-- ************************************* Begin editor declaration *************************************** -->
 
-        <service uid="openButton" type="::guiQt::editor::SSignalButton" >
+        <service uid="openButton" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <icon>media-0.1/icons/open.svg</icon>
                <iconWidth>40</iconWidth>
@@ -129,7 +129,7 @@
             </config>
         </service>
 
-        <service uid="saveButton" type="::guiQt::editor::SSignalButton" >
+        <service uid="saveButton" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <icon>media-0.1/icons/save.svg</icon>
                <iconWidth>40</iconWidth>
@@ -137,12 +137,12 @@
             </config>
         </service>
 
-        <service uid="appLogoView" type="::guiQt::editor::SImage" >
+        <service uid="appLogoView" type="::sight::modules::guiQt::editor::SImage" >
             <path>${APPLICATION_ICON_PATH}</path>
             <height>70</height>
         </service>
 
-        <service uid="ircadIhuLogoView" type="::guiQt::editor::SImage" >
+        <service uid="ircadIhuLogoView" type="::sight::modules::guiQt::editor::SImage" >
             <path>flatIcon-0.1/icons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
@@ -161,7 +161,7 @@
         <!-- *************************************** Begin view declaration **************************************** -->
 
         <!-- Display the activity in the current view -->
-        <service uid="dynamicView" type="::guiQt::editor::SActivityView">
+        <service uid="dynamicView" type="::sight::modules::guiQt::editor::SActivityView">
             <inout key="SERIESDB" uid="${seriesDB}" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />

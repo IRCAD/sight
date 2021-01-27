@@ -27,13 +27,13 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwGui/registry/macros.hpp>
-
 #include <fwQml/QmlEngine.hpp>
+
+#include <gui/registry/macros.hpp>
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQml::dialog::SelectorDialog, ::sight::gui::dialog::ISelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -42,7 +42,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key)
+SelectorDialog::SelectorDialog(gui::GuiBaseObject::Key key)
 {
 }
 

@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 #include <fwMath/VectorFunctions.hpp>
@@ -245,7 +245,7 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
         }
     }
 
-    ::fwDataTools::Mesh::generatePointNormals(_mesh);
+    data::tools::Mesh::generatePointNormals(_mesh);
 
     const auto sig = _mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));

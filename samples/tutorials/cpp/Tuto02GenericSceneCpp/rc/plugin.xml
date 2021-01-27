@@ -3,7 +3,7 @@
     <requirement id="preferences" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
 
     <library name="Tuto02GenericSceneCpp" />

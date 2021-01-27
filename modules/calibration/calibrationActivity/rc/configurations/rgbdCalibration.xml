@@ -31,9 +31,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                 </layout>
@@ -46,7 +46,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolbar" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="start" icon="media-0.1/icons/start-cam.svg" />
@@ -70,9 +70,9 @@
         </service>
 
         <!-- Begin Scanning views -->
-        <service uid="scanningView" type="::gui::view::SDefaultView">
+        <service uid="scanningView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -84,9 +84,9 @@
             </registry>
         </service>
 
-        <service uid="RGBDView" type="::gui::view::SDefaultView">
+        <service uid="RGBDView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -98,9 +98,9 @@
             </registry>
         </service>
 
-        <service uid="snapshotView" type="::gui::view::SDefaultView">
+        <service uid="snapshotView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -116,7 +116,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="startVideo" type="::gui::action::SSlotCaller">
+        <service uid="startVideo" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>startVideo/setInexecutable</slot>
                 <slot>scanner/startCamera</slot>
@@ -125,7 +125,7 @@
             </slots>
         </service>
 
-        <service uid="stopVideo" type="::gui::action::SSlotCaller">
+        <service uid="stopVideo" type="::sight::modules::gui::action::SSlotCaller">
             <state executable="false" />
             <slots>
                 <slot>stopVideo/setInexecutable</slot>
@@ -135,25 +135,25 @@
             </slots>
         </service>
 
-        <service uid="configureDepthRecord" type="::gui::action::SSlotCaller">
+        <service uid="configureDepthRecord" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>depthRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="configureColorRecord" type="::gui::action::SSlotCaller">
+        <service uid="configureColorRecord" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>rgbRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="configureIRRecord" type="::gui::action::SSlotCaller">
+        <service uid="configureIRRecord" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>irRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="takeSnapshot" type="::gui::action::SSlotCaller">
+        <service uid="takeSnapshot" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>scanner/takeSnapshot</slot>
                 <slot>actionRecord/update</slot>

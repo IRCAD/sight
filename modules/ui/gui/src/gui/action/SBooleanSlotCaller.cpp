@@ -28,12 +28,12 @@
 
 #include <regex>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SBooleanSlotCaller )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SBooleanSlotCaller )
 
 //-----------------------------------------------------------------------------
 
@@ -72,4 +72,4 @@ void SBooleanSlotCaller::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

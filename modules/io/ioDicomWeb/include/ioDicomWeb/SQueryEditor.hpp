@@ -26,9 +26,9 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwNetworkIO/http/ClientQt.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QDateEdit>
 #include <QLineEdit>
@@ -65,13 +65,13 @@ namespace ioDicomWeb
 
  */
 class IODICOMWEB_CLASS_API SQueryEditor : public QObject,
-                                          public ::fwGui::editor::IEditor
+                                          public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  gui::editor::IEditor )
 
     /// Constructor
     IODICOMWEB_API SQueryEditor() noexcept;

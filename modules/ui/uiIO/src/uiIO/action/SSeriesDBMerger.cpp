@@ -30,9 +30,9 @@
 #include <data/Series.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGui/Cursor.hpp>
-
 #include <fwIO/ioTypes.hpp>
+
+#include <gui/Cursor.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -43,7 +43,7 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
@@ -77,7 +77,7 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 void SSeriesDBMerger::configuring()
 {
 
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -91,7 +91,7 @@ void SSeriesDBMerger::configuring()
 
 void SSeriesDBMerger::updating( )
 {
-    ::fwGui::LockAction lock(this->getSptr());
+    gui::LockAction lock(this->getSptr());
 
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIES_INOUT);
     SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
@@ -137,14 +137,14 @@ void SSeriesDBMerger::updating( )
 
 void SSeriesDBMerger::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

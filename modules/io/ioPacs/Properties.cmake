@@ -4,13 +4,11 @@ set( TYPE MODULE )
 set( PRIORITY 1 )
 set( DEPENDENCIES
     core
-    fwGui
-    fwGuiQt
+    gui
+    guiQt
     fwPacsIO
     data
-    fwDataTools
     services
     fwIO
-    fwPreferences
     )
 set( REQUIREMENTS )

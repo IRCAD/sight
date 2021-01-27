@@ -22,17 +22,17 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/IActionSrv.hpp>
 
 #include <core/com/Slots.hpp>
-
-#include <fwGui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
 #include <vector>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -42,7 +42,7 @@ namespace action
  *
  * This action works on a data::Object. It does the action specify by the specify config.
  * @code{.xml}
-   <service uid="..." type="::gui::action::SSlotCaller" >
+   <service uid="..." type="::modules::gui::action::SSlotCaller" >
       <sync>true</sync>
       <slots>
           <slot>hasSlotsId/slotKey</slot>
@@ -52,12 +52,12 @@ namespace action
  * - \b sync : Determines whether slots are called asynchronously ("false") or synchronously ("true")
  */
 
-class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SSlotCaller : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SSlotCaller, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SSlotCaller, ::sight::gui::IActionSrv)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;
@@ -65,25 +65,25 @@ public:
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Constructor. Does nothing.
-    GUI_API SSlotCaller() noexcept;
+    MODULE_GUI_API SSlotCaller() noexcept;
 
     /// Destructor. Does nothing.
-    GUI_API virtual ~SSlotCaller() noexcept;
+    MODULE_GUI_API virtual ~SSlotCaller() noexcept;
 
 protected:
 
     /// This method gives information about the class.
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /// This method run the specified slots.
-    GUI_API void updating() override;
+    MODULE_GUI_API void updating() override;
 
     ///  This method is used to configure the service parameters: specifies which slots must be called.
-    GUI_API void configuring() override;
+    MODULE_GUI_API void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;
@@ -93,4 +93,4 @@ protected:
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

@@ -31,12 +31,11 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
+#include <data/tools/helper/Composite.hpp>
+#include <data/tools/helper/Field.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/helper/Composite.hpp>
-#include <fwDataTools/helper/Field.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -57,7 +56,7 @@ namespace uiMedDataQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
 
 static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const services::IService::KeyType s_COMPOSITE_INOUT = "composite";
@@ -91,8 +90,8 @@ void SOrganTransformation::configuring()
 void SOrganTransformation::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
 
@@ -176,8 +175,8 @@ void SOrganTransformation::refresh()
 
     data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -229,7 +228,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
         data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
-        ::fwDataTools::helper::Composite aCompositeHelper(pComposite);
+        data::tools::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
         {
             if (pComposite->find(item_name) == pComposite->end())
@@ -267,7 +266,7 @@ void SOrganTransformation::onResetClick()
             pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
         if (pTmpMat)
         {
-            ::fwDataTools::TransformationMatrix3D::identity(pTmpMat);
+            data::tools::TransformationMatrix3D::identity(pTmpMat);
             this->notitfyTransformationMatrix(pTmpMat);
         }
     }
@@ -338,7 +337,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 {
 
     data::Composite::sptr composite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
-    ::fwDataTools::helper::Composite compositeHelper(composite);
+    data::tools::helper::Composite compositeHelper(composite);
 
     if(state == Qt::Checked)
     {
@@ -386,7 +385,7 @@ void SOrganTransformation::addMeshTransform()
 
         if (!mesh->getField( s_MATRIX_FIELD_NAME ))
         {
-            ::fwDataTools::helper::Field fieldHelper(mesh);
+            data::tools::helper::Field fieldHelper(mesh);
             fieldHelper.setField(s_MATRIX_FIELD_NAME, data::TransformationMatrix3D::New());
             fieldHelper.notify();
         }

@@ -36,7 +36,7 @@
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -76,7 +76,7 @@ static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
 
 //------------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ SLandmarks::~SLandmarks() noexcept
 
 void SLandmarks::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -134,9 +134,9 @@ void SLandmarks::configuring()
 
 void SLandmarks::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    const ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    const guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QVBoxLayout* const layout     = new QVBoxLayout();
@@ -271,7 +271,7 @@ void SLandmarks::onColorButton()
     QObject* const sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -656,7 +656,7 @@ void SLandmarks::onRemoveSelection()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo _pickingInfo)
+void SLandmarks::addPickedPoint(data::tools::PickingInfo _pickingInfo)
 {
     FW_DEPRECATED_MSG(
         "::uiMeasurementQt::editor::addPickedPoint is no longer supported, the methods have been moved to ::uiMeasurementQt::editor::pick",
@@ -666,12 +666,12 @@ void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo _pickingInfo)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::pick(::fwDataTools::PickingInfo _info)
+void SLandmarks::pick(data::tools::PickingInfo _info)
 {
-    if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
+    if(_info.m_modifierMask & data::tools::PickingInfo::CTRL)
     {
         // Adds a new landmark.
-        if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
+        if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
             const double* const pickedPos             = _info.m_worldPos;
             const data::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
@@ -725,7 +725,7 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
                 sig->asyncEmit(groupName);
             }
         }
-        else if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP)
+        else if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_UP)
         {
             const double* const pickedPos = _info.m_worldPos;
 

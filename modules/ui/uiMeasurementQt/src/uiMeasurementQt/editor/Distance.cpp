@@ -33,7 +33,7 @@
 #include <data/Image.hpp>
 #include <data/String.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -50,7 +50,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::sight::data::Image )
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
@@ -71,9 +71,9 @@ Distance::~Distance() noexcept
 
 void Distance::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     namespace fs = std::filesystem;
@@ -106,7 +106,7 @@ void Distance::stopping()
 
 void Distance::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

@@ -27,7 +27,7 @@
 
 #include <core/tools/System.hpp>
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <utestData/generator/Mesh.hpp>
 
@@ -66,7 +66,7 @@ void MeshTrianTest::testSimpleMesh()
     data::Mesh::sptr mesh  = data::Mesh::New();
     data::Mesh::sptr mesh2 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh);
-    ::fwDataTools::Mesh::shakePoint(mesh);
+    data::tools::Mesh::shakePoint(mesh);
 
     mesh->adjustAllocatedMemory();
 
@@ -96,8 +96,8 @@ void MeshTrianTest::testMeshWithCellNormals()
     data::Mesh::sptr mesh  = data::Mesh::New();
     data::Mesh::sptr mesh2 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh);
-    ::fwDataTools::Mesh::shakePoint(mesh);
-    ::fwDataTools::Mesh::generateCellNormals(mesh);
+    data::tools::Mesh::shakePoint(mesh);
+    data::tools::Mesh::generateCellNormals(mesh);
 
     mesh->adjustAllocatedMemory();
 

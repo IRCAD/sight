@@ -30,7 +30,7 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <OgreEntity.h>
 #include <OgreHardwareBufferManager.h>
@@ -251,7 +251,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
             if(computeNormals)
             {
-                ::fwDataTools::Mesh::generatePointNormals(_mesh);
+                data::tools::Mesh::generatePointNormals(_mesh);
                 m_hasNormal = true;
             }
         }

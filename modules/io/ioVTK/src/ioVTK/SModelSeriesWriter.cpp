@@ -36,17 +36,17 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
-
 #include <fwVtkIO/MeshWriter.hpp>
 #include <fwVtkIO/ObjMeshWriter.hpp>
 #include <fwVtkIO/PlyMeshWriter.hpp>
 #include <fwVtkIO/StlMeshWriter.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/ILocationDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -85,11 +85,11 @@ void SModelSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ::fwGui::dialog::LocationDialog dialog;
+    gui::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+    dialog.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialog.setType(gui::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
 
@@ -100,13 +100,13 @@ void SModelSeriesWriter::openLocationDialog()
             break;
         }
         // message box
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::YES);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == ::fwGui::dialog::IMessageDialog::YES)
+        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(gui::dialog::IMessageDialog::YES);
+        messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
+        if( messageBox.show() == gui::dialog::IMessageDialog::YES)
         {
             break;
         }
@@ -137,7 +137,7 @@ void SModelSeriesWriter::openLocationDialog()
                 {
                     return pair.first;
                 });
-            ::fwGui::dialog::SelectorDialog extensionDialog;
+            gui::dialog::SelectorDialog extensionDialog;
             extensionDialog.setTitle("Extensions");
             extensionDialog.setMessage("Choose the extensions: ");
             extensionDialog.setSelections(descriptions);
@@ -255,8 +255,8 @@ void SModelSeriesWriter::updating()
         // Retrieve dataStruct associated with this service
         const auto modelSeriesLockedPtr = this->getLockedInput< const data::ModelSeries >(::fwIO::s_DATA_KEY);
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         const auto modelSeries                                  = modelSeriesLockedPtr.get_shared();
         const data::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
@@ -279,18 +279,18 @@ void SModelSeriesWriter::updating()
                 std::stringstream ss;
                 ss << "Warning during saving : " << e.what();
 
-                ::fwGui::dialog::MessageDialog::show(
+                gui::dialog::MessageDialog::show(
                     "Warning",
                     ss.str(),
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                    gui::dialog::IMessageDialog::WARNING);
             }
             catch( ... )
             {
                 m_writeFailed = true;
-                ::fwGui::dialog::MessageDialog::show(
+                gui::dialog::MessageDialog::show(
                     "Warning",
                     "Warning during saving",
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                    gui::dialog::IMessageDialog::WARNING);
             }
         }
 

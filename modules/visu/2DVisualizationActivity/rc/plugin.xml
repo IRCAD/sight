@@ -2,7 +2,7 @@
 
     <requirement id="::sight::modules::services" />
     <requirement id="visuVTKQt" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
 
     <requirement id="activities" />
     <requirement id="::sight::modules::services" />

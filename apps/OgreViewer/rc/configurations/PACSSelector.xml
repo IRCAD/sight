@@ -28,7 +28,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::frame::SDefaultFrame" >
+        <service uid="mainView" type="::sight::modules::gui::frame::SDefaultFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -42,9 +42,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <view proportion="1" />
@@ -56,9 +56,9 @@
             </registry>
         </service>
 
-        <service uid="queryView" type="::gui::view::SDefaultView" >
+        <service uid="queryView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -77,11 +77,11 @@
             </registry>
         </service>
 
-        <service uid="selectorsView" type="::gui::view::SDefaultView" >
+        <service uid="selectorsView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" hOffset="50%" />
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" />
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -95,9 +95,9 @@
             </registry>
         </service>
 
-        <service uid="advancedQueryEditorSliderView" type="::gui::view::SDefaultView" >
+        <service uid="advancedQueryEditorSliderView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -108,9 +108,9 @@
             </registry>
         </service>
 
-        <service uid="configurePACSSliderView" type="::gui::view::SDefaultView" >
+        <service uid="configurePACSSliderView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -121,9 +121,9 @@
             </registry>
         </service>
 
-        <service uid="previewView" type="::gui::view::SDefaultView" >
+        <service uid="previewView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -135,9 +135,9 @@
             </registry>
         </service>
 
-        <service uid="previewSceneView" type="::gui::view::SDefaultView" >
+        <service uid="previewSceneView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -149,9 +149,9 @@
             </registry>
         </service>
 
-        <service uid="previewSceneSliderView" type="::gui::view::SDefaultView" >
+        <service uid="previewSceneSliderView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -162,9 +162,9 @@
             </registry>
         </service>
 
-        <service uid="previewDICOMSliderView" type="::gui::view::SDefaultView" >
+        <service uid="previewDICOMSliderView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -178,9 +178,9 @@
             </registry>
         </service>
 
-        <service uid="localView" type="::gui::view::SDefaultView" >
+        <service uid="localView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -192,9 +192,9 @@
             </registry>
         </service>
 
-        <service uid="localSceneView" type="::gui::view::SDefaultView" >
+        <service uid="localSceneView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -206,9 +206,9 @@
             </registry>
         </service>
 
-        <service uid="localSceneSliderView" type="::gui::view::SDefaultView" >
+        <service uid="localSceneSliderView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -219,9 +219,9 @@
             </registry>
         </service>
 
-        <service uid="localSliderView" type="::gui::view::SDefaultView" >
+        <service uid="localSliderView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <spacer />
                     <view proportion="0" />
@@ -282,7 +282,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="seriesPullerAct" type="::guiQt::editor::SSignalButton" >
+        <service uid="seriesPullerAct" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
@@ -292,7 +292,7 @@
             </config>
         </service>
 
-        <service uid="waitAct" type="::guiQt::editor::SSignalButton" >
+        <service uid="waitAct" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -303,7 +303,7 @@
             </config>
         </service>
 
-        <service uid="exportImageAct" type="::guiQt::editor::SSignalButton" >
+        <service uid="exportImageAct" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -316,7 +316,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showAdvancedQueryEditorSrv" type="::guiQt::editor::SSignalButton" >
+        <service uid="showAdvancedQueryEditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowBottomChevron.svg</icon>
@@ -325,7 +325,7 @@
             </config>
         </service>
 
-        <service uid="hideAdvancedQueryEditorSrv" type="::guiQt::editor::SSignalButton" >
+        <service uid="hideAdvancedQueryEditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowTopChevron.svg</icon>
@@ -334,7 +334,7 @@
             </config>
         </service>
 
-        <service uid="showPACSConfigurationSrv" type="::guiQt::editor::SSignalButton" >
+        <service uid="showPACSConfigurationSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
@@ -343,7 +343,7 @@
             </config>
         </service>
 
-        <service uid="hidePACSConfigurationSrv" type="::guiQt::editor::SSignalButton" >
+        <service uid="hidePACSConfigurationSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
@@ -353,7 +353,7 @@
         </service>
 
         <!-- SNotifier listens to all the connected services & displays queued notifications at the same place -->
-        <service uid="leftNotifierSrv" type="::guiQt::SNotifier" >
+        <service uid="leftNotifierSrv" type="::sight::modules::guiQt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
@@ -361,7 +361,7 @@
             <duration>5000</duration>
         </service>
 
-        <service uid="rightNotifierSrv" type="::guiQt::SNotifier" >
+        <service uid="rightNotifierSrv" type="::sight::modules::guiQt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_RIGHT</position>
@@ -381,19 +381,19 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="previewNegatoStopperSrv" type="::gui::action::SStarter" >
+        <service uid="previewNegatoStopperSrv" type="::sight::modules::gui::action::SStarter" >
             <stop uid="pNegatoAdp" />
         </service>
 
-        <service uid="previewNegatoStarterSrv" type="::gui::action::SStarter" >
+        <service uid="previewNegatoStarterSrv" type="::sight::modules::gui::action::SStarter" >
             <start uid="pNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStopperSrv" type="::gui::action::SStarter" >
+        <service uid="localNegatoStopperSrv" type="::sight::modules::gui::action::SStarter" >
             <stop uid="lNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStarterSrv" type="::gui::action::SStarter" >
+        <service uid="localNegatoStarterSrv" type="::sight::modules::gui::action::SStarter" >
             <start uid="lNegatoAdp" />
         </service>
 

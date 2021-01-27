@@ -26,9 +26,9 @@
 
 #include <data/Composite.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwRenderOgre/SRender.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -43,7 +43,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SStereoSelector, ::sight::data::Composite)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SStereoSelector, ::sight::data::Composite)
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ void SStereoSelector::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_layersBox = new QComboBox();

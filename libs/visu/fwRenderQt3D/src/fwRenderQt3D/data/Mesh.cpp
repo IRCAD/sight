@@ -24,7 +24,7 @@
 
 #include "fwRenderQt3D/core/GenericScene.hpp"
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <Qt3DCore/QEntity>
 
@@ -197,7 +197,7 @@ void Mesh::buildBuffers(data::Mesh::sptr _mesh)
     // Checks if the mesh has normals. If not, generates them.
     if(!_mesh->hasPointNormals())
     {
-        ::fwDataTools::Mesh::generatePointNormals(_mesh);
+        data::tools::Mesh::generatePointNormals(_mesh);
     }
 
     float minX = 0, maxX = 0, minY = 0, maxY = 0, minZ = 0, maxZ = 0;

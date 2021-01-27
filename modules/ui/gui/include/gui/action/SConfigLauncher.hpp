@@ -22,7 +22,9 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/IActionSrv.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -30,11 +32,9 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/IActionSrv.hpp>
-
 #include <services/helper/ConfigLauncher.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -73,24 +73,24 @@ namespace action
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  */
-class GUI_CLASS_API SConfigLauncher : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SConfigLauncher : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SConfigLauncher, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SConfigLauncher, ::sight::gui::IActionSrv)
 
     /// Constructor. Do nothing.
-    GUI_API SConfigLauncher() noexcept;
+    MODULE_GUI_API SConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SConfigLauncher() noexcept;
+    MODULE_GUI_API virtual ~SConfigLauncher() noexcept;
 
     /// Set the action service is activated/disable.
-    GUI_API virtual void setIsActive(bool isActive) override;
+    MODULE_GUI_API virtual void setIsActive(bool isActive) override;
 
     // Launched signal key
-    GUI_API static const core::com::Signals::SignalKeyType s_LAUNCHED_SIG;
+    MODULE_GUI_API static const core::com::Signals::SignalKeyType s_LAUNCHED_SIG;
 
 protected:
 
@@ -119,7 +119,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::gui::action::SConfigLauncher" type="::fwGui::IActionSrv">
+       <service impl="::modules::gui::action::SConfigLauncher" type="::gui::IActionSrv">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>

@@ -22,6 +22,8 @@
 
 #include "guiQt/editor/SSignalButton.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -34,15 +36,13 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QVBoxLayout>
 
 #include <string>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
@@ -172,8 +172,7 @@ void SSignalButton::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
@@ -337,4 +336,4 @@ void SSignalButton::hide()
 //-----------------------------------------------------------------------------
 
 } // namespace editor.
-} // namespace gui.
+} // namespace sight::modules::gui.

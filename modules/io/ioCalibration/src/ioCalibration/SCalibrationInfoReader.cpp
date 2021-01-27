@@ -33,11 +33,10 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -82,11 +81,11 @@ void SCalibrationInfoReader::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
 
@@ -137,8 +136,8 @@ void SCalibrationInfoReader::updating()
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
 
         using DetectionPairType = std::pair< data::Image::sptr, data::PointList::sptr >;
 
@@ -187,12 +186,12 @@ void SCalibrationInfoReader::updating()
             if(!errorMessage.empty())
             {
                 errorMessage += "\n\n Abort reading?";
-                ::fwGui::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
-                                                          ::fwGui::dialog::MessageDialog::WARNING);
+                gui::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
+                                                      gui::dialog::MessageDialog::WARNING);
 
-                messageBox.addButton(::fwGui::dialog::IMessageDialog::YES_NO);
+                messageBox.addButton(gui::dialog::IMessageDialog::YES_NO);
 
-                if(messageBox.show() & ::fwGui::dialog::IMessageDialog::YES)
+                if(messageBox.show() & gui::dialog::IMessageDialog::YES)
                 {
                     filenameDetectionMap.clear();
                     m_readFailed = true;
@@ -234,19 +233,19 @@ void SCalibrationInfoReader::stopping()
 
 void SCalibrationInfoReader::updateChessboardSize()
 {
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
 
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
 
-    const std::string scaleStr = ::fwPreferences::getPreference(m_scaleKey);
+    const std::string scaleStr = gui::preferences::getPreference(m_scaleKey);
     if (!scaleStr.empty())
     {
         m_scale = std::stof(scaleStr);

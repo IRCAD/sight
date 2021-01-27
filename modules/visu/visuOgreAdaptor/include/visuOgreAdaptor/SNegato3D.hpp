@@ -28,8 +28,7 @@
 #include <core/com/Slots.hpp>
 
 #include <data/Float.hpp>
-
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <data/tools/helper/TransferFunction.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
@@ -95,7 +94,7 @@ class VISUOGREADAPTOR_CLASS_API SNegato3D final :
 
 public:
 
-    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato3D, ::fwRenderOgre::IAdaptor)
@@ -266,7 +265,7 @@ private:
     ::fwRenderOgre::Plane::FilteringEnumType m_filtering { ::fwRenderOgre::Plane::FilteringEnumType::NONE };
 
     /// Helps interfacing with the transfer function input.
-    ::fwDataTools::helper::TransferFunction m_helperTF;
+    data::tools::helper::TransferFunction m_helperTF;
 
     /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };

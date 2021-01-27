@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace guiQt contains the basic services to build the application IHM with Qt.
+ * @brief The namespace sight::modules::guiQt contains the basic services to build the application IHM with Qt.
  *
  * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
@@ -45,7 +45,7 @@
  */
 #pragma once
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 }

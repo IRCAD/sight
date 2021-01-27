@@ -28,7 +28,7 @@
 
 #include <data/Point.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -56,13 +56,13 @@ namespace uiImageQt
  * - \b shortcut : shortcut used to show/hide the image
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject,
-                                              public ::fwGui::editor::IEditor
+                                              public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageTransparency, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(ImageTransparency, gui::editor::IEditor)
 
     UIIMAGEQT_API ImageTransparency() noexcept;
 

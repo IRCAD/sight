@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
 #include <vector>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -42,7 +42,7 @@ namespace action
  * This action can be :
  *   - Start a service :
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <start uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -51,7 +51,7 @@ namespace action
  *
  *   - Only start a service :
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <start_only uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -59,7 +59,7 @@ namespace action
  *
  *   - Start a service if exists :
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <start_if_exists uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -67,7 +67,7 @@ namespace action
  *
  *   - Stop a service :
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <stop uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -75,7 +75,7 @@ namespace action
  *
  *   - Stop a service if exists :  Test if the service exist before stopping it
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <stop_if_exists uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -83,7 +83,7 @@ namespace action
  *
  *   - Start and update or stop the service:
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -92,7 +92,7 @@ namespace action
  *
  *   - Only start or stop the service:
  * @code{.xml}
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+           <service uid="actionUid" type="::gui::IActionSrv" impl="::modules::gui::action::SStarter" autoConnect="no">
               <start_only_or_stop uid="Uid_of_the_service" />
            </service>
    @endcode
@@ -102,23 +102,23 @@ namespace action
  * itself.
  */
 
-class GUI_CLASS_API SStarter : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SStarter : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SStarter, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SStarter, ::sight::gui::IActionSrv)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SStarter() noexcept;
+    MODULE_GUI_API SStarter() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SStarter() noexcept;
+    MODULE_GUI_API virtual ~SStarter() noexcept;
 
 protected:
 
@@ -137,26 +137,26 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating() override;
+    MODULE_GUI_API void updating() override;
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or
      * stopped
      */
-    GUI_API void configuring() override;
+    MODULE_GUI_API void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
     /**
      * @brief Uninitialized the service activity.
      * All services started by this action are stopped.
      */
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
 private:
     typedef core::tools::fwID::IDType IDSrvType;
@@ -170,4 +170,4 @@ private:
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

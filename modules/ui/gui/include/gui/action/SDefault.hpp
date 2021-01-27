@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -36,22 +36,22 @@ namespace action
 /**
  * @brief  Defines the default action to have a simple action button.
  */
-class GUI_CLASS_API SDefault : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SDefault : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefault, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SDefault, ::sight::gui::IActionSrv)
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SDefault() noexcept;
+    MODULE_GUI_API SDefault() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SDefault() noexcept;
+    MODULE_GUI_API virtual ~SDefault() noexcept;
 
 protected:
 
@@ -59,19 +59,19 @@ protected:
      * @{
      */
 
-    GUI_API virtual void configuring() override;
+    MODULE_GUI_API virtual void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     ///@}
 
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

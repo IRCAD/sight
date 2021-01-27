@@ -6,7 +6,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwGui
+    gui
     services
 )
 set( REQUIREMENTS
@@ -17,7 +17,6 @@ set( REQUIREMENTS
 if(NOT ${ENABLE_QML_APPLICATION})
 
     list(APPEND DEPENDENCIES
-        fwGuiQt
         )
     list(APPEND REQUIREMENTS
         guiQt

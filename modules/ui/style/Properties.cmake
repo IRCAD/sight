@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     services
-    fwPreferences
+    gui
     )
 set( REQUIREMENTS  )
 

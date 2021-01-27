@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IMenuBarSrv.hpp>
+#include <gui/IMenuBarSrv.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace aspect
 {
@@ -34,18 +34,18 @@ namespace aspect
 /**
  * @brief   Defines the default menubar for standard application
  */
-class GUI_CLASS_API SDefaultMenuBar : public ::fwGui::IMenuBarSrv
+class MODULE_GUI_CLASS_API SDefaultMenuBar : public ::sight::gui::IMenuBarSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultMenuBar, ::fwGui::IMenuBarSrv)
+    fwCoreServiceMacro(SDefaultMenuBar, ::sight::gui::IMenuBarSrv)
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultMenuBar() noexcept;
+    MODULE_GUI_API SDefaultMenuBar() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultMenuBar() noexcept;
+    MODULE_GUI_API virtual ~SDefaultMenuBar() noexcept;
 
 protected:
 
@@ -57,7 +57,8 @@ protected:
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
+       <service uid="menuBar" type="::gui::IMenuBarSrv" impl="::modules::gui::aspect::SDefaultMenuBar" autoConnect="no"
+     *>
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -81,24 +82,24 @@ protected:
      *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
+     *  @see gui::IMenuBarSrv::initialize(), gui::layoutManager::IMenuBarLayoutManager::initialize()
      */
-    GUI_API virtual void configuring() override;
+    MODULE_GUI_API virtual void configuring() override;
 
     /**
      * @brief Create the menus and start the managed services.
-     * @see ::fwGui::IMenuBarSrv::create()
+     * @see gui::IMenuBarSrv::create()
      */
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
     /**
      * @brief Stop all menu of this menuBar and destroy MenuBar
-     * @see ::fwGui::IMenuBarSrv::destroy()
+     * @see gui::IMenuBarSrv::destroy()
      */
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /// Updating service, do nothing.
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
     ///@}
 };

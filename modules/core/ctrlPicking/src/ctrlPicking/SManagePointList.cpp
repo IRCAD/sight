@@ -30,11 +30,10 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/helper/PointList.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/PointList.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
 
@@ -106,9 +105,9 @@ void SManagePointList::stopping()
 
 //------------------------------------------------------------------------------
 
-void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
+void SManagePointList::pick(data::tools::PickingInfo _info) const
 {
-    if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
+    if(_info.m_modifierMask & data::tools::PickingInfo::CTRL)
     {
         const data::Point::sptr point = data::Point::New();
 
@@ -119,7 +118,7 @@ void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
         {
             const double* const pickedCoord = _info.m_worldPos;
             const ::glm::dvec4 pickedPoint  = ::glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const ::glm::dmat4x4 mat        = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(
+            const ::glm::dmat4x4 mat        = data::tools::TransformationMatrix3D::getMatrixFromTF3D(
                 matrix.get_shared());
 
             const ::glm::dvec4 modifiedPickedPoint = mat*pickedPoint;
@@ -130,11 +129,11 @@ void SManagePointList::pick(::fwDataTools::PickingInfo _info) const
             point->setCoord({_info.m_worldPos[0], _info.m_worldPos[1], _info.m_worldPos[2]});
         }
 
-        if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
+        if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
             this->addPoint(point);
         }
-        else if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP)
+        else if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_UP)
         {
             this->removePoint(point);
         }
@@ -151,7 +150,7 @@ void SManagePointList::addPoint(const data::Point::sptr _point) const
     {
         const auto counter             = pointList->getPoints().size();
         const data::String::sptr label = data::String::New(std::to_string(counter));
-        _point->setField(::fwDataTools::fieldHelper::Image::m_labelId, label );
+        _point->setField(data::tools::fieldHelper::Image::m_labelId, label );
     }
 
     pointList->pushBack(_point);
@@ -178,7 +177,7 @@ void SManagePointList::removePoint(const data::Point::csptr _point) const
         const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
 
         const data::Point::sptr pointRes =
-            ::fwDataTools::helper::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
+            data::tools::helper::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
 
         if(pointRes != nullptr)
         {

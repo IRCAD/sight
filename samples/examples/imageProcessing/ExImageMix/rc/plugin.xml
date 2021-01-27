@@ -1,6 +1,6 @@
 <plugin id="ExImageMix" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKQt" />
@@ -19,7 +19,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExImageMix</name>
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open background image" shortcut="Ctrl+O" />
@@ -61,9 +61,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" backgroundColor="#36393E" border="5" />
                         <view proportion="1" />
@@ -77,9 +77,9 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="::gui::view::SDefaultView" >
+            <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" caption="[background image] Pixel info" />
                         <view proportion="0" caption="[background image] Window Level" />
@@ -98,9 +98,9 @@
                 </registry>
             </service>
 
-            <service uid="blendSceneView" type="::gui::view::SDefaultView" >
+            <service uid="blendSceneView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#3E4453" border="5" />
@@ -112,9 +112,9 @@
                 </registry>
             </service>
 
-            <service uid="blendSceneBottomView" type="::gui::view::SDefaultView" >
+            <service uid="blendSceneBottomView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="30" />
@@ -126,9 +126,9 @@
                 </registry>
             </service>
 
-            <service uid="imagesView" type="::gui::view::SDefaultView" >
+            <service uid="imagesView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" minWidth="300" />
                         <view proportion="1" />
@@ -142,15 +142,15 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="openBackgroundFileAct" type="::gui::action::SStarter" >
+            <service uid="openBackgroundFileAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="backgroundImageReaderSrv" />
             </service>
 
-            <service uid="openFrontFileAct" type="::gui::action::SStarter" >
+            <service uid="openFrontFileAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="foregroundImageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 

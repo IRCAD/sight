@@ -28,10 +28,10 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QDateEdit>
 #include <QLineEdit>
@@ -70,7 +70,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SQueryEditor final :
     public QObject,
-    public ::fwGui::editor::IEditor
+    public gui::editor::IEditor
 {
 
 Q_OBJECT;
@@ -78,7 +78,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SQueryEditor,  ::fwGui::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  gui::editor::IEditor )
 
     /// Creates the service.
     IOPACS_API SQueryEditor() noexcept;

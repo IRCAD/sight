@@ -4,10 +4,9 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwGui
+    gui
     fwRenderOgre
     services
-    fwDataTools
 )
 set( REQUIREMENTS )
 set( WARNINGS_AS_ERRORS ON )

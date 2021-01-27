@@ -26,7 +26,7 @@
 
 #include <data/String.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -102,7 +102,7 @@ void STextStatus::configuring()
 void STextStatus::starting()
 {
     this->create();
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QHBoxLayout* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);

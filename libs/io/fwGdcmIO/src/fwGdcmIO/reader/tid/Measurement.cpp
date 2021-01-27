@@ -31,9 +31,8 @@
 #include <data/Boolean.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -122,12 +121,12 @@ void Measurement::addDistance(const SPTR(data::Point)& point1,
                               const SPTR(data::Point)& point2)
 {
     data::Vector::sptr distanceVector =
-        m_object->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        m_object->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
 
     if(!distanceVector)
     {
         distanceVector = data::Vector::New();
-        m_object->setField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, distanceVector);
+        m_object->setField(data::tools::fieldHelper::Image::m_imageDistancesId, distanceVector);
     }
 
     data::PointList::sptr pointList = data::PointList::New();

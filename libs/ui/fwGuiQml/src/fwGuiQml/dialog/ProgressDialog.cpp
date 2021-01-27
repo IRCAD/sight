@@ -25,11 +25,11 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwGui/container/fwContainer.hpp>
-#include <fwGui/IFrameSrv.hpp>
-#include <fwGui/registry/macros.hpp>
-
 #include <fwQml/QmlEngine.hpp>
+
+#include <gui/container/fwContainer.hpp>
+#include <gui/IFrameSrv.hpp>
+#include <gui/registry/macros.hpp>
 
 #include <QGuiApplication>
 #include <QObject>
@@ -37,7 +37,7 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::ProgressDialog, ::fwGui::dialog::IProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQml::dialog::ProgressDialog, ::sight::gui::dialog::IProgressDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -46,7 +46,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog( ::fwGui::GuiBaseObject::Key key, const std::string& title, const std::string& message)
+ProgressDialog::ProgressDialog( gui::GuiBaseObject::Key key, const std::string& title, const std::string& message)
 {
     // get the qml engine QmlApplicationEngine
     SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();

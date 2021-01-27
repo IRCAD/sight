@@ -1,7 +1,7 @@
 <plugin id="Tuto10LaunchBasicConfig" version="@PROJECT_VERSION@" >
 
     <requirement id="preferences" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
 
     <!-- Allows to include a xml file containing a sub-configuration -->
@@ -17,7 +17,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto10LaunchBasicConfig</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -62,11 +62,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- ************************ Configuration launchers ********************************* -->
 
@@ -75,7 +75,7 @@
                 This service allows to launch a sub-configuration.
                 The configuration is defined by its id.
             -->
-            <service uid="launchConfigAct" type="::gui::action::SConfigLauncher" >
+            <service uid="launchConfigAct" type="::sight::modules::gui::action::SConfigLauncher" >
                 <appConfig id="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" />
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key

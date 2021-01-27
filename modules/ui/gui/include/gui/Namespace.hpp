@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,16 +21,16 @@
  ***********************************************************************/
 
 /**
- * @brief The namespace gui contains the basic services to build the application IHM.
+ * @brief The namespace sight::modules::gui contains the basic services to build the application IHM.
  *
  */
 #pragma once
 
-namespace gui
+namespace sight::modules::gui
 {
 
 /**
- * @brief The namespace gui::action contains basic services managing action.
+ * @brief The namespace sight::modules::gui::action contains basic services managing action.
  */
 namespace action
 {
@@ -38,7 +38,8 @@ namespace action
 } // namespace action
 
 /**
- * @brief The namespace gui::aspect contains basic services for basic widgets like menuBar, menu, toolBar....
+ * @brief The namespace sight::modules::gui::aspect contains basic services for basic widgets like menuBar,
+ * menu, toolBar....
  */
 namespace aspect
 {
@@ -46,7 +47,7 @@ namespace aspect
 } // namespace aspect
 
 /**
- * @brief The namespace gui::editor contains basic services managing editor.
+ * @brief The namespace sight::modules::gui::editor contains basic services managing editor.
  */
 namespace editor
 {
@@ -54,7 +55,7 @@ namespace editor
 }
 
 /**
- * @brief The namespace gui::frame contains basic services managing frame.
+ * @brief The namespace sight::modules::gui::frame contains basic services managing frame.
  */
 namespace frame
 {
@@ -62,11 +63,11 @@ namespace frame
 }
 
 /**
- * @brief The namespace gui::view contains basic services managing view.
+ * @brief The namespace sight::modules::gui::view contains basic services managing view.
  */
 namespace view
 {
 
 }
 
-} // namespace gui
+} // namespace sight::modules::gui

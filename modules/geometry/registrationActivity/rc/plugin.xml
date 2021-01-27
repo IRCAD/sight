@@ -1,7 +1,7 @@
 <plugin id="registrationActivity" version="@PROJECT_VERSION@" >
 
     <requirement id="::sight::modules::services" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
     <requirement id="activities" />

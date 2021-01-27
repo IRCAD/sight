@@ -25,10 +25,9 @@
 #include <calibration3d/helper.hpp>
 
 #include <data/mt/ObjectReadLock.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
 

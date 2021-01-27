@@ -42,9 +42,9 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGui/dialog/InputDialog.hpp>
+#include <gui/dialog/InputDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -73,7 +73,8 @@ static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard,
+                         ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -101,7 +102,7 @@ SActivityWizard::~SActivityWizard() noexcept
 
 void SActivityWizard::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -138,9 +139,9 @@ void SActivityWizard::configuring()
 
 void SActivityWizard::starting()
 {
-    ::fwGui::IGuiContainerSrv::create();
+    gui::IGuiContainerSrv::create();
 
-    fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QWidget* const container = qtContainer->getQtContainer();
 
@@ -479,7 +480,7 @@ void SActivityWizard::onBuildActivity()
                     info = activities::registry::Activities::getDefault()->getInfo(
                         m_actSeries->getActivityConfigId());
 
-                    std::string description = ::fwGui::dialog::InputDialog::showInputDialog(
+                    std::string description = gui::dialog::InputDialog::showInputDialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
                         info.title);

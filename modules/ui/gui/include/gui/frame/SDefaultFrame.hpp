@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/IFrameSrv.hpp>
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/IFrameSrv.hpp>
-
-namespace gui
+namespace sight::modules::gui
 {
 namespace frame
 {
@@ -36,18 +36,18 @@ namespace frame
 /**
  * @brief Defines the default frame for standard application.
  */
-class GUI_CLASS_API SDefaultFrame : public ::fwGui::IFrameSrv
+class MODULE_GUI_CLASS_API SDefaultFrame : public ::sight::gui::IFrameSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultFrame, ::fwGui::IFrameSrv)
+    fwCoreServiceMacro(SDefaultFrame, ::sight::gui::IFrameSrv)
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultFrame() noexcept;
+    MODULE_GUI_API SDefaultFrame() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultFrame() noexcept;
+    MODULE_GUI_API virtual ~SDefaultFrame() noexcept;
 
 protected:
 
@@ -57,34 +57,34 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters.
-     * @see ::fwGui::IFrameSrv::initialize()
+     * @see gui::IFrameSrv::initialize()
      */
-    GUI_API virtual void configuring() override;
+    MODULE_GUI_API virtual void configuring() override;
 
     /**
      * @brief Register a view with defined id.
-     * @see ::fwGui::IFrameSrv::create()
+     * @see gui::IFrameSrv::create()
      */
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
-     * @see ::fwGui::IFrameSrv::destroy()
+     * @see gui::IFrameSrv::destroy()
      */
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
     ///@}
 
 };
 
 } // namespace frame
-} // namespace gui
+} // namespace sight::modules::gui

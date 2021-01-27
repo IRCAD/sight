@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwRenderOgre/Layer.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -52,13 +52,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class UIVISUOGRE_CLASS_API SCoreCompositorEditor : public QObject,
-                                                   public ::fwGui::editor::IEditor
+                                                   public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCoreCompositorEditor, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SCoreCompositorEditor, gui::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SCoreCompositorEditor() noexcept;

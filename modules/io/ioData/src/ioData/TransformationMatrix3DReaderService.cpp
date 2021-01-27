@@ -31,9 +31,9 @@
 
 #include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-
 #include <fwIO/IReader.hpp>
+
+#include <gui/dialog/LocationDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -99,11 +99,11 @@ void TransformationMatrix3DReaderService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TRF files", "*.trf");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );

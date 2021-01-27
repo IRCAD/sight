@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -52,13 +52,13 @@ namespace uiReconstructionQt
  * - \b reconstruction [data::Reconstruction]: reconstruction containing the material to update.
  */
 class UIRECONSTRUCTIONQT_CLASS_API OrganMaterialEditor : public QObject,
-                                                         public ::fwGui::editor::IEditor
+                                                         public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(OrganMaterialEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(OrganMaterialEditor, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQT_API OrganMaterialEditor() noexcept;

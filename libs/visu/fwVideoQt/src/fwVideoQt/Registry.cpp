@@ -26,12 +26,11 @@
 #include "fwVideoQt/Player.hpp"
 #include "fwVideoQt/Surface.hpp"
 
-#include <arPreferences/preferences.hpp>
-
 #include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/preferences.hpp>
 
 namespace fwVideoQt
 {
@@ -101,7 +100,7 @@ Player* Registry::requestPlayer(const data::Camera::csptr& camera)
             {
                 /// Path of the video file stored in the camera description
                 std::filesystem::path videoPath(camera->getVideoFile());
-                std::filesystem::path videoDir(::arPreferences::getVideoDir());
+                std::filesystem::path videoDir(gui::preferences::getVideoDir());
 
                 // For compatibility with old calibration with absolute path
                 if (!videoPath.is_absolute())
@@ -116,10 +115,10 @@ Player* Registry::requestPlayer(const data::Camera::csptr& camera)
                 catch(std::exception& e)
                 {
                     delete player;
-                    ::fwGui::dialog::MessageDialog::show(
+                    gui::dialog::MessageDialog::show(
                         "Camera error",
                         e.what(),
-                        ::fwGui::dialog::IMessageDialog::WARNING);
+                        gui::dialog::IMessageDialog::WARNING);
                     return nullptr;
                 }
 

@@ -28,10 +28,9 @@
 #include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 namespace uiMeasurement
 {
@@ -56,14 +55,14 @@ SAddDistance::~SAddDistance() noexcept
 
 void SAddDistance::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SAddDistance::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +71,7 @@ void SAddDistance::updating()
 {
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         const data::Point::sptr pt1 = data::Point::New();
         std::copy( image->getOrigin2().begin(), image->getOrigin2().begin() +3, pt1->getCoord().begin() );
@@ -95,7 +94,7 @@ void SAddDistance::updating()
         pl->getPoints().push_back( pt2 );
 
         const data::Vector::sptr vectDist
-            = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
+            = image->setDefaultField(data::tools::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
 
         vectDist->getContainer().push_back(pl);
 
@@ -109,7 +108,7 @@ void SAddDistance::updating()
 
 void SAddDistance::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

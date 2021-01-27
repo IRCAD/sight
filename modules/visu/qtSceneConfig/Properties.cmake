@@ -7,8 +7,8 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     data
     module_services
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     uiTF
     scene2D
     media

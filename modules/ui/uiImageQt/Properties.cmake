@@ -5,11 +5,10 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwGui
-    fwGuiQt
+    gui
+    guiQt
     fwMath
     services
-    fwDataTools
 )
 set( REQUIREMENTS  )
 set( WARNINGS_AS_ERRORS ON)

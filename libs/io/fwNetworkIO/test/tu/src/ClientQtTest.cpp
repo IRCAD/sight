@@ -24,9 +24,8 @@
 
 #include <fwNetworkIO/helper/Series.hpp>
 
-#include <fwGuiQt/App.hpp>
-
-#include <fwQt/WorkerQt.hpp>
+#include <guiQt/App.hpp>
+#include <guiQt/WorkerQt.hpp>
 
 #include <services/registry/ActiveWorkers.hpp>
 
@@ -95,9 +94,9 @@ void ClientQtTest::setUp()
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
         = [](int& argc, char** argv)
           {
-              return QSharedPointer< QApplication > (new ::fwGuiQt::App(argc, argv, false));
+              return QSharedPointer< QApplication > (new guiQt::App(argc, argv, false));
           };
-    m_worker = ::fwQt::getQtWorker(argc, argv, callback, "", "");
+    m_worker = guiQt::getQtWorker(argc, argv, callback, "", "");
 
     m_server.moveToThread(&m_thread);
     m_thread.connect(&m_thread, &QThread::started, [ = ] {m_server.listen(); });

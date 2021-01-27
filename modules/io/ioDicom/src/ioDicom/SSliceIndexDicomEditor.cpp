@@ -34,14 +34,13 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/helper/Composite.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/helper/Composite.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -58,7 +57,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, ::sight::data::DicomSeries )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, ::sight::data::DicomSeries )
 
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
@@ -81,7 +80,7 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicom::SSliceIndexDicomEditor must have "
@@ -114,8 +113,8 @@ void SSliceIndexDicomEditor::starting()
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -331,11 +330,11 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         data::Image::sptr newImage      = imageSeries->getImage();
         const data::Image::Size newSize = newImage->getSize2();
 
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+        newImage->setField(data::tools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast< int >(newSize[0]/2));
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+        newImage->setField(data::tools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast< int >(newSize[1]/2));
-        newImage->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+        newImage->setField(data::tools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
 
         this->setOutput("image", newImage);
     }
@@ -350,11 +349,11 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

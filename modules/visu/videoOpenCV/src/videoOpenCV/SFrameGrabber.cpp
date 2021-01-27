@@ -22,8 +22,6 @@
 
 #include "videoOpenCV/SFrameGrabber.hpp"
 
-#include <arPreferences/preferences.hpp>
-
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
@@ -34,7 +32,8 @@
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/preferences.hpp>
 
 #include <services/macros.hpp>
 
@@ -141,7 +140,7 @@ void SFrameGrabber::startCamera()
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
         {
-            const std::filesystem::path videoDir(::arPreferences::getVideoDir());
+            const std::filesystem::path videoDir(gui::preferences::getVideoDir());
             file = videoDir / file;
         }
         file = file.lexically_normal();
@@ -170,7 +169,7 @@ void SFrameGrabber::startCamera()
     else
     {
         this->setStartState(false);
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Grabber",
             "This video source is not managed by this grabber.");
     }
@@ -249,10 +248,10 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
 
         if(fps == 0)
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Video error",
                 "Cannot read FPS from video file. Please check the video format.",
-                ::fwGui::dialog::MessageDialog::CRITICAL);
+                gui::dialog::MessageDialog::CRITICAL);
             return;
         }
 
@@ -275,7 +274,7 @@ void SFrameGrabber::readVideo(const std::filesystem::path& file)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Grabber",
             "This file cannot be opened: " + file.string() + ".");
 
@@ -304,7 +303,7 @@ void SFrameGrabber::readDevice( const data::Camera::csptr _camera)
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Grabber",
                 "This device cannot be opened: " + device + " at index: " + std::to_string(index));
         }
@@ -321,7 +320,7 @@ void SFrameGrabber::readDevice( const data::Camera::csptr _camera)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Grabber",
             "This device cannot be opened: " + device + " at index: " + std::to_string(index));
     }
@@ -352,7 +351,7 @@ void SFrameGrabber::readDevice( const data::Camera::csptr _camera)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Grabber",
             "This device:" + device + " at index: " + std::to_string(index) + "cannot be openned.");
 
@@ -391,7 +390,7 @@ void SFrameGrabber::readStream( const data::Camera::csptr _camera)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Grabber",
             "This stream:" + _camera->getStreamUrl() + " cannot be opened.");
 
@@ -476,7 +475,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
                     frameTL->initPoolSize(w, h, core::tools::Type::s_UINT16, 1);
                     break;
                 default:
-                    ::fwGui::dialog::MessageDialog::show(
+                    gui::dialog::MessageDialog::show(
                         "Grabber",
                         "This file cannot be opened: " + file + ".");
                     return;
@@ -592,7 +591,7 @@ void SFrameGrabber::grabVideo()
                         frameTL->initPoolSize(width, height, core::tools::Type::s_UINT16, 1);
                         break;
                     default:
-                        ::fwGui::dialog::MessageDialog::show(
+                        gui::dialog::MessageDialog::show(
                             "Grabber",
                             "This video cannot be read, the video type is not managed.");
                         return;
@@ -817,7 +816,7 @@ void SFrameGrabber::nextImage()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Grabber", "No more image to read.");
         }
 
@@ -845,7 +844,7 @@ void SFrameGrabber::previousImage()
         }
         else
         {
-            ::fwGui::dialog::MessageDialog::show(
+            gui::dialog::MessageDialog::show(
                 "Grabber", "No previous image.");
         }
 

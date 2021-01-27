@@ -29,12 +29,11 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -46,7 +45,7 @@
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiImageQt::ImageInfo, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::ImageInfo, ::sight::data::Image )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -67,10 +66,10 @@ ImageInfo::~ImageInfo() noexcept
 
 void ImageInfo::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer
+        = guiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
@@ -95,7 +94,7 @@ void ImageInfo::stopping()
 
 void ImageInfo::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -104,20 +103,20 @@ void ImageInfo::updating()
 {
     data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
     SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
-    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
+void ImageInfo::getInteraction(data::tools::PickingInfo info)
 {
-    if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
+    if (info.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
         data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
         SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
 
-        const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {

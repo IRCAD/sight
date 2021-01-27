@@ -77,9 +77,9 @@
 
         <!-- ***************************************** Begin layouts declaration ***************************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -94,7 +94,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolbar" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="start" icon="media-0.1/icons/start.svg" />
@@ -208,14 +208,14 @@
            </out>
         </service>
 
-        <service uid="startVideo" type="::gui::action::SSlotCaller" >
+        <service uid="startVideo" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>firstVideoGrabber/startCamera</slot>
                 <slot>secondVideoGrabber/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="stopVideo" type="::gui::action::SSlotCaller" >
+        <service uid="stopVideo" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>firstVideoGrabber/stopCamera</slot>
                 <slot>secondVideoGrabber/stopCamera</slot>
@@ -224,19 +224,19 @@
             </slots>
         </service>
 
-        <service uid="actionConcatenateRegistrationMatrix" type="::gui::action::SSlotCaller">
+        <service uid="actionConcatenateRegistrationMatrix" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>concatenateRegistrationMatrix/update</slot>
             </slots>
         </service>
 
-        <service uid="actionSwitchMatrices" type="::gui::action::SSlotCaller">
+        <service uid="actionSwitchMatrices" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>switchMatrices/switchMatrix</slot>
             </slots>
         </service>
 
-        <service uid="actionSaveMatrix" type="::gui::action::SSlotCaller">
+        <service uid="actionSaveMatrix" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>matrixWriter/update</slot>
             </slots>

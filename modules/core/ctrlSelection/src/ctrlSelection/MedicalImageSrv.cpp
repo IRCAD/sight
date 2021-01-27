@@ -26,8 +26,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <services/macros.hpp>
 
@@ -59,12 +58,12 @@ void MedicalImageSrv::convertImage()
 {
     data::Image::sptr pImg = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         bool isModified = false;
-        isModified |= ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(pImg);
-        isModified |= ::fwDataTools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg);
-        isModified |= ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg);
+        isModified |= data::tools::fieldHelper::MedicalImageHelpers::checkLandmarks(pImg);
+        isModified |= data::tools::fieldHelper::MedicalImageHelpers::checkTransferFunctionPool(pImg);
+        isModified |= data::tools::fieldHelper::MedicalImageHelpers::checkImageSliceIndex(pImg);
 
         if (isModified)
         {

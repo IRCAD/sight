@@ -41,9 +41,8 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -405,9 +404,9 @@ void SOpenCVExtrinsic::updating()
         // If one of those stringstream are not empty we should display the popup and not perform calibration.
         if(!messageIm1.str().empty() || !messageIm2.str().empty())
         {
-            ::fwGui::dialog::MessageDialog::sptr dialog = ::fwGui::dialog::MessageDialog::New();
+            gui::dialog::MessageDialog::sptr dialog = gui::dialog::MessageDialog::New();
             dialog->setTitle("Calibration Error");
-            dialog->setIcon(::fwGui::dialog::IMessageDialog::Icons::WARNING);
+            dialog->setIcon(gui::dialog::IMessageDialog::Icons::WARNING);
             dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration. "
                                + messageIm1.str() + messageIm2.str() + ".");
             dialog->show();
@@ -455,17 +454,17 @@ void SOpenCVExtrinsic::updating()
 
 void SOpenCVExtrinsic::updateCharucoBoardSize()
 {
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
-    const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);

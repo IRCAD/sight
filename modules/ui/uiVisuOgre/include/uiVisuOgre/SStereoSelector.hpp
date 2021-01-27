@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/Layer.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -42,13 +42,13 @@ namespace uiVisuOgre
  * @brief   Allows to select the stereo mode of an Ogre Compositor
  */
 class UIVISUOGRE_CLASS_API SStereoSelector : public QObject,
-                                             public ::fwGui::editor::IEditor
+                                             public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SStereoSelector, ::fwGui::editor::IEditor);
+    fwCoreServiceMacro(SStereoSelector, gui::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SStereoSelector() noexcept;

@@ -31,8 +31,7 @@
 #include <data/Boolean.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -142,15 +141,15 @@ void Fiducial::readNode(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& node
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
     data::Point::sptr point = data::Point::New(x, y, z);
-    point->setField(::fwDataTools::fieldHelper::Image::m_labelId, data::String::New(label));
+    point->setField(data::tools::fieldHelper::Image::m_labelId, data::String::New(label));
 
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
 
     if(!pointList)
     {
         pointList = data::PointList::New();
-        m_object->setField(::fwDataTools::fieldHelper::Image::m_imageLandmarksId, pointList);
+        m_object->setField(data::tools::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
     pointList->getPoints().push_back(point);

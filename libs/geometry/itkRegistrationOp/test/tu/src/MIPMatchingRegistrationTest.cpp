@@ -31,10 +31,9 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/itk.hpp>
 

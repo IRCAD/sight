@@ -30,7 +30,7 @@
 
 #include <data/Composite.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -138,9 +138,9 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show("Activity launch",
-                                             message,
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Activity launch",
+                                         message,
+                                         gui::dialog::IMessageDialog::CRITICAL);
     }
 }
 

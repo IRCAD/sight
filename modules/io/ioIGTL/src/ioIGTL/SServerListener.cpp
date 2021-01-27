@@ -24,9 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -82,7 +81,7 @@ void SServerListener::starting()
 {
     try
     {
-        const std::uint16_t port = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
+        const std::uint16_t port = gui::preferences::getValue<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
@@ -91,9 +90,9 @@ void SServerListener::starting()
     }
     catch (core::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::show("Error", "Cannot start the server: " +
-                                             std::string(e.what()),
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Error", "Cannot start the server: " +
+                                         std::string(e.what()),
+                                         gui::dialog::IMessageDialog::CRITICAL);
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SLM_ERROR(e.what());
         this->slot(s_STOP_SLOT)->asyncRun();
@@ -116,7 +115,7 @@ void SServerListener::stopping()
     }
     catch (core::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::show("Error", e.what());
+        gui::dialog::MessageDialog::show("Error", e.what());
     }
     catch (std::future_error&)
     {
@@ -167,7 +166,7 @@ void SServerListener::receiveObject()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ::fwGui::dialog::MessageDialog::show("Error", ex.what());
+            gui::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else

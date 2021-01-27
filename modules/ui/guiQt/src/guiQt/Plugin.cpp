@@ -22,14 +22,13 @@
 
 #include "guiQt/Plugin.hpp"
 
+#include <guiQt/App.hpp>
+#include <guiQt/WorkerQt.hpp>
+
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <fwGuiQt/App.hpp>
-
-#include <fwQt/WorkerQt.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ActiveWorkers.hpp>
@@ -42,11 +41,11 @@
 
 #include <functional>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::guiQt::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::guiQt::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +57,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
+    core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
@@ -66,16 +65,16 @@ void Plugin::start()
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
         = [](int& argc, char** argv)
           {
-              return QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv, true) );
+              return QSharedPointer< QApplication > ( new ::sight::guiQt::App(argc, argv, true) );
           };
 
-    m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
+    m_workerQt = ::sight::guiQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
 
     services::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 
     m_workerQt->post( std::bind( &Plugin::loadStyleSheet, this ) );
 
-    core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +92,7 @@ void Plugin::stop() noexcept
 
 void setup()
 {
-    core::runtime::profile::getCurrentProfile()->setup();
+    core::runtime::getCurrentProfile()->setup();
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +102,7 @@ int Plugin::run() noexcept
     m_workerQt->post( std::bind( &setup ) );
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    core::runtime::profile::getCurrentProfile()->cleanup();
+    core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
     services::registry::ActiveWorkers::getDefault()->clearRegistry();
@@ -150,4 +149,4 @@ void Plugin::loadStyleSheet()
 
 //-----------------------------------------------------------------------------
 
-} // namespace guiQt
+} // namespace sight::modules::guiQt

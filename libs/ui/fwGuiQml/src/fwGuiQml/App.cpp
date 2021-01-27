@@ -25,7 +25,7 @@
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <locale.h>
 #include <QCursor>

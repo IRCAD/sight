@@ -22,14 +22,13 @@
 
 #include "videoPCL/SFrameGrabber.hpp"
 
-#include <arPreferences/preferences.hpp>
-
 #include <core/com/Signal.hxx>
 
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/preferences.hpp>
 
 #include <services/macros.hpp>
 
@@ -110,7 +109,7 @@ void SFrameGrabber::startCamera()
     if (camera->getCameraSource() == data::Camera::FILE)
     {
         std::filesystem::path file = camera->getVideoFile();
-        const std::filesystem::path videoDir(::arPreferences::getVideoDir());
+        const std::filesystem::path videoDir(gui::preferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
@@ -133,7 +132,7 @@ void SFrameGrabber::startCamera()
     else
     {
         this->setStartState(false);
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Grabber",
             "This video source is not managed by this grabber.");
     }

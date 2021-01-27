@@ -29,8 +29,8 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -352,8 +352,8 @@ void SGrabberProxy::startCamera()
                 if (descriptions.size() == 0)
                 {
                     const std::string msg = "No video grabber implementation found.\n";
-                    ::fwGui::dialog::MessageDialog::show("Error", msg,
-                                                         ::fwGui::dialog::MessageDialog::Icons::WARNING);
+                    gui::dialog::MessageDialog::show("Error", msg,
+                                                     gui::dialog::MessageDialog::Icons::WARNING);
                     return;
                 }
                 else if (descriptions.size() == 1)
@@ -366,7 +366,7 @@ void SGrabberProxy::startCamera()
                     // Sort the description list.
                     std::sort(std::begin(descriptions), std::end(descriptions));
 
-                    ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
+                    gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
                     selector->setTitle(m_guiTitle);
                     selector->setSelections(descriptions);
 
@@ -379,7 +379,7 @@ void SGrabberProxy::startCamera()
             if(m_grabberImpl.empty())
             {
                 const std::string msg = "No video grabber chosen, aborting...\n";
-                ::fwGui::dialog::MessageDialog::show("Warning", msg);
+                gui::dialog::MessageDialog::show("Warning", msg);
                 return;
             }
             m_services.resize(implToNumTL[m_grabberImpl]);

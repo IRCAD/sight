@@ -26,8 +26,7 @@
 
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
+#include <data/tools/helper/Composite.hpp>
 
 #include <fwRenderQt/data/InitQtPen.hpp>
 #include <fwRenderQt/Scene2DGraphicsView.hpp>
@@ -1653,7 +1652,7 @@ void SMultipleTF::removeCurrenTF()
     const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
-    ::fwDataTools::helper::Composite compositeHelper(tfPool);
+    data::tools::helper::Composite compositeHelper(tfPool);
     data::TransferFunction::sptr tf;
     {
         const data::mt::ObjectWriteLock tfPoolLock(tfPool);
@@ -1814,7 +1813,7 @@ void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
     // Adds the new TF.
-    ::fwDataTools::helper::Composite compositeHelper(tfPool);
+    data::tools::helper::Composite compositeHelper(tfPool);
     compositeHelper.add(_tf->getName(), _tf);
 
     // Sends the signal.

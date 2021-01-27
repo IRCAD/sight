@@ -28,7 +28,7 @@
 
 #include <data/Vector.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -61,12 +61,12 @@ namespace editor
  *
  */
 class UITOOLS_CLASS_API SShowVectorSize : public QObject,
-                                          public ::fwGui::editor::IEditor
+                                          public gui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SShowVectorSize, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SShowVectorSize, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SShowVectorSize() noexcept;

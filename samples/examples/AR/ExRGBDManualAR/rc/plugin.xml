@@ -1,6 +1,6 @@
 <plugin id="ExRGBDManualAR" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -29,7 +29,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExRGBDManualAR</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuPreferencesView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -80,7 +80,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
@@ -125,9 +125,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" />
@@ -141,28 +141,28 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
-            <service uid="loadCalibAct" type="::gui::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="loadTransformationAct" type="::gui::action::SSlotCaller" >
+            <service uid="loadTransformationAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>transformReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="loadMeshAct" type="::gui::action::SSlotCaller" >
+            <service uid="loadMeshAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>meshReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -170,7 +170,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -180,7 +180,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -190,7 +190,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -204,32 +204,32 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="organManagerAct" type="::gui::action::SConfigLauncher" >
+            <service uid="organManagerAct" type="::sight::modules::gui::action::SConfigLauncher" >
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR-0.1/app.ico" />
             </service>
 
-            <service uid="learnBackgroundAct" type="::gui::action::SSlotCaller" >
+            <service uid="learnBackgroundAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>extractForegroundSrv/setBackground</slot>
                 </slots>
             </service>
 
-            <service uid="learnForegroundAct" type="::gui::action::SSlotCaller" >
+            <service uid="learnForegroundAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>extractForegroundSrv/setForeground</slot>
                 </slots>
             </service>
 
-            <service uid="segmentationParametersAct" type="::gui::action::SModifyLayout" >
+            <service uid="segmentationParametersAct" type="::sight::modules::gui::action::SModifyLayout" >
                 <state active="false" />
                 <config>
                     <show_or_hide sid="noiseLevelSrv" />
@@ -357,25 +357,25 @@
                 </out>
             </service>
 
-            <service uid="thresholdSliderSrv" type="::guiQt::editor::SParameters" >
+            <service uid="thresholdSliderSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
                 </parameters>
             </service>
 
-            <service uid="noiseLevelSrv" type="::guiQt::editor::SParameters" >
+            <service uid="noiseLevelSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
                 </parameters>
             </service>
 
-            <service uid="bgComponentsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="bgComponentsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>
             </service>
 
-            <service uid="fgComponentsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="fgComponentsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>

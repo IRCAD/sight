@@ -16,9 +16,9 @@
         <object uid="${tfBackgroundImage}" type="::sight::data::TransferFunction" src="deferred" />
         <object uid="${tfFrontImage}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="Blend" align="center" />
                     <view align="bottom" />
                 </layout>
@@ -30,9 +30,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::gui::view::SDefaultView">
+        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -44,9 +44,9 @@
             </registry>
         </service>
 
-        <service uid="sliderView" type="::gui::view::SDefaultView">
+        <service uid="sliderView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -58,9 +58,9 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::gui::view::SDefaultView">
+        <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Background image" proportion="1" />
                     <view caption="Front image" proportion="1" />
@@ -72,9 +72,9 @@
             </registry>
         </service>
 
-        <service uid="bgBottomView" type="::gui::view::SDefaultView">
+        <service uid="bgBottomView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <spacer/>
@@ -85,9 +85,9 @@
             </registry>
         </service>
 
-        <service uid="frontBottomView" type="::gui::view::SDefaultView">
+        <service uid="frontBottomView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />

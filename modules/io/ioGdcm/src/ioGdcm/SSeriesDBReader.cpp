@@ -36,14 +36,14 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/LoggerDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/PulseProgressDialog.hpp>
-
 #include <fwIO/IReader.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/LoggerDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
+#include <gui/dialog/PulseProgressDialog.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -92,11 +92,11 @@ void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setType(gui::dialog::LocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );
@@ -240,15 +240,15 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::pat
 
     if(m_dicomDirSupport == USER_SELECTION && reader->isDicomDirAvailable())
     {
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
         messageBox.setMessage( "There is a dicomdir file in the root folder. "
                                "Would you like to use it for the reading process ?" );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::YES_NO);
-        ::fwGui::dialog::IMessageDialog::Buttons button = messageBox.show();
+        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(gui::dialog::IMessageDialog::YES_NO);
+        gui::dialog::IMessageDialog::Buttons button = messageBox.show();
 
-        reader->setDicomdirActivated(button == ::fwGui::dialog::IMessageDialog::YES);
+        reader->setDicomdirActivated(button == gui::dialog::IMessageDialog::YES);
     }
     else if(m_dicomDirSupport == ALWAYS)
     {
@@ -268,7 +268,7 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::pat
         logger->sort();
 
         // Set default cursor
-        ::fwGui::Cursor cursor;
+        gui::Cursor cursor;
         cursor.setDefaultCursor();
 
         // Display logger dialog if enabled
@@ -290,7 +290,7 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::pat
             bool result = false;
             if(!job->cancelRequested())
             {
-                result = ::fwGui::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
+                result = gui::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
             }
 
             // If the user cancel the reading process we delete the loaded series
@@ -306,14 +306,14 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::pat
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::show(
-            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show(
+            "Warning", ss.str(), gui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
-        ::fwGui::dialog::MessageDialog::show(
-            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show(
+            "Warning", "Warning during loading", gui::dialog::IMessageDialog::WARNING);
     }
 
     return dummy;

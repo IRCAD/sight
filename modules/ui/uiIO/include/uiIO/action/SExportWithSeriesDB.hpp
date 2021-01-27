@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace sight::core::jobs
 {
@@ -84,10 +84,10 @@ namespace action
     </extension>
     @endcode
  */
-class UIIO_CLASS_API SExportWithSeriesDB : public ::fwGui::IActionSrv
+class UIIO_CLASS_API SExportWithSeriesDB : public ::sight::gui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SExportWithSeriesDB,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SExportWithSeriesDB,  gui::IActionSrv)
 
     /**
      * @name Signal/Slot typedefs

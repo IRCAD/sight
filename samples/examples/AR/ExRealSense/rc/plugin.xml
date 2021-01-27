@@ -1,6 +1,6 @@
 <plugin id="ExRealSense" version="@PROJECT_VERSION@" >
 
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
@@ -38,7 +38,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExRealSense</name>
@@ -55,7 +55,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -68,7 +68,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Recording Path..." shortcut="Ctrl+S" />
@@ -81,7 +81,7 @@
                 </registry>
             </service>
 
-            <service uid="menuOptionsView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuOptionsView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Filters settings..." style="check" />
@@ -96,7 +96,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor />
@@ -136,9 +136,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" visible="false" backgroundColor="#36393E" />
@@ -150,9 +150,9 @@
                 </registry>
             </service>
 
-            <service uid="scanningView" type="::gui::view::SDefaultView" >
+            <service uid="scanningView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -164,9 +164,9 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="::gui::view::SDefaultView" >
+            <service uid="RGBDView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -178,9 +178,9 @@
                 </registry>
             </service>
 
-            <service uid="pointcloudView" type="::gui::view::SDefaultView" >
+            <service uid="pointcloudView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -192,9 +192,9 @@
                 </registry>
             </service>
 
-            <service uid="filterSettingsView" type="::gui::view::SDefaultView" >
+            <service uid="filterSettingsView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -217,10 +217,10 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -228,7 +228,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -238,7 +238,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -248,7 +248,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -262,33 +262,33 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="recordAct" type="::gui::action::SSlotCaller" >
+            <service uid="recordAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/record</slot>
                 </slots>
             </service>
 
-            <service uid="configureRecordingPathAct" type="::gui::action::SSlotCaller" >
+            <service uid="configureRecordingPathAct" type="::sight::modules::gui::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/configureRecordingPath</slot>
                 </slots>
             </service>
 
-            <service uid="showPCDepthAct" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="showPCDepthAct" type="::sight::modules::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>DMPointAdp/updateVisibility</slot>
                 </slots>
                 <state active="false" />
             </service>
 
-            <service uid="showPCColorAct" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="showPCColorAct" type="::sight::modules::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>VPointAdp/updateVisibility</slot>
                 </slots>
@@ -297,7 +297,7 @@
 
             <!-- Show/hide the parameters view -->
 
-            <service uid="showfilterSettingsAct" type="::gui::action::SBooleanSlotCaller" >
+            <service uid="showfilterSettingsAct" type="::sight::modules::gui::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>filterSettingsView/setVisible</slot>
                 </slots>
@@ -390,7 +390,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="presetsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="presetsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
                     values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
@@ -399,51 +399,51 @@
                 </parameters>
             </service>
 
-            <service uid="alignmentSrv" type="::guiQt::editor::SParameters" >
+            <service uid="alignmentSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
                     values="None,Color,Depth,Infrared" />
                 </parameters>
             </service>
 
-            <service uid="infraredEmitterSrv" type="::guiQt::editor::SParameters" >
+            <service uid="infraredEmitterSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="IR Emitter" key="IREmitter" defaultValue="true" />
                 </parameters>
             </service>
 
-            <service uid="switchInfraToColorSrv" type="::guiQt::editor::SParameters" >
+            <service uid="switchInfraToColorSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Infra to Color" key="switchToIR" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="rangeEditorSrv" type="::guiQt::editor::SParameters" >
+            <service uid="rangeEditorSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="max range" key="maxRange" defaultValue="65535" min="0" max="65535" />
                     <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65534" />
                 </parameters>
             </service>
 
-            <service uid="enableSpacialFilterParamsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="enableSpacialFilterParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial"      defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="enableTemporalFilterParamsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="enableTemporalFilterParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable temporal filter"                key="enableTemporal"     defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="enableHoleFillingFilterParamsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="enableHoleFillingFilterParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable holes Filling filter"           key="enableHolesFilling" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="spacialFilterParamsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="spacialFilterParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int"    name="Number of iterations"  key="spacialMagnitude"    defaultValue="2"   min="1" max="5" />
                     <param type="double" name="Smooth Alpha"          key="spacialSmoothAlpha"  defaultValue="0.5" min="0.25" max="1"  widget="slider" />
@@ -452,7 +452,7 @@
                 </parameters>
             </service>
 
-            <service uid="temporalFilterParamsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="temporalFilterParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double" name="Smooth Alpha"        key="temporalSmoothAlpha"  defaultValue="0.4" min="0" max="1" widget="slider" />
                     <param type="int"    name="Smooth Delta"        key="temporalSmoothDelta"  defaultValue="20"  min="1" max="100" />
@@ -462,7 +462,7 @@
                 </parameters>
             </service>
 
-            <service uid="holeFillingFilterParamsSrv" type="::guiQt::editor::SParameters" >
+            <service uid="holeFillingFilterParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="enum" name="Hole filling" key="holeFilling"  defaultValue="farest_from_around"   values="fill_from_left,farest_from_around,nearest_from_around" />
                 </parameters>

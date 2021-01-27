@@ -28,9 +28,8 @@
 
 #include <data/Image.hpp>
 #include <data/Point.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
@@ -57,7 +56,7 @@ static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "update
 //------------------------------------------------------------------------------
 
 SPlaneSlicer::SPlaneSlicer() noexcept :
-    m_orientation(::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS),
+    m_orientation(data::tools::helper::MedicalImage::Orientation::Z_AXIS),
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateSliceOrientation, this);
@@ -134,15 +133,15 @@ void SPlaneSlicer::configuring()
 
     if(orientation == "axial")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS;
+        m_orientation = data::tools::helper::MedicalImage::Orientation::Z_AXIS;
     }
     else if(orientation == "sagittal")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS;
+        m_orientation = data::tools::helper::MedicalImage::Orientation::X_AXIS;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS;
+        m_orientation = data::tools::helper::MedicalImage::Orientation::Y_AXIS;
     }
     else
     {
@@ -187,17 +186,17 @@ void SPlaneSlicer::setReslicerExtent()
 
     switch (m_orientation)
     {
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
+        case data::tools::helper::MedicalImage::Orientation::X_AXIS:
             m_reslicer->SetOutputExtent(0, intSize[1], 0, intSize[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[1], origin[2], origin[0]);
             m_reslicer->SetOutputSpacing(spacing[1], spacing[2], spacing[0]);
             break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
+        case data::tools::helper::MedicalImage::Orientation::Y_AXIS:
             m_reslicer->SetOutputExtent(0, intSize[0], 0, intSize[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[2], origin[1]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[2], spacing[1]);
             break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
+        case data::tools::helper::MedicalImage::Orientation::Z_AXIS:
             m_reslicer->SetOutputExtent(0, intSize[0], 0, intSize[1], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[1], origin[2]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[1], spacing[2]);
@@ -220,7 +219,7 @@ void SPlaneSlicer::setReslicerAxes()
     // permutate axes.
     switch (m_orientation)
     {
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
+        case data::tools::helper::MedicalImage::Orientation::X_AXIS:
             // permutate X with Y and Y with Z
             for(std::uint8_t i = 0; i < 4; ++i)
             {
@@ -232,7 +231,7 @@ void SPlaneSlicer::setReslicerAxes()
                 axesMatrix->SetElement(i, 2, x);
             }
             break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
+        case data::tools::helper::MedicalImage::Orientation::Y_AXIS:
             // permutate Y with Z
             for(std::uint8_t i = 0; i < 4; ++i)
             {
@@ -242,7 +241,7 @@ void SPlaneSlicer::setReslicerAxes()
                 axesMatrix->SetElement(i, 2, y);
             }
             break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS: break; // Nothing to do.
+        case data::tools::helper::MedicalImage::Orientation::Z_AXIS: break; // Nothing to do.
     }
 
     m_reslicer->SetResliceAxes(axesMatrix);
@@ -257,14 +256,14 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
     data::Object::sptr index;
     switch (m_orientation)
     {
-        case ::fwDataTools::helper::MedicalImage::Orientation::X_AXIS:
-            index = image->getField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId);
+        case data::tools::helper::MedicalImage::Orientation::X_AXIS:
+            index = image->getField(data::tools::fieldHelper::Image::m_sagittalSliceIndexId);
             break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Y_AXIS:
-            index = image->getField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId);
+        case data::tools::helper::MedicalImage::Orientation::Y_AXIS:
+            index = image->getField(data::tools::fieldHelper::Image::m_frontalSliceIndexId);
             break;
-        case ::fwDataTools::helper::MedicalImage::Orientation::Z_AXIS:
-            index = image->getField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId);
+        case data::tools::helper::MedicalImage::Orientation::Z_AXIS:
+            index = image->getField(data::tools::fieldHelper::Image::m_axialSliceIndexId);
             break;
     }
 
@@ -290,11 +289,11 @@ void SPlaneSlicer::updateSliceOrientation(int from, int to)
 {
     if( to == static_cast< int > ( m_orientation ) )
     {
-        m_orientation = static_cast< ::fwDataTools::helper::MedicalImage::Orientation > ( from );
+        m_orientation = static_cast< data::tools::helper::MedicalImage::Orientation > ( from );
     }
     else if(from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast< ::fwDataTools::helper::MedicalImage::Orientation >( to );
+        m_orientation = static_cast< data::tools::helper::MedicalImage::Orientation >( to );
     }
 
     this->updating();
@@ -308,7 +307,7 @@ void SPlaneSlicer::updateDefaultValue()
     SLM_ASSERT("No 'image' found.", image);
 
     double min, max;
-    ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+    data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
 
     m_reslicer->SetBackgroundLevel(min);
 }

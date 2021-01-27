@@ -27,14 +27,14 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
-
 #include <fwIO/IWriter.hpp>
 
 #include <fwItkIO/JpgImageWriter.hpp>
+
+#include <gui/Cursor.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -82,11 +82,11 @@ void JpgImageWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );
@@ -126,7 +126,7 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(data::Image)& img)
 {
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
-    ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
+    gui::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
     data::location::Folder::sptr loc = data::location::Folder::New();
     loc->setFolder(imgPath);
@@ -143,15 +143,15 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ::fwGui::dialog::MessageDialog::show("Warning",
-                                             ss.str(),
-                                             ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show("Warning",
+                                         ss.str(),
+                                         gui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ::fwGui::dialog::MessageDialog::show("Warning",
-                                             "Warning during saving",
-                                             ::fwGui::dialog::IMessageDialog::WARNING);
+        gui::dialog::MessageDialog::show("Warning",
+                                         "Warning during saving",
+                                         gui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -166,8 +166,8 @@ void JpgImageWriterService::updating()
         data::Image::csptr image = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
+        gui::Cursor cursor;
+        cursor.setCursor(gui::ICursor::BUSY);
         saveImage(this->getFolder(), image);
         cursor.setDefaultCursor();
     }

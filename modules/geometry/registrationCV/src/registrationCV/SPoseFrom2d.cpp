@@ -37,9 +37,8 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 fwServicesRegisterMacro( ::sight::services::IRegisterer, ::registrationCV::SPoseFrom2d)
 
@@ -120,7 +119,7 @@ void SPoseFrom2d::starting()
             const ::cv::Point3f cvPoint    = m_3dModel.at(i);
             const data::Point::sptr point  = data::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
             const data::String::sptr label = data::String::New(std::to_string(i));
-            point->setField(::fwDataTools::fieldHelper::Image::m_labelId, label);
+            point->setField(data::tools::fieldHelper::Image::m_labelId, label);
             pl->pushBack(point);
         }
 

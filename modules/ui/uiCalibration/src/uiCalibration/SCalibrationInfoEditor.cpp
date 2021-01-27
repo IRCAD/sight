@@ -30,9 +30,9 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -42,7 +42,7 @@
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro(::fwGui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor)
+fwServicesRegisterMacro(gui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor)
 
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
@@ -101,8 +101,8 @@ void SCalibrationInfoEditor::updating()
             const auto errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
                                 "Your images may be out of sync.";
 
-            ::fwGui::dialog::MessageDialog::show("Inputs do not match",
-                                                 errMsg, ::fwGui::dialog::MessageDialog::WARNING);
+            gui::dialog::MessageDialog::show("Inputs do not match",
+                                             errMsg, gui::dialog::MessageDialog::WARNING);
         }
     }
     else
@@ -127,15 +127,15 @@ void SCalibrationInfoEditor::updating()
 
 void SCalibrationInfoEditor::configuring()
 {
-    fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SCalibrationInfoEditor::starting()
 {
-    fwGui::IGuiContainerSrv::create();
-    fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     // Creation of the Qt elements
 
@@ -171,7 +171,7 @@ void SCalibrationInfoEditor::starting()
 
 void SCalibrationInfoEditor::stopping()
 {
-    ::fwGui::IGuiContainerSrv::destroy();
+    gui::IGuiContainerSrv::destroy();
 }
 
 // ----------------------------------------------------------------------------

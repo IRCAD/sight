@@ -2,7 +2,7 @@
 
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -17,7 +17,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto11Picker</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
@@ -59,9 +59,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" backgroundColor="#3E4453" />
                         <view proportion="1" />
@@ -73,9 +73,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneView" type="::gui::view::SDefaultView" >
+            <service uid="sceneView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#3E4453" />
@@ -87,9 +87,9 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="::gui::view::SDefaultView" >
+            <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -105,15 +105,15 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::gui::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -156,14 +156,14 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="::guiQt::editor::SSignalButton" >
+            <service uid="snapshotSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="showNegatoSrv" type="::guiQt::editor::SSignalButton" >
+            <service uid="showNegatoSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
                     <icon>flatIcon-0.1/icons/RedCross.svg</icon>

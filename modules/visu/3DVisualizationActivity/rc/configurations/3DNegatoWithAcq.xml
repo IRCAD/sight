@@ -18,9 +18,9 @@
         <object uid="${imageComposite}" type="::sight::data::Composite" src="ref" />
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::sight::data::Image" src="deferred" />
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -33,9 +33,9 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::gui::view::SDefaultView">
+        <service uid="multiView_negato_bottom" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="0" minWidth="30" />
@@ -53,7 +53,7 @@
 
         <service uid="snapshotNegatoEditor" type="::uiVisuQt::SnapshotEditor" />
 
-        <service uid="extractImage" type="::gui::action::SPushObject">
+        <service uid="extractImage" type="::sight::modules::gui::action::SPushObject">
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
             <push srcKey="OptionalInputImageKey" />
@@ -146,7 +146,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="sliceListNegatoEditor" type="::guiQt::editor::SSelectionMenuButton">
+        <service uid="sliceListNegatoEditor" type="::sight::modules::guiQt::editor::SSelectionMenuButton">
             <!-- This input is only needed to start the service only if the image is present -->
             <in key="imageKey" uid="optionalInputImage" />
             <toolTip>Manage slice visibility</toolTip>

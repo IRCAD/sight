@@ -86,7 +86,7 @@ void SComputeHistogram::updating()
 
     data::mt::ObjectReadLock imgLock(image);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         data::Histogram::sptr histogram = this->getInOut< data::Histogram>(s_HISTOGRAM_INPUT);
 

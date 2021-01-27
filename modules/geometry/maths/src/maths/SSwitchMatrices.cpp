@@ -27,7 +27,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
 

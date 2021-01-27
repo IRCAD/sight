@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -41,19 +41,19 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::gui::action::SSignal" />
+        <service type="::modules::gui::action::SSignal" />
    @endcode
  *
- * See also ::fwGui::IActionSrv::initialize for more configuration parameters.
+ * See also gui::IActionSrv::initialize for more configuration parameters.
  * @see IActionSrv::initialize
  */
 
-class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SSignal : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SSignal, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SSignal, ::sight::gui::IActionSrv)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
@@ -62,29 +62,29 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SSignal() noexcept;
+    MODULE_GUI_API SSignal() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SSignal() noexcept;
+    MODULE_GUI_API virtual ~SSignal() noexcept;
 
 protected:
 
     /// Configures the service
-    GUI_API void configuring() override;
+    MODULE_GUI_API void configuring() override;
 
     /// Register the action and check if the action is executable.
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
     /// Unregister the action.
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /// Emit the signal
-    GUI_API void updating() override;
+    MODULE_GUI_API void updating() override;
 
     /// Give information about the class. Do nothing.
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /// Signal trigerred when action has been triggered
     SPTR(TriggeredSignalType) m_sigTriggered;
@@ -93,4 +93,4 @@ protected:
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

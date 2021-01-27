@@ -18,10 +18,10 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
                 <toolBar/>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::gui::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Export camera series" icon="flatIcon-0.1/icons/BlueSave.svg" />
@@ -60,9 +60,9 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::gui::view::SDefaultView">
+        <service uid="camerasView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -74,9 +74,9 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::gui::view::SDefaultView">
+        <service uid="cameraInfoView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
@@ -92,7 +92,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::gui::action::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>CalibrationXmlWriter/update</slot>
             </slots>
@@ -107,28 +107,28 @@
             <in key="data" uid="newCameraSeries"/>
         </service>
 
-        <service uid="startVideoAct" type="::gui::action::SSlotCaller">
+        <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="stopVideoAct" type="::gui::action::SSlotCaller">
+        <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="pauseVideoAct" type="::gui::action::SSlotCaller">
+        <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="loopVideoAct" type="::gui::action::SSlotCaller">
+        <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideoAct</slot>
                 <slot>videoGrabber2Srv/loopVideoAct</slot>

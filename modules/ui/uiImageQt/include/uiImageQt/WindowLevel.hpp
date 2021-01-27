@@ -27,10 +27,9 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Integer.hpp>
+#include <data/tools/helper/TransferFunction.hpp>
 
-#include <fwDataTools/helper/TransferFunction.hpp>
-
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -44,7 +43,7 @@ class QSlider;
 class QToolButton;
 class QSignalMapper;
 
-namespace fwGuiQt
+namespace sight::guiQt
 {
 namespace widget
 {
@@ -82,14 +81,14 @@ namespace uiImageQt
  * TF.
  */
 class UIIMAGEQT_CLASS_API WindowLevel final : public QObject,
-                                              public ::fwGui::editor::IEditor
+                                              public gui::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(WindowLevel, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(WindowLevel, gui::editor::IEditor)
 
     /// Initialize signals and slots.
     UIIMAGEQT_API WindowLevel() noexcept;
@@ -176,7 +175,7 @@ private:
     QPointer< QMenu >         m_dynamicRangeMenu;
     QPointer< QSignalMapper > m_dynamicRangeSignalMapper;
 
-    QPointer< ::fwGuiQt::widget::QRangeSlider > m_rangeSlider;
+    QPointer< guiQt::widget::QRangeSlider > m_rangeSlider;
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
@@ -186,7 +185,7 @@ private:
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     data::TransferFunction::sptr m_previousTF;
 
-    ::fwDataTools::helper::TransferFunction m_helperTF;
+    data::tools::helper::TransferFunction m_helperTF;
 
 };
 

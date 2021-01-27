@@ -22,6 +22,8 @@
 
 #include "guiQt/editor/SSelectionMenuButton.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -34,9 +36,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 
 #include <services/macros.hpp>
 
@@ -49,12 +49,12 @@
 
 #include <filesystem>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SSelectionMenuButton )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::sight::modules::guiQt::editor::SSelectionMenuButton )
 
 static const core::com::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 
@@ -124,8 +124,7 @@ void SSelectionMenuButton::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     m_dropDownButton = new QPushButton( QString::fromStdString(m_text) );
     m_dropDownButton->setToolTip( QString::fromStdString(m_toolTip));
@@ -225,4 +224,4 @@ void SSelectionMenuButton::disable()
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace guiQt
+} // namespace sight::modules::guiQt

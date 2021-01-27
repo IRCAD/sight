@@ -29,9 +29,8 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -196,7 +195,7 @@ void SPreferencesConfiguration::starting()
     this->actionServiceStarting();
 
     // Check preferences
-    data::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    data::Composite::sptr prefs = gui::preferences::getPreferences();
     if(prefs)
     {
         for(PreferenceElt& pref : m_preferences)
@@ -384,11 +383,11 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select Storage directory");
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
 
     const auto result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
@@ -405,11 +404,11 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 {
     static std::filesystem::path _sDefaultPath;
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select File");
     dialogFile.setDefaultLocation( data::location::SingleFile::New(_sDefaultPath) );
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
 
     const auto result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)

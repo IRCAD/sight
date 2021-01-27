@@ -4,14 +4,13 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     data
-    fwDataTools
     services
 )
 set( REQUIREMENTS
     ctrlCamp
     data
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     ioData
     ioVTK
     module_services

@@ -24,10 +24,10 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/Layer.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -60,7 +60,7 @@ namespace uiVisuOgre
  */
 class UIVISUOGRE_CLASS_API SLightSelector final :
     public QObject,
-    public ::fwGui::editor::IEditor
+    public gui::editor::IEditor
 {
 
 Q_OBJECT
@@ -68,7 +68,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLightSelector, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SLightSelector, gui::editor::IEditor)
 
     /// Initializes signals and slots.
     UIVISUOGRE_API SLightSelector() noexcept;

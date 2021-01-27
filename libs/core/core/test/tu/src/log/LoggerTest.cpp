@@ -20,16 +20,16 @@
  *
  ***********************************************************************/
 
-#include "LoggerTest.hpp"
+#include "log/LoggerTest.hpp"
 
 #include <core/log/Logger.hpp>
 
 #include <string>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwLogTest::ut::LoggerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::log::ut::LoggerTest );
 
-namespace fwLogTest
+namespace sight::log
 {
 namespace ut
 {
@@ -132,4 +132,4 @@ void LoggerTest::simpleLoggerTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace fwLogTest
+} // namespace sight::log

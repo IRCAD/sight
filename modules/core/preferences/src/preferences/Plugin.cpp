@@ -30,7 +30,7 @@
 
 #include <data/String.hpp>
 
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -51,12 +51,12 @@ void Plugin::start()
 
     services::IService::sptr prefSrv;
     prefSrv = services::add("::preferences::SPreferences", s_PREF_SERVICE_UID);
-    prefSrv->registerInOut(m_preferences, fwPreferences::s_PREFERENCES_KEY);
+    prefSrv->registerInOut(m_preferences, gui::preferences::s_PREFERENCES_KEY);
 
     try
     {
         core::runtime::EConfigurationElement::sptr prefConfig = core::runtime::EConfigurationElement::New( "filename" );
-        std::filesystem::path prefFile                        = ::fwPreferences::getPreferencesFile();
+        std::filesystem::path prefFile                        = gui::preferences::getPreferencesFile();
         prefConfig->setValue(prefFile.string());
 
         prefSrv->setConfiguration(prefConfig);

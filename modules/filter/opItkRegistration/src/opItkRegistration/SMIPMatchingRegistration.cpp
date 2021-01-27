@@ -29,9 +29,8 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>

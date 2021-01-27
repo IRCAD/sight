@@ -28,17 +28,16 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
-
-#include <fwGui/dialog/InputDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
+
+#include <gui/dialog/InputDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/op/Add.hpp>
 
@@ -171,8 +170,8 @@ void SMultipleTF::starting()
     this->create();
 
     // Get the Qt container
-    const ::fwGuiQt::container::QtContainer::sptr qtContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const guiQt::container::QtContainer::sptr qtContainer
+        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
     m_tfPoolsPreset = new QComboBox();
@@ -317,7 +316,7 @@ void SMultipleTF::initializePools()
             = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
         const data::Composite::sptr sTFPools = tfPools.get_shared();
-        ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+        data::tools::helper::Composite compositeHelper(sTFPools);
 
         // Add the default TF if it not exists.
         const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
@@ -544,15 +543,15 @@ void SMultipleTF::setCurrentPool()
 
 void SMultipleTF::deletePool()
 {
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle("Deleting confirmation");
     messageBox.setMessage("Are you sure you want to delete this TF pool ?");
-    messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-    ::fwGui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
+    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if(answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != gui::dialog::IMessageDialog::CANCEL)
     {
         {
             // Gets TF pools.
@@ -561,7 +560,7 @@ void SMultipleTF::deletePool()
 
             // Remove the current TF pool from the Composite.
             const std::string selectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
-            ::fwDataTools::helper::Composite compositeHelper(tfPools.get_shared());
+            data::tools::helper::Composite compositeHelper(tfPools.get_shared());
 
             compositeHelper.remove(selectedTFPoolKey);
 
@@ -587,7 +586,7 @@ void SMultipleTF::newPool()
     const std::string str = m_tfPoolsPreset->currentText().toStdString();
     std::string newName(str);
 
-    fwGui::dialog::InputDialog inputDialog;
+    gui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("New TF pool");
     inputDialog.setMessage("TF pool name :");
     inputDialog.setInput(newName);
@@ -609,7 +608,7 @@ void SMultipleTF::newPool()
                 defaultComposite->getContainer()[newName] = defaultTf;
 
                 // Add a new composite.
-                ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+                data::tools::helper::Composite compositeHelper(sTFPools);
                 {
                     compositeHelper.add(newName, defaultComposite);
                 }
@@ -629,11 +628,11 @@ void SMultipleTF::newPool()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -645,7 +644,7 @@ void SMultipleTF::copyPool()
     const std::string str = m_tfPoolsPreset->currentText().toStdString();
     std::string newName(str);
 
-    fwGui::dialog::InputDialog inputDialog;
+    gui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Copy TF pool");
     inputDialog.setMessage("TF pool name :");
     inputDialog.setInput(newName);
@@ -666,7 +665,7 @@ void SMultipleTF::copyPool()
                 SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
 
                 // Copy the composite.
-                ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+                data::tools::helper::Composite compositeHelper(sTFPools);
                 {
                     compositeHelper.add(newName, data::Object::copy(currentTFPool));
                 }
@@ -686,11 +685,11 @@ void SMultipleTF::copyPool()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -707,7 +706,7 @@ void SMultipleTF::reinitializePools()
         const data::mt::locked_ptr< data::Composite > tfPools
             = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-        ::fwDataTools::helper::Composite compositeHelper(tfPools.get_shared());
+        data::tools::helper::Composite compositeHelper(tfPools.get_shared());
 
         // Clear it.
         compositeHelper.clear();
@@ -727,7 +726,7 @@ void SMultipleTF::renamePool()
     const std::string str = m_tfPoolsPreset->currentText().toStdString();
     std::string newName(str);
 
-    fwGui::dialog::InputDialog inputDialog;
+    gui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Renaming TF pool");
     inputDialog.setMessage("TF pool name :");
     inputDialog.setInput(newName);
@@ -746,7 +745,7 @@ void SMultipleTF::renamePool()
                 data::Object::sptr object = (*tfPools)[str];
 
                 // Rename the composite.
-                ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+                data::tools::helper::Composite compositeHelper(sTFPools);
                 compositeHelper.remove(str);
                 compositeHelper.add(newName, object);
                 compositeHelper.notify();
@@ -760,11 +759,11 @@ void SMultipleTF::renamePool()
             }
             else
             {
-                ::fwGui::dialog::MessageDialog messageBox;
+                gui::dialog::MessageDialog messageBox;
                 messageBox.setTitle("Warning");
                 messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-                messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+                messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+                messageBox.addButton(gui::dialog::IMessageDialog::OK);
                 messageBox.show();
                 return;
             }
@@ -814,7 +813,7 @@ void SMultipleTF::importPool()
                 poolName = this->createPoolName(poolName, sTFPools);
             }
 
-            ::fwDataTools::helper::Composite compositeHelper(sTFPools);
+            data::tools::helper::Composite compositeHelper(sTFPools);
             compositeHelper.add(poolName, tfPool);
             compositeHelper.notify();
 

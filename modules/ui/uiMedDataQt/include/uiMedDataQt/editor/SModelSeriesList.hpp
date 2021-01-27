@@ -33,7 +33,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -96,7 +96,7 @@ class ValueView;
  */
 class UIMEDDATAQT_CLASS_API SModelSeriesList final :
     public QObject,
-    public ::fwGui::editor::IEditor
+    public gui::editor::IEditor
 {
 
 Q_OBJECT
@@ -104,7 +104,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SModelSeriesList, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SModelSeriesList, gui::editor::IEditor)
 
     /// Initializes the slot and signals.
     UIMEDDATAQT_API SModelSeriesList() noexcept;

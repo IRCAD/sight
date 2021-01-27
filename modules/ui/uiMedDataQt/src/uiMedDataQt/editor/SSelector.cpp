@@ -36,12 +36,11 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
+#include <data/tools/helper/Vector.hpp>
 
-#include <fwDataTools/helper/Vector.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -55,7 +54,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -95,7 +94,7 @@ SSelector::~SSelector() noexcept
 
 void SSelector::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 
     // Deprecated configuration.
 
@@ -232,9 +231,9 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_selectorWidget = new ::uiMedDataQt::widget::Selector();
@@ -308,7 +307,7 @@ void SSelector::onSelectedSeries(QVector< data::Series::sptr > _selection,
                                  QVector< data::Series::sptr > _deselection)
 {
     const auto selectionVector = this->getLockedInOut< data::Vector >(s_SELECTION_INOUT);
-    ::fwDataTools::helper::Vector vectorHelper(selectionVector.get_shared());
+    data::tools::helper::Vector vectorHelper(selectionVector.get_shared());
 
     for( data::Series::sptr series :  _deselection)
     {

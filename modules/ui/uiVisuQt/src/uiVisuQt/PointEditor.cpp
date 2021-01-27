@@ -31,9 +31,9 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwMath/IntrasecTypes.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -50,7 +50,7 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::PointEditor, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuQt::PointEditor, ::sight::data::Composite )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -69,9 +69,9 @@ PointEditor::~PointEditor() noexcept
 
 void PointEditor::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
@@ -113,7 +113,7 @@ void PointEditor::stopping()
 
 void PointEditor::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -131,9 +131,9 @@ void PointEditor::swapping()
 
 //------------------------------------------------------------------------------
 
-void PointEditor::getInteraction(::fwDataTools::PickingInfo info)
+void PointEditor::getInteraction(data::tools::PickingInfo info)
 {
-    if ( info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN )
+    if ( info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN )
     {
         m_textCtrl_x->setText(QString("%1").arg(info.m_worldPos[0], 0, 'f', 3));
         m_textCtrl_y->setText(QString("%1").arg(info.m_worldPos[1], 0, 'f', 3));

@@ -29,12 +29,11 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <sstream>
 
@@ -64,14 +63,14 @@ SRemoveDistance::~SRemoveDistance() noexcept
 
 void SRemoveDistance::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SRemoveDistance::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -81,9 +80,9 @@ void SRemoveDistance::updating( )
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     data::Vector::sptr vectDist
-        = image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        = image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
 
-    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
+    if (data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
         && vectDist)
     {
         bool requestAll;
@@ -101,9 +100,9 @@ void SRemoveDistance::updating( )
         if(requestAll)
         {
             data::PointList::sptr backupDistance = image->getField< data::PointList >(
-                ::fwDataTools::fieldHelper::Image::m_imageDistancesId );
+                data::tools::fieldHelper::Image::m_imageDistancesId );
 
-            image->removeField(::fwDataTools::fieldHelper::Image::m_imageDistancesId );
+            image->removeField(data::tools::fieldHelper::Image::m_imageDistancesId );
             const auto sig = image->signal< data::Image::DistanceAddedSignalType >(
                 data::Image::s_DISTANCE_ADDED_SIG);
             sig->asyncEmit(backupDistance);
@@ -115,7 +114,7 @@ void SRemoveDistance::updating( )
 
 void SRemoveDistance::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -135,7 +134,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
     data::PointList::sptr distToRemove;
     _removeAll = false;
     data::Vector::sptr vectDist
-        = _image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        = _image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
 
     if(vectDist)
     {
@@ -167,7 +166,7 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
 
         if(!selections.empty())
         {
-            const ::fwGui::dialog::SelectorDialog::sptr selector = ::fwGui::dialog::SelectorDialog::New();
+            const gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
             selector->setTitle("Select a distance to remove");
             selector->setSelections(selections);
             std::string selection = selector->show();
@@ -205,9 +204,9 @@ void SRemoveDistance::removeLastDistance()
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     const data::Vector::sptr vectDist
-        = image->getField< data::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
+        = image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
 
-    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
+    if (data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared())
         && vectDist)
     {
         const data::PointList::sptr distToRemove = data::PointList::dynamicCast(*(*vectDist).rbegin());

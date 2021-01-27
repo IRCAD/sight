@@ -22,14 +22,14 @@
 
 #include "guiQt/editor/SActivityView.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/GuiRegistry.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/GuiRegistry.hpp>
 
 #include <services/macros.hpp>
 #include <services/registry/AppConfig.hpp>
@@ -37,7 +37,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
@@ -46,7 +46,7 @@ const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunc
 
 static const std::string s_BORDER_CONFIG = "border";
 
-fwServicesRegisterMacro( ::fwGui::view::IActivityView, ::guiQt::editor::SActivityView )
+fwServicesRegisterMacro( ::sight::gui::view::IActivityView, ::sight::modules::guiQt::editor::SActivityView )
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ SActivityView::~SActivityView()
 
 void SActivityView::configuring()
 {
-    this->::fwGui::view::IActivityView::configuring();
+    this->gui::view::IActivityView::configuring();
 
     const ConfigType configType = this->getConfigTree();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -80,10 +80,9 @@ void SActivityView::configuring()
 
 void SActivityView::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr parentContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto parentContainer = ::sight::guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
     if(m_border >= 0)
@@ -94,11 +93,11 @@ void SActivityView::starting()
     QWidget* widget = new QWidget();
     layout->addWidget( widget );
 
-    ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
+    auto subContainer = ::sight::guiQt::container::QtContainer::New();
 
     subContainer->setQtContainer(widget);
     m_wid = this->getID() + "_container";
-    ::fwGui::GuiRegistry::registerWIDContainer(m_wid, subContainer);
+    gui::GuiRegistry::registerWIDContainer(m_wid, subContainer);
 
     parentContainer->setLayout(layout);
 
@@ -123,8 +122,8 @@ void SActivityView::stopping()
         m_configManager->stopAndDestroy();
     }
 
-    ::fwGui::container::fwContainer::sptr subContainer = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
-    ::fwGui::GuiRegistry::unregisterWIDContainer(m_wid);
+    gui::container::fwContainer::sptr subContainer = gui::GuiRegistry::getWIDContainer(m_wid);
+    gui::GuiRegistry::unregisterWIDContainer(m_wid);
 
     subContainer->destroyContainer();
 
@@ -166,9 +165,9 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
         }
         catch( std::exception& e )
         {
-            ::fwGui::dialog::MessageDialog::show("Activity launch failed",
-                                                 e.what(),
-                                                 ::fwGui::dialog::IMessageDialog::CRITICAL);
+            gui::dialog::MessageDialog::show("Activity launch failed",
+                                             e.what(),
+                                             gui::dialog::IMessageDialog::CRITICAL);
             SLM_ERROR(e.what());
         }
     }
@@ -177,4 +176,4 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
 //------------------------------------------------------------------------------
 
 }// namespace editor
-}// namespace guiQt
+}// namespace sight::modules::guiQt

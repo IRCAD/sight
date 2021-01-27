@@ -10,8 +10,8 @@ set( REQUIREMENTS
     ctrlSelection
     data
     dicomPacsReaderActivity
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     ioGdcm
     ioPacs
     media

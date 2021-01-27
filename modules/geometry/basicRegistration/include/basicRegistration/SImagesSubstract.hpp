@@ -24,7 +24,7 @@
 
 #include "basicRegistration/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -54,13 +54,13 @@ namespace basicRegistration
  */
 
 class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,
-                                                     public ::fwGui::editor::IEditor
+                                                     public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SImagesSubstract, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SImagesSubstract, gui::editor::IEditor)
 
     BASICREGISTRATION_API SImagesSubstract() noexcept;
 

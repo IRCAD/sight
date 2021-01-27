@@ -22,11 +22,11 @@
 
 #include "guiQt/editor/SListView.hpp"
 
+#include <guiQt/container/QtContainer.hpp>
+
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -34,11 +34,11 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace editor
 {
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::guiQt::editor::SListView )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::sight::modules::guiQt::editor::SListView )
 
 const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
 const core::com::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
@@ -97,8 +97,7 @@ void SListView::configuring()
 void SListView::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = ::sight::guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     layout->setObjectName("SListViewLayout");
@@ -165,4 +164,4 @@ void SListView::onItemDoubleClicked(QListWidgetItem* item)
 //------------------------------------------------------------------------------
 
 } //namespace editor
-} //namespace guiQt
+} //namespace sight::modules::guiQt

@@ -27,10 +27,10 @@
 #include <data/DicomSeries.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -72,7 +72,7 @@ SQueryEditor::~SQueryEditor() noexcept
 
 void SQueryEditor::configuring()
 {
-    ::fwGui::IGuiContainerSrv::initialize();
+    gui::IGuiContainerSrv::initialize();
 
     const auto configTree = this->getConfigTree();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
@@ -98,8 +98,8 @@ void SQueryEditor::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the GUI.
-    ::fwGui::IGuiContainerSrv::create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    gui::IGuiContainerSrv::create();
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* const mainLayout = new QVBoxLayout();
 

@@ -26,8 +26,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/mt/ObjectWriteLock.hpp>
-
-#include <fwDataTools/helper/PointList.hpp>
+#include <data/tools/helper/PointList.hpp>
 
 #include <services/macros.hpp>
 
@@ -111,7 +110,7 @@ void SAddPoint::removePoint(const data::Point::csptr _point)
 
     data::mt::ObjectWriteLock lock(pointList);
 
-    const data::Point::sptr pointRes = ::fwDataTools::helper::PointList::removeClosestPoint(pointList, _point, 10);
+    const data::Point::sptr pointRes = data::tools::helper::PointList::removeClosestPoint(pointList, _point, 10);
 
     if(pointRes != nullptr)
     {
@@ -126,19 +125,19 @@ void SAddPoint::removePoint(const data::Point::csptr _point)
 
 //------------------------------------------------------------------------------
 
-void SAddPoint::pick(::fwDataTools::PickingInfo _info)
+void SAddPoint::pick(data::tools::PickingInfo _info)
 {
     data::Point::sptr point                = data::Point::New();
     data::Point::PointCoordArrayType cords = {{_info.m_worldPos[0], _info.m_worldPos[1], _info.m_worldPos[2]}};
     point->setCoord(cords);
 
-    if(_info.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
+    if(_info.m_modifierMask & data::tools::PickingInfo::CTRL)
     {
-        if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
+        if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
             this->addPoint(point);
         }
-        else if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_RIGHT_UP)
+        else if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_UP)
         {
             this->removePoint(point);
         }

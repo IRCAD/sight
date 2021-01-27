@@ -37,7 +37,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -225,8 +225,8 @@ void SDistortion::remap()
             camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size [" <<
             inputSize[0] << "x" << inputSize[1] << "]";
 
-        ::fwGui::dialog::MessageDialog::show("Error", msg.str(),
-                                             ::fwGui::dialog::IMessageDialog::CRITICAL);
+        gui::dialog::MessageDialog::show("Error", msg.str(),
+                                         gui::dialog::IMessageDialog::CRITICAL);
 
         m_calibrationMismatch = true;
         m_prevImageSize       = inputSize;

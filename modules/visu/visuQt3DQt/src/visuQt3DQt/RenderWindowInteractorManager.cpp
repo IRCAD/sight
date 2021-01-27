@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "visuQt3DQt/RenderWindowInteractorManager.hpp"
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwRenderQt3D/registry/macros.hpp>
 #include <fwRenderQt3D/SRender.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <Qt3DExtras/Qt3DWindow>
 
@@ -56,10 +56,10 @@ RenderWindowInteractorManager::~RenderWindowInteractorManager()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::createContainer(::fwGui::container::fwContainer::sptr _parent)
+void RenderWindowInteractorManager::createContainer(gui::container::fwContainer::sptr _parent)
 {
     SLM_ASSERT("Invalid parent.", _parent);
-    m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
+    m_parentContainer = guiQt::container::QtContainer::dynamicCast( _parent );
 
     auto view3D = new Qt3DExtras::Qt3DWindow();
     this->set3DView(view3D);

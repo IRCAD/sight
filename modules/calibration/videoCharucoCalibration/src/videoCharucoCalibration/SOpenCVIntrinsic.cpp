@@ -37,12 +37,11 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/IService.hpp>
 #include <services/macros.hpp>
@@ -212,27 +211,27 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateCharucoBoardSize()
 {
-    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
-    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
-    const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);
     }
-    const std::string markerSizeStr = ::fwPreferences::getPreference(m_markerSizeKey);
+    const std::string markerSizeStr = gui::preferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
         m_markerSize = std::stof(markerSizeStr);
     }
-    const std::string markerSizeInBitsStr = ::fwPreferences::getPreference(m_markerSizeInBitsKey);
+    const std::string markerSizeInBitsStr = gui::preferences::getPreference(m_markerSizeInBitsKey);
     if(!markerSizeInBitsStr.empty())
     {
         m_markerSizeInBits = std::stoi(markerSizeInBitsStr);

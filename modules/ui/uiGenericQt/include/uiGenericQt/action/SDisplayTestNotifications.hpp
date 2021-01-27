@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <fwGui/dialog/NotificationDialog.hpp>
-#include <fwGui/IActionSrv.hpp>
+#include <gui/dialog/NotificationDialog.hpp>
+#include <gui/IActionSrv.hpp>
 
-namespace dial = ::fwGui::dialog;
+namespace dial = gui::dialog;
 
 namespace uiGenericQt
 {
@@ -46,11 +46,11 @@ namespace action
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
-class UIGENERICQT_CLASS_API SDisplayTestNotifications final : public ::fwGui::IActionSrv
+class UIGENERICQT_CLASS_API SDisplayTestNotifications final : public ::sight::gui::IActionSrv
 {
 
 public:
-    fwCoreServiceMacro(SDisplayTestNotifications,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SDisplayTestNotifications,  gui::IActionSrv)
 
     /**
      * @name Constructor/Destructor

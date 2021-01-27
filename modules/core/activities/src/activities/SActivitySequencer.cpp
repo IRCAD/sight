@@ -34,7 +34,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -208,7 +208,7 @@ bool SActivitySequencer::checkValidity(const data::ActivitySeries::csptr& activi
 
     if (!ok && showDialog)
     {
-        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        gui::dialog::MessageDialog::show("Activity not valid", errorMsg);
     }
     return ok;
 }

@@ -31,10 +31,10 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/LocationDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -53,7 +53,7 @@ namespace uiVisuQt
 
 const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::SnapshotEditor )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuQt::SnapshotEditor )
 
 //------------------------------------------------------------------------------
 
@@ -74,8 +74,8 @@ void SnapshotEditor::starting()
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer
-        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer
+        = guiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     std::filesystem::path path = core::runtime::getModuleResourceFilePath("uiVisuQt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
@@ -129,7 +129,7 @@ void SnapshotEditor::info( std::ostream& _sstream )
 
 void SnapshotEditor::onSnapButton()
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -145,11 +145,11 @@ void SnapshotEditor::onSnapButton()
     else
     {
         std::string msgInfo("It is not possible to snapshot the negato view. This view is not shown on screen.");
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Negato view snapshot");
         messageBox.setMessage( msgInfo );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -160,7 +160,7 @@ std::string SnapshotEditor::requestFileName()
 {
     std::string fileName = "";
 
-    ::fwGui::dialog::LocationDialog dialogFile;
+    gui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
     dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
@@ -168,7 +168,7 @@ std::string SnapshotEditor::requestFileName()
     dialogFile.addFilter("png", "*.png");
     dialogFile.addFilter("tiff", "*.tiff");
     dialogFile.addFilter("all", "*.*");
-    dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );

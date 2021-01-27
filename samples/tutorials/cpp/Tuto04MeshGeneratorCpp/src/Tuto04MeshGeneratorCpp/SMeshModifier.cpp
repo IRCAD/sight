@@ -25,17 +25,16 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
-#include <fwDataTools/Mesh.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
 
 static const services::IService::KeyType s_MESH_INOUT = "mesh";
 
@@ -80,7 +79,7 @@ void SMeshModifier::configuring()
 void SMeshModifier::starting()
 {
     this->actionServiceStarting();
-    ::fwDataTools::Mesh::initRand();
+    data::tools::Mesh::initRand();
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +92,7 @@ void SMeshModifier::updating()
     {
         if(m_functor == "ShakeMeshPoint")
         {
-            ::fwDataTools::Mesh::shakePoint(mesh.get_shared());
+            data::tools::Mesh::shakePoint(mesh.get_shared());
 
             data::Mesh::VertexModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::VertexModifiedSignalType >(data::Mesh::s_VERTEX_MODIFIED_SIG);
@@ -101,7 +100,7 @@ void SMeshModifier::updating()
         }
         else if(m_functor == "ColorizeMeshCells")
         {
-            ::fwDataTools::Mesh::colorizeMeshCells(mesh.get_shared());
+            data::tools::Mesh::colorizeMeshCells(mesh.get_shared());
 
             data::Mesh::CellColorsModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::CellColorsModifiedSignalType >(
@@ -110,7 +109,7 @@ void SMeshModifier::updating()
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
-            ::fwDataTools::Mesh::colorizeMeshPoints(mesh.get_shared());
+            data::tools::Mesh::colorizeMeshPoints(mesh.get_shared());
 
             data::Mesh::PointColorsModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::PointColorsModifiedSignalType >(
@@ -119,7 +118,7 @@ void SMeshModifier::updating()
         }
         else if(m_functor == "ComputeCellNormals")
         {
-            ::fwDataTools::Mesh::generateCellNormals(mesh.get_shared());
+            data::tools::Mesh::generateCellNormals(mesh.get_shared());
 
             data::Mesh::CellNormalsModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::CellNormalsModifiedSignalType >(
@@ -128,7 +127,7 @@ void SMeshModifier::updating()
         }
         else if(m_functor == "ComputePointNormals")
         {
-            ::fwDataTools::Mesh::generatePointNormals(mesh.get_shared());
+            data::tools::Mesh::generatePointNormals(mesh.get_shared());
 
             data::Mesh::PointNormalsModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::PointNormalsModifiedSignalType >(
@@ -137,7 +136,7 @@ void SMeshModifier::updating()
         }
         else if(m_functor == "ShakeCellNormals")
         {
-            ::fwDataTools::Mesh::shakeCellNormals(mesh.get_shared());
+            data::tools::Mesh::shakeCellNormals(mesh.get_shared());
 
             data::Mesh::CellNormalsModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::CellNormalsModifiedSignalType >(
@@ -146,7 +145,7 @@ void SMeshModifier::updating()
         }
         else if(m_functor == "ShakePointNormals")
         {
-            ::fwDataTools::Mesh::shakePointNormals(mesh.get_shared());
+            data::tools::Mesh::shakePointNormals(mesh.get_shared());
 
             data::Mesh::PointNormalsModifiedSignalType::sptr sig;
             sig = mesh->signal< data::Mesh::PointNormalsModifiedSignalType >(
@@ -168,10 +167,10 @@ void SMeshModifier::updating()
         std::stringstream ss;
         ss << "Warning during generating : " << _e.what();
 
-        ::fwGui::dialog::MessageDialog::show(
+        gui::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::IMessageDialog::WARNING);
     }
 }
 

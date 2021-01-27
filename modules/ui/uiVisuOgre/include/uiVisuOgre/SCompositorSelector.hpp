@@ -24,10 +24,10 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/Layer.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -46,13 +46,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
-                                                 public ::fwGui::editor::IEditor
+                                                 public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCompositorSelector, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SCompositorSelector, gui::editor::IEditor)
 
     /** @} */
 

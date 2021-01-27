@@ -24,7 +24,7 @@
 
 #include "opVTKSlicer/config.hpp"
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
 #include <services/IOperator.hpp>
 
@@ -119,7 +119,7 @@ private:
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
+    data::tools::helper::MedicalImage::Orientation m_orientation;
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

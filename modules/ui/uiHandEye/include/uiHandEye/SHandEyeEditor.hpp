@@ -29,7 +29,7 @@
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -74,12 +74,12 @@ namespace uiHandEye
  *[data::TransformationMatrix3D]
  */
 class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,
-                                           public ::fwGui::editor::IEditor
+                                           public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SHandEyeEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SHandEyeEditor, gui::editor::IEditor)
 
     /**
      * @name Slots API

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <fwGui/dialog/IProgressDialog.hpp>
+#include <gui/dialog/IProgressDialog.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -40,7 +40,7 @@ namespace dialog
  * @brief   This class allows us to select an acquisition in a patient data base.
  */
 class FWGUIQML_CLASS_API ProgressDialog : public QObject,
-                                          public ::fwGui::dialog::IProgressDialog
+                                          public gui::dialog::IProgressDialog
 {
 Q_OBJECT
 Q_PROPERTY(bool visible MEMBER m_visible)
@@ -48,9 +48,9 @@ Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
 
 public:
-    fwCoreClassMacro(ProgressDialog, ::fwGui::dialog::IProgressDialog, ::fwGui::factory::New<ProgressDialog>)
+    fwCoreClassMacro(ProgressDialog, gui::dialog::IProgressDialog, gui::factory::New<ProgressDialog>)
 
-    FWGUIQML_API ProgressDialog(::fwGui::GuiBaseObject::Key key,
+    FWGUIQML_API ProgressDialog(gui::GuiBaseObject::Key key,
                                 const std::string& title   = "Progression",
                                 const std::string& message = std::string(86, ' '));
 

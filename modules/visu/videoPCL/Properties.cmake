@@ -6,7 +6,6 @@ set( DEPENDENCIES
         core
         data
         services
-        fwGui
-        arPreferences
+        gui
 )
 set( REQUIREMENTS )

@@ -28,7 +28,7 @@
 
 #include <data/Composite.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -85,7 +85,7 @@ namespace uiTF
  */
 class UITF_CLASS_API SMultipleTF final :
     public QObject,
-    public ::fwGui::editor::IEditor
+    public gui::editor::IEditor
 {
 
 Q_OBJECT
@@ -93,7 +93,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(::uiTF::SMultipleTF, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(::uiTF::SMultipleTF, gui::editor::IEditor)
 
     /// Creates the editor.
     UITF_API SMultipleTF();

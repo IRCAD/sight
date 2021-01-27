@@ -5,9 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwDataTools
-    fwGuiQt
+    guiQt
     services
-    fwGui
+    gui
 )
 set( REQUIREMENTS )

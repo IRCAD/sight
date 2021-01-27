@@ -6,8 +6,8 @@ set( DEPENDENCIES
     core
     data
     fwDicomIOFilter
-    fwGui
-    fwGuiQt
+    gui
+    guiQt
 )
 set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchData )

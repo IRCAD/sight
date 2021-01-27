@@ -30,9 +30,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="7" />
@@ -46,9 +46,9 @@
 
         </service>
 
-        <service uid="leftPanelView" type="::gui::view::SDefaultView" >
+        <service uid="leftPanelView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -60,10 +60,10 @@
             </registry>
         </service>
 
-        <service uid="toolboxView" type="::gui::view::SDefaultView" >
+        <service uid="toolboxView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
                 <toolBar/>
-                <layout type="::fwGui::ToolboxLayoutManager">
+                <layout type="::sight::gui::ToolboxLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" caption="Calibration input" expanded="true" />
                     <view proportion="1" caption="Calibration result" expanded="true" />
@@ -76,7 +76,7 @@
             </registry>
         </service>
 
-        <service uid="videoToolbarView" type="::gui::aspect::SDefaultToolBar">
+        <service uid="videoToolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
@@ -95,12 +95,12 @@
             </registry>
         </service>
 
-        <service uid="calibrationDataView" type="::gui::view::SDefaultView">
+        <service uid="calibrationDataView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
                 <toolBar>
                     <toolBitmapSize height="24" width="24" />
                 </toolBar>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -111,9 +111,9 @@
         </service>
 
 
-        <service uid="cameraInfoView" type="::gui::view::SDefaultView">
+        <service uid="cameraInfoView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
@@ -127,7 +127,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="::gui::aspect::SDefaultToolBar">
+        <service uid="extrinsicCameraView" type="::sight::modules::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -154,9 +154,9 @@
             </registry>
         </service>
 
-        <service uid="videoView" type="::gui::view::SDefaultView">
+        <service uid="videoView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -176,9 +176,9 @@
             </registry>
         </service>
 
-        <service uid="videoSliderView" type="::gui::view::SDefaultView">
+        <service uid="videoSliderView" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::LineLayoutManager">
+                <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" />
@@ -191,39 +191,39 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="addAct" type="::gui::action::SSlotCaller">
+        <service uid="addAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>chessboardDetectorSrv/recordPoints</slot>
             </slots>
         </service>
 
-        <service uid="resetAct" type="::gui::action::SSlotCaller">
+        <service uid="resetAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/reset</slot>
             </slots>
         </service>
 
-        <service uid="removeAct" type="::gui::action::SSlotCaller">
+        <service uid="removeAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/remove</slot>
             </slots>
         </service>
 
-        <service uid="goOpenCVAct" type="::gui::action::SSlotCaller">
+        <service uid="goOpenCVAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCalSrv/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="displayImageAct" type="::gui::action::SSlotCaller">
+        <service uid="displayImageAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/getSelection</slot>
             </slots>
         </service>
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="::gui::action::SSlotCaller" >
+        <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
@@ -231,7 +231,7 @@
         </service>
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="::gui::action::SSlotCaller" >
+        <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
@@ -242,7 +242,7 @@
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="::gui::action::SSlotCaller" >
+        <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
@@ -253,7 +253,7 @@
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="::gui::action::SSlotCaller" >
+        <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
@@ -268,7 +268,7 @@
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="::gui::action::SSlotCaller">
+        <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideo</slot>
                 <slot>videoGrabber2Srv/loopVideo</slot>
@@ -276,13 +276,13 @@
             <state executable="false" />
         </service>
 
-        <service uid="exportExtrinsicAct" type="::gui::action::SSlotCaller">
+        <service uid="exportExtrinsicAct" type="::sight::modules::gui::action::SSlotCaller">
             <slots>
                 <slot>extrinsicExporterSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="saveInputsAct" type="::gui::action::SSlotCaller">
+        <service uid="saveInputsAct" type="::sight::modules::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataWriter1Srv/openLocationDialog</slot>
@@ -292,7 +292,7 @@
             </slots>
         </service>
 
-        <service uid="loadInputsAct" type="::gui::action::SSlotCaller">
+        <service uid="loadInputsAct" type="::sight::modules::gui::action::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataReader1Srv/openLocationDialog</slot>

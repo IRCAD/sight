@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <filesystem>
 
@@ -36,10 +36,10 @@ namespace action
 /**
  * @brief   This action show the help contents.
  */
-class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
+class UIGENERICQT_CLASS_API ShowHelpContents : public ::sight::gui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(ShowHelpContents,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(ShowHelpContents,  gui::IActionSrv)
     UIGENERICQT_API ShowHelpContents() noexcept;
 
     UIGENERICQT_API virtual ~ShowHelpContents() noexcept;
@@ -51,7 +51,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="::uiGenericQt::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
+       <service impl="::uiGenericQt::ui::action::ShowHelpContents" type="::gui::IActionSrv">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

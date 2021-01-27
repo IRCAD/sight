@@ -19,9 +19,9 @@ Example
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::sight::data::ModelSeries" src="ref" />
         <object uid="reconstruction" type="::sight::data::Reconstruction" src="deferred" />
 
-        <service uid="multiViewOrgans" type="::gui::view::SDefaultView" >
+        <service uid="multiViewOrgans" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::ToolboxLayoutManager">
+                <layout type="::sight::gui::ToolboxLayoutManager">
                     <view caption="Organs" expanded="true" />
                     <view caption="Material" expanded="true" />
                     <view caption="Representation" />

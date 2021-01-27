@@ -28,7 +28,7 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace sight::core::jobs
 {
@@ -58,11 +58,11 @@ namespace ioGdcm
  * @subsection In-Out In-Out:
  * - \b target [data::SeriesDB]: Destination SeriesDB.
  */
-class IOGDCM_CLASS_API SDicomSeriesConverter : public ::fwGui::IActionSrv
+class IOGDCM_CLASS_API SDicomSeriesConverter : public ::sight::gui::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SDicomSeriesConverter,  ::fwGui::IActionSrv )
+    fwCoreServiceMacro(SDicomSeriesConverter,  gui::IActionSrv )
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 

@@ -30,9 +30,8 @@
 #include <core/runtime/Convert.hpp>
 
 #include <data/String.hpp>
+#include <data/tools/helper/Field.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/helper/Field.hpp>
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
@@ -142,7 +141,7 @@ void SMaterial::starting()
         data::String::sptr string = data::String::New();
         string->setValue(m_materialTemplateName);
 
-        ::fwDataTools::helper::Field helper(material.get_shared());
+        data::tools::helper::Field helper(material.get_shared());
         helper.setField("ogreMaterial", string);
         helper.notify();
     }

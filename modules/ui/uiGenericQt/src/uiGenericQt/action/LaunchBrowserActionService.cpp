@@ -40,7 +40,8 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiGenericQt::action::LaunchBrowserActionService,
+                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -66,7 +67,7 @@ void LaunchBrowserActionService::info(std::ostream& _sstream )
 
 void LaunchBrowserActionService::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
 
     std::vector < Configuration > urlConfig = m_configuration->find("url");
     if(!urlConfig.empty())
@@ -101,14 +102,14 @@ void LaunchBrowserActionService::updating()
 
 void LaunchBrowserActionService::starting()
 {
-    this->::fwGui::IActionSrv::actionServiceStarting();
+    this->::gui::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void LaunchBrowserActionService::stopping()
 {
-    this->::fwGui::IActionSrv::actionServiceStopping();
+    this->::gui::IActionSrv::actionServiceStopping();
 }
 //------------------------------------------------------------------------------
 

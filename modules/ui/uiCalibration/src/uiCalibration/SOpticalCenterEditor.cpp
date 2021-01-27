@@ -27,7 +27,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -42,7 +42,7 @@ namespace uiCalibration
 static const services::IService::KeyType s_CAMERA_INPUT = "camera";
 static const services::IService::KeyType s_MATRIX_INOUT = "matrix";
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::sight::data::Camera)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::sight::data::Camera)
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept
@@ -67,8 +67,8 @@ void SOpticalCenterEditor::configuring()
 void SOpticalCenterEditor::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* vLayout  = new QVBoxLayout();
     QHBoxLayout* cxLayout = new QHBoxLayout();

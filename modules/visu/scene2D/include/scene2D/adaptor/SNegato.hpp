@@ -24,8 +24,8 @@
 
 #include "scene2D/config.hpp"
 
-#include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/helper/TransferFunction.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
+#include <data/tools/helper/TransferFunction.hpp>
 
 #include <fwRenderQt/data/Coord.hpp>
 #include <fwRenderQt/IAdaptor.hpp>
@@ -150,7 +150,7 @@ private:
     QGraphicsItemGroup* m_layer;
 
     /// The current orientation of the negato
-    ::fwDataTools::helper::MedicalImage::Orientation m_orientation;
+    data::tools::helper::MedicalImage::Orientation m_orientation;
 
     /// Used during negato interaction to manage window/level
     bool m_pointIsCaptured;
@@ -161,9 +161,9 @@ private:
     /// Specify if the negato allow slice type events
     bool m_changeSliceTypeAllowed;
 
-    ::fwDataTools::helper::TransferFunction m_helperTF;
+    data::tools::helper::TransferFunction m_helperTF;
 
-    ::fwDataTools::helper::MedicalImage m_helperImg;
+    data::tools::helper::MedicalImage m_helperImg;
 };
 
 } // namespace adaptor

@@ -2,8 +2,8 @@
 
     <activate id="::sight::modules::services" version="0.1" />
 
-    <activate id="gui" version="0.1" />
-    <activate id="guiQt" version="0.1" />
+    <activate id="::sight::modules::gui" version="0.1" />
+    <activate id="::sight::modules::guiQt" version="0.1" />
     <activate id="ioAtoms" version="0.1" />
     <activate id="patchMedicalData" version="0.1" />
 

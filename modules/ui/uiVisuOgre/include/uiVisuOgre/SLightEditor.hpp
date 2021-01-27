@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwRenderOgre/ILight.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -53,13 +53,13 @@ namespace uiVisuOgre
  *  <service uid=SLightEditorUid" type="uiVisuOgre::SLightEditor" />
  */
 class UIVISUOGRE_CLASS_API SLightEditor : public QObject,
-                                          public ::fwGui::editor::IEditor
+                                          public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SLightEditor, gui::editor::IEditor)
 
     /// Creates the service.
     UIVISUOGRE_API SLightEditor() noexcept;

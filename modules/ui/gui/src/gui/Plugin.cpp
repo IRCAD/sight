@@ -24,10 +24,10 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::gui::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::gui::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -45,4 +45,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace gui
+} // namespace sight::modules::gui

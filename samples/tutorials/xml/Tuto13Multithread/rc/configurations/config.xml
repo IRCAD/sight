@@ -10,7 +10,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
             <gui>
                 <frame>
                     <name>Tuto13Multithread</name>
@@ -25,7 +25,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+        <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -38,9 +38,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="1" />
@@ -52,7 +52,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+        <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -66,7 +66,7 @@
             </registry>
         </service>
 
-        <service uid="deformationMenuView" type="::gui::aspect::SDefaultMenu" >
+        <service uid="deformationMenuView" type="::sight::modules::gui::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Start deformation" shortcut="Ctrl+D" />
@@ -81,19 +81,19 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="openMeshAct" type="::gui::action::SStarter" >
+        <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
             <start uid="meshReaderSrv" />
         </service>
 
-        <service uid="quitAct" type="::gui::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
-        <service uid="startDeformationAct" type="::gui::action::SSlotCaller" >
+        <service uid="startDeformationAct" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>meshDeformationSrv/startDeformation</slot>
             </slots>
         </service>
 
-        <service uid="stopDeformationAct" type="::gui::action::SSlotCaller" >
+        <service uid="stopDeformationAct" type="::sight::modules::gui::action::SSlotCaller" >
             <slots>
                 <slot>meshDeformationSrv/stopDeformation</slot>
             </slots>

@@ -30,12 +30,12 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-#include <fwGui/GuiRegistry.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
+
+#include <gui/GuiRegistry.hpp>
+
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
@@ -45,7 +45,7 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor)
 
 const core::com::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
 
@@ -78,7 +78,7 @@ void SCompositorParameterEditor::starting()
 {
     this->create();
 
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer = guiQt::container::QtContainer::dynamicCast(this->getContainer() );
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
 
@@ -141,19 +141,19 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         }
 
         /// Getting this widget's container
-        auto qtContainer   = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+        auto qtContainer   = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
         QWidget* container = qtContainer->getQtContainer();
 
         QWidget* p2 = new QWidget( container );
-        m_editorInfo.editorPanel = ::fwGuiQt::container::QtContainer::New();
+        m_editorInfo.editorPanel = guiQt::container::QtContainer::New();
         m_editorInfo.editorPanel->setQtContainer(p2);
 
         const std::string uuid = this->getID();
         m_editorInfo.uuid = uuid + "-editor";
 
-        ::fwGui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
+        gui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = services::add( "::guiQt::editor::SParameters", m_editorInfo.uuid );
+        auto editorService = services::add( "::modules::guiQt::editor::SParameters", m_editorInfo.uuid );
         m_editorInfo.service = editorService;
 
         services::IService::ConfigType editorConfig;
@@ -195,7 +195,7 @@ void SCompositorParameterEditor::clear()
     {
         objService->stop();
 
-        ::fwGui::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
+        gui::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
         services::OSR::unregisterService(objService);
 

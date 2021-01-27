@@ -2,7 +2,7 @@
 
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="guiQt" />
+    <requirement id="::sight::modules::guiQt" />
     <requirement id="::sight::modules::services" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -24,7 +24,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
             <gui>
                 <frame>
                     <name>Tuto15Matrix</name>
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::gui::aspect::SDefaultMenuBar" >
+        <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -50,7 +50,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::gui::aspect::SDefaultMenu" >
+        <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Open mesh" shortcut="Ctrl+M" />
@@ -66,14 +66,14 @@
 
         <!--
             Default view service:
-            The type '::fwGui::LineLayoutManager' represents a layout where the view are aligned
+            The type '::sight::gui::LineLayoutManager' represents a layout where the view are aligned
             horizontally or vertically (set orientation value 'horizontal' or 'vertical').
             It is possible to add a 'proportion' attribute for the <view> to defined the proportion
             used by the view compared to the others.
         -->
-        <service uid="containerView" type="::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" backgroundColor="#36393E" />
@@ -85,9 +85,9 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::gui::view::SDefaultView" >
+        <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="4" />
@@ -107,11 +107,11 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="openMeshAct" type="::gui::action::SStarter" >
+        <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
             <start uid="meshReaderSrv" />
         </service>
 
-        <service uid="quitAct" type="::gui::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
 
         <!-- *************************** Begin generic scene *************************** -->
 
@@ -226,7 +226,7 @@
             <inout key="output" uid="rotTransMatrix" />
         </service>
 
-        <service uid="shhowMeshSrv" type="::guiQt::editor::SParameters" >
+        <service uid="shhowMeshSrv" type="::sight::modules::guiQt::editor::SParameters" >
              <parameters>
                  <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
              </parameters>

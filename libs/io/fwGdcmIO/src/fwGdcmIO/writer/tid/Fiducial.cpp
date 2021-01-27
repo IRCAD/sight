@@ -36,10 +36,9 @@
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -75,7 +74,7 @@ void Fiducial::createNodes(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)& p
                            bool useSCoord3D)
 {
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int id = 1;
@@ -117,7 +116,7 @@ void Fiducial::createFiducial(const SPTR(::fwGdcmIO::container::sr::DicomSRNode)
 
     // Create Fiducial intent node
     const std::string label =
-        point->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
+        point->getField< data::String >(data::tools::fieldHelper::Image::m_labelId)->value();
     SPTR(::fwGdcmIO::container::sr::DicomSRTextNode) intentNode =
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRTextNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"), "HAS PROPERTIES", label);

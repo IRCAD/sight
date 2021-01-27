@@ -32,7 +32,7 @@
 
 #include <core/Profiling.hpp>
 
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
@@ -245,7 +245,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 void RayTracingVolumeRenderer::imageUpdate(const data::Image::sptr image, const data::TransferFunction::sptr tf)
 {
-    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(!::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         return;
     }

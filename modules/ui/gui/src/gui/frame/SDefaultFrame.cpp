@@ -26,12 +26,12 @@
 
 #include <services/macros.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace frame
 {
 
-fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame )
+fwServicesRegisterMacro( ::sight::gui::IFrameSrv, ::sight::modules::gui::frame::SDefaultFrame )
 
 SDefaultFrame::SDefaultFrame() noexcept
 {

@@ -25,9 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Failed.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -92,15 +91,15 @@ void SClientSender::starting()
     {
         try
         {
-            const std::uint16_t port   = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
-            const std::string hostname = ::fwPreferences::getValue(m_hostnameConfig);
+            const std::uint16_t port   = gui::preferences::getValue<std::uint16_t>(m_portConfig);
+            const std::string hostname = gui::preferences::getValue(m_hostnameConfig);
 
             m_client.connect(hostname, port);
             m_sigConnected->asyncEmit();
         }
         catch (core::Exception& ex)
         {
-            ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
+            gui::dialog::MessageDialog::show("Connection error", ex.what());
             SLM_ERROR(ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
@@ -121,7 +120,7 @@ void SClientSender::stopping()
     }
     catch (core::Exception& e)
     {
-        ::fwGui::dialog::MessageDialog::show("Error", e.what());
+        gui::dialog::MessageDialog::show("Error", e.what());
         SLM_ERROR(e.what());
     }
 }

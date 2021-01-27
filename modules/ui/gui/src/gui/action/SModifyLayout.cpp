@@ -22,21 +22,21 @@
 
 #include "gui/action/SModifyLayout.hpp"
 
-#include <core/base.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/GuiRegistry.hpp>
+#include <gui/IGuiContainerSrv.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/GuiRegistry.hpp>
-#include <fwGui/IGuiContainerSrv.hpp>
+#include <core/base.hpp>
 
 #include <services/macros.hpp>
 #include <services/op/Get.hpp>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout )
+fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::sight::modules::gui::action::SModifyLayout )
 
 //-----------------------------------------------------------------------------
 
@@ -83,8 +83,8 @@ void SModifyLayout::updating()
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
         services::IService::sptr service = services::get( uid );
         SLM_ASSERT("service not found", service);
-        ::fwGui::IGuiContainerSrv::sptr container = ::fwGui::IGuiContainerSrv::dynamicCast(service);
-        SLM_ASSERT("::fwGui::IGuiContainerSrv dynamicCast failed", container);
+        ::sight::gui::IGuiContainerSrv::sptr container = ::sight::gui::IGuiContainerSrv::dynamicCast(service);
+        SLM_ASSERT("::gui::IGuiContainerSrv dynamicCast failed", container);
 
         container->setParent(wid);
         service->update();
@@ -99,12 +99,12 @@ void SModifyLayout::updating()
         SLM_ASSERT("service not found", service);
         if(service->isStarted())
         {
-            ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
+            ::sight::gui::IGuiContainerSrv::sptr containerSrv = ::sight::gui::IGuiContainerSrv::dynamicCast(service);
             if(containerSrv)
             {
                 containerSrv->getContainer()->setEnabled(isEnable);
             }
-            ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
+            auto actionSrv = ::sight::gui::IActionSrv::dynamicCast(service);
             if(actionSrv)
             {
                 actionSrv->setIsExecutable(isEnable);
@@ -115,9 +115,9 @@ void SModifyLayout::updating()
     for(ShowSrvVectType::value_type elt :  m_showSrvWid)
     {
         std::string wid = elt.first;
-        ::boost::logic::tribool isVisible               = elt.second;
-        ::fwGui::container::fwContainer::sptr container = ::fwGui::GuiRegistry::getWIDContainer(wid);
-        SLM_ASSERT("::fwGui::IGuiContainerSrv " << wid << " is unknown", container);
+        ::boost::logic::tribool isVisible                    = elt.second;
+        ::sight::gui::container::fwContainer::sptr container = ::sight::gui::GuiRegistry::getWIDContainer(wid);
+        SLM_ASSERT("::gui::IGuiContainerSrv " << wid << " is unknown", container);
 
         if(isVisible)
         {
@@ -140,10 +140,10 @@ void SModifyLayout::updating()
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
         services::IService::sptr service = services::get( uid );
 
-        ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
-        SLM_ASSERT("::fwGui::IGuiContainerSrv dynamicCast failed", containerSrv);
+        auto containerSrv = ::sight::gui::IGuiContainerSrv::dynamicCast(service);
+        SLM_ASSERT("::gui::IGuiContainerSrv dynamicCast failed", containerSrv);
 
-        ::fwGui::container::fwContainer::sptr container = containerSrv->getContainer();
+        ::sight::gui::container::fwContainer::sptr container = containerSrv->getContainer();
 
         if(isVisible)
         {
@@ -232,4 +232,4 @@ void SModifyLayout::configuring()
 //-----------------------------------------------------------------------------
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

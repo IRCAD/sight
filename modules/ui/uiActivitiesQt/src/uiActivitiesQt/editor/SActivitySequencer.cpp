@@ -27,9 +27,9 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -93,7 +93,7 @@ SActivitySequencer::~SActivitySequencer() noexcept
 
 void SActivitySequencer::configuring()
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::IGuiContainerSrv::initialize();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -118,10 +118,10 @@ void SActivitySequencer::configuring()
 
 void SActivitySequencer::starting()
 {
-    this->::fwGui::IGuiContainerSrv::create();
+    this->::gui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -281,7 +281,7 @@ void SActivitySequencer::goTo(int index)
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        gui::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

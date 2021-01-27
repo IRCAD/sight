@@ -1,0 +1,185 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "guiQt/layoutManager/MenuLayoutManager.hpp"
+
+#include "guiQt/ActionCallback.hpp"
+#include "guiQt/container/QtMenuContainer.hpp"
+#include "guiQt/container/QtMenuItemContainer.hpp"
+
+#include <gui/registry/macros.hpp>
+
+#include <QAction>
+#include <QActionGroup>
+#include <QMenu>
+
+#include <functional>
+
+fwGuiRegisterMacro( ::sight::gui::layoutManager::MenuLayoutManager,
+                    ::sight::gui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+
+namespace sight::gui
+{
+namespace layoutManager
+{
+
+//-----------------------------------------------------------------------------
+
+MenuLayoutManager::MenuLayoutManager(gui::GuiBaseObject::Key key)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+MenuLayoutManager::~MenuLayoutManager()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::createLayout( gui::container::fwMenu::sptr parent )
+{
+
+    m_parent = guiQt::container::QtMenuContainer::dynamicCast(parent);
+    SLM_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);
+
+    QMenu* menu = m_parent->getQtMenu();
+
+    QActionGroup* actionGroup  = 0;
+    unsigned int menuItemIndex = 0;
+    for ( gui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo : m_actionInfo)
+    {
+        guiQt::container::QtMenuItemContainer::sptr menuItem = guiQt::container::QtMenuItemContainer::New();
+
+        QAction* action = menu->addAction( QString::fromStdString(actionInfo.m_name) );
+
+        action->setSeparator(actionInfo.m_isSeparator);
+
+        if (!actionInfo.m_icon.empty())
+        {
+            QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
+            action->setIcon(icon);
+        }
+        if (actionInfo.m_type == gui::layoutManager::IMenuLayoutManager::QUIT)
+        {
+            action->setMenuRole(QAction::QuitRole);
+        }
+        else if (actionInfo.m_type == gui::layoutManager::IMenuLayoutManager::ABOUT)
+        {
+            action->setMenuRole(QAction::AboutRole);
+        }
+        else
+        {
+            action->setMenuRole(QAction::NoRole);
+        }
+
+        action->setCheckable(actionInfo.m_isCheckable || actionInfo.m_isRadio);
+
+        if (actionInfo.m_isRadio)
+        {
+            if (!actionGroup)
+            {
+                actionGroup = new QActionGroup(menu);
+            }
+            actionGroup->addAction(action);
+        }
+
+        // create shortcut
+        if( !actionInfo.m_shortcut.empty() )
+        {
+            action->setShortcut(QKeySequence(QString::fromStdString(actionInfo.m_shortcut)));
+        }
+
+        if (actionInfo.m_isMenu)
+        {
+            guiQt::container::QtMenuContainer::sptr menu = guiQt::container::QtMenuContainer::New();
+            QMenu* qtMenu                                = new QMenu();
+            menu->setQtMenu(qtMenu);
+            action->setMenu(qtMenu);
+            m_menus.push_back(menu);
+        }
+
+        menuItem->setQtMenuItem(action);
+
+        if(!actionInfo.m_isSeparator && !actionInfo.m_isMenu )
+        {
+            m_menuItems.push_back(menuItem);
+            SLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            gui::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
+
+            guiQt::ActionCallback::sptr qtCallback = guiQt::ActionCallback::dynamicCast(callback);
+            SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
+
+            QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
+            QObject::connect( action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));
+            menuItemIndex++;
+        }
+        else
+        {
+            actionGroup = 0;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::destroyLayout()
+{
+    this->destroyActions();
+    m_menuItems.clear();
+    m_parent->clean();
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::menuItemSetVisible(gui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
+{
+    guiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        guiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    QAction* action = menuItemContainer->getQtMenuItem();
+    action->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::menuItemSetEnabled(gui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
+{
+    guiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        guiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    QAction* action = menuItemContainer->getQtMenuItem();
+    action->setEnabled(isEnabled);
+}
+
+//-----------------------------------------------------------------------------
+
+void MenuLayoutManager::menuItemSetChecked(gui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
+{
+    guiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        guiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    QAction* action = menuItemContainer->getQtMenuItem();
+    action->setChecked(isChecked);
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace layoutManager
+} // namespace sight::gui

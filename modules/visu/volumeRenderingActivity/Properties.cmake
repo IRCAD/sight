@@ -7,8 +7,8 @@ set( REQUIREMENTS
     2DVisualizationActivity
     3DVisualizationActivity
     data
-    gui
-    guiQt
+    module_gui
+    module_guiQt
     ctrlCamp
     ctrlMemory
     ctrlSelection

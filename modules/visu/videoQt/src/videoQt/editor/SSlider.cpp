@@ -28,7 +28,7 @@
 
 #include <data/Object.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -43,7 +43,7 @@ namespace videoQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::videoQt::editor::SSlider )
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::videoQt::editor::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 
@@ -91,8 +91,8 @@ SSlider::~SSlider() noexcept
 void SSlider::starting()
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     m_positionSlider = new QSlider(Qt::Horizontal);

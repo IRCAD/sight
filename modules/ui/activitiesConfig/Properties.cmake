@@ -6,8 +6,8 @@ set( REQUIREMENTS
         data
         activities
         ctrlSelection
-        gui
-        guiQt
+        module_gui
+        module_guiQt
         filterUnknownSeries
         ioActivity
         uiIO

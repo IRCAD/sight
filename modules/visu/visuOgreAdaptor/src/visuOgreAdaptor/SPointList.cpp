@@ -30,8 +30,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/String.hpp>
-
-#include <fwDataTools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
 
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
@@ -286,7 +285,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
     for(auto& point: _pointList->getPoints())
     {
         data::String::sptr strField =
-            point->getField< data::String >(::fwDataTools::fieldHelper::Image::m_labelId);
+            point->getField< data::String >(data::tools::fieldHelper::Image::m_labelId);
         if(strField)
         {
             labelNumber = strField->value();

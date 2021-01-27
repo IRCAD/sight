@@ -26,11 +26,11 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
-#include <fwGuiQt/SliceSelector.hpp>
+#include <guiQt/SliceSelector.hpp>
 
 namespace uiImageQt
 {
@@ -56,12 +56,12 @@ namespace uiImageQt
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
-class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::fwGui::editor::IEditor
+class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public gui::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SliceIndexPositionEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SliceIndexPositionEditor, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API SliceIndexPositionEditor() noexcept;
@@ -72,7 +72,7 @@ public:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    typedef ::fwDataTools::helper::MedicalImage::Orientation Orientation;
+    typedef data::tools::helper::MedicalImage::Orientation Orientation;
 
     /**
      * @brief Install the layout.
@@ -150,9 +150,9 @@ private:
     /// @brief The field IDs for the slice index.
     static const std::string* SLICE_INDEX_FIELDID[ 3 ];
 
-    ::fwGuiQt::SliceSelector* m_sliceSelectorPanel;
+    guiQt::SliceSelector* m_sliceSelectorPanel;
 
-    ::fwDataTools::helper::MedicalImage m_helper;
+    data::tools::helper::MedicalImage m_helper;
 
 };
 

@@ -27,7 +27,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>

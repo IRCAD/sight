@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <fwGui/dialog/IPulseProgressDialog.hpp>
+#include <gui/dialog/IPulseProgressDialog.hpp>
 
 #include <QObject>
 
@@ -38,17 +38,17 @@ namespace dialog
  * @brief   This class allows us to show a pulse progress bar.
  */
 class FWGUIQML_CLASS_API PulseProgressDialog : public QObject,
-                                               public ::fwGui::dialog::IPulseProgressDialog
+                                               public gui::dialog::IPulseProgressDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog,
-                     ::fwGui::factory::New< PulseProgressDialog >)
+    fwCoreClassMacro(PulseProgressDialog, gui::dialog::IPulseProgressDialog,
+                     gui::factory::New< PulseProgressDialog >)
 
-    FWGUIQML_API PulseProgressDialog(::fwGui::GuiBaseObject::Key key);
+    FWGUIQML_API PulseProgressDialog(gui::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~PulseProgressDialog();
 

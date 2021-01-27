@@ -24,7 +24,7 @@
 
 #include "ioDicom/config.hpp"
 
-#include <fwGui/editor/IDialogEditor.hpp>
+#include <gui/editor/IDialogEditor.hpp>
 
 namespace ioDicom
 {
@@ -51,12 +51,12 @@ namespace ioDicom
  *  - \b addSelection
  *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
  */
-class IODICOM_CLASS_API SFilterSelectorDialog : public ::fwGui::editor::IDialogEditor
+class IODICOM_CLASS_API SFilterSelectorDialog : public gui::editor::IDialogEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectorDialog,  ::fwGui::editor::IDialogEditor)
+    fwCoreServiceMacro(SFilterSelectorDialog,  gui::editor::IDialogEditor)
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

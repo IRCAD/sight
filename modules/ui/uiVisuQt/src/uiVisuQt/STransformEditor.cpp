@@ -26,11 +26,10 @@
 
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <guiQt/container/QtContainer.hpp>
 
 #include <services/macros.hpp>
 
@@ -50,7 +49,8 @@
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::fwGui::editor::IEditor, ::uiVisuQt::STransformEditor, ::sight::data::TransformationMatrix3D)
+fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuQt::STransformEditor,
+                         ::sight::data::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
 
@@ -138,8 +138,8 @@ void STransformEditor::starting()
                                  "Rotation X", "Rotation Y", "Rotation Z"};
 
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    guiQt::container::QtContainer::sptr qtContainer =
+        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
 
@@ -260,7 +260,7 @@ void STransformEditor::onSliderChanged(int)
     mat[3] = ::glm::dvec4(tx, ty, tz, 1.);
 
     data::mt::ObjectWriteLock lock(matrix);
-    ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
+    data::tools::TransformationMatrix3D::setTF3DFromMatrix(matrix, mat);
 
     for (unsigned int i = 0; i < MAX_SLIDER_INDEX; i++)
     {
@@ -294,7 +294,7 @@ void STransformEditor::updateFromMatrix()
     SLM_ASSERT("Unable to get matrix", matrix);
 
     data::mt::ObjectReadLock lock(matrix);
-    const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
+    const ::glm::dmat4x4 mat = data::tools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
 
     const ::glm::dquat quat(mat);
     const ::glm::dvec3 angles = ::glm::eulerAngles(quat);

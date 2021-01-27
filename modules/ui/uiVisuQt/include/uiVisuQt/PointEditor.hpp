@@ -27,10 +27,9 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Point.hpp>
+#include <data/tools/PickingInfo.hpp>
 
-#include <fwDataTools/PickingInfo.hpp>
-
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -43,13 +42,13 @@ namespace uiVisuQt
  * @brief   PointEditor service allows to display point information.
  */
 class UIVISUQT_CLASS_API PointEditor : public QObject,
-                                       public ::fwGui::editor::IEditor
+                                       public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(PointEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(PointEditor, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIVISUQT_API PointEditor() noexcept;
@@ -79,7 +78,7 @@ protected:
 private:
 
     /// Slot: get the interaction information
-    void getInteraction(::fwDataTools::PickingInfo info);
+    void getInteraction(data::tools::PickingInfo info);
 
     QPointer< QLineEdit >   m_textCtrl_x;
     QPointer< QLineEdit >   m_textCtrl_y;

@@ -30,7 +30,7 @@
 
 #include <data/Material.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -57,13 +57,13 @@ namespace uiReconstructionQt
  * - \b reconstruction [data::Reconstruction]: reconstruction that will be updated
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public QObject,
-                                                          public ::fwGui::editor::IEditor
+                                                          public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(RepresentationEditor, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(RepresentationEditor, gui::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQT_API RepresentationEditor() noexcept;

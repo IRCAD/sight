@@ -24,7 +24,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
@@ -42,7 +42,7 @@ namespace visuOgreAdaptor
  * (auto connection to true), it's only used in 2D mode.
  *
  * @section Signals Signals
- * - \b picked(::fwDataTools::PickingInfo): emitted when a picking query is successful.
+ * - \b picked(data::tools::PickingInfo): emitted when a picking query is successful.
  *
  * @section Slots Slots
  * - \b sliceType(int, int): updates image slice index .
@@ -116,7 +116,7 @@ private:
     void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
-    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
 
     /**
      * @brief SLOT: updates the image slice type.
@@ -154,7 +154,7 @@ private:
     bool m_layerOrderDependant { true };
 
     /// Defines the signal sent on picking events.
-    core::com::Signal< void ( ::fwDataTools::PickingInfo ) >::sptr m_pickedSig;
+    core::com::Signal< void ( data::tools::PickingInfo ) >::sptr m_pickedSig;
 
 };
 

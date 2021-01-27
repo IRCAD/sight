@@ -24,11 +24,11 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwIO/IReader.hpp>
 
 #include <fwNetworkIO/http/ClientQt.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QLineEdit>
 #include <QSlider>
@@ -96,13 +96,13 @@ namespace ioDicomWeb
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
 class IODICOMWEB_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
-                                                          public ::fwGui::editor::IEditor
+                                                          public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ::fwGui::editor::IEditor )
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  gui::editor::IEditor )
 
     /**
      * @brief Constructor

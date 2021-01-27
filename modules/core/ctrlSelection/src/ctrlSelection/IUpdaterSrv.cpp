@@ -24,7 +24,7 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <fwDataTools/helper/Composite.hpp>
+#include <data/tools/helper/Composite.hpp>
 
 namespace ctrlSelection
 {

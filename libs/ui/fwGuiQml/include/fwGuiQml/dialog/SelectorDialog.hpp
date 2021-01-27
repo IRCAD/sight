@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2020-2021 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <fwGui/dialog/ISelectorDialog.hpp>
+#include <gui/dialog/ISelectorDialog.hpp>
 
 #include <QObject>
 #include <QVariant>
@@ -42,15 +42,15 @@ namespace dialog
  * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
  */
 class FWGUIQML_CLASS_API SelectorDialog : public QObject,
-                                          public ::fwGui::dialog::ISelectorDialog
+                                          public gui::dialog::ISelectorDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 public:
 
-    fwCoreClassMacro(SelectorDialog, ::fwGui::dialog::ISelectorDialog, ::fwGui::factory::New< SelectorDialog >)
+    fwCoreClassMacro(SelectorDialog, gui::dialog::ISelectorDialog, gui::factory::New< SelectorDialog >)
 
-    FWGUIQML_API SelectorDialog(::fwGui::GuiBaseObject::Key key);
+    FWGUIQML_API SelectorDialog(gui::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~SelectorDialog();
 
@@ -95,4 +95,4 @@ private:
 };
 
 } // namespace dialog
-} // namespace fwGuiQt
+} // namespace sight::guiQt

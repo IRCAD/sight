@@ -27,9 +27,8 @@
 
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
-
-#include <fwDataTools/Color.hpp>
-#include <fwDataTools/Mesh.hpp>
+#include <data/tools/Color.hpp>
+#include <data/tools/Mesh.hpp>
 
 #include <fwRenderOgre/ogre.hpp>
 
@@ -179,12 +178,12 @@ void SShapeExtruder::configuring()
 
     const auto hexaLineColor = config.get<std::string>(s_LINE_COLOR_CONFIG, "#FFFFFF");
     std::array< std::uint8_t, 4 > lineColor;
-    ::fwDataTools::Color::hexaStringToRGBA(hexaLineColor, lineColor.data());
+    data::tools::Color::hexaStringToRGBA(hexaLineColor, lineColor.data());
     std::transform(lineColor.begin(), lineColor.end(), m_lineColor.ptr(), divideBy255);
 
     const auto hexaEdgeColor = config.get<std::string>(s_EDGE_COLOR_CONFIG, "#FFFFFF");
     std::array< std::uint8_t, 4 > edgeColor;
-    ::fwDataTools::Color::hexaStringToRGBA(hexaEdgeColor, edgeColor.data());
+    data::tools::Color::hexaStringToRGBA(hexaEdgeColor, edgeColor.data());
     std::transform(edgeColor.begin(), edgeColor.end(), m_edgeColor.ptr(), divideBy255);
 }
 
@@ -760,7 +759,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
         }
 
         // Generate normals.
-        ::fwDataTools::Mesh::generatePointNormals(mesh);
+        data::tools::Mesh::generatePointNormals(mesh);
     }
 
     // Get the reconstruction list.

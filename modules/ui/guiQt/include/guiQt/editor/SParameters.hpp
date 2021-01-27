@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "guiQt/config.hpp"
+#include "module_guiQt/config.hpp"
 
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -36,7 +36,7 @@
 #include <QSignalMapper>
 #include <QSlider>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 
 namespace editor
@@ -86,7 +86,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::guiQt::editor::SParameters" >
+       <service uid="..." type="::modules::guiQt::editor::SParameters" >
         <parameters>
             <param type="bool" name="boolean parameter" key="boolParam" defaultValue="false" />
             <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42"
@@ -119,12 +119,12 @@ namespace editor
  * dependsValue (optional, string): value of the dependency in case of enum.
  * dependsReverse (optional, bool, default=false): reverse the dependency status checking.
  */
-class GUIQT_CLASS_API SParameters : public QObject,
-                                    public ::fwGui::editor::IEditor
+class MODULE_GUIQT_CLASS_API SParameters : public QObject,
+                                           public gui::editor::IEditor
 {
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SParameters, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SParameters, gui::editor::IEditor)
 
     /// Boolean changed signal type
     typedef core::com::Signal< void (bool, std::string) > BooleanChangedSignalType;
@@ -147,22 +147,22 @@ public:
     typedef core::com::Signal< void (int, std::string) > EnumChangedIndexSignalType;
 
     /// Constructor. Initializes signals
-    GUIQT_API SParameters() noexcept;
+    MODULE_GUIQT_API SParameters() noexcept;
 
     /// Destructor. Does nothing
-    GUIQT_API virtual ~SParameters() noexcept;
+    MODULE_GUIQT_API virtual ~SParameters() noexcept;
 
     /// Configure the editor.
-    GUIQT_API void configuring() override;
+    MODULE_GUIQT_API void configuring() override;
 
     /// Initializes Qt input widgets for parameters according to xml configuration
-    GUIQT_API void starting() override;
+    MODULE_GUIQT_API void starting() override;
 
     /// This method launches the IEditor::stopping method
-    GUIQT_API void stopping() override;
+    MODULE_GUIQT_API void stopping() override;
 
     /// This method is used to update services. Does nothing
-    GUIQT_API void updating() override;
+    MODULE_GUIQT_API void updating() override;
 
 private Q_SLOTS:
 
@@ -391,5 +391,5 @@ void SParameters::setLabelMinimumSize(QLabel* label, T min, T max, std::uint8_t 
 
 //------------------------------------------------------------------------------
 
-}   //namespace guiQt
+}   //namespace sight::modules::guiQt
 }   //namespace editor

@@ -31,7 +31,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <fwDataTools/PickingInfo.hpp>
+#include <data/tools/PickingInfo.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>

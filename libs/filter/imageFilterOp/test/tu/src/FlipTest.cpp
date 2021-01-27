@@ -25,8 +25,7 @@
 #include <imageFilterOp/Flipper.hpp>
 
 #include <data/Image.hpp>
-
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <utestData/generator/Image.hpp>
 

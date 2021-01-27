@@ -28,7 +28,7 @@
 
 #include <data/Vector.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace activities
 {
@@ -70,12 +70,12 @@ namespace action
  *      (exclude).
  *    - \b id: id of the activity
  */
-class ACTIVITIES_CLASS_API SCreateActivity : public ::fwGui::IActionSrv
+class ACTIVITIES_CLASS_API SCreateActivity : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SCreateActivity, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SCreateActivity, ::sight::gui::IActionSrv)
 
     /// Constructor. Do nothing.
     ACTIVITIES_API SCreateActivity() noexcept;
@@ -109,7 +109,7 @@ protected:
 
     /**
      * @brief Initialize the action.
-     * @see fwGui::IActionSrv::initialize()
+     * @see gui::IActionSrv::initialize()
      */
     virtual void configuring() override;
 

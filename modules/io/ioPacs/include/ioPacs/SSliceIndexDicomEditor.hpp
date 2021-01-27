@@ -30,9 +30,9 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwIO/IReader.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <services/IHasServices.hpp>
 
@@ -72,7 +72,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
-    public ::fwGui::editor::IEditor,
+    public gui::editor::IEditor,
     public services::IHasServices
 {
 
@@ -81,7 +81,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  gui::editor::IEditor)
 
     /// Creates the service.
     IOPACS_API SSliceIndexDicomEditor() noexcept;

@@ -27,7 +27,7 @@
 #include "fwRenderOgre/config.hpp"
 #include <fwRenderOgre/TransferFunction.hpp>
 
-#include <fwDataTools/helper/MedicalImage.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMesh.h>
@@ -54,7 +54,7 @@ class FWRENDEROGRE_CLASS_API Plane
 
 public:
 
-    typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
 
     /// Defines the texture filtering mode.
     typedef enum FilteringEnum

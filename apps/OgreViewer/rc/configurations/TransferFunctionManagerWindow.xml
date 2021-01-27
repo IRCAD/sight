@@ -27,7 +27,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::gui::frame::SDefaultFrame" >
+        <service uid="mainView" type="::sight::modules::gui::frame::SDefaultFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -42,9 +42,9 @@
             </registry>
         </service>
 
-        <service uid="tfView" type="::gui::view::SDefaultView" >
+        <service uid="tfView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <view proportion="1" leftBorder="5" rightBorder="5" bottomBorder="5" />
@@ -56,9 +56,9 @@
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="::gui::view::SDefaultView" >
+        <service uid="transferFunctionEditorView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <spacer />
@@ -69,9 +69,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
             <gui>
-                <layout type="::fwGui::LineLayoutManager" >
+                <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" spacing="0" />
                     <view proportion="0" backgroundColor="#36393E" spacing="0" />

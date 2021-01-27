@@ -19,9 +19,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainview" type="::gui::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-            <layout type="::fwGui::LineLayoutManager">
+            <layout type="::sight::gui::LineLayoutManager">
                 <orientation value="vertical" />
                     <view proportion="1" visible="false" backgroundColor="#2E3034" border="5" />
                     <view proportion="1" />

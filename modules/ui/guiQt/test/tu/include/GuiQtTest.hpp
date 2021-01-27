@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace guiQt
+namespace sight::modules::guiQt
 {
 namespace ut
 {
@@ -48,4 +48,4 @@ public:
 };
 
 } //namespace ut
-} //namespace guiQt
+} //namespace sight::modules::guiQt

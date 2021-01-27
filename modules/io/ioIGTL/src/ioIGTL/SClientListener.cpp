@@ -30,9 +30,8 @@
 #include <data/Object.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwPreferences/helper.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/preferences/helper.hpp>
 
 #include <services/macros.hpp>
 
@@ -102,8 +101,8 @@ void SClientListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port   = ::fwPreferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = ::fwPreferences::getValue(m_hostnameConfig);
+        const std::uint16_t port   = gui::preferences::getValue<std::uint16_t>(m_portConfig);
+        const std::string hostname = gui::preferences::getValue(m_hostnameConfig);
 
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
@@ -115,7 +114,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
+            gui::dialog::MessageDialog::show("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -167,7 +166,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ::fwGui::dialog::MessageDialog::show("Error", ex.what());
+            gui::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -201,7 +200,7 @@ void SClientListener::stopping()
     }
     catch (core::Exception& ex)
     {
-        ::fwGui::dialog::MessageDialog::show("Connection error", ex.what());
+        gui::dialog::MessageDialog::show("Connection error", ex.what());
         SLM_ERROR(ex.what());
     }
 }

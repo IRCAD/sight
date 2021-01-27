@@ -29,7 +29,7 @@
 #include <data/PointList.hpp>
 #include <data/Landmarks.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
 
@@ -125,7 +125,7 @@ void STargeting::updating()
         this->getLockedInput< data::TransformationMatrix3D >( s_MATRIX_INPUT );
     SLM_ASSERT("Input \"matrix\" is missing.", matrix);
 
-    const ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix.get_shared());
+    const ::glm::dmat4x4 mat = data::tools::TransformationMatrix3D::getMatrixFromTF3D(matrix.get_shared());
 
     const ::glm::dvec4 origin(0.0, 0.0, 0.0, 1.0);
 

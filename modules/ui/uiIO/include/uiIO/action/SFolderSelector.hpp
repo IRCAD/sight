@@ -24,7 +24,7 @@
 
 #include "uiIO/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <filesystem>
 
@@ -49,10 +49,10 @@ namespace action
  * @subsection Configuration Configuration:
  * - \b dialogTitle (optional): title of the dialog.
  */
-class UIIO_CLASS_API SFolderSelector : public ::fwGui::IActionSrv
+class UIIO_CLASS_API SFolderSelector : public ::sight::gui::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SFolderSelector,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SFolderSelector,  gui::IActionSrv)
 
     /**
      * @name Signals API

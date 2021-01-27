@@ -28,9 +28,8 @@
 #include "itkRegistrationOp/Resampler.hpp"
 
 #include <data/Image.hpp>
+#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwItkIO/itk.hpp>
 
@@ -142,7 +141,7 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
     if(fixedVoxelVolume < movingVoxelVolume)
     {
         auto inverseTransform = data::TransformationMatrix3D::New();
-        ::fwDataTools::TransformationMatrix3D::invert(_transform, inverseTransform);
+        data::tools::TransformationMatrix3D::invert(_transform, inverseTransform);
 
         fixed = ::itkRegistrationOp::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
     }
@@ -170,7 +169,7 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
         translation->setCoefficient(i, 3, res[i]);
     }
 
-    ::fwDataTools::TransformationMatrix3D::multiply(translation, _transform, _transform);
+    data::tools::TransformationMatrix3D::multiply(translation, _transform, _transform);
 }
 
 //------------------------------------------------------------------------------

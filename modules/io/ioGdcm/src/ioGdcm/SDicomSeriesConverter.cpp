@@ -32,16 +32,16 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwGui/dialog/LoggerDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
+#include <gui/dialog/LoggerDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/ProgressDialog.hpp>
 
 #include <services/macros.hpp>
 
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro(::fwGui::IActionSrv, ::ioGdcm::SDicomSeriesConverter, data::SeriesDB)
+fwServicesRegisterMacro(gui::IActionSrv, ::ioGdcm::SDicomSeriesConverter, data::SeriesDB)
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -95,9 +95,9 @@ void SDicomSeriesConverter::updating()
 
     if(dicomSeriesDB->empty())
     {
-        ::fwGui::dialog::MessageDialog messageBox;
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        gui::dialog::MessageDialog messageBox;
+        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.setTitle("Read DICOM series");
         messageBox.setMessage( "There is no DICOM series that can be read." );
         messageBox.show();
@@ -124,7 +124,7 @@ void SDicomSeriesConverter::updating()
             bool result = false;
             if(!job->cancelRequested())
             {
-                result = ::fwGui::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
+                result = gui::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
             }
 
             // If the user cancel the reading process we delete the loaded series
@@ -144,13 +144,13 @@ void SDicomSeriesConverter::updating()
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
-            ::fwGui::dialog::MessageDialog::show(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::MessageDialog::show(
+                "Warning", ss.str(), gui::dialog::IMessageDialog::WARNING);
         }
         catch( ... )
         {
-            ::fwGui::dialog::MessageDialog::show(
-                "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+            gui::dialog::MessageDialog::show(
+                "Warning", "Warning during loading", gui::dialog::IMessageDialog::WARNING);
         }
     }
 }

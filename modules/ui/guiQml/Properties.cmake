@@ -5,14 +5,13 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     core
-    fwGui
     fwQml
-    fwQt
+    guiQt
     fwGuiQml
     services
 )
 set( REQUIREMENTS
-    gui
+    module_gui
 )
 set( PLUGINS
     QtQml

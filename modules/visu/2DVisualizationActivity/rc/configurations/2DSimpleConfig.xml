@@ -9,9 +9,9 @@
     <config>
         <object uid="${objectID}" type="::sight::data::ImageSeries" src="ref" />
         <object uid="${imageID}" type="::sight::data::Image" src="ref" />
-        <service uid="mainview" type="::gui::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView">
             <gui>
-                <layout type="::fwGui::CardinalLayoutManager">
+                <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
                 </layout>

@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
+
+#include <gui/IToolBarSrv.hpp>
 
 #include <core/base.hpp>
 
-#include <fwGui/IToolBarSrv.hpp>
-
-namespace gui
+namespace sight::modules::gui
 {
 namespace aspect
 {
@@ -36,18 +36,18 @@ namespace aspect
 /**
  * @brief   Defines the default toolbar for standard application
  */
-class GUI_CLASS_API SDefaultToolBar : public ::fwGui::IToolBarSrv
+class MODULE_GUI_CLASS_API SDefaultToolBar : public ::sight::gui::IToolBarSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultToolBar, ::fwGui::IToolBarSrv)
+    fwCoreServiceMacro(SDefaultToolBar, ::sight::gui::IToolBarSrv)
 
     /// Constructor. Do nothing.
-    GUI_API SDefaultToolBar() noexcept;
+    MODULE_GUI_API SDefaultToolBar() noexcept;
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SDefaultToolBar() noexcept;
+    MODULE_GUI_API virtual ~SDefaultToolBar() noexcept;
 
 protected:
 
@@ -61,27 +61,28 @@ protected:
 
     /**
      * @brief Create the toolBar
-     * @see ::fwGui::IToolBarSrv::create()
+     * @see gui::IToolBarSrv::create()
      */
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
-     * @see ::fwGui::IToolBarSrv::destroy()
+     * @see gui::IToolBarSrv::destroy()
      */
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() override;
+    MODULE_GUI_API virtual void updating() override;
 
     /**
      * @brief Configuring method allows to create a toolBar with several actions.
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
+       <service uid="toolbar2" type="::gui::IToolBarSrv" impl="::modules::gui::aspect::SDefaultToolBar" autoConnect="no"
+     *>
            <gui>
                <layout>
                    <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/>
@@ -117,14 +118,14 @@ protected:
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
      *
-     *  @see ::fwGui::IToolBarSrv::initialize(), ::fwGui::layoutManager::IToolBarLayoutManager::initialize()
+     *  @see gui::IToolBarSrv::initialize(), gui::layoutManager::IToolBarLayoutManager::initialize()
      */
-    GUI_API virtual void configuring() override;
+    MODULE_GUI_API virtual void configuring() override;
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
     ///@}
 
 };

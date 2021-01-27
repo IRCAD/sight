@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "gui/config.hpp"
+#include "module_gui/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 #include <services/IService.hpp>
 
@@ -32,7 +32,7 @@
 
 #include <vector>
 
-namespace gui
+namespace sight::modules::gui
 {
 namespace action
 {
@@ -40,23 +40,23 @@ namespace action
 /**
  * @brief This action is used to modify the layout configuration.
  */
-class GUI_CLASS_API SModifyLayout : public ::fwGui::IActionSrv
+class MODULE_GUI_CLASS_API SModifyLayout : public ::sight::gui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SModifyLayout, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SModifyLayout, ::sight::gui::IActionSrv)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API SModifyLayout() noexcept;
+    MODULE_GUI_API SModifyLayout() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~SModifyLayout() noexcept;
+    MODULE_GUI_API virtual ~SModifyLayout() noexcept;
 
 protected:
 
@@ -74,12 +74,12 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_GUI_API virtual void info(std::ostream& _sstream ) override;
 
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating() override;
+    MODULE_GUI_API void updating() override;
 
     /**
      * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
@@ -106,11 +106,11 @@ protected:
      *
      * The action in the menu/toolbar must be checkable (style="check").
      */
-    GUI_API void configuring() override;
+    MODULE_GUI_API void configuring() override;
 
-    GUI_API virtual void starting() override;
+    MODULE_GUI_API virtual void starting() override;
 
-    GUI_API virtual void stopping() override;
+    MODULE_GUI_API virtual void stopping() override;
 
 private:
 
@@ -134,4 +134,4 @@ private:
 };
 
 } // namespace action
-} // namespace gui
+} // namespace sight::modules::gui

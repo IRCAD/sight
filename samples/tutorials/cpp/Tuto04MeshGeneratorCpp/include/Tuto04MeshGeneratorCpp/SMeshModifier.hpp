@@ -25,7 +25,7 @@
 #include "Tuto04MeshGeneratorCpp/AlgoMeshDeformation.hpp"
 #include "Tuto04MeshGeneratorCpp/config.hpp"
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
@@ -55,13 +55,13 @@ namespace Tuto04MeshGeneratorCpp
  *  - ShakeCellNormals: shakes cell normals.
  *  - MeshDeformation: deforms the mesh.
  */
-class TUTO04MESHGENERATORCPP_CLASS_API SMeshModifier final : public ::fwGui::IActionSrv
+class TUTO04MESHGENERATORCPP_CLASS_API SMeshModifier final : public ::sight::gui::IActionSrv
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMeshModifier, ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SMeshModifier, gui::IActionSrv)
 
     /// Creates the action.
     TUTO04MESHGENERATORCPP_API SMeshModifier() noexcept;

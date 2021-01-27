@@ -27,10 +27,9 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Point.hpp>
+#include <data/tools/PickingInfo.hpp>
 
-#include <fwDataTools/PickingInfo.hpp>
-
-#include <fwGui/editor/IEditor.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -46,7 +45,7 @@ namespace uiImageQt
  *         ::visuVTKAdaptor::SImagePickerInteractor)
  *
  * @section Slots Slots
- * - \b getInteraction(::fwDataTools::PickingInfo): display image pixel information
+ * - \b getInteraction(data::tools::PickingInfo): display image pixel information
  *
  * @section XML XML Configuration
  *
@@ -59,13 +58,13 @@ namespace uiImageQt
  * - \b image [data::Image]: image used to retrieve the pixel value.
  */
 class UIIMAGEQT_CLASS_API ImageInfo : public QObject,
-                                      public ::fwGui::editor::IEditor
+                                      public gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageInfo, ::fwGui::editor::IEditor)
+    fwCoreServiceMacro(ImageInfo, gui::editor::IEditor)
 
     UIIMAGEQT_API ImageInfo() noexcept;
 
@@ -99,7 +98,7 @@ protected:
 private:
 
     /// Slot: get the picking information to display the pixel value
-    void getInteraction(::fwDataTools::PickingInfo info);
+    void getInteraction(data::tools::PickingInfo info);
 
     /// Label to display the pixel value
     QPointer< QLineEdit >   m_valueText;

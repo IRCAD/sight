@@ -4,20 +4,20 @@
 
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwGui::editor::IDialogEditor</type>
+        <type>::sight::gui::editor::IDialogEditor</type>
         <service>::uiIO::editor::SIOSelector</service>
         <object>::sight::data::Object</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
+        <type>::sight::gui::IActionSrv</type>
         <service>::uiIO::action::SSeriesDBMerger</service>
         <object>::sight::data::SeriesDB</object>
         <desc>Merge SeriesDB</desc>
     </extension>
     
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
+        <type>::sight::gui::IActionSrv</type>
         <service>::uiIO::action::SExportWithSeriesDB</service>
         <object>::sight::data::Object</object>
         <desc>Export the series using a SeriesDB</desc>

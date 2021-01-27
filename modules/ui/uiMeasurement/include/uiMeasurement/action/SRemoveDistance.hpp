@@ -29,7 +29,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <gui/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -58,7 +58,7 @@ namespace action
             <inout key="image" uid="${image}" />
     </service>
 
-    <service uid="removeLastDistance" type="::gui::action::SSlotCaller">
+    <service uid="removeLastDistance" type="::modules::gui::action::SSlotCaller">
         <slots>
             <slot>SRemoveDistanceAct/removeLastDistance</slot>
         </slots>
@@ -68,13 +68,13 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [data::Image]: Image containing the distance field.
  */
-class UIMEASUREMENT_CLASS_API SRemoveDistance final : public ::fwGui::IActionSrv
+class UIMEASUREMENT_CLASS_API SRemoveDistance final : public ::sight::gui::IActionSrv
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SRemoveDistance,  ::fwGui::IActionSrv)
+    fwCoreServiceMacro(SRemoveDistance,  gui::IActionSrv)
 
     /// Initialize slots.
     UIMEASUREMENT_API SRemoveDistance() noexcept;

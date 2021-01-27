@@ -26,9 +26,9 @@
 
 #include <core/com/Slot.hpp>
 
-#include <fwGui/editor/IEditor.hpp>
-
 #include <fwIO/IReader.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -91,13 +91,13 @@ namespace ioDicom
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  */
 class IODICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
-                                                 public ::fwGui::editor::IEditor
+                                                 public gui::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  ::fwGui::editor::IEditor )
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  gui::editor::IEditor )
 
     IODICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;

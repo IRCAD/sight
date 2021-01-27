@@ -29,9 +29,9 @@
 
 #include <fwAtomsBoostIO/Writer.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-
 #include <fwIO/IWriter.hpp>
+
+#include <gui/dialog/LocationDialog.hpp>
 
 #include <set>
 

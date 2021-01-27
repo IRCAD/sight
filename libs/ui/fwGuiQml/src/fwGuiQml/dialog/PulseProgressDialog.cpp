@@ -25,9 +25,9 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <fwGui/registry/macros.hpp>
-
 #include <fwQml/QmlEngine.hpp>
+
+#include <gui/registry/macros.hpp>
 
 #include <QFutureWatcher>
 #include <QGuiApplication>
@@ -36,7 +36,7 @@
 #include <QtConcurrent>
 #include <QtCore>
 
-fwGuiRegisterMacro(::fwGuiQml::dialog::PulseProgressDialog, ::fwGui::dialog::IPulseProgressDialog::REGISTRY_KEY );
+fwGuiRegisterMacro(::fwGuiQml::dialog::PulseProgressDialog, ::sight::gui::dialog::IPulseProgressDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -44,7 +44,7 @@ namespace dialog
 {
 //------------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog(::fwGui::GuiBaseObject::Key key)
+PulseProgressDialog::PulseProgressDialog(gui::GuiBaseObject::Key key)
 {
 }
 

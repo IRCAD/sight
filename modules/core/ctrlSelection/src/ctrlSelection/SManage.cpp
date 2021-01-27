@@ -31,12 +31,11 @@
 #include <data/Exception.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
+#include <data/tools/helper/Composite.hpp>
+#include <data/tools/helper/Field.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
+#include <data/tools/helper/Vector.hpp>
 #include <data/Vector.hpp>
-
-#include <fwDataTools/helper/Composite.hpp>
-#include <fwDataTools/helper/Field.hpp>
-#include <fwDataTools/helper/Vector.hpp>
 
 #include <services/macros.hpp>
 
@@ -137,7 +136,7 @@ void SManage::addOrSwap()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Composite helper( composite );
+        data::tools::helper::Composite helper( composite );
         if (composite->find(m_compositeKey) == composite->end())
         {
             helper.add(m_compositeKey, obj);
@@ -155,7 +154,7 @@ void SManage::addOrSwap()
         auto iter = std::find(vector->begin(), vector->end(), obj);
         if (iter == vector->end())
         {
-            ::fwDataTools::helper::Vector helper( vector );
+            data::tools::helper::Vector helper( vector );
             helper.add(obj);
             helper.notify();
         }
@@ -179,7 +178,7 @@ void SManage::addOrSwap()
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        ::fwDataTools::helper::Field helper( fieldHolder );
+        data::tools::helper::Field helper( fieldHolder );
         helper.addOrSwap(m_fieldName, obj);
         helper.notify();
     }
@@ -202,14 +201,14 @@ void SManage::swap()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed",  !fieldHolder);
-        ::fwDataTools::helper::Composite helper( composite );
+        data::tools::helper::Composite helper( composite );
         helper.swap(m_compositeKey, obj);
         helper.notify();
     }
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !composite);
-        ::fwDataTools::helper::Field helper( fieldHolder );
+        data::tools::helper::Field helper( fieldHolder );
         helper.swap(m_fieldName, obj);
         helper.notify();
     }
@@ -233,7 +232,7 @@ void SManage::remove()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Composite helper( composite );
+        data::tools::helper::Composite helper( composite );
         helper.remove(m_compositeKey);
         helper.notify();
     }
@@ -241,7 +240,7 @@ void SManage::remove()
     {
         SLM_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
         SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        ::fwDataTools::helper::Vector helper( vector );
+        data::tools::helper::Vector helper( vector );
         helper.remove(obj);
         helper.notify();
     }
@@ -259,7 +258,7 @@ void SManage::remove()
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        ::fwDataTools::helper::Field helper( fieldHolder );
+        data::tools::helper::Field helper( fieldHolder );
         helper.remove(m_fieldName);
         helper.notify();
     }
@@ -283,7 +282,7 @@ void SManage::removeIfPresent()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Composite helper( composite );
+        data::tools::helper::Composite helper( composite );
         if (composite->find(m_compositeKey) != composite->end())
         {
             helper.remove(m_compositeKey);
@@ -297,7 +296,7 @@ void SManage::removeIfPresent()
         auto iter = std::find(vector->begin(), vector->end(), obj);
         if (iter != vector->end())
         {
-            ::fwDataTools::helper::Vector helper( vector );
+            data::tools::helper::Vector helper( vector );
             helper.remove(obj);
             helper.notify();
         }
@@ -322,7 +321,7 @@ void SManage::removeIfPresent()
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        ::fwDataTools::helper::Field helper( fieldHolder );
+        data::tools::helper::Field helper( fieldHolder );
         try
         {
             helper.remove(m_fieldName);
@@ -351,14 +350,14 @@ void SManage::clear()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Composite helper( composite );
+        data::tools::helper::Composite helper( composite );
         helper.clear();
         helper.notify();
     }
     else if (vector)
     {
         SLM_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Vector helper( vector );
+        data::tools::helper::Vector helper( vector );
         helper.clear();
         helper.notify();
     }
@@ -371,7 +370,7 @@ void SManage::clear()
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        ::fwDataTools::helper::Field helper( fieldHolder );
+        data::tools::helper::Field helper( fieldHolder );
         helper.clear();
         helper.notify();
     }
@@ -401,14 +400,14 @@ void SManage::internalAdd(bool _copy)
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Composite helper( composite );
+        data::tools::helper::Composite helper( composite );
         helper.add(m_compositeKey, obj);
         helper.notify();
     }
     else if (vector)
     {
         SLM_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        ::fwDataTools::helper::Vector helper( vector );
+        data::tools::helper::Vector helper( vector );
         helper.add(obj);
         helper.notify();
     }
@@ -424,7 +423,7 @@ void SManage::internalAdd(bool _copy)
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        ::fwDataTools::helper::Field helper( fieldHolder );
+        data::tools::helper::Field helper( fieldHolder );
         helper.add(m_fieldName, obj);
         helper.notify();
     }

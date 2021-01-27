@@ -27,14 +27,14 @@
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwGui/IGuiContainerSrv.hpp>
-
 #include <fwGuiQml/App.hpp>
 
 #include <fwQml/IQmlAppManager.hpp>
 #include <fwQml/QmlEngine.hpp>
 
-#include <fwQt/WorkerQt.hpp>
+#include <gui/IGuiContainerSrv.hpp>
+
+#include <guiQt/WorkerQt.hpp>
 
 #include <services/registry/ActiveWorkers.hpp>
 
@@ -73,7 +73,7 @@ void Plugin::start()
               return QSharedPointer< QGuiApplication > ( new ::fwGuiQml::App(argc, argv) );
           };
 
-    m_workerQt = ::fwQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
+    m_workerQt = guiQt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
     QQuickStyle::setStyle("Material");
 
     services::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
@@ -121,4 +121,4 @@ int Plugin::run() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace guiQt
+} // namespace sight::modules::guiQt

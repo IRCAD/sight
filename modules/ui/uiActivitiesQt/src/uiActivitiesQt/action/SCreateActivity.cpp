@@ -36,8 +36,8 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
+#include <gui/dialog/MessageDialog.hpp>
+#include <gui/dialog/SelectorDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -95,7 +95,7 @@ void SCreateActivity::stopping()
 
 void SCreateActivity::configuring()
 {
-    this->::fwGui::IActionSrv::initialize();
+    this->::gui::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     const services::IService::ConfigType srvconfig = this->getConfigTree();
@@ -244,9 +244,9 @@ void SCreateActivity::updating()
     }
     else
     {
-        ::fwGui::dialog::MessageDialog::show("Activity launcher",
-                                             "No available activity for the current selection.",
-                                             ::fwGui::dialog::MessageDialog::WARNING);
+        gui::dialog::MessageDialog::show("Activity launcher",
+                                         "No available activity for the current selection.",
+                                         gui::dialog::MessageDialog::WARNING);
     }
 }
 

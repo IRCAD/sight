@@ -31,10 +31,10 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
+
+#include <gui/dialog/MessageDialog.hpp>
 
 #include <services/macros.hpp>
 
@@ -118,22 +118,22 @@ void SSeriesPusher::updating()
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "The service is already pushing data. Please wait until the pushing is done "
                                "before sending a new push request." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        ::fwGui::dialog::MessageDialog messageBox;
+        gui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "Unable to push series, there is no series selected." );
-        messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+        messageBox.addButton(gui::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else
@@ -218,15 +218,15 @@ bool SSeriesPusher::checkSeriesOnPACS()
             ss << std::endl << "Would you like to perform the operation anyway ?" << std::endl
                << "(This will result in a merge operation)";
 
-            ::fwGui::dialog::MessageDialog messageBox;
+            gui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Duplicate series");
             messageBox.setMessage( ss.str() );
-            messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
-            messageBox.addButton(::fwGui::dialog::IMessageDialog::CANCEL);
-            ::fwGui::dialog::IMessageDialog::Buttons answer = messageBox.show();
+            messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
+            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
+            gui::dialog::IMessageDialog::Buttons answer = messageBox.show();
 
-            result = (answer == ::fwGui::dialog::IMessageDialog::OK);
+            result = (answer == gui::dialog::IMessageDialog::OK);
 
         }
     }
@@ -344,11 +344,11 @@ void SSeriesPusher::progressCallback(const std::string& seriesInstanceUID, unsig
 void SSeriesPusher::displayMessage(const ::std::string& message, bool error) const
 {
     SLM_WARN_IF("Error: " + message, error);
-    ::fwGui::dialog::MessageDialog messageBox;
+    gui::dialog::MessageDialog messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage( message );
-    messageBox.setIcon(error ? (::fwGui::dialog::IMessageDialog::CRITICAL): (::fwGui::dialog::IMessageDialog::INFO));
-    messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(error ? (gui::dialog::IMessageDialog::CRITICAL): (gui::dialog::IMessageDialog::INFO));
+    messageBox.addButton(gui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

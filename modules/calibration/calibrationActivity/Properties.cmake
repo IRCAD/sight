@@ -18,7 +18,7 @@ set( REQUIREMENTS
     data
 
     # UI declaration/Actions
-    gui
+    module_gui
     media
     uiTools
     uiIO

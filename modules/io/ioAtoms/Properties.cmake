@@ -10,8 +10,7 @@ set( DEPENDENCIES
     fwMDSemanticPatch
     core
     data
-    fwDataTools
-    fwGui
+    gui
     services
     fwZip
     fwIO

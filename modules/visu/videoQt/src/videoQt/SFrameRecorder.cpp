@@ -27,8 +27,7 @@
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Point.hpp>
-
-#include <fwDataTools/helper/Vector.hpp>
+#include <data/tools/helper/Vector.hpp>
 
 #include <services/IController.hpp>
 #include <services/macros.hpp>
