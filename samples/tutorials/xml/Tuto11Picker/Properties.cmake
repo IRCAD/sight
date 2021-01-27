@@ -5,7 +5,7 @@ set( UNIQUE TRUE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
-    appXml                  # XML configurations
+    module_appXml                  # XML configurations
 
     preferences             # Start the module, load file location or window preferences
     module_guiQt                   # Start the module, load qt implementation of module_gui
@@ -45,4 +45,4 @@ moduleParam(module_guiQt
         style-0.1/flatdark.qss
 ) # Allow dark theme via module_guiQt
 
-moduleParam(appXml PARAM_LIST config PARAM_VALUES Tuto11Picker_AppCfg)
+moduleParam(module_appXml PARAM_LIST config PARAM_VALUES Tuto11Picker_AppCfg)

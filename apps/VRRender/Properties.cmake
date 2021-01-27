@@ -11,7 +11,7 @@ set( REQUIREMENTS
     module_guiQt
 
     activities
-    appXml
+    module_appXml
     memory
     fwlauncher
 
@@ -51,4 +51,4 @@ set( REQUIREMENTS
     preferences
 )
 
-moduleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
+moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

@@ -1,11 +1,11 @@
 <plugin id="ExDump" version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
     <requirement id="patchMedicalData" />
     <requirement id="filterUnknownSeries" />
     <requirement id="preferences" />
     <requirement id="memory" />
-    <requirement id="::sight::modules::guiQt" />
+    <requirement id="module_guiQt" />
 
     <!-- This example allows to test the different dump policy. -->
     <extension implements="::sight::services::registry::AppConfig" >

@@ -2,7 +2,7 @@
 
     <library name="activities" />
 
-    <requirement id="::sight::modules::services"/>
+    <requirement id="module_services"/>
 
     <extension implements="::sight::services::registry::ServiceFactory">
         <type>::sight::gui::IActionSrv</type>

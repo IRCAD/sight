@@ -1,8 +1,8 @@
 
 <plugin id="Tuto03DataService" version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::services" />
-    <requirement id="::sight::modules::guiQt" />
+    <requirement id="module_services" />
+    <requirement id="module_guiQt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto03DataService_AppCfg</id>

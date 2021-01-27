@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "gui/preferences/config.hpp"
+#include "gui/config.hpp"
 
 #include <string>
 

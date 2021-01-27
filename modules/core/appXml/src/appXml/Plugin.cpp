@@ -27,10 +27,10 @@
 #include <services/registry/AppConfig.hpp>
 #include <services/registry/AppConfigParameters.hpp>
 
-namespace appXml
+namespace sight::modules::appXml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::appXml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::appXml::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -99,4 +99,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace appXml
+} // namespace sight::modules::appXml

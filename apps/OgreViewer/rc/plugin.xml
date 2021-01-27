@@ -4,8 +4,8 @@
 
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="::sight::modules::guiQt" />
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_guiQt" />
+    <requirement id="module_services" />
     <requirement id="scene2D" />
     <requirement id="patchMedicalData" />
     <requirement id="ioPacs" />

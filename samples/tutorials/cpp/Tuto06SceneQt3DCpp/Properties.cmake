@@ -42,7 +42,7 @@ moduleParam(module_guiQt
 ) # Allow dark theme via module_guiQt
 
 moduleParam(
-        appXml
+        module_appXml
     PARAM_LIST
         config
     PARAM_VALUES

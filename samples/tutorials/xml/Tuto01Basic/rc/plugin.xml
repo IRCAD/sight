@@ -4,8 +4,8 @@
 
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
-    <requirement id="::sight::modules::services" />
-    <requirement id="::sight::modules::guiQt" />
+    <requirement id="module_services" />
+    <requirement id="module_guiQt" />
 
     <!-- Defines the App-config -->
     <extension implements="::sight::services::registry::AppConfig" >

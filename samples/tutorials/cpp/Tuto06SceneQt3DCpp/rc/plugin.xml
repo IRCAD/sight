@@ -2,8 +2,8 @@
 
     <requirement id="visuQt3DQt" />
     <requirement id="preferences" />
-    <requirement id="::sight::modules::guiQt" />
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_guiQt" />
+    <requirement id="module_services" />
 
 
     <library name="Tuto06SceneQt3DCpp" />

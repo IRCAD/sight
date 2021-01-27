@@ -1,8 +1,8 @@
 <plugin id="Tuto10LaunchBasicConfig" version="@PROJECT_VERSION@" >
 
     <requirement id="preferences" />
-    <requirement id="::sight::modules::guiQt" />
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_guiQt" />
+    <requirement id="module_services" />
 
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

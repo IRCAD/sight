@@ -1,13 +1,13 @@
 <plugin id="ARCalibration" version="@PROJECT_VERSION@">
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="memory" />
     <requirement id="preferences" />
     <requirement id="activities" />
     <requirement id="filterUnknownSeries" />
-    <requirement id="::sight::modules::guiQt" />
+    <requirement id="module_guiQt" />
 
     <xi:include href="configurations/ARCalibrationActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

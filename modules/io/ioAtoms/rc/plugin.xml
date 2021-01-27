@@ -2,7 +2,7 @@
 
     <library name="ioAtoms" />
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IReader</type>

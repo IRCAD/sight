@@ -1,7 +1,7 @@
 <plugin id="uiVisu" class="::uiVisu::Plugin" version="@PROJECT_VERSION@" >
     <library name="uiVisu"/>
     
-    <requirement id="::sight::modules::services"/>
+    <requirement id="module_services"/>
     
     <extension implements="::sight::services::registry::ServiceFactory">
         <type>::sight::gui::IActionSrv</type>

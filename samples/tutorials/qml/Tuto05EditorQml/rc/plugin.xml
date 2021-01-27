@@ -1,6 +1,6 @@
 <plugin id="Tuto05EditorQml" class="::Tuto05EditorQml::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
 
     <library name="Tuto05EditorQml" />
 

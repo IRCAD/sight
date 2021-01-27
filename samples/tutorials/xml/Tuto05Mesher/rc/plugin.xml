@@ -1,7 +1,7 @@
 <plugin id="Tuto05Mesher" version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::services" />
-    <requirement id="::sight::modules::guiQt" />
+    <requirement id="module_services" />
+    <requirement id="module_guiQt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto05Mesher_AppCfg</id>

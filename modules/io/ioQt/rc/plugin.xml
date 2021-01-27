@@ -1,7 +1,7 @@
 <plugin id="ioQt" class="::ioQt::Plugin" version="@PROJECT_VERSION@" >
     <library name="ioQt" />
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
         <type>::fwIO::IWriter</type>

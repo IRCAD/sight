@@ -1,7 +1,7 @@
 <plugin id="calibrationActivity" class="::calibrationActivity::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="calibrationActivity" />
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
     <requirement id="validators" />
     <requirement id="preferences" />
     <requirement id="visuOgre" />

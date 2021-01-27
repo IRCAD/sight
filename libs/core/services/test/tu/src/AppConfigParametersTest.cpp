@@ -53,7 +53,7 @@ void AppConfigParametersTest::setUp()
     auto& runtime = core::runtime::Runtime::get();
     runtime.addModules(location);
 
-    core::runtime::loadModule("::sight::modules::services");
+    core::runtime::loadModule("module_services");
     core::runtime::loadModule("AppConfigParametersTest");
 
     services::registry::AppConfigParameters::sptr appConfigParam;

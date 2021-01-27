@@ -107,7 +107,7 @@ void signal_handler(int signal)
 
     try
     {
-        const core::runtime::profile::Profile::sptr& profile = core::runtime::profile::getCurrentProfile();
+        const auto& profile = sight::core::runtime::getCurrentProfile();
         profile->cleanup();
         profile->stop();
     }
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
     PathListType modulePaths;
     PathType rwd;
     PathType profileFile;
-    core::runtime::profile::Profile::ParamsContainer profileArgs;
+    sight::core::runtime::Profile::ParamsContainer profileArgs;
 
     // Launcher options
     po::options_description options("Launcher options");
@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
     std::string logFile;
     const std::string defaultLogFile = "SLM.log";
 
-    typedef core::log::SpyLogger SpyLogger;
+    typedef sight::core::log::SpyLogger SpyLogger;
     int logLevel = SpyLogger::SL_WARN;
 
     po::options_description logOptions("Log options");
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
     }
 
     // Log file
-    SpyLogger& logger = core::log::SpyLogger::getSpyLogger();
+    SpyLogger& logger = sight::core::log::SpyLogger::getSpyLogger();
 
     if(consoleLog)
     {
@@ -335,13 +335,13 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     SLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
-    core::runtime::init();
+    sight::core::runtime::init();
 
     for(const fs::path& modulePath :  modulePaths )
     {
         if ( fs::is_directory(modulePath))
         {
-            core::runtime::addModules( modulePath );
+            sight::core::runtime::addModules( modulePath );
         }
         else
         {
@@ -353,11 +353,11 @@ int main(int argc, char* argv[])
 
     if ( fs::is_regular_file(profileFile))
     {
-        core::runtime::profile::Profile::sptr profile;
+        sight::core::runtime::Profile::sptr profile;
 
         try
         {
-            profile = core::runtime::io::ProfileReader::createProfile(profileFile);
+            profile = sight::core::runtime::io::ProfileReader::createProfile(profileFile);
 
             // Install a signal handler
             std::signal(SIGINT, signal_handler);

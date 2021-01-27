@@ -2,7 +2,7 @@
 
     <library name="Tuto05MultithreadConsoleCpp" />
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
     <requirement id="console" />
 
     <extension implements="::sight::services::registry::ServiceFactory" >

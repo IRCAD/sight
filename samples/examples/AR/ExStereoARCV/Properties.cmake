@@ -4,7 +4,7 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
-    appXml                  # XML configurations
+    module_appXml                  # XML configurations
 
     preferences             # Start the module, load file location or window preferences
     visuOgre                # Start the module, allow to use fwRenderOgre
@@ -51,7 +51,7 @@ moduleParam(module_guiQt
 ) # Allow dark theme via module_guiQt
 
 moduleParam(
-        appXml
+        module_appXml
     PARAM_LIST
         config
     PARAM_VALUES

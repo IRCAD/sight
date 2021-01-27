@@ -1,6 +1,6 @@
 <plugin id="AppConfigParametersTest" version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::AppConfigParameters">
         <id>id1</id>

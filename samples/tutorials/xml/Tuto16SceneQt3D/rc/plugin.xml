@@ -2,8 +2,8 @@
 
 <plugin id="Tuto16SceneQt3D" version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::services" />
-    <requirement id="::sight::modules::guiQt" />
+    <requirement id="module_services" />
+    <requirement id="module_guiQt" />
     <requirement id="visuQt3DQt" />
 
     <extension implements="::sight::services::registry::ServiceConfig" >

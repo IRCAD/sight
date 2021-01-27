@@ -8,7 +8,7 @@ set( DEPENDENCIES
     exTimeLineData
 )
 set( REQUIREMENTS
-    appXml
+    module_appXml
     module_services
     fwlauncher
     console
@@ -16,7 +16,7 @@ set( REQUIREMENTS
 )
 
 moduleParam(
-        appXml
+        module_appXml
     PARAM_LIST
         config
     PARAM_VALUES

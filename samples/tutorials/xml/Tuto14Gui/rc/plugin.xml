@@ -1,8 +1,8 @@
 <plugin id="Tuto14Gui" version="@PROJECT_VERSION@" >
 
     <requirement id="preferences" />
-    <requirement id="::sight::modules::guiQt" />
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_guiQt" />
+    <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::AppConfig" >
     <id>Tuto14Gui_AppCfg</id>

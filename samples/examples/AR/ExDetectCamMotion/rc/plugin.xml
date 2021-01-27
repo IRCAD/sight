@@ -1,7 +1,7 @@
 <plugin id="ExDetectCamMotion" version="@PROJECT_VERSION@" >
 
-    <requirement id="::sight::modules::guiQt" />
-    <requirement id="::sight::modules::services" />
+    <requirement id="module_guiQt" />
+    <requirement id="module_services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
     <requirement id="preferences" />

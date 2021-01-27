@@ -172,7 +172,7 @@ endif()
 
 # set variables used in the configure_file command
 string(REPLACE "module_" "" STRIPPED_MODULE_NAME ${PROJECT})
-set(PLUGIN_ID "::sight::modules::${STRIPPED_MODULE_NAME}")
+set(PLUGIN_ID "${PROJECT}")
 
 # retrieves the class representing the module executable part.
 if(PRJ_CPP_FILES)

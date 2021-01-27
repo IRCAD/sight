@@ -7,7 +7,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
-    appXml                  # XML configurations
+    module_appXml                  # XML configurations
 
     # Objects declaration
     data
@@ -28,7 +28,7 @@ moduleParam(module_guiQt
 ) # Allow dark theme via module_guiQt
 
 moduleParam(
-        appXml
+        module_appXml
     PARAM_LIST
         config
     PARAM_VALUES

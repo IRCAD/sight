@@ -4,7 +4,7 @@ set( TYPE APP )             # Type APP represent "Application"
 set( DEPENDENCIES  )        # For an application we have no dependencies (libraries to link)
 set( REQUIREMENTS           # The modules used by this application
     fwlauncher              # Needed to build the launcher
-    appXml                  # XML configurations
+    module_appXml                  # XML configurations
     module_guiQt            # Start the module, load qt implementation of module_gui
 
     module_services
@@ -14,7 +14,7 @@ set( REQUIREMENTS           # The modules used by this application
 )
 
 moduleParam(
-        appXml
+        module_appXml
     PARAM_LIST
         config
     PARAM_VALUES
