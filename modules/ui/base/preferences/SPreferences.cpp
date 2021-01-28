@@ -29,12 +29,12 @@
 #include <data/Composite.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
 
-// #include <fwAtomsBoostIO/Reader.hpp>
-// #include <fwAtomsBoostIO/types.hpp>
-// #include <fwAtomsBoostIO/Writer.hpp>
+// #include <io/atoms/Reader.hpp>
+// #include <io/atoms/types.hpp>
+// #include <io/atoms/Writer.hpp>
 
-// #include <fwZip/ReadDirArchive.hpp>
-// #include <fwZip/WriteDirArchive.hpp>
+// #include <io/zip/ReadDirArchive.hpp>
+// #include <io/zip/WriteDirArchive.hpp>
 
 #include <services/macros.hpp>
 
@@ -93,8 +93,8 @@ void SPreferences::load()
                    data);
 
         // Read atom
-        // ::fwZip::IReadArchive::sptr readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-        // ::fwAtomsBoostIO::Reader reader;
+        // io::zip::IReadArchive::sptr readArchive = io::zip::ReadDirArchive::New(folderPath.string());
+        // io::atoms::Reader reader;
         // try
         // {
         //     atoms::Object::sptr atom = atoms::Object::dynamicCast( reader.read( readArchive, filename ) );
@@ -126,8 +126,8 @@ void SPreferences::save()
     // // Convert data to atom
     // atoms::Object::sptr atom = atoms::conversion::convert(obj);
     // // Write atom
-    // ::fwZip::IWriteArchive::sptr writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
-    // ::fwAtomsBoostIO::FormatType format       = ::fwAtomsBoostIO::JSON;
+    // io::zip::IWriteArchive::sptr writeArchive = io::zip::WriteDirArchive::New(folderPath.string());
+    // io::atoms::FormatType format       = io::atoms::JSON;
 
     // namespace fs = std::filesystem;
     // if( fs::exists(m_prefFile) && fs::is_regular_file(m_prefFile) &&
@@ -138,7 +138,7 @@ void SPreferences::save()
     // }
     // else
     // {
-    //     ::fwAtomsBoostIO::Writer(atom).write( writeArchive, filename, format );
+    //     io::atoms::Writer(atom).write( writeArchive, filename, format );
     // }
 }
 

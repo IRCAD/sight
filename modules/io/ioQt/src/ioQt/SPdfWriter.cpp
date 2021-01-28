@@ -40,7 +40,7 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioQt::SPdfWriter, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioQt::SPdfWriter, ::sight::data::Object )
 
 namespace ioQt
 {

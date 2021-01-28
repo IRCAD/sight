@@ -48,7 +48,7 @@ App::App(int& argc, char** argv) :
 
     std::string appName = "No name";
 
-    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
+    core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
 
     if (profile)
     {

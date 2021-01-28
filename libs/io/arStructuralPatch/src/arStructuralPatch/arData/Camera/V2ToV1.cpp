@@ -37,7 +37,7 @@ namespace Camera
 {
 
 V2ToV1::V2ToV1() :
-    ::fwAtomsPatch::IStructuralPatch()
+    io::atoms::patch::IStructuralPatch()
 {
     m_originClassname = "data::Camera";
     m_targetClassname = "data::Camera";
@@ -55,7 +55,7 @@ V2ToV1::~V2ToV1()
 // ----------------------------------------------------------------------------
 
 V2ToV1::V2ToV1( const V2ToV1& cpy ) :
-    ::fwAtomsPatch::IStructuralPatch(cpy)
+    io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
@@ -64,7 +64,7 @@ V2ToV1::V2ToV1( const V2ToV1& cpy ) :
 void V2ToV1::apply(
     const atoms::Object::sptr& previous,
     const atoms::Object::sptr& current,
-    ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -72,7 +72,7 @@ void V2ToV1::apply(
     this->updateVersion(current);
 
     // Create helper
-    ::fwAtomsPatch::helper::Object helper(current);
+    io::atoms::patch::helper::Object helper(current);
 
     atoms::Sequence::sptr intrinsicParam = atoms::Sequence::dynamicCast(previous->getAttribute("intrinsic"));
     atoms::Numeric::sptr width           = atoms::Numeric::dynamicCast(previous->getAttribute("width"));

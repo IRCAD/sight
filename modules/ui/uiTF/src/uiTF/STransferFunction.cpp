@@ -467,7 +467,8 @@ void STransferFunction::renameTF()
 void STransferFunction::importTF()
 {
     const data::TransferFunction::sptr tf          = data::TransferFunction::New();
-    const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
+    const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+        "::modules::io::atoms::SReader");
 
     reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
@@ -505,7 +506,8 @@ void STransferFunction::importTF()
 
 void STransferFunction::exportTF()
 {
-    const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >("::ioAtoms::SWriter");
+    const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+        "::modules::io::atoms::SWriter");
 
     writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
 
@@ -564,7 +566,7 @@ void STransferFunction::initTransferFunctions()
 
             const data::TransferFunction::sptr tf          = data::TransferFunction::New();
             const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
-                "::ioAtoms::SReader");
+                "::modules::io::atoms::SReader");
             reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(

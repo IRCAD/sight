@@ -5,11 +5,11 @@ set( TYPE MODULE )
 set( DEPENDENCIES 
     core
     data
-    base
+    ui_base
     qt
     services
     io_base
 )
 set( REQUIREMENTS 
-    ioAtoms
+    module_io_atoms
 )

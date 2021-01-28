@@ -22,9 +22,9 @@ set( REQUIREMENTS
     flatIcon
 
     # Reader
-    ioData
+    module_io_file
     ioVTK
-    ioAtoms
+    module_io_atoms
 
     # Services
     uiIO

@@ -46,7 +46,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( io::base::services::IReader, ::ioTimeline::SMatricesReader, ::sight::data::MatrixTL)
+fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::ioTimeline::SMatricesReader, ::sight::data::MatrixTL)
 
 static const services::IService::KeyType s_MATRIXTL = "matrixTL";
 

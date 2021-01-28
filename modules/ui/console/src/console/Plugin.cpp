@@ -46,7 +46,7 @@ void Plugin::start()
     m_worker = core::thread::Worker::New();
     services::registry::ActiveWorkers::setDefaultWorker(m_worker);
 
-    core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -63,10 +63,10 @@ void Plugin::stop() noexcept
 
 int Plugin::run() noexcept
 {
-    m_worker->post( []() {core::runtime::profile::getCurrentProfile()->setup(); } );
+    m_worker->post( []() {core::runtime::getCurrentProfile()->setup(); } );
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
-    core::runtime::profile::getCurrentProfile()->cleanup();
+    core::runtime::getCurrentProfile()->cleanup();
     const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
     services::registry::ActiveWorkers::getDefault()->clearRegistry();

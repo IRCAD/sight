@@ -1,0 +1,11 @@
+<profile name="IoAtomsTest" version="0.1">
+
+    <activate id="module_services" version="0.1" />
+
+    <activate id="module_ui_base" version="0.1" />
+
+    <activate id="module_io_atoms" version="0.1" />
+
+    <start id="module_io_atoms" />
+
+</profile>

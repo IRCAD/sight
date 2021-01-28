@@ -6,6 +6,6 @@ set( DEPENDENCIES
         core
         data
         services
-        base
+        ui_base
 )
 set( REQUIREMENTS )

@@ -22,7 +22,7 @@ set( REQUIREMENTS
 
     # Reader
     ioVTK
-    ioData
+    module_io_file
 
     # Services
     uiVisuQt

@@ -25,13 +25,13 @@
 #include "fwGdcmIO/config.hpp"
 #include "fwGdcmIO/helper/tags.hpp"
 
-#include <fwZip/WriteZipArchive.hpp>
-
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
 #include <gdcmAnonymizer.h>
 #include <gdcmDicts.h>
 #include <gdcmStringFilter.h>
+
+#include <io/zip/WriteZipArchive.hpp>
 
 #include <filesystem>
 #include <iostream>

@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
         core
         data
-        base
+        ui_base
         fwMath
         services
         cvIO

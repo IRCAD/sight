@@ -9,4 +9,4 @@ set( DEPENDENCIES
     services
     arMDSemanticPatch
 )
-set( REQUIREMENTS data module_services ioAtoms patchMedicalData arPatchMedicalData)
+set( REQUIREMENTS data module_services module_io_atoms patchMedicalData arPatchMedicalData)

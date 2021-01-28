@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "igtlProtocol/archiver/MemoryReadArchive.hpp"
 
-#include <fwZip/exception/Read.hpp>
-
 #include <archive_entry.h>
 
 #include <boost/iostreams/stream.hpp>
+
+#include <io/zip/exception/Read.hpp>
 
 #include <algorithm>
 
@@ -109,7 +109,7 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
     archive_read_support_format_all(m_archive);
     if (archive_read_open_memory(m_archive, const_cast< char*>(buffer), size) != ARCHIVE_OK)
     {
-        throw ::fwZip::exception::Read("Error when open memory archive : " + std::string(archive_error_string(
+        throw io::zip::exception::Read("Error when open memory archive : " + std::string(archive_error_string(
                                                                                              m_archive)));
     }
     else
@@ -127,7 +127,7 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
 
     if (archive_read_free(m_archive) != ARCHIVE_OK)
     {
-        throw ::fwZip::exception::Read("Error when close memory archive : " +
+        throw io::zip::exception::Read("Error when close memory archive : " +
                                        std::string(archive_error_string(m_archive)));
     }
 }
@@ -159,7 +159,7 @@ SPTR(std::istream) MemoryReadArchive::getFile(const std::filesystem::path& path)
     {
         return m_streams[path.string()];
     }
-    throw ::fwZip::exception::Read("Cannot get file");
+    throw io::zip::exception::Read("Cannot get file");
 }
 
 //-----------------------------------------------------------------------------

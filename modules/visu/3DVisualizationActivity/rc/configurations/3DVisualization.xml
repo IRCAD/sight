@@ -213,16 +213,16 @@
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="LandmarksAtomsConfig" service="::ioAtoms::SReader" />
+            <addSelection service="::sight::modules::io::atoms::SReader" />
+            <config id="LandmarksAtomsConfig" service="::sight::modules::io::atoms::SReader" />
         </service>
 
         <service uid="SaveLandmark" type="::uiIO::editor::SIOSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SWriter" />
-            <config id="LandmarksAtomsConfig" service="::ioAtoms::SWriter" />
+            <addSelection service="::sight::modules::io::atoms::SWriter" />
+            <config id="LandmarksAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </service>
 
         <service uid="ActionEditLandmark" type="::sight::modules::ui::base::action::SBooleanSlotCaller">

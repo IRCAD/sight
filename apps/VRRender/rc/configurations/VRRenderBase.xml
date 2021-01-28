@@ -19,8 +19,8 @@
             <inout key="data" uid="seriesDB" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SWriter" />
-            <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+            <addSelection service="::sight::modules::io::atoms::SWriter" />
+            <config id="MDAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </service>
 
         <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame">

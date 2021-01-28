@@ -28,7 +28,7 @@
 namespace arStructuralPatch
 {
 
-/// Contains the structural patch (::fwAtomsPatch::IStructuralPatch) to tranforms atoms from arData objects.
+/// Contains the structural patch (io::atoms::patch::IStructuralPatch) to tranforms atoms from arData objects.
 namespace sight::data
 {
 /// Contains the structural patch to transform atoms from data::Camera.

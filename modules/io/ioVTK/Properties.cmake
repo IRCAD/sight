@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     io_base
-    base
+    ui_base
     services
     fwVtkIO
 )

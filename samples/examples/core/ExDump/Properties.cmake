@@ -19,11 +19,11 @@ set( REQUIREMENTS
     flatIcon
 
     # Reader
-    ioAtoms
+    module_io_atoms
     ioITK
     ioVTK
     ioGdcm
-    ioData
+    module_io_file
 
     # Services
     memory

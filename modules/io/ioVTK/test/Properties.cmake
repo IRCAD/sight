@@ -7,6 +7,6 @@ set( DEPENDENCIES
     utestData
     data
     services
-    base
+    ui_base
 )
 set( REQUIREMENTS ioVTK )

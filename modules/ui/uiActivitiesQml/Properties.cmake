@@ -6,14 +6,14 @@ set( DEPENDENCIES
     core
     activities
     data
-    base
+    ui_base
     fwQml
 )
 set( REQUIREMENTS
     styleQml
     data
     module_services
-    ioAtoms
+    module_io_atoms
     ioActivity
 )
 

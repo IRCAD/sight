@@ -53,7 +53,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( io::base::services::IReader, ::ioITK::SInrSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::ioITK::SInrSeriesDBReader, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

@@ -15,11 +15,11 @@ set( REQUIREMENTS
     memory
     fwlauncher
 
-    ioAtoms
+    module_io_atoms
     ioITK
     ioVTK
     ioGdcm
-    ioData
+    module_io_file
 
     uiIO
     uiGenericQt

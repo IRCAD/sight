@@ -10,6 +10,6 @@ set( DEPENDENCIES
     fwMath
     data
     services
-    fwZip
+    io_zip
     )
 set( REQUIREMENTS )

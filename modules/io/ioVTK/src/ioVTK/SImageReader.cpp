@@ -62,7 +62,7 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of data::Image
-fwServicesRegisterMacro( io::base::services::IReader, ::ioVTK::SImageReader, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::ioVTK::SImageReader, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

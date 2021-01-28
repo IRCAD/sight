@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     core
-    base
+    ui_base
     qt
     fwRenderQt3D
 )

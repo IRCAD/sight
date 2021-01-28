@@ -7,6 +7,6 @@ set( DEPENDENCIES
     data
     qt
     services
-    base
+    ui_base
 )
 set( REQUIREMENTS )

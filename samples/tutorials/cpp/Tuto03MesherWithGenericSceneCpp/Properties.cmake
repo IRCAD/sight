@@ -11,7 +11,7 @@ set( REQUIREMENTS
     data
     module_ui_base
     module_ui_qt
-    ioData
+    module_io_file
     ioVTK
     module_services
     opVTKMesh

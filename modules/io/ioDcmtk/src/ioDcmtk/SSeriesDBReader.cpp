@@ -47,7 +47,7 @@
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( io::base::services::IReader, ::ioDcmtk::SSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::ioDcmtk::SSeriesDBReader, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

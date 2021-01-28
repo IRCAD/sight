@@ -31,7 +31,7 @@
 namespace camp_ext
 {
 
-/// New value mapper to manage conversion in camp world between atoms::Blob and a core::memory::BufferObject
+/// New value mapper to manage conversion in camp world between sight::atoms::Blob and a core::memory::BufferObject
 template <>
 struct ValueMapper< sight::atoms::Blob::sptr >
 {

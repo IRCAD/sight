@@ -32,13 +32,13 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwZip/ReadZipArchive.hpp>
-#include <fwZip/WriteDirArchive.hpp>
-#include <fwZip/WriteZipArchive.hpp>
-
 #include <utestData/Data.hpp>
 #include <utestData/helper/compare.hpp>
 #include <utestData/Slow.hpp>
+
+#include <io/zip/ReadZipArchive.hpp>
+#include <io/zip/WriteDirArchive.hpp>
+#include <io/zip/WriteZipArchive.hpp>
 
 #include <filesystem>
 
@@ -189,7 +189,7 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
         = core::tools::System::getTemporaryFolder("writeReadDirArchiveTest") / "dicomSeriesTest";
     std::filesystem::create_directories(destPath);
 
-    ::fwZip::WriteDirArchive::sptr writeArchive = ::fwZip::WriteDirArchive::New(destPath);
+    io::zip::WriteDirArchive::sptr writeArchive = io::zip::WriteDirArchive::New(destPath);
 
     // Write Dicom
     ::fwGdcmIO::helper::DicomSeriesWriter::sptr writer = ::fwGdcmIO::helper::DicomSeriesWriter::New();

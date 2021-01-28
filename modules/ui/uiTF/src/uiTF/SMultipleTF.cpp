@@ -333,7 +333,7 @@ void SMultipleTF::initializePools()
             // Creates the TF atoms reader.
             const data::TransferFunction::sptr tf            = data::TransferFunction::New();
             const io::base::services::IReader::sptr tfReader = services::add< io::base::services::IReader >(
-                "::ioAtoms::SReader");
+                "::modules::io::atoms::SReader");
             tfReader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
@@ -403,7 +403,7 @@ void SMultipleTF::initializePools()
             // Creates the multiple TF atoms reader.
             data::Composite::sptr tfPool                        = data::Composite::New();
             const io::base::services::IReader::sptr mulTFReader = services::add< io::base::services::IReader >(
-                "::ioAtoms::SReader");
+                "::modules::io::atoms::SReader");
             mulTFReader->registerInOut(tfPool, io::base::services::s_DATA_KEY);
 
             // Parse all path contained in m_path and read multiple TF.
@@ -781,7 +781,8 @@ void SMultipleTF::importPool()
 {
     const data::Composite::sptr tfPool = data::Composite::New();
 
-    const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
+    const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+        "::modules::io::atoms::SReader");
 
     reader->registerInOut(tfPool, io::base::services::s_DATA_KEY);
 
@@ -830,7 +831,8 @@ void SMultipleTF::importPool()
 
 void SMultipleTF::exportPool()
 {
-    const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >("::ioAtoms::SWriter");
+    const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+        "::modules::io::atoms::SWriter");
     writer->registerInput(m_currentTFPool, io::base::services::s_DATA_KEY);
 
     services::IService::ConfigType config;

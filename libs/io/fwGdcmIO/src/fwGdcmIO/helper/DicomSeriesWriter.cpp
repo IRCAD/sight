@@ -30,11 +30,10 @@
 
 #include <data/DicomSeries.hpp>
 
-#include <fwZip/WriteZipArchive.hpp>
-
 #include <boost/foreach.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
+#include <io/zip/WriteZipArchive.hpp>
 
 fwDataIOWriterRegisterMacro( ::fwGdcmIO::helper::DicomSeriesWriter );
 
@@ -61,7 +60,7 @@ void DicomSeriesWriter::setAnonymizer(const SPTR(helper::DicomAnonymizer)& anony
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesWriter::setOutputArchive(const ::fwZip::IWriteArchive::sptr& archive, const std::string& subPath)
+void DicomSeriesWriter::setOutputArchive(const io::zip::IWriteArchive::sptr& archive, const std::string& subPath)
 {
     m_archive = archive;
     m_subPath = subPath;

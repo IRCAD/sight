@@ -33,10 +33,10 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwZip/WriteDirArchive.hpp>
-#include <fwZip/WriteZipArchive.hpp>
-
 #include <services/registry/ActiveWorkers.hpp>
+
+#include <io/zip/WriteDirArchive.hpp>
+#include <io/zip/WriteZipArchive.hpp>
 
 namespace fwGdcmIO
 {
@@ -111,17 +111,17 @@ void DicomSeriesDBWriter::write()
     data::SeriesDB::csptr seriesDB = this->getConcreteObject();
     SLM_ASSERT("Unable to retrieve associated SeriesDB", seriesDB);
 
-    ::fwZip::IWriteArchive::sptr writeArchive;
+    io::zip::IWriteArchive::sptr writeArchive;
 
     if(m_enableZippedArchive)
     {
-        ::fwZip::WriteZipArchive::sptr writeZipArchive = ::fwZip::WriteZipArchive::New(this->getFile(), m_producer);
+        io::zip::WriteZipArchive::sptr writeZipArchive = io::zip::WriteZipArchive::New(this->getFile(), m_producer);
 
         writeArchive = writeZipArchive;
     }
     else
     {
-        writeArchive = ::fwZip::WriteDirArchive::New(this->getFolder());
+        writeArchive = io::zip::WriteDirArchive::New(this->getFolder());
     }
 
     const auto nbSeries = seriesDB->getContainer().size();

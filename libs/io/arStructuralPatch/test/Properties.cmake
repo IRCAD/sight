@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     utestData 
     arStructuralPatch
-    fwAtomsPatch
+    io_atoms
     atoms
 )
 set( REQUIREMENTS  )

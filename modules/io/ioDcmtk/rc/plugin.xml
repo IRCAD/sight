@@ -3,7 +3,7 @@
 
     
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IReader</type>
+        <type>::sight::io::base::services::IReader</type>
         <service>::ioDcmtk::SSeriesDBReader</service>
         <object>::sight::data::SeriesDB</object>
         <desc>Series DB Reader (DCMTK)</desc>

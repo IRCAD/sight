@@ -32,10 +32,10 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <fwAtomsPatch/helper/functions.hpp>
-#include <fwAtomsPatch/helper/Object.hpp>
-
 #include <utest/Exception.hpp>
+
+#include <io/atoms/patch/helper/functions.hpp>
+#include <io/atoms/patch/helper/Object.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::Camera::V2ToV1Test );
@@ -71,10 +71,10 @@ void V2ToV1Test::applyPatchTestFile()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV1, "2");
+    io::atoms::patch::helper::setClassname(camObjV1, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV1, "2");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV1);
+    io::atoms::patch::helper::Object helper(camObjV1);
 
     helper.addAttribute("is_calibrated", atoms::Boolean::New(true));
     helper.addAttribute("skew", atoms::Numeric::New(0));
@@ -96,7 +96,7 @@ void V2ToV1Test::applyPatchTestFile()
 
     camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
     ::arStructuralPatchdata::Camera::V2ToV1::sptr cam2ToCam1Patch;
@@ -126,10 +126,10 @@ void V2ToV1Test::applyPatchTestStream()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV1, "2");
+    io::atoms::patch::helper::setClassname(camObjV1, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV1, "2");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV1);
+    io::atoms::patch::helper::Object helper(camObjV1);
 
     helper.addAttribute("is_calibrated", atoms::Boolean::New(true));
     helper.addAttribute("skew", atoms::Numeric::New(0));
@@ -151,7 +151,7 @@ void V2ToV1Test::applyPatchTestStream()
 
     camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
     ::arStructuralPatchdata::Camera::V2ToV1::sptr cam2ToCam1Patch;
@@ -181,10 +181,10 @@ void V2ToV1Test::applyPatchTestDevice()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV1, "2");
+    io::atoms::patch::helper::setClassname(camObjV1, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV1, "2");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV1);
+    io::atoms::patch::helper::Object helper(camObjV1);
 
     helper.addAttribute("is_calibrated", atoms::Boolean::New(true));
     helper.addAttribute("skew", atoms::Numeric::New(0));
@@ -206,7 +206,7 @@ void V2ToV1Test::applyPatchTestDevice()
 
     camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
     ::arStructuralPatchdata::Camera::V2ToV1::sptr cam2ToCam1Patch;

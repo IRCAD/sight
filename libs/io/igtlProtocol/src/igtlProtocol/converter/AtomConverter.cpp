@@ -30,8 +30,8 @@
 #include <atoms/conversion/convert.hpp>
 #include <atoms/Object.hpp>
 
-#include <fwAtomsBoostIO/Reader.hpp>
-#include <fwAtomsBoostIO/Writer.hpp>
+#include <io/atoms/Reader.hpp>
+#include <io/atoms/Writer.hpp>
 
 #include <filesystem>
 
@@ -60,7 +60,7 @@ AtomConverter::~AtomConverter()
 {
     typedef ::igtlProtocol::archiver::MemoryWriteArchive MemoryWriteArchiveType;
 
-    ::fwAtomsBoostIO::Writer writer(atoms::conversion::convert(data::Object::constCast(src)));
+    io::atoms::Writer writer(atoms::conversion::convert(data::Object::constCast(src)));
 
     RawMessage::Pointer msg                   = RawMessage::New(AtomConverter::s_IGTL_TYPE);
     MemoryWriteArchiveType::sptr memoryWriter = std::make_shared<MemoryWriteArchiveType>(msg->getMessage());
@@ -74,7 +74,7 @@ AtomConverter::~AtomConverter()
 data::Object::sptr AtomConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     typedef ::igtlProtocol::archiver::MemoryReadArchive MemoryReadArchiveType;
-    ::fwAtomsBoostIO::Reader reader;
+    io::atoms::Reader reader;
 
     RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast< RawMessage* >(src.GetPointer()));
 

@@ -35,7 +35,7 @@ namespace Camera
 {
 
 V2ToV3::V2ToV3() :
-    ::fwAtomsPatch::IStructuralPatch()
+    io::atoms::patch::IStructuralPatch()
 {
     m_originClassname = "data::Camera";
     m_targetClassname = "data::Camera";
@@ -53,7 +53,7 @@ V2ToV3::~V2ToV3()
 // ----------------------------------------------------------------------------
 
 V2ToV3::V2ToV3( const V2ToV3& cpy ) :
-    ::fwAtomsPatch::IStructuralPatch(cpy)
+    io::atoms::patch::IStructuralPatch(cpy)
 {
 }
 
@@ -62,7 +62,7 @@ V2ToV3::V2ToV3( const V2ToV3& cpy ) :
 void V2ToV3::apply(
     const atoms::Object::sptr& previous,
     const atoms::Object::sptr& current,
-    ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+    io::atoms::patch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -70,7 +70,7 @@ void V2ToV3::apply(
     this->updateVersion(current);
 
     // Create helper
-    ::fwAtomsPatch::helper::Object helper(current);
+    io::atoms::patch::helper::Object helper(current);
 
     helper.addAttribute("scale", atoms::Numeric::New(1.0));
 }

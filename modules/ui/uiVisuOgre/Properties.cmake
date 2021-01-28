@@ -6,7 +6,7 @@ set( DEPENDENCIES
         core
         data
         services
-        base
+        ui_base
         qt
         fwRenderOgre
         io_base

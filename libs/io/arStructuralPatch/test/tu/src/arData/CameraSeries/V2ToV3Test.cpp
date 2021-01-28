@@ -28,10 +28,10 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <fwAtomsPatch/helper/functions.hpp>
-#include <fwAtomsPatch/helper/Object.hpp>
-
 #include <utest/Exception.hpp>
+
+#include <io/atoms/patch/helper/functions.hpp>
+#include <io/atoms/patch/helper/Object.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::CameraSeries::V2ToV3Test );
 
@@ -63,10 +63,10 @@ void V2ToV3Test::applyPatchTest()
     atoms::Object::sptr CameraSeriesV2 = atoms::Object::New();
     atoms::Object::sptr CameraSeriesV3;
 
-    ::fwAtomsPatch::helper::setClassname(CameraSeriesV2, "data::CameraSeries");
-    ::fwAtomsPatch::helper::setVersion(CameraSeriesV2, "2");
+    io::atoms::patch::helper::setClassname(CameraSeriesV2, "data::CameraSeries");
+    io::atoms::patch::helper::setVersion(CameraSeriesV2, "2");
 
-    ::fwAtomsPatch::helper::Object helper(CameraSeriesV2);
+    io::atoms::patch::helper::Object helper(CameraSeriesV2);
 
     helper.addAttribute("patient", atoms::Object::sptr());
     helper.addAttribute("study", atoms::Object::sptr());
@@ -85,7 +85,7 @@ void V2ToV3Test::applyPatchTest()
     {
         CameraSeriesV3 = atoms::Object::dynamicCast(CameraSeriesV2->clone());
 
-        ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+        io::atoms::patch::IPatch::NewVersionsType newVersions;
         newVersions[CameraSeriesV2] = CameraSeriesV3;
 
         ::arStructuralPatchdata::CameraSeries::V2ToV3::sptr v2ToV3Patch;
@@ -93,7 +93,7 @@ void V2ToV3Test::applyPatchTest()
         CPPUNIT_ASSERT_NO_THROW(v2ToV3Patch->apply(CameraSeriesV2, CameraSeriesV3, newVersions));
 
         CPPUNIT_ASSERT(CameraSeriesV3);
-        CPPUNIT_ASSERT_EQUAL(std::string("3"), ::fwAtomsPatch::helper::getVersion(CameraSeriesV3));
+        CPPUNIT_ASSERT_EQUAL(std::string("3"), io::atoms::patch::helper::getVersion(CameraSeriesV3));
         const auto attributes = CameraSeriesV3->getAttributes();
         CPPUNIT_ASSERT(attributes.find("number") != attributes.end());
         CPPUNIT_ASSERT(attributes.find("laterality") != attributes.end());

@@ -7,6 +7,6 @@ set( DEPENDENCIES
         data
         services
         io_base
-        base
+        ui_base
 )
 set( REQUIREMENTS )

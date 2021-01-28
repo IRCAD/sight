@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( PRIORITY 1 )
 set( DEPENDENCIES
     core
-    base
+    ui_base
     qt
     fwNetworkIO
     data

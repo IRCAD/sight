@@ -4,70 +4,70 @@
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IWriter</type>
+        <type>::sight::io::base::services::IWriter</type>
         <service>::ioVTK::SImageWriter</service>
         <object>::sight::data::Image</object>
         <desc>VTK Image Writer (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IReader</type>
+        <type>::sight::io::base::services::IReader</type>
         <service>::ioVTK::SImageSeriesReader</service>
         <object>::sight::data::ImageSeries</object>
         <desc>VTK Image Series Reader (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IWriter</type>
+        <type>::sight::io::base::services::IWriter</type>
         <service>::ioVTK::SImageSeriesWriter</service>
         <object>::sight::data::ImageSeries</object>
         <desc>VTK Image Series Writer (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IReader</type>
+        <type>::sight::io::base::services::IReader</type>
         <service>::ioVTK::SImageReader</service>
         <object>::sight::data::Image</object>
         <desc>VTK Image Reader (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IReader</type>
+        <type>::sight::io::base::services::IReader</type>
         <service>::ioVTK::SMeshReader</service>
         <object>::sight::data::Mesh</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IWriter</type>
+        <type>::sight::io::base::services::IWriter</type>
         <service>::ioVTK::SMeshWriter</service>
         <object>::sight::data::Mesh</object>
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IWriter</type>
+        <type>::sight::io::base::services::IWriter</type>
         <service>::ioVTK::SModelSeriesWriter</service>
         <object>::sight::data::ModelSeries</object>
         <desc>VTK files (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IReader</type>
+        <type>::sight::io::base::services::IReader</type>
         <service>::ioVTK::SModelSeriesReader</service>
         <object>::sight::data::ModelSeries</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IWriter</type>
+        <type>::sight::io::base::services::IWriter</type>
         <service>::ioVTK::SModelSeriesObjWriter</service>
         <object>::sight::data::ModelSeries</object>
         <desc>Wavefront OBJ files (VTK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::sight::io::base::services::IReader</type>
+        <type>::sight::io::base::services::IReader</type>
         <service>::ioVTK::SSeriesDBReader</service>
         <object>::sight::data::SeriesDB</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp *.vtu *.vti *.mhd)</desc>

@@ -27,17 +27,16 @@
 #include <atoms/Object.hxx>
 #include <atoms/Sequence.hpp>
 
-#include <fwAtomsFilter/functions.hpp>
-#include <fwAtomsFilter/registry/macros.hpp>
-
-#include <fwAtomsPatch/helper/functions.hpp>
+#include <io/atoms/filter/functions.hpp>
+#include <io/atoms/filter/registry/macros.hpp>
+#include <io/atoms/patch/helper/functions.hpp>
 
 namespace filterUnknownSeries
 {
 
 fwAtomsFilterRegisterMacro( ::filterUnknownSeries::FilterUnknownActivities, "FilterUnknownActivities" );
 
-FilterUnknownActivities::FilterUnknownActivities(::fwAtomsFilter::IFilter::Key key)
+FilterUnknownActivities::FilterUnknownActivities(io::atoms::filter::IFilter::Key key)
 {
 }
 
@@ -47,13 +46,13 @@ FilterUnknownActivities::~FilterUnknownActivities()
 
 //------------------------------------------------------------------------------
 
-void FilterUnknownActivities::apply(const SPTR(atoms::Object)& atom)
+void FilterUnknownActivities::apply(const SPTR(sight::atoms::Object)& atom)
 {
 
     SLM_ASSERT("Unable to filter atom : invalid object", atom);
 
     const std::string expName    = "::sight::data::SeriesDB"; // expected classname
-    const std::string& classname = ::fwAtomsPatch::helper::getClassname(atom);
+    const std::string& classname = io::atoms::patch::helper::getClassname(atom);
     FW_RAISE_IF("Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
                 classname != expName);
 
@@ -66,7 +65,7 @@ void FilterUnknownActivities::apply(const SPTR(atoms::Object)& atom)
         atoms::Object::sptr obj = atoms::Object::dynamicCast(serie);
         SLM_ASSERT("Failed to cast sequence element as atoms::Object", obj);
 
-        if(::fwAtomsFilter::isSeriesKnown(obj))
+        if(io::atoms::filter::isSeriesKnown(obj))
         {
             knownSeries->push_back(serie);
         }

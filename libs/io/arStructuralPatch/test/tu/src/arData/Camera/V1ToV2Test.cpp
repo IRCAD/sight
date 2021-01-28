@@ -31,10 +31,10 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <fwAtomsPatch/helper/functions.hpp>
-#include <fwAtomsPatch/helper/Object.hpp>
-
 #include <utest/Exception.hpp>
+
+#include <io/atoms/patch/helper/functions.hpp>
+#include <io/atoms/patch/helper/Object.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::Camera::V1ToV2Test );
@@ -71,10 +71,10 @@ void V1ToV2Test::applyPatchTestFile()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV1, "1");
+    io::atoms::patch::helper::setClassname(camObjV1, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV1, "1");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV1);
+    io::atoms::patch::helper::Object helper(camObjV1);
 
     helper.addAttribute("camera_id", atoms::String::New("file"));
     helper.addAttribute("description", atoms::String::New("Videos/myVideo.mp4"));
@@ -89,7 +89,7 @@ void V1ToV2Test::applyPatchTestFile()
 
     camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
     ::arStructuralPatchdata::Camera::V1ToV2::sptr cam1ToCam2Patch;
@@ -120,10 +120,10 @@ void V1ToV2Test::applyPatchTestStream()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV1, "1");
+    io::atoms::patch::helper::setClassname(camObjV1, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV1, "1");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV1);
+    io::atoms::patch::helper::Object helper(camObjV1);
 
     helper.addAttribute("camera_id", atoms::String::New("stream"));
     helper.addAttribute("description", atoms::String::New("rtsp://@127.0.0.1"));
@@ -138,7 +138,7 @@ void V1ToV2Test::applyPatchTestStream()
 
     camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
     ::arStructuralPatchdata::Camera::V1ToV2::sptr cam1ToCam2Patch;
@@ -169,10 +169,10 @@ void V1ToV2Test::applyPatchTestDevice()
     atoms::Object::sptr camObjV1 = atoms::Object::New();
     atoms::Object::sptr camObjV2;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV1, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV1, "1");
+    io::atoms::patch::helper::setClassname(camObjV1, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV1, "1");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV1);
+    io::atoms::patch::helper::Object helper(camObjV1);
 
     helper.addAttribute("camera_id", atoms::String::New("jreoigjflxgjpeohf4g1hf12df4gdf2gdkfos"));
     helper.addAttribute("description", atoms::String::New("My camera"));
@@ -187,7 +187,7 @@ void V1ToV2Test::applyPatchTestDevice()
 
     camObjV2 = atoms::Object::dynamicCast(camObjV1->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV1] = camObjV2;
 
     ::arStructuralPatchdata::Camera::V1ToV2::sptr cam1ToCam2Patch;

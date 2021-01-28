@@ -21,7 +21,7 @@ set( REQUIREMENTS
     flatIcon
 
     # Reader
-    ioData
+    module_io_file
     ioVTK
 
     # Grabber

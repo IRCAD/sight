@@ -47,7 +47,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioGdcm::SSeriesDBWriter, ::sight::data::Vector )
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioGdcm::SSeriesDBWriter, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 

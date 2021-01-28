@@ -32,7 +32,7 @@ namespace CameraSeries
 {
 
 V3ToV2::V3ToV2() :
-    ::fwAtomsPatch::IStructuralPatch()
+    io::atoms::patch::IStructuralPatch()
 {
     m_originClassname = "data::CameraSeries";
     m_targetClassname = "data::CameraSeries";
@@ -49,7 +49,7 @@ V3ToV2::~V3ToV2()
 // ----------------------------------------------------------------------------
 
 V3ToV2::V3ToV2(const V3ToV2& _cpy) :
-    ::fwAtomsPatch::IStructuralPatch(_cpy)
+    io::atoms::patch::IStructuralPatch(_cpy)
 {
 }
 
@@ -57,14 +57,14 @@ V3ToV2::V3ToV2(const V3ToV2& _cpy) :
 
 void V3ToV2::apply( const atoms::Object::sptr& _previous,
                     const atoms::Object::sptr& _current,
-                    ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions)
+                    io::atoms::patch::IPatch::NewVersionsType& _newVersions)
 {
     IStructuralPatch::apply(_previous, _current, _newVersions);
 
     // Updates object version.
     this->updateVersion(_current);
 
-    ::fwAtomsPatch::helper::Object helper(_current);
+    io::atoms::patch::helper::Object helper(_current);
     // We removes Series attributes since the patcher can't retrieve the mother class of CameraSeries.
     // The patcher can't call mother class patch.
     helper.removeAttribute("number");

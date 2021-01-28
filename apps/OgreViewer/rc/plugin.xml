@@ -283,7 +283,7 @@
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
-                <config id="OgreViewer_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
+                <config id="OgreViewer_jsonReader_SrvCfg" service="::sight::modules::io::atoms::SReader" />
                 <config id="OgreViewer_vtk_SrvCfg" service="::ioVTK::SSeriesDBReader" />
                 <config id="OgreViewer_gdcm_SrvCfg" service="::ioGdcm::SSeriesDBReader" />
             </service>

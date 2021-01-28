@@ -48,7 +48,8 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::sight::data::ModelSeries )
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioGdcm::SSurfaceSegmentationWriter,
+                         ::sight::data::ModelSeries )
 
 //------------------------------------------------------------------------------
 

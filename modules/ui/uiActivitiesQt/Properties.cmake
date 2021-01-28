@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     activities
     data
-    base
+    ui_base
     services
 )
 set( REQUIREMENTS

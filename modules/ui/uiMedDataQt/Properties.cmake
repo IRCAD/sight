@@ -6,7 +6,7 @@ set( DEPENDENCIES
     activities
     core
     data
-    base
+    ui_base
     qt
     services
     io_base

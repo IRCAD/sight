@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     io_base
     fwGdcmIO
-    base
+    ui_base
     services
     )
 set( REQUIREMENTS

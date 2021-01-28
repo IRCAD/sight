@@ -10,8 +10,8 @@
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+            <addSelection service="::sight::modules::io::atoms::SReader" />
+            <config id="MDAtomsConfig" service="::sight::modules::io::atoms::SReader" />
         </config>
     </extension>
 
@@ -23,8 +23,8 @@
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SWriter" />
-            <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+            <addSelection service="::sight::modules::io::atoms::SWriter" />
+            <config id="MDAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </config>
     </extension>
 
@@ -36,8 +36,8 @@
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::ioData::SAttachmentSeriesReader" />
-            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+            <addSelection service="::sight::modules::io::file::SAttachmentSeriesReader" />
+            <config id="MDAtomsConfig" service="::sight::modules::io::atoms::SReader" />
         </config>
     </extension>
 
@@ -48,8 +48,8 @@
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="ActivityMDAtomsConfig" service="::ioAtoms::SReader" />
+            <addSelection service="::sight::modules::io::atoms::SReader" />
+            <config id="ActivityMDAtomsConfig" service="::sight::modules::io::atoms::SReader" />
         </config>
     </extension>
 
@@ -60,8 +60,8 @@
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SWriter" />
-            <config id="ActivityMDAtomsConfig" service="::ioAtoms::SWriter" />
+            <addSelection service="::sight::modules::io::atoms::SWriter" />
+            <config id="ActivityMDAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </config>
     </extension>
 

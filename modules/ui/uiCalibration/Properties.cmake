@@ -7,6 +7,6 @@ set( DEPENDENCIES
         data
         io_base
         services
-        base
+        ui_base
         qt
 )

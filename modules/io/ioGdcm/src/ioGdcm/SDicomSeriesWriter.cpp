@@ -47,7 +47,8 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioGdcm::SDicomSeriesWriter, ::sight::data::DicomSeries )
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioGdcm::SDicomSeriesWriter,
+                         ::sight::data::DicomSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

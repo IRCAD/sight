@@ -166,7 +166,7 @@
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+            <addSelection service="::sight::modules::io::file::TransformationMatrix3DWriterService" />
         </service>
 
         <!-- *************************** End Services *************************** -->

@@ -25,7 +25,7 @@ set( REQUIREMENTS
     media
 
     # Reader
-    ioAtoms
+    module_io_atoms
     ioCalibration
     ioActivity
     videoRealSense

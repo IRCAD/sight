@@ -6,8 +6,8 @@ set( DEPENDENCIES
     core
     data
     services
-    fwZip
+    io_zip
     atoms
-    fwAtomsBoostIO
+    io_atoms
 )
 set( REQUIREMENTS )

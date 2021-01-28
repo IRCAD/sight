@@ -22,7 +22,7 @@ set( REQUIREMENTS
     flatIcon
 
     # Reader
-    ioAtoms
+    module_io_atoms
     ioVTK
     ioActivity
 

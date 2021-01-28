@@ -6,7 +6,7 @@ set( START ON )
 set( DEPENDENCIES
     core
     data
-    base
+    ui_base
     qt
     fwRenderOgre
 )

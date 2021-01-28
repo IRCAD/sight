@@ -216,14 +216,14 @@
             <inout key="data" uid="${transformUid}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::ioData::TransformationMatrix3DReaderService" />
+            <addSelection service="::sight::modules::io::file::TransformationMatrix3DReaderService" />
         </service>
 
         <service uid="exportTransform" type="::uiIO::editor::SIOSelector" >
             <inout key="data" uid="${transformUid}" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+            <addSelection service="::sight::modules::io::file::TransformationMatrix3DWriterService" />
         </service>
 
         <service uid="manualRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">

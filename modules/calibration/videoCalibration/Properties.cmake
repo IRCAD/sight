@@ -6,7 +6,7 @@ set( DEPENDENCIES
     calibration3d
     core
     data
-    base
+    ui_base
     services
     cvIO
 )

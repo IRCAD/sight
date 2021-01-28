@@ -24,9 +24,8 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <fwAtomsPatch/VersionsManager.hpp>
-
-#include <fwMDSemanticPatch/PatchLoader.hpp>
+#include <io/atoms/patch/VersionsManager.hpp>
+#include <io/patch/semantic/PatchLoader.hpp>
 
 namespace arMDSemanticPatch
 {
@@ -37,12 +36,12 @@ std::string PatchLoader::s_currentVersion = "V17AR";
 
 void PatchLoader::loadPatches()
 {
-    SPTR(::fwAtomsPatch::VersionsManager) versionManager = ::fwAtomsPatch::VersionsManager::getDefault();
+    SPTR(io::atoms::patch::VersionsManager) versionManager = io::atoms::patch::VersionsManager::getDefault();
     auto path = core::runtime::getLibraryResourceFilePath("arMDSemanticPatch-" ARMDSEMANTICPATCH_VER "/");
     versionManager->buildVersionTable(path.string());
     versionManager->buildLinkTable(path.string());
 
-    ::fwMDSemanticPatch::PatchLoader::setCurrentVersion(s_currentVersion);
+    io::patch::semantic::PatchLoader::setCurrentVersion(s_currentVersion);
 }
 
 //------------------------------------------------------------------------------

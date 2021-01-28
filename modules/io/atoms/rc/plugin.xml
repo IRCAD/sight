@@ -1,0 +1,24 @@
+<plugin id="module_io_atoms" class="::sight::modules::io::atoms::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="module_io_atoms" />
+
+    <requirement id="module_services" />
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::io::base::services::IReader</type>
+        <service>::sight::modules::io::atoms::SReader</service>
+        <object>::sight::data::Object</object>
+        <desc>Atoms reader</desc>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::io::base::services::IWriter</type>
+        <service>::sight::modules::io::atoms::SWriter</service>
+        <object>::sight::data::Object</object>
+        <desc>Atoms writer</desc>
+    </extension>
+
+</plugin>
+
+
+

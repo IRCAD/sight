@@ -41,7 +41,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioITK::JpgImageWriterService, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioITK::JpgImageWriterService, ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 

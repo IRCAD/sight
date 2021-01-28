@@ -10,6 +10,6 @@ set( DEPENDENCIES
     fwRender
     fwRenderQt
     services
-    base
+    ui_base
 )
 set( REQUIREMENTS )

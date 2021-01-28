@@ -30,7 +30,7 @@ set( REQUIREMENTS
 
     # Reader
     ioVTK
-    ioAtoms
+    module_io_atoms
     ioGdcm
 
     # Services

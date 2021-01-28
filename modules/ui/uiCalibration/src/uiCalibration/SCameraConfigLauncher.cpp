@@ -222,7 +222,7 @@ void SCameraConfigLauncher::onAddClicked()
 void SCameraConfigLauncher::onImportClicked()
 {
     auto sdb                               = data::SeriesDB::New();
-    services::IService::sptr readerService = services::add("::ioAtoms::SReader");
+    services::IService::sptr readerService = services::add("::modules::io::atoms::SReader");
     readerService->registerInOut(sdb, io::base::services::s_DATA_KEY);
 
     try

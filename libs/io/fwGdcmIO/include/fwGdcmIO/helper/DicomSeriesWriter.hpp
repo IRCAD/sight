@@ -41,7 +41,7 @@ namespace sight::data
 class DicomSeries;
 }
 
-namespace fwZip
+namespace sight::io::zip
 {
 class IWriteArchive;
 }
@@ -94,7 +94,7 @@ public:
      * @param archive Archive instance
      * @param subPath Path within archive where DICOM files are saved (only if an anonymizer instance is defined)
      */
-    FWGDCMIO_API void setOutputArchive(const SPTR(::fwZip::IWriteArchive)& archive,
+    FWGDCMIO_API void setOutputArchive(const SPTR(io::zip::IWriteArchive)& archive,
                                        const std::string& subPath = "");
 
 protected:
@@ -121,7 +121,7 @@ protected:
     SPTR(DicomAnonymizer) m_anonymizer;
 
     /// Optionnal output archive
-    SPTR(::fwZip::IWriteArchive) m_archive;
+    SPTR(io::zip::IWriteArchive) m_archive;
 
     /// Optional subPath (related to write archive
     std::string m_subPath;

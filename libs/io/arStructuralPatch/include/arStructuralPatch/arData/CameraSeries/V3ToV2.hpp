@@ -24,7 +24,7 @@
 
 #include "arStructuralPatch/config.hpp"
 
-#include <fwAtomsPatch/IStructuralPatch.hpp>
+#include <io/atoms/patch/IStructuralPatch.hpp>
 
 namespace arStructuralPatch
 {
@@ -34,7 +34,7 @@ namespace CameraSeries
 {
 
 /// Structural patch to convert a data::CameraSeries from version '3' to version '2'.
-class ARSTRUCTURALPATCH_CLASS_API V3ToV2 : public ::fwAtomsPatch::IStructuralPatch
+class ARSTRUCTURALPATCH_CLASS_API V3ToV2 : public io::atoms::patch::IStructuralPatch
 {
 
 public:
@@ -64,7 +64,7 @@ public:
     ARSTRUCTURALPATCH_API virtual void apply(
         const atoms::Object::sptr& _previous,
         const atoms::Object::sptr& _current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& _newVersions) override;
+        io::atoms::patch::IPatch::NewVersionsType& _newVersions) override;
 
 };
 

@@ -6,6 +6,6 @@ set( DEPENDENCIES
     data
     qt
     fwItkIO
-    base
+    ui_base
 )
 set( REQUIREMENTS )

@@ -79,7 +79,7 @@ namespace action
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::ioAtoms::SWriter" />
+            <addSelection service="::modules::io::atoms::SWriter" />
         </config>
     </extension>
     @endcode

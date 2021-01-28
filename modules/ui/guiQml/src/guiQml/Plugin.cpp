@@ -61,7 +61,7 @@ void Plugin::start()
 {
     qmlRegisterType< ::fwQml::IQmlAppManager >("fwQml", 1, 0, "IQmlAppManager");
 
-    core::runtime::profile::Profile::sptr profile = core::runtime::profile::getCurrentProfile();
+    core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
@@ -81,7 +81,7 @@ void Plugin::start()
     // add custom controls and the singleton theme for all qml project
     auto path = core::runtime::getModuleResourcePath("guiQml");
     engine->importModulePath(path);
-    core::runtime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void Plugin::stop() noexcept
 
 void setup()
 {
-    core::runtime::profile::getCurrentProfile()->setup();
+    core::runtime::getCurrentProfile()->setup();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ int Plugin::run() noexcept
     m_workerQt->post( std::bind( &setup ) );
     m_workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    core::runtime::profile::getCurrentProfile()->cleanup();
+    core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
     services::registry::ActiveWorkers::getDefault()->clearRegistry();

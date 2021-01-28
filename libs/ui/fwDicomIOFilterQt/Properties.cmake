@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     fwDicomIOFilter
-    base
+    ui_base
     qt
 )
 set( REQUIREMENTS )

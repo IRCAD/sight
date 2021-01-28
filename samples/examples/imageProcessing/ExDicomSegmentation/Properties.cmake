@@ -26,10 +26,10 @@ set( REQUIREMENTS
 
     # Reader
     ioActivity
-    ioData
+    module_io_file
     ioGdcm
     ioVTK
-    ioAtoms
+    module_io_atoms
 
     # Config
     3DVisualizationActivity

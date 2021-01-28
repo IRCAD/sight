@@ -27,7 +27,7 @@ set( REQUIREMENTS
     uiMedDataQt
 
     # Reader
-    ioData
+    module_io_file
     ioCalibration
     videoQt
 

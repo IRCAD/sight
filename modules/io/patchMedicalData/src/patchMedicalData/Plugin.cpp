@@ -24,9 +24,8 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwMDSemanticPatch/PatchLoader.hpp>
-
-#include <fwStructuralPatch/PatchLoader.hpp>
+#include <io/patch/semantic/PatchLoader.hpp>
+#include <io/patch/structural/PatchLoader.hpp>
 
 namespace patchMedicalData
 {
@@ -42,12 +41,12 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     //Hack: force link with fwStructuralPatch
-    ::fwStructuralPatch::PatchLoader::loadPatches();
+    io::patch::structural::PatchLoader::loadPatches();
 
     /* Force link with fwMDSemanticPatch and compute version/link tables
      * for fwMDSemanticPatch data.
      */
-    ::fwMDSemanticPatch::PatchLoader::loadPatches();
+    io::patch::semantic::PatchLoader::loadPatches();
 }
 
 //------------------------------------------------------------------------------

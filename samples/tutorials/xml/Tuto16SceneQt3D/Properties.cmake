@@ -20,7 +20,7 @@ set( REQUIREMENTS
 
     # Reader
     ioVTK
-    ioAtoms
+    module_io_atoms
 
     # Generic Scene
     visuQt3DAdaptor

@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
         data
-        base
+        ui_base
         services
 )
 set( REQUIREMENTS )

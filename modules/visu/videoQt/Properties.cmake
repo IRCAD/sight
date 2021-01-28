@@ -6,7 +6,7 @@ set( DEPENDENCIES
         qt
         services
         data
-        base
+        ui_base
         fwVideoQt
 )
 set( REQUIREMENTS  )

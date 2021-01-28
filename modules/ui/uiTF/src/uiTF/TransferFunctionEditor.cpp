@@ -409,7 +409,8 @@ void TransferFunctionEditor::importTF()
     data::tools::helper::Composite compositeHelper(poolTF);
 
     data::TransferFunction::sptr tf          = data::TransferFunction::New();
-    io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
+    io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+        "::modules::io::atoms::SReader");
 
     reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
@@ -438,7 +439,8 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >("::ioAtoms::SWriter");
+    io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+        "::modules::io::atoms::SWriter");
 
     writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
 
@@ -487,7 +489,8 @@ void TransferFunctionEditor::initTransferFunctions()
         }
 
         data::TransferFunction::sptr tf          = data::TransferFunction::New();
-        io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
+        io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+            "::modules::io::atoms::SReader");
         reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");

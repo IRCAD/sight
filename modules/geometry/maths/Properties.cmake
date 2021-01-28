@@ -5,7 +5,7 @@ set( DEPENDENCIES
     data
     core
     services
-    base
+    ui_base
 )
 set( REQUIREMENTS data module_services)
 

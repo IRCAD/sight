@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    base
+    ui_base
     services
 )
 set( REQUIREMENTS )

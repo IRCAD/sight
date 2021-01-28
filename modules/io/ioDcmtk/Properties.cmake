@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
     fwDcmtkIO
-    base
+    ui_base
     core
     data
     services

@@ -7,6 +7,6 @@ set( DEPENDENCIES
     core
     data
     services
-    fwMDSemanticPatch
+    io_patch
 )
-set( REQUIREMENTS data module_services ioAtoms module_ui_base module_ui_qt patchMedicalData )
+set( REQUIREMENTS data module_services module_io_atoms module_ui_base module_ui_qt patchMedicalData )

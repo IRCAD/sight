@@ -10,7 +10,7 @@ set( REQUIREMENTS
     visuVTK
     ctrlPicking
     uiIO
-    ioData
+    module_io_file
     basicRegistration
     module_ui_base
     module_ui_qt

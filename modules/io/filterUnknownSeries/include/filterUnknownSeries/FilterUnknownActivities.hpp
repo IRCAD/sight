@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <fwAtomsFilter/IFilter.hpp>
+#include <io/atoms/filter/IFilter.hpp>
 
 namespace sight::atoms
 {
@@ -36,18 +36,18 @@ class Object;
 namespace filterUnknownSeries
 {
 
-class FILTERUNKNOWNSERIES_CLASS_API FilterUnknownActivities : public ::fwAtomsFilter::IFilter
+class FILTERUNKNOWNSERIES_CLASS_API FilterUnknownActivities : public io::atoms::filter::IFilter
 {
 
 public:
     /// Constructor.
-    FilterUnknownActivities(::fwAtomsFilter::IFilter::Key key);
+    FilterUnknownActivities(io::atoms::filter::IFilter::Key key);
 
     /// Destructor.
     ~FilterUnknownActivities();
 
     /// Apply filter onto given atom object.
-    FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(atoms::Object)& atom);
+    FILTERUNKNOWNSERIES_API virtual void apply(const SPTR(sight::atoms::Object)& atom);
 };
 
 } // namespace filterUnknownSeries

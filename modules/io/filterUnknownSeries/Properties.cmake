@@ -6,8 +6,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     atoms
-    fwAtomsFilter
-    fwAtomsPatch
+    io_atoms
 )
 
 set( REQUIREMENTS  )

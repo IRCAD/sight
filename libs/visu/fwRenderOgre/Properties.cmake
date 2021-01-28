@@ -4,7 +4,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    base
+    ui_base
     fwRender
     services
 )

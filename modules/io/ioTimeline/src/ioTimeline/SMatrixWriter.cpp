@@ -42,7 +42,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioTimeline::SMatrixWriter, ::sight::data::MatrixTL)
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioTimeline::SMatrixWriter, ::sight::data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";

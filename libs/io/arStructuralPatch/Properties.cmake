@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
     atoms
-    fwAtomsPatch
+    io_atoms
     core
 )
 set( REQUIREMENTS  )

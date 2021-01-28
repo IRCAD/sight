@@ -42,7 +42,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::videoOpenCV::SVideoWriter, ::sight::data::FrameTL)
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::videoOpenCV::SVideoWriter, ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";

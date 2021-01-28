@@ -100,7 +100,7 @@
             <service uid="meshReaderAct" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
-                <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::ioAtoms::SReader" />
+                <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::sight::modules::io::atoms::SReader" />
                 <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="::ioVTK::SMeshReader" />
             </service>
 

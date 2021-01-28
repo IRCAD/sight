@@ -30,8 +30,8 @@ typedef SSIZE_T ssize_t;
 
 #include "igtlProtocol/config.hpp"
 
-#include <fwZip/IWriteArchive.hpp>
-#include <fwZip/exception/Write.hpp>
+#include <io/zip/IWriteArchive.hpp>
+#include <io/zip/exception/Write.hpp>
 #include <core/macros.hpp>
 
 #include <boost/iostreams/stream.hpp>
@@ -98,7 +98,7 @@ protected:
  *
  * @brief MemoryWriteArchive is a memory archive writer
  */
-class IGTLPROTOCOL_CLASS_API MemoryWriteArchive : public ::fwZip::IWriteArchive
+class IGTLPROTOCOL_CLASS_API MemoryWriteArchive : public io::zip::IWriteArchive
 {
 public:
 
@@ -123,7 +123,7 @@ public:
      *
      * @param[in] sourceFile source file
      * @param[in] path file in archive
-     * @throw ::fwZip::exception::Write when file cannot be opened
+     * @throw io::zip::exception::Write when file cannot be opened
      */
     IGTLPROTOCOL_API void putFile(const std::filesystem::path& sourceFile,
                                   const std::filesystem::path& path) override;

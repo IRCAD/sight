@@ -33,14 +33,14 @@
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
 
-#include <fwMDSemanticPatch/PatchLoader.hpp>
-
 #include <services/op/Add.hpp>
 #include <services/registry/ActiveWorkers.hpp>
 #include <services/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
+
+#include <io/patch/semantic/PatchLoader.hpp>
 
 #include <filesystem>
 
@@ -138,10 +138,10 @@ void PatchTest::patchMedicalDataTest()
     //<patcher context="..." version="..." />
     core::runtime::EConfigurationElement::sptr patcherCfg = core::runtime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context", "MedicalData");
-    patcherCfg->setAttributeValue("version", ::fwMDSemanticPatch::PatchLoader::getCurrentVersion());
+    patcherCfg->setAttributeValue("version", io::patch::semantic::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);
 
-    data::SeriesDB::sptr sdb = read< data::SeriesDB >(srvCfg, "::ioAtoms::SReader" );
+    data::SeriesDB::sptr sdb = read< data::SeriesDB >(srvCfg, "::modules::io::atoms::SReader" );
 
     // check data
     CPPUNIT_ASSERT_EQUAL( (size_t) 3, sdb->size() );

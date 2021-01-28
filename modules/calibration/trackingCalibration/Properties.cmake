@@ -6,7 +6,7 @@ set( DEPENDENCIES
     data
     qt
     services
-    base
+    ui_base
     fwMath
     eigenTools
     calibration3d

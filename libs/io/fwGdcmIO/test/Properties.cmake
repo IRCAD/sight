@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     utestData
-    fwZip
+    io_zip
     io_base
     )
 set( REQUIREMENTS )

@@ -18,7 +18,7 @@ set( REQUIREMENTS
     style
 
     # Reader
-    ioData
+    module_io_file
     ioVTK
 
     # Services

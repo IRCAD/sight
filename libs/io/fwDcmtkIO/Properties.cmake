@@ -8,7 +8,7 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwDicomTools
     services
-    fwZip
+    io_zip
     )
 set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchServices )

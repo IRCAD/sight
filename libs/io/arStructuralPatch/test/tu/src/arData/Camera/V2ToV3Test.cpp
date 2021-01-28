@@ -31,10 +31,10 @@
 #include <atoms/Sequence.hpp>
 #include <atoms/String.hpp>
 
-#include <fwAtomsPatch/helper/functions.hpp>
-#include <fwAtomsPatch/helper/Object.hpp>
-
 #include <utest/Exception.hpp>
+
+#include <io/atoms/patch/helper/functions.hpp>
+#include <io/atoms/patch/helper/Object.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arStructuralPatch::utdata::Camera::V2ToV3Test );
@@ -69,10 +69,10 @@ void V2ToV3Test::applyPatchTest()
     atoms::Object::sptr camObjV2 = atoms::Object::New();
     atoms::Object::sptr camObjV3;
 
-    ::fwAtomsPatch::helper::setClassname(camObjV2, "data::Camera");
-    ::fwAtomsPatch::helper::setVersion(camObjV2, "2");
+    io::atoms::patch::helper::setClassname(camObjV2, "data::Camera");
+    io::atoms::patch::helper::setVersion(camObjV2, "2");
 
-    ::fwAtomsPatch::helper::Object helper(camObjV2);
+    io::atoms::patch::helper::Object helper(camObjV2);
 
     helper.addAttribute("camera_id", atoms::String::New("file"));
     helper.addAttribute("description", atoms::String::New("Videos/myVideo.mp4"));
@@ -92,7 +92,7 @@ void V2ToV3Test::applyPatchTest()
 
     camObjV3 = atoms::Object::dynamicCast(camObjV2->clone());
 
-    ::fwAtomsPatch::IPatch::NewVersionsType newVersions;
+    io::atoms::patch::IPatch::NewVersionsType newVersions;
     newVersions[camObjV2] = camObjV3;
 
     auto patch = ::arStructuralPatchdata::Camera::V2ToV3::New();

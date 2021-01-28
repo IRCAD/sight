@@ -27,7 +27,7 @@
 #include "arStructuralPatch/data/CameraSeries/V2ToV3.hpp"
 #include "arStructuralPatch/data/CameraSeries/V3ToV2.hpp"
 
-#include <fwAtomsPatch/StructuralPatchDB.hpp>
+#include <io/atoms/patch/StructuralPatchDB.hpp>
 
 namespace arStructuralPatch
 {
@@ -37,7 +37,7 @@ struct runner
 {
     runner()
     {
-        ::fwAtomsPatch::StructuralPatchDB::sptr structuralPatches = ::fwAtomsPatch::StructuralPatchDB::getDefault();
+        io::atoms::patch::StructuralPatchDB::sptr structuralPatches = io::atoms::patch::StructuralPatchDB::getDefault();
         structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V1ToV2::New());
         structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V2ToV1::New());
         structuralPatches->registerPatch(::arStructuralPatchdata::Camera::V2ToV3::New());

@@ -44,7 +44,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( io::base::services::IReader, ::ioITK::InrImageReaderService, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::ioITK::InrImageReaderService, ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 

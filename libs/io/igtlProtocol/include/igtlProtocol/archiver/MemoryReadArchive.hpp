@@ -26,12 +26,12 @@
 
 #include <core/macros.hpp>
 
-#include <fwZip/exception/Read.hpp>
-#include <fwZip/IReadArchive.hpp>
-
 #include <archive.h>
 
 #include <boost/iostreams/categories.hpp>
+
+#include <io/zip/exception/Read.hpp>
+#include <io/zip/IReadArchive.hpp>
 
 #include <map>
 
@@ -47,7 +47,7 @@ typedef CSPTR (std::vector<char>) BufferCSPtr;
  *
  * @brief MemoryReadArchive is a memory archive reader
  */
-class IGTLPROTOCOL_CLASS_API MemoryReadArchive : public ::fwZip::IReadArchive
+class IGTLPROTOCOL_CLASS_API MemoryReadArchive : public io::zip::IReadArchive
 {
 public:
 
@@ -64,8 +64,8 @@ public:
      * @param[in] path file in archive.
      * @return input stream from request file.
      *
-     * @throw ::fwZip::exception::Read if file doesn't exist in archive.
-     * @throw ::fwZip::exception::Read if cannot retrieve file in archive.
+     * @throw io::zip::exception::Read if file doesn't exist in archive.
+     * @throw io::zip::exception::Read if cannot retrieve file in archive.
      */
     IGTLPROTOCOL_API SPTR(std::istream) getFile(const std::filesystem::path& path) override;
 

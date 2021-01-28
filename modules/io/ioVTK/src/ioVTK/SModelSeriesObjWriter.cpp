@@ -47,7 +47,8 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( io::base::services::IWriter, ::ioVTK::SModelSeriesObjWriter, ::sight::data::ModelSeries )
+fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::ioVTK::SModelSeriesObjWriter,
+                         ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

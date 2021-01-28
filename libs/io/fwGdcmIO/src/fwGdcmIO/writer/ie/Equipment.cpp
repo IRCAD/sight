@@ -69,7 +69,7 @@ void Equipment::writeGeneralEquipmentModule()
     ::fwGdcmIO::helper::DicomDataWriter::setTagValue< 0x0008, 0x0080 >(institutName, dataset);
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    const auto profile                = core::runtime::profile::getCurrentProfile();
+    const auto profile                = core::runtime::getCurrentProfile();
     const std::string softwareVersion = profile ? profile->getName() + " " + profile->getVersion() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one

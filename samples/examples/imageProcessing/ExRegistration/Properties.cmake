@@ -21,7 +21,7 @@ set( REQUIREMENTS
 
     # Reader
     ioVTK
-    ioData
+    module_io_file
 
     # Config
     basicRegistration

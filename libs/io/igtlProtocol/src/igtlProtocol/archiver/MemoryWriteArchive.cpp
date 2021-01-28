@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "igtlProtocol/archiver/MemoryWriteArchive.hpp"
 
-#include <fwZip/exception/Write.hpp>
-
 #include <archive_entry.h>
 
 #include <boost/date_time.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/iostreams/stream.hpp>
+
+#include <io/zip/exception/Write.hpp>
 
 #include <filesystem>
 
@@ -71,7 +71,7 @@ void MemoryArchiveSink::archive()
     archive_entry_set_mtime(entry, seconds, nanoseconds);
     if (archive_write_header(m_archive, entry) != ARCHIVE_OK)
     {
-        throw ::fwZip::exception::Write("Cannot write header");
+        throw io::zip::exception::Write("Cannot write header");
     }
     archive_entry_free(entry);
     for (int i = 0; i < m_buffer.size(); i += MemoryArchiveSink::s_WRITE_BUFFER_SIZE)
@@ -83,7 +83,7 @@ void MemoryArchiveSink::archive()
         }
         if (archive_write_data(m_archive, &m_buffer[i], size) < 0)
         {
-            ::fwZip::exception::Write("Cannot write data in archive");
+            io::zip::exception::Write("Cannot write data in archive");
         }
     }
 }
@@ -141,7 +141,7 @@ MemoryWriteArchive::MemoryWriteArchive(std::vector< char >& buffer) :
                                   &MemoryWriteArchive::close);
     if (ret != ARCHIVE_OK)
     {
-        throw ::fwZip::exception::Write("Cannot open archive in write mode");
+        throw io::zip::exception::Write("Cannot open archive in write mode");
     }
 }
 
@@ -200,7 +200,7 @@ void MemoryWriteArchive::putFile(const std::filesystem::path& sourceFile,
     }
     else
     {
-        throw fwZip::exception::Write("Cannot open file : " + sourceFile.string());
+        throw io::zip::exception::Write("Cannot open file : " + sourceFile.string());
     }
 }
 
