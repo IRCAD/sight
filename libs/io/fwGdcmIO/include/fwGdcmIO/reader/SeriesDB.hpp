@@ -32,9 +32,9 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
-
 #include <services/IService.hpp>
+
+#include <io/base/reader/GenericObjectReader.hpp>
 
 namespace sight::core::jobs
 {
@@ -52,23 +52,23 @@ namespace reader
 /**
  * @brief This class adds patient(s) from DICOM file(s) to data::SeriesDB.
  */
-class FWGDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
-                                    public data::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
-                                    public data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
+class FWGDCMIO_CLASS_API SeriesDB : public io::base::reader::GenericObjectReader< data::SeriesDB >,
+                                    public data::location::enableFolder< io::base::reader::IObjectReader >,
+                                    public data::location::enableMultiFiles< io::base::reader::IObjectReader >,
                                     public core::com::HasSignals
 {
 
 public:
 
-    fwCoreClassMacro(SeriesDB, ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
-                     ::fwDataIO::reader::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, io::base::reader::GenericObjectReader< data::SeriesDB >,
+                     io::base::reader::factory::New< SeriesDB >);
 
     typedef std::vector< SPTR(data::DicomSeries) > DicomSeriesContainerType;
     typedef std::vector< std::string > FilenameContainerType;
     typedef std::vector< std::string > SupportedSOPClassContainerType;
 
     /// Constructor
-    FWGDCMIO_API SeriesDB(::fwDataIO::reader::IObjectReader::Key key);
+    FWGDCMIO_API SeriesDB(io::base::reader::IObjectReader::Key key);
 
     /// Destructor
     FWGDCMIO_API ~SeriesDB();

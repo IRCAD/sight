@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -67,7 +67,7 @@ namespace ioVTK
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class IOVTK_CLASS_API SModelSeriesObjWriter : public ::fwIO::IWriter
+class IOVTK_CLASS_API SModelSeriesObjWriter : public io::base::services::IWriter
 {
 
 public:
@@ -83,7 +83,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesObjWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SModelSeriesObjWriter,  io::base::services::IWriter)
 
     /**
      * @brief Configure the mesh path.
@@ -103,7 +103,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

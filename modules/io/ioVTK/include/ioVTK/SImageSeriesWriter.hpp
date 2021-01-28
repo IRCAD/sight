@@ -24,7 +24,7 @@
 
 #include "ioVTK/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -65,7 +65,7 @@ namespace ioVTK
  * - \b file (optional): path of the image to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOVTK_CLASS_API SImageSeriesWriter : public ::fwIO::IWriter
+class IOVTK_CLASS_API SImageSeriesWriter : public io::base::services::IWriter
 {
 
 public:
@@ -81,7 +81,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SImageSeriesWriter,  io::base::services::IWriter)
 
     /**
      * @brief Configure the image path.
@@ -97,7 +97,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

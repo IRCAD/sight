@@ -4,7 +4,7 @@
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IWriter</type>
+        <type>::sight::sight::io::base::services::IWriter</type>
         <service>::ioQt::SPdfWriter</service>
         <object>::sight::data::Object</object>
     </extension>

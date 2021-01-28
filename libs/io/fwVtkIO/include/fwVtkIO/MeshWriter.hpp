@@ -27,7 +27,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
@@ -47,18 +47,18 @@ namespace fwVtkIO
  */
 
 class FWVTKIO_CLASS_API MeshWriter :
-    public ::fwDataIO::writer::GenericObjectWriter< data::Mesh >,
-    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public io::base::writer::GenericObjectWriter< data::Mesh >,
+    public data::location::enableSingleFile< io::base::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(MeshWriter, ::fwDataIO::writer::GenericObjectWriter< data::Mesh >,
-                     ::fwDataIO::writer::factory::New< MeshWriter >)
+    fwCoreClassMacro(MeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
+                     io::base::writer::factory::New< MeshWriter >)
     fwCoreAllowSharedFromThis()
 
     /// @brief Constructor.
-    FWVTKIO_API MeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API MeshWriter(io::base::writer::IObjectWriter::Key key);
 
     /// @brief Destructor.
     FWVTKIO_API ~MeshWriter();

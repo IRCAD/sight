@@ -24,7 +24,7 @@
 
 #include "ioData/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 
@@ -51,17 +51,17 @@ namespace ioData
  * @subsubsection Configuration Configuration
  * - \b file : .trian file to read
  */
-class IODATA_CLASS_API STrianMeshReader : public ::fwIO::IReader
+class IODATA_CLASS_API STrianMeshReader : public io::base::services::IReader
 {
 
 public:
 
-    fwCoreServiceMacro(STrianMeshReader, ::fwIO::IReader)
+    fwCoreServiceMacro(STrianMeshReader, io::base::services::IReader)
 
     /// Super class of reader services
-    typedef ::fwIO::IReader SuperClass;
+    typedef io::base::services::IReader SuperClass;
 
-    /** @name Specified reader service methods ( override from ::fwIO::IReader )
+    /** @name Specified reader service methods ( override from io::base::services::IReader )
      * @{
      */
 
@@ -90,7 +90,7 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IODATA_API virtual io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -125,7 +125,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( services::IService )
      *
      * This method is used to update the service.
-     * The mesh is read with the reader ::fwDataIO::reader::MeshReader.
+     * The mesh is read with the reader io::base::reader::MeshReader.
      * Notify reading.
      */
     IODATA_API void updating() override;

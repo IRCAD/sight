@@ -34,7 +34,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
@@ -53,8 +53,8 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+ModelSeriesObjWriter::ModelSeriesObjWriter(io::base::writer::IObjectWriter::Key) :
+    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("ModelSeries Writer"))
 {
 }

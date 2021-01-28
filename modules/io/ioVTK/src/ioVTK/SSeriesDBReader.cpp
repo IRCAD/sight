@@ -47,7 +47,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioVTK::SSeriesDBReader, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -60,9 +60,9 @@ SSeriesDBReader::SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
+::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::fwIO::FILES;
+    return io::base::services::FILES;
 }
 
 //------------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void SSeriesDBReader::stopping()
 
 void SSeriesDBReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ void SSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        auto lockedSeriesDB = this->getLockedInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
+        auto lockedSeriesDB = this->getLockedInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 

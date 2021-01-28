@@ -30,8 +30,6 @@
 #include <data/ImageSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwIO/ioTypes.hpp>
-
 #include <services/op/Add.hpp>
 #include <services/registry/ActiveWorkers.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -39,6 +37,8 @@
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
 #include <utestData/helper/compare.hpp>
+
+#include <io/base/services/ioTypes.hpp>
 
 #include <filesystem>
 
@@ -80,7 +80,7 @@ void executeService(
     services::IService::sptr srv = services::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    services::OSR::registerService(obj, ::fwIO::s_DATA_KEY, access, srv );
+    services::OSR::registerService(obj, io::base::services::s_DATA_KEY, access, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());

@@ -27,7 +27,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
+#include <io/base/reader/GenericObjectReader.hpp>
 
 #include <filesystem>
 
@@ -45,18 +45,18 @@ namespace fwVtkIO
  *
  */
 class FWVTKIO_CLASS_API MeshReader :
-    public ::fwDataIO::reader::GenericObjectReader< data::Mesh >,
-    public data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+    public io::base::reader::GenericObjectReader< data::Mesh >,
+    public data::location::enableSingleFile< io::base::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(MeshReader, ::fwDataIO::reader::GenericObjectReader< data::Mesh >,
-                     ::fwDataIO::reader::factory::New< MeshReader >)
+    fwCoreClassMacro(MeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
+                     io::base::reader::factory::New< MeshReader >)
     fwCoreAllowSharedFromThis()
 
     /// @brief Constructor.
-    FWVTKIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API MeshReader(io::base::reader::IObjectReader::Key key);
 
     /// @brief Destructor.
     FWVTKIO_API ~MeshReader();

@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 
@@ -66,7 +66,7 @@ namespace ioVTK
  * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOVTK_CLASS_API SMeshWriter : public ::fwIO::IWriter
+class IOVTK_CLASS_API SMeshWriter : public io::base::services::IWriter
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SMeshWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SMeshWriter,  io::base::services::IWriter)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -103,7 +103,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

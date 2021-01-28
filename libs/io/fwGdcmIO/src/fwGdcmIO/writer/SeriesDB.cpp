@@ -26,7 +26,7 @@
 
 #include <data/ModelSeries.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 #include <filesystem>
 
@@ -40,8 +40,8 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(::fwDataIO::writer::IObjectWriter::Key key) :
-    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+SeriesDB::SeriesDB(io::base::writer::IObjectWriter::Key key) :
+    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
     m_fiducialsExportMode(::fwGdcmIO::writer::Series::SPATIAL_FIDUCIALS)
 {
 }

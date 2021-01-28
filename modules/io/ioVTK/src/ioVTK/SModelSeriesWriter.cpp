@@ -55,7 +55,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesWriter, ::sight::data::ModelSeries )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioVTK::SModelSeriesWriter, ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -68,9 +68,9 @@ SModelSeriesWriter::SModelSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SModelSeriesWriter::getIOPathType() const
+::io::base::services::IOPathType SModelSeriesWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ void SModelSeriesWriter::stopping()
 
 void SModelSeriesWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
     services::IService::ConfigType config = this->getConfigTree();
 
     auto ext = config.get<std::string>("extension", "");
@@ -212,7 +212,7 @@ typename WRITER::sptr configureWriter(const std::filesystem::path& _filename)
 
 void SModelSeriesWriter::writeMesh(const std::filesystem::path& _filename, const data::Mesh::csptr _mesh)
 {
-    ::fwDataIO::writer::IObjectWriter::sptr meshWriter;
+    io::base::writer::IObjectWriter::sptr meshWriter;
     const auto ext = _filename.extension();
     if(ext == ".vtk")
     {
@@ -253,7 +253,8 @@ void SModelSeriesWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr = this->getLockedInput< const data::ModelSeries >(::fwIO::s_DATA_KEY);
+        const auto modelSeriesLockedPtr =
+            this->getLockedInput< const data::ModelSeries >(io::base::services::s_DATA_KEY);
 
         ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

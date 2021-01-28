@@ -9,7 +9,7 @@ set( DEPENDENCIES
     base
     qt
     services
-    fwIO
+    io_base
     data
     )
 set( REQUIREMENTS

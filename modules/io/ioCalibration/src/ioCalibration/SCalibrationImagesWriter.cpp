@@ -57,9 +57,9 @@ SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SCalibrationImagesWriter::getIOPathType() const
+::io::base::services::IOPathType SCalibrationImagesWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ void SCalibrationImagesWriter::openLocationDialog()
 
 void SCalibrationImagesWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 
     const auto configTree = this->getConfigTree();
     m_fileExtension = configTree.get("format", ".tiff");
@@ -118,7 +118,7 @@ void SCalibrationImagesWriter::updating()
     if( !m_fileExtension.empty() && this->hasLocationDefined() )
     {
         data::CalibrationInfo::csptr calibInfo =
-            this->getInput< data::CalibrationInfo >(::fwIO::s_DATA_KEY);
+            this->getInput< data::CalibrationInfo >(io::base::services::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info input.", calibInfo);
 
         ui::base::Cursor cursor;

@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -114,11 +114,11 @@ namespace ioGdcm
  *    - user_selection (let the user decide whether using the DicomDir or not)
  * - \b SOPClassSelection:  List of SOP Class selection managed by the reader
  */
-class IOGDCM_CLASS_API SSeriesDBReader : public ::fwIO::IReader
+class IOGDCM_CLASS_API SSeriesDBReader : public io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
+    fwCoreServiceMacro(SSeriesDBReader,  io::base::services::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
@@ -174,7 +174,7 @@ protected:
     IOGDCM_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FOLDER
-    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
+    IOGDCM_API io::base::services::IOPathType getIOPathType() const override;
 
 private:
 

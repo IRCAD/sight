@@ -34,8 +34,6 @@
 
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
-
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/IFilter.hpp>
@@ -47,6 +45,8 @@
 #include <gdcmMediaStorage.h>
 #include <gdcmUIDs.h>
 
+#include <io/base/reader/registry/macros.hpp>
+
 fwDataIOReaderRegisterMacro( ::fwGdcmIO::reader::SeriesDB );
 
 namespace fwGdcmIO
@@ -57,7 +57,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDB::SeriesDB(io::base::reader::IObjectReader::Key key) :
     data::location::enableFolder< IObjectReader >(this),
     data::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false),
@@ -218,7 +218,7 @@ void SeriesDB::readDicomSeries()
 void SeriesDB::readDicom()
 {
     SLM_ASSERT("This reader only work on folder selection.",
-               (data::location::have < data::location::Folder, ::fwDataIO::reader::IObjectReader > (this)));
+               (data::location::have < data::location::Folder, io::base::reader::IObjectReader > (this)));
 
     // DICOMDIR
     auto dicomdir = ::fwGdcmIO::helper::DicomDir::findDicomDir(this->getFolder());

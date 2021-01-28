@@ -34,7 +34,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
+#include <io/base/reader/registry/macros.hpp>
 
 #include <itkImageFileReader.h>
 #include <itkImageIOFactory.h>
@@ -48,7 +48,7 @@ namespace fwItkIO
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key )  :
+ImageReader::ImageReader(io::base::reader::IObjectReader::Key )  :
     data::location::enableSingleFile<
         IObjectReader >(this)
 {

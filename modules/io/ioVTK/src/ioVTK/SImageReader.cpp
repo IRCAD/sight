@@ -34,10 +34,6 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwDataIO/reader/IObjectReader.hpp>
-
-#include <fwIO/IReader.hpp>
-
 #include <fwVtkIO/BitmapImageReader.hpp>
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
@@ -47,6 +43,9 @@
 #include <services/registry/ActiveWorkers.hpp>
 
 #include <boost/algorithm/string.hpp>
+
+#include <io/base/reader/IObjectReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -63,15 +62,15 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of data::Image
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageReader, ::sight::data::Image )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioVTK::SImageReader, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SImageReader::getIOPathType() const
+::io::base::services::IOPathType SImageReader::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -148,7 +147,7 @@ void SImageReader::stopping()
 
 void SImageReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -164,8 +163,8 @@ void SImageReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        data::Image::sptr image = this->getInOut< data::Image >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::sptr image = this->getInOut< data::Image >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
@@ -218,7 +217,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
     std::string ext = imgFile.extension().string();
     ::boost::algorithm::to_lower(ext);
 
-    ::fwDataIO::reader::IObjectReader::sptr imageReader;
+    io::base::reader::IObjectReader::sptr imageReader;
     if(ext == ".vtk")
     {
         imageReader = configureReader< ::fwVtkIO::ImageReader >( imgFile );

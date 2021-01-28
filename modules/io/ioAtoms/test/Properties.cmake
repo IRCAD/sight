@@ -7,7 +7,7 @@ set( DEPENDENCIES
     utestData
     data
     services
-    fwIO
+    io_base
 )
 set( REQUIREMENTS
     data

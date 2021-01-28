@@ -40,7 +40,7 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioQt::SPdfWriter, ::sight::data::Object )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioQt::SPdfWriter, ::sight::data::Object )
 
 namespace ioQt
 {
@@ -58,7 +58,7 @@ SPdfWriter::SPdfWriter()
 
 void SPdfWriter::info(std::ostream& _sstream )
 {
-    this->::fwIO::IWriter::info( _sstream );
+    this->::io::base::services::IWriter::info( _sstream );
     _sstream << std::endl << " External data file reader";
 }
 
@@ -73,7 +73,7 @@ SPdfWriter::~SPdfWriter() noexcept
 
 void SPdfWriter::configuring()
 {
-    this->::fwIO::IWriter::configuring();
+    this->::io::base::services::IWriter::configuring();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     const ConfigurationType containersConfig = m_configuration->findConfigurationElement("container");
@@ -236,9 +236,9 @@ void SPdfWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SPdfWriter::getIOPathType() const
+::io::base::services::IOPathType SPdfWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------

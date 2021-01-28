@@ -4,7 +4,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    fwDataIO
+    io_base
     fwDicomIOFilter
     fwDicomTools
     services

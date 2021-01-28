@@ -31,7 +31,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace fwGdcmIO
 {
@@ -42,18 +42,18 @@ namespace writer
 /**
  * @brief   This class manages patient writing, in DICOM file format.
  */
-class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB >,
-                 public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+class SeriesDB : public io::base::writer::GenericObjectWriter< data::SeriesDB >,
+                 public data::location::enableFolder< io::base::writer::IObjectWriter >,
                  public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(SeriesDB, ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB >,
-                     ::fwDataIO::writer::factory::New< SeriesDB >);
+    fwCoreClassMacro(SeriesDB, io::base::writer::GenericObjectWriter< data::SeriesDB >,
+                     io::base::writer::factory::New< SeriesDB >);
 
     /// Constructor
-    FWGDCMIO_API SeriesDB(::fwDataIO::writer::IObjectWriter::Key key);
+    FWGDCMIO_API SeriesDB(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor
     FWGDCMIO_API ~SeriesDB();

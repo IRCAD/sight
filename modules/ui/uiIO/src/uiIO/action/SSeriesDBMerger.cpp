@@ -30,11 +30,11 @@
 #include <data/Series.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwIO/ioTypes.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ServiceConfig.hpp>
+
+#include <io/base/services/ioTypes.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -112,7 +112,7 @@ void SSeriesDBMerger::updating( )
     // Init and execute the service
     services::IService::sptr ioSelectorSrv;
     ioSelectorSrv = services::add("::uiIO::editor::SIOSelector");
-    ioSelectorSrv->registerInOut(localSeriesDB, ::fwIO::s_DATA_KEY);
+    ioSelectorSrv->registerInOut(localSeriesDB, io::base::services::s_DATA_KEY);
     ioSelectorSrv->setWorker(m_associatedWorker);
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");

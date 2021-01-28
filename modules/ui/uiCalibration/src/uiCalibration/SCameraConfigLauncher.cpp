@@ -33,12 +33,12 @@
 #include <data/Composite.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwIO/ioTypes.hpp>
-#include <fwIO/IReader.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ObjectService.hpp>
+
+#include <io/base/services/ioTypes.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -223,11 +223,11 @@ void SCameraConfigLauncher::onImportClicked()
 {
     auto sdb                               = data::SeriesDB::New();
     services::IService::sptr readerService = services::add("::ioAtoms::SReader");
-    readerService->registerInOut(sdb, ::fwIO::s_DATA_KEY);
+    readerService->registerInOut(sdb, io::base::services::s_DATA_KEY);
 
     try
     {
-        ::fwIO::IReader::sptr reader = ::fwIO::IReader::dynamicCast(readerService);
+        io::base::services::IReader::sptr reader = io::base::services::IReader::dynamicCast(readerService);
         reader->start();
         reader->openLocationDialog();
         reader->update();

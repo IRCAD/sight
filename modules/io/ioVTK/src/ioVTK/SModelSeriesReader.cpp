@@ -59,7 +59,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SModelSeriesReader, ::sight::data::ModelSeries )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioVTK::SModelSeriesReader, ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -72,9 +72,9 @@ SModelSeriesReader::SModelSeriesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SModelSeriesReader::getIOPathType() const
+::io::base::services::IOPathType SModelSeriesReader::getIOPathType() const
 {
-    return ::fwIO::FILES;
+    return io::base::services::FILES;
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ void SModelSeriesReader::stopping()
 
 void SModelSeriesReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void SModelSeriesReader::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto modelSeriesLockedPtr = this->getLockedInOut< data::ModelSeries >(::fwIO::s_DATA_KEY);
+        const auto modelSeriesLockedPtr = this->getLockedInOut< data::ModelSeries >(io::base::services::s_DATA_KEY);
         const auto modelSeries          = modelSeriesLockedPtr.get_shared();
 
         ui::base::Cursor cursor;
@@ -202,7 +202,7 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
 {
     // Test extension to provide the reader
 
-    ::fwDataIO::reader::IObjectReader::sptr meshReader;
+    io::base::reader::IObjectReader::sptr meshReader;
 
     if(_file.extension() == ".vtk")
     {

@@ -28,10 +28,10 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
-
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
+
+#include <io/base/writer/registry/macros.hpp>
 
 #include <vtkBMPWriter.h>
 #include <vtkImageData.h>
@@ -48,8 +48,8 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-BitmapImageWriter::BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+BitmapImageWriter::BitmapImageWriter(io::base::writer::IObjectWriter::Key) :
+    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("Bitmap image writer"))
 {
 }

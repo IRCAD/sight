@@ -24,7 +24,7 @@
 
 #include "ioData/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 
@@ -39,7 +39,7 @@ namespace ioData
  * @li Use update() to write the mesh and notify observers.
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::fwIO::IWriter , ::ioData::MeshWriterService , ::sight::data::Mesh )
+ * fwServicesRegisterMacro( io::base::services::IWriter , ::ioData::MeshWriterService , ::sight::data::Mesh )
  */
 /**
  * @brief This service writes a data::Mesh (with only triangular cells) on filesystem in format .trian.
@@ -60,15 +60,15 @@ namespace ioData
  * @subsection Input Input
  * - \b data [data::Mesh]: mesh to write.
  */
-class IODATA_CLASS_API MeshWriterService : public ::fwIO::IWriter
+class IODATA_CLASS_API MeshWriterService : public io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(MeshWriterService, ::fwIO::IWriter)
+    fwCoreServiceMacro(MeshWriterService, io::base::services::IWriter)
 
     /// Super class of writer services
-    typedef ::fwIO::IWriter SuperClass;
+    typedef io::base::services::IWriter SuperClass;
 
     /**
      * @brief   Constructor : does nothing
@@ -80,7 +80,7 @@ public:
      */
     IODATA_API ~MeshWriterService() noexcept;
 
-    /** @name Specified writer service methods ( override from ::fwIO::IWriter )
+    /** @name Specified writer service methods ( override from io::base::services::IWriter )
      * @{
      */
 
@@ -104,7 +104,7 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IODATA_API virtual io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -139,7 +139,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( services::IService )
      *
      * This method is used to update the service.
-     * The mesh is written with the writer ::fwDataIO::writer::MeshWriter.
+     * The mesh is written with the writer io::base::writer::MeshWriter.
      * Notify writing.
      */
     IODATA_API void updating() override;

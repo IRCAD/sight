@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 namespace videoOpenCV
 {
@@ -61,12 +61,12 @@ namespace videoOpenCV
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
-class VIDEOOPENCV_CLASS_API SFrameWriter : public ::fwIO::IWriter
+class VIDEOOPENCV_CLASS_API SFrameWriter : public io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SFrameWriter, ::fwIO::IWriter)
+    fwCoreServiceMacro(SFrameWriter, io::base::services::IWriter)
 
     /// Constructor.
     VIDEOOPENCV_API SFrameWriter() noexcept;
@@ -87,8 +87,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     VIDEOOPENCV_API virtual void openLocationDialog() override;
 
-    /// Return file type (::fwIO::FOLDER)
-    VIDEOOPENCV_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::services::FOLDER)
+    VIDEOOPENCV_API virtual io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 

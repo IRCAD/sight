@@ -31,10 +31,6 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/reader/IObjectReader.hpp>
-
-#include <fwIO/IWriter.hpp>
-
 #include <fwVtkIO/BitmapImageWriter.hpp>
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
@@ -44,6 +40,9 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <io/base/reader/IObjectReader.hpp>
+#include <io/base/services/IWriter.hpp>
+
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -52,7 +51,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SImageWriter, ::sight::data::Image )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioVTK::SImageWriter, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -65,9 +64,9 @@ SImageWriter::SImageWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SImageWriter::getIOPathType() const
+::io::base::services::IOPathType SImageWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +122,7 @@ void SImageWriter::stopping()
 
 void SImageWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +140,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
 {
     bool bValue = true;
 
-    ::fwDataIO::writer::IObjectWriter::sptr myWriter;
+    io::base::writer::IObjectWriter::sptr myWriter;
     ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
     std::string ext = imgFile.extension().string();
     ::boost::algorithm::to_lower(ext);
@@ -268,8 +267,8 @@ void SImageWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::Image::csptr pImage = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pImage);
+        data::Image::csptr pImage = this->getInput< data::Image >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", pImage);
 
         ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

@@ -33,11 +33,11 @@
 
 #include <fwDcmtkIO/SeriesDBReader.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ServiceConfig.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -47,7 +47,7 @@
 namespace ioDcmtk
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioDcmtk::SSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioDcmtk::SSeriesDBReader, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ void SSeriesDBReader::openLocationDialog()
 
 void SSeriesDBReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 
     // Use filter selector
     core::runtime::ConfigurationElement::sptr selectorConfig =
@@ -243,7 +243,7 @@ void SSeriesDBReader::updating()
         {
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
+                this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
@@ -272,7 +272,7 @@ void SSeriesDBReader::updating()
 
 void SSeriesDBReader::notificationOfDBUpdate()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     data::SeriesDB::ContainerType addedSeries;
@@ -288,9 +288,9 @@ void SSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
+::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------

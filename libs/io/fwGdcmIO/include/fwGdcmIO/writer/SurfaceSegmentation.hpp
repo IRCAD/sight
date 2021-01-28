@@ -32,7 +32,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace fwDicomData
 {
@@ -54,17 +54,17 @@ namespace writer
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
 class FWGDCMIO_CLASS_API SurfaceSegmentation :
-    public ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
-    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public io::base::writer::GenericObjectWriter< data::ModelSeries >,
+    public data::location::enableSingleFile< io::base::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(SurfaceSegmentation, ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
-                     ::fwDataIO::writer::factory::New< SurfaceSegmentation >);
+    fwCoreClassMacro(SurfaceSegmentation, io::base::writer::GenericObjectWriter< data::ModelSeries >,
+                     io::base::writer::factory::New< SurfaceSegmentation >);
 
     /// Constructor
-    FWGDCMIO_API SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key key);
+    FWGDCMIO_API SurfaceSegmentation(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor
     FWGDCMIO_API ~SurfaceSegmentation();

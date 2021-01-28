@@ -13,7 +13,7 @@ set( DEPENDENCIES
     base
     services
     fwZip
-    fwIO
+    io_base
 )
 set( REQUIREMENTS
     module_services

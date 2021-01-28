@@ -29,7 +29,7 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 #include <vtkGenericDataObjectWriter.h>
 #include <vtkPolyData.h>
@@ -41,8 +41,8 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+MeshWriter::MeshWriter(io::base::writer::IObjectWriter::Key) :
+    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("VTK Mesh writer"))
 {
 }

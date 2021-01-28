@@ -31,13 +31,13 @@
 #include <data/Composite.hpp>
 #include <data/tools/helper/Composite.hpp>
 
-#include <fwIO/IReader.hpp>
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ServiceConfig.hpp>
 #include <services/registry/ServiceFactory.hpp>
+
+#include <io/base/services/IReader.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -129,15 +129,15 @@ void SIOSelector::configuring()
 
     if (m_mode == WRITER_MODE)
     {
-        this->registerObject(::fwIO::s_DATA_KEY, AccessType::INOUT);
+        this->registerObject(io::base::services::s_DATA_KEY, AccessType::INOUT);
     }
     else if (m_dataClassname.empty())
     {
-        this->registerObject(::fwIO::s_DATA_KEY, AccessType::INOUT);
+        this->registerObject(io::base::services::s_DATA_KEY, AccessType::INOUT);
     }
     else
     {
-        this->registerObject(::fwIO::s_DATA_KEY, AccessType::OUTPUT, false, true);
+        this->registerObject(io::base::services::s_DATA_KEY, AccessType::OUTPUT, false, true);
     }
 }
 
@@ -158,16 +158,17 @@ void SIOSelector::stopping()
 void SIOSelector::updating()
 {
     bool createOutput      = false;
-    data::Object::sptr obj = this->getInOut< data::Object>(::fwIO::s_DATA_KEY);
+    data::Object::sptr obj = this->getInOut< data::Object>(io::base::services::s_DATA_KEY);
 
-    // Retrieve implementation of type ::fwIO::IReader for this object
+    // Retrieve implementation of type io::base::services::IReader for this object
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
         std::string classname = m_dataClassname;
 
-        SLM_ASSERT("An inout key '" + ::fwIO::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
-                   obj || !classname.empty());
+        SLM_ASSERT(
+            "An inout key '" + io::base::services::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
+            obj || !classname.empty());
 
         if (obj)
         {
@@ -178,15 +179,15 @@ void SIOSelector::updating()
         createOutput          = (!obj && !m_dataClassname.empty());
         availableExtensionsId =
             services::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                classname, "::fwIO::IReader");
+                classname, "::io::base::services::IReader");
     }
     else // m_mode == WRITER_MODE
     {
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
+        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
 
         availableExtensionsId =
             services::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                obj->getClassname(), "::fwIO::IWriter");
+                obj->getClassname(), "::io::base::services::IWriter");
     }
 
     // Filter available extensions and replace id by service description
@@ -302,8 +303,8 @@ void SIOSelector::updating()
                     SLM_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 
-                ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >( extensionId );
-                reader->registerInOut(obj, ::fwIO::s_DATA_KEY);
+                io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >( extensionId );
+                reader->registerInOut(obj, io::base::services::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -333,7 +334,7 @@ void SIOSelector::updating()
 
                     if (createOutput && !reader->hasFailed())
                     {
-                        this->setOutput(::fwIO::s_DATA_KEY, obj);
+                        this->setOutput(io::base::services::s_DATA_KEY, obj);
                     }
                 }
                 catch (std::exception& e)
@@ -354,13 +355,15 @@ void SIOSelector::updating()
             else
             {
                 // When all writers make use of getObject(), we can use the following code instead:
-                //      ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >( extensionId );
-                //      writer->registerInput(this->getObject(), ::fwIO::s_DATA_KEY);
+                //      io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+                // extensionId );
+                //      writer->registerInput(this->getObject(), io::base::services::s_DATA_KEY);
 
-                auto factory = services::registry::ServiceFactory::getDefault();
-                ::fwIO::IWriter::sptr writer =
-                    ::fwIO::IWriter::dynamicCast(factory->create( "::fwIO::IWriter", extensionId));
-                writer->registerInput(obj, ::fwIO::s_DATA_KEY);
+                auto factory                             = services::registry::ServiceFactory::getDefault();
+                io::base::services::IWriter::sptr writer =
+                    io::base::services::IWriter::dynamicCast(factory->create( "::io::base::services::IWriter",
+                                                                              extensionId));
+                writer->registerInput(obj, io::base::services::s_DATA_KEY);
 
                 writer->setWorker(m_associatedWorker);
 

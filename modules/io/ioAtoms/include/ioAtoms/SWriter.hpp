@@ -29,7 +29,7 @@
 
 #include <fwAtomsBoostIO/Writer.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -85,14 +85,14 @@ namespace ioAtoms
  *      The attribute label (mandatory) allows to display a label in front of extension when the file dialog is
  *      shown.
  *
- * @see ::fwIO::IReader
+ * @see io::base::services::IReader
  */
-class IOATOMS_CLASS_API SWriter : public ::fwIO::IWriter
+class IOATOMS_CLASS_API SWriter : public io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SWriter, ::fwIO::IWriter)
+    fwCoreServiceMacro(SWriter, io::base::services::IWriter)
 
     /// Signal type for job creation.
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
@@ -136,7 +136,7 @@ protected:
     IOATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    IOATOMS_API ::fwIO::IOPathType getIOPathType() const override;
+    IOATOMS_API io::base::services::IOPathType getIOPathType() const override;
 
     /// To activate atom patcher
     bool m_useAtomsPatcher;

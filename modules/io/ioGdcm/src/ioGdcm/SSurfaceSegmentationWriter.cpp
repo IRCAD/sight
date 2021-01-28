@@ -33,9 +33,9 @@
 #include <fwGdcmIO/writer/Series.hpp>
 #include <fwGdcmIO/writer/SurfaceSegmentation.hpp>
 
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -48,7 +48,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::sight::data::ModelSeries )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioGdcm::SSurfaceSegmentationWriter, ::sight::data::ModelSeries )
 
 //------------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ void SSurfaceSegmentationWriter::stopping()
 
 void SSurfaceSegmentationWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(::fwIO::s_DATA_KEY);
+        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(io::base::services::s_DATA_KEY);
 
         if(!model->getDicomReference())
         {
@@ -204,9 +204,9 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem:
 
 //-----------------------------------------------------------------------------
 
-::fwIO::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
+::io::base::services::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 } // namespace ioGdcm

@@ -29,10 +29,10 @@
 #include <data/Material.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwIO/ioTypes.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
+
+#include <io/base/services/ioTypes.hpp>
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -137,7 +137,7 @@ void STextureSelector::onLoadButton()
     }
 
     auto srv = services::add< ui::base::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
-    srv->registerInOut(image, ::fwIO::s_DATA_KEY);
+    srv->registerInOut(image, io::base::services::s_DATA_KEY);
 
     srv->configure();
     srv->start();

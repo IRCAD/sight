@@ -27,7 +27,7 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 #include <string>
 
@@ -50,21 +50,21 @@ namespace helper
 class DicomAnonymizer;
 
 class FWGDCMIO_CLASS_API DicomSeriesDBWriter :
-    public ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB >,
-    public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+    public io::base::writer::GenericObjectWriter< data::SeriesDB >,
+    public data::location::enableFolder< io::base::writer::IObjectWriter >,
+    public data::location::enableSingleFile< io::base::writer::IObjectWriter >
 
 {
 public:
 
-    fwCoreClassMacro(DicomSeriesDBWriter, ::fwDataIO::writer::GenericObjectWriter< data::SeriesDB>,
-                     ::fwDataIO::writer::factory::New< DicomSeriesDBWriter >);
+    fwCoreClassMacro(DicomSeriesDBWriter, io::base::writer::GenericObjectWriter< data::SeriesDB>,
+                     io::base::writer::factory::New< DicomSeriesDBWriter >);
     fwCoreAllowSharedFromThis();
 
     /**
      * @brief Construtor/Destructor
      * @{ */
-    FWGDCMIO_API DicomSeriesDBWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWGDCMIO_API DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key);
     FWGDCMIO_API virtual ~DicomSeriesDBWriter();
     /**  @} */
 

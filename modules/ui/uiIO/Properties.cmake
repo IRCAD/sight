@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     base
     services
-    fwIO
+    io_base
 )
 
 set( REQUIREMENTS

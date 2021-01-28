@@ -9,7 +9,7 @@ set( DEPENDENCIES
         base
         qt
         fwRenderOgre
-        fwIO
+        io_base
 )
 
 set( REQUIREMENTS

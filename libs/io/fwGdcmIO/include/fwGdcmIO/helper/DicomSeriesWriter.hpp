@@ -26,7 +26,7 @@
 
 #include <data/location/Folder.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 #include <string>
 
@@ -62,19 +62,19 @@ class DicomAnonymizer;
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
-class DicomSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< data::DicomSeries >,
-                          public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
+class DicomSeriesWriter : public io::base::writer::GenericObjectWriter< data::DicomSeries >,
+                          public data::location::enableFolder< io::base::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(DicomSeriesWriter, ::fwDataIO::writer::GenericObjectWriter< data::DicomSeries>,
-                     ::fwDataIO::writer::factory::New< DicomSeriesWriter >);
+    fwCoreClassMacro(DicomSeriesWriter, io::base::writer::GenericObjectWriter< data::DicomSeries>,
+                     io::base::writer::factory::New< DicomSeriesWriter >);
 
     fwCoreAllowSharedFromThis();
 
     /// Constructor. Does nothing
-    FWGDCMIO_API DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWGDCMIO_API DicomSeriesWriter(io::base::writer::IObjectWriter::Key key);
 
     /// Write the image series in DICOM format.
     FWGDCMIO_API void write() override;

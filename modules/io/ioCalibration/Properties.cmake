@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     services
     base
-    fwIO
+    io_base
     cvIO
     calibration3d
 )

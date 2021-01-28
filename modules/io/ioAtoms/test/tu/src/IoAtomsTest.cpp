@@ -30,8 +30,6 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwIO/ioTypes.hpp>
-
 #include <services/op/Add.hpp>
 #include <services/registry/ActiveWorkers.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -40,6 +38,8 @@
 #include <utest/Exception.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
+
+#include <io/base/services/ioTypes.hpp>
 
 #include <filesystem>
 
@@ -90,7 +90,8 @@ void write(const services::IService::ConfigType& srvCfg, const SPTR(T)& obj, con
     services::IService::sptr writerSrv = services::add( writer );
     CPPUNIT_ASSERT(writerSrv);
 
-    services::OSR::registerService( obj, ::fwIO::s_DATA_KEY, services::IService::AccessType::INPUT, writerSrv );
+    services::OSR::registerService( obj, io::base::services::s_DATA_KEY, services::IService::AccessType::INPUT,
+                                    writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start().wait();
@@ -107,7 +108,7 @@ SPTR(T) read(const services::IService::ConfigType& srvCfg, const std::string& re
     services::IService::sptr readerSrv = services::add( reader );
     CPPUNIT_ASSERT(readerSrv);
 
-    services::OSR::registerService( readObj, ::fwIO::s_DATA_KEY, services::IService::AccessType::INOUT,
+    services::OSR::registerService( readObj, io::base::services::s_DATA_KEY, services::IService::AccessType::INOUT,
                                     readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
@@ -123,7 +124,7 @@ template <typename T>
 SPTR(T) readOut(const services::IService::ConfigType& srvCfg, const std::string& reader)
 {
     services::IService::ConfigType config(srvCfg);
-    config.add("out.<xmlattr>.key", ::fwIO::s_DATA_KEY);
+    config.add("out.<xmlattr>.key", io::base::services::s_DATA_KEY);
 
     services::IService::sptr readerSrv = services::add( reader );
     CPPUNIT_ASSERT(readerSrv);
@@ -132,7 +133,7 @@ SPTR(T) readOut(const services::IService::ConfigType& srvCfg, const std::string&
     readerSrv->configure();
     readerSrv->start().wait();
     readerSrv->update().wait();
-    typename T::sptr readObj = readerSrv->getOutput<T>(::fwIO::s_DATA_KEY);
+    typename T::sptr readObj = readerSrv->getOutput<T>(io::base::services::s_DATA_KEY);
     readerSrv->stop().wait();
     services::OSR::unregisterService( readerSrv );
 

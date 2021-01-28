@@ -24,9 +24,9 @@
 
 #include "ioDicomWeb/config.hpp"
 
-#include <fwIO/IReader.hpp>
-
 #include <fwNetworkIO/http/ClientQt.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <QLineEdit>
 #include <QSlider>
@@ -166,7 +166,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    ::fwIO::IReader::wptr m_dicomReader;
+    io::base::services::IReader::wptr m_dicomReader;
 
     /// Image Key
     std::string m_imageKey;

@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 #include <vector>
 
@@ -45,19 +45,19 @@ namespace fwVtkIO
  *
  * Write a Bitmap Image using the VTK library
  */
-class BitmapImageWriter : public ::fwDataIO::writer::GenericObjectWriter< data::Image >,
-                          public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class BitmapImageWriter : public io::base::writer::GenericObjectWriter< data::Image >,
+                          public data::location::enableSingleFile< io::base::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(BitmapImageWriter, ::fwDataIO::writer::GenericObjectWriter< data::Image >,
-                     ::fwDataIO::writer::factory::New< BitmapImageWriter >);
+    fwCoreClassMacro(BitmapImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
+                     io::base::writer::factory::New< BitmapImageWriter >);
 
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    FWVTKIO_API BitmapImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API BitmapImageWriter(io::base::writer::IObjectWriter::Key key);
 
     //! @brief Destructor.
     FWVTKIO_API ~BitmapImageWriter();

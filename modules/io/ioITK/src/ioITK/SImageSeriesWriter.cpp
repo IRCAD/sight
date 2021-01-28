@@ -31,11 +31,11 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwIO/IWriter.hpp>
-
 #include <fwItkIO/ImageWriter.hpp>
 
 #include <services/macros.hpp>
+
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -45,7 +45,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SImageSeriesWriter, ::sight::data::ImageSeries )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioITK::SImageSeriesWriter, ::sight::data::ImageSeries )
 
 //------------------------------------------------------------------------------
 
@@ -61,16 +61,16 @@ SImageSeriesWriter::~SImageSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SImageSeriesWriter::getIOPathType() const
+::io::base::services::IOPathType SImageSeriesWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -134,8 +134,8 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
 
-        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", iseries);
+        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();
         SLM_ASSERT("associatedImage not instanced", associatedImage);

@@ -29,7 +29,7 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
+#include <io/base/reader/registry/macros.hpp>
 
 #include <vtkOBJReader.h>
 #include <vtkPolyData.h>
@@ -41,8 +41,8 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ObjMeshReader::ObjMeshReader(::fwDataIO::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
+ObjMeshReader::ObjMeshReader(io::base::reader::IObjectReader::Key) :
+    data::location::enableSingleFile< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("OBJ Mesh reader"))
 {
 }

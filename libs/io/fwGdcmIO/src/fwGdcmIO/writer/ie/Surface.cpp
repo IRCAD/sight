@@ -35,13 +35,13 @@
 #include <data/tools/Mesh.hpp>
 #include <data/types.hpp>
 
-#include <fwDataIO/reader/DictionaryReader.hpp>
-
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <gdcmSurfaceHelper.h>
 #include <gdcmSurfaceWriter.h>
 #include <gdcmUIDGenerator.h>
+
+#include <io/base/reader/DictionaryReader.hpp>
 
 #include <sstream>
 

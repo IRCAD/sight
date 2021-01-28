@@ -24,7 +24,7 @@
 
 #include "ioVTK/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -58,7 +58,7 @@ namespace ioVTK
  * - \b data [data::ImageSeries]: ImageSeries containing read image
  *
  */
-class IOVTK_CLASS_API SImageSeriesReader : public ::fwIO::IReader
+class IOVTK_CLASS_API SImageSeriesReader : public io::base::services::IReader
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesReader,  ::fwIO::IReader)
+    fwCoreServiceMacro(SImageSeriesReader,  io::base::services::IReader)
 
     /**
      * @brief Configure the image path.
@@ -90,7 +90,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

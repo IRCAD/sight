@@ -43,12 +43,12 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <fwIO/ioTypes.hpp>
-
 #include <services/IService.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ObjectService.hpp>
 #include <services/registry/ServiceConfig.hpp>
+
+#include <io/base/services/ioTypes.hpp>
 
 #include <QApplication>
 #include <QDropEvent>
@@ -773,10 +773,10 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
     {
         ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
-        ioSelectorSrv->setObjectId(::fwIO::s_DATA_KEY, "objRead");
+        ioSelectorSrv->setObjectId(io::base::services::s_DATA_KEY, "objRead");
         ioSelectorSrv->start();
         ioSelectorSrv->update();
-        obj = ioSelectorSrv->getOutput< data::Object >(::fwIO::s_DATA_KEY);
+        obj = ioSelectorSrv->getOutput< data::Object >(io::base::services::s_DATA_KEY);
         ioSelectorSrv->stop();
         services::OSR::unregisterService( ioSelectorSrv );
     }

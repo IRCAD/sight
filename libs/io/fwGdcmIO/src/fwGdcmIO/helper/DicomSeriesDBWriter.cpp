@@ -46,9 +46,9 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-DicomSeriesDBWriter::DicomSeriesDBWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+DicomSeriesDBWriter::DicomSeriesDBWriter(io::base::writer::IObjectWriter::Key key) :
+    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
+    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_aggregator(core::jobs::Aggregator::New("Writing Dicom series")),
     m_enableZippedArchive(false)
 

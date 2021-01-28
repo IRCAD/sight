@@ -31,7 +31,7 @@
 
 #include <fwGdcmIO/writer/Series.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 
@@ -57,11 +57,11 @@ namespace ioGdcm
  * @subsection Input Input
  * - \b data [data::ModelSeries]: ModelSeries to save in Dicom.
  */
-class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public ::fwIO::IWriter
+class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSurfaceSegmentationWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SSurfaceSegmentationWriter,  io::base::services::IWriter)
 
     /**
      * @brief Constructor
@@ -98,7 +98,7 @@ protected:
     IOGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
+    IOGDCM_API io::base::services::IOPathType getIOPathType() const override;
 
 private:
 

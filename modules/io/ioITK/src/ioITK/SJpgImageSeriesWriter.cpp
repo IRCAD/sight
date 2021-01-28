@@ -30,9 +30,9 @@
 #include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -42,7 +42,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::SJpgImageSeriesWriter, ::sight::data::ImageSeries )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioITK::SJpgImageSeriesWriter, ::sight::data::ImageSeries )
 
 //------------------------------------------------------------------------------
 
@@ -58,16 +58,16 @@ SJpgImageSeriesWriter::~SJpgImageSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SJpgImageSeriesWriter::getIOPathType() const
+::io::base::services::IOPathType SJpgImageSeriesWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SJpgImageSeriesWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -149,8 +149,8 @@ void SJpgImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", imageSeries);
+        data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
         SLM_ASSERT("Image from image series is not instanced", imageSeries->getImage());
 

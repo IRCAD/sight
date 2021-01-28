@@ -24,7 +24,7 @@
 
 #include "ioCalibration/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 namespace ioCalibration
 {
@@ -75,10 +75,10 @@ namespace ioCalibration
     </opencv_storage>
  * @endcode
  */
-class IOCALIBRATION_CLASS_API SOpenCVWriter : public ::fwIO::IWriter
+class IOCALIBRATION_CLASS_API SOpenCVWriter : public io::base::services::IWriter
 {
 public:
-    fwCoreServiceMacro(SOpenCVWriter, ::fwIO::IWriter)
+    fwCoreServiceMacro(SOpenCVWriter, io::base::services::IWriter)
 
     ///Constructor
     IOCALIBRATION_API SOpenCVWriter();
@@ -122,7 +122,7 @@ protected:
     IOCALIBRATION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    IOCALIBRATION_API ::fwIO::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API io::base::services::IOPathType getIOPathType() const override;
 
 };
 

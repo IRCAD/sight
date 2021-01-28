@@ -5,9 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES
         core
         data
-        fwDataIO
+        io_base
         services
         base
         qt
-        fwIO
 )

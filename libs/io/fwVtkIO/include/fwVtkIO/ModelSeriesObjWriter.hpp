@@ -26,7 +26,7 @@
 
 #include <data/location/Folder.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
@@ -53,19 +53,19 @@ namespace fwVtkIO
  *
  * Write a data::Reconstruction as .obj file using the VTK lib and the obj format.
  */
-class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
-                             public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
+class ModelSeriesObjWriter : public io::base::writer::GenericObjectWriter< data::ModelSeries >,
+                             public data::location::enableFolder< io::base::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(ModelSeriesObjWriter, ::fwDataIO::writer::GenericObjectWriter< data::ModelSeries >,
-                     ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >)
+    fwCoreClassMacro(ModelSeriesObjWriter, io::base::writer::GenericObjectWriter< data::ModelSeries >,
+                     io::base::writer::factory::New< ModelSeriesObjWriter >)
 
     fwCoreAllowSharedFromThis()
 
     /// Constructor.
-    FWVTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API ModelSeriesObjWriter(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor.
     FWVTKIO_API ~ModelSeriesObjWriter();

@@ -29,7 +29,7 @@
 #include <data/Color.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwDataIO/reader/DictionaryReader.hpp>
+#include <io/base/reader/DictionaryReader.hpp>
 
 #include <data/DicomSeries.hpp>
 

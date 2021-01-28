@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
+#include <io/base/reader/GenericObjectReader.hpp>
 
 #include <filesystem>
 
@@ -44,18 +44,18 @@ namespace fwVtkIO
  *
  * Read a VTK Image using the VTK lib
  */
-class ImageReader : public ::fwDataIO::reader::GenericObjectReader< data::Image >,
-                    public data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class ImageReader : public io::base::reader::GenericObjectReader< data::Image >,
+                    public data::location::enableSingleFile< io::base::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(ImageReader, ::fwDataIO::reader::GenericObjectReader< data::Image >,
-                     ::fwDataIO::reader::factory::New< ImageReader >);
+    fwCoreClassMacro(ImageReader, io::base::reader::GenericObjectReader< data::Image >,
+                     io::base::reader::factory::New< ImageReader >);
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    FWVTKIO_API ImageReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API ImageReader(io::base::reader::IObjectReader::Key key);
 
     //! @brief Destructor.
     FWVTKIO_API ~ImageReader();

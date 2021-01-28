@@ -24,7 +24,7 @@
 
 #include "ioData/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 
@@ -45,17 +45,17 @@ namespace ioData
  * @subsection Input Input
  * - \b data [data::TransformationMatrix3D]: matrix to save.
  */
-class IODATA_CLASS_API TransformationMatrix3DWriterService : public ::fwIO::IWriter
+class IODATA_CLASS_API TransformationMatrix3DWriterService : public io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(TransformationMatrix3DWriterService, ::fwIO::IWriter)
+    fwCoreServiceMacro(TransformationMatrix3DWriterService, io::base::services::IWriter)
 
     /// Super class of writer services
-    typedef ::fwIO::IWriter SuperClass;
+    typedef io::base::services::IWriter SuperClass;
 
-    /** @name Specified writer service methods ( override from ::fwIO::IWriter )
+    /** @name Specified writer service methods ( override from io::base::services::IWriter )
      * @{
      */
 
@@ -78,7 +78,7 @@ public:
     IODATA_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IODATA_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     ///@}
 
@@ -111,7 +111,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( services::IService )
      *
      * This method is used to update the service.
-     * The transformation matrix is written with the writer ::fwDataIO::writer::TransformationMatrix3DWriter.
+     * The transformation matrix is written with the writer io::base::writer::TransformationMatrix3DWriter.
      * Notify writing.
      */
     IODATA_API void updating() override;

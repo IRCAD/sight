@@ -5,10 +5,9 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwDataIO
+    io_base
     base
     services
-    fwIO
     )
 set( REQUIREMENTS  )
 

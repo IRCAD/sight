@@ -8,7 +8,7 @@ set( DEPENDENCIES
     base
     qt
     services
-    fwIO
+    io_base
 )
 set( REQUIREMENTS 
     ioAtoms

@@ -26,7 +26,7 @@
 
 #include <core/com/Slot.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -172,7 +172,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    ::fwIO::IReader::wptr m_dicomReader;
+    io::base::services::IReader::wptr m_dicomReader;
 
     /// Temporary SeriesDB
     SPTR(data::SeriesDB) m_tempSeriesDB;

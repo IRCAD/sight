@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -63,11 +63,11 @@ namespace ioVTK
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOVTK_CLASS_API SModelSeriesReader : public ::fwIO::IReader
+class IOVTK_CLASS_API SModelSeriesReader : public io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(SModelSeriesReader,  ::fwIO::IReader)
+    fwCoreServiceMacro(SModelSeriesReader,  io::base::services::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -98,7 +98,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

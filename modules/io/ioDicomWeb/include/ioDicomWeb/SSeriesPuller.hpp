@@ -26,11 +26,11 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <fwNetworkIO/http/ClientQt.hpp>
 
 #include <services/IController.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 
@@ -125,7 +125,7 @@ private:
     ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Reader
-    ::fwIO::IReader::sptr m_dicomReader;
+    io::base::services::IReader::sptr m_dicomReader;
 
     /// Reader Config
     std::string m_dicomReaderSrvConfig;

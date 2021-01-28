@@ -33,12 +33,12 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <fwIO/ioTypes.hpp>
-#include <fwIO/IReader.hpp>
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
+
+#include <io/base/services/ioTypes.hpp>
+#include <io/base/services/IReader.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -466,10 +466,10 @@ void STransferFunction::renameTF()
 
 void STransferFunction::importTF()
 {
-    const data::TransferFunction::sptr tf = data::TransferFunction::New();
-    const ::fwIO::IReader::sptr reader    = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    const data::TransferFunction::sptr tf          = data::TransferFunction::New();
+    const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
 
-    reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
+    reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
     services::IService::ConfigType config;
     config.add("archive.<xmlattr>.backend", "json");
@@ -505,9 +505,9 @@ void STransferFunction::importTF()
 
 void STransferFunction::exportTF()
 {
-    const ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >("::ioAtoms::SWriter");
 
-    writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
+    writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
 
     services::IService::ConfigType config;
     config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
@@ -562,9 +562,10 @@ void STransferFunction::initTransferFunctions()
                 }
             }
 
-            const data::TransferFunction::sptr tf = data::TransferFunction::New();
-            const ::fwIO::IReader::sptr reader    = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
-            reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
+            const data::TransferFunction::sptr tf          = data::TransferFunction::New();
+            const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+                "::ioAtoms::SReader");
+            reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
                 "service");

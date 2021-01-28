@@ -24,7 +24,7 @@
 
 #include "ioCalibration/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 namespace ioCalibration
 {
@@ -41,10 +41,10 @@ namespace ioCalibration
  * @subsection In-Out In-Out
  * - \b data [data::CameraSeries]: object to read
  */
-class IOCALIBRATION_CLASS_API SOpenCVReader : public ::fwIO::IReader
+class IOCALIBRATION_CLASS_API SOpenCVReader : public io::base::services::IReader
 {
 public:
-    fwCoreServiceMacro(SOpenCVReader, ::fwIO::IReader)
+    fwCoreServiceMacro(SOpenCVReader, io::base::services::IReader)
 
     ///Constructor
     IOCALIBRATION_API SOpenCVReader();
@@ -88,7 +88,7 @@ protected:
     IOCALIBRATION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    IOCALIBRATION_API ::fwIO::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API io::base::services::IOPathType getIOPathType() const override;
 
 };
 

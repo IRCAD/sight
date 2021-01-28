@@ -36,11 +36,11 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ServiceConfig.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -52,7 +52,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioGdcm::SSeriesDBReader, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -74,9 +74,9 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SSeriesDBReader::getIOPathType() const
+::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ void SSeriesDBReader::openLocationDialog()
 
 void SSeriesDBReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -330,7 +330,7 @@ void SSeriesDBReader::updating()
         if( !localSeriesDB->empty() )
         {
             // Retrieve dataStruct associated with this service
-            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
+            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
 
             // Clear SeriesDB and add new series
             data::tools::helper::SeriesDB sDBhelper(seriesDB);

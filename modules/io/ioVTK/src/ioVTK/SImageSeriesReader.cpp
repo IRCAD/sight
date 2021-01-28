@@ -40,14 +40,14 @@
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
 
-#include <fwIO/ioTypes.hpp>
-#include <fwIO/IReader.hpp>
-
 #include <fwVtkIO/BitmapImageReader.hpp>
 
 #include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <io/base/services/ioTypes.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -59,7 +59,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SImageSeriesReader, ::sight::data::ImageSeries )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioVTK::SImageSeriesReader, ::sight::data::ImageSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -72,9 +72,9 @@ SImageSeriesReader::SImageSeriesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SImageSeriesReader::getIOPathType() const
+::io::base::services::IOPathType SImageSeriesReader::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ void SImageSeriesReader::stopping()
 
 void SImageSeriesReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ void SImageSeriesReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(::fwIO::s_DATA_KEY);
+        data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(io::base::services::s_DATA_KEY);
         SLM_ASSERT("ImageSeries is not instanced", imageSeries);
 
         ui::base::Cursor cursor;
@@ -215,7 +215,7 @@ void SImageSeriesReader::updating()
 
 void SImageSeriesReader::notificationOfDBUpdate()
 {
-    data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(::fwIO::s_DATA_KEY);
+    data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(io::base::services::s_DATA_KEY);
     SLM_ASSERT("imageSeries not instanced", imageSeries);
 
     auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);

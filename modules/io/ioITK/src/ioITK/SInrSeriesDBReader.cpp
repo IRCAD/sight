@@ -37,13 +37,13 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <fwItkIO/ImageReader.hpp>
 
 #include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -53,7 +53,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::SInrSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioITK::SInrSeriesDBReader, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -69,16 +69,16 @@ SInrSeriesDBReader::~SInrSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SInrSeriesDBReader::getIOPathType() const
+::io::base::services::IOPathType SInrSeriesDBReader::getIOPathType() const
 {
-    return ::fwIO::FILES;
+    return io::base::services::FILES;
 }
 
 //------------------------------------------------------------------------------
 
 void SInrSeriesDBReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void SInrSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", seriesDB);
+        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 

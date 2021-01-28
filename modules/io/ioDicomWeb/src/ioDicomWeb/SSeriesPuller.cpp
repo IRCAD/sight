@@ -111,10 +111,10 @@ void SSeriesPuller::starting()
     // Create reader
     services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
     m_dicomReader =
-        ::fwIO::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+        io::base::services::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioDicomWeb::SSeriesPuller.",
                m_dicomReader);
-    services::OSR::registerService(m_tempSeriesDB, ::fwIO::s_DATA_KEY,
+    services::OSR::registerService(m_tempSeriesDB, io::base::services::s_DATA_KEY,
                                    services::IService::AccessType::INOUT, m_dicomReader);
 
     if(!m_dicomReaderSrvConfig.empty())
@@ -122,11 +122,11 @@ void SSeriesPuller::starting()
         // Get the config
         core::runtime::ConfigurationElement::csptr readerConfig =
             services::registry::ServiceConfig::getDefault()->getServiceConfig(
-                m_dicomReaderSrvConfig, "::fwIO::IReader");
+                m_dicomReaderSrvConfig, "::io::base::services::IReader");
 
         SLM_ASSERT("Sorry, there is no service configuration "
                    << m_dicomReaderSrvConfig
-                   << " for ::fwIO::IReader", readerConfig);
+                   << " for io::base::services::IReader", readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }

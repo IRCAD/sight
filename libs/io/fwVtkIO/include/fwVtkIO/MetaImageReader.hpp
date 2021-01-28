@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
+#include <io/base/reader/GenericObjectReader.hpp>
 
 #include <filesystem>
 
@@ -45,19 +45,19 @@ namespace fwVtkIO
  *
  * Read a MetaImage using the VTK lib
  */
-class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< data::Image >,
-                        public data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
+class MetaImageReader : public io::base::reader::GenericObjectReader< data::Image >,
+                        public data::location::enableSingleFile< io::base::reader::IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(MetaImageReader, ::fwDataIO::reader::GenericObjectReader< data::Image >,
-                     ::fwDataIO::reader::factory::New< MetaImageReader >);
+    fwCoreClassMacro(MetaImageReader, io::base::reader::GenericObjectReader< data::Image >,
+                     io::base::reader::factory::New< MetaImageReader >);
 
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    FWVTKIO_API MetaImageReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API MetaImageReader(io::base::reader::IObjectReader::Key key);
 
     //! @brief Destructor.
     FWVTKIO_API ~MetaImageReader();

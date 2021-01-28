@@ -29,7 +29,7 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
@@ -42,8 +42,8 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-VtiImageWriter::VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+VtiImageWriter::VtiImageWriter(io::base::writer::IObjectWriter::Key) :
+    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_job(core::jobs::Observer::New("VTK Image Writer"))
 {
 }

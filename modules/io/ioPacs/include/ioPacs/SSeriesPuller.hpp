@@ -27,12 +27,12 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <fwPacsIO/SeriesRetriever.hpp>
 
 #include <services/IController.hpp>
 #include <services/IHasServices.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <vector>
 
@@ -145,7 +145,7 @@ private:
     std::string m_readerConfig { "" };
 
     /// Contains the DICOM reader.
-    ::fwIO::IReader::sptr m_dicomReader { nullptr };
+    io::base::services::IReader::sptr m_dicomReader { nullptr };
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB { nullptr };

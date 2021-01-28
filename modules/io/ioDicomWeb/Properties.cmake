@@ -10,7 +10,7 @@ set( DEPENDENCIES
     fwNetworkIO
     data
     services
-    fwIO
+    io_base
     )
 set( REQUIREMENTS
     data

@@ -30,9 +30,9 @@
 #include <data/location/Folder.hpp>
 #include <data/location/MultiFiles.hpp>
 
-#include <fwDataIO/reader/GenericObjectReader.hpp>
-
 #include <services/IService.hpp>
+
+#include <io/base/reader/GenericObjectReader.hpp>
 
 namespace sight::data
 {
@@ -52,9 +52,9 @@ namespace fwDcmtkIO
  *
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
  */
-class FWDCMTKIO_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
-                                           public data::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
-                                           public data::location::enableMultiFiles< ::fwDataIO::reader::
+class FWDCMTKIO_CLASS_API SeriesDBReader : public io::base::reader::GenericObjectReader< data::SeriesDB >,
+                                           public data::location::enableFolder< io::base::reader::IObjectReader >,
+                                           public data::location::enableMultiFiles< io::base::reader::
                                                                                     IObjectReader >,
                                            public core::tools::ProgressAdviser
 {
@@ -63,8 +63,8 @@ public:
 
     fwCoreClassMacro(
         SeriesDBReader,
-        ::fwDataIO::reader::GenericObjectReader< data::SeriesDB >,
-        ::fwDataIO::reader::factory::New< SeriesDBReader >
+        io::base::reader::GenericObjectReader< data::SeriesDB >,
+        io::base::reader::factory::New< SeriesDBReader >
         );
     fwCoreAllowSharedFromThis();
 
@@ -75,7 +75,7 @@ public:
     typedef std::vector< std::string > FilenameContainerType;
     typedef std::vector< std::string > SupportedSOPClassContainerType;
 
-    FWDCMTKIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWDCMTKIO_API SeriesDBReader(io::base::reader::IObjectReader::Key key);
 
     FWDCMTKIO_API ~SeriesDBReader();
 

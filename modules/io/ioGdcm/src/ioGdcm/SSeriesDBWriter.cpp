@@ -34,9 +34,9 @@
 #include <fwGdcmIO/helper/Fiducial.hpp>
 #include <fwGdcmIO/writer/SeriesDB.hpp>
 
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -47,7 +47,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SSeriesDBWriter, ::sight::data::Vector )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioGdcm::SSeriesDBWriter, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ void SSeriesDBWriter::stopping()
 
 void SSeriesDBWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::Vector::csptr vector = this->getInput< data::Vector >(::fwIO::s_DATA_KEY);
+        data::Vector::csptr vector = this->getInput< data::Vector >(io::base::services::s_DATA_KEY);
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
@@ -202,9 +202,9 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
 
 //-----------------------------------------------------------------------------
 
-::fwIO::IOPathType SSeriesDBWriter::getIOPathType() const
+::io::base::services::IOPathType SSeriesDBWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    data::Vector::csptr vector = this->getInput< data::Vector >(::fwIO::s_DATA_KEY);
+    data::Vector::csptr vector = this->getInput< data::Vector >(io::base::services::s_DATA_KEY);
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();

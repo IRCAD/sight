@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 
@@ -54,11 +54,11 @@ namespace ioITK
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOITK_CLASS_API InrImageReaderService : public ::fwIO::IReader
+class IOITK_CLASS_API InrImageReaderService : public io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(InrImageReaderService,  ::fwIO::IReader)
+    fwCoreServiceMacro(InrImageReaderService,  io::base::services::IReader)
 
     IOITK_API InrImageReaderService() noexcept;
 
@@ -96,7 +96,7 @@ protected:
     IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FILE
-    IOITK_API ::fwIO::IOPathType getIOPathType() const override;
+    IOITK_API io::base::services::IOPathType getIOPathType() const override;
 
 private:
 

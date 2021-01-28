@@ -43,13 +43,13 @@
 #include <data/Reconstruction.hpp>
 #include <data/Study.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
-
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/stream.hpp>
+
+#include <io/base/reader/registry/macros.hpp>
 
 #include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
@@ -94,8 +94,8 @@ void initSeries(data::Series::sptr series, const std::string& instanceUID)
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key) :
-    data::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
+SeriesDBReader::SeriesDBReader(io::base::reader::IObjectReader::Key) :
+    data::location::enableMultiFiles< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("SeriesDB reader")),
     m_lazyMode(true)
 {

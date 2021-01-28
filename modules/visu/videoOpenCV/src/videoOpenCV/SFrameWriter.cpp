@@ -47,7 +47,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SFrameWriter, ::sight::data::FrameTL)
+fwServicesRegisterMacro( io::base::services::IWriter, ::videoOpenCV::SFrameWriter, ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
@@ -77,16 +77,16 @@ SFrameWriter::~SFrameWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SFrameWriter::getIOPathType() const
+::io::base::services::IOPathType SFrameWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SFrameWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 
     services::IService::ConfigType config = this->getConfigTree();
 
@@ -164,7 +164,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(::fwIO::s_DATA_KEY);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(io::base::services::s_DATA_KEY);
         // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
         // between frames and timestamps.
         // TODO: experiment with queuing frames and writing them from a worker thread.
@@ -222,7 +222,7 @@ void SFrameWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(::fwIO::s_DATA_KEY);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(io::base::services::s_DATA_KEY);
 
         if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -295,7 +295,7 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
 ::services::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
-    connections.push(::fwIO::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(io::base::services::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

@@ -42,7 +42,7 @@
 namespace videoOpenCV
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, ::sight::data::FrameTL)
+fwServicesRegisterMacro( io::base::services::IWriter, ::videoOpenCV::SVideoWriter, ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -68,16 +68,16 @@ SVideoWriter::~SVideoWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SVideoWriter::getIOPathType() const
+::io::base::services::IOPathType SVideoWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SVideoWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        auto frameTL = this->getLockedInput< data::FrameTL >(::fwIO::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< data::FrameTL >(io::base::services::s_DATA_KEY);
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
@@ -277,7 +277,7 @@ void SVideoWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        auto frameTL = this->getLockedInput< data::FrameTL >(::fwIO::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< data::FrameTL >(io::base::services::s_DATA_KEY);
 
         if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -320,7 +320,7 @@ void SVideoWriter::stopRecord()
 ::services::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
-    connections.push(::fwIO::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    connections.push(io::base::services::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
     return connections;
 }
 

@@ -46,7 +46,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioTimeline::SMatricesReader, ::sight::data::MatrixTL)
+fwServicesRegisterMacro( io::base::services::IReader, ::ioTimeline::SMatricesReader, ::sight::data::MatrixTL)
 
 static const services::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -93,16 +93,16 @@ SMatricesReader::~SMatricesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SMatricesReader::getIOPathType() const
+::io::base::services::IOPathType SMatricesReader::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatricesReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 
     services::IService::ConfigType config = this->getConfigTree();
 

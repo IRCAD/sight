@@ -27,10 +27,10 @@
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -182,7 +182,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Contains the DICOM reader.
-    ::fwIO::IReader::wptr m_dicomReader;
+    io::base::services::IReader::wptr m_dicomReader;
 
     /// Defines the image key.
     std::string m_imageKey;

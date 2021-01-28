@@ -2,42 +2,42 @@
     <library name="ioITK" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IReader</type>
+        <type>::sight::sight::io::base::services::IReader</type>
         <service>::ioITK::InrImageReaderService</service>
         <object>::sight::data::Image</object>
         <desc>Inrimage Reader (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IWriter</type>
+        <type>::sight::sight::io::base::services::IWriter</type>
         <service>::ioITK::InrImageWriterService</service>
         <object>::sight::data::Image</object>
         <desc>Inrimage Writer (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IWriter</type>
+        <type>::sight::sight::io::base::services::IWriter</type>
         <service>::ioITK::JpgImageWriterService</service>
         <object>::sight::data::Image</object>
         <desc>Jpeg Writer (ITK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IWriter</type>
+        <type>::sight::sight::io::base::services::IWriter</type>
         <service>::ioITK::SJpgImageSeriesWriter</service>
         <object>::sight::data::ImageSeries</object>
         <desc>ImageSeries Jpeg Writer (ITK)</desc>
     </extension>
     
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IReader</type>
+        <type>::sight::sight::io::base::services::IReader</type>
         <service>::ioITK::SInrSeriesDBReader</service>
         <object>::sight::data::SeriesDB</object>
         <desc>SeriesDB Inrimage Reader (ITK)</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IWriter</type>
+        <type>::sight::sight::io::base::services::IWriter</type>
         <service>::ioITK::SImageSeriesWriter</service>
         <object>::sight::data::ImageSeries</object>
         <desc>ImageSeries Inr Writer (ITK)</desc>

@@ -24,7 +24,7 @@
 
 #include "ioCalibration/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <string>
 
@@ -50,11 +50,11 @@ namespace ioCalibration
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.
  */
-class IOCALIBRATION_CLASS_API SCalibrationImagesWriter : public ::fwIO::IWriter
+class IOCALIBRATION_CLASS_API SCalibrationImagesWriter : public io::base::services::IWriter
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationImagesWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SCalibrationImagesWriter,  io::base::services::IWriter)
 
     /// Constructor.
     IOCALIBRATION_API SCalibrationImagesWriter() noexcept;
@@ -75,7 +75,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    IOCALIBRATION_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /// Configures the output file format.
     IOCALIBRATION_API virtual void configuring() override;

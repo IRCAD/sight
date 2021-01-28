@@ -26,16 +26,16 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwDataIO/writer/MeshWriter.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/writer/MeshWriter.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioData::MeshWriterService, ::sight::data::Mesh )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioData::MeshWriterService, ::sight::data::Mesh )
 
 namespace ioData
 {
@@ -60,16 +60,16 @@ MeshWriterService::~MeshWriterService() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType MeshWriterService::getIOPathType() const
+::io::base::services::IOPathType MeshWriterService::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void MeshWriterService::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -112,10 +112,10 @@ void MeshWriterService::updating()
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        data::Mesh::csptr mesh = this->getInput< data::Mesh >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", mesh);
+        data::Mesh::csptr mesh = this->getInput< data::Mesh >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", mesh);
 
-        ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
+        io::base::writer::MeshWriter::sptr writer = io::base::writer::MeshWriter::New();
         writer->setObject( mesh );
         writer->setFile(this->getFile());
 

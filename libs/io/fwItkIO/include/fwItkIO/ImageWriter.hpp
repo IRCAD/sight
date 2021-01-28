@@ -29,23 +29,23 @@
 #include <data/Image.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace fwItkIO
 {
 
-class ImageWriter : public ::fwDataIO::writer::GenericObjectWriter< data::Image >,
-                    public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+class ImageWriter : public io::base::writer::GenericObjectWriter< data::Image >,
+                    public data::location::enableSingleFile< io::base::writer::IObjectWriter >,
                     public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(ImageWriter, ::fwDataIO::writer::GenericObjectWriter< data::Image>,
-                     ::fwDataIO::writer::factory::New< ImageWriter >);
+    fwCoreClassMacro(ImageWriter, io::base::writer::GenericObjectWriter< data::Image>,
+                     io::base::writer::factory::New< ImageWriter >);
     fwCoreAllowSharedFromThis();
 
-    FWITKIO_API ImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWITKIO_API ImageWriter(io::base::writer::IObjectWriter::Key key);
 
     FWITKIO_API ~ImageWriter();
 

@@ -30,11 +30,11 @@
 
 #include <data/DicomSeries.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
-
 #include <fwZip/WriteZipArchive.hpp>
 
 #include <boost/foreach.hpp>
+
+#include <io/base/writer/registry/macros.hpp>
 
 fwDataIOWriterRegisterMacro( ::fwGdcmIO::helper::DicomSeriesWriter );
 
@@ -45,8 +45,8 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key) :
-    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+DicomSeriesWriter::DicomSeriesWriter(io::base::writer::IObjectWriter::Key) :
+    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
     m_writeCount(0),
     m_job(core::jobs::Observer::New("Writing DICOM files"))
 {

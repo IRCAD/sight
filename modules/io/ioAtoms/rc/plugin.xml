@@ -5,14 +5,14 @@
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IReader</type>
+        <type>::sight::sight::io::base::services::IReader</type>
         <service>::ioAtoms::SReader</service>
         <object>::sight::data::Object</object>
         <desc>Atoms reader</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::fwIO::IWriter</type>
+        <type>::sight::sight::io::base::services::IWriter</type>
         <service>::ioAtoms::SWriter</service>
         <object>::sight::data::Object</object>
         <desc>Atoms writer</desc>

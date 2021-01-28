@@ -24,7 +24,7 @@
 
 #include "ioDcmtk/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -53,11 +53,11 @@ namespace ioDcmtk
  * @subsection In-Out In-Out
  * - \b data [data::SeriesDB]: dicom seriesDB to read.
  */
-class IODCMTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
+class IODCMTK_CLASS_API SSeriesDBReader : public io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
+    fwCoreServiceMacro(SSeriesDBReader,  io::base::services::IReader)
     /**
      * @brief   constructor
      *
@@ -125,7 +125,7 @@ protected:
     IODCMTK_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FOLDER
-    IODCMTK_API ::fwIO::IOPathType getIOPathType() const override;
+    IODCMTK_API io::base::services::IOPathType getIOPathType() const override;
 
 private:
 

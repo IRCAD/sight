@@ -36,7 +36,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
@@ -52,8 +52,8 @@ namespace fwItkIO
 
 //------------------------------------------------------------------------------
 
-JpgImageWriter::JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key key) :
+    data::location::enableFolder< io::base::writer::IObjectWriter >(this)
 {
 }
 

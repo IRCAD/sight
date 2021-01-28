@@ -24,7 +24,7 @@
 
 #include "ioITK/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -53,11 +53,11 @@ namespace ioITK
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class IOITK_CLASS_API SJpgImageSeriesWriter : public ::fwIO::IWriter
+class IOITK_CLASS_API SJpgImageSeriesWriter : public io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SJpgImageSeriesWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SJpgImageSeriesWriter,  io::base::services::IWriter)
 
     IOITK_API SJpgImageSeriesWriter() noexcept;
 
@@ -91,7 +91,7 @@ protected:
     IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FOLDER
-    IOITK_API ::fwIO::IOPathType getIOPathType() const override;
+    IOITK_API io::base::services::IOPathType getIOPathType() const override;
 
 };
 

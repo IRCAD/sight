@@ -30,9 +30,9 @@
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <fwIO/ioTypes.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/services/ioTypes.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -59,7 +59,7 @@ SOpenCVReader::~SOpenCVReader()
 
 void SOpenCVReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ void SOpenCVReader::stopping()
 void SOpenCVReader::updating()
 {
 
-    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(::fwIO::s_DATA_KEY);
+    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(io::base::services::s_DATA_KEY);
 
     bool use_dialog = false;
     //use dialog only if no file was configured
@@ -273,9 +273,9 @@ void SOpenCVReader::swapping()
 
 // ----------------------------------------------------------------------------
 
-::fwIO::IOPathType SOpenCVReader::getIOPathType() const
+::io::base::services::IOPathType SOpenCVReader::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 // ----------------------------------------------------------------------------

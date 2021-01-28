@@ -24,7 +24,7 @@
 
 #include "ioVTK/config.hpp"  // Declaration of class and function export
 
-#include <fwIO/IReader.hpp> // Definition of abstract reader class
+#include <io/base/services/IReader.hpp> // Definition of abstract reader class
 
 #include <filesystem> // Used to save the file system path of loaded image
 
@@ -66,7 +66,7 @@ namespace ioVTK
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOVTK_CLASS_API SImageReader : public ::fwIO::IReader
+class IOVTK_CLASS_API SImageReader : public io::base::services::IReader
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageReader,  ::fwIO::IReader)
+    fwCoreServiceMacro(SImageReader,  io::base::services::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -111,7 +111,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /// Method called when the service is started, does nothing.
     IOVTK_API virtual void starting() override;

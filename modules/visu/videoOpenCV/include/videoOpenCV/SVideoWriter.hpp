@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -50,12 +50,12 @@ namespace videoOpenCV
  * @subsection Input Input
  * - \b data [data::FrameTL]: timeline containing the frame to save.
  */
-class VIDEOOPENCV_CLASS_API SVideoWriter : public ::fwIO::IWriter
+class VIDEOOPENCV_CLASS_API SVideoWriter : public io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SVideoWriter, ::fwIO::IWriter)
+    fwCoreServiceMacro(SVideoWriter, io::base::services::IWriter)
 
     /// Constructor.
     VIDEOOPENCV_API SVideoWriter() noexcept;
@@ -76,8 +76,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     VIDEOOPENCV_API virtual void openLocationDialog() override;
 
-    /// Return file type (::fwIO::FILE)
-    VIDEOOPENCV_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::services::FILE)
+    VIDEOOPENCV_API virtual io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 

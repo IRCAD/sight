@@ -3,7 +3,7 @@ set( NAME fwGdcmIO )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
-    fwDataIO
+    io_base
     fwDicomIOFilter
     fwDicomTools
     core

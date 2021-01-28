@@ -27,11 +27,11 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <fwIO/IWriter.hpp>
-
 #include <fwItkIO/JpgImageWriter.hpp>
 
 #include <services/macros.hpp>
+
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -41,7 +41,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioITK::JpgImageWriterService, ::sight::data::Image )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioITK::JpgImageWriterService, ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 
@@ -57,16 +57,16 @@ JpgImageWriterService::~JpgImageWriterService() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType JpgImageWriterService::getIOPathType() const
+::io::base::services::IOPathType JpgImageWriterService::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void JpgImageWriterService::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void JpgImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::Image::csptr image = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::csptr image = this->getInput< data::Image >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
         ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

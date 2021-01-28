@@ -30,11 +30,10 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwDataIO/reader/MeshReader.hpp>
-
-#include <fwIO/IReader.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/reader/MeshReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -43,7 +42,7 @@
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioData::STrianMeshReader, ::sight::data::Mesh )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioData::STrianMeshReader, ::sight::data::Mesh )
 
 namespace ioData
 {
@@ -67,16 +66,16 @@ std::vector< std::string > STrianMeshReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType STrianMeshReader::getIOPathType() const
+::io::base::services::IOPathType STrianMeshReader::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void STrianMeshReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -119,10 +118,10 @@ void STrianMeshReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve object
-        data::Mesh::sptr mesh = this->getInOut< data::Mesh >(::fwIO::s_DATA_KEY);
+        data::Mesh::sptr mesh = this->getInOut< data::Mesh >(io::base::services::s_DATA_KEY);
         SLM_ASSERT("mesh not instanced", mesh);
 
-        ::fwDataIO::reader::MeshReader::sptr reader = ::fwDataIO::reader::MeshReader::New();
+        io::base::reader::MeshReader::sptr reader = io::base::reader::MeshReader::New();
         reader->setObject( mesh );
         reader->setFile(this->getFile());
 

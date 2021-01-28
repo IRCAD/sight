@@ -31,7 +31,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 namespace fwGdcmIO
 {
@@ -43,15 +43,15 @@ namespace writer
  * It defines needs of data storage and delegates writing to appropriate tools.
  * It manages all related data of one patient.
  */
-class FWGDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter< data::Series >,
-                                  public data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+class FWGDCMIO_CLASS_API Series : public io::base::writer::GenericObjectWriter< data::Series >,
+                                  public data::location::enableFolder< io::base::writer::IObjectWriter >,
                                   public core::tools::ProgressAdviser
 {
 
 public:
 
-    fwCoreClassMacro(Series, ::fwDataIO::writer::GenericObjectWriter< data::Series >,
-                     ::fwDataIO::writer::factory::New< Series >);
+    fwCoreClassMacro(Series, io::base::writer::GenericObjectWriter< data::Series >,
+                     io::base::writer::factory::New< Series >);
 
     typedef enum
     {
@@ -63,7 +63,7 @@ public:
     typedef std::map< std::string, SPTR(::fwGdcmIO::container::DicomInstance) > DicomInstanceMapType;
 
     /// Constructor
-    FWGDCMIO_API Series(::fwDataIO::writer::IObjectWriter::Key key);
+    FWGDCMIO_API Series(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor
     FWGDCMIO_API ~Series();

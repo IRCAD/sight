@@ -49,15 +49,15 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioVTK::SMeshReader, ::sight::data::Mesh )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioVTK::SMeshReader, ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SMeshReader::getIOPathType() const
+::io::base::services::IOPathType SMeshReader::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ void SMeshReader::stopping()
 
 void SMeshReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -149,11 +149,11 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
 {
     bool ok = true;
     // Retrieve dataStruct associated with this service
-    const auto meshlockedPtr = this->getLockedInOut< data::Mesh >(::fwIO::s_DATA_KEY);
+    const auto meshlockedPtr = this->getLockedInOut< data::Mesh >(io::base::services::s_DATA_KEY);
 
     // Test extension to provide the reader
 
-    ::fwDataIO::reader::IObjectReader::sptr meshReader;
+    io::base::reader::IObjectReader::sptr meshReader;
 
     if(vtkFile.extension() == ".vtk")
     {
@@ -247,7 +247,7 @@ void SMeshReader::updating()
 
 void SMeshReader::notificationOfUpdate()
 {
-    const auto meshLockedPtr = this->getLockedInOut< data::Mesh >(::fwIO::s_DATA_KEY);
+    const auto meshLockedPtr = this->getLockedInOut< data::Mesh >(io::base::services::s_DATA_KEY);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = meshLockedPtr.get_shared()->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);

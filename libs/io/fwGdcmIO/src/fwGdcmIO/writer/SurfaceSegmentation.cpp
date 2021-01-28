@@ -38,7 +38,7 @@
 #include <data/Study.hpp>
 #include <data/Vector.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::SurfaceSegmentation);
 
@@ -49,8 +49,8 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentation::SurfaceSegmentation(::fwDataIO::writer::IObjectWriter::Key key) :
-    data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key key) :
+    data::location::enableSingleFile< io::base::writer::IObjectWriter >(this),
     m_logger(core::log::Logger::New()),
     m_writerJob(core::jobs::Observer::New("Writing DICOM file"))
 {

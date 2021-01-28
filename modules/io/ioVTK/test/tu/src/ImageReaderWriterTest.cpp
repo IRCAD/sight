@@ -64,7 +64,7 @@ void runImageSrv(
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-    if (srv->isA("::fwIO::IReader"))
+    if (srv->isA("::io::base::services::IReader"))
     {
         srv->registerInOut(image, "data");
     }

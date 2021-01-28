@@ -29,11 +29,10 @@
 #include <data/location/SingleFile.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
-
-#include <fwIO/IReader.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/reader/TransformationMatrix3DReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -46,14 +45,14 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::io::sight::data::TransformationMatrix3DReaderService,
+fwServicesRegisterMacro( io::base::services::IReader, ::io::sight::data::TransformationMatrix3DReaderService,
                          data::TransformationMatrix3D )
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType TransformationMatrix3DReaderService::getIOPathType() const
+::io::base::services::IOPathType TransformationMatrix3DReaderService::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,7 +82,7 @@ void TransformationMatrix3DReaderService::starting( )
 
 void TransformationMatrix3DReaderService::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -133,11 +132,11 @@ void TransformationMatrix3DReaderService::updating()
     {
         // Retrieve object
         data::TransformationMatrix3D::sptr matrix =
-            this->getInOut< data::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", matrix);
+            this->getInOut< data::TransformationMatrix3D >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", matrix);
 
-        ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader =
-            ::fwDataIO::reader::TransformationMatrix3DReader::New();
+        io::base::reader::TransformationMatrix3DReader::sptr reader =
+            io::base::reader::TransformationMatrix3DReader::New();
         reader->setObject( matrix );
         reader->setFile(this->getFile());
         reader->read();

@@ -30,11 +30,11 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <fwItkIO/ImageReader.hpp>
 
 #include <services/macros.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -44,7 +44,7 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioITK::InrImageReaderService, ::sight::data::Image )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioITK::InrImageReaderService, ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 
@@ -60,16 +60,16 @@ InrImageReaderService::~InrImageReaderService() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType InrImageReaderService::getIOPathType() const
+::io::base::services::IOPathType InrImageReaderService::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 //
 //------------------------------------------------------------------------------
 
 void InrImageReaderService::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -156,8 +156,8 @@ void InrImageReaderService::updating()
 
     if( this->hasLocationDefined() )
     {
-        data::Image::sptr image = this->getInOut< data::Image >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::sptr image = this->getInOut< data::Image >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
         {
@@ -181,8 +181,8 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    data::Image::sptr image = this->getInOut< data::Image >(::fwIO::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
+    data::Image::sptr image = this->getInOut< data::Image >(io::base::services::s_DATA_KEY);
+    SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
     auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

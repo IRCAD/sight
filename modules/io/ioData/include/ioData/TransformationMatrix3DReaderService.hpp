@@ -24,7 +24,7 @@
 
 #include "ioData/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 
@@ -46,16 +46,16 @@ namespace ioData
  * @subsection In-Out In-Out
  * - \b data [data::TransformationMatrix3D]: matrix to read.
  */
-class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::fwIO::IReader
+class IODATA_CLASS_API TransformationMatrix3DReaderService : public io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(TransformationMatrix3DReaderService, ::fwIO::IReader)
+    fwCoreServiceMacro(TransformationMatrix3DReaderService, io::base::services::IReader)
 
     /// Super class of reader services
-    typedef ::fwIO::IReader SuperClass;
+    typedef io::base::services::IReader SuperClass;
 
-    /** @name Specified reader service methods ( override from ::fwIO::IReader )
+    /** @name Specified reader service methods ( override from io::base::services::IReader )
      * @{
      */
 
@@ -84,7 +84,7 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    IODATA_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IODATA_API virtual io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -115,7 +115,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( services::IService )
      *
      * This method is used to update the service.
-     * The transformation matrix is read with the reader ::fwDataIO::reader::TransformationMatrix3DReader.
+     * The transformation matrix is read with the reader io::base::reader::TransformationMatrix3DReader.
      * Notify reading.
      */
     IODATA_API void updating() override;

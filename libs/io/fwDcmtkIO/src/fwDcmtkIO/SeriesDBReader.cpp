@@ -35,8 +35,6 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
-
 #include <fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp>
 #include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
@@ -48,6 +46,8 @@
 #include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmnet/diutil.h>
 
+#include <io/base/reader/registry/macros.hpp>
+
 fwDataIOReaderRegisterMacro( ::fwDcmtkIO::SeriesDBReader );
 
 namespace fwDcmtkIO
@@ -55,7 +55,7 @@ namespace fwDcmtkIO
 
 //------------------------------------------------------------------------------
 
-SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
+SeriesDBReader::SeriesDBReader(io::base::reader::IObjectReader::Key key) :
     data::location::enableFolder< IObjectReader >(this),
     data::location::enableMultiFiles< IObjectReader >(this),
     m_isDicomdirActivated(false)
@@ -73,7 +73,7 @@ SeriesDBReader::~SeriesDBReader()
 SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
 {
     FilenameContainerType filenames;
-    if(data::location::have < data::location::Folder, ::fwDataIO::reader::IObjectReader > (this))
+    if(data::location::have < data::location::Folder, io::base::reader::IObjectReader > (this))
     {
         // Try to read dicomdir file
         if(!m_isDicomdirActivated || (m_isDicomdirActivated &&
@@ -83,7 +83,7 @@ SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
             ::fwDcmtkIO::helper::DicomSearch::searchRecursively(this->getFolder(), filenames);
         }
     }
-    else if(data::location::have < data::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
+    else if(data::location::have < data::location::MultiFiles, io::base::reader::IObjectReader > (this))
     {
         for(std::filesystem::path file: this->getFiles())
         {

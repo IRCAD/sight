@@ -30,9 +30,9 @@
 #include <data/location/SingleFile.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/writer/TransformationMatrix3DWriter.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -45,7 +45,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::io::sight::data::TransformationMatrix3DWriterService,
+fwServicesRegisterMacro( io::base::services::IWriter, ::io::sight::data::TransformationMatrix3DWriterService,
                          data::TransformationMatrix3D )
 
 //-----------------------------------------------------------------------------
@@ -64,16 +64,16 @@ void TransformationMatrix3DWriterService::starting( )
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
+::io::base::services::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DWriterService::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -124,11 +124,11 @@ void TransformationMatrix3DWriterService::updating()
     {
         // Retrieve object
         data::TransformationMatrix3D::csptr matrix =
-            this->getInput< data::TransformationMatrix3D >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", matrix);
+            this->getInput< data::TransformationMatrix3D >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", matrix);
 
-        ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer =
-            ::fwDataIO::writer::TransformationMatrix3DWriter::New();
+        io::base::writer::TransformationMatrix3DWriter::sptr writer =
+            io::base::writer::TransformationMatrix3DWriter::New();
         writer->setObject( matrix );
         writer->setFile(this->getFile());
         writer->write();

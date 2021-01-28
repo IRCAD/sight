@@ -5,7 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    fwDataIO
+    io_base
     fwMath
 )
 set( REQUIREMENTS  )

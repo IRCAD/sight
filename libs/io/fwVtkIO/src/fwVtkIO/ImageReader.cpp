@@ -29,7 +29,7 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
+#include <io/base/reader/registry/macros.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -41,8 +41,8 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key) :
-    data::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this),
+ImageReader::ImageReader(io::base::reader::IObjectReader::Key) :
+    data::location::enableSingleFile< io::base::reader::IObjectReader >(this),
     m_job(core::jobs::Observer::New("VTK Image reader"))
 {
 }

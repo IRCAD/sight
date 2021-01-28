@@ -30,9 +30,9 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <services/IHasServices.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -160,7 +160,7 @@ private:
     std::string m_readerConfig { "" };
 
     /// Contains the DICOM reader.
-    ::fwIO::IReader::sptr m_dicomReader;
+    io::base::services::IReader::sptr m_dicomReader;
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB;

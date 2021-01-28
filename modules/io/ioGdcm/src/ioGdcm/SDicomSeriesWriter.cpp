@@ -35,9 +35,9 @@
 
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/services/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -47,7 +47,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioGdcm::SDicomSeriesWriter, ::sight::data::DicomSeries )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioGdcm::SDicomSeriesWriter, ::sight::data::DicomSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -113,7 +113,7 @@ void SDicomSeriesWriter::stopping()
 
 void SDicomSeriesWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ void SDicomSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::DicomSeries::csptr series     = this->getInput< data::DicomSeries >(::fwIO::s_DATA_KEY);
+        data::DicomSeries::csptr series     = this->getInput< data::DicomSeries >(io::base::services::s_DATA_KEY);
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
@@ -207,9 +207,9 @@ void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
 
 //-----------------------------------------------------------------------------
 
-::fwIO::IOPathType SDicomSeriesWriter::getIOPathType() const
+::io::base::services::IOPathType SDicomSeriesWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------

@@ -48,7 +48,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SMeshWriter, ::sight::data::Mesh )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioVTK::SMeshWriter, ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -61,9 +61,9 @@ SMeshWriter::SMeshWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SMeshWriter::getIOPathType() const
+::io::base::services::IOPathType SMeshWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void SMeshWriter::stopping()
 
 void SMeshWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ void SMeshWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(::fwIO::s_DATA_KEY);
+        const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(io::base::services::s_DATA_KEY);
 
         ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -168,7 +168,7 @@ void SMeshWriter::updating()
             extensionToUse = providedExtension;
         }
 
-        ::fwDataIO::writer::IObjectWriter::sptr meshWriter;
+        io::base::writer::IObjectWriter::sptr meshWriter;
 
         if(extensionToUse == ".vtk")
         {

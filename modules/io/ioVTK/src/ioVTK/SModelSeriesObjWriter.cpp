@@ -47,7 +47,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioVTK::SModelSeriesObjWriter, ::sight::data::ModelSeries )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioVTK::SModelSeriesObjWriter, ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -60,9 +60,9 @@ SModelSeriesObjWriter::SModelSeriesObjWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SModelSeriesObjWriter::getIOPathType() const
+::io::base::services::IOPathType SModelSeriesObjWriter::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ void SModelSeriesObjWriter::stopping()
 
 void SModelSeriesObjWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -151,8 +151,8 @@ void SModelSeriesObjWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::ModelSeries::csptr modelSeries = this->getInput< data::ModelSeries >(::fwIO::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", modelSeries);
+        data::ModelSeries::csptr modelSeries = this->getInput< data::ModelSeries >(io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         ::fwVtkIO::ModelSeriesObjWriter::sptr writer = ::fwVtkIO::ModelSeriesObjWriter::New();
         writer->setObject(modelSeries);

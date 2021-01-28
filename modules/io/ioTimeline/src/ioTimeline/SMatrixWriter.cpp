@@ -42,7 +42,7 @@
 namespace ioTimeline
 {
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioTimeline::SMatrixWriter, ::sight::data::MatrixTL)
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioTimeline::SMatrixWriter, ::sight::data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
@@ -73,16 +73,16 @@ SMatrixWriter::~SMatrixWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::fwIO::IOPathType SMatrixWriter::getIOPathType() const
+::io::base::services::IOPathType SMatrixWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatrixWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(::fwIO::s_DATA_KEY);
+        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(io::base::services::s_DATA_KEY);
 
         const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 
@@ -235,7 +235,7 @@ void SMatrixWriter::stopRecord()
 ::services::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
-    connections.push(::fwIO::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(io::base::services::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

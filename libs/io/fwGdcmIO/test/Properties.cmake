@@ -7,6 +7,6 @@ set( DEPENDENCIES
     data
     utestData
     fwZip
-    fwDataIO
+    io_base
     )
 set( REQUIREMENTS )

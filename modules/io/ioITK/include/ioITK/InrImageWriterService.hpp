@@ -24,7 +24,7 @@
 
 #include "ioITK/config.hpp"
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 
@@ -53,11 +53,11 @@ namespace ioITK
  * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class IOITK_CLASS_API InrImageWriterService : public ::fwIO::IWriter
+class IOITK_CLASS_API InrImageWriterService : public io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(InrImageWriterService,  ::fwIO::IWriter)
+    fwCoreServiceMacro(InrImageWriterService,  io::base::services::IWriter)
 
     IOITK_API InrImageWriterService() noexcept;
 
@@ -93,7 +93,7 @@ protected:
     IOITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FILE
-    IOITK_API ::fwIO::IOPathType getIOPathType() const override;
+    IOITK_API io::base::services::IOPathType getIOPathType() const override;
 
 };
 

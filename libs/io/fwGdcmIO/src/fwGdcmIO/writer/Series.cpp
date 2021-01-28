@@ -35,7 +35,7 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
+#include <io/base/writer/registry/macros.hpp>
 
 fwDataIOWriterRegisterMacro(::fwGdcmIO::writer::Series);
 
@@ -46,8 +46,8 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-Series::Series(::fwDataIO::writer::IObjectWriter::Key ) :
-    data::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+Series::Series(io::base::writer::IObjectWriter::Key ) :
+    data::location::enableFolder< io::base::writer::IObjectWriter >(this),
     m_fiducialsExportMode(SPATIAL_FIDUCIALS)
 {
 }

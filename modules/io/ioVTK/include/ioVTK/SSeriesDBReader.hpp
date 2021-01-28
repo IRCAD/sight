@@ -27,7 +27,7 @@
 #include <data/location/ILocation.hpp>
 #include <data/Mesh.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -71,7 +71,7 @@ namespace ioVTK
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOVTK_CLASS_API SSeriesDBReader : public ::fwIO::IReader
+class IOVTK_CLASS_API SSeriesDBReader : public io::base::services::IReader
 {
 
 public:
@@ -86,7 +86,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SSeriesDBReader,  ::fwIO::IReader)
+    fwCoreServiceMacro(SSeriesDBReader,  io::base::services::IReader)
 
     /**
      * @brief Configure the vtk file path.
@@ -108,7 +108,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

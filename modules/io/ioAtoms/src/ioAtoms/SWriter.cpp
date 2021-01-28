@@ -66,7 +66,7 @@ namespace ioAtoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwIO::IWriter, ::ioAtoms::SWriter, ::sight::data::Object )
+fwServicesRegisterMacro( io::base::services::IWriter, ::ioAtoms::SWriter, ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -102,7 +102,7 @@ void SWriter::stopping()
 
 void SWriter::configuring()
 {
-    ::fwIO::IWriter::configuring();
+    io::base::services::IWriter::configuring();
 
     m_customExts.clear();
     m_allowedExtLabels.clear();
@@ -324,8 +324,8 @@ void SWriter::updating()
         return;
     }
 
-    data::Object::csptr obj = this->getInput< data::Object >(::fwIO::s_DATA_KEY);
-    SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
+    data::Object::csptr obj = this->getInput< data::Object >(io::base::services::s_DATA_KEY);
+    SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
 
     ui::base::Cursor cursor;
     cursor.setCursor(ui::base::ICursor::BUSY);
@@ -545,9 +545,9 @@ void SWriter::updating()
 
 //-----------------------------------------------------------------------------
 
-::fwIO::IOPathType SWriter::getIOPathType() const
+::io::base::services::IOPathType SWriter::getIOPathType() const
 {
-    return ::fwIO::FILE;
+    return io::base::services::FILE;
 }
 
 //-----------------------------------------------------------------------------

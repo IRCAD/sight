@@ -30,12 +30,12 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <fwIO/ioTypes.hpp>
-#include <fwIO/IReader.hpp>
-#include <fwIO/IWriter.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
+
+#include <io/base/services/ioTypes.hpp>
+#include <io/base/services/IReader.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -408,10 +408,10 @@ void TransferFunctionEditor::importTF()
 
     data::tools::helper::Composite compositeHelper(poolTF);
 
-    data::TransferFunction::sptr tf = data::TransferFunction::New();
-    ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
+    data::TransferFunction::sptr tf          = data::TransferFunction::New();
+    io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
 
-    reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
+    reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
     reader->start();
     reader->openLocationDialog();
@@ -438,9 +438,9 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    ::fwIO::IWriter::sptr writer = services::add< ::fwIO::IWriter >("::ioAtoms::SWriter");
+    io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >("::ioAtoms::SWriter");
 
-    writer->registerInput(m_selectedTF, ::fwIO::s_DATA_KEY);
+    writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
 
     writer->start();
     writer->openLocationDialog();
@@ -486,9 +486,9 @@ void TransferFunctionEditor::initTransferFunctions()
             }
         }
 
-        data::TransferFunction::sptr tf = data::TransferFunction::New();
-        ::fwIO::IReader::sptr reader = services::add< ::fwIO::IReader >("::ioAtoms::SReader");
-        reader->registerInOut(tf, ::fwIO::s_DATA_KEY);
+        data::TransferFunction::sptr tf          = data::TransferFunction::New();
+        io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >("::ioAtoms::SReader");
+        reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
         core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");

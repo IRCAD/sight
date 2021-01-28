@@ -28,7 +28,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -74,7 +74,7 @@ namespace ioVTK
  * Accepted extensions are: "vtk", "vtp", "obj" "stl" "ply"
  * Extensions aren't case sensitive but make sure there isn't a dot "." before extension name.
  */
-class IOVTK_CLASS_API SModelSeriesWriter : public ::fwIO::IWriter
+class IOVTK_CLASS_API SModelSeriesWriter : public io::base::services::IWriter
 {
 
 public:
@@ -85,7 +85,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SModelSeriesWriter,  io::base::services::IWriter)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -107,7 +107,7 @@ public:
 
 protected:
 
-    IOVTK_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOVTK_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

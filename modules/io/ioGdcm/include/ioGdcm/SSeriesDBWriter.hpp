@@ -26,7 +26,7 @@
 
 #include <fwGdcmIO/writer/Series.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -53,11 +53,11 @@ namespace ioGdcm
  * @subsection Input Input
  * - \b data [data::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
  */
-class IOGDCM_CLASS_API SSeriesDBWriter : public ::fwIO::IWriter
+class IOGDCM_CLASS_API SSeriesDBWriter : public io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBWriter,  ::fwIO::IWriter)
+    fwCoreServiceMacro(SSeriesDBWriter,  io::base::services::IWriter)
 
     /**
      * @brief Constructor
@@ -94,7 +94,7 @@ protected:
     IOGDCM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    IOGDCM_API ::fwIO::IOPathType getIOPathType() const override;
+    IOGDCM_API io::base::services::IOPathType getIOPathType() const override;
 
 private:
 

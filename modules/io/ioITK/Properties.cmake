@@ -8,7 +8,7 @@ set( DEPENDENCIES
     base
     fwItkIO
     services
-    fwIO
+    io_base
 )
 set( REQUIREMENTS  )
 

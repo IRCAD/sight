@@ -26,7 +26,7 @@
 
 #include <data/location/SingleFile.hpp>
 
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <io/base/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
@@ -48,18 +48,18 @@ namespace fwVtkIO
  * @brief Writes a Mesh in .obj format using VTK library.
  */
 
-class ObjMeshWriter : public ::fwDataIO::writer::GenericObjectWriter< data::Mesh >,
-                      public data::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+class ObjMeshWriter : public io::base::writer::GenericObjectWriter< data::Mesh >,
+                      public data::location::enableSingleFile< io::base::writer::IObjectWriter >
 {
 
 public:
 
-    fwCoreClassMacro(ObjMeshWriter, ::fwDataIO::writer::GenericObjectWriter< data::Mesh >,
-                     ::fwDataIO::writer::factory::New< ObjMeshWriter >)
+    fwCoreClassMacro(ObjMeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
+                     io::base::writer::factory::New< ObjMeshWriter >)
     fwCoreAllowSharedFromThis()
 
     /// @brief Constructor.
-    FWVTKIO_API ObjMeshWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API ObjMeshWriter(io::base::writer::IObjectWriter::Key key);
 
     /// @brief Destructor.
     FWVTKIO_API ~ObjMeshWriter();

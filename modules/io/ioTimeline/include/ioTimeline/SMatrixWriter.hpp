@@ -26,7 +26,7 @@
 
 #include <data/MatrixTL.hpp>
 
-#include <fwIO/IWriter.hpp>
+#include <io/base/services/IWriter.hpp>
 
 #include <fstream>
 
@@ -60,12 +60,12 @@ namespace ioTimeline
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  */
-class IOTIMELINE_CLASS_API SMatrixWriter : public ::fwIO::IWriter
+class IOTIMELINE_CLASS_API SMatrixWriter : public io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixWriter, ::fwIO::IWriter)
+    fwCoreServiceMacro(SMatrixWriter, io::base::services::IWriter)
 
     /// Constructor.
     IOTIMELINE_API SMatrixWriter() noexcept;
@@ -86,8 +86,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     IOTIMELINE_API virtual void openLocationDialog() override;
 
-    /// Return file type (::fwIO::FOLDER)
-    IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::services::FOLDER)
+    IOTIMELINE_API virtual io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 

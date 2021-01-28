@@ -33,9 +33,9 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwIO/IReader.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/base/services/IReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -48,7 +48,7 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwIO::IReader, ::ioGdcm::SDicomSeriesDBReader, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( io::base::services::IReader, ::ioGdcm::SDicomSeriesDBReader, ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -72,7 +72,7 @@ SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
 
 void SDicomSeriesDBReader::configuring()
 {
-    ::fwIO::IReader::configuring();
+    io::base::services::IReader::configuring();
 
     // Show log dialog
     core::runtime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
@@ -266,7 +266,7 @@ void SDicomSeriesDBReader::updating()
         {
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< data::SeriesDB >(::fwIO::s_DATA_KEY);
+                this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
@@ -296,9 +296,9 @@ void SDicomSeriesDBReader::updating()
 
 //-----------------------------------------------------------------------------
 
-::fwIO::IOPathType SDicomSeriesDBReader::getIOPathType() const
+::io::base::services::IOPathType SDicomSeriesDBReader::getIOPathType() const
 {
-    return ::fwIO::FOLDER;
+    return io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------

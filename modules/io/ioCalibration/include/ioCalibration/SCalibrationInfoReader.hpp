@@ -24,7 +24,7 @@
 
 #include "ioCalibration/config.hpp"
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <string>
 
@@ -51,11 +51,11 @@ namespace ioCalibration
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.
  */
-class IOCALIBRATION_CLASS_API SCalibrationInfoReader : public ::fwIO::IReader
+class IOCALIBRATION_CLASS_API SCalibrationInfoReader : public io::base::services::IReader
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationInfoReader, ::fwIO::IReader )
+    fwCoreServiceMacro(SCalibrationInfoReader, io::base::services::IReader )
 
     /// Constructor.
     IOCALIBRATION_API SCalibrationInfoReader() noexcept;
@@ -76,7 +76,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    IOCALIBRATION_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /// Configures the output file format and the chessboard preference keys.
     IOCALIBRATION_API virtual void configuring() override;

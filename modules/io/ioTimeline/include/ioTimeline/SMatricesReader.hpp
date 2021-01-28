@@ -28,7 +28,7 @@
 
 #include <data/MatrixTL.hpp>
 
-#include <fwIO/IReader.hpp>
+#include <io/base/services/IReader.hpp>
 
 #include <array>
 
@@ -83,12 +83,12 @@ namespace ioTimeline
  * - \b step (optionnal): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  */
 
-class IOTIMELINE_CLASS_API SMatricesReader : public ::fwIO::IReader
+class IOTIMELINE_CLASS_API SMatricesReader : public io::base::services::IReader
 {
 
 public:
 
-    fwCoreServiceMacro(SMatricesReader, ::fwIO::IReader)
+    fwCoreServiceMacro(SMatricesReader, io::base::services::IReader)
 
     /// Constructor.
     IOTIMELINE_API SMatricesReader() noexcept;
@@ -106,8 +106,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     IOTIMELINE_API virtual void openLocationDialog() override;
 
-    /// Return file type (::fwIO::FILE)
-    IOTIMELINE_API virtual ::fwIO::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::services::FILE)
+    IOTIMELINE_API virtual io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.

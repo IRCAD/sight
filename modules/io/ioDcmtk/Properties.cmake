@@ -8,7 +8,7 @@ set( DEPENDENCIES
     core
     data
     services
-    fwIO
+    io_base
     )
 set( REQUIREMENTS
     data
