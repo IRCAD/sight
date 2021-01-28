@@ -63,7 +63,7 @@ public:
     VISUOGREQT_API virtual void requestRender() override;
 
     /// Creates the render window in the global OpenGL context, @see ::visuOgreQt::OpenGLContext.
-    VISUOGREQT_API virtual void createContainer(gui::container::fwContainer::sptr, bool, bool) override;
+    VISUOGREQT_API virtual void createContainer(ui::base::container::fwContainer::sptr, bool, bool) override;
 
     /// Does nothing.
     VISUOGREQT_API virtual void connectToContainer() override;

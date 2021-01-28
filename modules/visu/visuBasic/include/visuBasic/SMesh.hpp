@@ -26,7 +26,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainerSrv.hpp>
 
 namespace visuBasic
 {
@@ -50,13 +50,13 @@ namespace visuBasic
  * @subsection Input Input
  * - \b mesh [data::Mesh]: mesh to display.
  */
-class VISUBASIC_CLASS_API SMesh : public gui::IGuiContainerSrv
+class VISUBASIC_CLASS_API SMesh : public ui::base::IGuiContainerSrv
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMesh, gui::IGuiContainerSrv)
+    fwCoreServiceMacro(SMesh, ui::base::IGuiContainerSrv)
 
     VISUBASIC_API static const core::com::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
 

@@ -24,9 +24,9 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <gui/dialog/IPulseProgressDialog.hpp>
-
 #include <QObject>
+
+#include <ui/base/dialog/IPulseProgressDialog.hpp>
 
 #include <string>
 
@@ -38,17 +38,17 @@ namespace dialog
  * @brief   This class allows us to show a pulse progress bar.
  */
 class FWGUIQML_CLASS_API PulseProgressDialog : public QObject,
-                                               public gui::dialog::IPulseProgressDialog
+                                               public ui::base::dialog::IPulseProgressDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(PulseProgressDialog, gui::dialog::IPulseProgressDialog,
-                     gui::factory::New< PulseProgressDialog >)
+    fwCoreClassMacro(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog,
+                     ui::base::factory::New< PulseProgressDialog >)
 
-    FWGUIQML_API PulseProgressDialog(gui::GuiBaseObject::Key key);
+    FWGUIQML_API PulseProgressDialog(ui::base::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~PulseProgressDialog();
 

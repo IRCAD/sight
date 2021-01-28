@@ -32,14 +32,14 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <services/IHasServices.hpp>
 
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace ioPacs
 {
@@ -72,7 +72,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
-    public gui::editor::IEditor,
+    public ui::base::editor::IEditor,
     public services::IHasServices
 {
 
@@ -81,7 +81,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  gui::editor::IEditor)
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  ui::base::editor::IEditor)
 
     /// Creates the service.
     IOPACS_API SSliceIndexDicomEditor() noexcept;

@@ -24,12 +24,12 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiCalibration
 {
@@ -59,12 +59,12 @@ namespace uiCalibration
    0   0   0   0
  */
 class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
-                                                     public gui::editor::IEditor
+                                                     public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOpticalCenterEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SOpticalCenterEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor.
     UICALIBRATION_API SOpticalCenterEditor() noexcept;

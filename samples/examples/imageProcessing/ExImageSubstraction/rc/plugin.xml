@@ -53,11 +53,11 @@
 -->
 <plugin id="ExImageSubstraction" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>ExImageSubstraction_AppCfg</id>
@@ -74,7 +74,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExImageSubstraction</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::CardinalLayoutManager" >
                         <view align="center" />
@@ -101,7 +101,7 @@
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load image 1" icon="ExImageSubstraction-0.1/icons/icon-load1.png" />
@@ -119,7 +119,7 @@
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="multiView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::TabLayoutManager" >
                         <view caption="Image 1" selected="yes" border="5" backgroundColor="#2E3034" />
@@ -135,7 +135,7 @@
             </service>
 
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-            <service uid="image1View" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="image1View" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -149,7 +149,7 @@
                 </registry>
             </service>
 
-            <service uid="image1BottomView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="image1BottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -164,7 +164,7 @@
             </service>
 
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-            <service uid="image2View" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="image2View" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -178,7 +178,7 @@
                 </registry>
             </service>
 
-            <service uid="image2BottomView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="image2BottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -193,7 +193,7 @@
             </service>
 
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-            <service uid="substractionView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="substractionView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -207,7 +207,7 @@
                 </registry>
             </service>
 
-            <service uid="substractionContainerView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="substractionContainerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -221,7 +221,7 @@
                 </registry>
             </service>
 
-            <service uid="substractionBottomView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="substractionBottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -238,17 +238,17 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Action to load an image in the Tab 1 -->
-            <service uid="openImage1Act" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openImage1Act" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="readerFile1Srv" />
             </service>
 
             <!-- Action to load an image in the Tab 2 -->
-            <service uid="openImage2Act" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openImage2Act" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="readerFile2Srv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="saveImageAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="saveImageAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="imageWriterSrv" />
             </service>
 
@@ -335,21 +335,21 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotNegato1EditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+            <service uid="snapshotNegato1EditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="snapshotNegato2EditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+            <service uid="snapshotNegato2EditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="snapshotNegato3EditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+            <service uid="snapshotNegato3EditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>

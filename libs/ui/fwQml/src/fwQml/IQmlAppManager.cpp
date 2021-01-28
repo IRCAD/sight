@@ -22,7 +22,7 @@
 
 #include "fwQml/IQmlAppManager.hpp"
 
-#include <gui/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace fwQml
 {
@@ -51,9 +51,9 @@ void IQmlAppManager::initialize()
     {
         const std::string msg = "All the required inputs are not present, '" +this->getID() +
                                 "' activity will not be launched";
-        gui::dialog::MessageDialog::show("Manager Initialization",
-                                         msg,
-                                         gui::dialog::IMessageDialog::CRITICAL);
+        ui::base::dialog::MessageDialog::show("Manager Initialization",
+                                              msg,
+                                              ui::base::dialog::IMessageDialog::CRITICAL);
     }
 }
 

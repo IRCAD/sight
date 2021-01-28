@@ -17,7 +17,7 @@
         <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
         <object uid="localSelections" type="::sight::data::Vector" />
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="top"/>
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Pull selected series from Pacs" icon="media-0.1/icons/Pull.svg" />
@@ -48,7 +48,7 @@
             </registry>
         </service>
 
-        <service uid="topView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="topView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -60,7 +60,7 @@
             </registry>
         </service>
 
-        <service uid="centerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="centerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -74,7 +74,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -90,7 +90,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_pullSeries" type="::sight::modules::gui::action::SSlotCaller" >
+        <service uid="action_pullSeries" type="::sight::modules::ui::base::action::SSlotCaller" >
             <slots>
                 <slot>action_pullSeries/setInexecutable</slot>
                 <slot>pullSeriesController/update</slot>

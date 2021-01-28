@@ -29,8 +29,6 @@
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Get.hpp>
 
@@ -40,10 +38,12 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiReconstructionQt::RepresentationEditor,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiReconstructionQt::RepresentationEditor,
                          data::Reconstruction )
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ RepresentationEditor::~RepresentationEditor() noexcept
 void RepresentationEditor::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
@@ -186,7 +186,7 @@ void RepresentationEditor::updating()
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);

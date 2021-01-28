@@ -29,8 +29,6 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
@@ -38,6 +36,8 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <filesystem>
 
@@ -63,7 +63,7 @@ namespace ioPacs
  *                                                 notification.
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
-                                                  public gui::editor::IEditor
+                                                  public ui::base::editor::IEditor
 {
 
 Q_OBJECT;
@@ -71,7 +71,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPacsConfigurationEditor,  gui::editor::IEditor )
+    fwCoreServiceMacro(SPacsConfigurationEditor,  ui::base::editor::IEditor )
 
     /// Creates the service.
     IOPACS_API SPacsConfigurationEditor() noexcept;

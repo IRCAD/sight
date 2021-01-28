@@ -18,7 +18,7 @@
         <object uid="${imageComposite}" type="::sight::data::Composite" src="ref" />
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::sight::data::Image" src="deferred" />
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -33,7 +33,7 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="multiView_negato_bottom" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -53,7 +53,7 @@
 
         <service uid="snapshotNegatoEditor" type="::uiVisuQt::SnapshotEditor" />
 
-        <service uid="extractImage" type="::sight::modules::gui::action::SPushObject">
+        <service uid="extractImage" type="::sight::modules::ui::base::action::SPushObject">
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
             <push srcKey="OptionalInputImageKey" />
@@ -146,7 +146,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="sliceListNegatoEditor" type="::sight::modules::guiQt::editor::SSelectionMenuButton">
+        <service uid="sliceListNegatoEditor" type="::sight::modules::ui::qt::editor::SSelectionMenuButton">
             <!-- This input is only needed to start the service only if the image is present -->
             <in key="imageKey" uid="optionalInputImage" />
             <toolTip>Manage slice visibility</toolTip>

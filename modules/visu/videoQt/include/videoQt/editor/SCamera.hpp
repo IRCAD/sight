@@ -29,11 +29,11 @@
 
 #include <data/Camera.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace videoQt
 {
@@ -90,14 +90,14 @@ namespace editor
  * - \b label (optional, default="Video source: "): label of the selector.
  */
 class VIDEOQT_CLASS_API SCamera final : public QObject,
-                                        public gui::editor::IEditor
+                                        public ui::base::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCamera, gui::editor::IEditor)
+    fwCoreServiceMacro(SCamera, ui::base::editor::IEditor)
 
     /// Initialize signals and slots.
     VIDEOQT_API SCamera();

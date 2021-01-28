@@ -2,7 +2,7 @@ set( NAME visuBasic )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    guiQt
+    qt
 )
 set( REQUIREMENTS
     visuOgre

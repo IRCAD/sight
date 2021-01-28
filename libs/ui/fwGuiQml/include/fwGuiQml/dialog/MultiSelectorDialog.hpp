@@ -24,11 +24,11 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <gui/dialog/IMultiSelectorDialog.hpp>
-
 #include <QObject>
 #include <QString>
 #include <QVariant>
+
+#include <ui/base/dialog/IMultiSelectorDialog.hpp>
 
 #include <vector>
 
@@ -43,7 +43,7 @@ namespace dialog
  */
 
 class FWGUIQML_CLASS_API MultiSelectorDialog :  public QObject,
-                                                public gui::dialog::IMultiSelectorDialog
+                                                public ui::base::dialog::IMultiSelectorDialog
 
 {
 Q_OBJECT
@@ -51,10 +51,10 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(MultiSelectorDialog, gui::dialog::IMultiSelectorDialog,
-                     gui::factory::New< MultiSelectorDialog >)
+    fwCoreClassMacro(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
+                     ui::base::factory::New< MultiSelectorDialog >)
 
-    FWGUIQML_API MultiSelectorDialog(gui::GuiBaseObject::Key key);
+    FWGUIQML_API MultiSelectorDialog(ui::base::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~MultiSelectorDialog();
 

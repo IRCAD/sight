@@ -24,9 +24,9 @@
 
 #include <core/com/Slots.hxx>
 
-#include <guiQt/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/qt/dialog/ProgressDialog.hpp>
 
 namespace ioPacs
 {
@@ -80,7 +80,7 @@ void SProgressBarController::stopping()
 void SProgressBarController::startProgress(std::string _id)
 {
     core::mt::ScopedLock lock(m_mutex);
-    m_progressDialogs[_id] = gui::dialog::ProgressDialog::New();
+    m_progressDialogs[_id] = ui::base::dialog::ProgressDialog::New();
 }
 
 //------------------------------------------------------------------------------

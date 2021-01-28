@@ -28,12 +28,12 @@
 
 #include <fwRenderQt3D/IRenderWindowInteractorManager.hpp>
 
-#include <gui/container/fwContainer.hpp>
-
 #include <QObject>
 #include <QPointer>
 
-namespace sight::guiQt
+#include <ui/base/container/fwContainer.hpp>
+
+namespace sight::ui::qt
 {
 namespace container
 {
@@ -71,14 +71,14 @@ public:
      * @param _renderOnDemand if true, the rendering will be done only when it's requested.
      * @param _fullscreen enable the fullscreen.
      */
-    VISUQT3DQT_API void createContainer(gui::container::fwContainer::sptr _parent) final;
+    VISUQT3DQT_API void createContainer(ui::base::container::fwContainer::sptr _parent) final;
 
     VISUQT3DQT_API void set3DView(Qt3DExtras::Qt3DWindow* _3dView) final;
 
 private:
 
     /// Contains the parent of the widget.
-    SPTR(guiQt::container::QtContainer) m_parentContainer;
+    SPTR(ui::qt::container::QtContainer) m_parentContainer;
 
     /// Contains the window container.
     QPointer< QWidget > m_windowContainer;

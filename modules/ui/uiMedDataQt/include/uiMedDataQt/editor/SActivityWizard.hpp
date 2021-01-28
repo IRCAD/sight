@@ -38,11 +38,11 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiMedDataQt
 {
@@ -103,12 +103,12 @@ namespace editor
 
  */
 class UIMEDDATAQT_CLASS_API SActivityWizard : public QObject,
-                                              public gui::editor::IEditor
+                                              public sight::ui::base::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SActivityWizard, gui::editor::IEditor)
+    fwCoreServiceMacro(SActivityWizard, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEDDATAQT_API SActivityWizard() noexcept;

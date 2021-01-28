@@ -6,12 +6,12 @@ set( START ON )
 set( DEPENDENCIES
     core
     fwQml
-    guiQt
+    qt
     fwGuiQml
     services
 )
 set( REQUIREMENTS
-    module_gui
+    module_ui_base
 )
 set( PLUGINS
     QtQml

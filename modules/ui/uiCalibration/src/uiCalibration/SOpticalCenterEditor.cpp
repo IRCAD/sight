@@ -27,8 +27,6 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QComboBox>
@@ -36,13 +34,16 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiCalibration
 {
 
 static const services::IService::KeyType s_CAMERA_INPUT = "camera";
 static const services::IService::KeyType s_MATRIX_INOUT = "matrix";
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::sight::data::Camera)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiCalibration::SOpticalCenterEditor,
+                         ::sight::data::Camera)
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept
@@ -67,8 +68,8 @@ void SOpticalCenterEditor::configuring()
 void SOpticalCenterEditor::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* vLayout  = new QVBoxLayout();
     QHBoxLayout* cxLayout = new QHBoxLayout();

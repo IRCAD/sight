@@ -5,8 +5,8 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    gui
-    guiQt
+    base
+    qt
     fwRender
     services
 )

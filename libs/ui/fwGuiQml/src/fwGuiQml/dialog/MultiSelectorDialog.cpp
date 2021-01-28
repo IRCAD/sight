@@ -29,11 +29,12 @@
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <gui/registry/macros.hpp>
-
 #include <QGuiApplication>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::MultiSelectorDialog, ::sight::gui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
+#include <ui/base/registry/macros.hpp>
+
+fwGuiRegisterMacro( ::fwGuiQml::dialog::MultiSelectorDialog,
+                    ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -42,7 +43,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog(gui::GuiBaseObject::Key key)
+MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key key)
 {
 }
 
@@ -68,7 +69,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
 
 //------------------------------------------------------------------------------
 
-::gui::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
+::ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     // the listmodel that will be added as a context for the repeater.
     ::fwGuiQml::model::RoleListModel model;

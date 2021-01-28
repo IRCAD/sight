@@ -29,15 +29,15 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 #include <services/registry/ServiceConfig.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 namespace videoTools
 {
@@ -352,8 +352,8 @@ void SGrabberProxy::startCamera()
                 if (descriptions.size() == 0)
                 {
                     const std::string msg = "No video grabber implementation found.\n";
-                    gui::dialog::MessageDialog::show("Error", msg,
-                                                     gui::dialog::MessageDialog::Icons::WARNING);
+                    ui::base::dialog::MessageDialog::show("Error", msg,
+                                                          ui::base::dialog::MessageDialog::Icons::WARNING);
                     return;
                 }
                 else if (descriptions.size() == 1)
@@ -366,7 +366,7 @@ void SGrabberProxy::startCamera()
                     // Sort the description list.
                     std::sort(std::begin(descriptions), std::end(descriptions));
 
-                    gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
+                    ui::base::dialog::SelectorDialog::sptr selector = ui::base::dialog::SelectorDialog::New();
                     selector->setTitle(m_guiTitle);
                     selector->setSelections(descriptions);
 
@@ -379,7 +379,7 @@ void SGrabberProxy::startCamera()
             if(m_grabberImpl.empty())
             {
                 const std::string msg = "No video grabber chosen, aborting...\n";
-                gui::dialog::MessageDialog::show("Warning", msg);
+                ui::base::dialog::MessageDialog::show("Warning", msg);
                 return;
             }
             m_services.resize(implToNumTL[m_grabberImpl]);

@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     services
-    gui
+    base
     fwIO
     igtlNetwork
 )

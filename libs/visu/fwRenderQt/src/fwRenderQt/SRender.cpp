@@ -34,14 +34,14 @@
 
 #include <data/tools/Color.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/helper/Config.hpp>
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace fwRenderQt
 {
@@ -226,8 +226,8 @@ void SRender::stopping()
 
 void SRender::startContext()
 {
-    SPTR(guiQt::container::QtContainer) qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
+    SPTR(ui::qt::container::QtContainer) qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Convert the background color
     std::uint8_t color[4];

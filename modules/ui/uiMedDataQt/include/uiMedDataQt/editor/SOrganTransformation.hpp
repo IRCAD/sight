@@ -27,10 +27,10 @@
 #include <data/Reconstruction.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <map>
 #include <string>
@@ -60,12 +60,12 @@ namespace editor
  * - \b composite [data::Composite]: composite.
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
-                                                   public gui::editor::IEditor
+                                                   public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOrganTransformation, gui::editor::IEditor)
+    fwCoreServiceMacro(SOrganTransformation, sight::ui::base::editor::IEditor)
 
     /// constructor
     UIMEDDATAQT_API SOrganTransformation() noexcept;

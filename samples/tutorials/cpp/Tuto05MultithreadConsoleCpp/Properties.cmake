@@ -18,14 +18,14 @@ set( REQUIREMENTS
     console
 )
 
-moduleParam(module_guiQt
+moduleParam(module_ui_qt
     PARAM_LIST
         resource
         stylesheet
     PARAM_VALUES
         style-0.1/flatdark.rcc
         style-0.1/flatdark.qss
-) # Allow dark theme via module_guiQt
+) # Allow dark theme via module_ui_qt
 
 moduleParam(
         module_appXml

@@ -24,11 +24,11 @@
 
 #include "uiTools/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
 #include <QVector>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QLabel;
 
@@ -58,10 +58,10 @@ namespace editor
  */
 
 class UITOOLS_CLASS_API SMatrixViewer : public QObject,
-                                        public gui::editor::IEditor
+                                        public sight::ui::base::editor::IEditor
 {
 public:
-    fwCoreServiceMacro(SMatrixViewer, gui::editor::IEditor)
+    fwCoreServiceMacro(SMatrixViewer, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SMatrixViewer() noexcept;

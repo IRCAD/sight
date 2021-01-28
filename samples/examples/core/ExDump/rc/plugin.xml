@@ -3,9 +3,9 @@
     <requirement id="module_services" />
     <requirement id="patchMedicalData" />
     <requirement id="filterUnknownSeries" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="memory" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
 
     <!-- This example allows to test the different dump policy. -->
     <extension implements="::sight::services::registry::AppConfig" >
@@ -19,7 +19,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExDump</name>
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open Series..." shortcut="Ctrl+O" />
@@ -64,7 +64,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMonitorView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuMonitorView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="ClassFactoryRegistry information" />
@@ -89,7 +89,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Open..." icon="flatIcon-0.1/icons/BlueLoad.svg" />
@@ -105,7 +105,7 @@
                 </registry>
             </service>
 
-            <service uid="mainview" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -119,7 +119,7 @@
                 </registry>
             </service>
 
-            <service uid="subView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="subView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -135,14 +135,14 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <service uid="openAct" type="::uiIO::action::SSeriesDBMerger" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
 
-            <service uid="saveAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="saveAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="SDBWriterSrv" />
             </service>
 

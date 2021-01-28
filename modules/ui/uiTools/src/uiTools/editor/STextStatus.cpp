@@ -26,13 +26,13 @@
 
 #include <data/String.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QString>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiTools
 {
@@ -102,7 +102,7 @@ void STextStatus::configuring()
 void STextStatus::starting()
 {
     this->create();
-    auto qtContainer = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QHBoxLayout* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);

@@ -30,8 +30,6 @@
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 #include <services/op/Get.hpp>
@@ -46,10 +44,12 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiReconstructionQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiReconstructionQt::OrganMaterialEditor,
                          data::Reconstruction )
 
 static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
@@ -72,8 +72,8 @@ OrganMaterialEditor::~OrganMaterialEditor() noexcept
 void OrganMaterialEditor::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
     m_colourButton = new QPushButton(tr("Color"));
     m_colourButton->setToolTip(tr("Selected organ's color"));
@@ -146,7 +146,7 @@ void OrganMaterialEditor::onColorButton()
     int blue                      = material->diffuse()->blue()*255;
 
     // Create Color choice dialog.
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -187,7 +187,7 @@ void OrganMaterialEditor::refreshMaterial( )
     data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
     SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);

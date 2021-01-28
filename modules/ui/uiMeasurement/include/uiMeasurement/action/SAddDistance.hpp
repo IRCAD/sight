@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -46,13 +46,13 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [data::Image]: Image containing the distance field.
  */
-class UIMEASUREMENT_CLASS_API SAddDistance final : public ::sight::gui::IActionSrv
+class UIMEASUREMENT_CLASS_API SAddDistance final : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SAddDistance,  gui::IActionSrv)
+    fwCoreServiceMacro(SAddDistance,  ui::base::IActionSrv)
 
     /// Creates the service.
     UIMEASUREMENT_API SAddDistance() noexcept;

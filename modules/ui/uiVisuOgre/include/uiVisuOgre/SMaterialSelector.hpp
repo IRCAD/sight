@@ -28,13 +28,13 @@
 
 #include <data/Reconstruction.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
 #include <QString>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiVisuOgre
 {
@@ -60,13 +60,13 @@ namespace uiVisuOgre
  * @brief
  */
 class UIVISUOGRE_CLASS_API SMaterialSelector : public QObject,
-                                               public gui::editor::IEditor
+                                               public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SMaterialSelector, gui::editor::IEditor)
+    fwCoreServiceMacro(SMaterialSelector, sight::ui::base::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() noexcept;

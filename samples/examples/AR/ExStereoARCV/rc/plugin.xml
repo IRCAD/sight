@@ -1,10 +1,10 @@
 <plugin id="ExStereoARCV" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>ExStereoARCV_AppCfg</id>
@@ -29,7 +29,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Show settings" shortcut="Ctrl+H" style="check" />
@@ -71,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuPreferencesView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -82,7 +82,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
@@ -108,7 +108,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -122,7 +122,7 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -136,7 +136,7 @@
                 </registry>
             </service>
 
-            <service uid="infoView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="infoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -150,7 +150,7 @@
                 </registry>
             </service>
 
-            <service uid="stereoView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="stereoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -164,7 +164,7 @@
                 </registry>
             </service>
 
-            <service uid="reprojectionInfoView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="reprojectionInfoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -179,7 +179,7 @@
             </service>
 
 
-            <service uid="parametersView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -199,7 +199,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
             <service uid="videoDirAct" type="::uiPreferences::action::SPreferencesConfiguration" >
@@ -211,40 +211,40 @@
                 </preference>
             </service>
 
-            <service uid="showParametersAct" type="::sight::modules::gui::action::SModifyLayout" >
+            <service uid="showParametersAct" type="::sight::modules::ui::base::action::SModifyLayout" >
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/startCamera</slot>
                     <slot>videoGrabber2Srv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/stopCamera</slot>
                     <slot>videoGrabber2Srv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/pauseCamera</slot>
                     <slot>videoGrabber2Srv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="startRecordAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="startRecordAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>matricesWriterSrv/startRecord</slot>
                     <slot>startRecordAct/hide</slot>
@@ -252,7 +252,7 @@
                 </slots>
             </service>
 
-            <service uid="stopRecordAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="stopRecordAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>matricesWriterSrv/stopRecordAct</slot>
@@ -345,7 +345,7 @@
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
+            <service uid="arucoParamsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -399,14 +399,14 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
+            <service uid="reprojectionParamsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
                 </parameters>
             </service>
 
-            <service uid="synchroParamsSrv" type="::sight::modules::guiQt::editor::SParameters" >
+            <service uid="synchroParamsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Delay" key="frameDelay" defaultValue="0" min="0" max="2000" />
                 </parameters>
@@ -554,7 +554,7 @@
                 <inout key="output" uid="rightMat" />
             </service>
 
-            <service uid="hideAxisSrv" type="::sight::modules::gui::action::SBooleanSlotCaller" >
+            <service uid="hideAxisSrv" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>LAxisAdp/updateVisibility</slot>
                     <slot>RAxisAdp/updateVisibility</slot>

@@ -1,7 +1,7 @@
 ﻿<plugin id="Tuto13Multithread" version="@PROJECT_VERSION@" >
 
     <requirement id="module_services" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
 
     <xi:include href="configurations/config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     

@@ -29,11 +29,11 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiImageQt
 {
@@ -58,13 +58,13 @@ namespace uiImageQt
  * - \b image [data::Image]: image used to retrieve the pixel value.
  */
 class UIIMAGEQT_CLASS_API ImageInfo : public QObject,
-                                      public gui::editor::IEditor
+                                      public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageInfo, gui::editor::IEditor)
+    fwCoreServiceMacro(ImageInfo, sight::ui::base::editor::IEditor)
 
     UIIMAGEQT_API ImageInfo() noexcept;
 

@@ -4,8 +4,8 @@ set( TYPE MODULE )
 set( PRIORITY 1 )
 set( DEPENDENCIES
     core
-    gui
-    guiQt
+    base
+    qt
     fwPacsIO
     data
     services

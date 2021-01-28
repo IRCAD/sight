@@ -26,11 +26,11 @@
 
 #include <core/base.hpp>
 
-#include <gui/dialog/ILocationDialog.hpp>
-
 #include <QObject>
 #include <QString>
 #include <QUrl>
+
+#include <ui/base/dialog/ILocationDialog.hpp>
 
 namespace fwGuiQml
 {
@@ -41,26 +41,26 @@ namespace dialog
  *
  */
 class FWGUIQML_CLASS_API LocationDialog : public QObject,
-                                          public gui::dialog::ILocationDialog
+                                          public ui::base::dialog::ILocationDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
 
 public:
 
-    fwCoreClassMacro(LocationDialog, gui::dialog::ILocationDialog, gui::factory::New< LocationDialog >)
+    fwCoreClassMacro(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New< LocationDialog >)
 
-    FWGUIQML_API LocationDialog(gui::GuiBaseObject::Key key);
+    FWGUIQML_API LocationDialog(ui::base::GuiBaseObject::Key key);
 
     /// show the locationDialog to the user and wait selection from the user
     FWGUIQML_API data::location::ILocation::sptr show() override;
 
     /// Set the type of locationDialog to open (multi selection, folder selection...)
-    FWGUIQML_API void setType( gui::dialog::ILocationDialog::Types type ) override;
+    FWGUIQML_API void setType( ui::base::dialog::ILocationDialog::Types type ) override;
 
     /// Set the type of locationDialog to open (read, write...)
-    FWGUIQML_API gui::dialog::ILocationDialog& setOption(
-        gui::dialog::ILocationDialog::Options option) override;
+    FWGUIQML_API ui::base::dialog::ILocationDialog& setOption(
+        ui::base::dialog::ILocationDialog::Options option) override;
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
     FWGUIQML_API void addFilter(const std::string& filterName, const std::string& wildcardList ) override;
@@ -70,8 +70,8 @@ protected Q_SLOTS:
 
 private:
 
-    gui::dialog::ILocationDialog::Options m_style {::gui::dialog::ILocationDialog::NONE};
-    gui::dialog::ILocationDialog::Types m_type {::gui::dialog::ILocationDialog::SINGLE_FILE};
+    ui::base::dialog::ILocationDialog::Options m_style {::ui::base::dialog::ILocationDialog::NONE};
+    ui::base::dialog::ILocationDialog::Types m_type {::ui::base::dialog::ILocationDialog::SINGLE_FILE};
     std::vector< std::pair< std::string, std::string > > m_filters;
 
     /// helper to transform m_filters into qml encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"

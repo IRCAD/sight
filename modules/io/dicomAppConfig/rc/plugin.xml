@@ -1,6 +1,6 @@
 <plugin id="dicomAppConfig" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/2DLocalPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

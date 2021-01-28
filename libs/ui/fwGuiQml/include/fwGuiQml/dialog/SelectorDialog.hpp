@@ -24,11 +24,11 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <gui/dialog/ISelectorDialog.hpp>
-
 #include <QObject>
 #include <QVariant>
 #include <QVector>
+
+#include <ui/base/dialog/ISelectorDialog.hpp>
 
 #include <vector>
 
@@ -42,15 +42,15 @@ namespace dialog
  * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
  */
 class FWGUIQML_CLASS_API SelectorDialog : public QObject,
-                                          public gui::dialog::ISelectorDialog
+                                          public ui::base::dialog::ISelectorDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 public:
 
-    fwCoreClassMacro(SelectorDialog, gui::dialog::ISelectorDialog, gui::factory::New< SelectorDialog >)
+    fwCoreClassMacro(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
 
-    FWGUIQML_API SelectorDialog(gui::GuiBaseObject::Key key);
+    FWGUIQML_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~SelectorDialog();
 
@@ -95,4 +95,4 @@ private:
 };
 
 } // namespace dialog
-} // namespace sight::guiQt
+} // namespace sight::ui::qt

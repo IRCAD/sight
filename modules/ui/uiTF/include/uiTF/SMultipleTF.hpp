@@ -28,11 +28,11 @@
 
 #include <data/Composite.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QComboBox>
 #include <QObject>
 #include <QPushButton>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <filesystem>
 
@@ -85,7 +85,7 @@ namespace uiTF
  */
 class UITF_CLASS_API SMultipleTF final :
     public QObject,
-    public gui::editor::IEditor
+    public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
@@ -93,7 +93,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(::uiTF::SMultipleTF, gui::editor::IEditor)
+    fwCoreServiceMacro(::uiTF::SMultipleTF, sight::ui::base::editor::IEditor)
 
     /// Creates the editor.
     UITF_API SMultipleTF();

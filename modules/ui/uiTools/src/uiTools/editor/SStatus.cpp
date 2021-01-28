@@ -28,8 +28,6 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
@@ -42,13 +40,15 @@
 #include <QVector>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiTools
 {
 
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiTools::editor::SStatus )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiTools::editor::SStatus )
 
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
@@ -89,8 +89,8 @@ void SStatus::starting()
 {
     this->create();
 
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QBoxLayout* layout;
     if(m_layout == "horizontal")
     {

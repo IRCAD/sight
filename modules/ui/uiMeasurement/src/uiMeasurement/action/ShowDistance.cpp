@@ -41,7 +41,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::uiMeasurement::action::ShowDistance, ::sight::data::Image )
 
 static const core::com::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
@@ -77,7 +77,7 @@ void ShowDistance::updating()
 
     if ( !::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
-        this->::gui::IActionSrv::setIsActive(false);
+        this->::ui::base::IActionSrv::setIsActive(false);
     }
     else
     {
@@ -90,7 +90,7 @@ void ShowDistance::updating()
         image->setField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
-        this->::gui::IActionSrv::setIsActive(!toShow);
+        this->::ui::base::IActionSrv::setIsActive(!toShow);
 
         auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
             data::Image::s_DISTANCE_DISPLAYED_SIG);
@@ -112,28 +112,28 @@ void ShowDistance::showDistance(bool)
         image->getField< data::Boolean >(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                              true));
 
-    this->::gui::IActionSrv::setIsActive( !(showDistances->value()) );
+    this->::ui::base::IActionSrv::setIsActive( !(showDistances->value()) );
 }
 
 //------------------------------------------------------------------------------
 
 void ShowDistance::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowDistance::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowDistance::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -32,12 +32,6 @@
 #include <core/tools/fwID.hpp>
 #include <core/tools/Stringizer.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/IMessageDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ActiveWorkers.hpp>
 
@@ -51,12 +45,17 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/IMessageDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace monitorQt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::monitorQt::DumpEditor )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::monitorQt::DumpEditor )
 
 core::memory::BufferManager::BufferInfoMapType m_bufferInfos;
 core::memory::BufferManager::BufferStats m_bufferStats = {0, 0};
@@ -442,10 +441,10 @@ DumpEditor::~DumpEditor() noexcept
 
 void DumpEditor::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
     m_updateTimer = new QTimer(qtContainer->getQtContainer());
     m_updateTimer->setInterval(300);
@@ -533,7 +532,7 @@ void DumpEditor::stopping()
 
 void DumpEditor::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -717,8 +716,8 @@ void DumpEditor::changeStatus( int index )
         iter = buffInfoMap.find(selectedBuffer);
         if( iter != buffInfoMap.end())
         {
-            gui::Cursor cursor;
-            cursor.setCursor(gui::ICursor::BUSY);
+            ui::base::Cursor cursor;
+            cursor.setCursor(ui::base::ICursor::BUSY);
             const core::memory::BufferInfo& dumpBuffInfo = iter->second;
 
             bool isLock = dumpBuffInfo.lockCount() > 0;
@@ -735,10 +734,10 @@ void DumpEditor::changeStatus( int index )
             }
             else
             {
-                gui::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Dump process information",
                     "Dump process is locked. It is impossible to dump or restore this object.",
-                    gui::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
             }
 
             cursor.setDefaultCursor();
@@ -749,10 +748,10 @@ void DumpEditor::changeStatus( int index )
         {
             std::stringstream stream;
             stream << "Object " << selectedBuffer << " not found, please refresh the grid.";
-            gui::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Dump process information",
                 stream.str(),
-                gui::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }

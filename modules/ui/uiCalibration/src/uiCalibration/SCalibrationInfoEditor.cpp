@@ -30,19 +30,18 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QHBoxLayout>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <map>
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro(gui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor)
+fwServicesRegisterMacro(ui::base::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor)
 
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
@@ -101,8 +100,8 @@ void SCalibrationInfoEditor::updating()
             const auto errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
                                 "Your images may be out of sync.";
 
-            gui::dialog::MessageDialog::show("Inputs do not match",
-                                             errMsg, gui::dialog::MessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show("Inputs do not match",
+                                                         errMsg, sight::ui::base::dialog::MessageDialog::WARNING);
         }
     }
     else
@@ -127,15 +126,15 @@ void SCalibrationInfoEditor::updating()
 
 void SCalibrationInfoEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SCalibrationInfoEditor::starting()
 {
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Creation of the Qt elements
 
@@ -171,7 +170,7 @@ void SCalibrationInfoEditor::starting()
 
 void SCalibrationInfoEditor::stopping()
 {
-    gui::IGuiContainerSrv::destroy();
+    ui::base::IGuiContainerSrv::destroy();
 }
 
 // ----------------------------------------------------------------------------

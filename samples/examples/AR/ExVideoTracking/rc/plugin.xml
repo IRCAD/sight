@@ -1,10 +1,10 @@
 <plugin id="ExVideoTracking" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>ExVideoTracking_AppCfg</id>
@@ -21,7 +21,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -57,7 +57,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -74,7 +74,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -82,7 +82,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -92,7 +92,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -102,7 +102,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -116,7 +116,7 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
@@ -141,7 +141,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="parametersSrv" type="::sight::modules::guiQt::editor::SParameters" >
+            <service uid="parametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />

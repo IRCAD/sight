@@ -45,14 +45,14 @@
 
 #include <fwVtkIO/BitmapImageReader.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 #include <filesystem>
 
@@ -104,15 +104,15 @@ void SImageSeriesReader::openLocationDialog()
         }
     }
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an ImageSeries" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.addFilter("Bitmap image", availableExtensions);
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -189,8 +189,8 @@ void SImageSeriesReader::updating()
         data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("ImageSeries is not instanced", imageSeries);
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
         {

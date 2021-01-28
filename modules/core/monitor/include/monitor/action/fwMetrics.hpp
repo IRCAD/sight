@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace monitor
 namespace action
 {
 /// Implements an action for show metrics about Sight factories (number of data, message and service in factories).
-class MONITOR_CLASS_API fwMetrics : public ::sight::gui::IActionSrv
+class MONITOR_CLASS_API fwMetrics : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(fwMetrics,  gui::IActionSrv )
+    fwCoreServiceMacro(fwMetrics,  ui::base::IActionSrv )
 
     /// Does nothing
     MONITOR_API fwMetrics() noexcept;

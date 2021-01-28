@@ -27,7 +27,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::frame::SDefaultFrame" >
+        <service uid="mainView" type="::sight::modules::ui::base::frame::SDefaultFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -42,7 +42,7 @@
             </registry>
         </service>
 
-        <service uid="tfView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="tfView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -56,7 +56,7 @@
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="transferFunctionEditorView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -69,7 +69,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />

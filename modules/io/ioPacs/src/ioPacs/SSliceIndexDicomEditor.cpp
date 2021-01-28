@@ -34,11 +34,11 @@
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/registry/ServiceConfig.hpp>
 
 #include <QHBoxLayout>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace ioPacs
 {
@@ -68,7 +68,7 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
@@ -120,8 +120,8 @@ void SSliceIndexDicomEditor::starting()
     m_sliceTriggerer->setOneShot(true);
 
     // Create the slider.
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 

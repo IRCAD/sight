@@ -28,12 +28,12 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace videoQt
 {
@@ -44,13 +44,13 @@ namespace editor
  * @brief   This editor allows to draw a slider. It is designed to be used with SFrameGrabber to browse a video.
  */
 class VIDEOQT_CLASS_API SSlider : public QObject,
-                                  public gui::editor::IEditor
+                                  public ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSlider, gui::editor::IEditor)
+    fwCoreServiceMacro(SSlider, ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     VIDEOQT_API SSlider() noexcept;
@@ -100,7 +100,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::gui::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
+        <service uid="..." type="::ui::base::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
        @endcode
      */
     virtual void configuring() override;

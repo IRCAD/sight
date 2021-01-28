@@ -38,10 +38,6 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -50,6 +46,9 @@
 #include <QHBoxLayout>
 #include <QMouseEvent>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <filesystem>
 #include <fstream>
 #include <iterator>
@@ -57,7 +56,8 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, ::sight::data::DicomSeries )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor,
+                         ::sight::data::DicomSeries )
 
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
@@ -80,7 +80,7 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicom::SSliceIndexDicomEditor must have "
@@ -113,8 +113,8 @@ void SSliceIndexDicomEditor::starting()
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -349,11 +349,11 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    gui::dialog::MessageDialog messageBox;
+    ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
-    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

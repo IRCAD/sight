@@ -6,7 +6,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    gui
+    base
     services
 )
 set( REQUIREMENTS
@@ -19,7 +19,7 @@ if(NOT ${ENABLE_QML_APPLICATION})
     list(APPEND DEPENDENCIES
         )
     list(APPEND REQUIREMENTS
-        guiQt
+        qt
         )
     add_definitions ( -DKEEP_OLD_SERVICE )
 endif()

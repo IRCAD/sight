@@ -31,10 +31,6 @@
 
 #include <fwIO/ioTypes.hpp>
 
-#include <gui/editor/IDialogEditor.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 
@@ -44,10 +40,14 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include <ui/base/editor/IDialogEditor.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::STextureSelector, ::sight::data::Reconstruction)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiVisuOgre::STextureSelector,
+                         ::sight::data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -71,7 +71,7 @@ void STextureSelector::starting()
 
     this->create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_loadButton = new QPushButton(QString("Load texture"));
@@ -136,7 +136,7 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv = services::add< gui::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
+    auto srv = services::add< ui::base::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
     srv->registerInOut(image, ::fwIO::s_DATA_KEY);
 
     srv->configure();

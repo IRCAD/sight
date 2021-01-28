@@ -27,11 +27,11 @@
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
 
 #include <sstream>
 
@@ -80,11 +80,11 @@ bool SOpenCVWriter::defineLocationGUI()
     // Ask user for the file path
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter("XML file", "*.xml");
     dialogFile.addFilter("YAML file", "*.yaml *.yml");
 

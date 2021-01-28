@@ -37,7 +37,7 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitorQt::action::ComponentsTree, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::monitorQt::action::ComponentsTree, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -98,14 +98,14 @@ void ComponentsTree::updating( )
 
 void ComponentsTree::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ComponentsTree::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 
     QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
@@ -126,7 +126,7 @@ void ComponentsTree::stopping()
     delete m_treeContainer;
     delete m_dialog;
 
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

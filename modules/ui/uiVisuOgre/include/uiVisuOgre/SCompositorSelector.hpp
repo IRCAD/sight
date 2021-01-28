@@ -27,8 +27,6 @@
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
@@ -36,6 +34,8 @@
 #include <QObject>
 #include <QPointer>
 #include <QVBoxLayout>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <vector>
 
@@ -46,13 +46,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
-                                                 public gui::editor::IEditor
+                                                 public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCompositorSelector, gui::editor::IEditor)
+    fwCoreServiceMacro(SCompositorSelector, sight::ui::base::editor::IEditor)
 
     /** @} */
 

@@ -33,8 +33,6 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
@@ -42,10 +40,12 @@
 #include <QLabel>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::ImageTransparency, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiImageQt::ImageTransparency, ::sight::data::Image )
 
 static const services::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -63,9 +63,9 @@ ImageTransparency::~ImageTransparency() noexcept
 
 void ImageTransparency::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
@@ -112,7 +112,7 @@ void ImageTransparency::stopping()
 
 void ImageTransparency::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 
     //<shortcut value="X"/>
     std::vector < ConfigurationType > vectCfg = m_configuration->find("shortcut");

@@ -24,9 +24,6 @@
 
 #include <core/base.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <QApplication>
@@ -37,6 +34,9 @@
 #include <QObject>
 #include <QSplitter>
 #include <QTextBrowser>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
@@ -75,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::uiGenericQt::action::ShowHelpContents, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ void ShowHelpContents::configuring()
      * .qhcp/.qhc (source/binary): Contains information that is used to customize
      *                             the appearance and available features of Qt Assistant.
      */
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
@@ -130,11 +130,11 @@ void ShowHelpContents::updating()
     if (!helpEngine->setupData())
     {
         SLM_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
-        gui::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( "Help file is missing or not correct." );
-        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
         // Setup help engine information failed.
         // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not correct.
@@ -161,14 +161,14 @@ void ShowHelpContents::updating()
 
 void ShowHelpContents::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowHelpContents::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

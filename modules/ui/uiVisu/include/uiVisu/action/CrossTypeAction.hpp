@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 #include <map>
 #include <string>
@@ -41,12 +41,12 @@ namespace action
 /**
  * @brief   This action allows change the cross type
  */
-class UIVISU_CLASS_API CrossTypeAction : public ::sight::gui::IActionSrv
+class UIVISU_CLASS_API CrossTypeAction : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(CrossTypeAction, ::sight::gui::IActionSrv)
+    fwCoreServiceMacro(CrossTypeAction, ::sight::ui::base::IActionSrv)
 
     /// Constructor. Do nothing.
     UIVISU_API CrossTypeAction() noexcept;
@@ -73,7 +73,7 @@ protected:
     /**
      * @brief Configure action.
      * @code{.xml}
-       <service type="::gui::IActionSrv" impl="::uiData::action::CrossTypeAction" autoConnect="no">
+       <service type="::ui::base::IActionSrv" impl="::uiData::action::CrossTypeAction" autoConnect="no">
         <crossType>hide</crossType>
        </service>
        @endcode

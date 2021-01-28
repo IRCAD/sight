@@ -7,7 +7,7 @@ set( DEPENDENCIES
         data
         fwDataIO
         services
-        gui
-        guiQt
+        base
+        qt
         fwIO
 )

@@ -36,13 +36,6 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
 
-#include <gui/dialog/InputDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/preferences.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QByteArray>
@@ -50,6 +43,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/preferences.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace videoQt
 {
@@ -72,7 +71,7 @@ static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string s_LABEL_CONFIG                = "label";
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::videoQt::editor::SCamera )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::videoQt::editor::SCamera )
 
 //------------------------------------------------------------------------------
 
@@ -113,7 +112,7 @@ void SCamera::starting()
 {
     this->create();
 
-    const guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    const ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
@@ -209,18 +208,18 @@ void SCamera::onChooseFile()
     std::vector< data::Camera::sptr > cameras = this->getCameras();
 
     // Check preferences
-    const std::filesystem::path videoDirPreferencePath(gui::preferences::getVideoDir());
+    const std::filesystem::path videoDirPreferencePath(modules::ui::base::preferences::getVideoDir());
 
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("All files", "*.*");
     dialogFile.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
     dialogFile.addFilter("images", "*.bmp *.jpeg *.jpg *.png *.tiff");
     dialogFile.addFilter("realsense files (*.bag)", "*.bag *.rosbag");
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     size_t count = 0;
     for(auto& camera : cameras)
@@ -346,7 +345,7 @@ void SCamera::onChooseStream()
     size_t count = 0;
     for(auto& camera : cameras)
     {
-        gui::dialog::InputDialog inputDialog;
+        ui::base::dialog::InputDialog inputDialog;
         inputDialog.setTitle("Enter stream url for video source #" + std::to_string(count++));
 
         const std::string streamSource = inputDialog.getInput();

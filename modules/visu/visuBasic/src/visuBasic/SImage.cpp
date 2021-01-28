@@ -22,11 +22,10 @@
 
 #include "visuBasic/SImage.hpp"
 
-#include <gui/GuiRegistry.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/op/Add.hpp>
+
+#include <ui/base/GuiRegistry.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace visuBasic
 {
@@ -49,7 +48,7 @@ SImage::~SImage() noexcept
 
 void SImage::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -68,12 +67,12 @@ void SImage::configuring()
 
 void SImage::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     const auto genericSceneId = this->getID() + "-genericScene";
-    gui::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
+    ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
     auto image = this->getLockedInput< data::Object>(s_IMAGE_INPUT);
 
@@ -144,7 +143,7 @@ void SImage::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    gui::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
+    ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
     services::OSR::unregisterService( m_negatoSrv );
     services::OSR::unregisterService( m_interactorSrv );

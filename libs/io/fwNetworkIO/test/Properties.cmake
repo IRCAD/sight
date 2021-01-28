@@ -6,6 +6,6 @@ set( DEPENDENCIES
     core
     utestData
     data
-    guiQt
+    qt
     )
 set( REQUIREMENTS )

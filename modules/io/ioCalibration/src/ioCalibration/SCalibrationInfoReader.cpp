@@ -33,14 +33,14 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
 
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 namespace ioCalibration
 {
@@ -81,11 +81,11 @@ void SCalibrationInfoReader::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result = data::location::Folder::dynamicCast(dialogFile.show());
 
@@ -136,8 +136,8 @@ void SCalibrationInfoReader::updating()
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         using DetectionPairType = std::pair< data::Image::sptr, data::PointList::sptr >;
 
@@ -186,12 +186,12 @@ void SCalibrationInfoReader::updating()
             if(!errorMessage.empty())
             {
                 errorMessage += "\n\n Abort reading?";
-                gui::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
-                                                      gui::dialog::MessageDialog::WARNING);
+                ui::base::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
+                                                           ui::base::dialog::MessageDialog::WARNING);
 
-                messageBox.addButton(gui::dialog::IMessageDialog::YES_NO);
+                messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
 
-                if(messageBox.show() & gui::dialog::IMessageDialog::YES)
+                if(messageBox.show() & ui::base::dialog::IMessageDialog::YES)
                 {
                     filenameDetectionMap.clear();
                     m_readFailed = true;
@@ -233,19 +233,19 @@ void SCalibrationInfoReader::stopping()
 
 void SCalibrationInfoReader::updateChessboardSize()
 {
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
 
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
 
-    const std::string scaleStr = gui::preferences::getPreference(m_scaleKey);
+    const std::string scaleStr = modules::ui::base::preferences::getPreference(m_scaleKey);
     if (!scaleStr.empty())
     {
         m_scale = std::stof(scaleStr);

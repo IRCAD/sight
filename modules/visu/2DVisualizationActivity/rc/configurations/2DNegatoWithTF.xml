@@ -14,7 +14,7 @@
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
         <object uid="${transferFunctionDeferred}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="multiView_negato_bottom" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />

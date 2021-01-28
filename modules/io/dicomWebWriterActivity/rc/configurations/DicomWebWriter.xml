@@ -12,7 +12,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
@@ -51,14 +51,14 @@
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="::sight::modules::gui::action::SSlotCaller" >
+        <service uid="action_anonymize" type="::sight::modules::ui::base::action::SSlotCaller" >
             <slots>
                 <slot>anonymizeController/update</slot>
             </slots>
         </service>
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="::sight::modules::gui::action::SSlotCaller" >
+        <service uid="action_pushSeriesToPacs" type="::sight::modules::ui::base::action::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
                 <slot>action_pushSeriesToPacs/setInexecutable</slot>

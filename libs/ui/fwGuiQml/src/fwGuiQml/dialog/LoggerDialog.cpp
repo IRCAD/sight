@@ -28,13 +28,13 @@
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <gui/registry/macros.hpp>
-
 #include <QGuiApplication>
+
+#include <ui/base/registry/macros.hpp>
 
 #include <filesystem>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::LoggerDialog, ::sight::gui::dialog::ILoggerDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQml::dialog::LoggerDialog, ::sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -43,7 +43,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-LoggerDialog::LoggerDialog(gui::GuiBaseObject::Key key)
+LoggerDialog::LoggerDialog(ui::base::GuiBaseObject::Key key)
 {
 }
 

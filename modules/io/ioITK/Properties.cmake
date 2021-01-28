@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    gui
+    base
     fwItkIO
     services
     fwIO

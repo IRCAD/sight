@@ -17,7 +17,7 @@
         <!-- *********************************** End Objects declaration *********************************** -->
 
         <!-- *********************************** Begin layouts declaration *********************************** -->
-        <service uid="HistogramView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="HistogramView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />

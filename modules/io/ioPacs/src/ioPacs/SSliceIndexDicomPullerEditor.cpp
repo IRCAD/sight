@@ -40,10 +40,6 @@
 
 #include <fwPacsIO/exceptions/Base.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -52,13 +48,16 @@
 #include <QHBoxLayout>
 #include <QMouseEvent>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <filesystem>
 #include <iterator>
 
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::ioPacs::SSliceIndexDicomPullerEditor,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::ioPacs::SSliceIndexDicomPullerEditor,
                          data::DicomSeries )
 
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
@@ -96,7 +95,7 @@ SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 
 void SSliceIndexDicomPullerEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have "
@@ -132,8 +131,8 @@ void SSliceIndexDicomPullerEditor::starting()
     // Get pacs configuration
     m_pacsConfiguration = this->getInput< ::fwPacsIOdata::PacsConfiguration>(s_PACS_INPUT);
 
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -428,11 +427,11 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& _message) const
 {
     SLM_WARN("Error: " + _message);
-    gui::dialog::MessageDialog messageBox;
+    ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage(_message);
-    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

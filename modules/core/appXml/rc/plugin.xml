@@ -1,4 +1,4 @@
-<plugin id="module_appXml" class="::sight::modules::appXml::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="module_appXml" class="::sight::module::appXml::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="module_appXml" />
     <requirement id="module_services" />

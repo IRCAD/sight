@@ -33,10 +33,10 @@
 
 #include <fwGdcmIO/helper/DicomSeriesAnonymizer.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <vector>
 
@@ -85,22 +85,22 @@ void SDicomSeriesAnonymizer::updating()
 {
     data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
 
-    gui::dialog::MessageDialog dialog;
+    ui::base::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
 
     // If the selection is not empty
     if(!vector->empty())
     {
         dialog.setMessage( "Are you sure you want to anonymize the selected series ?" );
-        dialog.setIcon(gui::dialog::IMessageDialog::QUESTION);
-        dialog.addButton(gui::dialog::IMessageDialog::YES);
-        dialog.addButton(gui::dialog::IMessageDialog::CANCEL);
-        gui::dialog::IMessageDialog::Buttons answer = dialog.show();
+        dialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        dialog.addButton(ui::base::dialog::IMessageDialog::YES);
+        dialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+        ui::base::dialog::IMessageDialog::Buttons answer = dialog.show();
 
-        if ( answer == gui::dialog::IMessageDialog::YES )
+        if ( answer == ui::base::dialog::IMessageDialog::YES )
         {
-            gui::Cursor cursor;
-            cursor.setCursor(gui::ICursor::BUSY);
+            ui::base::Cursor cursor;
+            cursor.setCursor(ui::base::ICursor::BUSY);
             this->anonymize();
             cursor.setDefaultCursor();
         }
@@ -109,8 +109,8 @@ void SDicomSeriesAnonymizer::updating()
     else
     {
         dialog.setMessage( "Please select which series you want to anonymize." );
-        dialog.setIcon(gui::dialog::IMessageDialog::INFO);
-        dialog.addButton(gui::dialog::IMessageDialog::OK);
+        dialog.setIcon(ui::base::dialog::IMessageDialog::INFO);
+        dialog.addButton(ui::base::dialog::IMessageDialog::OK);
         dialog.show();
     }
 }

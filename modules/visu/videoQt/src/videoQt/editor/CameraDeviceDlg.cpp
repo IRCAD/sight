@@ -26,8 +26,6 @@
 
 #include <data/Camera.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <QCamera>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -35,6 +33,8 @@
 #include <QPushButton>
 #include <QtMultimedia>
 #include <QVBoxLayout>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <algorithm>
 #include <sstream>

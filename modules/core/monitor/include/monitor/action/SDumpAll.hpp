@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Implements an action that dump all buffer (if possible)
-class MONITOR_CLASS_API SDumpAll : public ::sight::gui::IActionSrv
+class MONITOR_CLASS_API SDumpAll : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDumpAll, ::sight::gui::IActionSrv)
+    fwCoreServiceMacro(SDumpAll, ::sight::ui::base::IActionSrv)
 
     /// Does nothing
     MONITOR_API SDumpAll() noexcept;

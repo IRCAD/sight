@@ -28,14 +28,14 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QFutureWatcher>
 #include <QPointer>
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTableView>
 #include <QTableWidget>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <vector>
 
@@ -54,13 +54,13 @@ namespace monitorQt
  * @brief   Editor to dump or restore selected buffer.
  */
 class MONITORQT_CLASS_API DumpEditor : public QObject,
-                                       public gui::editor::IEditor
+                                       public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(DumpEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(DumpEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Does nothing.
     MONITORQT_API DumpEditor() noexcept;

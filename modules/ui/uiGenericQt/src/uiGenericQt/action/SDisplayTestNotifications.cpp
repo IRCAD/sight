@@ -40,7 +40,7 @@ namespace action
 static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiGenericQt::action::SDisplayTestNotifications)
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::uiGenericQt::action::SDisplayTestNotifications)
 
 //------------------------------------------------------------------------------
 
@@ -150,7 +150,7 @@ void SDisplayTestNotifications::info(std::ostream& _sstream )
 
 void SDisplayTestNotifications::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -217,14 +217,14 @@ void SDisplayTestNotifications::updating( )
 
 void SDisplayTestNotifications::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SDisplayTestNotifications::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

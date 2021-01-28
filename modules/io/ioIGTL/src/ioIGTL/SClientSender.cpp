@@ -25,10 +25,10 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Failed.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 fwServicesRegisterMacro(::ioIGTL::INetworkSender, ::ioIGTL::SClientSender)
 
@@ -91,15 +91,15 @@ void SClientSender::starting()
     {
         try
         {
-            const std::uint16_t port   = gui::preferences::getValue<std::uint16_t>(m_portConfig);
-            const std::string hostname = gui::preferences::getValue(m_hostnameConfig);
+            const std::uint16_t port   = modules::ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
+            const std::string hostname = modules::ui::base::preferences::getValue(m_hostnameConfig);
 
             m_client.connect(hostname, port);
             m_sigConnected->asyncEmit();
         }
         catch (core::Exception& ex)
         {
-            gui::dialog::MessageDialog::show("Connection error", ex.what());
+            ui::base::dialog::MessageDialog::show("Connection error", ex.what());
             SLM_ERROR(ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
@@ -120,7 +120,7 @@ void SClientSender::stopping()
     }
     catch (core::Exception& e)
     {
-        gui::dialog::MessageDialog::show("Error", e.what());
+        ui::base::dialog::MessageDialog::show("Error", e.what());
         SLM_ERROR(e.what());
     }
 }

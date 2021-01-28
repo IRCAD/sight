@@ -4,10 +4,10 @@
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="memory" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="activities" />
     <requirement id="filterUnknownSeries" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
 
     <xi:include href="configurations/ARCalibrationActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

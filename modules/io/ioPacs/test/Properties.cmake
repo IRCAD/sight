@@ -10,6 +10,6 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     data
     module_services
-    module_gui
+    module_ui_base
     ioPacs
 )

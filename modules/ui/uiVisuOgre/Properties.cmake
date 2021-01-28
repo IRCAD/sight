@@ -6,8 +6,8 @@ set( DEPENDENCIES
         core
         data
         services
-        gui
-        guiQt
+        base
+        qt
         fwRenderOgre
         fwIO
 )

@@ -30,9 +30,9 @@
 
 #include <data/location/SingleFile.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
 
 namespace uiVisu
 {
@@ -41,7 +41,7 @@ namespace action
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiVisu::action::SSnapshot, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::uiVisu::action::SSnapshot, ::sight::data::Object )
 
 SSnapshot::SSnapshot() noexcept
 {
@@ -58,21 +58,21 @@ SSnapshot::~SSnapshot() noexcept
 
 void SSnapshot::starting()
 {
-    gui::IActionSrv::actionServiceStarting();
+    ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::stopping()
 {
-    gui::IActionSrv::actionServiceStopping();
+    ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::configuring()
 {
-    gui::IActionSrv::initialize();
+    ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -106,7 +106,7 @@ std::string SSnapshot::requestFileName()
 {
     std::string fileName = "";
 
-    gui::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
     dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
     dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
@@ -114,7 +114,7 @@ std::string SSnapshot::requestFileName()
     dialogFile.addFilter("png", "*.png");
     dialogFile.addFilter("tiff", "*.tiff");
     dialogFile.addFilter("all", "*.*");
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );

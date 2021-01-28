@@ -28,7 +28,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::frame::SDefaultFrame" >
+        <service uid="mainView" type="::sight::modules::ui::base::frame::SDefaultFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -42,7 +42,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -56,7 +56,7 @@
             </registry>
         </service>
 
-        <service uid="queryView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="queryView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <service uid="selectorsView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="selectorsView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" hOffset="50%" />
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" />
@@ -95,7 +95,7 @@
             </registry>
         </service>
 
-        <service uid="advancedQueryEditorSliderView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="advancedQueryEditorSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -108,7 +108,7 @@
             </registry>
         </service>
 
-        <service uid="configurePACSSliderView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="configurePACSSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -121,7 +121,7 @@
             </registry>
         </service>
 
-        <service uid="previewView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="previewView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -135,7 +135,7 @@
             </registry>
         </service>
 
-        <service uid="previewSceneView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="previewSceneView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -149,7 +149,7 @@
             </registry>
         </service>
 
-        <service uid="previewSceneSliderView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="previewSceneSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -162,7 +162,7 @@
             </registry>
         </service>
 
-        <service uid="previewDICOMSliderView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="previewDICOMSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -178,7 +178,7 @@
             </registry>
         </service>
 
-        <service uid="localView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="localView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -192,7 +192,7 @@
             </registry>
         </service>
 
-        <service uid="localSceneView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="localSceneView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -206,7 +206,7 @@
             </registry>
         </service>
 
-        <service uid="localSceneSliderView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="localSceneSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -219,7 +219,7 @@
             </registry>
         </service>
 
-        <service uid="localSliderView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="localSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -282,7 +282,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="seriesPullerAct" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="seriesPullerAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
@@ -292,7 +292,7 @@
             </config>
         </service>
 
-        <service uid="waitAct" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="waitAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -303,7 +303,7 @@
             </config>
         </service>
 
-        <service uid="exportImageAct" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="exportImageAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -316,7 +316,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showAdvancedQueryEditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="showAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowBottomChevron.svg</icon>
@@ -325,7 +325,7 @@
             </config>
         </service>
 
-        <service uid="hideAdvancedQueryEditorSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="hideAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowTopChevron.svg</icon>
@@ -334,7 +334,7 @@
             </config>
         </service>
 
-        <service uid="showPACSConfigurationSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="showPACSConfigurationSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
@@ -343,7 +343,7 @@
             </config>
         </service>
 
-        <service uid="hidePACSConfigurationSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="hidePACSConfigurationSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
@@ -353,7 +353,7 @@
         </service>
 
         <!-- SNotifier listens to all the connected services & displays queued notifications at the same place -->
-        <service uid="leftNotifierSrv" type="::sight::modules::guiQt::SNotifier" >
+        <service uid="leftNotifierSrv" type="::sight::modules::ui::qt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
@@ -361,7 +361,7 @@
             <duration>5000</duration>
         </service>
 
-        <service uid="rightNotifierSrv" type="::sight::modules::guiQt::SNotifier" >
+        <service uid="rightNotifierSrv" type="::sight::modules::ui::qt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_RIGHT</position>
@@ -381,19 +381,19 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="previewNegatoStopperSrv" type="::sight::modules::gui::action::SStarter" >
+        <service uid="previewNegatoStopperSrv" type="::sight::modules::ui::base::action::SStarter" >
             <stop uid="pNegatoAdp" />
         </service>
 
-        <service uid="previewNegatoStarterSrv" type="::sight::modules::gui::action::SStarter" >
+        <service uid="previewNegatoStarterSrv" type="::sight::modules::ui::base::action::SStarter" >
             <start uid="pNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStopperSrv" type="::sight::modules::gui::action::SStarter" >
+        <service uid="localNegatoStopperSrv" type="::sight::modules::ui::base::action::SStarter" >
             <stop uid="lNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStarterSrv" type="::sight::modules::gui::action::SStarter" >
+        <service uid="localNegatoStarterSrv" type="::sight::modules::ui::base::action::SStarter" >
             <start uid="lNegatoAdp" />
         </service>
 

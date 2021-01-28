@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     services
-    gui
+    base
     fwIO
     cvIO
     calibration3d

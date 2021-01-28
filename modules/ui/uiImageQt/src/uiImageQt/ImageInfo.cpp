@@ -33,8 +33,6 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
@@ -42,10 +40,12 @@
 #include <QLabel>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::ImageInfo, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiImageQt::ImageInfo, ::sight::data::Image )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -66,10 +66,10 @@ ImageInfo::~ImageInfo() noexcept
 
 void ImageInfo::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
@@ -94,7 +94,7 @@ void ImageInfo::stopping()
 
 void ImageInfo::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

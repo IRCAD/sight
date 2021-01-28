@@ -10,8 +10,8 @@ set( REQUIREMENTS
     ctrlSelection
     data
     dicomAppConfig
-    module_gui
-    module_guiQt
+    module_ui_base
+    module_ui_qt
     ioDicom
     ioGdcm
     media

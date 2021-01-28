@@ -17,7 +17,7 @@
         <object uid="${targetTransferFunction}" type="::sight::data::TransferFunction" src="ref" />
         <object uid="${referenceTransferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="manualRegistrationView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="manualRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -32,7 +32,7 @@
             </registry>
         </service>
 
-        <service uid="blendNegatoViews" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="blendNegatoViews" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -46,7 +46,7 @@
             </registry>
         </service>
 
-        <service uid="secondaryBlendViews" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="secondaryBlendViews" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />

@@ -26,10 +26,10 @@
 
 #include <data/Reconstruction.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QPushButton;
 
@@ -50,14 +50,14 @@ namespace uiVisuOgre
  * - \b reconstruction [data::Reconstruction]: reconstruction where the texture should be applied.
  */
 class UIVISUOGRE_CLASS_API STextureSelector : public QObject,
-                                              public gui::editor::IEditor
+                                              public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(STextureSelector, gui::editor::IEditor)
+    fwCoreServiceMacro(STextureSelector, sight::ui::base::editor::IEditor)
 
     UIVISUOGRE_API STextureSelector() noexcept;
     UIVISUOGRE_API virtual ~STextureSelector() noexcept;

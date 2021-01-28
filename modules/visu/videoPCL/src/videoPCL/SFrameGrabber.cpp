@@ -27,13 +27,13 @@
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/preferences.hpp>
-
 #include <services/macros.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/preferences.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -109,7 +109,7 @@ void SFrameGrabber::startCamera()
     if (camera->getCameraSource() == data::Camera::FILE)
     {
         std::filesystem::path file = camera->getVideoFile();
-        const std::filesystem::path videoDir(gui::preferences::getVideoDir());
+        const std::filesystem::path videoDir(modules::ui::base::preferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
@@ -132,7 +132,7 @@ void SFrameGrabber::startCamera()
     else
     {
         this->setStartState(false);
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Grabber",
             "This video source is not managed by this grabber.");
     }

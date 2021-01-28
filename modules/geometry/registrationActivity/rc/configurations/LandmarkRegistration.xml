@@ -22,7 +22,7 @@
         <object uid="transformedImage" type="::sight::data::Image" />
         <object uid="emptyImage" type="::sight::data::Image" />
 
-        <service uid="landmarkRegistrationView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="landmarkRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="editors" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="editors" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -51,7 +51,7 @@
             </registry>
         </service>
 
-        <service uid="landmarkRegEditor" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="landmarkRegEditor" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -68,21 +68,21 @@
             </registry>
         </service>
 
-        <service uid="applyLandmarkRegistration" type="::sight::modules::guiQt::editor::SSignalButton">
+        <service uid="applyLandmarkRegistration" type="::sight::modules::ui::qt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
             </config>
         </service>
 
-        <service uid="resetLandmarks" type="::sight::modules::guiQt::editor::SSignalButton">
+        <service uid="resetLandmarks" type="::sight::modules::ui::qt::editor::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Reset</text>
             </config>
         </service>
 
-        <service uid="registrationScenes" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="registrationScenes" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -96,7 +96,7 @@
             </registry>
         </service>
 
-        <service uid="referenceSceneView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="referenceSceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -115,7 +115,7 @@
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="mixedSceneView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mixedSceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />

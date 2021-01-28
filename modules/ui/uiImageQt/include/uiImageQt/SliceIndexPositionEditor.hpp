@@ -28,9 +28,8 @@
 
 #include <data/tools/helper/MedicalImage.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
-#include <guiQt/SliceSelector.hpp>
+#include <ui/base/editor/IEditor.hpp>
+#include <ui/qt/SliceSelector.hpp>
 
 namespace uiImageQt
 {
@@ -56,12 +55,12 @@ namespace uiImageQt
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
-class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public gui::editor::IEditor
+class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SliceIndexPositionEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SliceIndexPositionEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIIMAGEQT_API SliceIndexPositionEditor() noexcept;
@@ -150,7 +149,7 @@ private:
     /// @brief The field IDs for the slice index.
     static const std::string* SLICE_INDEX_FIELDID[ 3 ];
 
-    guiQt::SliceSelector* m_sliceSelectorPanel;
+    ui::qt::SliceSelector* m_sliceSelectorPanel;
 
     data::tools::helper::MedicalImage m_helper;
 

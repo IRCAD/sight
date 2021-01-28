@@ -3,10 +3,10 @@ set( NAME videoQt )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-        guiQt
+        qt
         services
         data
-        gui
+        base
         fwVideoQt
 )
 set( REQUIREMENTS  )

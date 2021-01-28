@@ -31,7 +31,7 @@ Example:
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />

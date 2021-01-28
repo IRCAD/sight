@@ -36,9 +36,6 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
@@ -50,6 +47,9 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QVBoxLayout>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
 
@@ -95,7 +95,7 @@ void SCreateActivity::stopping()
 
 void SCreateActivity::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     const services::IService::ConfigType srvconfig = this->getConfigTree();
@@ -244,9 +244,9 @@ void SCreateActivity::updating()
     }
     else
     {
-        gui::dialog::MessageDialog::show("Activity launcher",
-                                         "No available activity for the current selection.",
-                                         gui::dialog::MessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Activity launcher",
+                                                     "No available activity for the current selection.",
+                                                     sight::ui::base::dialog::MessageDialog::WARNING);
     }
 }
 

@@ -69,12 +69,12 @@ namespace factory
  * The service activities::action::SActivityLauncher allows to launch an activity. Its role is to create the specific
  * Activity associated with the selected data.
  *
- * This action should be followed by the service modules::guiQt::editor::SDynamicView : this service listens the action
+ * This action should be followed by the service modules::ui::qt::editor::SDynamicView : this service listens the action
  * signals
  * and launchs the activity in a new tab.
  *
  * - activities::action::SActivityLauncher uses the selected data to generate the activity.
- * - modules::guiQt::editor::SDynamicView  displays the activity in the application.
+ * - modules::ui::qt::editor::SDynamicView  displays the activity in the application.
  * - data::Vector contains the set of selected data .
  *
  * @code{.xml}

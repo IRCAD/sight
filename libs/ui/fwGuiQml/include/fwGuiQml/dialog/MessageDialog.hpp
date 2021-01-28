@@ -25,10 +25,10 @@
 #include "fwGuiQml/config.hpp"
 #include "fwGuiQml/dialog/StandardButton.hpp"
 
-#include <gui/dialog/IMessageDialog.hpp>
-
 #include <QObject>
 #include <QUrl>
+
+#include <ui/base/dialog/IMessageDialog.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ namespace dialog
  * @brief Defines the generic message box for IHM.
  */
 class FWGUIQML_CLASS_API MessageDialog : public QObject,
-                                         public gui::dialog::IMessageDialog
+                                         public ui::base::dialog::IMessageDialog
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
@@ -49,9 +49,9 @@ Q_PROPERTY(QUrl icon MEMBER m_iconImage NOTIFY iconChanged)
 
 public:
 
-    fwCoreClassMacro(MessageDialog, gui::dialog::IMessageDialog, gui::factory::New< MessageDialog > )
+    fwCoreClassMacro(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
 
-    FWGUIQML_API MessageDialog(gui::GuiBaseObject::Key key);
+    FWGUIQML_API MessageDialog(ui::base::GuiBaseObject::Key key);
 
     FWGUIQML_API virtual ~MessageDialog() override;
 
@@ -94,16 +94,16 @@ private:
     /// Dialog box message
     QString m_message;
 
-    gui::dialog::IMessageDialog::Buttons m_buttons {::gui::dialog::IMessageDialog::NOBUTTON};
+    ui::base::dialog::IMessageDialog::Buttons m_buttons {::ui::base::dialog::IMessageDialog::NOBUTTON};
 
     /// Icon
-    gui::dialog::IMessageDialog::Icons m_icon {::gui::dialog::IMessageDialog::NONE};
+    ui::base::dialog::IMessageDialog::Icons m_icon {::ui::base::dialog::IMessageDialog::NONE};
 
     /// Resume the biggest error get with an icon
     QUrl m_iconImage {""};
 
     /// boolean to check if button was pressed
-    gui::dialog::IMessageDialog::Buttons m_clicked {::gui::dialog::IMessageDialog::NOBUTTON};
+    ui::base::dialog::IMessageDialog::Buttons m_clicked {::ui::base::dialog::IMessageDialog::NOBUTTON};
 
     /// Setter to QProperty and emit signal
     FWGUIQML_API void emitButtons(StandardButton*);

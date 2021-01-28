@@ -44,11 +44,6 @@
 
 #include <fwNetworkIO/exceptions/Base.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ActiveWorkers.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -57,6 +52,10 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QMouseEvent>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -82,7 +81,7 @@ SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 
 void SSliceIndexDicomPullerEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicomWeb::SPacsConfigurationInitializer must have "
@@ -127,8 +126,8 @@ void SSliceIndexDicomPullerEditor::configuring()
 
 void SSliceIndexDicomPullerEditor::starting()
 {
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -370,13 +369,13 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         throw core::tools::Failed("'server' element not found");
     }
 
-    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
+    const std::string hostname = modules::ui::base::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
 
-    const std::string port = gui::preferences::getValue(m_serverPortKey);
+    const std::string port = modules::ui::base::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -477,11 +476,11 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    gui::dialog::MessageDialog messageBox;
+    ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
-    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

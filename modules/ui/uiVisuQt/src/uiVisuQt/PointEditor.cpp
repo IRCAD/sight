@@ -33,8 +33,6 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
@@ -47,10 +45,12 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuQt::PointEditor, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiVisuQt::PointEditor, ::sight::data::Composite )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -69,9 +69,9 @@ PointEditor::~PointEditor() noexcept
 
 void PointEditor::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
@@ -113,7 +113,7 @@ void PointEditor::stopping()
 
 void PointEditor::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

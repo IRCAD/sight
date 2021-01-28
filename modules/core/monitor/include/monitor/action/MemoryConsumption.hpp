@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MONITOR_CLASS_API MemoryConsumption : public ::sight::gui::IActionSrv
+class MONITOR_CLASS_API MemoryConsumption : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(MemoryConsumption,   gui::IActionSrv )
+    fwCoreServiceMacro(MemoryConsumption,   ui::base::IActionSrv )
 
     /// Does nothing
     MONITOR_API MemoryConsumption() noexcept;
@@ -53,7 +53,7 @@ protected:
      * Sample of declaration configuration :
      *
      * @code{.xml}
-         <service uid="myIncMemConsum"  type="::gui::IActionSrv"
+         <service uid="myIncMemConsum"  type="::ui::base::IActionSrv"
             implementation="::monitor::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>

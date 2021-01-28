@@ -32,12 +32,12 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 namespace ioITK
 {
@@ -83,11 +83,11 @@ void SJpgImageSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialog;
+    ui::base::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
     dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialog.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialog.setType(gui::dialog::ILocationDialog::FOLDER);
+    dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
 
@@ -98,13 +98,13 @@ void SJpgImageSeriesWriter::openLocationDialog()
             break;
         }
         // message box
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(gui::dialog::IMessageDialog::YES);
-        messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == gui::dialog::IMessageDialog::YES)
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+        if( messageBox.show() == ui::base::dialog::IMessageDialog::YES)
         {
             break;
         }
@@ -154,8 +154,8 @@ void SJpgImageSeriesWriter::updating()
 
         SLM_ASSERT("Image from image series is not instanced", imageSeries->getImage());
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
         JpgImageWriterService::saveImage(this->getFolder(), imageSeries->getImage());
         cursor.setDefaultCursor();
     }

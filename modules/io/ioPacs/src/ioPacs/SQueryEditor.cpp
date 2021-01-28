@@ -30,8 +30,6 @@
 #include <fwPacsIO/exceptions/Base.hpp>
 #include <fwPacsIO/helper/Series.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
@@ -41,6 +39,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <algorithm>
 #include <vector>
@@ -72,7 +72,7 @@ SQueryEditor::~SQueryEditor() noexcept
 
 void SQueryEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     const auto configTree = this->getConfigTree();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
@@ -98,8 +98,8 @@ void SQueryEditor::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the GUI.
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* const mainLayout = new QVBoxLayout();
 

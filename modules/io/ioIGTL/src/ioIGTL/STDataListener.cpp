@@ -29,12 +29,12 @@
 #include <data/MatrixTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <functional>
 #include <string>
@@ -102,21 +102,21 @@ void STDataListener::configuring()
 
 void STDataListener::runClient()
 {
-    gui::dialog::MessageDialog msgDialog;
+    ui::base::dialog::MessageDialog msgDialog;
 
     data::Composite::sptr composite = data::Composite::New();
 
     // 1. Connection
     try
     {
-        const std::uint16_t port   = gui::preferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = gui::preferences::getValue(m_hostnameConfig);
+        const std::uint16_t port   = modules::ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
+        const std::string hostname = modules::ui::base::preferences::getValue(m_hostnameConfig);
 
         if(!m_deviceNamesConfig.empty())
         {
             for(const auto& dn : m_deviceNamesConfig)
             {
-                const std::string dnKey = gui::preferences::getValue(dn->getValue());
+                const std::string dnKey = modules::ui::base::preferences::getValue(dn->getValue());
                 m_client.addAuthorizedDevice(dnKey);
             }
             m_client.setFilteringByDeviceName(true);

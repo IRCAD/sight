@@ -18,7 +18,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::gui::LineLayoutManager">
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Export camera series" icon="flatIcon-0.1/icons/BlueSave.svg" />
@@ -60,7 +60,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -74,7 +74,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -92,7 +92,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>CalibrationXmlWriter/update</slot>
             </slots>
@@ -107,28 +107,28 @@
             <in key="data" uid="newCameraSeries"/>
         </service>
 
-        <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideoAct</slot>
                 <slot>videoGrabber2Srv/loopVideoAct</slot>

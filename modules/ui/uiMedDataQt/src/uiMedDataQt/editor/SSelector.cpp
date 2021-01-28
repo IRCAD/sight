@@ -38,13 +38,12 @@
 #include <data/tools/helper/SeriesDB.hpp>
 #include <data/tools/helper/Vector.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QVBoxLayout>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiMedDataQt
 {
@@ -54,7 +53,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -94,7 +93,7 @@ SSelector::~SSelector() noexcept
 
 void SSelector::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 
     // Deprecated configuration.
 
@@ -231,9 +230,9 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_selectorWidget = new ::uiMedDataQt::widget::Selector();

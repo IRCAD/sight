@@ -28,11 +28,11 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
 
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 #include <chrono>
 #include <fstream>
@@ -153,7 +153,7 @@ void SAutomaticRegistration::updating()
 
     ::itkRegistrationOp::AutomaticRegistration registrator;
 
-    gui::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
+    ui::base::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
 
     dialog.setCancelCallback([&registrator]()
         {

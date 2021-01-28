@@ -27,14 +27,14 @@
 #include <data/Mesh.hpp>
 #include <data/tools/Mesh.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace Tuto04MeshGeneratorCpp
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
 
 static const services::IService::KeyType s_MESH_INOUT = "mesh";
 
@@ -167,10 +167,10 @@ void SMeshModifier::updating()
         std::stringstream ss;
         ss << "Warning during generating : " << _e.what();
 
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 

@@ -7,8 +7,8 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    preferences             # Start the module, load file location or window preferences
-    module_guiQt                   # Start the module, load qt implementation of module_gui
+    module_io_base             # Start the module, load file location or window module_io_base
+    module_ui_qt                   # Start the module, load qt implementation of module_ui_base
     visuOgre                # Start the module, allow to use fwRenderOgre
     visuOgreQt              # Enable Ogre to render things in Qt window
 
@@ -17,7 +17,7 @@ set( REQUIREMENTS
     module_services             # fwService
 
     # UI declaration/Actions
-    module_gui
+    module_ui_base
     style
     flatIcon
 
@@ -34,14 +34,14 @@ set( REQUIREMENTS
     visuOgreAdaptor
 )
 
-moduleParam(module_guiQt
+moduleParam(module_ui_qt
     PARAM_LIST
         resource
         stylesheet
     PARAM_VALUES
         style-0.1/flatdark.rcc
         style-0.1/flatdark.qss
-) # Allow dark theme via module_guiQt
+) # Allow dark theme via module_ui_qt
 
 moduleParam(
         module_appXml

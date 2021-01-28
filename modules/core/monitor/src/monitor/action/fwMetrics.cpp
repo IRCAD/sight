@@ -26,10 +26,10 @@
 
 #include <data/registry/detail.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ServiceFactory.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <iostream>
 
@@ -38,7 +38,7 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitor::action::fwMetrics, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::monitor::action::fwMetrics, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -68,11 +68,11 @@ void fwMetrics::updating()
     stream << "IService: ";
     stream << services::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
 
-    gui::dialog::MessageDialog messageBox;
+    ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("FactoryRegistry Information");
     messageBox.setMessage( stream.str() );
-    messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 
@@ -80,21 +80,21 @@ void fwMetrics::updating()
 
 void fwMetrics::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

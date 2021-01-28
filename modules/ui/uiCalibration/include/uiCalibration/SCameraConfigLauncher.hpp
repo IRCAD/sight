@@ -27,14 +27,14 @@
 #include <data/ActivitySeries.hpp>
 #include <data/CameraSeries.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <services/helper/ConfigLauncher.hpp>
 
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiCalibration
 {
@@ -76,18 +76,18 @@ namespace uiCalibration
  * @subsection Configuration Configuration:
  * - \b config: contains the appConfigs to launch for intrinsic and extrinsic calibration.
  *   - \b intrinsic: configuration to launch the intrinsic calibration config. @see
- * modules::gui::action::SConfigLauncher
+ * modules::ui::base::action::SConfigLauncher
  *   - \b extrinsic: configuration to launch the extrinsic calibration config. @see
- * modules::gui::action::SConfigLauncher
+ * modules::ui::base::action::SConfigLauncher
  *
  */
 class UICALIBRATION_CLASS_API SCameraConfigLauncher : public QObject,
-                                                      public gui::editor::IEditor
+                                                      public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SCameraConfigLauncher, gui::editor::IEditor)
+    fwCoreServiceMacro(SCameraConfigLauncher, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UICALIBRATION_API SCameraConfigLauncher() noexcept;

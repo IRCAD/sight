@@ -26,14 +26,14 @@
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <gui/registry/macros.hpp>
-
 #include <QGuiApplication>
 #include <QVector>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <filesystem>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::MessageDialog, ::sight::gui::dialog::IMessageDialog::REGISTRY_KEY );
+fwGuiRegisterMacro( ::fwGuiQml::dialog::MessageDialog, ::sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -43,30 +43,30 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 //value of the enum in QMessageBox
-typedef const std::map< gui::dialog::IMessageDialog::Icons, std::string> MessageDialogQmlIconsType;
+typedef const std::map< ui::base::dialog::IMessageDialog::Icons, std::string> MessageDialogQmlIconsType;
 MessageDialogQmlIconsType messageDialogQmlIcons =
 {
-    {::gui::dialog::IMessageDialog::NONE, ""},
-    {::gui::dialog::IMessageDialog::QUESTION, "fwGuiQml-" FWGUIQML_VER "/question.svg"},
-    {::gui::dialog::IMessageDialog::INFO, "fwGuiQml-" FWGUIQML_VER "/information.svg"},
-    {::gui::dialog::IMessageDialog::WARNING, "fwGuiQml-" FWGUIQML_VER "/warning.svg"},
-    {::gui::dialog::IMessageDialog::CRITICAL, "fwGuiQml-" FWGUIQML_VER "/critical.svg"}
+    {::ui::base::dialog::IMessageDialog::NONE, ""},
+    {::ui::base::dialog::IMessageDialog::QUESTION, "fwGuiQml-" FWGUIQML_VER "/question.svg"},
+    {::ui::base::dialog::IMessageDialog::INFO, "fwGuiQml-" FWGUIQML_VER "/information.svg"},
+    {::ui::base::dialog::IMessageDialog::WARNING, "fwGuiQml-" FWGUIQML_VER "/warning.svg"},
+    {::ui::base::dialog::IMessageDialog::CRITICAL, "fwGuiQml-" FWGUIQML_VER "/critical.svg"}
 };
 
 // value of the enum in int value of Dialog
-typedef const std::map< gui::dialog::IMessageDialog::Buttons,
+typedef const std::map< ui::base::dialog::IMessageDialog::Buttons,
                         StandardButton::ButtonList> MessageDialogQmlButtonType;
 MessageDialogQmlButtonType messageDialogQmlButton =
 {
-    {::gui::dialog::IMessageDialog::OK, StandardButton::ButtonList::Ok},
-    {::gui::dialog::IMessageDialog::CANCEL, StandardButton::ButtonList::Cancel},
-    {::gui::dialog::IMessageDialog::YES, StandardButton::ButtonList::Yes},
-    {::gui::dialog::IMessageDialog::NO, StandardButton::ButtonList::No}
+    {::ui::base::dialog::IMessageDialog::OK, StandardButton::ButtonList::Ok},
+    {::ui::base::dialog::IMessageDialog::CANCEL, StandardButton::ButtonList::Cancel},
+    {::ui::base::dialog::IMessageDialog::YES, StandardButton::ButtonList::Yes},
+    {::ui::base::dialog::IMessageDialog::NO, StandardButton::ButtonList::No}
 };
 
 //------------------------------------------------------------------------------
 
-MessageDialog::MessageDialog(gui::GuiBaseObject::Key key)
+MessageDialog::MessageDialog(ui::base::GuiBaseObject::Key key)
 {
     qmlRegisterType<StandardButton>("Dialog", 1, 0, "StandardButton");
 }
@@ -93,16 +93,16 @@ void MessageDialog::setMessage( const std::string& msg )
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::setIcon( gui::dialog::IMessageDialog::Icons icon )
+void MessageDialog::setIcon( ui::base::dialog::IMessageDialog::Icons icon )
 {
     m_icon = icon;
 }
 
 //------------------------------------------------------------------------------
 
-void MessageDialog::addButton( gui::dialog::IMessageDialog::Buttons button )
+void MessageDialog::addButton( ui::base::dialog::IMessageDialog::Buttons button )
 {
-    m_buttons = (gui::dialog::IMessageDialog::Buttons) ( m_buttons | button );
+    m_buttons = (ui::base::dialog::IMessageDialog::Buttons) ( m_buttons | button );
 }
 
 //------------------------------------------------------------------------------
@@ -113,13 +113,13 @@ void MessageDialog::addCustomButton(const std::string& label, std::function<void
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setDefaultButton(gui::dialog::IMessageDialog::Buttons button )
+void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons button )
 {
 }
 
 //------------------------------------------------------------------------------
 
-::gui::dialog::IMessageDialog::Buttons MessageDialog::show()
+::ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     MessageDialogQmlIconsType::const_iterator iterIcon = messageDialogQmlIcons.find(m_icon);
     SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
@@ -152,7 +152,7 @@ void MessageDialog::setDefaultButton(gui::dialog::IMessageDialog::Buttons button
     emitIcon(QUrl::fromLocalFile(QString::fromStdString(pathIcon.string())));
     emitButtons(buttonSetting);
 
-    m_clicked = gui::dialog::IMessageDialog::CANCEL;
+    m_clicked = ui::base::dialog::IMessageDialog::CANCEL;
     QEventLoop loop;
     //slot to retrieve the result and open the dialog with invoke
     connect(dialog, SIGNAL(accepted()), &loop, SLOT(quit()));

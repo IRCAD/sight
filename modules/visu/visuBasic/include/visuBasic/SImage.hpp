@@ -24,7 +24,7 @@
 
 #include "visuBasic/config.hpp"
 
-#include <gui/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainerSrv.hpp>
 
 namespace visuBasic
 
@@ -41,13 +41,13 @@ namespace visuBasic
  * @subsection Input Input
  * - \b image [data::Image]: image to display.
  */
-class VISUBASIC_CLASS_API SImage : public gui::IGuiContainerSrv
+class VISUBASIC_CLASS_API SImage : public ui::base::IGuiContainerSrv
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImage, gui::IGuiContainerSrv)
+    fwCoreServiceMacro(SImage, ui::base::IGuiContainerSrv)
 
     /// Creates the service.
     VISUBASIC_API SImage() noexcept;

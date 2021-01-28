@@ -35,12 +35,12 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/LoggerDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/LoggerDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <string>
 #include <vector>
@@ -119,11 +119,11 @@ void SDicomSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setType(gui::dialog::LocationDialog::FOLDER);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setType(ui::base::dialog::LocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );
@@ -175,15 +175,15 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
 
     if(m_dicomDirSupport == USER_SELECTION && reader->isDicomDirAvailable())
     {
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
         messageBox.setMessage( "There is a dicomdir file in the root folder. "
                                "Would you like to use it for the reading process ?" );
-        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(gui::dialog::IMessageDialog::YES_NO);
-        gui::dialog::IMessageDialog::Buttons button = messageBox.show();
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
+        ui::base::dialog::IMessageDialog::Buttons button = messageBox.show();
 
-        reader->setDicomdirActivated(button == gui::dialog::IMessageDialog::YES);
+        reader->setDicomdirActivated(button == ui::base::dialog::IMessageDialog::YES);
     }
     else if(m_dicomDirSupport == ALWAYS)
     {
@@ -220,7 +220,7 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
             bool result = false;
             if(!reader->getJob()->cancelRequested())
             {
-                result = gui::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
+                result = ui::base::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
             }
 
             // If the user cancel the reading process we delete the loaded series
@@ -236,14 +236,14 @@ data::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(const std::filesystem:
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        gui::dialog::MessageDialog::show(
-            "Warning", ss.str(), gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show(
+            "Warning", ss.str(), ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
-        gui::dialog::MessageDialog::show(
-            "Warning", "Warning during loading", gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show(
+            "Warning", "Warning during loading", ui::base::dialog::IMessageDialog::WARNING);
     }
 
     m_cancelled = job->cancelRequested();
@@ -257,8 +257,8 @@ void SDicomSeriesDBReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         data::SeriesDB::sptr seriesDB = this->createSeriesDB(this->getFolder() );
 

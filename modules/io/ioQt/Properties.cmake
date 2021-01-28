@@ -4,8 +4,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    gui
-    guiQt
+    base
+    qt
     services
     fwIO
 )

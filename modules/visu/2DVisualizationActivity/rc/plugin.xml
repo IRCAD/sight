@@ -2,7 +2,7 @@
 
     <requirement id="module_services" />
     <requirement id="visuVTKQt" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
 
     <requirement id="activities" />
     <requirement id="module_services" />

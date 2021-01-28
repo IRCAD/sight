@@ -5,7 +5,7 @@
     <requirement id="arPatchMedicalData" />
     <requirement id="filterUnknownSeries" />
     <requirement id="activities" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

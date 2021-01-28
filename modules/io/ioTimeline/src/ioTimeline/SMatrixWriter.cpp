@@ -30,10 +30,10 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -103,11 +103,11 @@ void SMatrixWriter::configureWithIHM()
 void SMatrixWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter(".csv file", "*.csv");
 
     data::location::SingleFile::sptr result;

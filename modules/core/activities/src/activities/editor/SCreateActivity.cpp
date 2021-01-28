@@ -37,10 +37,10 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <data/ActivitySeries.hpp>
 
@@ -71,7 +71,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, activities::editor::SCreateActivity )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, activities::editor::SCreateActivity )
 
 //------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ SCreateActivity::~SCreateActivity() noexcept
 
 void SCreateActivity::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     const auto cfg = this->getConfigTree();
 
@@ -131,9 +131,9 @@ void SCreateActivity::configuring()
 
 void SCreateActivity::starting()
 {
-    gui::IGuiContainerSrv::create();
+    ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QGroupBox* groupBox = new QGroupBox(tr("Activities") );
 

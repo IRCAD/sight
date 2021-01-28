@@ -29,9 +29,9 @@
 #include <data/Landmarks.hpp>
 #include <data/tools/TransformationMatrix3D.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace maths
 {
@@ -115,10 +115,10 @@ void STransformLandmark::updating()
         }
         catch (data::Exception& e )
         {
-            gui::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
-                                                          "It is impossible to modify landmarks: "
-                                                          + std::string(e.what()),
-                                                          gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
+                                                               "It is impossible to modify landmarks: "
+                                                               + std::string(e.what()),
+                                                               ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }

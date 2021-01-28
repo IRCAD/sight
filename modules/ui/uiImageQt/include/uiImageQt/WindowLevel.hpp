@@ -29,10 +29,10 @@
 #include <data/Integer.hpp>
 #include <data/tools/helper/TransferFunction.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QAction;
 class QComboBox;
@@ -43,7 +43,7 @@ class QSlider;
 class QToolButton;
 class QSignalMapper;
 
-namespace sight::guiQt
+namespace sight::ui::qt
 {
 namespace widget
 {
@@ -81,14 +81,14 @@ namespace uiImageQt
  * TF.
  */
 class UIIMAGEQT_CLASS_API WindowLevel final : public QObject,
-                                              public gui::editor::IEditor
+                                              public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(WindowLevel, gui::editor::IEditor)
+    fwCoreServiceMacro(WindowLevel, sight::ui::base::editor::IEditor)
 
     /// Initialize signals and slots.
     UIIMAGEQT_API WindowLevel() noexcept;
@@ -175,7 +175,7 @@ private:
     QPointer< QMenu >         m_dynamicRangeMenu;
     QPointer< QSignalMapper > m_dynamicRangeSignalMapper;
 
-    QPointer< guiQt::widget::QRangeSlider > m_rangeSlider;
+    QPointer< ui::qt::widget::QRangeSlider > m_rangeSlider;
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;

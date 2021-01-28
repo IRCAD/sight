@@ -31,7 +31,7 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
 
 #include <set>
 

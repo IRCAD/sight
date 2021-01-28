@@ -29,7 +29,7 @@
 
 #include <data/Vector.hpp>
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace uiActivitiesQt
 {
@@ -71,12 +71,12 @@ namespace action
  *      (exclude).
  *    - \b id: id of the activity
  */
-class UIACTIVITIESQT_CLASS_API SCreateActivity : public ::sight::gui::IActionSrv
+class UIACTIVITIESQT_CLASS_API SCreateActivity : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SCreateActivity, ::sight::gui::IActionSrv)
+    fwCoreServiceMacro(SCreateActivity, ::sight::ui::base::IActionSrv)
 
     /// Constructor. Do nothing.
     UIACTIVITIESQT_API SCreateActivity() noexcept;
@@ -110,7 +110,7 @@ protected:
 
     /**
      * @brief Initialize the action.
-     * @see gui::IActionSrv::initialize()
+     * @see ui::base::IActionSrv::initialize()
      */
     virtual void configuring() override;
 

@@ -32,15 +32,15 @@
 #include <data/Composite.hpp>
 #include <data/location/Folder.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
@@ -112,11 +112,11 @@ void SFrameWriter::configureWithIHM()
 void SFrameWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );

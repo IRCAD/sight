@@ -9,7 +9,7 @@
         <object uid="${objectID}" type="::sight::data::DicomSeries" src="ref" />
         <object uid="image" type="::sight::data::Image" src="deferred" />
         <object uid="${PACS_CONFIGURATION}" type="::fwPacsIO::data::PacsConfiguration" src="ref" />
-        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />

@@ -33,13 +33,13 @@
 #include <data/Image.hpp>
 #include <data/String.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
 #include <QIcon>
 #include <QVBoxLayout>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -50,7 +50,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMeasurementQt::editor::Distance, ::sight::data::Image )
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
@@ -71,9 +71,9 @@ Distance::~Distance() noexcept
 
 void Distance::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     namespace fs = std::filesystem;
@@ -106,7 +106,7 @@ void Distance::stopping()
 
 void Distance::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

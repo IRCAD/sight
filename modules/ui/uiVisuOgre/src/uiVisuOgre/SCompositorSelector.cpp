@@ -28,8 +28,6 @@
 
 #include <fwRenderOgre/SRender.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -40,10 +38,13 @@
 #include <QListWidgetItem>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SCompositorSelector, ::sight::data::Composite)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiVisuOgre::SCompositorSelector,
+                         ::sight::data::Composite)
 
 const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 
@@ -68,7 +69,7 @@ void SCompositorSelector::starting()
 {
     this->create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_layersBox       = new QComboBox();

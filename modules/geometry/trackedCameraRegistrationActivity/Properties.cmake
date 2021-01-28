@@ -7,8 +7,8 @@ set( REQUIREMENTS
     activities
     data
     ctrlCamp
-    module_gui
-    module_guiQt
+    module_ui_base
+    module_ui_qt
     maths
     media
     registrationCV

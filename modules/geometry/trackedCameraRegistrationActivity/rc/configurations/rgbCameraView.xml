@@ -26,7 +26,7 @@
         <object uid="identity" type="::sight::data::TransformationMatrix3D" />
         <!-- *************************** End objects declaration ****************************** -->
         <!-- *************************** Begin layouts declaration **************************** -->
-        <service uid="videoView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />

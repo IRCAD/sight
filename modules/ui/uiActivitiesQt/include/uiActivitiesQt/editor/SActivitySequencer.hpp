@@ -26,11 +26,11 @@
 
 #include <activities/IActivitySequencer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
 #include <QQuickWidget>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiActivitiesQt
 {
@@ -105,14 +105,14 @@ namespace editor
  * @todo listen the current activity data to notify when the next activity can be created
  */
 class UIACTIVITIESQT_CLASS_API SActivitySequencer : public QObject,
-                                                    public gui::editor::IEditor,
+                                                    public sight::ui::base::editor::IEditor,
                                                     public activities::IActivitySequencer
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SActivitySequencer, gui::editor::IEditor)
+    fwCoreServiceMacro(SActivitySequencer, sight::ui::base::editor::IEditor)
 
     /// Initialize signals and slots
     UIACTIVITIESQT_API SActivitySequencer() noexcept;

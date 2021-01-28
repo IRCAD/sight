@@ -40,14 +40,14 @@
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/algorithm/string.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 namespace ioVTK
 {
@@ -83,14 +83,14 @@ void SImageWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.addFilter("Bitmap images", "*.bmp *.jpeg *.jpg *.png *.pnm *.tiff");
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -142,7 +142,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     bool bValue = true;
 
     ::fwDataIO::writer::IObjectWriter::sptr myWriter;
-    gui::dialog::ProgressDialog progressMeterGUI("Saving images... ");
+    ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
     std::string ext = imgFile.extension().string();
     ::boost::algorithm::to_lower(ext);
 
@@ -179,20 +179,20 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
             // Check data type
             if(type != "uint8" && type != "uint16")
             {
-                gui::dialog::MessageDialog::show(
+                ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
-                    gui::dialog::IMessageDialog::WARNING);
+                    ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
             // Check number of components
             if(noc < 1 || noc > 4)
             {
-                gui::dialog::MessageDialog::show(
+                ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported number of components (" + std::to_string(noc) + ") for " +
                     ext + " export.\n The image will not be exported.",
-                    gui::dialog::IMessageDialog::WARNING);
+                    ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
         }
@@ -201,20 +201,20 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         {
             if(type != "uint8")
             {
-                gui::dialog::MessageDialog::show(
+                ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
-                    gui::dialog::IMessageDialog::WARNING);
+                    ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
             // Check number of components
             if(noc < 1 || noc > 3)
             {
-                gui::dialog::MessageDialog::show(
+                ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported number of components (" + std::to_string(noc) + ") for " +
                     ext + " export.\n The image will not be exported.",
-                    gui::dialog::IMessageDialog::WARNING);
+                    ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
         }
@@ -243,18 +243,18 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
 
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::IMessageDialog::WARNING);
         bValue = false;
     }
     catch( ... )
     {
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during saving.",
-            gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::IMessageDialog::WARNING);
         bValue = false;
     }
     return bValue;
@@ -271,8 +271,8 @@ void SImageWriter::updating()
         data::Image::csptr pImage = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", pImage);
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
         {

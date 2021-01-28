@@ -32,13 +32,13 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
 #include <QWidget>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <filesystem>
 
@@ -105,7 +105,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SSliceIndexDicomPullerEditor final :
     public QObject,
-    public gui::editor::IEditor
+    public ui::base::editor::IEditor
 {
 
 Q_OBJECT;
@@ -113,7 +113,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  gui::editor::IEditor)
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ui::base::editor::IEditor)
 
     /// Creates slots.
     [[deprecated("Will be removed in sight 21.0, use ::ioPacs::SSliceIndexDicomEditor instead")]]

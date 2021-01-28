@@ -24,10 +24,10 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <gui/dialog/NotificationDialog.hpp>
-#include <gui/IActionSrv.hpp>
+#include <ui/base/dialog/NotificationDialog.hpp>
+#include <ui/base/IActionSrv.hpp>
 
-namespace dial = gui::dialog;
+namespace dial = sight::ui::base::dialog;
 
 namespace uiGenericQt
 {
@@ -46,11 +46,11 @@ namespace action
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
-class UIGENERICQT_CLASS_API SDisplayTestNotifications final : public ::sight::gui::IActionSrv
+class UIGENERICQT_CLASS_API SDisplayTestNotifications final : public ::sight::ui::base::IActionSrv
 {
 
 public:
-    fwCoreServiceMacro(SDisplayTestNotifications,  gui::IActionSrv)
+    fwCoreServiceMacro(SDisplayTestNotifications,  ui::base::IActionSrv)
 
     /**
      * @name Constructor/Destructor

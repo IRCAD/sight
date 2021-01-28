@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
 )
 set( REQUIREMENTS
-    preferences             # Start the module, load file location or window preferences
+    module_io_base             # Start the module, load file location or window module_io_base
     visuOgre                # Start the module, allow to use fwRenderOgre
     visuOgreQt              # Enable Ogre to render things in Qt window.
     validators
@@ -18,7 +18,7 @@ set( REQUIREMENTS
     data
 
     # UI declaration/Actions
-    module_gui
+    module_ui_base
     media
     uiTools
     uiIO

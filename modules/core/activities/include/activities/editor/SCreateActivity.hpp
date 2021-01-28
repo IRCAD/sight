@@ -27,7 +27,7 @@
 #include <activities/registry/Activities.hpp>
 #include <activities/registry/ActivityMsg.hpp>
 
-#include <gui/editor/IEditor.hpp>
+#include <ui/base/editor/IEditor.hpp>
 
 #ifdef KEEP_OLD_SERVICE
 
@@ -76,7 +76,7 @@ namespace editor
  */
 #ifdef KEEP_OLD_SERVICE
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
-                                             public gui::editor::IEditor
+                                             public ui::base::editor::IEditor
 #else
 class ACTIVITIES_CLASS_API SCreateActivity
 #endif
@@ -87,7 +87,7 @@ Q_OBJECT;
 public:
 
 #ifdef KEEP_OLD_SERVICE
-    fwCoreServiceMacro(SCreateActivity, gui::editor::IEditor)
+    fwCoreServiceMacro(SCreateActivity, ui::base::editor::IEditor)
 #endif
 
     /// Constructor. Do nothing.

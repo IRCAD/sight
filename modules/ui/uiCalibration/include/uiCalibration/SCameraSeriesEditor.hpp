@@ -24,12 +24,12 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
 #include <QVector>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiCalibration
 {
@@ -55,12 +55,12 @@ namespace uiCalibration
  * -\b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class UICALIBRATION_CLASS_API SCameraSeriesEditor : public QObject,
-                                                    public gui::editor::IEditor
+                                                    public sight::ui::base::editor::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraSeriesEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SCameraSeriesEditor, sight::ui::base::editor::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

@@ -42,10 +42,6 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <gui/dialog/InputDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QApplication>
@@ -54,6 +50,9 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QVBoxLayout>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiMedDataQt
 {
@@ -73,7 +72,7 @@ static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
@@ -102,7 +101,7 @@ SActivityWizard::~SActivityWizard() noexcept
 
 void SActivityWizard::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -139,9 +138,9 @@ void SActivityWizard::configuring()
 
 void SActivityWizard::starting()
 {
-    gui::IGuiContainerSrv::create();
+    ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QWidget* const container = qtContainer->getQtContainer();
 
@@ -480,7 +479,7 @@ void SActivityWizard::onBuildActivity()
                     info = activities::registry::Activities::getDefault()->getInfo(
                         m_actSeries->getActivityConfigId());
 
-                    std::string description = gui::dialog::InputDialog::showInputDialog(
+                    std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
                         info.title);

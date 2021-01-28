@@ -1,9 +1,9 @@
 <plugin id="Tuto02GenericSceneCpp" class="::Tuto02GenericSceneCpp::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
 
     <library name="Tuto02GenericSceneCpp" />

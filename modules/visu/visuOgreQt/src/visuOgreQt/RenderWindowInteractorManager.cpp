@@ -30,14 +30,14 @@
 #include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QRect>
 #include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -84,12 +84,12 @@ void RenderWindowInteractorManager::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::createContainer( gui::container::fwContainer::sptr _parent,
+void RenderWindowInteractorManager::createContainer( ui::base::container::fwContainer::sptr _parent,
                                                      bool _renderOnDemand,
                                                      bool _fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
-    m_parentContainer = guiQt::container::QtContainer::dynamicCast( _parent );
+    m_parentContainer = ui::qt::container::QtContainer::dynamicCast( _parent );
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_parentContainer->setLayout(layout);

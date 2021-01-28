@@ -24,12 +24,12 @@
 
 #include <fwNetworkIO/helper/Series.hpp>
 
-#include <guiQt/App.hpp>
-#include <guiQt/WorkerQt.hpp>
-
 #include <services/registry/ActiveWorkers.hpp>
 
 #include <utest/Exception.hpp>
+
+#include <ui/qt/App.hpp>
+#include <ui/qt/WorkerQt.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwNetworkIO::ut::ClientQtTest );
 
@@ -94,9 +94,9 @@ void ClientQtTest::setUp()
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback
         = [](int& argc, char** argv)
           {
-              return QSharedPointer< QApplication > (new guiQt::App(argc, argv, false));
+              return QSharedPointer< QApplication > (new ui::qt::App(argc, argv, false));
           };
-    m_worker = guiQt::getQtWorker(argc, argv, callback, "", "");
+    m_worker = ui::qt::getQtWorker(argc, argv, callback, "", "");
 
     m_server.moveToThread(&m_thread);
     m_thread.connect(&m_thread, &QThread::started, [ = ] {m_server.listen(); });

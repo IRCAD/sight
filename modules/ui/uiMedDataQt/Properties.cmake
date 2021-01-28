@@ -6,8 +6,8 @@ set( DEPENDENCIES
     activities
     core
     data
-    gui
-    guiQt
+    base
+    qt
     services
     fwIO
     )

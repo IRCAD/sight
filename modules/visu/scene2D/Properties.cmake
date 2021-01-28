@@ -6,10 +6,10 @@ set( PRIORITY 2)
 set( DEPENDENCIES
     core
     data
-    guiQt
+    qt
     fwRender
     fwRenderQt
     services
-    gui
+    base
 )
 set( REQUIREMENTS )

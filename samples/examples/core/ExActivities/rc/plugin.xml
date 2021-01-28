@@ -1,8 +1,8 @@
 <plugin id="ExActivities" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="activities" />
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

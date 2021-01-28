@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="VTK Mesher" icon="flatIcon-0.1/icons/YellowMenu.svg" />
@@ -50,7 +50,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -64,7 +64,7 @@
             </registry>
         </service>
 
-        <service uid="parametersView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -80,7 +80,7 @@
             </registry>
         </service>
 
-        <service uid="materialView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="materialView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::ToolboxLayoutManager" >
                     <orientation value="vertical" />
@@ -141,7 +141,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showHideNegatoSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="showHideNegatoSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                 <checkable>true</checkable>
                 <icon>flatIcon-0.1/icons/Layers.svg</icon>
@@ -151,7 +151,7 @@
             </config>
         </service>
 
-        <service uid="snapshotSrv" type="::sight::modules::guiQt::editor::SSignalButton" >
+        <service uid="snapshotSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>

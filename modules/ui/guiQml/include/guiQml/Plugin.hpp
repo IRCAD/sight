@@ -61,4 +61,4 @@ private:
 
 };
 
-} // namespace sight::modules::guiQt
+} // namespace sight::modules::ui::qt

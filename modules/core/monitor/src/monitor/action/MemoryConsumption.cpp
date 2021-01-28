@@ -24,11 +24,11 @@
 
 #include <data/Array.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <sstream>
 
@@ -42,7 +42,7 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitor::action::MemoryConsumption, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::monitor::action::MemoryConsumption, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 
@@ -62,10 +62,10 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
     {
         std::stringstream msg;
         msg << "Cannot allocate buffer ("<< memorySizeInBytes/(1024*1024) <<" Mo) :\n" << e.what() << std::endl;
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Action increase memory",
             msg.str(),
-            gui::dialog::IMessageDialog::CRITICAL);
+            ui::base::dialog::IMessageDialog::CRITICAL);
     }
 }
 
@@ -105,7 +105,7 @@ void MemoryConsumption::updating()
 
 void MemoryConsumption::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
@@ -128,13 +128,13 @@ void MemoryConsumption::configuring()
 
 void MemoryConsumption::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void MemoryConsumption::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

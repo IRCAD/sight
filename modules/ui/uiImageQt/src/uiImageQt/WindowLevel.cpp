@@ -37,9 +37,6 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-#include <guiQt/widget/QRangeSlider.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -55,12 +52,15 @@
 #include <QToolButton>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/widget/QRangeSlider.hpp>
+
 #include <functional>
 
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::WindowLevel, ::sight::data::Image)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiImageQt::WindowLevel, ::sight::data::Image)
 
 static const services::IService::KeyType s_IMAGE_INOUT = "image";
 static const services::IService::KeyType s_TF_INOUT = "tf";
@@ -117,7 +117,7 @@ void WindowLevel::starting()
     SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QGridLayout* const layout = new QGridLayout();
@@ -130,7 +130,7 @@ void WindowLevel::starting()
     QDoubleValidator* const maxValidator = new QDoubleValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
 
-    m_rangeSlider = new guiQt::widget::QRangeSlider();
+    m_rangeSlider = new ui::qt::widget::QRangeSlider();
 
     m_toggleTFButton = new QToolButton();
     QIcon ico;

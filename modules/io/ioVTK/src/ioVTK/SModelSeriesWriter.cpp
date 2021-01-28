@@ -42,13 +42,13 @@
 #include <fwVtkIO/StlMeshWriter.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/ILocationDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/ILocationDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 #include <filesystem>
 
@@ -85,11 +85,11 @@ void SModelSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    gui::dialog::LocationDialog dialog;
+    ui::base::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialog.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialog.setType(gui::dialog::ILocationDialog::FOLDER);
+    dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
 
@@ -100,13 +100,13 @@ void SModelSeriesWriter::openLocationDialog()
             break;
         }
         // message box
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(gui::dialog::IMessageDialog::YES);
-        messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == gui::dialog::IMessageDialog::YES)
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+        if( messageBox.show() == ui::base::dialog::IMessageDialog::YES)
         {
             break;
         }
@@ -137,7 +137,7 @@ void SModelSeriesWriter::openLocationDialog()
                 {
                     return pair.first;
                 });
-            gui::dialog::SelectorDialog extensionDialog;
+            ui::base::dialog::SelectorDialog extensionDialog;
             extensionDialog.setTitle("Extensions");
             extensionDialog.setMessage("Choose the extensions: ");
             extensionDialog.setSelections(descriptions);
@@ -255,8 +255,8 @@ void SModelSeriesWriter::updating()
         // Retrieve dataStruct associated with this service
         const auto modelSeriesLockedPtr = this->getLockedInput< const data::ModelSeries >(::fwIO::s_DATA_KEY);
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         const auto modelSeries                                  = modelSeriesLockedPtr.get_shared();
         const data::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
@@ -279,18 +279,18 @@ void SModelSeriesWriter::updating()
                 std::stringstream ss;
                 ss << "Warning during saving : " << e.what();
 
-                gui::dialog::MessageDialog::show(
+                ui::base::dialog::MessageDialog::show(
                     "Warning",
                     ss.str(),
-                    gui::dialog::IMessageDialog::WARNING);
+                    ui::base::dialog::IMessageDialog::WARNING);
             }
             catch( ... )
             {
                 m_writeFailed = true;
-                gui::dialog::MessageDialog::show(
+                ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Warning during saving",
-                    gui::dialog::IMessageDialog::WARNING);
+                    ui::base::dialog::IMessageDialog::WARNING);
             }
         }
 

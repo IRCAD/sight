@@ -24,10 +24,10 @@
 
 #include "basicRegistration/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QPushButton;
 
@@ -54,13 +54,13 @@ namespace basicRegistration
  */
 
 class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,
-                                                     public gui::editor::IEditor
+                                                     public ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SImagesSubstract, gui::editor::IEditor)
+    fwCoreServiceMacro(SImagesSubstract, ui::base::editor::IEditor)
 
     BASICREGISTRATION_API SImagesSubstract() noexcept;
 

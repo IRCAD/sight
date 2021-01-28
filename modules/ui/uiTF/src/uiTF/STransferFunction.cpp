@@ -37,12 +37,6 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <gui/dialog/InputDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 
@@ -52,6 +46,11 @@
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -79,7 +78,7 @@ static const std::string s_VERSION_TF = "V1";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiTF::STransferFunction)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiTF::STransferFunction)
 
 //------------------------------------------------------------------------------
 
@@ -176,8 +175,8 @@ void STransferFunction::starting()
     this->create();
 
     // Get the Qt container
-    const guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
     m_transferFunctionPreset = new QComboBox();
@@ -298,15 +297,15 @@ void STransferFunction::presetChoice(int index)
 
 void STransferFunction::deleteTF()
 {
-    gui::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Deleting confirmation");
     messageBox.setMessage("Are you sure you want to delete this transfer function?");
-    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(gui::dialog::IMessageDialog::YES);
-    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::YES);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
+    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if(answerCopy != gui::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
@@ -335,10 +334,10 @@ void STransferFunction::deleteTF()
         }
         else
         {
-            gui::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
-                gui::dialog::IMessageDialog::WARNING );
+                sight::ui::base::dialog::IMessageDialog::WARNING );
         }
     }
 }
@@ -353,7 +352,7 @@ void STransferFunction::newTF()
         newName = this->createTransferFunctionName(newName);
     }
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
     inputDialog.setInput( newName );
@@ -379,10 +378,10 @@ void STransferFunction::newTF()
         }
         else
         {
-            gui::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
-                gui::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -391,15 +390,15 @@ void STransferFunction::newTF()
 
 void STransferFunction::reinitializeTFPool()
 {
-    gui::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Reinitializing confirmation");
     messageBox.setMessage("Are you sure you want to reinitialize all transfer functions?");
-    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(gui::dialog::IMessageDialog::YES);
-    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::YES);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
+    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if(answerCopy != gui::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         {
             const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
@@ -421,7 +420,7 @@ void STransferFunction::renameTF()
     const std::string str = m_transferFunctionPreset->currentText().toStdString();
     std::string newName(str);
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
     inputDialog.setInput( newName );
@@ -453,11 +452,11 @@ void STransferFunction::renameTF()
         }
         else
         {
-            gui::dialog::MessageDialog messageBox;
+            sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage("This transfer function name already exists so you can not overwrite it.");
-            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }

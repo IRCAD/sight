@@ -26,16 +26,16 @@
 #include <core/memory/BufferInfo.hpp>
 #include <core/memory/BufferManager.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace monitor
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::monitor::action::SDumpAll, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::monitor::action::SDumpAll, ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 
@@ -76,30 +76,30 @@ void SDumpAll::updating( )
     }
     std::stringstream stream;
     stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped <<"/"<<buffInfoMap.size()<<").";
-    gui::dialog::MessageDialog::show(
+    ui::base::dialog::MessageDialog::show(
         "Dump all",
         stream.str(),
-        gui::dialog::IMessageDialog::INFO);
+        ui::base::dialog::IMessageDialog::INFO);
 }
 
 //------------------------------------------------------------------------------
 
 void SDumpAll::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SDumpAll::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void SDumpAll::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

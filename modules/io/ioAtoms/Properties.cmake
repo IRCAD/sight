@@ -10,7 +10,7 @@ set( DEPENDENCIES
     fwMDSemanticPatch
     core
     data
-    gui
+    base
     services
     fwZip
     fwIO

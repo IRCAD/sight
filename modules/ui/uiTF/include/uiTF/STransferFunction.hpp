@@ -27,9 +27,9 @@
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <filesystem>
 
@@ -86,7 +86,7 @@ namespace uiTF
  * - \b iconHeight (optional, default="16"): icon height.
  */
 class UITF_CLASS_API STransferFunction final : public QObject,
-                                               public gui::editor::IEditor
+                                               public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STransferFunction, gui::editor::IEditor)
+    fwCoreServiceMacro(STransferFunction, sight::ui::base::editor::IEditor)
 
     /// Does nothing.
     UITF_API STransferFunction();

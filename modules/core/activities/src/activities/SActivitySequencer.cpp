@@ -34,11 +34,11 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/foreach.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace activities
 {
@@ -208,7 +208,7 @@ bool SActivitySequencer::checkValidity(const data::ActivitySeries::csptr& activi
 
     if (!ok && showDialog)
     {
-        gui::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
     }
     return ok;
 }

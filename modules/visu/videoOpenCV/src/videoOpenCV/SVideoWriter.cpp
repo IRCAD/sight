@@ -30,14 +30,14 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace videoOpenCV
 {
@@ -98,11 +98,11 @@ void SVideoWriter::configureWithIHM()
 void SVideoWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("mp4", "*.mp4");
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -225,7 +225,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
                 }
                 else
                 {
-                    gui::dialog::MessageDialog::show(
+                    ui::base::dialog::MessageDialog::show(
                         "Video recording",
                         "The extension "+ extensionToUse+ " is not supported. Unable to write the file: " +
                         path.string());
@@ -241,7 +241,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 
                 if (!m_writer->isOpened())
                 {
-                    gui::dialog::MessageDialog::show(
+                    ui::base::dialog::MessageDialog::show(
                         "Video recording", "Unable to write the video in the file: " + path.string());
                     this->stopRecord();
                 }

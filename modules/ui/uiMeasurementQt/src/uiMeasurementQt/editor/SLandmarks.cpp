@@ -36,8 +36,6 @@
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QColorDialog>
@@ -47,6 +45,8 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiMeasurementQt
 {
@@ -76,7 +76,7 @@ static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMeasurementQt::editor::SLandmarks )
 
 //------------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ SLandmarks::~SLandmarks() noexcept
 
 void SLandmarks::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -134,9 +134,9 @@ void SLandmarks::configuring()
 
 void SLandmarks::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    const guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    const ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QVBoxLayout* const layout     = new QVBoxLayout();
@@ -271,7 +271,7 @@ void SLandmarks::onColorButton()
     QObject* const sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 

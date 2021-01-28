@@ -35,18 +35,18 @@
 #include <data/Composite.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/highui/base/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 namespace videoCharucoCalibration
 {
@@ -222,27 +222,27 @@ void SCharucoBoardDetector::detectPoints()
 
 void SCharucoBoardDetector::updateCharucoBoardSize()
 {
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
-    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = modules::ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);
     }
-    const std::string markerSizeStr = gui::preferences::getPreference(m_markerSizeKey);
+    const std::string markerSizeStr = modules::ui::base::preferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
         m_markerSize = std::stof(markerSizeStr);
     }
-    const std::string markerSizeInBitsStr = gui::preferences::getPreference(m_markerSizeInBitsKey);
+    const std::string markerSizeInBitsStr = modules::ui::base::preferences::getPreference(m_markerSizeInBitsKey);
     if(!markerSizeInBitsStr.empty())
     {
         m_markerSizeInBits = std::stoi(markerSizeInBitsStr);
@@ -255,9 +255,9 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
     catch (const std::exception& e )
     {
         // Warn user that something went wrong with dictionary generation.
-        gui::dialog::MessageDialog::sptr errorDialog = gui::dialog::MessageDialog::New();
+        ui::base::dialog::MessageDialog::sptr errorDialog = ui::base::dialog::MessageDialog::New();
         errorDialog->setTitle("Error in dictionary generation");
-        errorDialog->setIcon(gui::dialog::IMessageDialog::Icons::CRITICAL);
+        errorDialog->setIcon(ui::base::dialog::IMessageDialog::Icons::CRITICAL);
         errorDialog->setMessage("Error when generating dictionary: " + std::string(e.what()));
         errorDialog->show();
 

@@ -35,13 +35,13 @@
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/ogre.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 //-----------------------------------------------------------------------------
 

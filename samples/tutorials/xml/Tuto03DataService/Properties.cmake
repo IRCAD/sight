@@ -6,14 +6,14 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_guiQt                   # Start the module, load qt implementation of module_gui
+    module_ui_qt                   # Start the module, load qt implementation of module_ui_base
 
     # Objects declaration
     data
     module_services             # fwService
 
     # UI declaration/Actions
-    module_gui
+    module_ui_base
 
     # Reader
     ioVTK

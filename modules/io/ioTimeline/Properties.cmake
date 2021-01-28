@@ -7,6 +7,6 @@ set( DEPENDENCIES
         data
         services
         fwIO
-        gui
+        base
 )
 set( REQUIREMENTS  )

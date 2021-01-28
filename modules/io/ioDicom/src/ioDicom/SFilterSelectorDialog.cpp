@@ -33,11 +33,11 @@
 
 #include <fwDicomIOFilter/IFilter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 #include <sstream>
 #include <string>
@@ -47,7 +47,8 @@ namespace ioDicom
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog, ::sight::data::String )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IDialogEditor, ::ioDicom::SFilterSelectorDialog,
+                         ::sight::data::String )
 
 static const services::IService::KeyType s_FILTER_INOUT = "filter";
 
@@ -163,7 +164,7 @@ void SFilterSelectorDialog::updating()
         // Selection of extension when availableFilterNames.size() > 1
         if ( availableFilterNames.size() > 1 )
         {
-            gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
+            ui::base::dialog::SelectorDialog::sptr selector = ui::base::dialog::SelectorDialog::New();
 
             selector->setTitle("Filter to use");
             selector->setSelections(availableFilterNames);
@@ -195,11 +196,11 @@ void SFilterSelectorDialog::updating()
     else
     {
         SLM_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Filter not found");
         messageBox.setMessage( "There is no available filter for this reader." );
-        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }

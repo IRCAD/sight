@@ -46,13 +46,13 @@
 #include <fwVtkIO/StlMeshReader.hpp>
 #include <fwVtkIO/VtpMeshReader.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/ILocationDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/ILocationDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 #include <filesystem>
 
@@ -90,9 +90,9 @@ void SModelSeriesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setType(gui::dialog::ILocationDialog::MULTI_FILES);
+    dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
     dialogFile.addFilter("OBJ Files(.obj)", "*.obj");
@@ -100,8 +100,8 @@ void SModelSeriesReader::openLocationDialog()
     dialogFile.addFilter("STL Files(.stl)", "*.stl");
     dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::MultiFiles::sptr result;
     result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
@@ -157,8 +157,8 @@ void SModelSeriesReader::updating()
         const auto modelSeriesLockedPtr = this->getLockedInOut< data::ModelSeries >(::fwIO::s_DATA_KEY);
         const auto modelSeries          = modelSeriesLockedPtr.get_shared();
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         data::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
         data::ModelSeries::ReconstructionVectorType addedRecs;
@@ -243,10 +243,10 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::IMessageDialog::WARNING);
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
     }
@@ -255,19 +255,19 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 

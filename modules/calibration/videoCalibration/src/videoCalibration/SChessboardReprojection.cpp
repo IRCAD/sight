@@ -40,12 +40,12 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/preferences/helper.hpp>
 
 fwServicesRegisterMacro( ::sight::services::IController, ::videoCalibration::SChessboardReprojection)
 
@@ -272,19 +272,19 @@ void SChessboardReprojection::toggleDistortion()
 void SChessboardReprojection::updateChessboardSize()
 {
     unsigned long width(0), height(0);
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         width = std::stoul(widthStr);
     }
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         height = std::stoul(heightStr);
     }
 
     double squareSize(0.);
-    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = modules::ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         squareSize = std::stod(squareSizeStr);

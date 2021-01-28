@@ -1,7 +1,7 @@
 <plugin id="Tuto05Mesher" version="@PROJECT_VERSION@" >
 
     <requirement id="module_services" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto05Mesher_AppCfg</id>
@@ -17,7 +17,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto05Mesher</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -66,7 +66,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuMesherView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Compute Mesh (VTK)" />
@@ -84,7 +84,7 @@
                 It is possible to add a 'proportion' attribute for the <view> to defined the proportion
                 used by the view compared to the others.
             -->
-            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -100,21 +100,21 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
-            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="saveImageAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="saveImageAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="imageWriterSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="saveMeshAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshWriterSrv" />
             </service>
 
@@ -127,7 +127,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Add a shortcut in the application (key "v") -->
-            <service uid="shortcutSrv" type="::sight::modules::guiQt::SSignalShortcut" >
+            <service uid="shortcutSrv" type="::sight::modules::ui::qt::SSignalShortcut" >
                 <config shortcut="v" sid="containerView" />
             </service>
 

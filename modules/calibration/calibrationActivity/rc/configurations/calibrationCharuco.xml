@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::gui::CardinalLayoutManager">
@@ -34,7 +34,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="media-0.1/icons/Back.svg" />
@@ -60,7 +60,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>calibrationWriterSrv/update</slot>
             </slots>
@@ -124,11 +124,11 @@
 
         <!-- The action "previous" and "next" are visible only if the application use a "SActivitySequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="::sight::modules::gui::action::SSignal">
+        <service uid="previousAct" type="::sight::modules::ui::base::action::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="::sight::modules::gui::action::SSignal">
+        <service uid="nextAct" type="::sight::modules::ui::base::action::SSignal">
             <state visible="false" />
         </service>
 

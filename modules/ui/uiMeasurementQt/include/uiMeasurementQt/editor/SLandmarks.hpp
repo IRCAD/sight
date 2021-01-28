@@ -27,8 +27,6 @@
 #include <data/Landmarks.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QObject>
@@ -36,6 +34,8 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QTreeWidget>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiMeasurementQt
 {
@@ -83,14 +83,14 @@ namespace editor
  *      and groups with multiple points.
  */
 class UIMEASUREMENTQT_CLASS_API SLandmarks final : public QObject,
-                                                   public gui::editor::IEditor
+                                                   public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLandmarks, gui::editor::IEditor)
+    fwCoreServiceMacro(SLandmarks, sight::ui::base::editor::IEditor)
 
     /// Initializes slots.
     UIMEASUREMENTQT_API SLandmarks() noexcept;

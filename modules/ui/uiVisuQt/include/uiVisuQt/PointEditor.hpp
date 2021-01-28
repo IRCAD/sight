@@ -29,11 +29,11 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiVisuQt
 {
@@ -42,13 +42,13 @@ namespace uiVisuQt
  * @brief   PointEditor service allows to display point information.
  */
 class UIVISUQT_CLASS_API PointEditor : public QObject,
-                                       public gui::editor::IEditor
+                                       public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(PointEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(PointEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIVISUQT_API PointEditor() noexcept;

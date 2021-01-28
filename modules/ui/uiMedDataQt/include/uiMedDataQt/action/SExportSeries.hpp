@@ -29,7 +29,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace uiMedDataQt
 {
@@ -60,10 +60,10 @@ namespace action
  * - \b series [data::Series]: Source series to export.
  * - \b seriesDB [data::SeriesDB]: Target series database where the series should be exported.
  */
-class UIMEDDATAQT_CLASS_API SExportSeries : public ::sight::gui::IActionSrv
+class UIMEDDATAQT_CLASS_API SExportSeries : public ::sight::ui::base::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SExportSeries, ::sight::gui::IActionSrv)
+    fwCoreServiceMacro(SExportSeries, ::sight::ui::base::IActionSrv)
 
     /// Constructor
     UIMEDDATAQT_API SExportSeries();

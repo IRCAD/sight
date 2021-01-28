@@ -28,10 +28,10 @@
 
 #include <data/Vector.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLabel>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QPushButton;
 
@@ -61,12 +61,12 @@ namespace editor
  *
  */
 class UITOOLS_CLASS_API SShowVectorSize : public QObject,
-                                          public gui::editor::IEditor
+                                          public sight::ui::base::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SShowVectorSize, gui::editor::IEditor)
+    fwCoreServiceMacro(SShowVectorSize, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UITOOLS_API SShowVectorSize() noexcept;

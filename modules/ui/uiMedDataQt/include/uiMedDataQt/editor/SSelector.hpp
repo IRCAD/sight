@@ -31,12 +31,12 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QAbstractItemView>
 #include <QObject>
 #include <QPointer>
 #include <QVector>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiMedDataQt
 {
@@ -77,7 +77,7 @@ namespace editor
  */
 class UIMEDDATAQT_CLASS_API SSelector final :
     public QObject,
-    public gui::editor::IEditor
+    public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
@@ -85,7 +85,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSelector, gui::editor::IEditor)
+    fwCoreServiceMacro(SSelector, sight::ui::base::editor::IEditor)
 
     /// Creates the signal and slots.
     UIMEDDATAQT_API SSelector();

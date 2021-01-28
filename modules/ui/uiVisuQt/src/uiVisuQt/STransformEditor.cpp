@@ -29,8 +29,6 @@
 #include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -44,12 +42,14 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <regex>
 
 namespace uiVisuQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuQt::STransformEditor,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiVisuQt::STransformEditor,
                          ::sight::data::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------
@@ -138,8 +138,8 @@ void STransformEditor::starting()
                                  "Rotation X", "Rotation Y", "Rotation Z"};
 
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
 

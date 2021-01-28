@@ -32,18 +32,18 @@
 #include <data/tools/helper/Vector.hpp>
 #include <data/Vector.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiCalibration::SImagesSelector, ::sight::data::Vector)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiCalibration::SImagesSelector, ::sight::data::Vector)
 
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
@@ -70,7 +70,7 @@ SImagesSelector::~SImagesSelector() noexcept
 
 void SImagesSelector::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -80,8 +80,8 @@ void SImagesSelector::starting()
     m_frameTL = this->getInput< data::FrameTL>("frameTL");
     SLM_ASSERT("Frame timeline is not found.", m_frameTL);
 
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main container, VBox
     QVBoxLayout* vLayout = new QVBoxLayout();

@@ -5,7 +5,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
         activities
         ctrlSelection
-        module_gui
+        module_ui_base
         uiIO
     uiIO
     uiMedDataQt

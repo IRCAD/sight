@@ -14,7 +14,7 @@
 
         <!-- *************************** Begin Layouts *************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -31,7 +31,7 @@
             </registry>
         </service>
 
-        <service uid="footer" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="footer" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start Tracker client" icon="media-0.1/icons/Network-Receiving.svg" />
@@ -68,17 +68,17 @@
 
         <!-- *************************** Begin Actions *************************** -->
 
-        <service uid="actionStartOpenIGTLinkClient" type="::sight::modules::gui::action::SStarter">
+        <service uid="actionStartOpenIGTLinkClient" type="::sight::modules::ui::base::action::SStarter">
             <state active="true" visible="true" />
             <start uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionStopOpenIGTLinkClient" type="::sight::modules::gui::action::SStarter">
+        <service uid="actionStopOpenIGTLinkClient" type="::sight::modules::ui::base::action::SStarter">
             <state active="true" visible="false" />
             <stop uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionAddPoint" type="::sight::modules::gui::action::SSlotCaller" >
+        <service uid="actionAddPoint" type="::sight::modules::ui::base::action::SSlotCaller" >
            <slots>
                <slot>markerToPoint/addPoint</slot>
                <slot>manageVector/addCopy</slot>
@@ -91,7 +91,7 @@
            </slots>
         </service>
 
-        <service uid="actionExportMatrix" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="actionExportMatrix" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>calibrationMatrixWriter/update</slot>
             </slots>

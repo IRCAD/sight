@@ -26,7 +26,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="extrinsicView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="extrinsicView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="extrinsicCameraView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
@@ -55,7 +55,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start camera" icon="media-0.1/icons/start-cam.svg" />
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="calibrationInfoView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="calibrationInfoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="videoView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -101,7 +101,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -115,7 +115,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCamera" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="extrinsicCamera" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -136,7 +136,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -156,59 +156,59 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="ActionAdd" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionAdd" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>CharucoBoardDetector/detectPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionReset" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionRemove" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionGoOpenCV" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCal/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionDisplayImage" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/getSelection</slot>
             </slots>
         </service>
 
-        <service uid="ActionStartCamera" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionStartCamera" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/startCamera</slot>
                 <slot>VideoGrabber2/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="ActionStopCamera" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionStopCamera" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/stopCamera</slot>
                 <slot>VideoGrabber2/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="PauseVideo" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="PauseVideo" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/pauseCamera</slot>
                 <slot>VideoGrabber2/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="LoopVideo" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="LoopVideo" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/loopVideo</slot>
                 <slot>VideoGrabber2/loopVideo</slot>

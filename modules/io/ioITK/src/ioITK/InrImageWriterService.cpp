@@ -32,12 +32,12 @@
 
 #include <fwItkIO/ImageWriter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 namespace ioITK
 {
@@ -83,11 +83,11 @@ void InrImageWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -133,7 +133,7 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
 
     try
     {
-        gui::dialog::ProgressDialog progressMeterGUI("Saving Image ");
+        ui::base::dialog::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter->addHandler( progressMeterGUI );
         myWriter->write();
 
@@ -142,15 +142,15 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        gui::dialog::MessageDialog::show("Warning",
-                                         ss.str(),
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              ss.str(),
+                                              ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        gui::dialog::MessageDialog::show("Warning",
-                                         "Warning during saving",
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              "Warning during saving",
+                                              ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -165,8 +165,8 @@ void InrImageWriterService::updating()
         data::Image::csptr image = this->getInput< data::Image >(::fwIO::s_DATA_KEY);
         SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", image);
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
         saveImage(this->getFile(), image);
         cursor.setDefaultCursor();
     }

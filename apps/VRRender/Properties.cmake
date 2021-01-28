@@ -7,8 +7,8 @@ set( REQUIREMENTS
     module_services
     data
 
-    module_gui
-    module_guiQt
+    module_ui_base
+    module_ui_qt
 
     activities
     module_appXml
@@ -48,7 +48,7 @@ set( REQUIREMENTS
 
     filterUnknownSeries
 
-    preferences
+    module_io_base
 )
 
 moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

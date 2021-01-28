@@ -39,8 +39,6 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -50,12 +48,15 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <functional>
 
 namespace uiImageQt
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiImageQt::SliceIndexPositionEditor,
+                         ::sight::data::Image )
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -90,20 +91,20 @@ void SliceIndexPositionEditor::starting()
 {
     this->create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout( );
 
-    m_sliceSelectorPanel = new guiQt::SliceSelector();
+    m_sliceSelectorPanel = new ui::qt::SliceSelector();
     m_sliceSelectorPanel->setEnable(false);
 
-    guiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
+    ui::qt::SliceSelector::ChangeIndexCallback changeIndexCallback;
     changeIndexCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceIndexNotification, this,
                                      std::placeholders::_1);
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
-    guiQt::SliceSelector::ChangeIndexCallback changeTypeCallback;
+    ui::qt::SliceSelector::ChangeIndexCallback changeTypeCallback;
     changeTypeCallback = std::bind( &::uiImageQt::SliceIndexPositionEditor::sliceTypeNotification, this,
                                     std::placeholders::_1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);

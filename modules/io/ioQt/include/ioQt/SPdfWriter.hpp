@@ -28,10 +28,10 @@
 
 #include <fwIO/IWriter.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <QPdfWriter>
 #include <QtWidgets>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace ioQt
 {

@@ -24,11 +24,11 @@
 
 #include "monitorQt/config.hpp"
 
-#include <gui/IActionSrv.hpp>
-
 #include <QApplication>
 #include <QDialog>
 #include <QTreeWidget>
+
+#include <ui/base/IActionSrv.hpp>
 
 namespace monitorQt
 {
@@ -37,12 +37,12 @@ namespace action
 /**
  * @brief   Implements an action to show services registered in factory
  */
-class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::sight::gui::IActionSrv
+class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(ClassFactoryRegistryInfo,  gui::IActionSrv )
+    fwCoreServiceMacro(ClassFactoryRegistryInfo,  ui::base::IActionSrv )
 
     /// Does nothing
     MONITORQT_API ClassFactoryRegistryInfo() noexcept;

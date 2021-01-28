@@ -33,7 +33,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/dialog/SelectorDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 #include <sstream>
 
@@ -63,14 +63,14 @@ SRemoveDistance::~SRemoveDistance() noexcept
 
 void SRemoveDistance::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SRemoveDistance::starting()
 {
-    this->::gui::IActionSrv::actionServiceStarting();
+    this->::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void SRemoveDistance::updating( )
 
 void SRemoveDistance::stopping()
 {
-    this->::gui::IActionSrv::actionServiceStopping();
+    this->::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -166,7 +166,8 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
 
         if(!selections.empty())
         {
-            const gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
+            const sight::ui::base::dialog::SelectorDialog::sptr selector =
+                sight::ui::base::dialog::SelectorDialog::New();
             selector->setTitle("Select a distance to remove");
             selector->setSelections(selections);
             std::string selection = selector->show();

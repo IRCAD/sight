@@ -41,9 +41,6 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
@@ -51,8 +48,11 @@
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/highui/base/highgui.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -404,9 +404,9 @@ void SOpenCVExtrinsic::updating()
         // If one of those stringstream are not empty we should display the popup and not perform calibration.
         if(!messageIm1.str().empty() || !messageIm2.str().empty())
         {
-            gui::dialog::MessageDialog::sptr dialog = gui::dialog::MessageDialog::New();
+            ui::base::dialog::MessageDialog::sptr dialog = ui::base::dialog::MessageDialog::New();
             dialog->setTitle("Calibration Error");
-            dialog->setIcon(gui::dialog::IMessageDialog::Icons::WARNING);
+            dialog->setIcon(ui::base::dialog::IMessageDialog::Icons::WARNING);
             dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration. "
                                + messageIm1.str() + messageIm2.str() + ".");
             dialog->show();
@@ -454,17 +454,17 @@ void SOpenCVExtrinsic::updating()
 
 void SOpenCVExtrinsic::updateCharucoBoardSize()
 {
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
-    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = modules::ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);

@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     activities
     data
-    gui
+    base
     fwQml
 )
 set( REQUIREMENTS

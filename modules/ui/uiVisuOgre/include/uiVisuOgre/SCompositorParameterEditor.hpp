@@ -27,11 +27,10 @@
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <QVBoxLayout>
+
+#include <ui/base/editor/IEditor.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiVisuOgre
 {
@@ -47,12 +46,12 @@ namespace uiVisuOgre
        </service>
        @endcode
  */
-class UIVISUOGRE_CLASS_API SCompositorParameterEditor : public gui::editor::IEditor
+class UIVISUOGRE_CLASS_API SCompositorParameterEditor : public sight::ui::base::editor::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SCompositorParameterEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SCompositorParameterEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SCompositorParameterEditor() noexcept;
@@ -95,7 +94,7 @@ private:
     struct ShaderEditorInfo
     {
         std::string uuid;
-        guiQt::container::QtContainer::sptr editorPanel;
+        ui::qt::container::QtContainer::sptr editorPanel;
         services::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };

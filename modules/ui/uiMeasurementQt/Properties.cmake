@@ -5,8 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    guiQt
+    qt
     services
-    gui
+    base
 )
 set( REQUIREMENTS )

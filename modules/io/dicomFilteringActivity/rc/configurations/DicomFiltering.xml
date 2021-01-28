@@ -17,7 +17,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="media-0.1/icons/Import.svg" />
@@ -59,7 +59,7 @@
         </service>
 
 
-        <service uid="centerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="centerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -73,7 +73,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="rightView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="rightView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -100,7 +100,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="menuHelp" type="::sight::modules::gui::aspect::SDefaultMenu" >
+        <service uid="menuHelp" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Activity help" />
@@ -142,7 +142,7 @@
         </service>
 
         <!-- FILTERED SELECTION -->
-        <service uid="action_previewFilteredDicomSeries" type="::sight::modules::gui::action::SConfigLauncher">
+        <service uid="action_previewFilteredDicomSeries" type="::sight::modules::ui::base::action::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout key="SERIESDB" uid="filteredSeriesDB" />
             <parameter replace="ICON_PATH" by="media-0.1/icons/Preview.svg" />

@@ -28,14 +28,14 @@
 
 #include <fwNetworkIO/http/ClientQt.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QWidget>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <filesystem>
 
@@ -65,13 +65,13 @@ namespace ioDicomWeb
 
  */
 class IODICOMWEB_CLASS_API SQueryEditor : public QObject,
-                                          public gui::editor::IEditor
+                                          public ui::base::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  gui::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  ui::base::editor::IEditor )
 
     /// Constructor
     IODICOMWEB_API SQueryEditor() noexcept;

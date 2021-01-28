@@ -35,8 +35,8 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 #include <data/ActivitySeries.hpp>
 
@@ -65,7 +65,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, activities::action::SCreateActivity, ::sight::data::Vector)
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, activities::action::SCreateActivity, ::sight::data::Vector)
 
 //------------------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ void SCreateActivity::stopping()
 
 void SCreateActivity::configuring()
 {
-    this->::gui::IActionSrv::initialize();
+    this->::ui::base::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     const services::IService::ConfigType srvconfig = this->getConfigTree();
@@ -263,9 +263,9 @@ void SCreateActivity::updating()
     }
     else
     {
-        gui::dialog::MessageDialog::show("Activity launcher",
-                                         "No available activity for the current selection.",
-                                         gui::dialog::MessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Activity launcher",
+                                              "No available activity for the current selection.",
+                                              ui::base::dialog::MessageDialog::WARNING);
     }
 }
 

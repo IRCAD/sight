@@ -37,7 +37,7 @@ namespace uiTools
 namespace action
 {
 
-fwServicesRegisterMacro(gui::IActionSrv, ::uiTools::action::STimestampSlotCaller, data::Object)
+fwServicesRegisterMacro(ui::base::IActionSrv, ::uiTools::action::STimestampSlotCaller, data::Object)
 
 //-----------------------------------------------------------------------------
 

@@ -27,8 +27,6 @@
 #include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
@@ -37,6 +35,8 @@
 #include <QListWidget>
 #include <QPointer>
 #include <QPushButton>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <string>
 #include <vector>
@@ -60,7 +60,7 @@ namespace uiVisuOgre
  */
 class UIVISUOGRE_CLASS_API SLightSelector final :
     public QObject,
-    public gui::editor::IEditor
+    public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
@@ -68,7 +68,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLightSelector, gui::editor::IEditor)
+    fwCoreServiceMacro(SLightSelector, sight::ui::base::editor::IEditor)
 
     /// Initializes signals and slots.
     UIVISUOGRE_API SLightSelector() noexcept;

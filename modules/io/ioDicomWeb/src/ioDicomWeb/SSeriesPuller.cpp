@@ -36,13 +36,13 @@
 #include <fwNetworkIO/helper/Series.hpp>
 #include <fwNetworkIO/http/Request.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/registry/ObjectService.hpp>
 #include <services/registry/ServiceConfig.hpp>
 #include <services/registry/ServiceFactory.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <filesystem>
 
@@ -148,12 +148,12 @@ void SSeriesPuller::stopping()
 
 void SSeriesPuller::updating()
 {
-    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
+    const std::string hostname = modules::ui::base::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
-    const std::string port = gui::preferences::getValue(m_serverPortKey);
+    const std::string port = modules::ui::base::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -164,22 +164,22 @@ void SSeriesPuller::updating()
     if(m_isPulling)
     {
         // Display a message to inform the user that the service is already pulling data.
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pulling Series");
         messageBox.setMessage( "The service is already pulling data. Please wait until the pulling is done "
                                "before sending a new pull request." );
-        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pulling Series");
         messageBox.setMessage( "Unable to pull series, there is no series selected. " );
-        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else
@@ -383,11 +383,11 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 void SSeriesPuller::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    gui::dialog::MessageDialog messageBox;
+    ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
-    messageBox.setIcon(gui::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

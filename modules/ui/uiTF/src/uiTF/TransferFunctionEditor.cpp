@@ -34,12 +34,6 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <gui/dialog/InputDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 
@@ -49,6 +43,11 @@
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -61,7 +60,7 @@ static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiTF::TransferFunctionEditor)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiTF::TransferFunctionEditor)
 
 //------------------------------------------------------------------------------
 
@@ -116,8 +115,8 @@ void TransferFunctionEditor::starting()
     this->create();
 
     // Get the Qt container
-    guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
@@ -225,15 +224,15 @@ void TransferFunctionEditor::presetChoice(int index)
 
 void TransferFunctionEditor::deleteTF()
 {
-    gui::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Deleting confirmation");
     messageBox.setMessage("Are you sure you want to delete this transfer function?");
-    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(gui::dialog::IMessageDialog::YES);
-    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::YES);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
+    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if (answerCopy != gui::dialog::IMessageDialog::CANCEL)
+    if (answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
@@ -263,10 +262,10 @@ void TransferFunctionEditor::deleteTF()
         }
         else
         {
-            gui::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "You can not remove this transfer function because the program requires at least one.",
-                gui::dialog::IMessageDialog::WARNING );
+                sight::ui::base::dialog::IMessageDialog::WARNING );
         }
     }
 }
@@ -281,7 +280,7 @@ void TransferFunctionEditor::newTF()
         newName = this->createTransferFunctionName(newName);
     }
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
     inputDialog.setInput( newName );
@@ -310,10 +309,10 @@ void TransferFunctionEditor::newTF()
         }
         else
         {
-            gui::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "This transfer function name already exists so you can not overwrite it.",
-                gui::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -322,15 +321,15 @@ void TransferFunctionEditor::newTF()
 
 void TransferFunctionEditor::reinitializeTFPool()
 {
-    gui::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Reinitializing confirmation");
     messageBox.setMessage("Are you sure you want to reinitialize all transfer functions?");
-    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(gui::dialog::IMessageDialog::YES);
-    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::YES);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
+    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if (answerCopy != gui::dialog::IMessageDialog::CANCEL)
+    if (answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
@@ -352,7 +351,7 @@ void TransferFunctionEditor::renameTF()
     std::string str = m_pTransferFunctionPreset->currentText().toStdString();
     std::string newName(str);
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
     inputDialog.setMessage("Transfer function name:");
     inputDialog.setInput( newName );
@@ -381,21 +380,21 @@ void TransferFunctionEditor::renameTF()
         }
         else
         {
-            gui::dialog::MessageDialog messageBox;
+            sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage("This transfer function name already exists so you can not overwrite it.");
-            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
         }
     }
     if ( newName.empty() )
     {
-        gui::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("You have to give a name to your transfer function.");
-        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }

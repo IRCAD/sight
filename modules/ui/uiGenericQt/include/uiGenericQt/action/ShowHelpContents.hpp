@@ -24,7 +24,7 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 #include <filesystem>
 
@@ -36,10 +36,10 @@ namespace action
 /**
  * @brief   This action show the help contents.
  */
-class UIGENERICQT_CLASS_API ShowHelpContents : public ::sight::gui::IActionSrv
+class UIGENERICQT_CLASS_API ShowHelpContents : public ::sight::ui::base::IActionSrv
 {
 public:
-    fwCoreServiceMacro(ShowHelpContents,  gui::IActionSrv)
+    fwCoreServiceMacro(ShowHelpContents,  ui::base::IActionSrv)
     UIGENERICQT_API ShowHelpContents() noexcept;
 
     UIGENERICQT_API virtual ~ShowHelpContents() noexcept;
@@ -51,7 +51,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="::uiGenericQt::ui::action::ShowHelpContents" type="::gui::IActionSrv">
+       <service impl="::uiGenericQt::ui::action::ShowHelpContents" type="::ui::base::IActionSrv">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

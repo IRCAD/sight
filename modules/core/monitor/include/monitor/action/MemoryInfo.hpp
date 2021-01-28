@@ -24,7 +24,7 @@
 
 #include "monitor/config.hpp"
 
-#include <gui/IActionSrv.hpp>
+#include <ui/base/IActionSrv.hpp>
 
 namespace monitor
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Implements an action to show in a message box few memory information
-class MONITOR_CLASS_API MemoryInfo : public ::sight::gui::IActionSrv
+class MONITOR_CLASS_API MemoryInfo : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(MemoryInfo,  gui::IActionSrv )
+    fwCoreServiceMacro(MemoryInfo,  ui::base::IActionSrv )
 
     /// Does nothing
     MONITOR_API MemoryInfo() noexcept;

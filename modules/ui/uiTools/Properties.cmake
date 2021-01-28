@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     services
-    gui
-    guiQt
+    base
+    qt
 )
 set( REQUIREMENTS )

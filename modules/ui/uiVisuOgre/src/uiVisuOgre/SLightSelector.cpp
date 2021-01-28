@@ -33,8 +33,6 @@
 
 #include <fwRenderOgre/SRender.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -47,10 +45,12 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SLightSelector, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiVisuOgre::SLightSelector, ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ void SLightSelector::starting()
 {
     this->create();
 
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
 
     m_layersBox       = new QComboBox();
@@ -189,7 +189,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 void SLightSelector::onAddLight(bool)
 {
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 
@@ -258,7 +258,7 @@ void SLightSelector::onRemoveLight(bool)
 
 void SLightSelector::onEditAmbientColor(bool)
 {
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 

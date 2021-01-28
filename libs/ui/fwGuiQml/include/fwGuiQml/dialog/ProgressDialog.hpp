@@ -24,11 +24,11 @@
 
 #include "fwGuiQml/config.hpp"
 
-#include <gui/dialog/IProgressDialog.hpp>
-
 #include <QObject>
 #include <QPointer>
 #include <QString>
+
+#include <ui/base/dialog/IProgressDialog.hpp>
 
 #include <string>
 
@@ -40,7 +40,7 @@ namespace dialog
  * @brief   This class allows us to select an acquisition in a patient data base.
  */
 class FWGUIQML_CLASS_API ProgressDialog : public QObject,
-                                          public gui::dialog::IProgressDialog
+                                          public ui::base::dialog::IProgressDialog
 {
 Q_OBJECT
 Q_PROPERTY(bool visible MEMBER m_visible)
@@ -48,9 +48,9 @@ Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
 
 public:
-    fwCoreClassMacro(ProgressDialog, gui::dialog::IProgressDialog, gui::factory::New<ProgressDialog>)
+    fwCoreClassMacro(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New<ProgressDialog>)
 
-    FWGUIQML_API ProgressDialog(gui::GuiBaseObject::Key key,
+    FWGUIQML_API ProgressDialog(ui::base::GuiBaseObject::Key key,
                                 const std::string& title   = "Progression",
                                 const std::string& message = std::string(86, ' '));
 

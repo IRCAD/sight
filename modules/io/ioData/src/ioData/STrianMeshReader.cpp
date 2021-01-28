@@ -34,10 +34,10 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -92,11 +92,11 @@ void STrianMeshReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a trian file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Trian file", "*.trian");
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -144,18 +144,18 @@ void STrianMeshReader::updating()
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            gui::dialog::MessageDialog::show(
+            ui::base::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                gui::dialog::IMessageDialog::WARNING);
+                ui::base::dialog::IMessageDialog::WARNING);
         }
         catch( ... )
         {
             m_readFailed = true;
-            gui::dialog::MessageDialog::show(
+            ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "Warning during loading.",
-                gui::dialog::IMessageDialog::WARNING);
+                ui::base::dialog::IMessageDialog::WARNING);
         }
     }
     else

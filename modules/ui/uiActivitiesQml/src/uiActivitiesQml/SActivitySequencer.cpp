@@ -27,9 +27,9 @@
 
 #include <data/Composite.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace uiActivitiesQml
 {
@@ -147,7 +147,7 @@ void SActivitySequencer::goTo(int index)
     }
     else
     {
-        gui::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        sight::ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

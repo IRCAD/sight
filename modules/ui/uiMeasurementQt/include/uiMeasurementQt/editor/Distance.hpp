@@ -26,11 +26,11 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiMeasurementQt
 {
@@ -58,12 +58,12 @@ namespace editor
  * -\b image [data::Image]: Image in which we calculate the distance.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
-                                           public gui::editor::IEditor
+                                           public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(Distance, gui::editor::IEditor)
+    fwCoreServiceMacro(Distance, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIMEASUREMENTQT_API Distance() noexcept;

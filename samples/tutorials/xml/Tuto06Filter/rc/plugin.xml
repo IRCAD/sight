@@ -1,7 +1,7 @@
 <plugin id="Tuto06Filter" version="@PROJECT_VERSION@" >
 
     <requirement id="module_services" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto06Filter_AppCfg</id>
@@ -18,7 +18,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- Windows & Main Menu -->
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto06Filter</name>
@@ -33,7 +33,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -47,7 +47,7 @@
             </service>
 
             <!-- Menus -->
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -61,7 +61,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFilterView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFilterView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Compute image filter" />
@@ -74,7 +74,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -92,24 +92,24 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to quit the application -->
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <!-- Action to open image file: call update on image reader service -->
-            <service uid="openImageAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>imageReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Action apply threshold filter: call update on threshold filter service -->
-            <service uid="imageFilterAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="imageFilterAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>imageFilterSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Action apply flip filter: call 'flipAxisY' slot on flip service -->
-            <service uid="imageFlipperAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="imageFlipperAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>imageFlipperSrv/flipAxisY</slot>
                 </slots>

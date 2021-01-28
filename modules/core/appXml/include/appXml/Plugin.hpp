@@ -28,7 +28,7 @@
 
 #include <services/AppConfigManager.hpp>
 
-namespace sight::modules::appXml
+namespace sight::module::appXml
 {
 
 /**
@@ -59,4 +59,4 @@ private:
     services::AppConfigManager::sptr m_appConfigMng;
 };
 
-} // namespace sight::modules::appXml
+} // namespace sight::module::appXml

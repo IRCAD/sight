@@ -24,9 +24,9 @@
 
 #include "uiTools/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QLabel;
 
@@ -64,13 +64,13 @@ namespace editor
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
 class UITOOLS_CLASS_API STextStatus final : public QObject,
-                                            public gui::editor::IEditor
+                                            public sight::ui::base::editor::IEditor
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STextStatus, gui::editor::IEditor)
+    fwCoreServiceMacro(STextStatus, sight::ui::base::editor::IEditor)
 
     /// Initializes slots and member.
     UITOOLS_API STextStatus();

@@ -122,9 +122,9 @@ namespace sight::services
         {
             const std::string msg = "All the required inputs are not present, '" + this->getID() +
                                     "' activity will not be launched";
-            gui::dialog::MessageDialog::show("Manager Initialization",
+            ui::base::dialog::MessageDialog::show("Manager Initialization",
                                                               msg,
-                                                              gui::dialog::IMessageDialog::CRITICAL);
+                                                              ui::base::dialog::IMessageDialog::CRITICAL);
         }
     }
    @endcode

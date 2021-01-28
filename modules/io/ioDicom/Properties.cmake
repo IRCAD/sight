@@ -6,8 +6,8 @@ set( DEPENDENCIES
     core
     fwDicomIOFilter
     fwDicomIOFilterQt
-    gui
-    guiQt
+    base
+    qt
     services
     fwIO
     data

@@ -25,10 +25,10 @@
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <locale.h>
 #include <QCursor>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 #include <iostream>

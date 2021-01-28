@@ -12,8 +12,8 @@ set( REQUIREMENTS
     uiIO
     ioData
     basicRegistration
-    module_gui
-    module_guiQt
+    module_ui_base
+    module_ui_qt
     ctrlSelection
     ctrlCamp
     uiVisuQt

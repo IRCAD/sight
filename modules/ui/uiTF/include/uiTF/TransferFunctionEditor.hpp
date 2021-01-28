@@ -27,9 +27,9 @@
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <filesystem>
 
@@ -77,13 +77,13 @@ namespace uiTF
  * - \b path (optional): path to a directory containing tf files.
  */
 class UITF_CLASS_API TransferFunctionEditor : public QObject,
-                                              public gui::editor::IEditor
+                                              public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(TransferFunctionEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(TransferFunctionEditor, sight::ui::base::editor::IEditor)
 
     /// Basic constructor, do nothing.
     UITF_API TransferFunctionEditor();

@@ -32,9 +32,9 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <vtkLandmarkTransform.h>
 #include <vtkMatrix4x4.h>
@@ -237,16 +237,16 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            gui::dialog::MessageDialog::show("Error",
-                                             "You must enter 3 or more points for the registration to work.",
-                                             gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::MessageDialog::show("Error",
+                                                  "You must enter 3 or more points for the registration to work.",
+                                                  ui::base::dialog::IMessageDialog::WARNING);
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size());
-            gui::dialog::MessageDialog::show("Error", msg, gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::MessageDialog::show("Error", msg, ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }

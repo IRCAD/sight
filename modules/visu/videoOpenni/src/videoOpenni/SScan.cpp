@@ -28,9 +28,9 @@
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace videoOpenni
 {
@@ -209,10 +209,10 @@ void SScan::startCamera()
     if (m_status != ::openni::STATUS_OK)
     {
         SLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
-        gui::dialog::MessageDialog::show(
+        ui::base::dialog::MessageDialog::show(
             "Sense Error",
             "Sense device is not available. Please check if it is plugged in.",
-            gui::dialog::IMessageDialog::CRITICAL);
+            ui::base::dialog::IMessageDialog::CRITICAL);
         return;
     }
 

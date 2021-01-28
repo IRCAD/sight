@@ -51,14 +51,17 @@ macro(groupMaker FWPROJECT_NAME)
     endforeach()
 endmacro()
 
-macro(configure_header_file FWPROJECT_NAME FILENAME)
+macro(configure_header_file FWPROJECT_NAME FILENAME ROOT)
 
     get_filename_component(PROJECT_PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
     get_filename_component(PROJECT_PARENT_DIR ${PROJECT_PARENT_DIR} NAME)
+    string(REGEX REPLACE "module_(.*)" "\\1" PROJECT_NAME_WITHOUT_MODULE "${FWPROJECT_NAME}")
+    string(REGEX REPLACE ".*_(.*)" "\\1" PROJECT_NAME_WITHOUT_PARENT "${PROJECT_NAME_WITHOUT_MODULE}")
+
     if(${PROJECT_PARENT_DIR} STREQUAL "core")
-        set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}//${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/${FILENAME}")
+        set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${ROOT}/${PROJECT_NAME_WITHOUT_MODULE}/${FILENAME}")
     else()
-        set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${PROJECT_PARENT_DIR}/${FWPROJECT_NAME}/${FILENAME}")
+        set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${ROOT}/${PROJECT_PARENT_DIR}/${PROJECT_NAME_WITHOUT_PARENT}/${FILENAME}")
     endif()
 
     configure_file(
@@ -469,8 +472,8 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME_OBJECT_LIB}> ${${FWPROJECT_NAME}_PCH_LIB})
 
         target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
           $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
         )
         target_link_libraries(${FWPROJECT_NAME} PUBLIC ${FWPROJECT_NAME_OBJECT_LIB})
@@ -482,8 +485,8 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             ${${FWPROJECT_NAME}_CMAKE_FILES}
             ${${FWPROJECT_NAME}_PCH_LIB})
         target_include_directories(${FWPROJECT_NAME} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
           $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
         )
     endif()
@@ -511,7 +514,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
 
     # create the config.hpp for the current library
-    configure_header_file(${FWPROJECT_NAME} "config.hpp")
+    configure_header_file(${FWPROJECT_NAME} "config.hpp" ".")
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
 
@@ -641,8 +644,8 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     set(MODULE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
-
-    if(EXISTS "${PRJ_SOURCE_DIR}/src")
+    
+    if( ${FWPROJECT_NAME}_SOURCES )
 
         add_library(${FWPROJECT_NAME} SHARED ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
@@ -677,10 +680,18 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         endif()
 
         # create the config.hpp for the current module
-        configure_header_file(${FWPROJECT_NAME} "config.hpp")
+        configure_header_file(${FWPROJECT_NAME} "config.hpp" "modules")
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
+        # Allows include of type <core/..> <data/..> ...
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/core)
+        # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs)
+        # Allows include of type <modules/../..>
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR})
+        # ???
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
 
         if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})

@@ -36,12 +36,6 @@
 #include <fwIO/ioTypes.hpp>
 #include <fwIO/IReader.hpp>
 
-#include <gui/dialog/InputDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ObjectService.hpp>
@@ -50,10 +44,15 @@
 #include <QInputDialog>
 #include <QStringList>
 
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiCalibration
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiCalibration::SCameraConfigLauncher,
                          ::sight::data::Composite)
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
@@ -97,7 +96,7 @@ void SCameraConfigLauncher::starting()
     m_activitySeries = this->getInOut< data::ActivitySeries >("activitySeries");
     SLM_ASSERT("Missing activitySeries.", m_activitySeries);
 
-    auto qtContainer = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -236,11 +235,11 @@ void SCameraConfigLauncher::onImportClicked()
     }
     catch(std::exception const& e)
     {
-        gui::dialog::MessageDialog dlg;
+        sight::ui::base::dialog::MessageDialog dlg;
         const auto msg = "Cannot read file: " + std::string(e.what());
         dlg.setTitle("Read error");
         dlg.setMessage(msg);
-        dlg.setIcon(gui::dialog::IMessageDialog::Icons::CRITICAL);
+        dlg.setIcon(sight::ui::base::dialog::IMessageDialog::Icons::CRITICAL);
         SLM_ERROR(msg);
 
         throw;
@@ -261,10 +260,10 @@ void SCameraConfigLauncher::onImportClicked()
 
     if (cameraSeries.size() == 0)
     {
-        gui::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "No CameraSeries in SDB",
             "There are no CameraSeries present in the loaded SeriesDB",
-            gui::dialog::IMessageDialog::CRITICAL);
+            sight::ui::base::dialog::IMessageDialog::CRITICAL);
     }
     else
     {
@@ -285,14 +284,14 @@ void SCameraConfigLauncher::onImportClicked()
 
         if (cameras.size() == 0)
         {
-            gui::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "No Cameras in SDB",
                 "There are CameraSeries present in the loaded SeriesDB, but no Cameras were found",
-                gui::dialog::IMessageDialog::CRITICAL);
+                sight::ui::base::dialog::IMessageDialog::CRITICAL);
         }
         else
         {
-            auto qtContainer = guiQt::container::QtContainer::dynamicCast(this->getContainer());
+            auto qtContainer = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
             bool ok          = false;
             auto selected    = QInputDialog::getItem(
                 qtContainer->getQtContainer(), "Please select a camera", "Camera", cameras, 0, false, &ok);
@@ -351,7 +350,7 @@ void SCameraConfigLauncher::onRemoveClicked()
     }
     else
     {
-        gui::dialog::MessageDialog::show("Warning", "The first camera can not be deleted");
+        sight::ui::base::dialog::MessageDialog::show("Warning", "The first camera can not be deleted");
     }
 }
 
@@ -440,7 +439,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
     }
     else
     {
-        gui::dialog::MessageDialog::show("Calibration", "Cameras must be intrinsically calibrated.");
+        sight::ui::base::dialog::MessageDialog::show("Calibration", "Cameras must be intrinsically calibrated.");
         m_extrinsicButton->setChecked(false);
     }
 }

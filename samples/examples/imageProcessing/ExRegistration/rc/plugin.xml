@@ -56,11 +56,11 @@ Detail of the ToolBar
  -->
 <plugin id="ExRegistration" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>ExRegistration_AppCfg</id>
@@ -81,7 +81,7 @@ Detail of the ToolBar
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExRegistration</name>
@@ -94,7 +94,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::CardinalLayoutManager" >
                         <view align="center" />
@@ -108,7 +108,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load image" icon="ExRegistration-0.1/icons/icon-load1.png" />
@@ -128,7 +128,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="multiView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::TabLayoutManager" >
                         <view caption="Point List 1" selected="yes" border="5" backgroundColor="#2E3034" />
@@ -144,7 +144,7 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW    (Content of the first Tab)-->
-            <service uid="image1View" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="image1View" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -161,22 +161,22 @@ Detail of the ToolBar
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="openImageAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="openMesh1Act" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openMesh1Act" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshReader1Srv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 2 (Point list 2)    -->
-            <service uid="openMesh2Act" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openMesh2Act" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshReader2Srv" />
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="registerAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="registerAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>PLRegistrationSrv/update</slot>
                 </slots>

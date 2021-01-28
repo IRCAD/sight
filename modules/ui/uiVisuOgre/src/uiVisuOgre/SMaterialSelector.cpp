@@ -31,8 +31,6 @@
 #include <fwRenderOgre/ogre.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
@@ -47,10 +45,13 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::sight::data::Reconstruction)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiVisuOgre::SMaterialSelector,
+                         ::sight::data::Reconstruction)
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
@@ -76,8 +77,8 @@ void SMaterialSelector::starting()
 {
     this->create();
 
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
     // Selection
     QLabel* currentMaterial = new QLabel();

@@ -9,7 +9,7 @@
         <object uid="${PACS_CONFIGURATION}" type="::fwPacsIO::data::PacsConfiguration" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="pacsConfigurationManagerFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+        <service uid="pacsConfigurationManagerFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -24,7 +24,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />

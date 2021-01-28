@@ -31,13 +31,13 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace ioPacs
 {
@@ -70,7 +70,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SQueryEditor final :
     public QObject,
-    public gui::editor::IEditor
+    public ui::base::editor::IEditor
 {
 
 Q_OBJECT;
@@ -78,7 +78,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SQueryEditor,  gui::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  ui::base::editor::IEditor )
 
     /// Creates the service.
     IOPACS_API SQueryEditor() noexcept;

@@ -35,10 +35,10 @@
 #include <fwNetworkIO/helper/Series.hpp>
 #include <fwNetworkIO/http/Request.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 namespace ioDicomWeb
 {
@@ -96,12 +96,12 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    const std::string hostname = gui::preferences::getValue(m_serverHostnameKey);
+    const std::string hostname = modules::ui::base::preferences::getValue(m_serverHostnameKey);
     if(!hostname.empty())
     {
         m_serverHostname = hostname;
     }
-    const std::string port = gui::preferences::getValue(m_serverPortKey);
+    const std::string port = modules::ui::base::preferences::getValue(m_serverPortKey);
     if(!port.empty())
     {
         m_serverPort = std::stoi(port);
@@ -112,22 +112,22 @@ void SSeriesPusher::updating()
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "The service is already pushing data. Please wait until the pushing is done "
                                "before sending a new push request." );
-        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "Unable to push series, there is no series selected." );
-        messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
     else
@@ -210,11 +210,11 @@ void SSeriesPusher::pushSeries()
 void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 {
     SLM_WARN_IF("Error: " + message, error);
-    gui::dialog::MessageDialog messageBox;
+    ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage( message );
-    messageBox.setIcon(error ? (gui::dialog::IMessageDialog::CRITICAL): (gui::dialog::IMessageDialog::INFO));
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    messageBox.setIcon(error ? (ui::base::dialog::IMessageDialog::CRITICAL): (ui::base::dialog::IMessageDialog::INFO));
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.show();
 }
 

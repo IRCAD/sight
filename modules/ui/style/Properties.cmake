@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     services
-    gui
+    base
     )
 set( REQUIREMENTS  )
 

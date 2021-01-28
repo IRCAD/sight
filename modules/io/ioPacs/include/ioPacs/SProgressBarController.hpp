@@ -27,9 +27,9 @@
 #include <core/com/Slot.hpp>
 #include <core/mt/types.hpp>
 
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/IController.hpp>
+
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 #include <filesystem>
 
@@ -88,7 +88,7 @@ private:
     void stopProgress(std::string _id);
 
     /// Stores progress bars.
-    std::map< std::string, gui::dialog::ProgressDialog::sptr > m_progressDialogs;
+    std::map< std::string, ui::base::dialog::ProgressDialog::sptr > m_progressDialogs;
 
     /// Synchronizes progress bars access.
     core::mt::Mutex m_mutex;

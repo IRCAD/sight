@@ -28,13 +28,13 @@
 
 #include <data/Object.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QString>
 #include <QTime>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <chrono>
 
@@ -43,7 +43,7 @@ namespace videoQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::videoQt::editor::SSlider )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::videoQt::editor::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 
@@ -91,8 +91,8 @@ SSlider::~SSlider() noexcept
 void SSlider::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast(this->getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     m_positionSlider = new QSlider(Qt::Horizontal);

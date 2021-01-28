@@ -28,10 +28,10 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QPushButton;
 
@@ -45,14 +45,14 @@ namespace uiVisuQt
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
 class UIVISUQT_CLASS_API SnapshotEditor : public QObject,
-                                          public gui::editor::IEditor
+                                          public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SnapshotEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SnapshotEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIVISUQT_API SnapshotEditor() noexcept;

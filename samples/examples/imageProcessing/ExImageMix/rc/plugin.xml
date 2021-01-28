@@ -1,10 +1,10 @@
 <plugin id="ExImageMix" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKQt" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>ExImageMix_AppCfg</id>
@@ -19,7 +19,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExImageMix</name>
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open background image" shortcut="Ctrl+O" />
@@ -61,7 +61,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -77,7 +77,7 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="blendSceneView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="blendSceneView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -112,7 +112,7 @@
                 </registry>
             </service>
 
-            <service uid="blendSceneBottomView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="blendSceneBottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -126,7 +126,7 @@
                 </registry>
             </service>
 
-            <service uid="imagesView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="imagesView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -142,15 +142,15 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="openBackgroundFileAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openBackgroundFileAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="backgroundImageReaderSrv" />
             </service>
 
-            <service uid="openFrontFileAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openFrontFileAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="foregroundImageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 

@@ -29,12 +29,12 @@
 
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 
-#include <gui/container/fwContainer.hpp>
-
 #include <QObject>
 #include <QPointer>
 
-namespace sight::guiQt
+#include <ui/base/container/fwContainer.hpp>
+
+namespace sight::ui::qt
 {
 namespace container
 {
@@ -74,7 +74,7 @@ public:
      * @param _renderOnDemand if true, the rendering will be done only when it's requested.
      * @param _fullscreen enable the fullscreen.
      */
-    VISUOGREQT_API virtual void createContainer(gui::container::fwContainer::sptr _parent,
+    VISUOGREQT_API virtual void createContainer(ui::base::container::fwContainer::sptr _parent,
                                                 bool _renderOnDemand,
                                                 bool _fullscreen) final;
 
@@ -130,7 +130,7 @@ private:
     QPointer< ::visuOgreQt::Window > m_qOgreWidget;
 
     /// Contains the parent of the widget.
-    SPTR(guiQt::container::QtContainer) m_parentContainer;
+    SPTR(ui::qt::container::QtContainer) m_parentContainer;
 
     /// Contains the window container.
     QWidget* m_windowContainer {nullptr};

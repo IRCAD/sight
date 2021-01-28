@@ -41,14 +41,14 @@
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 namespace ioITK
 {
@@ -94,13 +94,13 @@ void SInrSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
-    dialogFile.setType(gui::dialog::ILocationDialog::MULTI_FILES);
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::MultiFiles::sptr result;
     result = data::location::MultiFiles::dynamicCast( dialogFile.show() );
@@ -132,7 +132,7 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data:
 
     try
     {
-        gui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
+        ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
@@ -140,16 +140,16 @@ bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data:
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        gui::dialog::MessageDialog::show("Warning",
-                                         ss.str(),
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              ss.str(),
+                                              ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        gui::dialog::MessageDialog::show("Warning",
-                                         "Warning during loading",
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              "Warning during loading",
+                                              ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -168,8 +168,8 @@ void SInrSeriesDBReader::updating()
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         const std::string instanceUID = core::tools::UUID::generateUUID();
 

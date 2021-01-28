@@ -41,8 +41,6 @@
 #include <data/String.hpp>
 #include <data/tools/helper/Field.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 #include <services/op/Get.hpp>
@@ -58,6 +56,8 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiMedDataQt
 {
@@ -141,7 +141,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(gui::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, data::ModelSeries)
+fwServicesRegisterMacro(ui::base::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, data::ModelSeries)
 
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
@@ -215,8 +215,8 @@ void SModelSeriesList::configuring()
 void SModelSeriesList::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout       = new QVBoxLayout;
     QHBoxLayout* layoutButton = new QHBoxLayout;
@@ -340,8 +340,8 @@ void SModelSeriesList::stopping()
 
 void SModelSeriesList::updateReconstructions()
 {
-    guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
 
     SLM_ASSERT("container not instanced", container);

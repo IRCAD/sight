@@ -34,8 +34,8 @@
 
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-#include <gui/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 // Services tools
 #include <services/macros.hpp>
@@ -44,13 +44,13 @@
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::basicRegistration::SImagesSubstract )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::basicRegistration::SImagesSubstract )
 
 namespace basicRegistration
 {
 
 SImagesSubstract::SImagesSubstract() noexcept :
-    gui::editor::IEditor(),
+    ui::base::editor::IEditor(),
     mpComputeButton(0)
 {
 
@@ -72,7 +72,7 @@ void SImagesSubstract::configuring()
 void SImagesSubstract::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -140,16 +140,16 @@ void SImagesSubstract::updating()
         }
         else
         {
-            gui::dialog::MessageDialog::show("Warning",
-                                             "Both images must have the same size.",
-                                             gui::dialog::IMessageDialog::WARNING);
+            ui::base::dialog::MessageDialog::show("Warning",
+                                                  "Both images must have the same size.",
+                                                  ui::base::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
-        gui::dialog::MessageDialog::show("Warning",
-                                         "Both Images must have signed short as type.",
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              "Both Images must have signed short as type.",
+                                              ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 

@@ -15,17 +15,16 @@ if(REQUIREMENT_LIST)
 endif()
 
 # Add each service to the extension list
-file(TO_CMAKE_PATH "${PROJECT_DIR}/src" PRJ_SRC_DIR)
 file(TO_CMAKE_PATH "${PROJECT_DIR}/include" PRJ_INCLUDE_DIR)
 
-file(GLOB_RECURSE PRJ_CPP_FILES  "${PRJ_SRC_DIR}/*.cpp")
+file(GLOB_RECURSE PRJ_CPP_FILES  "${PROJECT_DIR}/*.cpp")
 
 foreach(CPP_FILE ${PRJ_CPP_FILES})
     #find associated .hpp file to find service description in doxygen
     file(TO_CMAKE_PATH ${CPP_FILE} CPP_FILE)
     string(REPLACE "${PRJ_SRC_DIR}" "" HPP_FILE ${CPP_FILE})
     string(REPLACE ".cpp" ".hpp" HPP_FILE ${HPP_FILE})
-    set(HPP_FILE "${PRJ_INCLUDE_DIR}/${HPP_FILE}")
+    set(HPP_FILE "${PROJECT_DIR}/${HPP_FILE}")
     file(TO_CMAKE_PATH ${HPP_FILE} HPP_FILE)
 
     unset(SRV_DESC)
@@ -172,11 +171,12 @@ endif()
 
 # set variables used in the configure_file command
 string(REPLACE "module_" "" STRIPPED_MODULE_NAME ${PROJECT})
+string(REPLACE "_" "::" SPLIT_MODULE_NAME "${STRIPPED_MODULE_NAME}")
 set(PLUGIN_ID "${PROJECT}")
 
 # retrieves the class representing the module executable part.
 if(PRJ_CPP_FILES)
-    set(PLUGIN_CLASS "class=\"::sight::modules::${STRIPPED_MODULE_NAME}::Plugin\"")
+    set(PLUGIN_CLASS "class=\"::sight::modules::${SPLIT_MODULE_NAME}::Plugin\"")
     set(PROJECT_LIBRARY "    <library name=\"${PROJECT}\" />")
 endif()
 

@@ -2,10 +2,10 @@
 
     <library name="Tuto04MeshGeneratorCpp" />
 
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory" >
@@ -24,7 +24,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto04MeshGeneratorCpp</name>
@@ -38,9 +38,9 @@
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="::sight::modules::gui::editor::SJobBar" />
+            <service uid="progressBarView" type="::sight::modules::ui::base::editor::SJobBar" />
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -53,7 +53,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="modifierFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="modifierFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Shake mesh point" shortcut="Q" />
@@ -121,15 +121,15 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="saveMeshAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <service uid="shakeMeshPointAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />

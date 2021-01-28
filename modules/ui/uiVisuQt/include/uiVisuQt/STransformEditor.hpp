@@ -24,10 +24,10 @@
 
 #include "uiVisuQt/config.hpp"
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QSlider;
 class QLabel;
@@ -58,11 +58,11 @@ namespace uiVisuQt
  * - \b max (optional): set the maximum value for translation/rotation (default: translation=+300, rotation=180).
  */
 class UIVISUQT_CLASS_API STransformEditor : public QObject,
-                                            public gui::editor::IEditor
+                                            public sight::ui::base::editor::IEditor
 {
 Q_OBJECT;
 public:
-    fwCoreServiceMacro(STransformEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(STransformEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIVISUQT_API STransformEditor() noexcept;
@@ -75,10 +75,10 @@ protected:
     /// This method is used to configure the service parameters:
     UIVISUQT_API virtual void configuring() override;
 
-    ///This method launches the gui::IGuiContainerSrv::create method.
+    ///This method launches the ui::base::IGuiContainerSrv::create method.
     UIVISUQT_API virtual void starting() override;
 
-    ///This method launches the gui::IGuiContainerSrv::destroy method.
+    ///This method launches the ui::base::IGuiContainerSrv::destroy method.
     UIVISUQT_API virtual void stopping() override;
 
     /// Updates Slider value

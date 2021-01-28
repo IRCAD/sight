@@ -1,8 +1,8 @@
 <plugin id="Tuto06SceneQt3DCpp" class="::Tuto06SceneQt3DCpp::Plugin"  version="@PROJECT_VERSION@" >
 
     <requirement id="visuQt3DQt" />
-    <requirement id="preferences" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_base" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
 
 

@@ -31,7 +31,7 @@
         <!-- TF editor -->
         <object uid="Histogram" type="::sight::data::Histogram" />
         <object uid="landmarks" type="::sight::data::Landmarks" />
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="VR" align="center" />
@@ -47,7 +47,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Show 3d slice cursor" icon="media-0.1/icons/icon-landmark.png" style="check" />
@@ -78,17 +78,17 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="ActionShowSliceCursor" type="::sight::modules::gui::action::SStarter" >
+        <service uid="ActionShowSliceCursor" type="::sight::modules::ui::base::action::SStarter" >
             <start_or_stop uid="image3DCursorAdaptor" />
         </service>
 
-        <service uid="ActionShowMesh" type="::sight::modules::gui::action::SPushObject">
+        <service uid="ActionShowMesh" type="::sight::modules::ui::base::action::SPushObject">
             <inout key="source" uid="${optionalModelSeriesComposite}" />
             <out key="destination" uid="optionalModelSeries" />
             <push srcKey="optionalModelSeriesKey" />
         </service>
 
-        <service uid="action_organManager" type="::sight::modules::gui::action::SConfigLauncher">
+        <service uid="action_organManager" type="::sight::modules::ui::base::action::SConfigLauncher">
             <appConfig id="ModelSeriesManagerWindow" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
@@ -152,14 +152,14 @@
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="ActionShowHideBoxWidget" type="::sight::modules::gui::action::SBooleanSlotCaller">
+        <service uid="ActionShowHideBoxWidget" type="::sight::modules::ui::base::action::SBooleanSlotCaller">
             <slots>
                 <slot>VolumeScene3DA/activateBoxClipping</slot>
             </slots>
             <state active="true" />
         </service>
 
-        <service uid="ActionResetBoxWidget" type="::sight::modules::gui::action::SSlotCaller">
+        <service uid="ActionResetBoxWidget" type="::sight::modules::ui::base::action::SSlotCaller">
             <slots>
                 <slot>VolumeScene3DA/resetBoxWidget</slot>
             </slots>

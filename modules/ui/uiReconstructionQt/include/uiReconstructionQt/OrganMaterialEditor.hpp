@@ -26,10 +26,10 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QSlider;
 class QPushButton;
@@ -52,13 +52,13 @@ namespace uiReconstructionQt
  * - \b reconstruction [data::Reconstruction]: reconstruction containing the material to update.
  */
 class UIRECONSTRUCTIONQT_CLASS_API OrganMaterialEditor : public QObject,
-                                                         public gui::editor::IEditor
+                                                         public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(OrganMaterialEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(OrganMaterialEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQT_API OrganMaterialEditor() noexcept;

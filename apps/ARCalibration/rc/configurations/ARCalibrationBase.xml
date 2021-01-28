@@ -15,7 +15,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+        <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+        <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="New Activity..." shortcut="Ctrl+N" />
@@ -66,7 +66,7 @@
             </registry>
         </service>
 
-        <service uid="menuToolsView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+        <service uid="menuToolsView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Show selector" style="check"/>
@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <service uid="menuPreferencesView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+        <service uid="menuPreferencesView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Video directory" />
@@ -89,7 +89,7 @@
         </service>
 
 
-        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view align="center" />
@@ -102,7 +102,7 @@
             </registry>
         </service>
 
-        <service uid="dynamicView" type="::sight::modules::guiQt::editor::SDynamicView" >
+        <service uid="dynamicView" type="::sight::modules::ui::qt::editor::SDynamicView" >
             <mainActivity id="ARCalibrationActivitySelector_Activity" closable="false" />
             <inout key="SERIESDB" uid="seriesDB" />
             <inout key="LOADING_SERIESDB" uid="loadingSeriesDB" />
@@ -153,7 +153,7 @@
         </service>
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
-        <service uid="saveAct" type="::sight::modules::gui::action::SStarter">
+        <service uid="saveAct" type="::sight::modules::ui::base::action::SStarter">
             <start uid="seriesDBWriterSrv" />
         </service>
 
@@ -163,9 +163,9 @@
             <IOSelectorSrvConfig name="ActivityWriterConfig" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
-        <service uid="selectorAct" type="::sight::modules::gui::action::SConfigLauncher" >
+        <service uid="selectorAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
             <appConfig id="ARCalibration_Selector_AppCfg" />
             <inout key="SERIESDB" uid="seriesDB" />
             <parameter replace="WID_PARENT" uid="selectorView" />

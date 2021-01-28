@@ -24,12 +24,12 @@
 
 #include "monitorQt/config.hpp"
 
-#include <gui/IActionSrv.hpp>
-
 #include <QDialog>
 #include <QObject>
 #include <QPointer>
 #include <QTreeWidget>
+
+#include <ui/base/IActionSrv.hpp>
 
 namespace monitorQt
 {
@@ -39,12 +39,12 @@ namespace action
 /**
  * @brief  Implements an action that show module information.
  */
-class MONITORQT_CLASS_API ComponentsTree : public ::sight::gui::IActionSrv
+class MONITORQT_CLASS_API ComponentsTree : public ::sight::ui::base::IActionSrv
 {
 
 public:
 
-    fwCoreServiceMacro(ComponentsTree, ::sight::gui::IActionSrv)
+    fwCoreServiceMacro(ComponentsTree, ::sight::ui::base::IActionSrv)
 
     /// Does nothing
     MONITORQT_API ComponentsTree() noexcept;

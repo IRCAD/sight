@@ -15,11 +15,11 @@
 -->
 <plugin id="Tuto17SimpleAR" version="@PROJECT_VERSION@" >
 
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="visuOgre" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto17SimpleAR_AppCfg</id>
@@ -49,7 +49,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- declaration of the views, menu and toolbar -->
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto17SimpleAR</name>
@@ -63,7 +63,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
@@ -102,7 +102,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -116,7 +116,7 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -130,7 +130,7 @@
                 </registry>
             </service>
 
-            <service uid="parametersView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -148,20 +148,20 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="showParametersAct" type="::sight::modules::gui::action::SModifyLayout" >
+            <service uid="showParametersAct" type="::sight::modules::ui::base::action::SModifyLayout" >
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -169,7 +169,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -179,7 +179,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -189,7 +189,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -203,14 +203,14 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="startUndistortAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="startUndistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>undistortAdp/show</slot>
                     <slot>startDistortAct/setInexecutable</slot>
@@ -219,7 +219,7 @@
                 </slots>
             </service>
 
-            <service uid="stopUndistortAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="stopUndistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>undistortAdp/hide</slot>
@@ -229,7 +229,7 @@
                 </slots>
             </service>
 
-            <service uid="startDistortAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="startDistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <slots>
                     <slot>distortAdp/show</slot>
                     <slot>startUndistortAct/setInexecutable</slot>
@@ -238,7 +238,7 @@
                 </slots>
             </service>
 
-            <service uid="stopDistortAct" type="::sight::modules::gui::action::SSlotCaller" >
+            <service uid="stopDistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>distortAdp/hide</slot>
@@ -248,7 +248,7 @@
                 </slots>
             </service>
 
-            <service uid="showMeshAct" type="::sight::modules::gui::action::SBooleanSlotCaller" >
+            <service uid="showMeshAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>cubeAdp/updateVisibility</slot>
                 </slots>
@@ -317,7 +317,7 @@
             </service>
 
             <!-- hide axis adaptor until a marker is found -->
-            <service uid="hideAxisSrv" type="::sight::modules::gui::action::SBooleanSlotCaller" >
+            <service uid="hideAxisSrv" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
                 <slots>
                     <slot>axisAdp/updateVisibility</slot>
                 </slots>
@@ -339,7 +339,7 @@
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamametersSrv" type="::sight::modules::guiQt::editor::SParameters" >
+            <service uid="arucoParamametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -393,7 +393,7 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamametersSrv" type="::sight::modules::guiQt::editor::SParameters" >
+            <service uid="reprojectionParamametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />

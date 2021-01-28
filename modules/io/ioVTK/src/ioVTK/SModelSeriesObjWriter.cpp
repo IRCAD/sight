@@ -34,13 +34,13 @@
 
 #include <fwVtkIO/ModelSeriesObjWriter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/ILocationDialog.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/ILocationDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 #include <filesystem>
 
@@ -78,11 +78,11 @@ void SModelSeriesObjWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    gui::dialog::LocationDialog dialog;
+    ui::base::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialog.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialog.setType(gui::dialog::ILocationDialog::FOLDER);
+    dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
 
@@ -93,13 +93,13 @@ void SModelSeriesObjWriter::openLocationDialog()
             break;
         }
         // message box
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(gui::dialog::IMessageDialog::YES);
-        messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == gui::dialog::IMessageDialog::YES)
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+        if( messageBox.show() == ui::base::dialog::IMessageDialog::YES)
         {
             break;
         }
@@ -158,8 +158,8 @@ void SModelSeriesObjWriter::updating()
         writer->setObject(modelSeries);
         writer->setFolder(this->getFolder());
 
-        gui::Cursor cursor;
-        cursor.setCursor(gui::ICursor::BUSY);
+        ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
         {
@@ -172,11 +172,11 @@ void SModelSeriesObjWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            gui::dialog::MessageDialog messageBox;
+            ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage( ss.str() );
-            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
         }
         catch( ... )
@@ -185,11 +185,11 @@ void SModelSeriesObjWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving.";
 
-            gui::dialog::MessageDialog messageBox;
+            ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage( ss.str() );
-            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
         }
 

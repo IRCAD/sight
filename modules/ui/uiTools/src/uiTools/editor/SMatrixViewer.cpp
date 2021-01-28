@@ -24,8 +24,6 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QHBoxLayout>
@@ -35,6 +33,8 @@
 #include <QString>
 #include <QVBoxLayout>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 namespace uiTools
 {
 
@@ -43,7 +43,7 @@ namespace editor
 
 static const services::IService::KeyType s_MATRIX_INPUT = "matrix";
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiTools::editor::SMatrixViewer)
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiTools::editor::SMatrixViewer)
 
 // ------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ SMatrixViewer::~SMatrixViewer() noexcept
 
 void SMatrixViewer::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     m_title = this->getConfigTree().get<std::string>("title", "matrix");
 }
@@ -71,9 +71,9 @@ void SMatrixViewer::configuring()
 
 void SMatrixViewer::starting()
 {
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);

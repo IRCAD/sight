@@ -28,9 +28,9 @@
 
 #include <core/base.hpp>
 
-#include <gui/container/fwContainer.hpp>
-
 #include <services/IService.hpp>
+
+#include <ui/base/container/fwContainer.hpp>
 
 namespace Qt3DExtras
 {
@@ -82,7 +82,7 @@ public:
     FWRENDERQT3D_API virtual ~IRenderWindowInteractorManager();
 
     /// Creates an interactor and installs it in window.
-    FWRENDERQT3D_API virtual void createContainer( gui::container::fwContainer::sptr _parent) = 0;
+    FWRENDERQT3D_API virtual void createContainer( ui::base::container::fwContainer::sptr _parent) = 0;
 
     /// Converts 3DView to QWidget and attach it to the container.
     FWRENDERQT3D_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3dView) = 0;

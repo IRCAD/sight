@@ -19,7 +19,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
             <layout type="::sight::gui::LineLayoutManager">
                 <orientation value="vertical" />

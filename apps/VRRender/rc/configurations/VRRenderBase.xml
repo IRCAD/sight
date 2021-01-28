@@ -12,7 +12,7 @@
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
-        <service uid="action_save" type="::sight::modules::gui::action::SStarter">
+        <service uid="action_save" type="::sight::modules::ui::base::action::SStarter">
             <start uid="SDBWriter" />
         </service>
         <service uid="SDBWriter" type="::uiIO::editor::SIOSelector">
@@ -23,7 +23,7 @@
             <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
         </service>
 
-        <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame">
+        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame">
             <gui>
                 <frame>
                     <name>${appName}</name>
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="menuBar" type="::sight::modules::gui::aspect::SDefaultMenuBar">
+        <service uid="menuBar" type="::sight::modules::ui::base::aspect::SDefaultMenuBar">
             <gui>
                 <layout>
                     <menu name="File" />
@@ -53,7 +53,7 @@
             </registry>
         </service>
 
-        <service uid="menu_file" type="::sight::modules::gui::aspect::SDefaultMenu">
+        <service uid="menu_file" type="::sight::modules::ui::base::aspect::SDefaultMenu">
             <gui>
                 <layout>
                     <menuItem name="Open" shortcut="Ctrl+O" />
@@ -68,7 +68,7 @@
             </registry>
         </service>
 
-        <service uid="menu_preferences" type="::sight::modules::gui::aspect::SDefaultMenu">
+        <service uid="menu_preferences" type="::sight::modules::ui::base::aspect::SDefaultMenu">
             <gui>
                 <layout>
                     <menuItem name="Preferences configuration"/>
@@ -79,7 +79,7 @@
             </registry>
         </service>
 
-        <service uid="menu_help" type="::sight::modules::gui::aspect::SDefaultMenu">
+        <service uid="menu_help" type="::sight::modules::ui::base::aspect::SDefaultMenu">
             <gui>
                 <layout>
                     <menuItem name="About" specialAction="ABOUT" />
@@ -90,7 +90,7 @@
             </registry>
         </service>
 
-        <service uid="action_quit" type="::sight::modules::gui::action::SQuit" />
+        <service uid="action_quit" type="::sight::modules::ui::base::action::SQuit" />
 
         <service uid="action_configuration" type="::uiPreferences::action::SPreferencesConfiguration">
             <preference>
@@ -118,7 +118,7 @@
             <filename id="VRRender-${appVersion}/about/about.html" />
         </service>
 
-        <service uid="dynamicView" type="::sight::modules::guiQt::editor::SDynamicView">
+        <service uid="dynamicView" type="::sight::modules::ui::qt::editor::SDynamicView">
             <inout key="SERIESDB" uid="seriesDB" />
             <mainActivity id="SDBVRRender" closable="false" />
             <parameters>
@@ -128,7 +128,7 @@
             </parameters>
         </service>
 
-        <service uid="progress_statusbar" type="::sight::modules::gui::editor::SJobBar" />
+        <service uid="progress_statusbar" type="::sight::modules::ui::base::editor::SJobBar" />
 
          <service uid="styleSelector" type="::style::SStyleSelector" />
 

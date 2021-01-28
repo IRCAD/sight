@@ -18,7 +18,7 @@
         <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
         <object uid="localSelections" type="::sight::data::Vector" />
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="DICOM Query" align="left"/>
@@ -36,7 +36,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="media-0.1/icons/Settings.svg" style="check" />
@@ -51,7 +51,7 @@
             </registry>
         </service>
 
-        <service uid="leftView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="leftView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -65,7 +65,7 @@
             </registry>
         </service>
 
-        <service uid="queryEditorSpacerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="queryEditorSpacerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -75,7 +75,7 @@
             </registry>
         </service>
 
-        <service uid="centerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="centerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -89,7 +89,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -105,13 +105,13 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_editPacsConfiguration" type="::sight::modules::gui::action::SConfigLauncher">
+        <service uid="action_editPacsConfiguration" type="::sight::modules::ui::base::action::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
             <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
             <parameter replace="ICON_PATH" by="media-0.1/icons/Settings.svg"  />
         </service>
 
-        <service uid="action_pullSeries" type="::sight::modules::gui::action::SSlotCaller" >
+        <service uid="action_pullSeries" type="::sight::modules::ui::base::action::SSlotCaller" >
             <slots>
                 <slot>pullSeriesController/update</slot>
             </slots>

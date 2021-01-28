@@ -32,11 +32,11 @@
 #include <data/Color.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/container/fwContainer.hpp>
-
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreVector3.h>
+
+#include <ui/base/container/fwContainer.hpp>
 
 #include <string>
 

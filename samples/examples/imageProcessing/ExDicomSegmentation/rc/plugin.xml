@@ -1,11 +1,11 @@
 <plugin id="ExDicomSegmentation" version="@PROJECT_VERSION@" >
 
     <requirement id="activities" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
 
     <xi:include href="ExDicomSegmentationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="Threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -65,7 +65,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>ExDicomSegmentation</name>
@@ -79,7 +79,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="dynamicViewSrv" type="::sight::modules::guiQt::editor::SDynamicView" >
+            <service uid="dynamicViewSrv" type="::sight::modules::ui::qt::editor::SDynamicView" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>

@@ -13,7 +13,7 @@
         <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
         <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="Negato" align="center" />
@@ -27,7 +27,7 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="sceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -41,7 +41,7 @@
             </registry>
         </service>
 
-        <service uid="sceneView_bottom" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="sceneView_bottom" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -57,7 +57,7 @@
 
         <service uid="snapshotEditor" type="::uiVisuQt::SnapshotEditor" />
 
-        <service uid="tfView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="tfView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -130,7 +130,7 @@
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="fieldMgr" type="::sight::modules::gui::action::SPushField">
+        <service uid="fieldMgr" type="::sight::modules::ui::base::action::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />

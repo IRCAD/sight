@@ -35,8 +35,6 @@
 #include <data/tools/helper/Field.hpp>
 #include <data/tools/TransformationMatrix3D.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QCheckBox>
@@ -49,6 +47,8 @@
 #include <QStringList>
 #include <QVBoxLayout>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <map>
 
 namespace uiMedDataQt
@@ -56,7 +56,7 @@ namespace uiMedDataQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
 
 static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const services::IService::KeyType s_COMPOSITE_INOUT = "composite";
@@ -90,8 +90,8 @@ void SOrganTransformation::configuring()
 void SOrganTransformation::starting()
 {
     this->create();
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
 
@@ -175,8 +175,8 @@ void SOrganTransformation::refresh()
 
     data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 

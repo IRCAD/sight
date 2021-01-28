@@ -26,12 +26,12 @@
 
 #include <fwQml/QmlEngine.hpp>
 
-#include <gui/registry/macros.hpp>
-
 #include <QGuiApplication>
 #include <QObject>
 
-fwGuiRegisterMacro( ::fwGuiQml::dialog::InputDialog, ::sight::gui::dialog::IInputDialog::REGISTRY_KEY );
+#include <ui/base/registry/macros.hpp>
+
+fwGuiRegisterMacro( ::fwGuiQml::dialog::InputDialog, ::sight::ui::base::dialog::IInputDialog::REGISTRY_KEY );
 
 namespace fwGuiQml
 {
@@ -40,7 +40,7 @@ namespace dialog
 
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog(gui::GuiBaseObject::Key key)
+InputDialog::InputDialog(ui::base::GuiBaseObject::Key key)
 {
 }
 

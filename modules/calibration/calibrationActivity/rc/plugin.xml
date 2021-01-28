@@ -3,7 +3,7 @@
     <library name="calibrationActivity" />
     <requirement id="module_services" />
     <requirement id="validators" />
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="visuOgre" />
     <requirement id="activities" />
 

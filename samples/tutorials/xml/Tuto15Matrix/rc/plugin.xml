@@ -1,8 +1,8 @@
 <plugin id="Tuto15Matrix" version="@PROJECT_VERSION@" >
 
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="visuOgre" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -24,7 +24,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
             <gui>
                 <frame>
                     <name>Tuto15Matrix</name>
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+        <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -50,7 +50,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+        <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Open mesh" shortcut="Ctrl+M" />
@@ -71,7 +71,7 @@
             It is possible to add a 'proportion' attribute for the <view> to defined the proportion
             used by the view compared to the others.
         -->
-        <service uid="containerView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -85,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -107,11 +107,11 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
+        <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
             <start uid="meshReaderSrv" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
         <!-- *************************** Begin generic scene *************************** -->
 
@@ -226,7 +226,7 @@
             <inout key="output" uid="rotTransMatrix" />
         </service>
 
-        <service uid="shhowMeshSrv" type="::sight::modules::guiQt::editor::SParameters" >
+        <service uid="shhowMeshSrv" type="::sight::modules::ui::qt::editor::SParameters" >
              <parameters>
                  <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
              </parameters>

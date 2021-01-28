@@ -5,9 +5,9 @@
 -->
 <plugin id="Tuto09MatrixTransformInGS" version="@PROJECT_VERSION@" >
 
-    <requirement id="preferences" />
+    <requirement id="module_ui_base" />
     <requirement id="visuOgre" />
-    <requirement id="module_guiQt" />
+    <requirement id="module_ui_qt" />
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -72,7 +72,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::gui::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto09MatrixTransformInGS</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::gui::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::gui::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -112,7 +112,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::gui::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::gui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -189,11 +189,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="::sight::modules::gui::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::gui::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 

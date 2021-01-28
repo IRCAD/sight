@@ -63,7 +63,7 @@ void Plugin::initialize()
     m_appManager->addObject(snapshot, snapshot->getID());
 
     // UI declaration.
-    auto mainView = m_appManager->addService("::sight::modules::gui::frame::SDefaultFrame", true, false);
+    auto mainView = m_appManager->addService("::sight::modules::ui::base::frame::SDefaultFrame", true, false);
     {
         services::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto02GenericSceneCpp");
@@ -76,9 +76,10 @@ void Plugin::initialize()
         mainView->configure(config);
     }
 
-    auto progressBarView = m_appManager->addService("::sight::modules::gui::editor::SJobBar", true, false);
+    auto progressBarView = m_appManager->addService("::sight::modules::ui::base::editor::SJobBar", true, false);
 
-    auto menuBarView = m_appManager->addService("::sight::modules::gui::aspect::SDefaultMenuBar", "menuBarView", true,
+    auto menuBarView = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenuBar", "menuBarView",
+                                                true,
                                                 false);
     {
         services::IService::ConfigType config;
@@ -87,7 +88,8 @@ void Plugin::initialize()
         menuBarView->configure(config);
     }
 
-    auto menuFileView = m_appManager->addService("::sight::modules::gui::aspect::SDefaultMenu", "menuFileView", true,
+    auto menuFileView = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenu", "menuFileView",
+                                                 true,
                                                  false);
     {
         services::IService::ConfigType config;
@@ -142,12 +144,13 @@ void Plugin::initialize()
         menuFileView->configure(config);
     }
 
-    auto containerView = m_appManager->addService("::modules::gui::view::SDefaultView", "containerView", true, false);
+    auto containerView = m_appManager->addService("::modules::ui::base::view::SDefaultView", "containerView", true,
+                                                  false);
     {
         services::IService::ConfigType config;
         {
             services::IService::ConfigType gui;
-            gui.put("<xmlattr>.type", "::gui::LineLayoutManager");
+            gui.put("<xmlattr>.type", "::ui::base::LineLayoutManager");
             {
                 services::IService::ConfigType orientation;
                 orientation.put("<xmlattr>.value", "vertical");
@@ -181,12 +184,12 @@ void Plugin::initialize()
         containerView->configure(config);
     }
 
-    auto editorsView = m_appManager->addService("::modules::gui::view::SDefaultView", "editorsView", true, false);
+    auto editorsView = m_appManager->addService("::modules::ui::base::view::SDefaultView", "editorsView", true, false);
     {
         services::IService::ConfigType config;
         {
             services::IService::ConfigType gui;
-            gui.put("<xmlattr>.type", "::gui::LineLayoutManager");
+            gui.put("<xmlattr>.type", "::ui::base::LineLayoutManager");
             {
                 services::IService::ConfigType orientation;
                 orientation.put("<xmlattr>.value", "horizontal");
@@ -311,28 +314,29 @@ void Plugin::initialize()
     }
 
     // Actions.
-    auto openImageAct = m_appManager->addService("::modules::gui::action::SStarter", "openImageAct", true, false);
+    auto openImageAct = m_appManager->addService("::modules::ui::base::action::SStarter", "openImageAct", true, false);
     {
         services::IService::ConfigType config;
         config.add("start.<xmlattr>.uid", "imageReaderSrv");
         openImageAct->configure(config);
     }
 
-    auto openMeshAct = m_appManager->addService("::modules::gui::action::SStarter", "openMeshAct", true, false);
+    auto openMeshAct = m_appManager->addService("::modules::ui::base::action::SStarter", "openMeshAct", true, false);
     {
         services::IService::ConfigType config;
         config.add("start.<xmlattr>.uid", "meshReaderSrv");
         openMeshAct->configure(config);
     }
 
-    auto openTextureAct = m_appManager->addService("::modules::gui::action::SStarter", "openTextureAct", true, false);
+    auto openTextureAct = m_appManager->addService("::modules::ui::base::action::SStarter", "openTextureAct", true,
+                                                   false);
     {
         services::IService::ConfigType config;
         config.add("start.<xmlattr>.uid", "textureReaderSrv");
         openTextureAct->configure(config);
     }
 
-    auto quitAct = m_appManager->addService("::modules::gui::action::SQuit", "quitAct", true, false);
+    auto quitAct = m_appManager->addService("::modules::ui::base::action::SQuit", "quitAct", true, false);
     {
         quitAct->configure();
     }
@@ -363,7 +367,7 @@ void Plugin::initialize()
     }
 
     auto showNegatoSrv =
-        m_appManager->addService("::modules::guiQt::editor::SSignalButton", "showNegatoSrv", true, false);
+        m_appManager->addService("::modules::ui::qt::editor::SSignalButton", "showNegatoSrv", true, false);
     {
         services::IService::ConfigType config;
         config.add("config.checkable", true);
@@ -384,7 +388,7 @@ void Plugin::initialize()
         sliderIndexEditorSrv->configure(config);
     }
 
-    auto snapshotSrv = m_appManager->addService("::modules::guiQt::editor::SSignalButton", "snapshotSrv", true, false);
+    auto snapshotSrv = m_appManager->addService("::modules::ui::qt::editor::SSignalButton", "snapshotSrv", true, false);
     {
         services::IService::ConfigType config;
         config.add("config.checkable", false);

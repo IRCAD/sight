@@ -6,8 +6,8 @@ set( START ON )
 set( DEPENDENCIES
     core
     data
-    gui
-    guiQt
+    base
+    qt
     fwRenderOgre
 )
 set( REQUIREMENTS

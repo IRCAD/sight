@@ -27,10 +27,6 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QApplication>
@@ -39,6 +35,9 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QVBoxLayout>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiActivitiesQt
 {
@@ -93,7 +92,7 @@ SActivitySequencer::~SActivitySequencer() noexcept
 
 void SActivitySequencer::configuring()
 {
-    this->::gui::IGuiContainerSrv::initialize();
+    this->::ui::base::IGuiContainerSrv::initialize();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -118,10 +117,10 @@ void SActivitySequencer::configuring()
 
 void SActivitySequencer::starting()
 {
-    this->::gui::IGuiContainerSrv::create();
+    this->::ui::base::IGuiContainerSrv::create();
 
-    guiQt::container::QtContainer::sptr qtContainer =
-        guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::qt::container::QtContainer::sptr qtContainer =
+        ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -281,7 +280,7 @@ void SActivitySequencer::goTo(int index)
     }
     else
     {
-        gui::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        sight::ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
         m_sigDataRequired->asyncEmit(activity);
     }
 }

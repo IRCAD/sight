@@ -34,12 +34,12 @@
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 namespace ioITK
 {
@@ -85,12 +85,12 @@ void InrImageReaderService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setOption(gui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -126,7 +126,7 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
 
     try
     {
-        gui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
+        ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
@@ -134,16 +134,16 @@ bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        gui::dialog::MessageDialog::show("Warning",
-                                         ss.str(),
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              ss.str(),
+                                              ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        gui::dialog::MessageDialog::show("Warning",
-                                         "Warning during loading",
-                                         gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show("Warning",
+                                              "Warning during loading",
+                                              ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -161,8 +161,8 @@ void InrImageReaderService::updating()
 
         if ( this->createImage( this->getFile(), image) )
         {
-            gui::Cursor cursor;
-            cursor.setCursor(gui::ICursor::BUSY);
+            ui::base::Cursor cursor;
+            cursor.setCursor(ui::base::ICursor::BUSY);
             notificationOfDBUpdate();
             cursor.setDefaultCursor();
         }

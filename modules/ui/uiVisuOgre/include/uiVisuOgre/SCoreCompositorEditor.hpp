@@ -26,11 +26,11 @@
 
 #include <fwRenderOgre/Layer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QAbstractButton;
 class QButtonGroup;
@@ -52,13 +52,13 @@ namespace uiVisuOgre
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class UIVISUOGRE_CLASS_API SCoreCompositorEditor : public QObject,
-                                                   public gui::editor::IEditor
+                                                   public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCoreCompositorEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SCoreCompositorEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SCoreCompositorEditor() noexcept;

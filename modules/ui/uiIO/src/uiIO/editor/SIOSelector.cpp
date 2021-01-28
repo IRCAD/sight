@@ -34,14 +34,14 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ServiceConfig.hpp>
 #include <services/registry/ServiceFactory.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
 
 #include <sstream>
 #include <string>
@@ -54,7 +54,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::gui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
@@ -240,7 +240,7 @@ void SIOSelector::updating()
         // Selection of extension when availableExtensions.size() > 1
         if ( availableExtensionsSelector.size() > 1 )
         {
-            gui::dialog::SelectorDialog::sptr selector = gui::dialog::SelectorDialog::New();
+            sight::ui::base::dialog::SelectorDialog::sptr selector = sight::ui::base::dialog::SelectorDialog::New();
 
             if ( m_mode != READER_MODE )
             {
@@ -323,8 +323,8 @@ void SIOSelector::updating()
                     reader->start();
                     reader->openLocationDialog();
 
-                    gui::Cursor cursor;
-                    cursor.setCursor(gui::ICursor::BUSY);
+                    ui::base::Cursor cursor;
+                    cursor.setCursor(ui::base::ICursor::BUSY);
                     reader->update();
                     cursor.setDefaultCursor();
 
@@ -339,7 +339,7 @@ void SIOSelector::updating()
                 catch (std::exception& e)
                 {
                     std::string msg = "Failed to read : \n" + std::string(e.what());
-                    gui::dialog::MessageDialog::show("Reader Error", msg);
+                    sight::ui::base::dialog::MessageDialog::show("Reader Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
                 if(reader->hasFailed())
@@ -381,8 +381,8 @@ void SIOSelector::updating()
                     writer->start();
                     writer->openLocationDialog();
 
-                    gui::Cursor cursor;
-                    cursor.setCursor(gui::ICursor::BUSY);
+                    ui::base::Cursor cursor;
+                    cursor.setCursor(ui::base::ICursor::BUSY);
                     writer->update();
                     cursor.setDefaultCursor();
 
@@ -392,7 +392,7 @@ void SIOSelector::updating()
                 catch (std::exception& e)
                 {
                     std::string msg = "Failed to write : \n" +  std::string(e.what());
-                    gui::dialog::MessageDialog::show("Writer Error", msg);
+                    sight::ui::base::dialog::MessageDialog::show("Writer Error", msg);
                     m_sigJobFailed->asyncEmit();
                 }
 
@@ -416,20 +416,20 @@ void SIOSelector::updating()
         SLM_WARN("SIOSelector::load : availableExtensions is empty.");
         if ( m_mode == READER_MODE )
         {
-            gui::dialog::MessageDialog messageBox;
+            sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
             messageBox.setMessage( "There are no available readers for this data type." );
-            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
         }
         else // m_mode == WRITER_MODE
         {
-            gui::dialog::MessageDialog messageBox;
+            sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
             messageBox.setMessage( "There are no available writers for this data type." );
-            messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-            messageBox.addButton(gui::dialog::IMessageDialog::OK);
+            messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+            messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
             messageBox.show();
 
         }
@@ -462,4 +462,4 @@ void SIOSelector::forwardJob(core::jobs::IJob::sptr iJob)
 //------------------------------------------------------------------------------
 } // namespace editor
 
-} // namespace sight::modules::gui
+} // namespace sight::modules::ui::base

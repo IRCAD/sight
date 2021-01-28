@@ -26,8 +26,6 @@
 
 #include <fwRenderOgre/ILight.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <OGRE/OgreColourValue.h>
 
 #include <QComboBox>
@@ -37,6 +35,8 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
+
+#include <ui/base/editor/IEditor.hpp>
 
 namespace uiVisuOgre
 {
@@ -53,13 +53,13 @@ namespace uiVisuOgre
  *  <service uid=SLightEditorUid" type="uiVisuOgre::SLightEditor" />
  */
 class UIVISUOGRE_CLASS_API SLightEditor : public QObject,
-                                          public gui::editor::IEditor
+                                          public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(SLightEditor, sight::ui::base::editor::IEditor)
 
     /// Creates the service.
     UIVISUOGRE_API SLightEditor() noexcept;

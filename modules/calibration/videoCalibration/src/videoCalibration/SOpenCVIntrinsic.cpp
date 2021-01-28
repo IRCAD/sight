@@ -39,13 +39,13 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/preferences/helper.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
+
+#include <ui/base/preferences/helper.hpp>
 
 fwServicesRegisterMacro(services::ICalibration, ::videoCalibration::SOpenCVIntrinsic, data::Camera)
 
@@ -216,17 +216,17 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateChessboardSize()
 {
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoi(widthStr);
     }
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoi(heightStr);
     }
-    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = modules::ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);

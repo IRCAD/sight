@@ -30,10 +30,10 @@
 
 #include <data/Material.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 class QRadioButton;
 class QCheckBox;
@@ -57,13 +57,13 @@ namespace uiReconstructionQt
  * - \b reconstruction [data::Reconstruction]: reconstruction that will be updated
  */
 class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public QObject,
-                                                          public gui::editor::IEditor
+                                                          public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(RepresentationEditor, gui::editor::IEditor)
+    fwCoreServiceMacro(RepresentationEditor, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     UIRECONSTRUCTIONQT_API RepresentationEditor() noexcept;

@@ -48,15 +48,15 @@
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-#include <gui/dialog/SelectorDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/algorithm/string/join.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <filesystem>
 #include <regex>
@@ -275,7 +275,7 @@ bool SWriter::versionSelection()
                 }
             }
 
-            gui::dialog::SelectorDialog dialogVersion;
+            ui::base::dialog::SelectorDialog dialogVersion;
 
             dialogVersion.setTitle("Archive version");
             dialogVersion.setMessage("Select an archive version");
@@ -290,7 +290,7 @@ bool SWriter::versionSelection()
             std::string result = dialogVersion.show();
             if(selectAmongstAllVersions)
             {
-                gui::dialog::SelectorDialog dialogVersionAll;
+                ui::base::dialog::SelectorDialog dialogVersionAll;
 
                 dialogVersionAll.setTitle("Archive version");
                 dialogVersionAll.setMessage("Select an archive version");
@@ -327,8 +327,8 @@ void SWriter::updating()
     data::Object::csptr obj = this->getInput< data::Object >(::fwIO::s_DATA_KEY);
     SLM_ASSERT("The input key '" + ::fwIO::s_DATA_KEY + "' is not correctly set.", obj);
 
-    gui::Cursor cursor;
-    cursor.setCursor(gui::ICursor::BUSY);
+    ui::base::Cursor cursor;
+    cursor.setCursor(ui::base::ICursor::BUSY);
 
     // Get the selected extension
     const std::filesystem::path& requestedFilePath = this->getFile();
@@ -345,9 +345,9 @@ void SWriter::updating()
         else
         {
             const std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
-            gui::dialog::MessageDialog::show("Medical data writer failed",
-                                             errorMessage,
-                                             gui::dialog::IMessageDialog::CRITICAL);
+            ui::base::dialog::MessageDialog::show("Medical data writer failed",
+                                                  errorMessage,
+                                                  ui::base::dialog::IMessageDialog::CRITICAL);
             m_writeFailed = true;
             return;
         }
@@ -455,7 +455,7 @@ void SWriter::updating()
             else if ( extension == ".cpz" )
             {
                 writeArchive = ::fwZip::WriteZipArchive::New(tmpFilePath.string(), "",
-                                                             gui::preferences::getPassword());
+                                                             modules::ui::base::preferences::getPassword());
                 archiveRootName = "root.json";
                 format          = ::fwAtomsBoostIO::JSON;
             }
@@ -520,9 +520,9 @@ void SWriter::updating()
 
         // Handle the error.
         SLM_ERROR(_e.what());
-        gui::dialog::MessageDialog::show("Medical data writer failed",
-                                         _e.what(),
-                                         gui::dialog::IMessageDialog::CRITICAL);
+        ui::base::dialog::MessageDialog::show("Medical data writer failed",
+                                              _e.what(),
+                                              ui::base::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
     catch(...)
@@ -534,9 +534,9 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        gui::dialog::MessageDialog::show("Medical data writer failed",
-                                         "Writing process aborted",
-                                         gui::dialog::IMessageDialog::CRITICAL);
+        ui::base::dialog::MessageDialog::show("Medical data writer failed",
+                                              "Writing process aborted",
+                                              ui::base::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
 
@@ -565,11 +565,11 @@ void SWriter::openLocationDialog()
 
     if( !m_useAtomsPatcher || versionSelection() )
     {
-        gui::dialog::LocationDialog dialogFile;
+        ui::base::dialog::LocationDialog dialogFile;
         dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
         dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-        dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
-        dialogFile.setType(gui::dialog::LocationDialog::SINGLE_FILE);
+        dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+        dialogFile.setType(ui::base::dialog::LocationDialog::SINGLE_FILE);
 
         for(const std::string& ext :  m_allowedExts)
         {

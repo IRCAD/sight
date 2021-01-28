@@ -44,7 +44,7 @@ namespace uiVisu
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::uiVisu::action::CrossTypeAction, ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
@@ -67,21 +67,21 @@ CrossTypeAction::~CrossTypeAction() noexcept
 
 void CrossTypeAction::starting()
 {
-    gui::IActionSrv::actionServiceStarting();
+    ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void CrossTypeAction::stopping()
 {
-    gui::IActionSrv::actionServiceStopping();
+    ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void CrossTypeAction::configuring()
 {
-    gui::IActionSrv::initialize();
+    ui::base::IActionSrv::initialize();
 
     if( this->m_configuration->size() > 0 )
     {

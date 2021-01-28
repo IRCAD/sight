@@ -30,9 +30,9 @@
 
 #include <data/Composite.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace uiActivitiesQml
 {
@@ -138,9 +138,9 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
     }
     else
     {
-        gui::dialog::MessageDialog::show("Activity launch",
-                                         message,
-                                         gui::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show("Activity launch",
+                                                     message,
+                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
     }
 }
 

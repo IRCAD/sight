@@ -24,11 +24,11 @@
 
 #include "uiGenericQt/config.hpp"
 
-#include <gui/IActionSrv.hpp>
-
 #include <QObject>
 #include <QSize>
 #include <QUrl>
+
+#include <ui/base/IActionSrv.hpp>
 
 #include <filesystem>
 
@@ -42,12 +42,12 @@ namespace action
  * @brief   This action show the about frame.
  */
 class UIGENERICQT_CLASS_API SShowAbout : public QObject,
-                                         public ::sight::gui::IActionSrv
+                                         public ::sight::ui::base::IActionSrv
 {
 
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SShowAbout,  gui::IActionSrv)
+    fwCoreServiceMacro(SShowAbout,  ui::base::IActionSrv)
 
     /**
      * @name Constructor/Destructor
@@ -62,7 +62,7 @@ protected:
      *
      * XML configuration sample:
        @code{.xml}
-       <service impl="::uiGenericQt::action::SShowAbout" type="::gui::IActionSrv">
+       <service impl="::uiGenericQt::action::SShowAbout" type="::ui::base::IActionSrv">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />

@@ -13,7 +13,7 @@
         <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
         <object uid="selections" type="::sight::data::Vector" />
 
-        <service uid="mainview" type="::sight::modules::gui::view::SDefaultView" >
+        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::gui::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import" icon="media-0.1/icons/Import.svg" />

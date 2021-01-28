@@ -16,7 +16,7 @@
         <object uid="${tfBackgroundImage}" type="::sight::data::TransferFunction" src="deferred" />
         <object uid="${tfFrontImage}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::CardinalLayoutManager">
                     <view caption="Blend" align="center" />
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="sliderView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="sliderView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -58,7 +58,7 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="bgBottomView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="bgBottomView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -85,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="frontBottomView" type="::sight::modules::gui::view::SDefaultView">
+        <service uid="frontBottomView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <layout type="::sight::gui::LineLayoutManager">
                     <orientation value="vertical" />

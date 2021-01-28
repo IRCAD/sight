@@ -28,10 +28,10 @@
 
 #include <fwDataIO/writer/MeshWriter.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
@@ -85,11 +85,11 @@ void MeshWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a TrianMesh file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TrianMesh", "*.trian");
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     data::location::SingleFile::sptr result;
     result = data::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -129,10 +129,10 @@ void MeshWriterService::updating()
             std::stringstream ss;
             ss << "Warning during writing Mesh : " << e.what();
 
-            gui::dialog::MessageDialog::show(
+            ui::base::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                gui::dialog::IMessageDialog::WARNING);
+                ui::base::dialog::IMessageDialog::WARNING);
         }
 
     }

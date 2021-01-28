@@ -30,10 +30,10 @@
 #include <data/Object.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <functional>
 #include <string>
@@ -101,8 +101,8 @@ void SClientListener::runClient()
     // 1. Connection
     try
     {
-        const std::uint16_t port   = gui::preferences::getValue<std::uint16_t>(m_portConfig);
-        const std::string hostname = gui::preferences::getValue(m_hostnameConfig);
+        const std::uint16_t port   = modules::ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
+        const std::string hostname = modules::ui::base::preferences::getValue(m_hostnameConfig);
 
         m_client.connect(hostname, port);
         m_sigConnected->asyncEmit();
@@ -114,7 +114,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            gui::dialog::MessageDialog::show("Connection error", ex.what());
+            ui::base::dialog::MessageDialog::show("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -166,7 +166,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            gui::dialog::MessageDialog::show("Error", ex.what());
+            ui::base::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -200,7 +200,7 @@ void SClientListener::stopping()
     }
     catch (core::Exception& ex)
     {
-        gui::dialog::MessageDialog::show("Connection error", ex.what());
+        ui::base::dialog::MessageDialog::show("Connection error", ex.what());
         SLM_ERROR(ex.what());
     }
 }

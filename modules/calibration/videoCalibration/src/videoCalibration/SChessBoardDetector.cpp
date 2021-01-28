@@ -34,13 +34,13 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <gui/preferences/helper.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
+
+#include <ui/base/preferences/helper.hpp>
 
 #include <thread>
 
@@ -192,19 +192,19 @@ void SChessBoardDetector::recordPoints()
 
 void SChessBoardDetector::updateChessboardSize()
 {
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
 
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
 
-    const std::string scaleStr = gui::preferences::getPreference(m_scaleKey);
+    const std::string scaleStr = modules::ui::base::preferences::getPreference(m_scaleKey);
     if (!scaleStr.empty())
     {
         m_scale = std::stof(scaleStr);

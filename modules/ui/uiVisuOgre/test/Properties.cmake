@@ -6,7 +6,7 @@ set( DEPENDENCIES core utestData fwRenderOgre)
 set( REQUIREMENTS
     data
     module_services
-    module_gui
+    module_ui_base
     uiIO
     uiVisuOgre
 )

@@ -27,11 +27,11 @@
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
+
+#include <ui/base/editor/IEditor.hpp>
 
 #include <vector>
 
@@ -42,13 +42,13 @@ namespace uiVisuOgre
  * @brief   Allows to select the stereo mode of an Ogre Compositor
  */
 class UIVISUOGRE_CLASS_API SStereoSelector : public QObject,
-                                             public gui::editor::IEditor
+                                             public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SStereoSelector, gui::editor::IEditor)
+    fwCoreServiceMacro(SStereoSelector, sight::ui::base::editor::IEditor)
 
     /// Constructor.
     UIVISUOGRE_API SStereoSelector() noexcept;

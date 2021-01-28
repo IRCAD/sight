@@ -35,14 +35,14 @@
 
 #include <fwIO/IReader.hpp>
 
-#include <gui/Cursor.hpp>
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/dialog/ProgressDialog.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 #include <services/registry/ServiceConfig.hpp>
+
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/ProgressDialog.hpp>
 
 namespace ioDcmtk
 {
@@ -73,11 +73,11 @@ void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setType(gui::dialog::LocationDialog::FOLDER);
+    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setType(ui::base::dialog::LocationDialog::FOLDER);
 
     data::location::Folder::sptr result;
     result = data::location::Folder::dynamicCast( dialogFile.show() );
@@ -198,20 +198,20 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
 
     if(myLoader->isDicomDirAvailable())
     {
-        gui::dialog::MessageDialog messageBox;
+        ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
         messageBox.setMessage( "There is a dicomdir file in the root folder. "
                                "Would you like to use it for the reading process ?" );
-        messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(gui::dialog::IMessageDialog::YES_NO);
-        gui::dialog::IMessageDialog::Buttons button = messageBox.show();
+        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+        messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
+        ui::base::dialog::IMessageDialog::Buttons button = messageBox.show();
 
-        myLoader->setDicomdirActivated(button == gui::dialog::IMessageDialog::YES);
+        myLoader->setDicomdirActivated(button == ui::base::dialog::IMessageDialog::YES);
     }
 
     try
     {
-        gui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
+        ui::base::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
@@ -219,13 +219,13 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        gui::dialog::MessageDialog::show(
-            "Warning", ss.str(), gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show(
+            "Warning", ss.str(), ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        gui::dialog::MessageDialog::show(
-            "Warning", "Warning during loading", gui::dialog::IMessageDialog::WARNING);
+        ui::base::dialog::MessageDialog::show(
+            "Warning", "Warning during loading", ui::base::dialog::IMessageDialog::WARNING);
     }
 
     return myLoader->getConcreteObject();
@@ -247,8 +247,8 @@ void SSeriesDBReader::updating()
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
-            gui::Cursor cursor;
-            cursor.setCursor(gui::ICursor::BUSY);
+            ui::base::Cursor cursor;
+            cursor.setCursor(ui::base::ICursor::BUSY);
             this->notificationOfDBUpdate();
             cursor.setDefaultCursor();
 
@@ -257,9 +257,9 @@ void SSeriesDBReader::updating()
         else
         {
             m_readFailed = true;
-            gui::dialog::MessageDialog::show(
+            ui::base::dialog::MessageDialog::show(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
-                gui::dialog::IMessageDialog::WARNING);
+                ui::base::dialog::IMessageDialog::WARNING);
         }
     }
     else

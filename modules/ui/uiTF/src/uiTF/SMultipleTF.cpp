@@ -34,14 +34,13 @@
 #include <fwIO/IReader.hpp>
 #include <fwIO/IWriter.hpp>
 
-#include <gui/dialog/InputDialog.hpp>
-#include <gui/dialog/MessageDialog.hpp>
-
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/op/Add.hpp>
 
 #include <QBoxLayout>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 namespace uiTF
 {
@@ -170,8 +169,8 @@ void SMultipleTF::starting()
     this->create();
 
     // Get the Qt container
-    const guiQt::container::QtContainer::sptr qtContainer
-        = guiQt::container::QtContainer::dynamicCast(this->getContainer());
+    const ui::qt::container::QtContainer::sptr qtContainer
+        = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
     m_tfPoolsPreset = new QComboBox();
@@ -543,15 +542,15 @@ void SMultipleTF::setCurrentPool()
 
 void SMultipleTF::deletePool()
 {
-    gui::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Deleting confirmation");
     messageBox.setMessage("Are you sure you want to delete this TF pool ?");
-    messageBox.setIcon(gui::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
-    messageBox.addButton(gui::dialog::IMessageDialog::CANCEL);
-    gui::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
+    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
 
-    if(answerCopy != gui::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         {
             // Gets TF pools.
@@ -586,7 +585,7 @@ void SMultipleTF::newPool()
     const std::string str = m_tfPoolsPreset->currentText().toStdString();
     std::string newName(str);
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("New TF pool");
     inputDialog.setMessage("TF pool name :");
     inputDialog.setInput(newName);
@@ -628,11 +627,11 @@ void SMultipleTF::newPool()
     }
     else
     {
-        gui::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -644,7 +643,7 @@ void SMultipleTF::copyPool()
     const std::string str = m_tfPoolsPreset->currentText().toStdString();
     std::string newName(str);
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Copy TF pool");
     inputDialog.setMessage("TF pool name :");
     inputDialog.setInput(newName);
@@ -685,11 +684,11 @@ void SMultipleTF::copyPool()
     }
     else
     {
-        gui::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-        messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(gui::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
         messageBox.show();
     }
 }
@@ -726,7 +725,7 @@ void SMultipleTF::renamePool()
     const std::string str = m_tfPoolsPreset->currentText().toStdString();
     std::string newName(str);
 
-    gui::dialog::InputDialog inputDialog;
+    sight::ui::base::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Renaming TF pool");
     inputDialog.setMessage("TF pool name :");
     inputDialog.setInput(newName);
@@ -759,11 +758,11 @@ void SMultipleTF::renamePool()
             }
             else
             {
-                gui::dialog::MessageDialog messageBox;
+                sight::ui::base::dialog::MessageDialog messageBox;
                 messageBox.setTitle("Warning");
                 messageBox.setMessage("This TF pool name already exists so you can not overwrite it.");
-                messageBox.setIcon(gui::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(gui::dialog::IMessageDialog::OK);
+                messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
+                messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
                 messageBox.show();
                 return;
             }

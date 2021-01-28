@@ -22,13 +22,13 @@
 
 #include "uiCalibration/SUpdateIntrinsicDialog.hpp"
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QObject>
 #include <QPushButton>
 #include <QVBoxLayout>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <sstream>
 
@@ -160,9 +160,9 @@ void SUpdateIntrinsicDialog::onPushCompute()
     //new resolution don't respect the original ratio
     if(std::abs(m_ratio - ratio) > 0.0001)
     {
-        gui::dialog::MessageDialog::sptr warningMess = gui::dialog::MessageDialog::New();
+        sight::ui::base::dialog::MessageDialog::sptr warningMess = sight::ui::base::dialog::MessageDialog::New();
         warningMess->show("Warning", "The new resolution don't respect the original resolution ratio !"
-                          , gui::dialog::IMessageDialog::WARNING);
+                          , sight::ui::base::dialog::IMessageDialog::WARNING);
         return;
     }
 

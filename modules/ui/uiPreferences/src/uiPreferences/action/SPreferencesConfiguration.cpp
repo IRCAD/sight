@@ -29,9 +29,6 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <gui/dialog/LocationDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -45,6 +42,9 @@
 #include <QIntValidator>
 #include <QLabel>
 #include <QPushButton>
+
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 namespace uiPreferences
 {
@@ -195,7 +195,7 @@ void SPreferencesConfiguration::starting()
     this->actionServiceStarting();
 
     // Check preferences
-    data::Composite::sptr prefs = gui::preferences::getPreferences();
+    data::Composite::sptr prefs = modules::ui::base::preferences::getPreferences();
     if(prefs)
     {
         for(PreferenceElt& pref : m_preferences)
@@ -383,11 +383,11 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select Storage directory");
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(gui::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setType(sight::ui::base::dialog::ILocationDialog::FOLDER);
 
     const auto result = data::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
@@ -404,11 +404,11 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 {
     static std::filesystem::path _sDefaultPath;
 
-    gui::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Select File");
     dialogFile.setDefaultLocation( data::location::SingleFile::New(_sDefaultPath) );
-    dialogFile.setOption(gui::dialog::ILocationDialog::READ);
-    dialogFile.setType(gui::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setType(sight::ui::base::dialog::ILocationDialog::SINGLE_FILE);
 
     const auto result = data::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)

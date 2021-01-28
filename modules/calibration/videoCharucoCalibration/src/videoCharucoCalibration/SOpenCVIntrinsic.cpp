@@ -41,8 +41,6 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/preferences/helper.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
 
@@ -51,6 +49,8 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <ui/base/preferences/helper.hpp>
 
 fwServicesRegisterMacro(services::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic, data::Camera)
 
@@ -211,27 +211,27 @@ void SOpenCVIntrinsic::updating()
 
 void SOpenCVIntrinsic::updateCharucoBoardSize()
 {
-    const std::string widthStr = gui::preferences::getPreference(m_widthKey);
+    const std::string widthStr = modules::ui::base::preferences::getPreference(m_widthKey);
     if(!widthStr.empty())
     {
         m_width = std::stoul(widthStr);
     }
-    const std::string heightStr = gui::preferences::getPreference(m_heightKey);
+    const std::string heightStr = modules::ui::base::preferences::getPreference(m_heightKey);
     if(!heightStr.empty())
     {
         m_height = std::stoul(heightStr);
     }
-    const std::string squareSizeStr = gui::preferences::getPreference(m_squareSizeKey);
+    const std::string squareSizeStr = modules::ui::base::preferences::getPreference(m_squareSizeKey);
     if(!squareSizeStr.empty())
     {
         m_squareSize = std::stof(squareSizeStr);
     }
-    const std::string markerSizeStr = gui::preferences::getPreference(m_markerSizeKey);
+    const std::string markerSizeStr = modules::ui::base::preferences::getPreference(m_markerSizeKey);
     if(!markerSizeStr.empty())
     {
         m_markerSize = std::stof(markerSizeStr);
     }
-    const std::string markerSizeInBitsStr = gui::preferences::getPreference(m_markerSizeInBitsKey);
+    const std::string markerSizeInBitsStr = modules::ui::base::preferences::getPreference(m_markerSizeInBitsKey);
     if(!markerSizeInBitsStr.empty())
     {
         m_markerSizeInBits = std::stoi(markerSizeInBitsStr);

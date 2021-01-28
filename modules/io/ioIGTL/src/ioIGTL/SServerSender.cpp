@@ -26,10 +26,10 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <gui/dialog/MessageDialog.hpp>
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <functional>
 
@@ -81,7 +81,7 @@ void SServerSender::starting()
 {
     try
     {
-        const std::uint16_t port = gui::preferences::getValue<std::uint16_t>(m_portConfig);
+        const std::uint16_t port = modules::ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
@@ -89,9 +89,9 @@ void SServerSender::starting()
     }
     catch (core::Exception& e)
     {
-        gui::dialog::MessageDialog::show("Error", "Cannot start the server: " +
-                                         std::string(e.what()),
-                                         gui::dialog::IMessageDialog::CRITICAL);
+        ui::base::dialog::MessageDialog::show("Error", "Cannot start the server: " +
+                                              std::string(e.what()),
+                                              ui::base::dialog::IMessageDialog::CRITICAL);
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SLM_ERROR(e.what());
         this->slot(s_STOP_SLOT)->asyncRun();
@@ -113,7 +113,7 @@ void SServerSender::stopping()
     }
     catch (core::Exception& e)
     {
-        gui::dialog::MessageDialog::show("Error", e.what());
+        ui::base::dialog::MessageDialog::show("Error", e.what());
     }
     catch (std::future_error&)
     {

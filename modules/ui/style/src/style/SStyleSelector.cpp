@@ -26,14 +26,14 @@
 #include <core/macros.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <gui/preferences/helper.hpp>
-
 #include <services/macros.hpp>
 
 #include <QApplication>
 #include <QFile>
 #include <QResource>
 #include <QTextStream>
+
+#include <ui/base/preferences/helper.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -119,8 +119,8 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
     if(path.empty())
     {
         qApp->setStyleSheet("");
-        gui::preferences::setPreference("THEME", "DEFAULT");
-        gui::preferences::savePreferences();
+        modules::ui::base::preferences::setPreference("THEME", "DEFAULT");
+        modules::ui::base::preferences::savePreferences();
         return;
     }
 
@@ -136,8 +136,8 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
         const QString style = styleIn.readAll();
         data.close();
         qApp->setStyleSheet(style);
-        gui::preferences::setPreference("THEME", _styleName);
-        gui::preferences::savePreferences();
+        modules::ui::base::preferences::setPreference("THEME", _styleName);
+        modules::ui::base::preferences::savePreferences();
     }
 }
 
@@ -146,7 +146,7 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 void SStyleSelector::updateFromPrefs()
 {
     // Apply previously saved style in preferences file.
-    const std::string value = gui::preferences::getPreference("THEME");
+    const std::string value = modules::ui::base::preferences::getPreference("THEME");
     if(!value.empty())
     {
         this->changeStyle(value);

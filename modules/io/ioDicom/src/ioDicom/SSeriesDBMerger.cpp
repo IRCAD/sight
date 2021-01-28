@@ -25,14 +25,14 @@
 #include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <services/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::sight::gui::IActionSrv, ::ioDicom::SSeriesDBMerger, ::sight::data::Vector )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::ioDicom::SSeriesDBMerger, ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 
@@ -99,9 +99,9 @@ void SSeriesDBMerger::updating()
     sDBhelper.notify();
 
     // Display the informations
-    gui::dialog::MessageDialog messageBox;
-    messageBox.setIcon(gui::dialog::IMessageDialog::INFO);
-    messageBox.addButton(gui::dialog::IMessageDialog::OK);
+    ui::base::dialog::MessageDialog messageBox;
+    messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
+    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.setTitle("Push Series");
 
     if(selectedSeries->empty())

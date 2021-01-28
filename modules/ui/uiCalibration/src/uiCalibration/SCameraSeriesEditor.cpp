@@ -31,19 +31,19 @@
 #include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <guiQt/container/QtContainer.hpp>
-
 #include <services/macros.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <algorithm>
 #include <sstream>
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro( ::sight::gui::editor::IEditor, ::uiCalibration::SCameraSeriesEditor,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiCalibration::SCameraSeriesEditor,
                          ::sight::data::CameraSeries)
 
 const core::com::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
@@ -59,7 +59,7 @@ SCameraSeriesEditor::SCameraSeriesEditor() noexcept :
 
 void SCameraSeriesEditor::configuring()
 {
-    gui::IGuiContainerSrv::initialize();
+    ui::base::IGuiContainerSrv::initialize();
 
     services::IService::ConfigType config = this->getConfigTree();
     m_camIndex = config.get<size_t>("index", 1);
@@ -69,8 +69,8 @@ void SCameraSeriesEditor::configuring()
 
 void SCameraSeriesEditor::starting()
 {
-    gui::IGuiContainerSrv::create();
-    guiQt::container::QtContainer::sptr qtContainer = guiQt::container::QtContainer::dynamicCast(getContainer());
+    ui::base::IGuiContainerSrv::create();
+    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);

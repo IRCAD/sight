@@ -25,10 +25,10 @@
 #include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <gui/dialog/MessageDialog.hpp>
-
 #include <QList>
 #include <QtNetwork>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
