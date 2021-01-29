@@ -32,10 +32,10 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwVtkIO/helper/Mesh.hpp>
-#include <fwVtkIO/vtk.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/vtk/helper/Mesh.hpp>
+#include <io/vtk/vtk.hpp>
 
 #include <vtkDecimatePro.h>
 #include <vtkDiscreteMarchingCubes.h>
@@ -108,7 +108,7 @@ void SVTKMesher::updating()
 
     // vtk img
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
-    ::fwVtkIO::toVTKImage( imageSeries->getImage(), vtkImage );
+    io::vtk::toVTKImage( imageSeries->getImage(), vtkImage );
 
     // contour filter
     vtkSmartPointer< vtkDiscreteMarchingCubes > contourFilter = vtkSmartPointer< vtkDiscreteMarchingCubes >::New();
@@ -146,12 +146,12 @@ void SVTKMesher::updating()
         decimate->SetSplitAngle( 120 );
         decimate->Update();
         polyData = decimate->GetOutput();
-        ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
+        io::vtk::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
     else
     {
         polyData = smoothFilter->GetOutput();
-        ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
+        io::vtk::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
 
     data::Reconstruction::sptr reconstruction = data::Reconstruction::New();

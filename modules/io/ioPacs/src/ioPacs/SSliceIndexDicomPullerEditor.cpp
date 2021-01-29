@@ -167,11 +167,11 @@ void SSliceIndexDicomPullerEditor::starting()
     // Create reader
     services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
 
-    io::base::services::IReader::sptr dicomReader;
-    dicomReader = io::base::services::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    sight::io::base::services::IReader::sptr dicomReader;
+    dicomReader = sight::io::base::services::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::ioPacs::SSliceIndexDicomPullerEditor.", dicomReader);
-    services::OSR::registerService(m_tempSeriesDB, io::base::services::s_DATA_KEY,
+    services::OSR::registerService(m_tempSeriesDB, sight::io::base::services::s_DATA_KEY,
                                    services::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
     {
@@ -306,7 +306,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t _selectedSliceIndex)
     fs.close();
 
     // Read image
-    io::base::services::IReader::sptr dicomReader = m_dicomReader.lock();
+    sight::io::base::services::IReader::sptr dicomReader = m_dicomReader.lock();
     if(dicomReader)
     {
         dicomReader->setFolder(tmpPath);

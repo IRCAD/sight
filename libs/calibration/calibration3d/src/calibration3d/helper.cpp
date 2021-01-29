@@ -26,7 +26,7 @@
 
 #include <core/spyLog.hpp>
 
-#include <eigenTools/helper.hpp>
+#include <geometry/eigen/helper.hpp>
 
 #include <thread>
 
@@ -197,7 +197,7 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
         return;
     }
 
-    ::eigenTools::helper::EigenMatrix matrixSum;
+    geometry::eigen::helper::EigenMatrix matrixSum;
     matrixSum.fill(0.);
     ::Eigen::Vector4d vectorSum;
     vectorSum.fill(0);
@@ -206,7 +206,7 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
     {
         data::TransformationMatrix3D::csptr m1 = data::TransformationMatrix3D::dynamicCast(matrices.at(i));
         SLM_ASSERT("This element of the vector is not a data::TransformationMatrix3D", m1);
-        ::eigenTools::helper::EigenMatrix xyz1;
+        geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = m1->getCoefficient(0, 3);
         xyz1(0, 1) = m1->getCoefficient(1, 3);
@@ -217,7 +217,7 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
         vectorSum = vectorSum + xyz1.squaredNorm() * ::Eigen::Vector4d(xyz1(0, 0), xyz1(0, 1), xyz1(0, 2), xyz1(0, 3));
     }
 
-    ::eigenTools::helper::EigenMatrix tempMatrix;
+    geometry::eigen::helper::EigenMatrix tempMatrix;
     tempMatrix.fill(0.);
     tempMatrix(0, 0) = vectorSum[0];
     tempMatrix(0, 1) = vectorSum[1];
@@ -235,15 +235,16 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
     {
         data::TransformationMatrix3D::csptr m1 = data::TransformationMatrix3D::dynamicCast(matrices.at(i));
         SLM_ASSERT("This element of the vector is not a data::TransformationMatrix3D", m1);
-        const ::eigenTools::helper::EigenMatrix pointMatrix = ::eigenTools::helper::toEigen(m1->getCoefficients());
-        ::eigenTools::helper::EigenMatrix centerMatrix(pointMatrix);
-        const ::eigenTools::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
+        const geometry::eigen::helper::EigenMatrix pointMatrix =
+            geometry::eigen::helper::toEigen(m1->getCoefficients());
+        geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);
+        const geometry::eigen::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
 
         centerMatrix(0, 3) = a;
         centerMatrix(1, 3) = b;
         centerMatrix(2, 3) = c;
 
-        const ::eigenTools::helper::EigenMatrix calibrationMatrix = pointMatrixInverse * centerMatrix;
+        const geometry::eigen::helper::EigenMatrix calibrationMatrix = pointMatrixInverse * centerMatrix;
         translation(0) += calibrationMatrix(0, 3);
         translation(1) += calibrationMatrix(1, 3);
         translation(2) += calibrationMatrix(2, 3);

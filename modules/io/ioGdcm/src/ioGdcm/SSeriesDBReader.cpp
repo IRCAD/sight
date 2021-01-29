@@ -74,9 +74,9 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
+sight::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ void SSeriesDBReader::openLocationDialog()
 
 void SSeriesDBReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -330,7 +330,7 @@ void SSeriesDBReader::updating()
         if( !localSeriesDB->empty() )
         {
             // Retrieve dataStruct associated with this service
-            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
+            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
 
             // Clear SeriesDB and add new series
             data::tools::helper::SeriesDB sDBhelper(seriesDB);

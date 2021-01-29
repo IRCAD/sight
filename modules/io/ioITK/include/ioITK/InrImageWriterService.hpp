@@ -53,11 +53,11 @@ namespace ioITK
  * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class IOITK_CLASS_API InrImageWriterService : public io::base::services::IWriter
+class IOITK_CLASS_API InrImageWriterService : public sight::io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(InrImageWriterService,  io::base::services::IWriter)
+    fwCoreServiceMacro(InrImageWriterService, sight::io::base::services::IWriter)
 
     IOITK_API InrImageWriterService() noexcept;
 

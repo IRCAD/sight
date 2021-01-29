@@ -114,7 +114,7 @@ void SDicomSeriesWriter::stopping()
 
 void SDicomSeriesWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +124,8 @@ void SDicomSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::DicomSeries::csptr series     = this->getInput< data::DicomSeries >(io::base::services::s_DATA_KEY);
+        data::DicomSeries::csptr series =
+            this->getInput< data::DicomSeries >(sight::io::base::services::s_DATA_KEY);
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
@@ -208,9 +209,9 @@ void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
 
 //-----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SDicomSeriesWriter::getIOPathType() const
+sight::io::base::services::IOPathType SDicomSeriesWriter::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------

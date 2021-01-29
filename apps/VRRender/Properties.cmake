@@ -17,7 +17,7 @@ set( REQUIREMENTS
 
     module_io_atoms
     ioITK
-    ioVTK
+    module_io_vtk
     ioGdcm
     module_io_file
 

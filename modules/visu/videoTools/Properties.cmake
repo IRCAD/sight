@@ -6,7 +6,7 @@ set( DEPENDENCIES
         core
         data
         ui_base
-        fwMath
+        geometry_data
         services
         cvIO
 )

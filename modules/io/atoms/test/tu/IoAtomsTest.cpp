@@ -88,7 +88,8 @@ void write(const services::IService::ConfigType& srvCfg, const SPTR(T)& obj, con
     services::IService::sptr writerSrv = services::add( writer );
     CPPUNIT_ASSERT(writerSrv);
 
-    services::OSR::registerService( obj, sight::io::base::services::s_DATA_KEY, services::IService::AccessType::INPUT,
+    services::OSR::registerService( obj, sight::sight::io::base::services::s_DATA_KEY,
+                                    services::IService::AccessType::INPUT,
                                     writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
@@ -106,7 +107,7 @@ SPTR(T) read(const services::IService::ConfigType& srvCfg, const std::string& re
     services::IService::sptr readerSrv = services::add( reader );
     CPPUNIT_ASSERT(readerSrv);
 
-    services::OSR::registerService( readObj, sight::io::base::services::s_DATA_KEY,
+    services::OSR::registerService( readObj, sight::sight::io::base::services::s_DATA_KEY,
                                     services::IService::AccessType::INOUT,
                                     readerSrv );
     readerSrv->setConfiguration(srvCfg);
@@ -123,7 +124,7 @@ template <typename T>
 SPTR(T) readOut(const services::IService::ConfigType& srvCfg, const std::string& reader)
 {
     services::IService::ConfigType config(srvCfg);
-    config.add("out.<xmlattr>.key", sight::io::base::services::s_DATA_KEY);
+    config.add("out.<xmlattr>.key", sight::sight::io::base::services::s_DATA_KEY);
 
     services::IService::sptr readerSrv = services::add( reader );
     CPPUNIT_ASSERT(readerSrv);
@@ -132,7 +133,7 @@ SPTR(T) readOut(const services::IService::ConfigType& srvCfg, const std::string&
     readerSrv->configure();
     readerSrv->start().wait();
     readerSrv->update().wait();
-    typename T::sptr readObj = readerSrv->getOutput<T>(sight::io::base::services::s_DATA_KEY);
+    typename T::sptr readObj = readerSrv->getOutput<T>(sight::sight::io::base::services::s_DATA_KEY);
     readerSrv->stop().wait();
     services::OSR::unregisterService( readerSrv );
 

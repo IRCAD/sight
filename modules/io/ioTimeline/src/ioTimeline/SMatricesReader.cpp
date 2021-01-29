@@ -93,16 +93,16 @@ SMatricesReader::~SMatricesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SMatricesReader::getIOPathType() const
+sight::io::base::services::IOPathType SMatricesReader::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatricesReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 
     services::IService::ConfigType config = this->getConfigTree();
 

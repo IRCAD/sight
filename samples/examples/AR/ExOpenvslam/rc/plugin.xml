@@ -476,7 +476,7 @@
                 <inout key="data" uid="openvslamPointCloud" />
                 <type mode="writer" />
                 <selection mode="include" />
-                <addSelection service="::ioVTK::SMeshWriter" />
+                <addSelection service="::sight::modules::io::vtk::SMeshWriter" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

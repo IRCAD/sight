@@ -39,7 +39,7 @@ namespace sight::modules::io::file
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::modules::io::file::TransformationMatrix3DReaderService">
+   <service type="::sight::modules::io::file::TransformationMatrix3DReaderService">
        <inout key="data" uid="..." />
    </service>
    @endcode
@@ -55,7 +55,7 @@ public:
     /// Super class of reader services
     typedef sight::io::base::services::IReader SuperClass;
 
-    /** @name Specified reader service methods ( override from io::base::services::IReader )
+    /** @name Specified reader service methods ( override from sight::io::base::services::IReader )
      * @{
      */
 

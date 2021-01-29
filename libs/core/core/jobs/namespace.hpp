@@ -152,7 +152,7 @@
     core::jobs::Job::sptr job = core::jobs::Job::New( "VTK Mesh reader",
         [=](core::jobs::Job& runningJob)
         {
-            ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
+            io::vtk::MeshWriter::sptr writer = io::vtk::MeshWriter::New();
 
             runningJob.addSimpleCancelHook( [=]{ writer->cancel(); });
 

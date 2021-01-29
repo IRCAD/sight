@@ -21,7 +21,7 @@ set( REQUIREMENTS
     flatIcon
 
     # Reader
-    ioVTK
+    module_io_vtk
 
     # Grabber
     videoQt

@@ -50,7 +50,7 @@ namespace sight::modules::io::atoms
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::modules::io::atoms::SReader">
+   <service type="::sight::modules::io::atoms::SReader">
        <inout key="data" uid="..." />
        <out key="data" uid="..." />
        <uuidPolicy>Strict|Change</uuidPolicy>
@@ -98,7 +98,7 @@ namespace sight::modules::io::atoms
  *      The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
  *      shown.
  *
- * @see io::base::services::IReader
+ * @see sight::io::base::services::IReader
  */
 class MODULE_IO_ATOMS_CLASS_API SReader : public sight::io::base::services::IReader
 {

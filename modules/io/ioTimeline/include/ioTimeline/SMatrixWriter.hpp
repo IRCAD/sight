@@ -60,12 +60,12 @@ namespace ioTimeline
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  */
-class IOTIMELINE_CLASS_API SMatrixWriter : public io::base::services::IWriter
+class IOTIMELINE_CLASS_API SMatrixWriter : public sight::io::base::services::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixWriter, io::base::services::IWriter)
+    fwCoreServiceMacro(SMatrixWriter, sight::io::base::services::IWriter)
 
     /// Constructor.
     IOTIMELINE_API SMatrixWriter() noexcept;
@@ -87,7 +87,7 @@ public:
     IOTIMELINE_API virtual void openLocationDialog() override;
 
     /// Return file type (io::base::services::FOLDER)
-    IOTIMELINE_API virtual io::base::services::IOPathType getIOPathType() const override;
+    IOTIMELINE_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
 
 protected:
 

@@ -66,7 +66,7 @@ void Plugin::initialize()
     }
 
     // Services
-    m_readerSrv = services::add("::ioVTK::SImageReader");
+    m_readerSrv = services::add("::modules::io::vtk::SImageReader");
     {
         m_readerSrv->registerInOut(m_image, "data");
         services::IService::ConfigType config;

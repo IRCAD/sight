@@ -53,11 +53,11 @@ namespace ioITK
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class IOITK_CLASS_API SJpgImageSeriesWriter : public io::base::services::IWriter
+class IOITK_CLASS_API SJpgImageSeriesWriter : public sight::io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SJpgImageSeriesWriter,  io::base::services::IWriter)
+    fwCoreServiceMacro(SJpgImageSeriesWriter, sight::io::base::services::IWriter)
 
     IOITK_API SJpgImageSeriesWriter() noexcept;
 

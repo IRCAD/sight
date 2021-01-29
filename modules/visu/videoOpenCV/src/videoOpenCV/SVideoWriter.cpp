@@ -68,7 +68,7 @@ SVideoWriter::~SVideoWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SVideoWriter::getIOPathType() const
+sight::io::base::services::IOPathType SVideoWriter::getIOPathType() const
 {
     return io::base::services::FILE;
 }

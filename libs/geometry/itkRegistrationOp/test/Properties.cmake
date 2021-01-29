@@ -6,7 +6,7 @@ set( DEPENDENCIES
     utestData
     core
     data
-    fwVtkIO
+    io_vtk
     itkRegistrationOp
 )
 set( REQUIREMENTS  )

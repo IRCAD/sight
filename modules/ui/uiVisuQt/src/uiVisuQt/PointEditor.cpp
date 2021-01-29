@@ -31,10 +31,10 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <fwMath/IntrasecTypes.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
+
+#include <geometry/data/IntrasecTypes.hpp>
 
 #include <QDoubleValidator>
 #include <QHBoxLayout>

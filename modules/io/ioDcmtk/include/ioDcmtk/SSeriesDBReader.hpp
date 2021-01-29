@@ -53,11 +53,11 @@ namespace ioDcmtk
  * @subsection In-Out In-Out
  * - \b data [data::SeriesDB]: dicom seriesDB to read.
  */
-class IODCMTK_CLASS_API SSeriesDBReader : public io::base::services::IReader
+class IODCMTK_CLASS_API SSeriesDBReader : public sight::io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader,  io::base::services::IReader)
+    fwCoreServiceMacro(SSeriesDBReader, sight::io::base::services::IReader)
     /**
      * @brief   constructor
      *

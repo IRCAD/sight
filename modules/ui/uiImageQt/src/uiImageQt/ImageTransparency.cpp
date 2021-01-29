@@ -31,10 +31,10 @@
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwMath/IntrasecTypes.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
+
+#include <geometry/data/IntrasecTypes.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>

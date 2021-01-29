@@ -16,7 +16,7 @@ set( REQUIREMENTS
     module_ui_base
 
     # Reader
-    ioVTK
+    module_io_vtk
 
     # Services
     uiIO                    # Contains services to show dialogs for reader/writer selection

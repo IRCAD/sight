@@ -27,12 +27,12 @@
 
 #include <data/tools/Mesh.hpp>
 
-#include <fwMath/IntrasecTypes.hpp>
-#include <fwMath/VectorFunctions.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/math/constants/constants.hpp>
+
+#include <geometry/data/IntrasecTypes.hpp>
+#include <geometry/data/VectorFunctions.hpp>
 
 namespace opUltrasound
 {

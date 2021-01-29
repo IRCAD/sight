@@ -41,10 +41,10 @@ namespace ioCalibration
  * @subsection In-Out In-Out
  * - \b data [data::CameraSeries]: object to read
  */
-class IOCALIBRATION_CLASS_API SOpenCVReader : public io::base::services::IReader
+class IOCALIBRATION_CLASS_API SOpenCVReader : public sight::io::base::services::IReader
 {
 public:
-    fwCoreServiceMacro(SOpenCVReader, io::base::services::IReader)
+    fwCoreServiceMacro(SOpenCVReader, sight::io::base::services::IReader)
 
     ///Constructor
     IOCALIBRATION_API SOpenCVReader();

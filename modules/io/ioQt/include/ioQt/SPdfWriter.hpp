@@ -64,7 +64,7 @@ namespace ioQt
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 
-class IOQT_CLASS_API SPdfWriter : public io::base::services::IWriter
+class IOQT_CLASS_API SPdfWriter : public sight::io::base::services::IWriter
 {
 
 public:
@@ -76,7 +76,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceMacro(SPdfWriter,  io::base::services::IWriter)
+    fwCoreServiceMacro(SPdfWriter, sight::io::base::services::IWriter)
     /**
      * @brief Constructor : does nothing
      */

@@ -25,14 +25,14 @@
 #include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/registry/macros.hpp"
 
-#include <fwMath/VectorFunctions.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
+
+#include <geometry/data/VectorFunctions.hpp>
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::modifier::SliceThicknessModifier );
 
@@ -161,10 +161,10 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
     }
 
     //Compute Z direction (cross product)
-    const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
 
     //Compute dot product to get the index
-    const double index = ::fwMath::dot(imagePosition, zVector);
+    const double index = geometry::data::dot(imagePosition, zVector);
 
     return index;
 }

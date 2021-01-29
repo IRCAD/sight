@@ -28,8 +28,6 @@
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwMath/VectorFunctions.hpp>
-
 #include <utestData/Data.hpp>
 
 #include <boost/algorithm/string.hpp>
@@ -37,6 +35,8 @@
 #include <boost/lexical_cast.hpp>
 
 #include <gdcmImageReader.h>
+
+#include <geometry/data/VectorFunctions.hpp>
 
 #include <filesystem>
 
@@ -104,10 +104,10 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
                                        }};
 
     //Compute Z direction (cross product)
-    const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
 
     //Compute dot product to get the index
-    const double index = ::fwMath::dot(imagePosition, zVector);
+    const double index = geometry::data::dot(imagePosition, zVector);
 
     return index;
 }

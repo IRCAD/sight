@@ -29,7 +29,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwMath/Compare.hpp>
+#include <geometry/data/Compare.hpp>
 
 namespace sight::data::tools
 {
@@ -78,9 +78,9 @@ void Image::mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr
 
     SLM_ASSERT( "Images have not the same size", imgDest->getSize2() == mask->getSize2() );
     SLM_ASSERT( "Images have not the same spacing",
-                ::fwMath::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2()) );
+                geometry::data::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2()) );
     SLM_ASSERT( "Images have not the same origin",
-                ::fwMath::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2()) );
+                geometry::data::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2()) );
 
     const auto imgDumpLock  = imgDest->lock();
     const auto maskDumpLock = mask->lock();

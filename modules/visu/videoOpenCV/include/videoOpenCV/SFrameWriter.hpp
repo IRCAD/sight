@@ -61,7 +61,7 @@ namespace videoOpenCV
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
-class VIDEOOPENCV_CLASS_API SFrameWriter : public io::base::services::IWriter
+class VIDEOOPENCV_CLASS_API SFrameWriter : public sight::io::base::services::IWriter
 {
 
 public:

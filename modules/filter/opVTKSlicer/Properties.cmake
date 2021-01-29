@@ -5,5 +5,5 @@ set( DEPENDENCIES
     core
     data
     services
-    fwVtkIO
+    io_vtk
 )

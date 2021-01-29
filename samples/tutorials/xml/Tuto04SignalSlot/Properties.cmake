@@ -17,7 +17,7 @@ set( REQUIREMENTS
     style
 
     # Reader
-    ioVTK
+    module_io_vtk
 
     # Services
     uiIO

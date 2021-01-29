@@ -75,10 +75,10 @@ namespace ioCalibration
     </opencv_storage>
  * @endcode
  */
-class IOCALIBRATION_CLASS_API SOpenCVWriter : public io::base::services::IWriter
+class IOCALIBRATION_CLASS_API SOpenCVWriter : public sight::io::base::services::IWriter
 {
 public:
-    fwCoreServiceMacro(SOpenCVWriter, io::base::services::IWriter)
+    fwCoreServiceMacro(SOpenCVWriter, sight::io::base::services::IWriter)
 
     ///Constructor
     IOCALIBRATION_API SOpenCVWriter();

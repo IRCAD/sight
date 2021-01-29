@@ -5,7 +5,7 @@ set( DEPENDENCIES
     fwDicomIOFilter
     core
     utestData
-    fwMath
+    geometry_data
     data
     fwGdcmIO
 )

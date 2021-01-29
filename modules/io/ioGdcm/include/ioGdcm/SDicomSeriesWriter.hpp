@@ -59,13 +59,13 @@ namespace ioGdcm
  * @subsection Input Input
  * - \b data [data::DicomSeries]: data to save in Dicom.
  */
-class IOGDCM_CLASS_API SDicomSeriesWriter : public io::base::services::IWriter
+class IOGDCM_CLASS_API SDicomSeriesWriter : public sight::io::base::services::IWriter
 {
 
 public:
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesWriter,  io::base::services::IWriter)
+    fwCoreServiceMacro(SDicomSeriesWriter, sight::io::base::services::IWriter)
 
     /**
      * @brief   constructor

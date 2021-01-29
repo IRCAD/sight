@@ -58,16 +58,16 @@ InrImageWriterService::~InrImageWriterService() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType InrImageWriterService::getIOPathType() const
+sight::io::base::services::IOPathType InrImageWriterService::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void InrImageWriterService::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -162,8 +162,8 @@ void InrImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::Image::csptr image = this->getInput< data::Image >(io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::csptr image = this->getInput< data::Image >(sight::io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
         ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

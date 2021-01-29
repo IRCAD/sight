@@ -53,11 +53,11 @@ namespace ioGdcm
  * @subsection Input Input
  * - \b data [data::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
  */
-class IOGDCM_CLASS_API SSeriesDBWriter : public io::base::services::IWriter
+class IOGDCM_CLASS_API SSeriesDBWriter : public sight::io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBWriter,  io::base::services::IWriter)
+    fwCoreServiceMacro(SSeriesDBWriter, sight::io::base::services::IWriter)
 
     /**
      * @brief Constructor

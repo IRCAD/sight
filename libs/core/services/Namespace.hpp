@@ -80,7 +80,7 @@ namespace sight::services
                              The <file> tag defines the path of the image to load. Here, it is a relative
                              path from the repository in which you launch the application.
                          -->
-                         <service uid="myReaderPathFile" impl="::ioVTK::SImageReader">
+                         <service uid="myReaderPathFile" impl="::modules::io::vtk::SImageReader">
                             <file>./TutoData/patient1.vtk</file>
                          </service>
 
@@ -274,7 +274,7 @@ namespace sight::services
                  The <file> tag defines the path of the image to load. Here, it is a relative
                  path from the repository in which you launch the application.
              -->
-             <service uid="myReaderPathFile" type="::ioVTK::SImageReader">
+             <service uid="myReaderPathFile" type="::modules::io::vtk::SImageReader">
                 <inout key="target" uid="myImage" />
                 <file>./TutoData/patient1.vtk</file>
              </service>
@@ -387,7 +387,7 @@ namespace sight::services
  *   Some services needs a specific configuration, it is usually described in the doxygen of the method configuring().
  *     - \b uid (optional): unique identifier of the service. If it is not defined, it will be automatically
  *       generated.
- *     - \b type: service type (ex: ::ioVTK::SImageReader)
+ *     - \b type: service type (ex: modules::io::vtk::SImageReader)
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working objects
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *

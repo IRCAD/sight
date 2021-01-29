@@ -73,16 +73,16 @@ SMatrixWriter::~SMatrixWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SMatrixWriter::getIOPathType() const
+sight::io::base::services::IOPathType SMatrixWriter::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatrixWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(io::base::services::s_DATA_KEY);
+        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(sight::io::base::services::s_DATA_KEY);
 
         const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 
@@ -235,7 +235,7 @@ void SMatrixWriter::stopRecord()
 ::services::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
-    connections.push(io::base::services::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    connections.push(sight::io::base::services::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

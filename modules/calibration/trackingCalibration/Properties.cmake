@@ -7,8 +7,8 @@ set( DEPENDENCIES
     qt
     services
     ui_base
-    fwMath
-    eigenTools
+    geometry_data
+    geometry_eigen
     calibration3d
 )
 set( REQUIREMENTS )

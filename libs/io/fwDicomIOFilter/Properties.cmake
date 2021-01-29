@@ -4,6 +4,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    fwMath
+    geometry_data
 )
 set( USE_PCH_FROM_TARGET pchData )

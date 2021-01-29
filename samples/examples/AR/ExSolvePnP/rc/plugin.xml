@@ -305,7 +305,7 @@
                 </out>
             </service>
 
-            <service uid="meshReaderSrv" type="::ioVTK::SMeshReader" >
+            <service uid="meshReaderSrv" type="::sight::modules::io::vtk::SMeshReader" >
                 <inout key="data" uid="cube" />
                 <resource>ExSolvePnP-@PROJECT_VERSION@/plane.vtk</resource>
             </service>

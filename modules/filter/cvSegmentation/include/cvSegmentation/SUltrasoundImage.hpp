@@ -26,10 +26,10 @@
 
 #include <data/Image.hpp>
 
-#include <fwMath/IntrasecTypes.hpp>
-#include <fwMath/VectorFunctions.hpp>
-
 #include <services/IOperator.hpp>
+
+#include <geometry/data/IntrasecTypes.hpp>
+#include <geometry/data/VectorFunctions.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>

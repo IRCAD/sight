@@ -465,7 +465,7 @@
         </service>
 
         <!-- Load the background image -->
-        <service uid="backgroundReaderSrv" type="::ioVTK::SImageReader">
+        <service uid="backgroundReaderSrv" type="::sight::modules::io::vtk::SImageReader">
             <inout key="data" uid="background" />
             <resource>OgreViewer-@PROJECT_VERSION@/icons/background.png</resource>
         </service>

@@ -31,9 +31,9 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwVtkIO/vtk.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/vtk/vtk.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageReslice.h>
@@ -97,14 +97,14 @@ void SPlaneSlicer::updating()
     auto image                           = this->getInput< data::Image >(s_IMAGE_IN);
     vtkSmartPointer<vtkImageData> vtkimg = vtkSmartPointer<vtkImageData>::New();
 
-    ::fwVtkIO::toVTKImage(image, vtkimg.Get());
+    io::vtk::toVTKImage(image, vtkimg.Get());
 
     m_reslicer->SetInputData(vtkimg);
     m_reslicer->Update();
 
     auto slice = this->getInOut< data::Image >(s_SLICE_OUT);
 
-    ::fwVtkIO::fromVTKImage(m_reslicer->GetOutput(), slice);
+    io::vtk::fromVTKImage(m_reslicer->GetOutput(), slice);
 
     // HACK: Make output slice three-dimensional.
     // We need to do so in order to visualize it with ::visuVTKAdaptor::SImageSlice.
@@ -212,7 +212,7 @@ void SPlaneSlicer::setReslicerAxes()
 
     SLM_ASSERT("No axes found.", axes);
 
-    vtkSmartPointer<vtkMatrix4x4> axesMatrix = ::fwVtkIO::toVTKMatrix(axes);
+    vtkSmartPointer<vtkMatrix4x4> axesMatrix = io::vtk::toVTKMatrix(axes);
 
     this->applySliceTranslation(axesMatrix);
 

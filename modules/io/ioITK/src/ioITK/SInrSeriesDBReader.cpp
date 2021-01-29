@@ -69,16 +69,16 @@ SInrSeriesDBReader::~SInrSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SInrSeriesDBReader::getIOPathType() const
+sight::io::base::services::IOPathType SInrSeriesDBReader::getIOPathType() const
 {
-    return io::base::services::FILES;
+    return sight::io::base::services::FILES;
 }
 
 //------------------------------------------------------------------------------
 
 void SInrSeriesDBReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void SInrSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", seriesDB);
+        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 

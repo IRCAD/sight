@@ -114,11 +114,11 @@ namespace ioGdcm
  *    - user_selection (let the user decide whether using the DicomDir or not)
  * - \b SOPClassSelection:  List of SOP Class selection managed by the reader
  */
-class IOGDCM_CLASS_API SSeriesDBReader : public io::base::services::IReader
+class IOGDCM_CLASS_API SSeriesDBReader : public sight::io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader,  io::base::services::IReader)
+    fwCoreServiceMacro(SSeriesDBReader, sight::io::base::services::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 

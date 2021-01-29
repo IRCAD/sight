@@ -63,9 +63,9 @@ SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SCalibrationInfoReader::getIOPathType() const
+sight::io::base::services::IOPathType SCalibrationInfoReader::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void SCalibrationInfoReader::openLocationDialog()
 
 void SCalibrationInfoReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 
     const ConfigType config      = this->getConfigTree();
     const ConfigType boardConfig = config.get_child("board");
@@ -131,7 +131,7 @@ void SCalibrationInfoReader::updating()
     if( this->hasLocationDefined() )
     {
         data::CalibrationInfo::sptr calibInfo =
-            this->getInOut< data::CalibrationInfo >(io::base::services::s_DATA_KEY);
+            this->getInOut< data::CalibrationInfo >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info.", calibInfo);
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);

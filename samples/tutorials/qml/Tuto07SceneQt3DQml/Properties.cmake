@@ -11,7 +11,7 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     guiQml
     data
-    ioVTK
+    module_io_vtk
     uiIO
     module_services
     fwlauncher

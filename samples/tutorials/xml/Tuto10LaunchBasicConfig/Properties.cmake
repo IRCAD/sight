@@ -19,7 +19,7 @@ set( REQUIREMENTS
 
     # Reader
     module_io_file
-    ioVTK
+    module_io_vtk
 
     # Services
     uiIO

@@ -5,7 +5,7 @@ set( TYPE TEST )
 set( DEPENDENCIES
     utestData
     data
-    fwVtkIO
+    io_vtk
     imageFilterOp
 )
 set( REQUIREMENTS  )

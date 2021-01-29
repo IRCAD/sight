@@ -311,7 +311,7 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="loadMeshSrv" type="::ioVTK::SMeshReader" >
+            <service uid="loadMeshSrv" type="::sight::modules::io::vtk::SMeshReader" >
                 <inout key="data" uid="cubeMesh" />
                 <resource>Tuto17SimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
             </service>

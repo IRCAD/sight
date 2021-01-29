@@ -43,7 +43,7 @@
                 The <file> tag defines the path of the image to load. Here, it is a relative
                 path from the repository in which you launch the application.
             -->
-            <service uid="imageReaderSrv" type="::ioVTK::SImageReader" >
+            <service uid="imageReaderSrv" type="::sight::modules::io::vtk::SImageReader" >
                 <inout key="data" uid="imageData" />
                 <file>../../data/patient1.vtk</file>
             </service>

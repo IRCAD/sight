@@ -143,7 +143,7 @@ void PatchTest::arPatchMedicalDataTest()
     patcherCfg->setAttributeValue("version", ::arMDSemanticPatch::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);
 
-    data::SeriesDB::sptr sdb = read< data::SeriesDB >(srvCfg, "::modules::io::atoms::SReader" );
+    data::SeriesDB::sptr sdb = read< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader" );
 
     // check data
     CPPUNIT_ASSERT_EQUAL( (size_t) 3, sdb->size() );

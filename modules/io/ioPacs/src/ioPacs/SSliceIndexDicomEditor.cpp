@@ -90,7 +90,7 @@ void SSliceIndexDicomEditor::starting()
     // Create the DICOM reader.
     m_seriesDB = data::SeriesDB::New();
 
-    m_dicomReader = this->registerService< io::base::services::IReader >(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService< sight::io::base::services::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
@@ -101,7 +101,8 @@ void SSliceIndexDicomEditor::starting()
             services::registry::ServiceConfig::getDefault()->getServiceConfig(
                 m_readerConfig, "::io::base::services::IReader");
 
-        SLM_ASSERT("No service configuration " << m_readerConfig << " for io::base::services::IReader", readerConfig);
+        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::services::IReader",
+                   readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }

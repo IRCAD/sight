@@ -59,16 +59,16 @@ SJpgImageSeriesWriter::~SJpgImageSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SJpgImageSeriesWriter::getIOPathType() const
+sight::io::base::services::IOPathType SJpgImageSeriesWriter::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SJpgImageSeriesWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -150,8 +150,9 @@ void SJpgImageSeriesWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::ImageSeries::csptr imageSeries = this->getInput< data::ImageSeries >(io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", imageSeries);
+        data::ImageSeries::csptr imageSeries =
+            this->getInput< data::ImageSeries >(sight::io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
         SLM_ASSERT("Image from image series is not instanced", imageSeries->getImage());
 

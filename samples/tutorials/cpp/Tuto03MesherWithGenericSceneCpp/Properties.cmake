@@ -12,7 +12,7 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     module_io_file
-    ioVTK
+    module_io_vtk
     module_services
     opVTKMesh
     uiIO

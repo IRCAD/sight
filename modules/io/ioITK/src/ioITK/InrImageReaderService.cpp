@@ -60,16 +60,16 @@ InrImageReaderService::~InrImageReaderService() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType InrImageReaderService::getIOPathType() const
+sight::io::base::services::IOPathType InrImageReaderService::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 //
 //------------------------------------------------------------------------------
 
 void InrImageReaderService::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -156,8 +156,8 @@ void InrImageReaderService::updating()
 
     if( this->hasLocationDefined() )
     {
-        data::Image::sptr image = this->getInOut< data::Image >(io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
         {
@@ -181,8 +181,8 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    data::Image::sptr image = this->getInOut< data::Image >(io::base::services::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+    data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::services::s_DATA_KEY);
+    SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
     auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

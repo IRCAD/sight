@@ -28,7 +28,7 @@ set( REQUIREMENTS
     ioActivity
     module_io_file
     ioGdcm
-    ioVTK
+    module_io_vtk
     module_io_atoms
 
     # Config

@@ -38,7 +38,7 @@ namespace sight::modules::io::file
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::modules::io::file::TransformationMatrix3DWriterService">
+   <service type="::sight::modules::io::file::TransformationMatrix3DWriterService">
        <in key="data" uid="..." />
    </service>
    @endcode
@@ -55,7 +55,7 @@ public:
     /// Super class of writer services
     typedef sight::io::base::services::IWriter SuperClass;
 
-    /** @name Specified writer service methods ( override from io::base::services::IWriter )
+    /** @name Specified writer service methods ( override from sight::io::base::services::IWriter )
      * @{
      */
 

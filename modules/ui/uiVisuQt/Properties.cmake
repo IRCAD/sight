@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     ui_base
     qt
-    fwMath
+    geometry_data
     services
 )
 set( REQUIREMENTS )

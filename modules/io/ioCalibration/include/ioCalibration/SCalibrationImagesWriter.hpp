@@ -50,11 +50,11 @@ namespace ioCalibration
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.
  */
-class IOCALIBRATION_CLASS_API SCalibrationImagesWriter : public io::base::services::IWriter
+class IOCALIBRATION_CLASS_API SCalibrationImagesWriter : public sight::io::base::services::IWriter
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationImagesWriter,  io::base::services::IWriter)
+    fwCoreServiceMacro(SCalibrationImagesWriter, sight::io::base::services::IWriter)
 
     /// Constructor.
     IOCALIBRATION_API SCalibrationImagesWriter() noexcept;
@@ -75,7 +75,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    IOCALIBRATION_API virtual io::base::services::IOPathType getIOPathType() const override;
+    IOCALIBRATION_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
 
     /// Configures the output file format.
     IOCALIBRATION_API virtual void configuring() override;

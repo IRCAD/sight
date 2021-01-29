@@ -472,9 +472,9 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME_OBJECT_LIB}> ${${FWPROJECT_NAME}_PCH_LIB})
 
         target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+          $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-          $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
+          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
         )
         target_link_libraries(${FWPROJECT_NAME} PUBLIC ${FWPROJECT_NAME_OBJECT_LIB})
     else()
@@ -485,9 +485,9 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             ${${FWPROJECT_NAME}_CMAKE_FILES}
             ${${FWPROJECT_NAME}_PCH_LIB})
         target_include_directories(${FWPROJECT_NAME} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
           $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
+          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
+          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
         )
     endif()
 
@@ -682,16 +682,16 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         # create the config.hpp for the current module
         configure_header_file(${FWPROJECT_NAME} "config.hpp" "modules")
 
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
-        target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
-        # Allows include of type <core/..> <data/..> ...
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/core)
-        # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs)
-        # Allows include of type <modules/../..>
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR})
         # ???
         target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
+        # Allows include of type <ui/config.hpp>
+        target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include")
+        # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs)
+        # Allows include of type <core/..> <data/..> ...
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/core)
+        # Allows include of type <modules/../..>
+        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR})
 
         if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})

@@ -111,7 +111,7 @@ void SSeriesDBWriter::stopping()
 
 void SSeriesDBWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::Vector::csptr vector = this->getInput< data::Vector >(io::base::services::s_DATA_KEY);
+        data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::services::s_DATA_KEY);
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
@@ -202,9 +202,9 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
 
 //-----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SSeriesDBWriter::getIOPathType() const
+sight::io::base::services::IOPathType SSeriesDBWriter::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    data::Vector::csptr vector = this->getInput< data::Vector >(io::base::services::s_DATA_KEY);
+    data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::services::s_DATA_KEY);
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();

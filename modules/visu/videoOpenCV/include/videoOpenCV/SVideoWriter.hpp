@@ -50,7 +50,7 @@ namespace videoOpenCV
  * @subsection Input Input
  * - \b data [data::FrameTL]: timeline containing the frame to save.
  */
-class VIDEOOPENCV_CLASS_API SVideoWriter : public io::base::services::IWriter
+class VIDEOOPENCV_CLASS_API SVideoWriter : public sight::io::base::services::IWriter
 {
 
 public:

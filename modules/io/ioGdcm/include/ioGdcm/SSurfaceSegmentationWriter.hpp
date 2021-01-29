@@ -57,11 +57,11 @@ namespace ioGdcm
  * @subsection Input Input
  * - \b data [data::ModelSeries]: ModelSeries to save in Dicom.
  */
-class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public io::base::services::IWriter
+class IOGDCM_CLASS_API SSurfaceSegmentationWriter : public sight::io::base::services::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSurfaceSegmentationWriter,  io::base::services::IWriter)
+    fwCoreServiceMacro(SSurfaceSegmentationWriter, sight::io::base::services::IWriter)
 
     /**
      * @brief Constructor

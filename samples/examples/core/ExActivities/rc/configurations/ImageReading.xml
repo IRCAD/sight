@@ -45,7 +45,7 @@
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::ioVTK::SImageReader" />
+            <addSelection service="::sight::modules::io::vtk::SImageReader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->

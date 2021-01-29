@@ -77,7 +77,7 @@ SFrameWriter::~SFrameWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SFrameWriter::getIOPathType() const
+sight::io::base::services::IOPathType SFrameWriter::getIOPathType() const
 {
     return io::base::services::FOLDER;
 }

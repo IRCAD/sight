@@ -105,7 +105,7 @@
                 This is a generic service that shows a dialog to display all the readers or writers available for its
                 associated data. By default it is configured to show readers. (Note: if there is only one reading
                 service, it is directly selected without prompting.)
-                Here, the only reader available to read a ::sight::data::Image is ::ioVTK::ImageReaderService (see
+                Here, the only reader available to read a ::sight::data::Image is ::sight::modules::io::vtk::ImageReaderService (see
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->

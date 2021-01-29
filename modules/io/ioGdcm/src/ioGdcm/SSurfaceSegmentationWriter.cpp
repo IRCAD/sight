@@ -112,7 +112,7 @@ void SSurfaceSegmentationWriter::stopping()
 
 void SSurfaceSegmentationWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(io::base::services::s_DATA_KEY);
+        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(sight::io::base::services::s_DATA_KEY);
 
         if(!model->getDicomReference())
         {
@@ -205,9 +205,9 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem:
 
 //-----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
+sight::io::base::services::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 } // namespace ioGdcm

@@ -6,7 +6,7 @@ set( DEPENDENCIES
     data
     ui_base
     services
-    fwVtkIO
+    io_vtk
     core
 )
 set( REQUIREMENTS )

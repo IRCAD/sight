@@ -322,8 +322,8 @@ void SWriter::updating()
         return;
     }
 
-    data::Object::csptr obj = this->getInput< data::Object >(sight::io::base::services::s_DATA_KEY);
-    SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
+    data::Object::csptr obj = this->getInput< data::Object >(sight::sight::io::base::services::s_DATA_KEY);
+    SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
 
     ui::base::Cursor cursor;
     cursor.setCursor(ui::base::ICursor::BUSY);

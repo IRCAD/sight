@@ -80,7 +80,7 @@ void executeService(
     services::IService::sptr srv = services::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    services::OSR::registerService(obj, io::base::services::s_DATA_KEY, access, srv );
+    services::OSR::registerService(obj, sight::io::base::services::s_DATA_KEY, access, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());

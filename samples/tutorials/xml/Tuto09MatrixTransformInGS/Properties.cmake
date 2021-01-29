@@ -21,7 +21,7 @@ set( REQUIREMENTS
 
     # Reader
     module_io_file
-    ioVTK
+    module_io_vtk
     module_io_atoms
 
     # Services

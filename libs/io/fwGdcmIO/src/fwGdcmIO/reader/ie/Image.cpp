@@ -31,8 +31,6 @@
 
 #include <fwDicomTools/Image.hpp>
 
-#include <fwMath/VectorFunctions.hpp>
-
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -45,6 +43,8 @@
 #include <gdcmPixelFormat.h>
 #include <gdcmRescaler.h>
 #include <gdcmUIDGenerator.h>
+
+#include <geometry/data/VectorFunctions.hpp>
 
 namespace fwGdcmIO
 {
@@ -117,10 +117,10 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
                                        }};
 
     //Compute Z direction (cross product)
-    const fwVec3d zVector = ::fwMath::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d zVector = geometry::data::cross(imageOrientationU, imageOrientationV);
 
     //Compute dot product to get the index
-    const double index = ::fwMath::dot(imagePosition, zVector);
+    const double index = geometry::data::dot(imagePosition, zVector);
 
     return index;
 }
@@ -572,7 +572,7 @@ char* Image::correctImageOrientation(char* buffer,
     }
 
     // Compute W vector
-    const fwVec3d imageOrientationW = ::fwMath::cross(imageOrientationU, imageOrientationV);
+    const fwVec3d imageOrientationW = geometry::data::cross(imageOrientationU, imageOrientationV);
 
     // Create orientation matrix
     Image::MatrixType matrix(4, 4);

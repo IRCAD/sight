@@ -23,7 +23,7 @@ set( REQUIREMENTS
 
     # Reader
     module_io_atoms
-    ioVTK
+    module_io_vtk
     ioActivity
 
     # Config

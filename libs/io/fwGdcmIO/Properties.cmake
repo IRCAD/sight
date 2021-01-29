@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwDicomTools
     core
-    fwMath
+    geometry_data
     data
     services
     io_zip

@@ -166,7 +166,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    io::base::services::IReader::wptr m_dicomReader;
+    sight::io::base::services::IReader::wptr m_dicomReader;
 
     /// Image Key
     std::string m_imageKey;

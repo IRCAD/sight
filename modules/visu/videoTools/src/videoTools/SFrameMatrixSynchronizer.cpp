@@ -33,9 +33,9 @@
 #include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwMath/Compare.hpp>
-
 #include <services/macros.hpp>
+
+#include <geometry/data/Compare.hpp>
 
 #include <algorithm>
 #include <functional>

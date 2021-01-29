@@ -72,7 +72,7 @@ SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
 
 void SDicomSeriesDBReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 
     // Show log dialog
     core::runtime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
@@ -266,7 +266,7 @@ void SDicomSeriesDBReader::updating()
         {
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
+                this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
@@ -296,9 +296,9 @@ void SDicomSeriesDBReader::updating()
 
 //-----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SDicomSeriesDBReader::getIOPathType() const
+sight::io::base::services::IOPathType SDicomSeriesDBReader::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------

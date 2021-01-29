@@ -55,7 +55,7 @@ SOpenCVWriter::~SOpenCVWriter()
 
 void SOpenCVWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void SOpenCVWriter::stopping()
 void SOpenCVWriter::updating()
 {
 
-    data::CameraSeries::csptr camSeries = this->getInput< data::CameraSeries >(io::base::services::s_DATA_KEY);
+    data::CameraSeries::csptr camSeries = this->getInput< data::CameraSeries >(sight::io::base::services::s_DATA_KEY);
 
     if(!camSeries)
     {
@@ -227,9 +227,9 @@ void SOpenCVWriter::swapping()
 
 // ----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SOpenCVWriter::getIOPathType() const
+sight::io::base::services::IOPathType SOpenCVWriter::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 // ----------------------------------------------------------------------------

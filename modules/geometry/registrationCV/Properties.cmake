@@ -6,7 +6,7 @@ set( DEPENDENCIES
     calibration3d
     core
     data
-    fwMath
+    geometry_data
     services
     cvIO
 )

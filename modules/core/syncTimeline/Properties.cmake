@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    fwMath
+    geometry_data
     services
 )
 set( REQUIREMENTS  )

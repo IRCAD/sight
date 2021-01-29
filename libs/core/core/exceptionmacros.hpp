@@ -31,14 +31,14 @@
 
 # define LOG_FWEXCEPTIONS 1
 
-# define __FWCORE_EXCEPTION_CLASS core::Exception
+# define __FWCORE_EXCEPTION_CLASS ::sight::core::Exception
 
 # define __FWCORE_EXCEPTION_PREPARE_MSG(var, msg)       \
     std::stringstream var;                              \
     var << msg
 
 # define __FWCORE_EXCEPTION_GETCLASSNAME(obj)           \
-    core::Demangler(typeid(obj)).getClassname()
+    ::sight::core::Demangler(typeid(obj)).getClassname()
 
 # define __FWCORE_EXCEPTION_INFO(excep)         \
     "Exception: <"                              \

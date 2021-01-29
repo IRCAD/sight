@@ -27,7 +27,7 @@
 namespace sight::modules::io::file
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::modules::io::file::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::io::file::Plugin");
 
 Plugin::~Plugin() noexcept
 {

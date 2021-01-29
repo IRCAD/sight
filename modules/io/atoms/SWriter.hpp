@@ -46,7 +46,7 @@ namespace sight::modules::io::atoms
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::modules::io::atoms::SWriter">
+    <service type="::sight::modules::io::atoms::SWriter">
         <in key="data" uid="..." />
         <patcher context="..." version="..." />
 
@@ -84,7 +84,7 @@ namespace sight::modules::io::atoms
  *      The attribute label (mandatory) allows to display a label in front of extension when the file dialog is
  *      shown.
  *
- * @see io::base::services::IReader
+ * @see sight::io::base::services::IReader
  */
 class MODULE_IO_ATOMS_CLASS_API SWriter : public sight::io::base::services::IWriter
 {

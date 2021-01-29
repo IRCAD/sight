@@ -120,7 +120,7 @@ void SSeriesDBReader::openLocationDialog()
 
 void SSeriesDBReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 
     // Use filter selector
     core::runtime::ConfigurationElement::sptr selectorConfig =
@@ -243,7 +243,7 @@ void SSeriesDBReader::updating()
         {
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
+                this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
@@ -272,7 +272,7 @@ void SSeriesDBReader::updating()
 
 void SSeriesDBReader::notificationOfDBUpdate()
 {
-    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(io::base::services::s_DATA_KEY);
+    data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     data::SeriesDB::ContainerType addedSeries;
@@ -288,9 +288,9 @@ void SSeriesDBReader::notificationOfDBUpdate()
 
 //-----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
+sight::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return io::base::services::FOLDER;
+    return sight::io::base::services::FOLDER;
 }
 
 //------------------------------------------------------------------------------

@@ -29,7 +29,7 @@ set( REQUIREMENTS
     uiMeasurementQt
 
     # Reader
-    ioVTK
+    module_io_vtk
     module_io_atoms
     ioGdcm
 

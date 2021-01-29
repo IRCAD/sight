@@ -236,9 +236,9 @@ void SPdfWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SPdfWriter::getIOPathType() const
+sight::io::base::services::IOPathType SPdfWriter::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------

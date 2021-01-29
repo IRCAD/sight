@@ -59,7 +59,7 @@ SOpenCVReader::~SOpenCVReader()
 
 void SOpenCVReader::configuring()
 {
-    io::base::services::IReader::configuring();
+    sight::io::base::services::IReader::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ void SOpenCVReader::stopping()
 void SOpenCVReader::updating()
 {
 
-    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(io::base::services::s_DATA_KEY);
+    data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(sight::io::base::services::s_DATA_KEY);
 
     bool use_dialog = false;
     //use dialog only if no file was configured
@@ -273,9 +273,9 @@ void SOpenCVReader::swapping()
 
 // ----------------------------------------------------------------------------
 
-::io::base::services::IOPathType SOpenCVReader::getIOPathType() const
+sight::io::base::services::IOPathType SOpenCVReader::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 // ----------------------------------------------------------------------------

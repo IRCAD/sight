@@ -145,7 +145,7 @@ private:
     std::string m_readerConfig { "" };
 
     /// Contains the DICOM reader.
-    io::base::services::IReader::sptr m_dicomReader { nullptr };
+    sight::io::base::services::IReader::sptr m_dicomReader { nullptr };
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB { nullptr };

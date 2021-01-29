@@ -172,7 +172,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    io::base::services::IReader::wptr m_dicomReader;
+    sight::io::base::services::IReader::wptr m_dicomReader;
 
     /// Temporary SeriesDB
     SPTR(data::SeriesDB) m_tempSeriesDB;

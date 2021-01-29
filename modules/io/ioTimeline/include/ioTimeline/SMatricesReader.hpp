@@ -83,12 +83,12 @@ namespace ioTimeline
  * - \b step (optionnal): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  */
 
-class IOTIMELINE_CLASS_API SMatricesReader : public io::base::services::IReader
+class IOTIMELINE_CLASS_API SMatricesReader : public sight::io::base::services::IReader
 {
 
 public:
 
-    fwCoreServiceMacro(SMatricesReader, io::base::services::IReader)
+    fwCoreServiceMacro(SMatricesReader, sight::io::base::services::IReader)
 
     /// Constructor.
     IOTIMELINE_API SMatricesReader() noexcept;
@@ -107,7 +107,7 @@ public:
     IOTIMELINE_API virtual void openLocationDialog() override;
 
     /// Return file type (io::base::services::FILE)
-    IOTIMELINE_API virtual io::base::services::IOPathType getIOPathType() const override;
+    IOTIMELINE_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.

@@ -19,7 +19,7 @@ set( REQUIREMENTS
     uiIO
 
     # Reader
-    ioVTK
+    module_io_vtk
     module_io_atoms
 
     # Generic Scene

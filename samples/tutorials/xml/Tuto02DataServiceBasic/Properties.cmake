@@ -15,7 +15,7 @@ set( REQUIREMENTS
     module_ui_base
 
     # Reader
-    ioVTK                   # Contains the reader and writer for VTK files (image and mesh).
+    module_io_vtk                   # Contains the reader and writer for VTK files (image and mesh).
 
     # Services
     visuBasic               # Loads basic rendering services for images and meshes.

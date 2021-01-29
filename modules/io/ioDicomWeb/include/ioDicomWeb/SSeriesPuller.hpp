@@ -125,7 +125,7 @@ private:
     ::fwNetworkIO::http::ClientQt m_clientQt;
 
     /// Reader
-    io::base::services::IReader::sptr m_dicomReader;
+    sight::io::base::services::IReader::sptr m_dicomReader;
 
     /// Reader Config
     std::string m_dicomReaderSrvConfig;

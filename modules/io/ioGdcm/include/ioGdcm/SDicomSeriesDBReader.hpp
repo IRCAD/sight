@@ -68,14 +68,14 @@ namespace ioGdcm
  *    - never (never use the DicomDir)
  *    - user_selection (let the user decide whether using the DicomDir or not)
  */
-class IOGDCM_CLASS_API SDicomSeriesDBReader : public io::base::services::IReader
+class IOGDCM_CLASS_API SDicomSeriesDBReader : public sight::io::base::services::IReader
 {
 
 public:
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesDBReader,  io::base::services::IReader)
+    fwCoreServiceMacro(SDicomSeriesDBReader, sight::io::base::services::IReader)
 
     /**
      * @brief   constructor

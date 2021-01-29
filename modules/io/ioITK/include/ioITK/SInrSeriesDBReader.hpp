@@ -64,11 +64,11 @@ namespace ioITK
  * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class IOITK_CLASS_API SInrSeriesDBReader : public io::base::services::IReader
+class IOITK_CLASS_API SInrSeriesDBReader : public sight::io::base::services::IReader
 {
 
 public:
-    fwCoreServiceMacro(SInrSeriesDBReader,  io::base::services::IReader)
+    fwCoreServiceMacro(SInrSeriesDBReader, sight::io::base::services::IReader)
 
     IOITK_API SInrSeriesDBReader() noexcept;
 

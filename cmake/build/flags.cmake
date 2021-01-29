@@ -15,6 +15,7 @@ add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
     "$<$<CXX_COMPILER_ID:Clang>:-march=sandybridge;-mtune=generic;-mfpmath=sse>"
     "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:AVX;/MP;/bigobj>"
+    "$<$<CONFIG:DEBUG>:-DDEBUG;-D_DEBUG>"
 )
 
 add_compile_definitions(

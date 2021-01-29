@@ -61,16 +61,16 @@ SImageSeriesWriter::~SImageSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-::io::base::services::IOPathType SImageSeriesWriter::getIOPathType() const
+sight::io::base::services::IOPathType SImageSeriesWriter::getIOPathType() const
 {
-    return io::base::services::FILE;
+    return sight::io::base::services::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::configuring()
 {
-    io::base::services::IWriter::configuring();
+    sight::io::base::services::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -134,8 +134,8 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
 
-        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", iseries);
+        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(sight::io::base::services::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();
         SLM_ASSERT("associatedImage not instanced", associatedImage);

@@ -4,7 +4,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    eigenTools
+    geometry_eigen
 )
 set( REQUIREMENTS  )
 set( DISABLE_PCH TRUE)

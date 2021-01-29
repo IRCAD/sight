@@ -5,7 +5,7 @@ set( DEPENDENCIES
         data
         core
         services
-        fwMath
+        geometry_data
         )
 set( REQUIREMENTS data module_services)
 set( CONAN_DEPS
