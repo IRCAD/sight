@@ -62,7 +62,8 @@ BOOST_LOG_GLOBAL_LOGGER_DEFAULT(lg, ::boost::log::sources::severity_logger_mt< :
 std::string stripFilePath(const char* path)
 {
     // Keep the minimum file tree necessary to identify the file, i.e.
-    // /home/user/dev/sight/modules/visu/visuOgreAdaptor/src/visuOgreAdaptor/SCamera.cpp -> visuOgreAdaptor/SCamera.cpp
+    // /home/user/dev/sight/modules/visu/modules/viz/ogre/adaptor/src/modules/viz/ogre/adaptor/SCamera.cpp ->
+    // modules/viz/ogre/adaptor/SCamera.cpp
     static const std::regex regex("(include|src)(?!.*(src|include))/(.*)");
 
     std::smatch match;

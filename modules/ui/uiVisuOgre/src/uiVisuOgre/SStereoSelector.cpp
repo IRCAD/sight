@@ -26,8 +26,6 @@
 
 #include <data/Composite.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -39,6 +37,8 @@
 #include <QWidget>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -123,9 +123,9 @@ void SStereoSelector::onSelectedLayerItem(int index)
 
 void SStereoSelector::onSelectedModeItem(int index)
 {
-    m_currentLayer.lock()->setStereoMode(index == 1 ? ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_5 :
-                                         index == 2 ? ::fwRenderOgre::compositorcore::StereoModeType::AUTOSTEREO_8 :
-                                         ::fwRenderOgre::compositorcore::StereoModeType::NONE);
+    m_currentLayer.lock()->setStereoMode(index == 1 ? viz::ogre::compositorcore::StereoModeType::AUTOSTEREO_5 :
+                                         index == 2 ? viz::ogre::compositorcore::StereoModeType::AUTOSTEREO_8 :
+                                         viz::ogre::compositorcore::StereoModeType::NONE);
 }
 
 //------------------------------------------------------------------------------
@@ -136,16 +136,16 @@ void SStereoSelector::refreshRenderers()
 
     // Fill layer box with all enabled layers
     services::registry::ObjectService::ServiceVectorType renderers =
-        services::OSR::getServices("::fwRenderOgre::SRender");
+        services::OSR::getServices("::sight::viz::ogre::SRender");
 
     for(auto srv : renderers)
     {
-        ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
+        viz::ogre::SRender::sptr render = viz::ogre::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
             const std::string& id = layerMap.first;
-            if(id != ::fwRenderOgre::SRender::s_OGREBACKGROUNDID)
+            if(id != viz::ogre::SRender::s_OGREBACKGROUNDID)
             {
                 m_layersBox->addItem(QString::fromStdString(id));
                 m_layers.push_back(layerMap.second);

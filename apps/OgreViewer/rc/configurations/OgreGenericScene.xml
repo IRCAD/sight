@@ -164,7 +164,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+        <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -236,112 +236,112 @@
             </scene>
         </service>
 
-        <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
+        <service uid="trackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera">
             <config layer="defaultLayer" priority="0" />
         </service>
 
-        <service uid="pickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+        <service uid="pickerInteractorAdp" type="::sight::modules::viz::ogre::adaptor::SPicker">
             <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modeSeriesAdp" type="::sight::modules::viz::ogre::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${modelSeries}" />
             <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
-        <service uid="extrudedMeshesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
+        <service uid="extrudedMeshesAdp" type="::sight::modules::viz::ogre::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${extrudedModelSeries}" />
             <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
-        <service uid="volumeAdp" type="::visuOgreAdaptor::SVolumeRender" >
+        <service uid="volumeAdp" type="::sight::modules::viz::ogre::adaptor::SVolumeRender" >
             <inout key="image" uid="extrudedImage" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="yes" />
             <config layer="defaultLayer" widgets="no" preintegration="no" autoresetcamera="no" samples="1024" />
         </service>
 
-        <service uid="3DNegatoAdp" type="::visuOgreAdaptor::SNegato3D" >
+        <service uid="3DNegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" >
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
-        <service uid="landmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+        <service uid="landmarksAdp" type="::sight::modules::viz::ogre::adaptor::SLandmarks" autoConnect="yes" >
             <in key="landmarks" uid="${landmarks}" />
             <config layer="defaultLayer" />
         </service>
 
-        <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="multiDistancesAdp" type="::sight::modules::viz::ogre::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
-        <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
+        <service uid="axisAdp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
             <config layer="defaultLayer" visible="false" origin="true" label="false" />
         </service>
 
-        <service uid="pickedVoxelTextAdp" type="::visuOgreAdaptor::SText">
+        <service uid="pickedVoxelTextAdp" type="::sight::modules::viz::ogre::adaptor::SText">
             <text></text>
             <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="bottom" color="#D35151" />
         </service>
 
-        <service uid="shapeExtruderAdp" type="::visuOgreAdaptor::SShapeExtruder">
+        <service uid="shapeExtruderAdp" type="::sight::modules::viz::ogre::adaptor::SShapeExtruder">
             <inout key="extrudedMeshes" uid="${extrudedModelSeries}" />
             <config layer="defaultLayer" lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
-        <service uid="resizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="resizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
         </service>
 
-        <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo">
+        <service uid="snapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
             <config layer="defaultLayer" flip="true" />
         </service>
 
         <!-- Axial -->
 
-        <service uid="axialBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="axialBackgroundAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="axialBackgroundNegatoLayer" />
         </service>
 
-        <service uid="axialBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="axialBackgroundResizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="axialBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
         </service>
 
-        <service uid="axialCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+        <service uid="axialCompositorAdp" type="::sight::modules::viz::ogre::adaptor::SCompositorParameter">
             <inout key="parameter" uid="border" />
             <config layer="axialNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="axialNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+        <service uid="axialNegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="axialNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="axialNegatoMultiDistancesAdp" type="::sight::modules::viz::ogre::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="axialNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="axialNegatoCameraAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" priority="0" orientation="axial" />
         </service>
 
-        <service uid="axialNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="axialNegatoResizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="axialNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
         </service>
 
-        <service uid="axialPickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+        <service uid="axialPickerInteractorAdp" type="::sight::modules::viz::ogre::adaptor::SPicker">
             <config layer="axialNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="axialLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+        <service uid="axialLandmarksAdp" type="::sight::modules::viz::ogre::adaptor::SLandmarks" autoConnect="yes" >
             <in key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="axialNegatoLayer" label="false" orientation="axial" />
@@ -349,46 +349,46 @@
 
         <!-- Sagittal -->
 
-        <service uid="sagittalBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="sagittalBackgroundAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="sagittalBackgroundNegatoLayer" />
         </service>
 
-        <service uid="sagittalBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="sagittalBackgroundResizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="sagittalBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
         </service>
 
-        <service uid="sagittalCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+        <service uid="sagittalCompositorAdp" type="::sight::modules::viz::ogre::adaptor::SCompositorParameter">
             <inout key="parameter" uid="border" />
             <config layer="sagittalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="sagittalNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+        <service uid="sagittalNegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" sliceIndex="sagittal" filtering="anisotropic" />
         </service>
 
-        <service uid="sagittalNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="sagittalNegatoMultiDistancesAdp" type="::sight::modules::viz::ogre::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="sagittalNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="sagittalNegatoCameraAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" priority="0" orientation="sagittal" />
         </service>
 
-        <service uid="sagittalNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="sagittalNegatoResizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="sagittalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
         </service>
 
-        <service uid="sagittalPickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+        <service uid="sagittalPickerInteractorAdp" type="::sight::modules::viz::ogre::adaptor::SPicker">
             <config layer="sagittalNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="sagittalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+        <service uid="sagittalLandmarksAdp" type="::sight::modules::viz::ogre::adaptor::SLandmarks" autoConnect="yes" >
             <in key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" />
@@ -396,46 +396,46 @@
 
         <!-- Frontal -->
 
-        <service uid="frontalBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="frontalBackgroundAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="frontalBackgroundNegatoLayer" />
         </service>
 
-        <service uid="frontalBackgroundResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="frontalBackgroundResizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="frontalBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
         </service>
 
-        <service uid="frontalCompositorAdp" type="::visuOgreAdaptor::SCompositorParameter">
+        <service uid="frontalCompositorAdp" type="::sight::modules::viz::ogre::adaptor::SCompositorParameter">
             <inout key="parameter" uid="border" />
             <config layer="frontalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="frontalNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+        <service uid="frontalNegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" sliceIndex="frontal" filtering="anisotropic" />
         </service>
 
-        <service uid="frontalNegatoMultiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="frontalNegatoMultiDistancesAdp" type="::sight::modules::viz::ogre::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="frontalNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="frontalNegatoCameraAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" priority="0" orientation="frontal" />
         </service>
 
-        <service uid="frontalNegatoResizeViewportAdp" type="::visuOgreAdaptor::SResizeViewport" >
+        <service uid="frontalNegatoResizeViewportAdp" type="::sight::modules::viz::ogre::adaptor::SResizeViewport" >
             <config layer="frontalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
         </service>
 
-        <service uid="frontalPickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
+        <service uid="frontalPickerInteractorAdp" type="::sight::modules::viz::ogre::adaptor::SPicker">
             <config layer="frontalNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="frontalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
+        <service uid="frontalLandmarksAdp" type="::sight::modules::viz::ogre::adaptor::SLandmarks" autoConnect="yes" >
             <in key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" label="false" orientation="frontal" />

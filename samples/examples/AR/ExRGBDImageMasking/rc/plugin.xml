@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgre" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -226,7 +226,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -242,23 +242,23 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="video" />
             </service>
 
-            <service uid="cameraAdp" type="::visuOgreAdaptor::SCamera" >
+            <service uid="cameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" >
                 <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
                 <in key="calibration" uid="RGBcamera" />
                 <config layer="default" />
             </service>
 
-            <service uid="meshAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::modules::viz::ogre::adaptor::SModelSeries" autoConnect="yes" >
                 <in key="model" uid="modelSeries" />
                 <config layer="default" transform="id" autoresetcamera="no" />
             </service>
 
-            <service uid="videoARAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="videoARAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="foregroundImage" />
                 <config layer="ar" />
             </service>
@@ -266,7 +266,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <!-- Scene in which skin mesh will be render and fill a binary image to perform image masking -->
-            <service uid="offscreenSceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="offscreenSceneSrv" type="::sight::viz::ogre::SRender" >
                 <inout key="offScreen" uid="offscreenImage" />
                 <scene width="1280" height="720" >
                     <background topColor="#36393E" bottomColor="#36393E" />
@@ -277,13 +277,13 @@
                 </scene>
             </service>
 
-            <service uid="cameraOffscreenAdp" type="::visuOgreAdaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraOffscreenAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
                 <in key="calibration" uid="RGBcamera" />
                 <config layer="default" />
             </service>
 
-            <service uid="meshOffscreenAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="meshOffscreenAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" shadingMode="ambient" />
                 <config layer="default" transform="id" autoresetcamera="no" />
             </service>

@@ -232,7 +232,7 @@ void SMatrixWriter::stopRecord()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
+services::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
     connections.push(sight::io::base::services::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);

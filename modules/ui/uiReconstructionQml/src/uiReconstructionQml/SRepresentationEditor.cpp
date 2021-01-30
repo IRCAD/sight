@@ -198,7 +198,7 @@ void SRepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

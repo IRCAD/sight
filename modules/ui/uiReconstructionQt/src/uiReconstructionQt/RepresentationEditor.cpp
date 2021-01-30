@@ -399,7 +399,7 @@ void RepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

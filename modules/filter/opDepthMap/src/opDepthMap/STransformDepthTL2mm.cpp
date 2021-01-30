@@ -136,7 +136,7 @@ void STransformDepthTL2mm::updating()
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
+services::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

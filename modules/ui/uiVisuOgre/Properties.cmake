@@ -7,8 +7,8 @@ set( DEPENDENCIES
         data
         services
         ui_base
-        qt
-        fwRenderOgre
+        module_ui_qt
+        viz_ogre
         io_base
 )
 

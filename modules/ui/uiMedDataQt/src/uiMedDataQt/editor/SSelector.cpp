@@ -93,7 +93,7 @@ SSelector::~SSelector() noexcept
 
 void SSelector::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 
     // Deprecated configuration.
 
@@ -230,7 +230,7 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -270,7 +270,7 @@ void SSelector::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+services::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT);

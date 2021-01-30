@@ -24,14 +24,14 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
 
 #include <ui/base/editor/IEditor.hpp>
+
+#include <viz/ogre/compositor/ChainManager.hpp>
+#include <viz/ogre/Layer.hpp>
 
 #include <vector>
 
@@ -95,8 +95,8 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QComboBox> m_modeBox;
 
-    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
-    ::fwRenderOgre::Layer::wptr m_currentLayer;
+    std::vector< viz::ogre::Layer::wptr > m_layers;
+    viz::ogre::Layer::wptr m_currentLayer;
 };
 
 } // uiVisuOgre

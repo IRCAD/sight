@@ -28,9 +28,6 @@
 #include <data/String.hpp>
 #include <data/tools/helper/Field.hpp>
 
-#include <fwRenderOgre/ogre.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
 #include <services/macros.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
@@ -46,6 +43,9 @@
 #include <QWidget>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/ogre.hpp>
+#include <viz/ogre/Utils.hpp>
 
 namespace uiVisuOgre
 {
@@ -183,7 +183,7 @@ void SMaterialSelector::onReloadMaterial()
 {
     auto materialName = m_materialBox->currentText().toStdString();
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName,
-                                                                                     ::fwRenderOgre::RESOURCE_GROUP);
+                                                                                     viz::ogre::RESOURCE_GROUP);
 
     if(!material)
     {

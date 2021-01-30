@@ -35,7 +35,7 @@ set( REQUIREMENTS
     uiIO
 
     # Generic Scene
-    visuBasic
+    module_viz_sample
 )
 
 moduleParam(module_ui_qt

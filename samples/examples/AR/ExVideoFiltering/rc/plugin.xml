@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgre" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -141,7 +141,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericScene1Srv" type="::fwRenderOgre::SRender" >
+            <service uid="genericScene1Srv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -150,14 +150,14 @@
                 </scene>
             </service>
 
-            <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="video1Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage1" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericScene2Srv" type="::fwRenderOgre::SRender" >
+            <service uid="genericScene2Srv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -166,14 +166,14 @@
                 </scene>
             </service>
 
-            <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="video2Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage2" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericScene3Srv" type="::fwRenderOgre::SRender" >
+            <service uid="genericScene3Srv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -182,14 +182,14 @@
                 </scene>
             </service>
 
-            <service uid="video3Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="video3Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage3" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericScene4Srv" type="::fwRenderOgre::SRender" >
+            <service uid="genericScene4Srv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -198,7 +198,7 @@
                 </scene>
             </service>
 
-            <service uid="video4Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="video4Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage4" />
                 <config layer="default" />
             </service>

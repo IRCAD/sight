@@ -230,7 +230,7 @@ void OrganMaterialEditor::materialNotification( )
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap OrganMaterialEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap OrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

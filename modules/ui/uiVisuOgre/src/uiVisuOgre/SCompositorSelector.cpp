@@ -26,8 +26,6 @@
 
 #include <data/Composite.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -39,6 +37,8 @@
 #include <QWidget>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -114,8 +114,8 @@ void SCompositorSelector::updating()
 
 void SCompositorSelector::onSelectedLayerItem(int index)
 {
-    m_currentLayer                    = m_layers[static_cast<size_t>(index)];
-    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+    m_currentLayer = m_layers[static_cast<size_t>(index)];
+    viz::ogre::Layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
     {
@@ -146,7 +146,7 @@ void SCompositorSelector::onSelectedCompositorItem(QListWidgetItem* compositorIt
 {
     const ::std::string compositorName = compositorItem->text().toStdString();
     const bool isChecked               = (compositorItem->checkState() == ::Qt::Checked);
-    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+    viz::ogre::Layer::sptr layer       = m_currentLayer.lock();
 
     if(layer)
     {
@@ -157,7 +157,7 @@ void SCompositorSelector::onSelectedCompositorItem(QListWidgetItem* compositorIt
 
 //------------------------------------------------------------------------------
 
-void SCompositorSelector::initCompositorList(fwRenderOgre::Layer::sptr layer)
+void SCompositorSelector::initCompositorList(viz::ogre::Layer::sptr layer)
 {
     m_currentLayer = m_layers[0];
 
@@ -175,11 +175,11 @@ void SCompositorSelector::refreshRenderers()
 
     // Fill layer box with all enabled layers
     services::registry::ObjectService::ServiceVectorType renderers =
-        services::OSR::getServices("::fwRenderOgre::SRender");
+        services::OSR::getServices("::sight::viz::ogre::SRender");
 
     for(auto srv : renderers)
     {
-        ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
+        viz::ogre::SRender::sptr render = viz::ogre::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -188,7 +188,7 @@ void SCompositorSelector::refreshRenderers()
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
-            m_connections.connect(layerMap.second, ::fwRenderOgre::Layer::s_INIT_LAYER_SIG,
+            m_connections.connect(layerMap.second, viz::ogre::Layer::s_INIT_LAYER_SIG,
                                   this->getSptr(), s_INIT_COMPOSITOR_LIST_SLOT);
         }
     }
@@ -203,7 +203,7 @@ void SCompositorSelector::refreshRenderers()
 
 void SCompositorSelector::updateCompositorList()
 {
-    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+    viz::ogre::Layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
     {
@@ -232,7 +232,7 @@ void SCompositorSelector::updateCompositorList()
 
 void SCompositorSelector::checkEnabledCompositors()
 {
-    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+    viz::ogre::Layer::sptr layer = m_currentLayer.lock();
 
     if(layer)
     {
@@ -247,7 +247,7 @@ void SCompositorSelector::checkEnabledCompositors()
 
                 auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                                     m_layerCompositorChain.end(),
-                                                    ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
+                                                    viz::ogre::compositor::ChainManager::FindCompositorByName(
                                                         currentCompositorName));
 
                 if(layerCompositor != m_layerCompositorChain.end())
@@ -280,7 +280,7 @@ bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
 {
     auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                         m_layerCompositorChain.end(),
-                                        ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
+                                        viz::ogre::compositor::ChainManager::FindCompositorByName(
                                             compositorName));
 
     if(layerCompositor != m_layerCompositorChain.end())

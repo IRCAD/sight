@@ -89,21 +89,21 @@ void MemoryInfo::updating( )
 
 void MemoryInfo::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

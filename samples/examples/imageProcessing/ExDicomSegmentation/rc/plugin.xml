@@ -3,8 +3,8 @@
     <requirement id="activities" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgre" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
 
     <xi:include href="ExDicomSegmentationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

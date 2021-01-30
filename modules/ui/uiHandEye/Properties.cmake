@@ -7,6 +7,6 @@ set( DEPENDENCIES
         data
         services
         ui_base
-        qt
+        module_ui_qt
 )
 set( REQUIREMENTS )

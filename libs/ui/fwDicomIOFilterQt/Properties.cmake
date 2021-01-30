@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     fwDicomIOFilter
     ui_base
-    qt
+    module_ui_qt
 )
 set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchData )

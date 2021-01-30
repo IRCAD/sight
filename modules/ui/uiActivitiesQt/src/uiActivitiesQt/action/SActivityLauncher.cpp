@@ -113,7 +113,7 @@ void SActivityLauncher::stopping()
 
 void SActivityLauncher::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     m_parameters.clear();
@@ -634,7 +634,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
+services::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -92,7 +92,7 @@ SActivitySequencer::~SActivitySequencer() noexcept
 
 void SActivitySequencer::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -117,7 +117,7 @@ void SActivitySequencer::configuring()
 
 void SActivitySequencer::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer =
         ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -351,7 +351,7 @@ void SActivitySequencer::enableActivity(int index)
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );

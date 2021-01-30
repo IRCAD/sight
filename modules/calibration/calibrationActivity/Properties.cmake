@@ -8,8 +8,8 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     module_io_base             # Start the module, load file location or window module_io_base
-    visuOgre                # Start the module, allow to use fwRenderOgre
-    visuOgreQt              # Enable Ogre to render things in Qt window.
+    module_viz_ogre                # Start the module, allow to use viz_ogre
+    module_viz_ogreQt              # Enable Ogre to render things in Qt window.
     validators
     activities
 
@@ -41,5 +41,4 @@ set( REQUIREMENTS
     ctrlCamp
 
     # Generic Scene
-    visuOgreAdaptor
 )

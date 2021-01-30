@@ -394,7 +394,7 @@ void SOrganTransformation::addMeshTransform()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
+services::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -105,7 +105,7 @@ void MemoryConsumption::updating()
 
 void MemoryConsumption::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
@@ -128,13 +128,13 @@ void MemoryConsumption::configuring()
 
 void MemoryConsumption::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void MemoryConsumption::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

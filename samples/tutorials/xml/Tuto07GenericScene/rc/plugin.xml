@@ -5,10 +5,10 @@
 <plugin id="Tuto07GenericScene" version="@PROJECT_VERSION@" >
 
     <requirement id="module_ui_base" />
-    <requirement id="visuOgre" />
+    <requirement id="module_viz_ogre" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogreQt" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto07GenericScene_AppCfg</id>
@@ -105,7 +105,7 @@
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- This scene display a 3D image and a textured mesh -->
-            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -118,29 +118,29 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
             <!-- Texture adaptor, used by mesh adaptor -->
-            <service uid="textureAdp" type="::visuOgreAdaptor::STexture" autoConnect="yes" >
+            <service uid="textureAdp" type="::sight::modules::viz::ogre::adaptor::STexture" autoConnect="yes" >
                 <in key="image" uid="texture" />
                 <config layer="default" textureName="ogreTexture" />
             </service>
 
             <!-- Mesh adaptor -->
-            <service uid="meshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" textureName="ogreTexture" />
             </service>
 
             <!-- 3D image negatoscope adaptor -->
-            <service uid="negatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <service uid="negatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="snapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo" >
+            <service uid="snapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot" />
                 <config layer="default" flip="true" />
             </service>

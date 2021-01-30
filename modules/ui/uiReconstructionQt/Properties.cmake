@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    qt
+    module_ui_qt
     services
 )
 set( REQUIREMENTS )

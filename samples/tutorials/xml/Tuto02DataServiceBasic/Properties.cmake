@@ -4,21 +4,21 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
-    module_appXml                  # XML configurations
-    module_ui_qt                   # Start the module, load qt implementation of module_ui_base
+    module_appXml           # XML configurations
+    module_ui_qt            # Start the module, load module_ui_qt implementation of module_ui_base
 
     # Objects declaration
     data
-    module_services             # fwService
+    module_services
 
     # UI declaration/Actions
     module_ui_base
 
     # Reader
-    module_io_vtk                   # Contains the reader and writer for VTK files (image and mesh).
+    module_io_vtk           # Contains the reader and writer for VTK files (image and mesh).
 
     # Services
-    visuBasic               # Loads basic rendering services for images and meshes.
+    module_viz_sample       # Loads basic rendering services for images and meshes.
 )
 
 moduleParam(

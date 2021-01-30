@@ -458,7 +458,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
+services::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

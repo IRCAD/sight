@@ -24,13 +24,13 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/Layer.hpp>
-
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
 
 #include <ui/base/editor/IEditor.hpp>
+
+#include <viz/ogre/Layer.hpp>
 
 class QAbstractButton;
 class QButtonGroup;
@@ -91,8 +91,8 @@ protected:
     /// FILL ME.
     UIVISUOGRE_API void refreshRenderers();
 
-    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
-    ::fwRenderOgre::Layer::wptr m_currentLayer;
+    std::vector< viz::ogre::Layer::wptr > m_layers;
+    viz::ogre::Layer::wptr m_currentLayer;
 
 protected Q_SLOTS:
 

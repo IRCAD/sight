@@ -71,7 +71,7 @@ std::pair<T, T> getRange(T _value)
 
 //-----------------------------------------------------------------------------
 
-services::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderOgre::IParameter::csptr& _adaptor,
+services::IService::ConfigType ParameterEditor::createConfig(const viz::ogre::IParameter::csptr& _adaptor,
                                                              const services::IService::csptr& _paramSrv,
                                                              core::com::helper::SigSlotConnection& _connections)
 {
@@ -79,7 +79,7 @@ services::IService::ConfigType ParameterEditor::createConfig(const ::fwRenderOgr
 
     /// Getting associated object infos
     const data::Object::csptr shaderObj =
-        _adaptor->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+        _adaptor->getInOut< data::Object>(viz::ogre::IParameter::s_PARAMETER_INOUT);
 
     const auto& objType = shaderObj->getClassname();
 

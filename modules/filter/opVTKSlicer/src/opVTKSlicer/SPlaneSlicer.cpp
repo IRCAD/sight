@@ -151,7 +151,7 @@ void SPlaneSlicer::configuring()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
+services::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

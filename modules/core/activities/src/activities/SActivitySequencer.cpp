@@ -215,7 +215,7 @@ bool SActivitySequencer::checkValidity(const data::ActivitySeries::csptr& activi
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );

@@ -418,7 +418,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
+services::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);

@@ -189,7 +189,7 @@ void SSeriesViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
+services::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

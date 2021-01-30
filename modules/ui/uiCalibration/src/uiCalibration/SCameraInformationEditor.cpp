@@ -246,7 +246,7 @@ void SCameraInformationEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
 {
 
     KeyConnectionsMap connections;

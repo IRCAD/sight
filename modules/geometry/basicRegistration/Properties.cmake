@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
     data
-    qt
+    module_ui_qt
     fwItkIO
     ui_base
 )

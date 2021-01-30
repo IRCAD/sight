@@ -26,7 +26,7 @@
                 <gui>
                     <frame>
                         <name>Tuto02DataServiceBasic</name>
-                        <icon>Tuto02DataServiceBasic-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto02DataServiceBasic/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -52,7 +52,7 @@
                 Visualization service of a 3D medical image:
                 This service will render the 3D image.
             -->
-            <service uid="imageRendereSrv" type="::visuBasic::SImage" >
+            <service uid="imageRendereSrv" type="::sight::modules::viz::sample::SImage" >
                 <in key="image" uid="imageData" />
             </service>
 

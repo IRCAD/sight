@@ -80,21 +80,21 @@ void fwMetrics::updating()
 
 void fwMetrics::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -122,7 +122,7 @@ void SConcatenateMatrices::updating()
 
 // ----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
+services::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

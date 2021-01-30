@@ -166,7 +166,7 @@ void SModelSeriesList::onCheckAllBoxes( bool checked )
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

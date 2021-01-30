@@ -93,7 +93,7 @@ void SStringEditor::updateString(const QString& str)
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SStringEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SStringEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -30,9 +30,6 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/SRender.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 
@@ -40,6 +37,9 @@
 
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/IAdaptor.hpp>
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -103,7 +103,7 @@ void SCompositorParameterEditor::updating()
 //------------------------------------------------------------------------------
 
 void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*/, bool /*_enabled*/,
-                                                  fwRenderOgre::Layer::sptr _layer)
+                                                  viz::ogre::Layer::sptr _layer)
 {
     if(_layer->getLayerID() == m_layerID)
     {
@@ -118,11 +118,11 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::modules::viz::ogre::adaptor::SCompositorParameter")
             {
                 /// Filter object types
                 const data::Object::csptr shaderObj =
-                    adaptor->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+                    adaptor->getInOut< data::Object>(viz::ogre::IParameter::s_PARAMETER_INOUT);
                 const auto& objType = shaderObj->getClassname();
 
                 if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
@@ -161,9 +161,9 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::modules::viz::ogre::adaptor::SCompositorParameter")
             {
-                auto paramAdaptor = ::fwRenderOgre::IParameter::dynamicConstCast(adaptor);
+                auto paramAdaptor = viz::ogre::IParameter::dynamicConstCast(adaptor);
                 auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                         m_editorInfo.service.lock(),
                                                                                         m_editorInfo.connections);

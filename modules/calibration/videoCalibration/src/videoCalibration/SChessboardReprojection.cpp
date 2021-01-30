@@ -314,7 +314,7 @@ void SChessboardReprojection::updateChessboardSize()
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
+services::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

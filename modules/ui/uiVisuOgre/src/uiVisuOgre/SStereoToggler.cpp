@@ -22,8 +22,8 @@
 
 #include "uiVisuOgre/SStereoToggler.hpp"
 
-#include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/SRender.hpp>
+#include <viz/ogre/compositor/Core.hpp>
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -89,15 +89,15 @@ void SStereoToggler::updating()
     if(this->confirmAction())
     {
         services::registry::ObjectService::ServiceVectorType renderers =
-            services::OSR::getServices("::fwRenderOgre::SRender");
+            services::OSR::getServices("::sight::viz::ogre::SRender");
 
         const bool enableStereo = this->getIsActive() && this->getIsExecutable();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
 
         for(auto srv : renderers)
         {
-            ::fwRenderOgre::SRender::sptr renderSrv        = ::fwRenderOgre::SRender::dynamicCast(srv);
-            ::fwRenderOgre::SRender::LayerMapType layerMap = renderSrv->getLayers();
+            viz::ogre::SRender::sptr renderSrv        = viz::ogre::SRender::dynamicCast(srv);
+            viz::ogre::SRender::LayerMapType layerMap = renderSrv->getLayers();
 
             auto layerIt = layerMap.find(m_layerId);
 

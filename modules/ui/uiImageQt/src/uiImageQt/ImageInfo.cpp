@@ -66,7 +66,7 @@ ImageInfo::~ImageInfo() noexcept
 
 void ImageInfo::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer
         = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
@@ -94,7 +94,7 @@ void ImageInfo::stopping()
 
 void ImageInfo::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ void ImageInfo::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
+services::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

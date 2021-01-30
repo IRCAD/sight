@@ -75,7 +75,7 @@ void SShowAbout::info(std::ostream& _sstream )
 
 void SShowAbout::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 
     typedef SPTR (core::runtime::ConfigurationElement) ConfigurationElement;
 
@@ -160,14 +160,14 @@ void SShowAbout::updating( )
 
 void SShowAbout::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowAbout::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

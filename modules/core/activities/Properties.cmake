@@ -19,7 +19,7 @@ if(NOT ${ENABLE_QML_APPLICATION})
     list(APPEND DEPENDENCIES
         )
     list(APPEND REQUIREMENTS
-        qt
+        module_ui_qt
         )
     add_definitions ( -DKEEP_OLD_SERVICE )
 endif()

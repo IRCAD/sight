@@ -3,7 +3,7 @@
 <plugin id="OgreViewer" version="@PROJECT_VERSION@" >
 
     <requirement id="module_ui_base" />
-    <requirement id="visuOgre" />
+    <requirement id="module_viz_ogre" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="scene2D" />

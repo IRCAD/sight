@@ -58,8 +58,8 @@ Detail of the ToolBar
 
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgre" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -185,7 +185,7 @@ Detail of the ToolBar
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the first tab -->
-            <service uid="negato1SceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="negato1SceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -198,33 +198,33 @@ Detail of the ToolBar
                 </scene>
             </service>
 
-            <service uid="N1TrackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="N1TrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N1NegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N1NegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="myImage" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="N1MeshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="N1MeshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="meshOnNegato1" />
                 <config layer="default" picker="negato1default" />
             </service>
 
-            <service uid="N1PointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
+            <service uid="N1PointListAdp" type="::sight::modules::viz::ogre::adaptor::SPointList" autoConnect="yes" >
                 <in key="pointList" uid="pointList1" />
                 <config layer="default" color="#619647" radius="5.0" />
             </service>
 
-            <service uid="N1PickerAdp" type="::visuOgreAdaptor::SPicker" >
+            <service uid="N1PickerAdp" type="::sight::modules::viz::ogre::adaptor::SPicker" >
                 <config layer="default" />
             </service>
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the second tab -->
-            <service uid="negato2SceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="negato2SceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -236,28 +236,28 @@ Detail of the ToolBar
                 </scene>
             </service>
 
-            <service uid="N2TrackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="N2TrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N2MeshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="N2MeshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="meshOnNegato2" />
                 <config layer="default" picker="negato2default" />
             </service>
 
-            <service uid="N2PointListAdp" type="::visuOgreAdaptor::SPointList" autoConnect="yes" >
+            <service uid="N2PointListAdp" type="::sight::modules::viz::ogre::adaptor::SPointList" autoConnect="yes" >
                 <in key="pointList" uid="pointList2" />
                 <config layer="default" color="#619647" radius="5.0" />
             </service>
 
-            <service uid="N2PickerAdp" type="::visuOgreAdaptor::SPicker" >
+            <service uid="N2PickerAdp" type="::sight::modules::viz::ogre::adaptor::SPicker" >
                 <config layer="default" />
             </service>
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the Third tab -->
-            <service uid="negato3SceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="negato3SceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -270,26 +270,26 @@ Detail of the ToolBar
                 </scene>
             </service>
 
-            <service uid="N3TrackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="N3TrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N3Mesh1Adp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="N3Mesh1Adp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="meshOnNegato1" />
                 <config layer="default" />
             </service>
 
-            <service uid="N3Mesh2Adp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="N3Mesh2Adp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="meshOnNegato2" />
                 <config layer="default" transform="registrationMatrix" />
             </service>
 
-            <service uid="N3NegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N3NegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="myImage" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="N3TransformAdp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >
+            <service uid="N3TransformAdp" type="::sight::modules::viz::ogre::adaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="registrationMatrix" />
                 <config layer="default" transform="registrationMatrix" />
             </service>

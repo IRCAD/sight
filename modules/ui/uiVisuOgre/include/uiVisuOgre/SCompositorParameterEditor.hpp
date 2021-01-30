@@ -24,13 +24,13 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/SRender.hpp>
-
 #include <QVBoxLayout>
 
 #include <ui/base/editor/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/Layer.hpp>
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -83,7 +83,7 @@ protected:
 
 private:
     /// Slot: update the interface.
-    void updateCompositor(std::string _compositorName, bool _enabled, ::fwRenderOgre::Layer::sptr _layer);
+    void updateCompositor(std::string _compositorName, bool _enabled, viz::ogre::Layer::sptr _layer);
 
     /// Clear the current container
     void clear();

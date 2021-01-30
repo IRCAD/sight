@@ -4,7 +4,7 @@
     <requirement id="module_services" />
     <requirement id="validators" />
     <requirement id="module_ui_base" />
-    <requirement id="visuOgre" />
+    <requirement id="module_viz_ogre" />
     <requirement id="activities" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

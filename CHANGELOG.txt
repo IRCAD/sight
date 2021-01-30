@@ -475,7 +475,7 @@
   * Added new factory for IObjectReader and IObjectWriter and update readers/writers to use it
   * Updated fwCommand : doesn't need to use factory
   * Added new factory for fwXML
-  * Added new factory for VtkRenderWindowInteractorManager and updated visuVTKQt to use it
+  * Added new factory for VtkWindowInteractor and updated visuVTKQt to use it
   * Added new factory for fwMetaConversion
   * Added new factory for fwCamp
   * Added new factory for Gui objects and updated fwGuiQt/fwGuiWx to use new factory

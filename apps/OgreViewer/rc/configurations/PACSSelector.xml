@@ -234,7 +234,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericScenePreviewSrv" type="::fwRenderOgre::SRender" >
+        <service uid="genericScenePreviewSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -244,19 +244,19 @@
             </scene>
         </service>
 
-        <service uid="pNegatoAdp" type="::visuOgreAdaptor::SNegato2D" autoConnect="yes" >
+        <service uid="pNegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="previewImage" />
             <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="pNegatoCameraAdp" type="::visuOgreAdaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="pNegatoCameraAdp" type="::sight::modules::viz::ogre::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="previewImage" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneLocalSrv" type="::fwRenderOgre::SRender" >
+        <service uid="genericSceneLocalSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -267,16 +267,16 @@
             </scene>
         </service>
 
-        <service uid="lNegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+        <service uid="lNegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
             <inout key="image" uid="localImage" />
             <config layer="defaultLayer" priority="1" sliceIndex="axial" interactive="true" />
         </service>
 
-        <service uid="lNegatoCameraAdp" type="::visuOgreAdaptor::STrackballCamera" >
+        <service uid="lNegatoCameraAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
             <config layer="defaultLayer" priority="0" />
         </service>
 
-        <service uid="lTextAdp" type="::visuOgreAdaptor::SText" >
+        <service uid="lTextAdp" type="::sight::modules::viz::ogre::adaptor::SText" >
             <config layer="defaultLayer" x="0.025" y="0.025" hAlign="left" vAlign="top" color="#D25252" />
         </service>
 

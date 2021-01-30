@@ -48,7 +48,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericScene1Srv" type="::fwRenderOgre::SRender" >
+        <service uid="genericScene1Srv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -57,7 +57,7 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="video1Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
             <config layer="video" radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
@@ -65,7 +65,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericScene2Srv" type="::fwRenderOgre::SRender" >
+        <service uid="genericScene2Srv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -74,7 +74,7 @@
             </scene>
         </service>
 
-        <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="video2Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId2}" />
             <in key="pointList" uid="${pointListId2}" />
             <config layer="video" radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />

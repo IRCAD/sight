@@ -2503,7 +2503,7 @@ Add a test in CMakeLists.txt to display a warning message if there are links bet
 Add a new technique to the volume rendering in order to display the depth of the volume.
 
 * RayTracedVolumeDepth_FP: new fragment shader that displays the volume depth.
-* OffScreenRenderWindowInteractorManager: fix the rendering by calling the specific target instead of all targets.
+* OffScreenWindowInteractor: fix the rendering by calling the specific target instead of all targets.
 
 Remove a double connection in `::visuOgreAdaptor::SInteractorStyle`.
 

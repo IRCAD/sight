@@ -24,8 +24,6 @@
 
 #include <data/Composite.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -46,6 +44,8 @@
 #include <QWidget>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -188,12 +188,12 @@ void SCoreCompositorEditor::refreshRenderers()
 
     // Fill layer box with all enabled layers
     services::registry::ObjectService::ServiceVectorType renderers =
-        services::OSR::getServices("::fwRenderOgre::SRender");
+        services::OSR::getServices("::sight::viz::ogre::SRender");
 
     bool is3DLayer = false;
     for(auto srv : renderers)
     {
-        ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
+        viz::ogre::SRender::sptr render = viz::ogre::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -255,22 +255,22 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     {
         switch (layer->getTransparencyTechnique())
         {
-            case ::fwRenderOgre::compositor::DEFAULT:
+            case viz::ogre::compositor::DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
                 break;
-            case ::fwRenderOgre::compositor::DEPTHPEELING:
+            case viz::ogre::compositor::DEPTHPEELING:
                 m_transparencyButtonGroup->button(1)->setChecked(true);
                 break;
-            case ::fwRenderOgre::compositor::DUALDEPTHPEELING:
+            case viz::ogre::compositor::DUALDEPTHPEELING:
                 m_transparencyButtonGroup->button(2)->setChecked(true);
                 break;
-            case ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT:
+            case viz::ogre::compositor::WEIGHTEDBLENDEDOIT:
                 m_transparencyButtonGroup->button(3)->setChecked(true);
                 break;
-            case ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY:
+            case viz::ogre::compositor::HYBRIDTRANSPARENCY:
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
-            case ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING:
+            case viz::ogre::compositor::CELSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
@@ -301,27 +301,27 @@ void SCoreCompositorEditor::onEditTransparency(int index)
         {
             case 0:
                 transparencyUpdated = layer->setTransparencyTechnique(
-                    ::fwRenderOgre::compositor::DEFAULT);
+                    viz::ogre::compositor::DEFAULT);
                 break;
             case 1:
                 transparencyUpdated = layer->setTransparencyTechnique(
-                    ::fwRenderOgre::compositor::DEPTHPEELING);
+                    viz::ogre::compositor::DEPTHPEELING);
                 break;
             case 2:
                 transparencyUpdated = layer->setTransparencyTechnique(
-                    ::fwRenderOgre::compositor::DUALDEPTHPEELING);
+                    viz::ogre::compositor::DUALDEPTHPEELING);
                 break;
             case 3:
                 transparencyUpdated = layer->setTransparencyTechnique(
-                    ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT);
+                    viz::ogre::compositor::WEIGHTEDBLENDEDOIT);
                 break;
             case 4:
                 transparencyUpdated = layer->setTransparencyTechnique(
-                    ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY);
+                    viz::ogre::compositor::HYBRIDTRANSPARENCY);
                 break;
             case 5:
                 transparencyUpdated = layer->setTransparencyTechnique(
-                    ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING);
+                    viz::ogre::compositor::CELSHADING_DEPTHPEELING);
                 break;
         }
 

@@ -24,9 +24,6 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
@@ -36,6 +33,9 @@
 #include <QVBoxLayout>
 
 #include <ui/base/editor/IEditor.hpp>
+
+#include <viz/ogre/compositor/ChainManager.hpp>
+#include <viz/ogre/Layer.hpp>
 
 #include <vector>
 
@@ -60,7 +60,7 @@ public:
      * @name Slots API
      * @{
      */
-    typedef core::com::Slot< void (::fwRenderOgre::Layer::sptr) > InitLayerSlotType;
+    typedef core::com::Slot< void (viz::ogre::Layer::sptr) > InitLayerSlotType;
 
     /// Slot: Populate the list of available compositors for the selected layer
     UIVISUOGRE_API static const core::com::Slots::SlotKeyType s_INIT_COMPOSITOR_LIST_SLOT;
@@ -106,7 +106,7 @@ private Q_SLOTS:
 
 private:
     /// Slot: Populate the list of available compositors for the selected layer
-    void initCompositorList(::fwRenderOgre::Layer::sptr layer);
+    void initCompositorList(viz::ogre::Layer::sptr layer);
 
     /// Retrieves all the layers from the application thanks to the render services
     void refreshRenderers();
@@ -131,10 +131,10 @@ private:
 
     QPointer<QListWidget> m_compositorChain;
 
-    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
-    ::fwRenderOgre::Layer::wptr m_currentLayer;
+    std::vector< viz::ogre::Layer::wptr > m_layers;
+    viz::ogre::Layer::wptr m_currentLayer;
 
-    ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
+    viz::ogre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
     core::com::helper::SigSlotConnection m_connections;

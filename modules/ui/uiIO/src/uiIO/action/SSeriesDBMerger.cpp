@@ -77,7 +77,7 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 void SSeriesDBMerger::configuring()
 {
 
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -137,14 +137,14 @@ void SSeriesDBMerger::updating( )
 
 void SSeriesDBMerger::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

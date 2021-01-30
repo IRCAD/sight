@@ -6,7 +6,7 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_ui_qt                   # Start the module, load qt implementation of module_ui_base
+    module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
 
     # Objects declaration
     module_services             # fwService

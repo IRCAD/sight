@@ -1,7 +1,7 @@
 <plugin id="Tuto15Matrix" version="@PROJECT_VERSION@" >
 
     <requirement id="module_ui_base" />
-    <requirement id="visuOgre" />
+    <requirement id="module_viz_ogre" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
 
@@ -119,7 +119,7 @@
             Mesh view:
             This scene display two meshes.
         -->
-        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+        <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -137,17 +137,17 @@
             </scene>
         </service>
 
-        <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+        <service uid="trackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
             <config layer="default" priority="0" />
         </service>
 
         <!-- Mesh adaptors -->
-        <service uid="mesh1Adp" type="::visuOgreAdaptor::SMesh"  autoConnect="yes" >
+        <service uid="mesh1Adp" type="::sight::modules::viz::ogre::adaptor::SMesh"  autoConnect="yes" >
             <inout key="mesh" uid="mesh" />
             <config layer="default" transform="transRotMat" />
         </service>
 
-        <service uid="mesh2Adp" type="::visuOgreAdaptor::SMesh"  autoConnect="yes" >
+        <service uid="mesh2Adp" type="::sight::modules::viz::ogre::adaptor::SMesh"  autoConnect="yes" >
             <inout key="mesh" uid="mesh" />
             <config layer="default" transform="rotTransMat" />
         </service>
@@ -158,34 +158,34 @@
             the ::sight::data::TransformationMatrix3D is modified, it updates the vtkTransform, and vice
             versa.
         -->
-        <service uid="matrix1Adp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >
+        <service uid="matrix1Adp" type="::sight::modules::viz::ogre::adaptor::STransform" autoConnect="yes" >
             <inout key="transform" uid="transRotMatrix" />
             <config layer="default" transform="transRotMat" />
         </service>
 
-        <service uid="matrix2Adp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >
+        <service uid="matrix2Adp" type="::sight::modules::viz::ogre::adaptor::STransform" autoConnect="yes" >
             <inout key="transform" uid="rotTransMatrix" />
             <config layer="default" transform="rotTransMat" />
         </service>
 
-        <service uid="axis1Adp" type="::visuOgreAdaptor::SAxis" >
+        <service uid="axis1Adp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
             <config layer="default" length="10" transform="transRotMat" label="false" origin="true" originColor="#6997BB" />
         </service>
 
-        <service uid="axis2Adp" type="::visuOgreAdaptor::SAxis" >
+        <service uid="axis2Adp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
             <config layer="default" length="10" transform="rotTransMat" label="false" origin="true" originColor="#D25252" />
         </service>
 
-        <service uid="originAxisAdp" type="::visuOgreAdaptor::SAxis" >
+        <service uid="originAxisAdp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
             <config layer="default" length="10" label="false" origin="true" originColor="#000000" />
         </service>
 
-        <service uid="text1Adp" type="::visuOgreAdaptor::SText" >
+        <service uid="text1Adp" type="::sight::modules::viz::ogre::adaptor::SText" >
             <text>Translation-Rotation transform</text>
             <config layer="default" color="#FF0000" fontSize="15" hAlign="left" vAlign="bottom" />
         </service>
 
-        <service uid="text2Adp" type="::visuOgreAdaptor::SText" >
+        <service uid="text2Adp" type="::sight::modules::viz::ogre::adaptor::SText" >
             <text>Rotation-Translation transform</text>
             <config layer="default" color="#00FF00" fontSize="15" hAlign="right" vAlign="bottom" />
         </service>

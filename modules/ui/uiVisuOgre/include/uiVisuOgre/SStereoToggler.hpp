@@ -26,9 +26,9 @@
 
 #include <core/com/Signals.hpp>
 
-#include <fwRenderOgre/Layer.hpp>
-
 #include <ui/base/IActionSrv.hpp>
+
+#include <viz/ogre/Layer.hpp>
 
 namespace uiVisuOgre
 {
@@ -81,14 +81,14 @@ protected:
 
 private:
 
-    using StereoModeType      = ::fwRenderOgre::compositorcore::StereoModeType;
+    using StereoModeType      = viz::ogre::compositorcore::StereoModeType;
     using StereoActiveSigType = core::com::Signal< void(bool) >;
 
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;
 
     /// Mode that is toggled.
-    ::fwRenderOgre::compositorcore::StereoModeType m_stereoMode { StereoModeType::NONE };
+    viz::ogre::compositorcore::StereoModeType m_stereoMode { StereoModeType::NONE };
 
     /// Sent at each update, notifies if stereo is enabled.
     StereoActiveSigType::sptr m_stereoActiveSig;

@@ -143,7 +143,7 @@ void SMatrixViewer::clearLabels()
 
 // ------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
+services::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_MATRIX_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

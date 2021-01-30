@@ -24,8 +24,6 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/ILight.hpp>
-
 #include <OGRE/OgreColourValue.h>
 
 #include <QComboBox>
@@ -38,6 +36,8 @@
 
 #include <ui/base/editor/IEditor.hpp>
 
+#include <viz/ogre/ILight.hpp>
+
 namespace uiVisuOgre
 {
 
@@ -45,7 +45,7 @@ namespace uiVisuOgre
  * @brief This service creates a user interface to manage a light adaptor.
  *
  * @section Slots Slots
- * - \b editLight(::fwRenderOgre::ILight::sptr): loads the editor with the parameters from the selected light.
+ * - \b editLight(viz::ogre::ILight::sptr): loads the editor with the parameters from the selected light.
  *
  * @section XML XML Configuration
  *
@@ -91,7 +91,7 @@ private:
      * @brief SLOT: sets the current light adaptor to edit.
      * @param _lightAdaptor The light adaptor to edit.
      */
-    void editLight(::fwRenderOgre::ILight::sptr _lightAdaptor);
+    void editLight(viz::ogre::ILight::sptr _lightAdaptor);
 
     /**
      * @brief Opens a QColorDialog to pick a new color that is returned.
@@ -137,7 +137,7 @@ private:
     QPointer<QPushButton> m_zReset;
 
     /// Contains the current selected light.
-    ::fwRenderOgre::ILight::sptr m_currentLight;
+    viz::ogre::ILight::sptr m_currentLight;
 
 private Q_SLOTS:
 

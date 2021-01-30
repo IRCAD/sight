@@ -148,7 +148,7 @@ void SColourImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SColourImageMasking::getAutoConnections() const
+services::IService::KeyConnectionsMap SColourImageMasking::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

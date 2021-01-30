@@ -69,7 +69,7 @@ PointEditor::~PointEditor() noexcept
 
 void PointEditor::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -113,7 +113,7 @@ void PointEditor::stopping()
 
 void PointEditor::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

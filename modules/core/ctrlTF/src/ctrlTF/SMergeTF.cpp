@@ -61,7 +61,7 @@ void SMergeTF::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SMergeTF::getAutoConnections() const
+services::IService::KeyConnectionsMap SMergeTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TF_POOL_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -67,7 +67,7 @@ void LaunchBrowserActionService::info(std::ostream& _sstream )
 
 void LaunchBrowserActionService::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 
     std::vector < Configuration > urlConfig = m_configuration->find("url");
     if(!urlConfig.empty())
@@ -102,14 +102,14 @@ void LaunchBrowserActionService::updating()
 
 void LaunchBrowserActionService::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void LaunchBrowserActionService::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 //------------------------------------------------------------------------------
 

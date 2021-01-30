@@ -138,7 +138,7 @@ void SMatrixTLSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
+services::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );

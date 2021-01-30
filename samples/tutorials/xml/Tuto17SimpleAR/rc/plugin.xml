@@ -16,7 +16,7 @@
 <plugin id="Tuto17SimpleAR" version="@PROJECT_VERSION@" >
 
     <requirement id="module_ui_base" />
-    <requirement id="visuOgre" />
+    <requirement id="module_viz_ogre" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="module_ui_base" />
@@ -259,7 +259,7 @@
 
             <!-- Scene in which the video and the 3D will be rendered -->
             <!-- In this tutorial, we move the camera and the marker mesh is fixed -->
-            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
                 <!-- It is essential to use the 'sync' mode when doing AR -->
                 <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
                 <scene renderMode="sync" >
@@ -277,34 +277,34 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="sourceFrame" />
                 <config layer="video" />
             </service>
 
-            <service uid="undistortAdp" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes" >
+            <service uid="undistortAdp" type="::sight::modules::viz::ogre::adaptor::SCompositorParameter" autoConnect="yes" >
                 <inout key="parameter" uid="undistortMap" />
                 <config layer="video" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
 
-            <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
+            <service uid="axisAdp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
                 <config layer="default" length="30" origin="true" label="false" />
             </service>
 
             <!-- Camera for the 3D layer -->
-            <service uid="cameraAdp" type="::visuOgreAdaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="cameraToMarker" />
                 <in key="calibration" uid="camera" />
                 <config layer="default" />
             </service>
 
             <!-- Cube displayed on top of the marker plane -->
-            <service uid="cubeAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="cubeAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="cubeMesh" />
                 <config layer="default" autoresetcamera="no" />
             </service>
 
-            <service uid="distortAdp" type="::visuOgreAdaptor::SCompositorParameter" autoConnect="yes" >
+            <service uid="distortAdp" type="::sight::modules::viz::ogre::adaptor::SCompositorParameter" autoConnect="yes" >
                 <inout key="parameter" uid="distortMap" />
                 <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>

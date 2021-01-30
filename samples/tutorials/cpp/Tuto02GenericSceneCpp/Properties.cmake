@@ -9,8 +9,8 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     module_io_base             # Start the module, load file location or window module_io_base
     module_ui_qt                   # Start the module, allow dark theme
-    visuOgre                # Start the module, allow to use fwRenderOgre
-    visuOgreQt              # Enable Ogre to render things in Qt window
+    module_viz_ogre                # Start the module, allow to use viz_ogre
+    module_viz_ogreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
     module_services             # fwService
@@ -30,7 +30,6 @@ set( REQUIREMENTS
     uiImageQt
 
     # Generic Scene
-    visuOgreAdaptor
 )
 set( WARNINGS_AS_ERRORS ON )
 

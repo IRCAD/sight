@@ -62,14 +62,14 @@ SShowDistance::~SShowDistance() noexcept
 
 void SShowDistance::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowDistance::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void SShowDistance::updating()
 
     if(!::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
-        this->::ui::base::IActionSrv::setIsActive(false);
+        this->ui::base::IActionSrv::setIsActive(false);
     }
     else
     {
@@ -93,7 +93,7 @@ void SShowDistance::updating()
         image->setField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // Manage hide/show from the field information.
-        this->::ui::base::IActionSrv::setIsActive(!toShow);
+        this->ui::base::IActionSrv::setIsActive(!toShow);
 
         const auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
             data::Image::s_DISTANCE_DISPLAYED_SIG);
@@ -108,12 +108,12 @@ void SShowDistance::updating()
 
 void SShowDistance::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
+services::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
@@ -131,7 +131,7 @@ void SShowDistance::showDistance(bool)
         image->getField< data::Boolean >(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                              true));
 
-    this->::ui::base::IActionSrv::setIsActive( !(SShowDistances->value()) );
+    this->ui::base::IActionSrv::setIsActive( !(SShowDistances->value()) );
 }
 
 //------------------------------------------------------------------------------

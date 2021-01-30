@@ -125,7 +125,7 @@ void STextStatus::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+services::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
     connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

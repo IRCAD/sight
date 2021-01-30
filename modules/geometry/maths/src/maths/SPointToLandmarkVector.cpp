@@ -29,9 +29,9 @@
 #include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
-
 #include <glm/glm.hpp>
+
+#include <services/macros.hpp>
 
 namespace maths
 {
@@ -167,7 +167,7 @@ void SPointToLandmarkVector::updating()
 
 // -----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
+services::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
 
     services::IService::KeyConnectionsMap connections;

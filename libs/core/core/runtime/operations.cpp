@@ -194,7 +194,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     try
     {
         Runtime* rntm                  = Runtime::getDefault();
-        std::shared_ptr<Module> module = rntm->findModuleByPath( moduleFolder );
+        std::shared_ptr<Module> module = rntm->findModule( moduleFolder );
 
         if(module == nullptr)
         {

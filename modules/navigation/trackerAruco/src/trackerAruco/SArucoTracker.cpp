@@ -103,7 +103,7 @@ SArucoTracker::~SArucoTracker() noexcept
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
+services::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

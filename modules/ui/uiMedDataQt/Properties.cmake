@@ -7,7 +7,7 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    qt
+    module_ui_qt
     services
     io_base
     )

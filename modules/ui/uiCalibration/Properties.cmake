@@ -8,5 +8,5 @@ set( DEPENDENCIES
         io_base
         services
         ui_base
-        qt
+        module_ui_qt
 )

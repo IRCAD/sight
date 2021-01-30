@@ -55,8 +55,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgre" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -254,7 +254,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="negato1SceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="negato1SceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -265,23 +265,23 @@
                 </scene>
             </service>
 
-            <service uid="N1TrackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="N1TrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N1SnapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo" >
+            <service uid="N1SnapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot1" />
                 <config layer="default" />
             </service>
 
-            <service uid="N1NegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N1NegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image1" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="negato2SceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="negato2SceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -292,23 +292,23 @@
                 </scene>
             </service>
 
-            <service uid="N2TrackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="N2TrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N2SnapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo" >
+            <service uid="N2SnapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot2" />
                 <config layer="default" />
             </service>
 
-            <service uid="N2NegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N2NegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image2" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="negato3SceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="negato3SceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -319,16 +319,16 @@
                 </scene>
             </service>
 
-            <service uid="N3TrackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="N3TrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N3SnapshotAdp" type="::visuOgreAdaptor::SFragmentsInfo" >
+            <service uid="N3SnapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot3" />
                 <config layer="default" />
             </service>
 
-            <service uid="N3NegatoAdp" type="::visuOgreAdaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N3NegatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="imageResult" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>

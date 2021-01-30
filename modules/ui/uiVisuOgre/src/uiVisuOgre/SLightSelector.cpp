@@ -31,8 +31,6 @@
 #include <data/Composite.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-
 #include <services/macros.hpp>
 #include <services/registry/ObjectService.hpp>
 
@@ -46,6 +44,8 @@
 #include <QWidget>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/SRender.hpp>
 
 namespace uiVisuOgre
 {
@@ -143,7 +143,7 @@ void SLightSelector::stopping()
 
     for(auto& light : m_managedLightAdaptors)
     {
-        ::fwRenderOgre::ILight::destroyLightAdaptor(light.m_light);
+        viz::ogre::ILight::destroyLightAdaptor(light.m_light);
     }
     m_managedLightAdaptors.clear();
 
@@ -179,7 +179,7 @@ void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem
 
 void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 {
-    ::fwRenderOgre::ILight::sptr checkedLightAdaptor =
+    viz::ogre::ILight::sptr checkedLightAdaptor =
         this->retrieveLightAdaptor(_item->text().toStdString());
 
     checkedLightAdaptor->switchOn(_item->checkState() == ::Qt::Checked);
@@ -201,7 +201,7 @@ void SLightSelector::onAddLight(bool)
 
         auto existingLight =
             std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
-                         [lightName](::fwRenderOgre::ILight::sptr lightAdaptor)
+                         [lightName](viz::ogre::ILight::sptr lightAdaptor)
             {
                 return lightAdaptor->getName() == lightName;
             });
@@ -219,7 +219,7 @@ void SLightSelector::onRemoveLight(bool)
 {
     if(m_currentLight)
     {
-        ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
+        viz::ogre::Layer::sptr currentLayer = m_currentLayer.lock();
 
         const std::vector< Light >::iterator position
             = std::find_if(m_managedLightAdaptors.begin(), m_managedLightAdaptors.end(), [&](const Light& _light)
@@ -238,7 +238,7 @@ void SLightSelector::onRemoveLight(bool)
         }
         else
         {
-            ::fwRenderOgre::ILight::destroyLightAdaptor(m_currentLight);
+            viz::ogre::ILight::destroyLightAdaptor(m_currentLight);
         }
         m_currentLight.reset();
 
@@ -262,8 +262,8 @@ void SLightSelector::onEditAmbientColor(bool)
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 
-    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
-    ::Ogre::ColourValue ogreColor     = layer->getSceneManager()->getAmbientLight();
+    viz::ogre::Layer::sptr layer = m_currentLayer.lock();
+    ::Ogre::ColourValue ogreColor = layer->getSceneManager()->getAmbientLight();
 
     QColor qColor = QColorDialog::getColor(::uiVisuOgre::helper::Utils::converOgreColorToQColor(ogreColor),
                                            container,
@@ -277,7 +277,7 @@ void SLightSelector::onEditAmbientColor(bool)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::initLightList(::fwRenderOgre::Layer::sptr _layer)
+void SLightSelector::initLightList(viz::ogre::Layer::sptr _layer)
 {
     m_currentLayer = m_layers[0];
 
@@ -294,12 +294,12 @@ void SLightSelector::refreshLayers()
     m_layersBox->clear();
 
     services::registry::ObjectService::ServiceVectorType renderers =
-        services::OSR::getServices("::fwRenderOgre::SRender");
+        services::OSR::getServices("::sight::viz::ogre::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(auto srv : renderers)
     {
-        ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
+        viz::ogre::SRender::sptr render = viz::ogre::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -308,7 +308,7 @@ void SLightSelector::refreshLayers()
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
-            m_connections.connect(layerMap.second, ::fwRenderOgre::Layer::s_INIT_LAYER_SIG,
+            m_connections.connect(layerMap.second, viz::ogre::Layer::s_INIT_LAYER_SIG,
                                   this->getSptr(), s_INIT_LIGHT_LIST_SLOT);
         }
     }
@@ -343,15 +343,15 @@ void SLightSelector::updateLightsList()
 
 void SLightSelector::createLightAdaptor(const std::string& _name)
 {
-    ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
+    viz::ogre::Layer::sptr currentLayer = m_currentLayer.lock();
 
     if(currentLayer)
     {
         data::Color::sptr lightDiffuseColor  = data::Color::New();
         data::Color::sptr lightSpecularColor = data::Color::New();
 
-        ::fwRenderOgre::ILight::sptr lightAdaptor = ::fwRenderOgre::ILight::createLightAdaptor(lightDiffuseColor,
-                                                                                               lightSpecularColor);
+        viz::ogre::ILight::sptr lightAdaptor = viz::ogre::ILight::createLightAdaptor(lightDiffuseColor,
+                                                                                     lightSpecularColor);
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
@@ -368,11 +368,11 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         this->updateLightsList();
 
         services::registry::ObjectService::ServiceVectorType materialServices =
-            services::OSR::getServices("::visuOgreAdaptor::SMaterial");
+            services::OSR::getServices("::modules::viz::ogre::adaptor::SMaterial");
 
         for(auto srv : materialServices)
         {
-            ::fwRenderOgre::IAdaptor::sptr materialAdaptor = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
+            viz::ogre::IAdaptor::sptr materialAdaptor = viz::ogre::IAdaptor::dynamicCast(srv);
 
             if(materialAdaptor->getLayerID() == currentLayer->getLayerID())
             {
@@ -385,10 +385,10 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-::fwRenderOgre::ILight::sptr SLightSelector::retrieveLightAdaptor(const std::string& _name) const
+::viz::ogre::ILight::sptr SLightSelector::retrieveLightAdaptor(const std::string& _name) const
 {
     auto it = std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
-                           [_name](::fwRenderOgre::ILight::sptr lightAdaptor)
+                           [_name](viz::ogre::ILight::sptr lightAdaptor)
         {
             return lightAdaptor->getName() == _name;
         });

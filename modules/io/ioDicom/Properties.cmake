@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwDicomIOFilter
     fwDicomIOFilterQt
     ui_base
-    qt
+    module_ui_qt
     services
     io_base
     data

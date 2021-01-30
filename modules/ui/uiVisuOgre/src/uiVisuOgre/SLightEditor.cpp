@@ -28,8 +28,6 @@
 
 #include <data/Composite.hpp>
 
-#include <fwRenderOgre/helper/Scene.hpp>
-
 #include <services/macros.hpp>
 
 #include <QColorDialog>
@@ -39,6 +37,8 @@
 #include <QVBoxLayout>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/ogre/helper/Scene.hpp>
 
 namespace uiVisuOgre
 {
@@ -83,8 +83,8 @@ void SLightEditor::starting()
 
     m_lightTypeBox = new QComboBox();
     m_lightTypeBox->addItems(QStringList() <<
-                             ::fwRenderOgre::ILight::s_POINT_LIGHT.c_str() <<
-                             ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str());
+                             viz::ogre::ILight::s_POINT_LIGHT.c_str() <<
+                             viz::ogre::ILight::s_DIRECTIONAL_LIGHT.c_str());
     m_lightTypeBox->setEnabled(false);
 
     m_visualFeedback = new QPushButton("Feedback");
@@ -99,12 +99,12 @@ void SLightEditor::starting()
 
     m_thetaSlider = new QSlider(::Qt::Horizontal);
     m_thetaSlider->setMinimum(0);
-    m_thetaSlider->setMaximum(::fwRenderOgre::ILight::s_OFFSET_RANGE);
+    m_thetaSlider->setMaximum(viz::ogre::ILight::s_OFFSET_RANGE);
     m_thetaSlider->setEnabled(false);
 
     m_phiSlider = new QSlider(::Qt::Horizontal);
     m_phiSlider->setMinimum(0);
-    m_phiSlider->setMaximum(::fwRenderOgre::ILight::s_OFFSET_RANGE);
+    m_phiSlider->setMaximum(viz::ogre::ILight::s_OFFSET_RANGE);
     m_phiSlider->setEnabled(false);
 
     m_xTranslation = new QSlider(::Qt::Horizontal);
@@ -261,26 +261,26 @@ void SLightEditor::onEditSpecularColor(bool)
 
 void SLightEditor::onEditThetaOffset(int _value)
 {
-    m_currentLight->setThetaOffset(static_cast<float>(_value - ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
+    m_currentLight->setThetaOffset(static_cast<float>(_value - viz::ogre::ILight::s_OFFSET_RANGE / 2));
 }
 
 //------------------------------------------------------------------------------
 
 void SLightEditor::onEditPhiOffset(int _value)
 {
-    m_currentLight->setPhiOffset(static_cast<float>(_value - ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
+    m_currentLight->setPhiOffset(static_cast<float>(_value - viz::ogre::ILight::s_OFFSET_RANGE / 2));
 }
 
 //------------------------------------------------------------------------------
 
 void SLightEditor::onEditType(const QString& _type)
 {
-    if(_type == ::fwRenderOgre::ILight::s_POINT_LIGHT.c_str())
+    if(_type == viz::ogre::ILight::s_POINT_LIGHT.c_str())
     {
         m_currentLight->setType(::Ogre::Light::LT_POINT);
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
-        if(m_currentLight->getName().find(::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
+        if(m_currentLight->getName().find(viz::ogre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_xTranslation->setEnabled(true);
             m_yTranslation->setEnabled(true);
@@ -290,10 +290,10 @@ void SLightEditor::onEditType(const QString& _type)
             m_zReset->setEnabled(true);
         }
     }
-    else if(_type == ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str())
+    else if(_type == viz::ogre::ILight::s_DIRECTIONAL_LIGHT.c_str())
     {
         m_currentLight->setType(::Ogre::Light::LT_DIRECTIONAL);
-        if(m_currentLight->getName().find(::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
+        if(m_currentLight->getName().find(viz::ogre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_thetaSlider->setEnabled(true);
             m_phiSlider->setEnabled(true);
@@ -400,13 +400,13 @@ void SLightEditor::onResetZTranslation(bool)
 ::Ogre::Node* SLightEditor::getLightNode() const
 {
     ::Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
-    ::Ogre::Node* const lightNode = ::fwRenderOgre::helper::Scene::getNodeById(m_currentLight->getTransformId(), root);
+    ::Ogre::Node* const lightNode = viz::ogre::helper::Scene::getNodeById(m_currentLight->getTransformId(), root);
     return lightNode;
 }
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
+void SLightEditor::editLight(viz::ogre::ILight::sptr _lightAdaptor)
 {
     m_currentLight = _lightAdaptor;
     if(_lightAdaptor)
@@ -420,7 +420,7 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         m_specularColorBtn->setEnabled(true);
         m_lightTypeBox->setEnabled(true);
 
-        if(m_currentLight->getName().find(::fwRenderOgre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
+        if(m_currentLight->getName().find(viz::ogre::Layer::s_DEFAULT_LIGHT_NAME) == std::string::npos)
         {
             m_visualFeedback->setEnabled(true);
             if(m_currentLight->getType() == ::Ogre::Light::LT_DIRECTIONAL)
@@ -458,12 +458,12 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         m_visualFeedback->setChecked(m_currentLight->isVisualFeedbackOn());
 
         m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
-                                                 ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
+                                                 viz::ogre::ILight::s_OFFSET_RANGE / 2));
         m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() +
-                                               ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
+                                               viz::ogre::ILight::s_OFFSET_RANGE / 2));
 
         ::Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
-        const ::Ogre::Node* const lightNode = ::fwRenderOgre::helper::Scene::getNodeById(
+        const ::Ogre::Node* const lightNode = viz::ogre::helper::Scene::getNodeById(
             m_currentLight->getTransformId(), root);
         const ::Ogre::Vector3 currentPos = lightNode->getPosition();
 

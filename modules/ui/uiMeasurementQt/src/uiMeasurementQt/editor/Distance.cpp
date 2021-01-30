@@ -71,7 +71,7 @@ Distance::~Distance() noexcept
 
 void Distance::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -106,7 +106,7 @@ void Distance::stopping()
 
 void Distance::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

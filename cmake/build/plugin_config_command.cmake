@@ -15,20 +15,18 @@ if(REQUIREMENT_LIST)
 endif()
 
 # Add each service to the extension list
-file(TO_CMAKE_PATH "${PROJECT_DIR}/include" PRJ_INCLUDE_DIR)
 
 file(GLOB_RECURSE PRJ_CPP_FILES  "${PROJECT_DIR}/*.cpp")
 
 foreach(CPP_FILE ${PRJ_CPP_FILES})
     #find associated .hpp file to find service description in doxygen
     file(TO_CMAKE_PATH ${CPP_FILE} CPP_FILE)
-    string(REPLACE "${PRJ_SRC_DIR}" "" HPP_FILE ${CPP_FILE})
+    string(REPLACE "${PROJECT_DIR}/" "" HPP_FILE ${CPP_FILE})
     string(REPLACE ".cpp" ".hpp" HPP_FILE ${HPP_FILE})
-    set(HPP_FILE "${PROJECT_DIR}/${HPP_FILE}")
-    file(TO_CMAKE_PATH ${HPP_FILE} HPP_FILE)
+    file(TO_CMAKE_PATH ${PROJECT_DIR}/${HPP_FILE} HPP_FILE)
 
     unset(SRV_DESC)
-    if(EXISTS ${HPP_FILE})
+    if(EXISTS "${HPP_FILE}")
         set(BRIEF_REGEX "[ /*]*@brief ([^\n]+)")
         file(STRINGS ${HPP_FILE} HPP_FILE_CONTENT NEWLINE_CONSUME)
         if("${HPP_FILE_CONTENT}" MATCHES ${BRIEF_REGEX})
@@ -71,6 +69,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                                    "    </extension>")
     else()
 
+    message("11 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " ${SRV_TYPE})
         # Guess everything from the doxygen
 
         # 1. Find the service type from fwCoreServiceClassDefinitionsMacro (old macro) or fwCoreServiceMacro (new macro),
@@ -86,6 +85,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
             string(STRIP ${CMAKE_MATCH_2} SRV_TYPE)
 
 
+            message("22 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " ${SRV_TYPE})
             # 2. Find the service implementation from the XML configuration doxygen
             set(SRV_IMPL_REGEX "<service[\n\t\r ]*(uid[\n\t\r ]*=[\n\t\r ]*\".*\")?[\n\t\r ]*type[\n\t\r ]*=[\n\t\r ]*\"([:a-zA-Z0-9_]*)\".*>")
 
@@ -106,8 +106,8 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                         string(STRIP ${CMAKE_MATCH_1} OBJECT_KEY)
                         string(STRIP ${CMAKE_MATCH_2} OBJECT_IMPL)
 
-                        list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">${OBJECT_IMPL}</object>")
-                        list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, ${OBJECT_IMPL} )\n")
+                        list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">sight::${OBJECT_IMPL}</object>")
+                        list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, sight::${OBJECT_IMPL} )\n")
 
                         set(OBJECT_INCLUDE_REGEX "(::([a-zA-Z0-9_]*))*")
                         # check if the object implementation matches the regex.
@@ -148,14 +148,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                 list(APPEND EXTENSION_LIST "    </extension>\n")
 
                 # 5. Add the include for each hpp file
-                set(HPP_REGEX ".*/include/(.*)")
-                if("${HPP_FILE}" MATCHES ${HPP_REGEX})
-                    # Shorten include path
-                    list(APPEND INCLUDE_SERVICES "#include \"${CMAKE_MATCH_1}\"")
-                else()
-                    # Full path otherwise
-                    list(APPEND INCLUDE_SERVICES "#include \"${HPP_FILE}\"")
-                endif()
+                list(APPEND INCLUDE_SERVICES "#include \"${HPP_FILE}\"")
 
                 list(APPEND COPY_COMMAND_DEPENDS "${HPP_FILE}" )
 

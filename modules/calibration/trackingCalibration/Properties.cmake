@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    qt
+    module_ui_qt
     services
     ui_base
     geometry_data

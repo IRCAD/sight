@@ -272,7 +272,7 @@ void SAutomaticRegistration::stopping()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
+services::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
     connections.push(s_TARGET_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

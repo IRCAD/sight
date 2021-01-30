@@ -81,7 +81,7 @@ void SDepthImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
+services::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

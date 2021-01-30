@@ -125,7 +125,7 @@ void STransformLandmark::updating()
 
 // -----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() const
+services::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -162,7 +162,7 @@
 
         <!-- ******************************* Begin Generic Scene (Distance map)******************************* -->
 
-        <service uid="gsDistanceMapSrv" type="::fwRenderOgre::SRender" >
+        <service uid="gsDistanceMapSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -171,7 +171,7 @@
             </scene>
         </service>
 
-        <service uid="videoDMAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="videoDMAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="imageDepth" />
             <in key="tf" uid="tfDepth" />
             <config layer="default" />
@@ -179,7 +179,7 @@
 
         <!-- ******************************* Begin Generic Scene (Video) ******************************* -->
 
-        <service uid="gsVideoSrv" type="::fwRenderOgre::SRender" >
+        <service uid="gsVideoSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -188,14 +188,14 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="imageVideo" />
             <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene (Depth) ******************************* -->
 
-        <service uid="gsDepthSrv" type="::fwRenderOgre::SRender" >
+        <service uid="gsDepthSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -204,7 +204,7 @@
             </scene>
         </service>
 
-        <service uid="videoDAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="videoDAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotDepth" />
             <in key="tf" uid="tfDepth" />
             <config layer="default" />
@@ -212,7 +212,7 @@
 
         <!-- ******************************* Begin Generic Scene (Color) ******************************* -->
 
-        <service uid="gsColorSrv" type="::fwRenderOgre::SRender" >
+        <service uid="gsColorSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -221,14 +221,14 @@
             </scene>
         </service>
 
-        <service uid="videoCAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="videoCAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotColor" />
             <config layer="default" />
         </service>
 
         <!-- ******************************* Begin Generic Scene (IR) ******************************* -->
 
-        <service uid="gsInfraRedSrv" type="::fwRenderOgre::SRender" >
+        <service uid="gsInfraRedSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -237,7 +237,7 @@
             </scene>
         </service>
 
-        <service uid="videoIRAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="videoIRAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotIR" />
             <config layer="default" />
         </service>

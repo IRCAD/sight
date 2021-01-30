@@ -441,7 +441,7 @@ DumpEditor::~DumpEditor() noexcept
 
 void DumpEditor::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer
         = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
@@ -532,7 +532,7 @@ void DumpEditor::stopping()
 
 void DumpEditor::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

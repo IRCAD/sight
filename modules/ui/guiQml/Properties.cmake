@@ -6,7 +6,7 @@ set( START ON )
 set( DEPENDENCIES
     core
     fwQml
-    qt
+    module_ui_qt
     fwGuiQml
     services
 )

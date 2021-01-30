@@ -237,7 +237,7 @@ void SMultipleTF::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
+services::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TF_POOLS_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);

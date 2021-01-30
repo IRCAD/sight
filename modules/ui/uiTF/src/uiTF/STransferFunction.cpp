@@ -238,7 +238,7 @@ void STransferFunction::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+services::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);

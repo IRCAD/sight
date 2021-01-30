@@ -144,7 +144,7 @@ void SShowVectorSize::removeObjects(data::Vector::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
+services::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push("vector", data::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );

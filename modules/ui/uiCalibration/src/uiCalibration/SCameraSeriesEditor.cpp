@@ -156,7 +156,7 @@ void SCameraSeriesEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
     connections.push( "cameraSeries", data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );

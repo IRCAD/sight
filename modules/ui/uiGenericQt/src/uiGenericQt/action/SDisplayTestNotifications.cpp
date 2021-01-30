@@ -150,7 +150,7 @@ void SDisplayTestNotifications::info(std::ostream& _sstream )
 
 void SDisplayTestNotifications::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -217,14 +217,14 @@ void SDisplayTestNotifications::updating( )
 
 void SDisplayTestNotifications::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SDisplayTestNotifications::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

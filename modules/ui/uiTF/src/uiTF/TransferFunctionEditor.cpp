@@ -609,7 +609,7 @@ void TransferFunctionEditor::updateTransferFunction()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);

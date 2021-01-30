@@ -139,7 +139,7 @@ void SSeriesSignal::updating()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
+services::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INPUT,  data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);

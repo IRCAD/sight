@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="visuOgre" />
-    <requirement id="visuOgreQt" />
+    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::services::registry::AppConfig" >
@@ -120,7 +120,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -132,21 +132,21 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="cameraAdp" type="::visuOgreAdaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="cameraMatrix" />
                 <config layer="default" />
             </service>
 
-            <service uid="transformAdp" type="::visuOgreAdaptor::STransform" autoConnect="yes" >
+            <service uid="transformAdp" type="::sight::modules::viz::ogre::adaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="meshMatrix" />
                 <config layer="default" transform="meshMatrixTransform" />
             </service>
 
-            <service uid="meshAdp" type="::visuOgreAdaptor::SMesh" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="objectMeshUid" />
                 <config layer="default" transform="meshMatrixTransform" autoresetcamera="no" />
             </service>

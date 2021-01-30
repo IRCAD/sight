@@ -214,7 +214,7 @@ void STargeting::updating()
 
 // -----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap STargeting::getAutoConnections() const
+services::IService::KeyConnectionsMap STargeting::getAutoConnections() const
 {
 
     services::IService::KeyConnectionsMap connections;

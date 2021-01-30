@@ -372,7 +372,7 @@ void SReprojectionError::updating()
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
+services::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

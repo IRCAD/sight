@@ -6,7 +6,7 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_ui_qt                   # Start the module, load qt implementation of module_ui_base
+    module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
 
     # Objects declaration
     data
@@ -21,7 +21,7 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    visuBasic   # contains a visualization service of mesh.
+    module_viz_sample   # contains a visualization service of mesh.
     opVTKMesh       # provides services to generate a mesh from an image.
 )
 

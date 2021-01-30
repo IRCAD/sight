@@ -6,7 +6,7 @@ set( PRIORITY 1 )
 set( DEPENDENCIES
     core
     ui_base
-    qt
+    module_ui_qt
     fwNetworkIO
     data
     services

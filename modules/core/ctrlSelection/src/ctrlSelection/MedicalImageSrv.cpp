@@ -120,7 +120,7 @@ void MedicalImageSrv::info( std::ostream& )
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
+services::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push("image", data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

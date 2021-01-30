@@ -218,7 +218,7 @@ void SSliceIndexPositionEditor::onSliceType( int _type )
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SSliceIndexPositionEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SSliceIndexPositionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -75,7 +75,7 @@ void Plugin::initialize()
         m_readerSrv->configure();
     }
 
-    m_renderSrv = services::add("::visuBasic::SImage");
+    m_renderSrv = services::add("::modules::viz::sample::SImage");
     {
         m_renderSrv->registerInput(m_image, "image");
         m_renderSrv->setID("imageRendereSrv");

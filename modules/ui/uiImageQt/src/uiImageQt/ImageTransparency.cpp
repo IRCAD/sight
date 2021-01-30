@@ -63,7 +63,7 @@ ImageTransparency::~ImageTransparency() noexcept
 
 void ImageTransparency::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -112,7 +112,7 @@ void ImageTransparency::stopping()
 
 void ImageTransparency::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 
     //<shortcut value="X"/>
     std::vector < ConfigurationType > vectCfg = m_configuration->find("shortcut");
@@ -234,7 +234,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
+services::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

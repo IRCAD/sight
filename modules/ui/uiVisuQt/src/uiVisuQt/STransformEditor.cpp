@@ -29,11 +29,11 @@
 #include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
+
+#include <services/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -231,7 +231,7 @@ void STransformEditor::updating()
 
 //-----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

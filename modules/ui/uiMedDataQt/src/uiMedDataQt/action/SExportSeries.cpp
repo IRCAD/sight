@@ -69,7 +69,7 @@ SExportSeries::~SExportSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
+services::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
@@ -82,7 +82,7 @@ SExportSeries::~SExportSeries() noexcept
 
 void SExportSeries::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

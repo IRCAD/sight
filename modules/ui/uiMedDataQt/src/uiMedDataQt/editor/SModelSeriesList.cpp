@@ -278,7 +278,7 @@ void SModelSeriesList::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

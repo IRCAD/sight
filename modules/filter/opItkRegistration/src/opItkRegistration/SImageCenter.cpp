@@ -140,7 +140,7 @@ void SImageCenter::stopping()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
+services::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

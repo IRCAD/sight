@@ -77,7 +77,7 @@ void ShowDistance::updating()
 
     if ( !::data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
-        this->::ui::base::IActionSrv::setIsActive(false);
+        this->ui::base::IActionSrv::setIsActive(false);
     }
     else
     {
@@ -90,7 +90,7 @@ void ShowDistance::updating()
         image->setField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // auto manage hide/show : use Field Information instead let gui manage checking
-        this->::ui::base::IActionSrv::setIsActive(!toShow);
+        this->ui::base::IActionSrv::setIsActive(!toShow);
 
         auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
             data::Image::s_DISTANCE_DISPLAYED_SIG);
@@ -112,33 +112,33 @@ void ShowDistance::showDistance(bool)
         image->getField< data::Boolean >(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                              true));
 
-    this->::ui::base::IActionSrv::setIsActive( !(showDistances->value()) );
+    this->ui::base::IActionSrv::setIsActive( !(showDistances->value()) );
 }
 
 //------------------------------------------------------------------------------
 
 void ShowDistance::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowDistance::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowDistance::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
+services::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );

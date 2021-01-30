@@ -275,7 +275,7 @@ void SCalibrationInfoEditor::getSelection()
 
 // ----------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
+services::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_CALIBRATION_INFO_1, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );

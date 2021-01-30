@@ -107,7 +107,7 @@ SLandmarks::~SLandmarks() noexcept
 
 void SLandmarks::configuring()
 {
-    this->::ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainerSrv::initialize();
 
     const services::IService::ConfigType config = this->getConfigTree();
 
@@ -134,7 +134,7 @@ void SLandmarks::configuring()
 
 void SLandmarks::starting()
 {
-    this->::ui::base::IGuiContainerSrv::create();
+    this->ui::base::IGuiContainerSrv::create();
 
     const ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -207,7 +207,7 @@ void SLandmarks::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+services::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

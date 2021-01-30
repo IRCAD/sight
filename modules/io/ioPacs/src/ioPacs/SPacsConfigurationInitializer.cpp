@@ -148,7 +148,7 @@ void SPacsConfigurationInitializer::starting()
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
+services::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
 {
     services::IService::KeyConnectionsMap connections;
 

@@ -108,7 +108,7 @@ void ShowHelpContents::configuring()
      * .qhcp/.qhc (source/binary): Contains information that is used to customize
      *                             the appearance and available features of Qt Assistant.
      */
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
@@ -161,14 +161,14 @@ void ShowHelpContents::updating()
 
 void ShowHelpContents::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowHelpContents::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

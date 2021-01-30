@@ -304,7 +304,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
+        <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -320,13 +320,13 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="video1Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame1" />
             <config layer="video1" />
         </service>
 
 
-        <service uid="video2Adp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
+        <service uid="video2Adp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame2" />
             <config layer="video2" />
         </service>

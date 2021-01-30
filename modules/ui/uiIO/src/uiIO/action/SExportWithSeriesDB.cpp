@@ -76,7 +76,7 @@ void SExportWithSeriesDB::info(std::ostream& _sstream )
 
 void SExportWithSeriesDB::configuring()
 {
-    this->::ui::base::IActionSrv::initialize();
+    this->ui::base::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -134,7 +134,7 @@ void SExportWithSeriesDB::updating( )
 
 void SExportWithSeriesDB::starting()
 {
-    this->::ui::base::IActionSrv::actionServiceStarting();
+    this->ui::base::IActionSrv::actionServiceStarting();
 
     data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
     SLM_FATAL_IF( "The associated object must be a data::Series.", !series);
@@ -144,7 +144,7 @@ void SExportWithSeriesDB::starting()
 
 void SExportWithSeriesDB::stopping()
 {
-    this->::ui::base::IActionSrv::actionServiceStopping();
+    this->ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -515,7 +515,7 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 
 //------------------------------------------------------------------------------
 
-::services::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
+services::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

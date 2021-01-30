@@ -31,14 +31,14 @@
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <fwRenderOgre/IAdaptor.hpp>
-
 #include <services/macros.hpp>
 #include <services/op/Add.hpp>
 
 #include <QWidget>
 
 #include <ui/base/GuiRegistry.hpp>
+
+#include <viz/ogre/IAdaptor.hpp>
 
 namespace uiVisuOgre
 {
@@ -146,23 +146,23 @@ void SShaderParameterEditor::updateGuiInfo()
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
     services::registry::ObjectService::ServiceVectorType srvVec = services::OSR::getServices(
-        "::visuOgreAdaptor::SMaterial");
+        "::modules::viz::ogre::adaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
     if(srvVec.empty())
     {
-        SLM_WARN("No ::visuOgreAdaptor::SMaterial found in the application");
+        SLM_WARN("No modules::viz::ogre::adaptor::SMaterial found in the application");
         return;
     }
 
     /// Try to find the material adaptor working with the same data::Material
     /// as the one contained by the current reconstruction
-    ::fwRenderOgre::IAdaptor::sptr matService;
+    viz::ogre::IAdaptor::sptr matService;
     for (auto srv : srvVec)
     {
         if (srv->getInOut< data::Object>("material")->getID() == reconstruction->getMaterial()->getID())
         {
-            matService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
+            matService = viz::ogre::IAdaptor::dynamicCast(srv);
             break;
         }
     }
@@ -175,11 +175,11 @@ void SShaderParameterEditor::updateGuiInfo()
     for (const auto& wParamSrv : matService->getRegisteredServices())
     {
         const auto paramSrv = wParamSrv.lock();
-        if (paramSrv->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        if (paramSrv->getClassname() == "::modules::viz::ogre::adaptor::SShaderParameter")
         {
             /// Filter object types
             const data::Object::csptr shaderObj =
-                paramSrv->getInOut< data::Object>(::fwRenderOgre::IParameter::s_PARAMETER_INOUT);
+                paramSrv->getInOut< data::Object>(viz::ogre::IParameter::s_PARAMETER_INOUT);
             const ObjectClassnameType objType = shaderObj->getClassname();
 
             if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
@@ -218,9 +218,9 @@ void SShaderParameterEditor::updateGuiInfo()
     for (auto wAdaptor : matService->getRegisteredServices())
     {
         const auto adaptor = wAdaptor.lock();
-        if (adaptor->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        if (adaptor->getClassname() == "::modules::viz::ogre::adaptor::SShaderParameter")
         {
-            auto paramAdaptor = ::fwRenderOgre::IParameter::dynamicCast(adaptor);
+            auto paramAdaptor = viz::ogre::IParameter::dynamicCast(adaptor);
             auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                     m_editorInfo.service.lock(),
                                                                                     m_editorInfo.connections);
