@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2020 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,36 +20,40 @@
  *
  ***********************************************************************/
 
-#include "arPatchMedicalData/Plugin.hpp"
+#include "patchMedicalData/Plugin.hpp"
 
-#include <arStructuralPatch/PatchLoader.hpp>
-
-#include <arMDSemanticPatch/PatchLoader.hpp>
+#include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace arPatchMedicalData
+#include <fwStructuralPatch/PatchLoader.hpp>
+
+namespace patchMedicalData
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::arPatchMedicalData::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::patchMedicalData::Plugin");
 
 Plugin::~Plugin() noexcept
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start()
 {
-    //Hack: force link with arStructuralPatch
-    ::arStructuralPatch::PatchLoader::loadPatches();
+    //Hack: force link with fwStructuralPatch
+    ::fwStructuralPatch::PatchLoader::loadPatches();
 
-    /* Force link with arMDSemanticPatch and compute version/link tables
-     * for arMDSemanticPatch data.
+    /* Force link with fwMDSemanticPatch and compute version/link tables
+     * for fwMDSemanticPatch data.
      */
-    ::arMDSemanticPatch::PatchLoader::loadPatches();
+    ::fwMDSemanticPatch::PatchLoader::loadPatches();
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
 {
 }
 
-} // namespace arPatchMedicalData
+} // namespace patchMedicalData

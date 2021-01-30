@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2020 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,36 +20,28 @@
  *
  ***********************************************************************/
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#pragma once
 
-#include <fwStructuralPatch/PatchLoader.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <fwMDSemanticPatch/PatchLoader.hpp>
-
-#include "patchMedicalData/Plugin.hpp"
-
-namespace patchMedicalData
+namespace arPatchMedicalData
+{
+namespace ut
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::patchMedicalData::Plugin");
-
-Plugin::~Plugin() noexcept
+class PatchTest : public CPPUNIT_NS::TestFixture
 {
-}
+CPPUNIT_TEST_SUITE( PatchTest );
+CPPUNIT_TEST( arPatchMedicalDataTest );
+CPPUNIT_TEST_SUITE_END();
 
-void Plugin::start()
-{
-    //Hack: force link with fwStructuralPatch
-    ::fwStructuralPatch::PatchLoader::loadPatches();
+public:
 
-    /* Force link with fwMDSemanticPatch and compute version/link tables
-     * for fwMDSemanticPatch data.
-     */
-    ::fwMDSemanticPatch::PatchLoader::loadPatches();
-}
+    void setUp();
+    void tearDown();
 
-void Plugin::stop() noexcept
-{
-}
+    void arPatchMedicalDataTest();
+};
 
-} // namespace patchMedicalData
+} //namespace ut
+} //namespace arPatchMedicalData

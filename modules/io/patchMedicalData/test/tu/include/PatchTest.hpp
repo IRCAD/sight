@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2020 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,7 @@
  *
  ***********************************************************************/
 
-#ifndef __PATCHMEDICALDATA_UT_PATCHTEST_HPP__
-#define __PATCHMEDICALDATA_UT_PATCHTEST_HPP__
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -46,6 +45,3 @@ public:
 
 } //namespace ut
 } //namespace patchMedicalData
-
-#endif //__PATCHMEDICALDATA_UT_PATCHTEST_HPP__
-

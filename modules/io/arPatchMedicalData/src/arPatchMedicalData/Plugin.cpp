@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
+ * Copyright (C) 2009-2020 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,32 +20,40 @@
  *
  ***********************************************************************/
 
-#ifndef __ARPATCHMEDICALDATA_UT_PATCHTEST_HPP__
-#define __ARPATCHMEDICALDATA_UT_PATCHTEST_HPP__
+#include "arPatchMedicalData/Plugin.hpp"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <arMDSemanticPatch/PatchLoader.hpp>
+
+#include <arStructuralPatch/PatchLoader.hpp>
+
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace arPatchMedicalData
 {
-namespace ut
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::arPatchMedicalData::Plugin");
+
+Plugin::~Plugin() noexcept
 {
+}
 
-class PatchTest : public CPPUNIT_NS::TestFixture
+//------------------------------------------------------------------------------
+
+void Plugin::start()
 {
-CPPUNIT_TEST_SUITE( PatchTest );
-CPPUNIT_TEST( arPatchMedicalDataTest );
-CPPUNIT_TEST_SUITE_END();
+    //Hack: force link with arStructuralPatch
+    ::arStructuralPatch::PatchLoader::loadPatches();
 
-public:
+    /* Force link with arMDSemanticPatch and compute version/link tables
+     * for arMDSemanticPatch data.
+     */
+    ::arMDSemanticPatch::PatchLoader::loadPatches();
+}
 
-    void setUp();
-    void tearDown();
+//------------------------------------------------------------------------------
 
-    void arPatchMedicalDataTest();
-};
+void Plugin::stop() noexcept
+{
+}
 
-} //namespace ut
-} //namespace arPatchMedicalData
-
-#endif //__ARPATCHMEDICALDATA_UT_PATCHTEST_HPP__
-
+} // namespace arPatchMedicalData
