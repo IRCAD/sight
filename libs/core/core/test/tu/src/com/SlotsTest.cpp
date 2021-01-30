@@ -20,24 +20,22 @@
  *
  ***********************************************************************/
 
-#include "SlotsTest.hpp"
+#include "com/SlotsTest.hpp"
 
 #include <core/com/HasSlots.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::com::ut::SlotsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SlotsTest );
 
-namespace fwCom
+namespace sight::core::com
 {
 namespace ut
 {
-
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 
@@ -199,4 +197,4 @@ void SlotsTest::slotsIDTest()
 
 //-----------------------------------------------------------------------------
 } //namespace ut
-} //namespace fwCom
+} //namespace sight::core::com

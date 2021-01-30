@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwMemory
+namespace sight::core::memory
 {
 namespace ut
 {
@@ -44,4 +44,4 @@ public:
 };
 
 } // namespace ut
-} // namespace fwMemory
+} // namespace sight::core::memory

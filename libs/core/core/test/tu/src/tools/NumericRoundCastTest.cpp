@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "NumericRoundCastTest.hpp"
+#include "tools/NumericRoundCastTest.hpp"
 
 #include <core/tools/NumericRoundCast.hxx>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::NumericRoundCastTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::NumericRoundCastTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -139,4 +139,4 @@ void NumericRoundCastTest::castIntToIntTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

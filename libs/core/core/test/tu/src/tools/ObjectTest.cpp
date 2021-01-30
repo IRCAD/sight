@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "ObjectTest.hpp"
+#include "tools/ObjectTest.hpp"
 
 #include <core/tools/Object.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::ObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::ObjectTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -63,4 +63,4 @@ void ObjectTest::idTest()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

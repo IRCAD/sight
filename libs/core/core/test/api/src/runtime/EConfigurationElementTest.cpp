@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "EConfigurationElementTest.hpp"
+#include "runtime/EConfigurationElementTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::runtime::ut::EConfigurationElementTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::runtime::ut::EConfigurationElementTest );
 
-namespace fwRuntime
+namespace sight::core::runtime
 {
 namespace ut
 {
@@ -79,4 +79,4 @@ void EConfigurationElementTest::testConfiguration()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::runtime

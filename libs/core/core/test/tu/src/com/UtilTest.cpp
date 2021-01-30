@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "UtilTest.hpp"
+#include "com/UtilTest.hpp"
 
 #include <core/com/util/AutoBind.hpp>
 #include <core/com/util/AutoBind.hxx>
@@ -31,9 +31,9 @@
 #include <type_traits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::com::ut::UtilTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::UtilTest );
 
-namespace fwCom
+namespace sight::core::com
 {
 namespace ut
 {
@@ -127,4 +127,4 @@ void UtilTest::removeLastArgTest ()
 //-----------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwCom
+} //namespace sight::core::com

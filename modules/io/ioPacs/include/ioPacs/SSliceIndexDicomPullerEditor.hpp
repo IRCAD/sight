@@ -48,7 +48,7 @@ class Composite;
 class Integer;
 }
 
-namespace fwThread
+namespace thread
 {
 class Timer;
 }

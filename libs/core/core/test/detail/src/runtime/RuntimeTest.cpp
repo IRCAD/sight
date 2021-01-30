@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "RuntimeTest.hpp"
+#include "runtime/RuntimeTest.hpp"
 
 #include <core/runtime/detail/dl/Posix.hpp>
 #include <core/runtime/detail/dl/Win32.hpp>
@@ -34,9 +34,9 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::runtime::detail::ut::RuntimeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::runtime::detail::ut::RuntimeTest );
 
-namespace fwRuntime
+namespace sight::core::runtime
 {
 namespace detail
 {
@@ -69,23 +69,24 @@ void RuntimeTest::tearDown()
 void RuntimeTest::testPosix()
 {
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
-    auto module         = std::make_shared<Module>(location / "servicesReg-0.1", "servicesReg", "0.1");
+    auto module         = std::make_shared<Module>(location / "module_utest-0.1", "module_utest", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Posix>("servicesReg");
+    auto nativeLibrary = std::make_unique<dl::Posix>("module_utest");
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("libsight_module_servicesReg.so.0.1", nativeName));
-    CPPUNIT_ASSERT( std::regex_match("libsight_module_servicesReg.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libsight_module_servicesReg", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("sight_module_servicesReg", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libsight_module_utest.so.0.1", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libsight_module_utest.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libsight_module_utest", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("sight_module_utest", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
-
     auto path = nativeLibrary->getPath();
+
+    std::cout << path.string() << std::endl;
     // The library picked will be one of these
-    const bool testPath = std::filesystem::path("libsight_module_servicesReg.so.0.1") == path ||
-                          std::filesystem::path("libsight_module_servicesReg.so.0") == path ||
-                          std::filesystem::path("libsight_module_servicesReg.so") == path;
+    const bool testPath = std::filesystem::path("libsight_module_utest.so.0.1") == path ||
+                          std::filesystem::path("libsight_module_utest.so.0") == path ||
+                          std::filesystem::path("libsight_module_utest.so") == path;
     CPPUNIT_ASSERT_EQUAL( true, testPath);
 }
 
@@ -96,20 +97,20 @@ void RuntimeTest::testPosix()
 void RuntimeTest::testWin32()
 {
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
-    auto module         = std::make_shared<Module>(location / "servicesReg-0.1", "servicesReg", "0.1");
+    auto module         = std::make_shared<Module>(location / "utest-0.1", "utest", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Win32>("servicesReg");
+    auto nativeLibrary = std::make_unique<dl::Win32>("utest");
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("sight_module_servicesReg.dll", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libsight_module_servicesReg.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libsight_module_servicesReg", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("sight_module_servicesReg", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("sight_module_utest.dll", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libsight_module_utest.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libsight_module_utest", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("sight_module_utest", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
 
     auto path = nativeLibrary->getPath();
-    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("servicesReg.dll"), path );
+    CPPUNIT_ASSERT_EQUAL( std::filesystem::path("utest.dll"), path );
 }
 #endif
 
@@ -122,22 +123,17 @@ void RuntimeTest::testRuntime()
 
     core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
 
-    // Test module servicesReg
-    CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
-    auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule("servicesReg"));
+    // Test module utest
+    CPPUNIT_ASSERT(runtime.findModule("module_utest"));
+    auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule("module_utest"));
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnabled());
 
-    // Test module servicesReg
-    CPPUNIT_ASSERT(runtime.findModule("servicesReg"));
-    auto bundle2 = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule("servicesReg"));
+    // Test module utest
+    CPPUNIT_ASSERT(runtime.findModule("module_utest"));
+    auto bundle2 = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule("module_utest"));
     bundle2->setEnable(true);
     CPPUNIT_ASSERT(bundle2->isEnabled());
-
-    // Test runtime extensions
-    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceFactory"));
-    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::ServiceConfig"));
-    CPPUNIT_ASSERT(runtime.findExtensionPoint("::fwServices::registry::AppConfig"));
 }
 
 //------------------------------------------------------------------------------

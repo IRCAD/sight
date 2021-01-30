@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,36 +20,15 @@
  *
  ***********************************************************************/
 
-#include "fwTest/Slow.hpp"
+/**
+ * @ingroup apprequirement
+ * @brief The namespace servicesReg (registration service) allows to load all the service managment registry.
+ *
+ * It is required for all applications.
+ */
+#pragma once
 
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-
-namespace fwTest
+namespace servicesReg
 {
 
-//------------------------------------------------------------------------------
-
-static bool getIgnoreSlowTestsEnv()
-{
-    const char* slowTests = std::getenv( "FW_IGNORE_SLOW_TESTS" );
-    if(slowTests == nullptr || std::strlen(slowTests) == 0 || std::strcmp(slowTests, "0") == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
 }
-
-//------------------------------------------------------------------------------
-
-bool Slow::ignoreSlowTests()
-{
-    static const bool IGNORE_SLOW_TESTS = getIgnoreSlowTestsEnv();
-    return IGNORE_SLOW_TESTS;
-}
-
-} // namespace fwTest

@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "BufferManagerTest.hpp"
+#include "memory/BufferManagerTest.hpp"
 
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/BufferObject.hpp>
 
-#include <fwTest/helper/wait.hpp>
+#include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::memory::ut::BufferManagerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::memory::ut::BufferManagerTest );
 
-namespace fwMemory
+namespace sight::core::memory
 {
 namespace ut
 {
@@ -81,7 +81,7 @@ void BufferManagerTest::allocateTest()
 
         for (int i = 0; i < SIZE; ++i)
         {
-            buf[i] = (i%256);
+            buf[i] = static_cast<char>(i%256);
         }
     }
 
@@ -135,7 +135,7 @@ void BufferManagerTest::allocateTest()
 
         for (int i = 0; i < SIZE; ++i)
         {
-            buf[i] = (i%256);
+            buf[i] = static_cast<char>(i%256);
         }
     }
 
@@ -200,4 +200,4 @@ void BufferManagerTest::memoryInfoTest()
 }
 
 } // namespace ut
-} // namespace fwMemory
+} // namespace sight::core::memory

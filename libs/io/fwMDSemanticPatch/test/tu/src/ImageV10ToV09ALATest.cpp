@@ -38,7 +38,7 @@
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 #include <boost/algorithm/string.hpp>
 

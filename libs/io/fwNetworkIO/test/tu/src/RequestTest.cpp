@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "RequestTest.hpp"
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 #include <cppunit/Exception.h>
 
@@ -35,7 +35,7 @@ namespace fwNetworkIO
 namespace ut
 {
 
-static ::fwTest::Exception e(""); // force link with fwTest
+static ::utest::Exception e(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

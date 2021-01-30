@@ -100,4 +100,4 @@ protected:
 
 };
 
-} // namespace FWTHREAD
+} // namespace sight::core::thread

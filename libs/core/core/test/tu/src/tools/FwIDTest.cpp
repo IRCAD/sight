@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "FwIDTest.hpp"
+#include "tools/FwIDTest.hpp"
 
 #include <core/tools/Failed.hpp>
 #include <core/tools/fwID.hpp>
@@ -32,9 +32,9 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::FwIDTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::FwIDTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -144,4 +144,4 @@ void FwIDTest::runFwIDCreation()
 //-----------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

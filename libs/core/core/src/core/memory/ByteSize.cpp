@@ -137,7 +137,7 @@ void ByteSize::setSize ( double size, UnitType unit )
     SLM_ASSERT("Bad Unit",
                (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
-    m_size = static_cast<SizeType>(size)*unit;
+    m_size = static_cast<SizeType>(size*unit);
 }
 
 //------------------------------------------------------------------------------
@@ -257,7 +257,7 @@ bool ByteSize::parseSize(const std::string& s, SizeType& size)
             FW_RAISE_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << floatSize << " < 0");
         }
 
-        size = static_cast< ByteSize::SizeType >(floatSize) * multiplier;
+        size = static_cast< ByteSize::SizeType >(floatSize * multiplier);
     }
     else
     {
@@ -282,7 +282,7 @@ std::string ByteSize::getSizeAsString( UnitType unit )
     }
     else
     {
-        sstr << static_cast<UnitType>(static_cast<double>(m_size) / static_cast<double>(unit));
+        sstr << (static_cast<double>(m_size) / unit);
     }
     sstr << " " << unitToString(unit);
 

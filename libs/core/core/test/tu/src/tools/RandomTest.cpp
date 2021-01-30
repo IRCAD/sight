@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "RandomTest.hpp"
+#include "tools/RandomTest.hpp"
 
 #include <core/tools/random/Generator.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::RandomTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::RandomTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -104,4 +104,4 @@ void RandomTest::seedTest()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

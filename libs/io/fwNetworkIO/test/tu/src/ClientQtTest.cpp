@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwNetworkIO::ut::ClientQtTest );
 
@@ -73,7 +73,7 @@ std::uint8_t postAnswer[] = { /* Packet 196 */
     0x31, 0x52, 0x52, 0x88, 0xe5, 0x02, 0x00, 0xe2,
     0x39, 0xc0, 0x49, 0x33, 0x00, 0x00, 0x00
 };
-static ::fwTest::Exception e(""); // force link with fwTest
+static ::utest::Exception e(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

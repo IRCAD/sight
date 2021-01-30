@@ -32,7 +32,7 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::ut::LazyInstantiatorTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::ut::LazyInstantiatorTest );
 
 namespace sight::core
 {

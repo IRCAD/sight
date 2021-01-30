@@ -40,7 +40,7 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Object.hpp>
 
-#include <fwTest/helper/wait.hpp>
+#include <utest/wait.hpp>
 
 #include <thread>
 

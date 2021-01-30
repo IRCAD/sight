@@ -41,7 +41,7 @@
 
 class QTimer;
 
-namespace fwCom
+namespace sight::core::com
 {
 template< typename F >
 struct Slot;

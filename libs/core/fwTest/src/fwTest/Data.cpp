@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,10 @@
 
 #include "fwTest/Data.hpp"
 
-#include "fwTest/Exception.hpp"
-
-#include <filesystem>
+#include "core/test/Exception.hpp"
 
 #include <cstdlib>
+#include <filesystem>
 #include <sstream>
 
 namespace fwTest

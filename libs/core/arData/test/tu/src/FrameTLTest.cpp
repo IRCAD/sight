@@ -25,7 +25,7 @@
 #include <arData/FrameTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 #include <algorithm>
 
@@ -37,7 +37,7 @@ namespace arData
 namespace ut
 {
 
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
+static ::utest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

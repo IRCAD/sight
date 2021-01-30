@@ -33,7 +33,7 @@
 #include <map>
 #include <set>
 
-namespace fwMemory
+namespace sight::core::memory
 {
 class IPolicy;
 }

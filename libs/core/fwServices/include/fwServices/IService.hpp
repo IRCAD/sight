@@ -60,7 +60,7 @@ namespace registry
 {
 class ObjectService;
 }
-namespace fwThread
+namespace thread
 {
 class Worker;
 }

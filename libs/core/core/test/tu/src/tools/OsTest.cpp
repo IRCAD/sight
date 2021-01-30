@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "OsTest.hpp"
+#include "tools/OsTest.hpp"
 
 #include <core/base.hpp>
 #include <core/tools/Os.hpp>
@@ -30,9 +30,9 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::Os );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::Os );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -59,26 +59,26 @@ void Os::getSharedLibraryPath()
     const auto cwd = fs::current_path();
 
     {
-        const auto fwCorePath = core::tools::os::getSharedLibraryPath("fwCore");
+        const auto fwCorePath = core::tools::os::getSharedLibraryPath("sight_core");
         const auto execPath   = ::boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
-        const fs::path expectedPath = fs::path(execPath.string()) / "fwCore.dll";
+        const fs::path expectedPath = fs::path(execPath.string()) / "sight_core.dll";
 #elif defined(__APPLE__)
-        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / SIGHT_MODULE_LIB_PREFIX /
-                                      "libfwCore.0.dylib";
+        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / MODULE_LIB_PREFIX /
+                                      "libsight_core.0.dylib";
 #else
-        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / SIGHT_MODULE_LIB_PREFIX /
-                                      "libfwCore.so.0";
+        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / MODULE_LIB_PREFIX /
+                                      "libsight_core.so.0";
 #endif
         CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
     }
 
     // Test that a call with a not loaded library throws an error
-    CPPUNIT_ASSERT_THROW( core::tools::os::getSharedLibraryPath("fwData"), core::tools::Exception );
+    CPPUNIT_ASSERT_THROW( core::tools::os::getSharedLibraryPath("foo"), core::tools::Exception );
 
     // Test that a call with a not loaded library throws an error
-    CPPUNIT_ASSERT_THROW( core::tools::os::getSharedLibraryPath("camp"), core::tools::Exception );
+    CPPUNIT_ASSERT_THROW( core::tools::os::getSharedLibraryPath("Qt5Core"), core::tools::Exception );
 
     // Now load that library and check that we find it
 #if defined(WIN32)
@@ -90,7 +90,7 @@ void Os::getSharedLibraryPath()
 #elif defined(__APPLE__)
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.dylib";
 #else
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so";
+    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";
 #endif
     auto handle = ::boost::dll::shared_library(campPath.string());
     CPPUNIT_ASSERT_MESSAGE( "Could not load camp for testing", handle );
@@ -99,4 +99,4 @@ void Os::getSharedLibraryPath()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

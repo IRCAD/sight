@@ -40,7 +40,7 @@ namespace fwData
 class Integer;
 }
 
-namespace fwThread
+namespace thread
 {
 class Timer;
 }

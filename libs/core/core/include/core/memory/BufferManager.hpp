@@ -33,7 +33,7 @@
 #include <filesystem>
 #include <future>
 
-namespace fwThread
+namespace sight::core::thread
 {
 class Worker;
 }

@@ -35,7 +35,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwTest/helper/wait.hpp>
+#include <utest/wait.hpp>
 
 #include <TestService.hpp>
 

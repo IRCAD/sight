@@ -33,7 +33,7 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::scene2D::ut::ProcessingTest );
@@ -43,7 +43,7 @@ namespace scene2D
 namespace ut
 {
 
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
+static ::utest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

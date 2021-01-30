@@ -20,15 +20,15 @@
  *
  ***********************************************************************/
 
-#include "MacrosTest.hpp"
+#include "tools/MacrosTest.hpp"
 
 #include <core/base.hpp>
 #include <core/tools/Object.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::MacrosTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::MacrosTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -109,4 +109,4 @@ void MacrosTest::factoryMacroTest()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

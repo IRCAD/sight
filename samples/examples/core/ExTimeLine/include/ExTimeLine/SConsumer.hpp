@@ -26,7 +26,7 @@
 
 #include <fwServices/IService.hpp>
 
-namespace fwThread
+namespace thread
 {
 class Timer;
 }

@@ -38,8 +38,9 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include <fwTest/Exception.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
+
+#include <utest/Exception.hpp>
 
 #include <filesystem>
 
@@ -51,7 +52,7 @@ namespace ioAtoms
 namespace ut
 {
 
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
+static ::utest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

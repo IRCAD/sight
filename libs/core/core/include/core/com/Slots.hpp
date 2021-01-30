@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-namespace fwThread
+namespace sight::core::thread
 {
 class Worker;
 }

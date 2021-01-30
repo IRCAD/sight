@@ -30,7 +30,10 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/IPlugin.hpp"
+#include "core/runtime/Profile.hpp"
 #include <core/tools/Os.hpp>
+
+#include <boost/dll.hpp>
 
 #include <filesystem>
 #include <functional>
@@ -48,15 +51,8 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 Runtime::Runtime()
 {
-    const auto fwRuntimePath = core::tools::os::getSharedLibraryPath("fwCore");
-
-#if defined(WIN32)
-    // The lib location is 'SIGHT_DIR/lib/libfwCore.dll'
-    m_workingPath = fwRuntimePath.parent_path().parent_path();
-#else
-    // The lib location is 'SIGHT_DIR/lib/share/libfwCore.so'
-    m_workingPath = fwRuntimePath.parent_path().parent_path().parent_path();
-#endif
+    // The lib location is 'SIGHT_DIR/lib/sight_core.dll'
+    m_workingPath = ::boost::dll::program_location().parent_path().parent_path().string();
 }
 
 //------------------------------------------------------------------------------

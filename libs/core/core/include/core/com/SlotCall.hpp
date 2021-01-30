@@ -26,7 +26,7 @@
 
 #include "core/com/SlotRun.hpp"
 
-namespace fwThread
+namespace sight::core::thread
 {
 class Worker;
 }

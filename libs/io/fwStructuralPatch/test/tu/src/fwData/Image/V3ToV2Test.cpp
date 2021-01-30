@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 #include <fwAtomsPatch/helper/functions.hpp>
 #include <fwAtomsPatch/helper/Object.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Image::V3ToV2Test );

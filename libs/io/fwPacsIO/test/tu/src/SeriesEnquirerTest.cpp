@@ -29,7 +29,8 @@
 #include <fwDcmtkIO/helper/DicomSearch.hpp>
 
 #include <fwTest/Data.hpp>
-#include <fwTest/Exception.hpp>
+
+#include <utest/Exception.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -43,7 +44,7 @@ namespace fwPacsIO
 namespace ut
 {
 
-static ::fwTest::Exception e(""); // force link with fwTest
+static ::utest::Exception e(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

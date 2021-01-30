@@ -148,20 +148,20 @@
     /** @brief return object's classname without its namespace, i.e. BaseObject */              \
     virtual const std::string& getLeafClassname() const                                         \
     {                                                                                           \
-        __FWCORE_STATIC_CACHE(core::Demangler(*this).getLeafClassname());                   \
+        __FWCORE_STATIC_CACHE(sight::core::Demangler(*this).getLeafClassname());                   \
     }                                                                                           \
     static const std::string& leafClassname()                                                   \
     {                                                                                           \
-        __FWCORE_STATIC_CACHE(core::getLeafClassname<SelfType>());                          \
+        __FWCORE_STATIC_CACHE(sight::core::getLeafClassname<SelfType>());                          \
     }                                                                                           \
     /** @brief return full object's classname with its namespace, i.e. core::BaseObject */  \
     virtual const std::string& getClassname() const                                             \
     {                                                                                           \
-        __FWCORE_STATIC_CACHE(core::getClassname<SelfType>());                              \
+        __FWCORE_STATIC_CACHE(sight::core::getClassname<SelfType>());                              \
     }                                                                                           \
     static const std::string& classname()                                                       \
     {                                                                                           \
-        __FWCORE_STATIC_CACHE(core::getClassname<SelfType>());                              \
+        __FWCORE_STATIC_CACHE(sight::core::getClassname<SelfType>());                              \
     }                                                                                           \
     /** @} */
 

@@ -29,10 +29,10 @@
 #include <functional>
 #include <string>
 
-namespace fwThread
+namespace thread
 {
 class Worker;
-} //namespace fwThread
+} //namespace thread
 
 namespace fwJobs
 {

@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "DynamicTypeTest.hpp"
+#include "tools/DynamicTypeTest.hpp"
 
 #include <core/tools/DynamicType.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::DynamicTypeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::DynamicTypeTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -61,4 +61,4 @@ void DynamicTypeTest::typeTest()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

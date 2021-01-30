@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,17 @@
  *
  ***********************************************************************/
 
-#include "fwTest/Exception.hpp"
+#pragma once
 
-namespace fwTest
+#include "core/config.hpp"
+
+namespace sight::utest
 {
 
-Exception::Exception ( const std::string &err ) : std::runtime_error ( err )
+class CORE_CLASS_API Slow
 {
-}
+public:
+    CORE_API static bool ignoreSlowTests();
+};
 
-
-} // namespace fwTest
-
-
+} // namespace sight::utest

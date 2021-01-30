@@ -4,7 +4,7 @@ fwLoadProperties()
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
 # Link with the library objects instead of classical shared library
-target_link_libraries(${FWPROJECT_NAME} PUBLIC fwRuntime_obj)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC core_obj)
 
 find_package(CppUnit QUIET REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE CppUnit)

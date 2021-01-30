@@ -31,10 +31,10 @@
 
 #include <functional>
 
-namespace fwThread
+namespace thread
 {
 class Worker;
-} //namespace fwThread
+} //namespace thread
 
 namespace fwQt
 {

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "TaskHandlerTest.hpp"
+#include "thread/TaskHandlerTest.hpp"
 
 #include <core/spyLog.hpp>
 #include <core/thread/TaskHandler.hpp>
@@ -30,9 +30,9 @@
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::thread::ut::TaskHandlerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::thread::ut::TaskHandlerTest );
 
-namespace fwThread
+namespace sight::core::thread
 {
 namespace ut
 {
@@ -150,4 +150,4 @@ void TaskHandlerTest::exceptionTest()
 //-----------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwThread
+} //namespace sight::core::thread

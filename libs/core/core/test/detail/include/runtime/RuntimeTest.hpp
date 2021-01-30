@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwRuntime
+namespace sight::core::runtime
 {
 namespace detail
 {

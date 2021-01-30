@@ -29,7 +29,7 @@
 
 #include <fwData/registry/macros.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::GenericTLTest );
@@ -90,7 +90,7 @@ fwDataRegisterMacro( ::arData::TestClassTL )
 namespace ut
 {
 
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
+static ::utest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

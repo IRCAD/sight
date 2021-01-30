@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "TypeTest.hpp"
+#include "tools/TypeTest.hpp"
 
 #include <core/tools/Type.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::TypeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::TypeTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -159,4 +159,4 @@ void TypeTest::typeTest()
 }
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

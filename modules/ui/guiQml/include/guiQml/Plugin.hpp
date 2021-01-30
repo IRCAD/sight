@@ -26,10 +26,10 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace fwThread
+namespace thread
 {
 class Worker;
-} //namespace fwThread
+} //namespace thread
 
 namespace guiQml
 {

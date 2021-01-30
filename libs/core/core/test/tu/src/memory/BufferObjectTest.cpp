@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "BufferObjectTest.hpp"
+#include "memory/BufferObjectTest.hpp"
 
 #include <core/memory/BufferAllocationPolicy.hpp>
 #include <core/memory/BufferObject.hpp>
 #include <core/memory/exception/Memory.hpp>
 
-#include <fwTest/helper/wait.hpp>
+#include <utest/wait.hpp>
 
 #include <boost/thread/thread.hpp>
 
@@ -37,9 +37,9 @@
 #include <type_traits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::memory::ut::BufferObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::memory::ut::BufferObjectTest );
 
-namespace fwMemory
+namespace sight::core::memory
 {
 namespace ut
 {
@@ -92,9 +92,9 @@ void BufferObjectTest::allocateTest()
         CPPUNIT_ASSERT_EQUAL( static_cast<long>(1), bo->lockCount() );
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i < SIZE; ++i)
+        for (size_t i = 0; i < SIZE; ++i)
         {
-            buf[i] = (i%256);
+            buf[i] = static_cast<char>(i%256);
         }
     }
 
@@ -102,7 +102,7 @@ void BufferObjectTest::allocateTest()
         core::memory::BufferObject::Lock lock(bo->lock());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i < SIZE; ++i)
+        for (size_t i = 0; i < SIZE; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i%256), buf[i]);
         }
@@ -148,9 +148,9 @@ void BufferObjectTest::allocateTest()
         core::memory::BufferObject::Lock lock(bo->lock());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i < SIZE; ++i)
+        for (size_t i = 0; i < SIZE; ++i)
         {
-            buf[i] = (i%256);
+            buf[i] = static_cast<char>(i%256);
         }
     }
 
@@ -158,7 +158,7 @@ void BufferObjectTest::allocateTest()
         core::memory::BufferObject::Lock lock(bo->lock());
         char* buf = static_cast<char*>(lock.getBuffer());
 
-        for (int i = 0; i < SIZE; ++i)
+        for (size_t i = 0; i < SIZE; ++i)
         {
             CPPUNIT_ASSERT_EQUAL(static_cast<char>(i%256), buf[i]);
         }
@@ -269,4 +269,4 @@ void BufferObjectTest::lockThreadedStressTest()
 }
 
 } // namespace ut
-} // namespace fwMemory
+} // namespace sight::core::memory

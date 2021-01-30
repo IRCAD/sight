@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "SignalTest.hpp"
+#include "com/SignalTest.hpp"
 
 #include "core/com/exception/AlreadyConnected.hpp"
 #include "core/com/exception/BadSlot.hpp"
@@ -35,9 +35,9 @@
 #include <string>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::com::ut::SignalTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SignalTest );
 
-namespace fwCom
+namespace sight::core::com
 {
 namespace ut
 {
@@ -680,4 +680,4 @@ void SignalTest::asyncEmitTest()
 }
 
 } //namespace ut
-} //namespace fwCom
+} //namespace sight::core::com

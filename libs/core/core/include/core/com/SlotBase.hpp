@@ -35,7 +35,7 @@
 #include <queue>
 #include <set>
 
-namespace fwThread
+namespace sight::core::thread
 {
 class Worker;
 }

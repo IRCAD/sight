@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "SlotTest.hpp"
+#include "com/SlotTest.hpp"
 
 #include "core/com/exception/BadCall.hpp"
 #include "core/com/exception/BadRun.hpp"
@@ -36,9 +36,9 @@
 #include <future>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::com::ut::SlotTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SlotTest );
 
-namespace fwCom
+namespace sight::core::com
 {
 namespace ut
 {
@@ -473,4 +473,4 @@ void SlotTest::workerSwapTest()
 
 } //namespace ut
 
-} //namespace fwCom
+} //namespace sight::core::com

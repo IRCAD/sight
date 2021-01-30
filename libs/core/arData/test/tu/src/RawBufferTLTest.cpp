@@ -25,7 +25,7 @@
 #include <arData/RawBufferTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::RawBufferTLTest );
@@ -35,7 +35,7 @@ namespace arData
 namespace ut
 {
 
-static ::fwTest::Exception fwTestException(""); // force link with fwTest
+static ::utest::Exception fwTestException(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "RuntimeTest.hpp"
+#include "runtime/RuntimeTest.hpp"
 
 #include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Module.hpp>
@@ -33,9 +33,9 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::runtime::ut::RuntimeTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::runtime::ut::RuntimeTest );
 
-namespace fwRuntime
+namespace sight::core::runtime
 {
 namespace ut
 {
@@ -65,10 +65,10 @@ void RuntimeTest::tearDown()
 
 void RuntimeTest::testLibrary()
 {
-    bool success = core::runtime::loadLibrary(std::string("fwData"));
+    bool success = core::runtime::loadLibrary(std::string("utest"));
     CPPUNIT_ASSERT_EQUAL(true, success);
 
-    success = core::runtime::loadLibrary(std::string("fwData"));
+    success = core::runtime::loadLibrary(std::string("utest"));
     CPPUNIT_ASSERT_EQUAL(true, success);
 
     success = core::runtime::loadLibrary(std::string("foo"));
@@ -79,9 +79,9 @@ void RuntimeTest::testLibrary()
 
 void RuntimeTest::testModule()
 {
-    auto module = core::runtime::loadModule(std::string("servicesReg"));
+    auto module = core::runtime::loadModule(std::string("module_utest"));
 
-    CPPUNIT_ASSERT_EQUAL(std::string("servicesReg"),  module->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(std::string("module_utest"),  module->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(Version("0.1"),  module->getVersion());
     // No good parameter test for now, but at least test without any parameter
     CPPUNIT_ASSERT_EQUAL(false,  module->hasParameter("test"));
@@ -91,12 +91,9 @@ void RuntimeTest::testModule()
     const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
     CPPUNIT_ASSERT_EQUAL(libLocation,  module->getLibraryLocation());
     const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
-    CPPUNIT_ASSERT_EQUAL(rcLocation / "servicesReg-0.1",  module->getResourcesLocation());
+    CPPUNIT_ASSERT_EQUAL(rcLocation / "module_utest-0.1",  module->getResourcesLocation());
 
-    const auto extensions = module->getExtensions();
-    CPPUNIT_ASSERT_EQUAL(false, extensions.empty());
-
-    CPPUNIT_ASSERT_EQUAL(std::string("::servicesReg::Plugin"), module->getClass());
+    CPPUNIT_ASSERT_EQUAL(std::string("::module_utest::Plugin"), module->getClass());
     auto plugin = module->getPlugin();
     CPPUNIT_ASSERT_MESSAGE("Plugin is null", nullptr != plugin);
 
@@ -114,18 +111,18 @@ void RuntimeTest::testOperations()
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
 
     // module location prototype
-    auto path = core::runtime::getModuleResourcePath(std::string("servicesReg"));
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1", path);
+    auto path = core::runtime::getModuleResourcePath(std::string("module_utest"));
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1", path);
 
     path = core::runtime::getModuleResourcePath("notExistingBundle");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
-    path = core::runtime::getModuleResourceFilePath("servicesReg-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
+    path = core::runtime::getModuleResourceFilePath("module_utest-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("servicesReg-0.1/not_existing.file");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
+    path = core::runtime::getModuleResourceFilePath("module_utest-0.1/not_existing.file");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
@@ -139,15 +136,15 @@ void RuntimeTest::testOperations()
     path = core::runtime::getResourceFilePath("fwLibrary-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
 
-    path = core::runtime::getResourceFilePath("servicesReg-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
+    path = core::runtime::getResourceFilePath("module_utest-0.1/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
 
     // (module, path) prototype
-    path = core::runtime::getModuleResourceFilePath("servicesReg", "plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/plugin.xml", path);
+    path = core::runtime::getModuleResourceFilePath("module_utest", "plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("servicesReg", "not_existing.file");
-    CPPUNIT_ASSERT_EQUAL(location / "servicesReg-0.1/not_existing.file", path);
+    path = core::runtime::getModuleResourceFilePath("module_utest", "not_existing.file");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
@@ -156,4 +153,4 @@ void RuntimeTest::testOperations()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::runtime

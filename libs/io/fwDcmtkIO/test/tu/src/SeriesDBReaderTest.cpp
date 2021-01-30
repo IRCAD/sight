@@ -52,7 +52,7 @@ namespace fwDcmtkIO
 namespace ut
 {
 
-static ::fwTest::Exception e(""); // force link with fwTest
+static ::utest::Exception e(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 

@@ -32,7 +32,7 @@
 #endif
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::ut::HisResClockTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::ut::HisResClockTest );
 
 namespace sight::core
 {

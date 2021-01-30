@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "SignalsTest.hpp"
+#include "com/SignalsTest.hpp"
 
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
@@ -28,9 +28,9 @@
 #include <core/com/Signals.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::com::ut::SignalsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::com::ut::SignalsTest );
 
-namespace fwCom
+namespace sight::core::com
 {
 namespace ut
 {
@@ -142,4 +142,4 @@ void SignalsTest::hasSignalsTest()
 //-----------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwCom
+} //namespace sight::core::com

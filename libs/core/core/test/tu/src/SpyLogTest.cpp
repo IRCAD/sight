@@ -25,7 +25,7 @@
 #include <core/mt/types.hpp>
 #include <core/spyLog.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/regex.hpp>
@@ -39,14 +39,14 @@
 #include <thread>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::ut::SpyLogTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::ut::SpyLogTest );
 
 namespace sight::core
 {
 namespace ut
 {
 
-static ::fwTest::Exception e("");
+static utest::Exception e("");
 
 //------------------------------------------------------------------------------
 

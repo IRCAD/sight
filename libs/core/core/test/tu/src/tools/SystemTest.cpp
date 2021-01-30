@@ -20,16 +20,16 @@
  *
  ***********************************************************************/
 
-#include "SystemTest.hpp"
+#include "tools/SystemTest.hpp"
 
 #include <core/tools/System.hpp>
 
 #include <fstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::tools::ut::SystemTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::tools::ut::SystemTest );
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -107,4 +107,4 @@ void SystemTest::robustRenameTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

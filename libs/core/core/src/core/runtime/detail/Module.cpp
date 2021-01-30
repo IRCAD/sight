@@ -403,7 +403,7 @@ void Module::start()
         catch( std::exception& e )
         {
             throw RuntimeException( getModuleStr(m_identifier, m_version) +
-                                    ": start plugin error (after load requirement) :" + e.what() );
+                                    ": start plugin error (after load requirement) " + e.what() );
         }
     }
 }
@@ -415,7 +415,9 @@ void Module::startPlugin()
     SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " plugin is already started.",
                !m_started );
     // Retrieves the type of the plugin.
-    const std::string pluginType( getClass() );
+    std::string pluginType( getClass() );
+
+    pluginType = std::regex_replace(pluginType, std::regex("_"), "::");
 
     // According to the presence of a class or not, build and empty
     // plugin or attempt to instantiate a user defined plugin.

@@ -20,27 +20,27 @@
  *
  ***********************************************************************/
 
-#include "WorkerTest.hpp"
+#include "thread/WorkerTest.hpp"
 
 #include <core/spyLog.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 
-#include <fwTest/Exception.hpp>
+#include <utest/Exception.hpp>
 
 #include <atomic>
 #include <exception>
 #include <iostream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( core::thread::ut::WorkerTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::core::thread::ut::WorkerTest );
 
-namespace fwThread
+namespace sight::core::thread
 {
 namespace ut
 {
 
-static ::fwTest::Exception e(""); // force link with fwTest
+static utest::Exception e(""); // force link with fwTest
 
 //------------------------------------------------------------------------------
 
@@ -309,4 +309,4 @@ void WorkerTest::timerTest()
 //-----------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwThread
+} //namespace sight::core::thread

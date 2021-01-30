@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwTools
+namespace sight::core::tools
 {
 namespace ut
 {
@@ -48,4 +48,4 @@ public:
 };
 
 } // namespace ut
-} // namespace fwTools
+} // namespace sight::core::tools

@@ -639,7 +639,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME sight_module_${FWPROJECT_NAME})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME sight_${FWPROJECT_NAME})
         
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
             qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each modules

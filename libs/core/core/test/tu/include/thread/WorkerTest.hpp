@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwThread
+namespace sight::core::thread
 {
 namespace ut
 {
@@ -48,4 +48,4 @@ public:
 };
 
 } //namespace ut
-} //namespace fwThread
+} //namespace sight::core::thread
