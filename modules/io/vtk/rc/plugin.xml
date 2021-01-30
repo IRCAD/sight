@@ -1,4 +1,4 @@
-<plugin id="module_io_vtk" class="::sight::modules::io::vtk::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="::sight::modules::io::vtk" class="::sight::modules::io::vtk::Plugin" version="@PROJECT_VERSION@" >
     <library name="module_io_vtk" />
 
     <requirement id="module_services" />

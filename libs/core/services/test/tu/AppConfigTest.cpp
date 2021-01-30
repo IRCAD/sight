@@ -113,7 +113,7 @@ void AppConfigTest::addConfigTest()
     const std::string configId(services::registry::AppConfig::getUniqueIdentifier());
     const std::string group("TestGroup");
     const std::string desc("Description");
-    const std::string moduleId("module_services");
+    const std::string moduleId("::sight::modules::services");
     const std::string moduleVersion("0.1");
     services::registry::AppInfo::ParametersType parameters;
 

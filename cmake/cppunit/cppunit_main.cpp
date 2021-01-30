@@ -203,16 +203,18 @@ int main( int argc, char* argv[] )
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
+    if( options.listTests )
+    {
+        for(int i = 0; i < testSuite->getChildTestCount(); ++i)
+        {
+            std::cout << testSuite->getChildTestAt(i)->getName() << std::endl;
+        }
+        return 0;
+    }
+
     // Add the top suite to the test runner
     CPPUNIT_NS::TestRunner runner;
     runner.addTest( testSuite );
-
-    if( options.listTests )
-    {
-        CPPUNIT_NS::TestResult result;
-        runner.run( result );
-        return 0;
-    }
 
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;

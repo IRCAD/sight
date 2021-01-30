@@ -93,6 +93,9 @@ void AppManager::destroy()
 {
     this->stopAndUnregisterServices();
 
+    m_addObjectConnection.disconnect();
+    m_removeObjectConnection.disconnect();
+
     std::unique_lock<std::recursive_mutex> lock(m_objectMutex);
     // remove all the registered objects
     while (!m_registeredObject.empty())

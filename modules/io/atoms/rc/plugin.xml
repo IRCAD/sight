@@ -1,4 +1,4 @@
-<plugin id="module_io_atoms" class="::sight::modules::io::atoms::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="::sight::modules::io::atoms" class="::sight::modules::io::atoms::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="module_io_atoms" />
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "module_utest/config.hpp"
+#include "modules/utest/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 

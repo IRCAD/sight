@@ -1,4 +1,4 @@
-<plugin id="module_services" class="::sight::modules::services::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="::sight::modules::services" class="::sight::modules::services::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="module_services" />
 

@@ -69,7 +69,6 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                                    "    </extension>")
     else()
 
-    message("11 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " ${SRV_TYPE})
         # Guess everything from the doxygen
 
         # 1. Find the service type from fwCoreServiceClassDefinitionsMacro (old macro) or fwCoreServiceMacro (new macro),
@@ -84,8 +83,6 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
 
             string(STRIP ${CMAKE_MATCH_2} SRV_TYPE)
 
-
-            message("22 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  " ${SRV_TYPE})
             # 2. Find the service implementation from the XML configuration doxygen
             set(SRV_IMPL_REGEX "<service[\n\t\r ]*(uid[\n\t\r ]*=[\n\t\r ]*\".*\")?[\n\t\r ]*type[\n\t\r ]*=[\n\t\r ]*\"([:a-zA-Z0-9_]*)\".*>")
 
@@ -165,7 +162,7 @@ endif()
 # set variables used in the configure_file command
 string(REPLACE "module_" "" STRIPPED_MODULE_NAME ${PROJECT})
 string(REPLACE "_" "::" SPLIT_MODULE_NAME "${STRIPPED_MODULE_NAME}")
-set(PLUGIN_ID "${PROJECT}")
+set(PLUGIN_ID "::sight::modules::${SPLIT_MODULE_NAME}")
 
 # retrieves the class representing the module executable part.
 if(PRJ_CPP_FILES)

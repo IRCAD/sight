@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "utest/Plugin.hpp"
+#include "modules/core/utest/Plugin.hpp"
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
