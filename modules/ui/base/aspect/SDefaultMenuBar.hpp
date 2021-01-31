@@ -83,19 +83,20 @@ protected:
      *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see ui::base::IMenuBarSrv::initialize(), ui::base::layoutManager::IMenuBarLayoutManager::initialize()
+     *  @see sight::ui::base::IMenuBarSrv::initialize(),
+     * sight::ui::base::layoutManager::IMenuBarLayoutManager::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 
     /**
      * @brief Create the menus and start the managed services.
-     * @see ui::base::IMenuBarSrv::create()
+     * @see sight::ui::base::IMenuBarSrv::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief Stop all menu of this menuBar and destroy MenuBar
-     * @see ui::base::IMenuBarSrv::destroy()
+     * @see sight::ui::base::IMenuBarSrv::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 

@@ -54,13 +54,13 @@ namespace basicRegistration
  */
 
 class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,
-                                                     public ui::base::editor::IEditor
+                                                     public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SImagesSubstract, ui::base::editor::IEditor)
+    fwCoreServiceMacro(SImagesSubstract, sight::ui::base::editor::IEditor)
 
     BASICREGISTRATION_API SImagesSubstract() noexcept;
 

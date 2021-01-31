@@ -12,10 +12,7 @@ set( REQUIREMENTS
         module_ui_base
         module_ui_qt
         ctrlSelection
-        uiImageQt
-        uiTF
         uiVisu
-        uiVisuQt
         visuVTKAdaptor
         visuVTKQt
         scene2D

@@ -84,7 +84,7 @@
 
             <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="no" backgroundColor="#3E4453" />
@@ -98,7 +98,7 @@
 
             <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="2" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -112,7 +112,7 @@
 
             <service uid="organsView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::ToolboxLayoutManager" >
+                    <layout type="::sight::ui::base::ToolboxLayoutManager" >
                         <view caption="Organs" expanded="true" />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" />
@@ -127,7 +127,7 @@
 
             <service uid="sceneEditorsView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -221,7 +221,7 @@
                 </columns>
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -271,11 +271,11 @@
                 <out key="object" uid="reconstruction" />
             </service>
 
-            <service uid="organMaterialEditorSrv" type="::uiReconstructionQt::SOrganMaterialEditor" autoConnect="yes" >
+            <service uid="organMaterialEditorSrv" type="::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor" autoConnect="yes" >
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
-            <service uid="representationEditorSrv" type="::uiReconstructionQt::RepresentationEditor" autoConnect="yes" >
+            <service uid="representationEditorSrv" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 

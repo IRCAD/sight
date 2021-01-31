@@ -19,7 +19,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                     <view align="right" minWidth="350" />
@@ -61,7 +61,7 @@
 
         <service uid="centerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
@@ -75,7 +75,7 @@
 
         <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Loaded Series" align="center" minWidth="200" />
                     <view caption="Loaded Preview" align="right" minWidth="200" />
@@ -89,7 +89,7 @@
 
         <service uid="rightView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Filters" align="center" minWidth="200" />
                 </layout>
@@ -113,7 +113,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="activityHelp" type="::uiGenericQt::action::LaunchBrowserActionService" >
+        <service uid="activityHelp" type="::sight::modules::ui::qt::action::LaunchBrowserActionService" >
             <url>dicomFilteringActivity-0.1/quickstart.pdf</url>
         </service>
 

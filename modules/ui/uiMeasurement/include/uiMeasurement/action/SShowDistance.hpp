@@ -55,7 +55,7 @@ class UIMEASUREMENT_CLASS_API SShowDistance final : public ::sight::ui::base::IA
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShowDistance,  ui::base::IActionSrv)
+    fwCoreServiceMacro(SShowDistance, sight::ui::base::IActionSrv)
 
     /// Initialize slots.
     UIMEASUREMENT_API SShowDistance() noexcept;

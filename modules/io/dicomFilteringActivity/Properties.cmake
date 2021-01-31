@@ -16,7 +16,6 @@ set( REQUIREMENTS
     ioGdcm
     media
     module_services
-    uiGenericQt
     uiIO
     uiMedDataQt
     visuVTK

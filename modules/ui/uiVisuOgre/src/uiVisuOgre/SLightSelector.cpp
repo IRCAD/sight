@@ -84,7 +84,7 @@ void SLightSelector::starting()
 {
     this->create();
 
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
 
     m_layersBox       = new QComboBox();
@@ -189,7 +189,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 void SLightSelector::onAddLight(bool)
 {
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 
@@ -258,7 +258,7 @@ void SLightSelector::onRemoveLight(bool)
 
 void SLightSelector::onEditAmbientColor(bool)
 {
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 

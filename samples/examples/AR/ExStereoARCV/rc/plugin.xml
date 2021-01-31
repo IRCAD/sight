@@ -110,7 +110,7 @@
 
             <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -124,7 +124,7 @@
 
             <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -138,7 +138,7 @@
 
             <service uid="infoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -152,7 +152,7 @@
 
             <service uid="stereoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -166,7 +166,7 @@
 
             <service uid="reprojectionInfoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -181,7 +181,7 @@
 
             <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                             <view proportion="3" />
                             <view proportion="2" />

@@ -380,7 +380,7 @@ void Plugin::initialize()
         showNegatoSrv->configure(config);
     }
 
-    auto sliderIndexEditorSrv = m_appManager->addService("::uiImageQt::SliceIndexPositionEditor",
+    auto sliderIndexEditorSrv = m_appManager->addService("::modules::ui::qt::image::SliceIndexPositionEditor",
                                                          "sliderIndexEditorSrv", true, false);
     {
         sliderIndexEditorSrv->registerInOut(image, "image", true);

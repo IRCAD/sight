@@ -29,7 +29,7 @@
 
 #include <ui/base/layoutManager/ToolboxLayoutManagerBase.hpp>
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 /**
@@ -62,4 +62,4 @@ public:
 
 };
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

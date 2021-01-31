@@ -77,7 +77,7 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 void SSeriesDBMerger::configuring()
 {
 
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -91,7 +91,7 @@ void SSeriesDBMerger::configuring()
 
 void SSeriesDBMerger::updating( )
 {
-    ui::base::LockAction lock(this->getSptr());
+    sight::ui::base::LockAction lock(this->getSptr());
 
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIES_INOUT);
     SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
@@ -137,14 +137,14 @@ void SSeriesDBMerger::updating( )
 
 void SSeriesDBMerger::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::stopping()
 {
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

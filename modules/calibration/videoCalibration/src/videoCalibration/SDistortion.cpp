@@ -225,8 +225,8 @@ void SDistortion::remap()
             camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size [" <<
             inputSize[0] << "x" << inputSize[1] << "]";
 
-        ui::base::dialog::MessageDialog::show("Error", msg.str(),
-                                              ui::base::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show("Error", msg.str(),
+                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
 
         m_calibrationMismatch = true;
         m_prevImageSize       = inputSize;

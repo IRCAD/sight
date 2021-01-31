@@ -35,10 +35,10 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro( ::sight::ui::base::ToolboxLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::ToolboxLayoutManager,
                     ::sight::ui::base::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 //-----------------------------------------------------------------------------
@@ -157,4 +157,4 @@ void ToolboxLayoutManager::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

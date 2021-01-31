@@ -91,13 +91,13 @@ namespace ioDicom
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  */
 class IODICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
-                                                 public ui::base::editor::IEditor
+                                                 public sight::ui::base::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  ui::base::editor::IEditor )
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::editor::IEditor )
 
     IODICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;

@@ -105,7 +105,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SSliceIndexDicomPullerEditor final :
     public QObject,
-    public ui::base::editor::IEditor
+    public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT;
@@ -113,7 +113,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  sight::ui::base::editor::IEditor)
 
     /// Creates slots.
     [[deprecated("Will be removed in sight 21.0, use ::ioPacs::SSliceIndexDicomEditor instead")]]

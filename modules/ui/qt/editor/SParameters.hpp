@@ -86,7 +86,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::modules::ui::qt::editor::SParameters" >
+       <service uid="..." type="::sight::modules::ui::qt::editor::SParameters" >
         <parameters>
             <param type="bool" name="boolean parameter" key="boolParam" defaultValue="false" />
             <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42"

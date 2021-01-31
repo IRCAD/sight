@@ -4,13 +4,13 @@
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSelector</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SSeries</service>
         <object>::sight::data::Vector</object>
     </extension>
@@ -22,31 +22,31 @@
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::IActionSrv</type>
+        <type>::sight::ui::base::IActionSrv</type>
         <service>::uiMedDataQt::action::SExportSeries</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::IActionSrv</type>
+        <type>::sight::ui::base::IActionSrv</type>
         <service>::uiMedDataQt::action::SInitNewSeries</service>
         <object>::sight::data::SeriesDB</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SModelSeriesList</service>
         <object>::sight::data::ModelSeries</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SOrganTransformation</service>
         <object>::sight::data::ModelSeries</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::uiMedDataQt::editor::SActivityWizard</service>
         <object>::sight::data::SeriesDB</object>
     </extension>

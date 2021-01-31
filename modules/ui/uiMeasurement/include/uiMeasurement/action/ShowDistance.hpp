@@ -56,7 +56,7 @@ class UIMEASUREMENT_DEPRECATED_CLASS_API ShowDistance : public ::sight::ui::base
 {
 
 public:
-    fwCoreServiceMacro(ShowDistance,  ui::base::IActionSrv)
+    fwCoreServiceMacro(ShowDistance, sight::ui::base::IActionSrv)
 
     UIMEASUREMENT_API ShowDistance() noexcept;
 

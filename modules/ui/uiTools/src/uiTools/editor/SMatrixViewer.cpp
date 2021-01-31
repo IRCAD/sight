@@ -62,7 +62,7 @@ SMatrixViewer::~SMatrixViewer() noexcept
 
 void SMatrixViewer::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 
     m_title = this->getConfigTree().get<std::string>("title", "matrix");
 }
@@ -71,7 +71,7 @@ void SMatrixViewer::configuring()
 
 void SMatrixViewer::starting()
 {
-    ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainerSrv::create();
     ui::qt::container::QtContainer::sptr qtContainer =
         ui::qt::container::QtContainer::dynamicCast(getContainer());
 

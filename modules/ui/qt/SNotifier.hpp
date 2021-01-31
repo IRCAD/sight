@@ -44,7 +44,7 @@ namespace sight::modules::ui::qt
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::ui::qt::SNotifier">
+        <service type="::sight::modules::ui::qt::SNotifier">
             <message>Default Message</message>
             <maxNotifications>3</maxNotifications>
             <position>TOP_RIGHT</position>

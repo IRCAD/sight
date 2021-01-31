@@ -77,15 +77,15 @@ void SQueryEditor::configuring()
         throw core::tools::Failed("'server' element not found");
     }
 
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SQueryEditor::starting()
 {
-    ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::base::IGuiContainerSrv::create();
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main Widget
     QGridLayout* layout = new QGridLayout();
@@ -341,7 +341,7 @@ void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 
 void SQueryEditor::displayErrorMessage(const std::string& message) const
 {
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
     messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);

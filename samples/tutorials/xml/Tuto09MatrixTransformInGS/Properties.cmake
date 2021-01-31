@@ -17,7 +17,6 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
 
     # Reader
     module_io_file
@@ -26,7 +25,6 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    uiVisuQt
     maths
 
     # Generic Scene

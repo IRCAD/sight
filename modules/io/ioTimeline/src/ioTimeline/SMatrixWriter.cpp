@@ -103,7 +103,7 @@ void SMatrixWriter::configureWithIHM()
 void SMatrixWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);

@@ -30,10 +30,10 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro( ::sight::ui::base::layoutManager::MenuBarLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::MenuBarLayoutManager,
                     ::sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 namespace layoutManager
 {
@@ -101,4 +101,4 @@ void MenuBarLayoutManager::menuIsEnabled(ui::base::container::fwMenu::sptr fwMen
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

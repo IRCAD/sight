@@ -72,7 +72,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
-    public ui::base::editor::IEditor,
+    public sight::ui::base::editor::IEditor,
     public services::IHasServices
 {
 
@@ -81,7 +81,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::editor::IEditor)
 
     /// Creates the service.
     IOPACS_API SSliceIndexDicomEditor() noexcept;

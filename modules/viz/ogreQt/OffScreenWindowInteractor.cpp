@@ -80,7 +80,7 @@ void OffScreenWindowInteractor::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void OffScreenWindowInteractor::createContainer( ui::base::container::fwContainer::sptr, bool, bool)
+void OffScreenWindowInteractor::createContainer( sight::ui::base::container::fwContainer::sptr, bool, bool)
 {
     m_ogreRoot = sight::viz::ogre::Utils::getOgreRoot();
 

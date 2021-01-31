@@ -63,14 +63,14 @@ SRemoveDistance::~SRemoveDistance() noexcept
 
 void SRemoveDistance::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SRemoveDistance::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void SRemoveDistance::updating( )
 
 void SRemoveDistance::stopping()
 {
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

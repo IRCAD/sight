@@ -60,13 +60,13 @@ namespace ioDicom
  */
 
 class IODICOM_CLASS_API SFilterSelectionEditor : public QObject,
-                                                 public ui::base::editor::IEditor
+                                                 public sight::ui::base::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectionEditor,  ui::base::editor::IEditor )
+    fwCoreServiceMacro(SFilterSelectionEditor,  sight::ui::base::editor::IEditor )
 
     typedef std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > FilterMapType;
 

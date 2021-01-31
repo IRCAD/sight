@@ -34,7 +34,7 @@ Example:
 
         <service uid="tfEditor" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -54,7 +54,7 @@ Example:
             <push field="m_transferFunctionCompositeId" />
         </service>
 
-        <service uid="tfm" type="::uiTF::TransferFunctionEditor">
+        <service uid="tfm" type="::sight::modules::ui::qt::image::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
             <in key="currentTF" uid="${transferFunctionOutput}" optional="yes"/>
             <out key="tf" uid="${transferFunctionOutput}" />
@@ -65,7 +65,7 @@ Example:
 
         <service uid="tfmTab" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::TabLayoutManager">
+                <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="TF-Negato" />
                     <view caption="TF-Editor" />
                 </layout>

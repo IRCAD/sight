@@ -91,7 +91,7 @@ void SModelSeriesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
@@ -159,7 +159,7 @@ void SModelSeriesReader::updating()
             sight::io::base::services::s_DATA_KEY);
         const auto modelSeries = modelSeriesLockedPtr.get_shared();
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         data::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
@@ -245,10 +245,10 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
     }
@@ -257,19 +257,19 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 

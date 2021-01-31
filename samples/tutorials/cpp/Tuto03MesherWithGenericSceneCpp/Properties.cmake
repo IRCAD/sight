@@ -16,10 +16,7 @@ set( REQUIREMENTS
     module_services
     opVTKMesh
     uiIO
-    uiImageQt
     uiMedDataQt
-    uiReconstructionQt
-    uiVisuQt
     visuVTKAdaptor
     visuVTKQt
     media

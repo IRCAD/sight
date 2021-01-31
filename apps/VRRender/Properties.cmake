@@ -22,10 +22,8 @@ set( REQUIREMENTS
     module_io_file
 
     uiIO
-    uiGenericQt
     uiMedDataQt
     uiPreferences
-    uiActivitiesQt
 
     2DVisualizationActivity
     3DVisualizationActivity
@@ -41,7 +39,6 @@ set( REQUIREMENTS
     DicomWebWriterActivity
 
     media
-    style
 
     patchMedicalData
     arPatchMedicalData

@@ -104,7 +104,7 @@ void SImageSeriesReader::openLocationDialog()
         }
     }
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an ImageSeries" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
@@ -190,7 +190,7 @@ void SImageSeriesReader::updating()
             this->getInOut< data::ImageSeries >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("ImageSeries is not instanced", imageSeries);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try

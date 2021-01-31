@@ -67,21 +67,21 @@ CrossTypeAction::~CrossTypeAction() noexcept
 
 void CrossTypeAction::starting()
 {
-    ui::base::IActionSrv::actionServiceStarting();
+    sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void CrossTypeAction::stopping()
 {
-    ui::base::IActionSrv::actionServiceStopping();
+    sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void CrossTypeAction::configuring()
 {
-    ui::base::IActionSrv::initialize();
+    sight::ui::base::IActionSrv::initialize();
 
     if( this->m_configuration->size() > 0 )
     {

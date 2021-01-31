@@ -61,7 +61,7 @@
 
             <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" backgroundColor="#3E4453" />
                         <view proportion="1" />
@@ -75,7 +75,7 @@
 
             <service uid="sceneView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#3E4453" />
@@ -89,7 +89,7 @@
 
             <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -174,7 +174,7 @@
                 </config>
             </service>
 
-            <service uid="pointEditorSrv" type="::uiVisuQt::PointEditor" />
+            <service uid="pointEditorSrv" type="::sight::modules::ui::qt::viz::PointEditor" />
 
             <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
@@ -191,7 +191,7 @@
                 <inout key="image" uid="image" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>

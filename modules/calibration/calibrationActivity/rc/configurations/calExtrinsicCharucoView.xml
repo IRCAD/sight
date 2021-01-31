@@ -28,7 +28,7 @@
 
         <service uid="extrinsicView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -40,7 +40,7 @@
 
         <service uid="extrinsicCameraView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" caption="Calibration" />
                     <view align="bottom" caption="Information" />
@@ -74,7 +74,7 @@
 
         <service uid="calibrationInfoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
                 <toolBar align="left">
@@ -89,7 +89,7 @@
 
         <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -103,7 +103,7 @@
 
         <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view/>
                     <view/>
@@ -138,7 +138,7 @@
 
         <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
@@ -263,7 +263,7 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="ExtrinsicCalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="ExtrinsicCalibrationInfoEditor" type="::sight::modules::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
@@ -290,7 +290,7 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS" />
         </service>
 
-        <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo">
+        <service uid="DisplayCalibrationInfo" type="::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo1}" />
             <in key="calInfo2" uid="${calibrationInfo2}" />
         </service>
@@ -319,16 +319,16 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE"/>
         </service>
 
-        <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
+        <service uid="cameraSeriesInfo" type="::sight::modules::ui::qt::calibration::SCameraSeriesEditor" autoConnect="yes">
             <in key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 
-        <service uid="cameraInfo1" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo1" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera1}" />
         </service>
 
-        <service uid="cameraInfo2" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo2" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera2}" />
         </service>
 

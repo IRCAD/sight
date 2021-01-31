@@ -79,7 +79,7 @@ void SModelSeriesObjWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialog;
+    sight::ui::base::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
@@ -94,13 +94,13 @@ void SModelSeriesObjWriter::openLocationDialog()
             break;
         }
         // message box
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
         messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
         messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == ui::base::dialog::IMessageDialog::YES)
+        if( messageBox.show() == sight::ui::base::dialog::IMessageDialog::YES)
         {
             break;
         }
@@ -160,7 +160,7 @@ void SModelSeriesObjWriter::updating()
         writer->setObject(modelSeries);
         writer->setFolder(this->getFolder());
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
@@ -174,7 +174,7 @@ void SModelSeriesObjWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            ui::base::dialog::MessageDialog messageBox;
+            sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage( ss.str() );
             messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);
@@ -187,7 +187,7 @@ void SModelSeriesObjWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving.";
 
-            ui::base::dialog::MessageDialog messageBox;
+            sight::ui::base::dialog::MessageDialog messageBox;
             messageBox.setTitle("Warning");
             messageBox.setMessage( ss.str() );
             messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);

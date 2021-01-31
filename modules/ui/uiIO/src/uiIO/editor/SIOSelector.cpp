@@ -324,7 +324,7 @@ void SIOSelector::updating()
                     reader->start();
                     reader->openLocationDialog();
 
-                    ui::base::Cursor cursor;
+                    sight::ui::base::Cursor cursor;
                     cursor.setCursor(ui::base::ICursor::BUSY);
                     reader->update();
                     cursor.setDefaultCursor();
@@ -384,7 +384,7 @@ void SIOSelector::updating()
                     writer->start();
                     writer->openLocationDialog();
 
-                    ui::base::Cursor cursor;
+                    sight::ui::base::Cursor cursor;
                     cursor.setCursor(ui::base::ICursor::BUSY);
                     writer->update();
                     cursor.setDefaultCursor();

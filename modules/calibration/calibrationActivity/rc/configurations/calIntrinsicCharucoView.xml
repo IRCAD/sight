@@ -20,7 +20,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="7" />
@@ -35,7 +35,7 @@
 
         <service uid="leftPanelView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -50,7 +50,7 @@
         <service uid="toolboxView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar/>
-                <layout type="::sight::gui::ToolboxLayoutManager">
+                <layout type="::sight::ui::base::ToolboxLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="3" caption="Calibration input" expanded="true" />
                     <view proportion="1" caption="Calibration result" expanded="true" />
@@ -90,7 +90,7 @@
                 <toolBar>
                     <toolBitmapSize height="24" width="24" />
                 </toolBar>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -129,7 +129,7 @@
 
         <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -151,7 +151,7 @@
 
         <service uid="videoSliderView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" />
@@ -298,11 +298,11 @@
             <color>#D25252</color>
         </service>
 
-        <service uid="displayCalibrationInfoSrv" type="::uiCalibration::SDisplayCalibrationInfo">
+        <service uid="displayCalibrationInfoSrv" type="::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="calibrationInfoEditorSrv" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="calibrationInfoEditorSrv" type="::sight::modules::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
@@ -312,11 +312,11 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS"/>
         </service>
 
-        <service uid="cameraInfoSrv" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfoSrv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera}" />
         </service>
 
-        <service uid="intrinsicEditionSrv" type="::uiCalibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="::sight::modules::ui::qt::calibration::SIntrinsicEdition">
             <inout key="camera" uid="${camera}" />
         </service>
 

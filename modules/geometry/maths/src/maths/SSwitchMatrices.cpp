@@ -27,9 +27,9 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <data/tools/TransformationMatrix3D.hpp>
-
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 fwServicesRegisterMacro( ::sight::services::IController, ::maths::SSwitchMatrices, data::TransformationMatrix3D)
 

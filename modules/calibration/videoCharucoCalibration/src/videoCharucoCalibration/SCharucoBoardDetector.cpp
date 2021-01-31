@@ -255,7 +255,7 @@ void SCharucoBoardDetector::updateCharucoBoardSize()
     catch (const std::exception& e )
     {
         // Warn user that something went wrong with dictionary generation.
-        ui::base::dialog::MessageDialog::sptr errorDialog = ui::base::dialog::MessageDialog::New();
+        sight::ui::base::dialog::MessageDialog::sptr errorDialog = sight::ui::base::dialog::MessageDialog::New();
         errorDialog->setTitle("Error in dictionary generation");
         errorDialog->setIcon(ui::base::dialog::IMessageDialog::Icons::CRITICAL);
         errorDialog->setMessage("Error when generating dictionary: " + std::string(e.what()));

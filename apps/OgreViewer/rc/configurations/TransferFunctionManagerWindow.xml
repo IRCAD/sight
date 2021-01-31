@@ -44,7 +44,7 @@
 
         <service uid="tfView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <view proportion="1" leftBorder="5" rightBorder="5" bottomBorder="5" />
@@ -58,7 +58,7 @@
 
         <service uid="transferFunctionEditorView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <spacer />
@@ -71,7 +71,7 @@
 
         <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" spacing="0" />
                     <view proportion="0" backgroundColor="#36393E" spacing="0" />
@@ -223,7 +223,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="transferFunctionEditorSrv" type="::uiTF::SMultipleTF" >
+        <service uid="transferFunctionEditorSrv" type="::sight::modules::ui::qt::image::SMultipleTF" >
             <in key="currentTFPool" uid="${currentTFPool}" optional="yes" />
             <inout key="tfPools" uid="${tfPools}" autoConnect="yes" />
             <out key="tfPool" uid="${currentTFPool}" />

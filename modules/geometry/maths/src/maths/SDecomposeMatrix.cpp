@@ -28,7 +28,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <data/tools/TransformationMatrix3D.hpp>
+#include <geometry/data/TransformationMatrix3D.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -82,7 +82,7 @@ void SDecomposeMatrix::updating()
     SLM_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
     data::mt::ObjectReadLock srcLock(matrix);
 
-    ::glm::dmat4 glmMatrix = data::tools::TransformationMatrix3D::getMatrixFromTF3D(matrix);
+    ::glm::dmat4 glmMatrix = geometry::data::getMatrixFromTF3D(matrix);
     ::glm::dvec3 scale;
     ::glm::dquat orientation;
     ::glm::dvec3 translation;
@@ -100,8 +100,8 @@ void SDecomposeMatrix::updating()
     if( rotation)
     {
         data::mt::ObjectWriteLock rotLock(rotation);
-        data::tools::TransformationMatrix3D::identity(rotation);
-        data::tools::TransformationMatrix3D::setTF3DFromMatrix(rotation, orientationMat);
+        geometry::data::identity(rotation);
+        geometry::data::setTF3DFromMatrix(rotation, orientationMat);
 
         auto rotSig = rotation->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         rotSig->asyncEmit();
@@ -110,7 +110,7 @@ void SDecomposeMatrix::updating()
     if( translationMat)
     {
         data::mt::ObjectWriteLock transLock(translationMat);
-        data::tools::TransformationMatrix3D::identity(translationMat);
+        geometry::data::identity(translationMat);
         for (size_t i = 0; i < 3; ++i)
         {
             translationMat->setCoefficient(i, 3, translation[i]);
@@ -123,7 +123,7 @@ void SDecomposeMatrix::updating()
     if( scaleMat)
     {
         data::mt::ObjectWriteLock scaleLock(scaleMat);
-        data::tools::TransformationMatrix3D::identity(scaleMat);
+        geometry::data::identity(scaleMat);
         for (size_t i = 0; i < 3; ++i)
         {
             for (size_t j = 0; j < 3; j++)

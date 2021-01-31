@@ -27,9 +27,10 @@
 
 #include <data/Exception.hpp>
 #include <data/Landmarks.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -115,10 +116,10 @@ void STransformLandmark::updating()
         }
         catch (data::Exception& e )
         {
-            ui::base::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
-                                                               "It is impossible to modify landmarks: "
-                                                               + std::string(e.what()),
-                                                               ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::showMessageDialog("Transform Landmarks",
+                                                                      "It is impossible to modify landmarks: "
+                                                                      + std::string(e.what()),
+                                                                      sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }

@@ -3,18 +3,17 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    fwlauncher              # Needed to build the launcher
+    fwlauncher                     # Needed to build the launcher
     module_appXml                  # XML configurations
 
     module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
 
     # Objects declaration
     data
-    module_services             # fwService
+    module_services             
 
     # UI declaration/Actions
     module_ui_base
-    style
 
     # Reader
     module_io_vtk
@@ -29,8 +28,8 @@ moduleParam(module_ui_qt
         resource
         stylesheet
     PARAM_VALUES
-        style-0.1/flatdark.rcc
-        style-0.1/flatdark.qss
+        module_ui_qt-0.1/flatdark.rcc
+        module_ui_qt-0.1/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
 moduleParam(

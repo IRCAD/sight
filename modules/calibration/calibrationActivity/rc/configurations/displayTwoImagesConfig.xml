@@ -34,7 +34,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view/>
                     <view/>

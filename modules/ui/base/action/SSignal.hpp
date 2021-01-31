@@ -44,7 +44,7 @@ namespace action
         <service type="::modules::ui::base::action::SSignal" />
    @endcode
  *
- * See also ui::base::IActionSrv::initialize for more configuration parameters.
+ * See also sight::ui::base::IActionSrv::initialize for more configuration parameters.
  * @see IActionSrv::initialize
  */
 

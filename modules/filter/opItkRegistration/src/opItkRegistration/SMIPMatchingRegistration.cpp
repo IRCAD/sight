@@ -29,13 +29,14 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <itkRegistrationOp/MIPMatchingRegistration.hpp>
 #include <itkRegistrationOp/Resampler.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <functional>
 #include <numeric>

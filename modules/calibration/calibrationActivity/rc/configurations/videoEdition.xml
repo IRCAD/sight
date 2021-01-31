@@ -23,7 +23,7 @@
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar/>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
@@ -93,7 +93,7 @@
             <label></label>
         </service>
 
-        <service uid="intrinsicEditionSrv" type="::uiCalibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="::sight::modules::ui::qt::calibration::SIntrinsicEdition">
             <inout key="camera" uid="${camera}" />
         </service>
 

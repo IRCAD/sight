@@ -106,7 +106,7 @@
 
             <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="3" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -120,7 +120,7 @@
 
             <service uid="sceneViews" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -134,7 +134,7 @@
 
             <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -149,7 +149,7 @@
 
             <service uid="statusView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -165,7 +165,7 @@
 
             <service uid="editorViews" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                <layout type="::sight::gui::ToolboxLayoutManager" >
+                <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                         <view caption="Openvslam  Orb Parameters."  expanded="true" />
                         <view caption="Openvslam  initializer Parameters. (Advanced)" expanded="false" />

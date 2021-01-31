@@ -76,7 +76,7 @@ namespace editor
  */
 #ifdef KEEP_OLD_SERVICE
 class ACTIVITIES_CLASS_API SCreateActivity : public QObject,
-                                             public ui::base::editor::IEditor
+                                             public sight::ui::base::editor::IEditor
 #else
 class ACTIVITIES_CLASS_API SCreateActivity
 #endif
@@ -87,7 +87,7 @@ Q_OBJECT;
 public:
 
 #ifdef KEEP_OLD_SERVICE
-    fwCoreServiceMacro(SCreateActivity, ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCreateActivity, sight::ui::base::editor::IEditor)
 #endif
 
     /// Constructor. Do nothing.

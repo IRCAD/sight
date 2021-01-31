@@ -29,13 +29,14 @@
 #include <data/CameraSeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <depthMapOp/Projection.hpp>
 
+#include <glm/glm.hpp>
+
 #include <services/macros.hpp>
 
-#include <glm/glm.hpp>
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 namespace opDepthMap
 {
@@ -328,7 +329,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const data::iterator::RGBA defaultColor = {255, 255, 255, 255};
 
     size_t nbRealPoints     = 0;
-    auto glmExtrinsicMatrix = data::tools::TransformationMatrix3D::getMatrixFromTF3D(extrinsic);
+    auto glmExtrinsicMatrix = geometry::data::getMatrixFromTF3D(extrinsic);
 
     const auto imageSize = height*width;
     for(size_t y = 0; y != height; ++y)

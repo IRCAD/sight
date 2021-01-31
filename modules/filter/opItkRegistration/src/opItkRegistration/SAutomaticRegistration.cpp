@@ -153,7 +153,7 @@ void SAutomaticRegistration::updating()
 
     ::itkRegistrationOp::AutomaticRegistration registrator;
 
-    ui::base::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
+    sight::ui::base::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
 
     dialog.setCancelCallback([&registrator]()
         {

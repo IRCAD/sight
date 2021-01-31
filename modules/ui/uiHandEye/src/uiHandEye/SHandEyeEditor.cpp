@@ -93,14 +93,14 @@ void SHandEyeEditor::updating()
 
 void SHandEyeEditor::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SHandEyeEditor::starting()
 {
-    ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainerSrv::create();
     ui::qt::container::QtContainer::sptr qtContainer =
         ui::qt::container::QtContainer::dynamicCast(getContainer());
 

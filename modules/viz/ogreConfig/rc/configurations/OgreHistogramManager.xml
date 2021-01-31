@@ -19,7 +19,7 @@
         <!-- *********************************** Begin layouts declaration *********************************** -->
         <service uid="HistogramView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -46,16 +46,16 @@
             <parameter replace="WID_PARENT" by="TFScene"/>
         </service>
 
-        <service uid="WindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+        <service uid="WindowLevel" type="::sight::modules::ui::qt::image::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${IMAGE}" />
             <inout key="tf" uid="${TF}" optional="yes" />
         </service>
 
-        <service uid="TransparencyEditor" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
+        <service uid="TransparencyEditor" type="::sight::modules::ui::qt::image::ImageTransparency" autoConnect="yes" >
             <inout key="image" uid="${IMAGE}" />
         </service>
 
-        <service uid="TransferFunctionEditor" type="::uiTF::STransferFunction" >
+        <service uid="TransferFunctionEditor" type="::sight::modules::ui::qt::image::STransferFunction" >
             <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
             <out key="tf" uid="${TF}" />
         </service>

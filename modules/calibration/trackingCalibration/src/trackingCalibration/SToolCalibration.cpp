@@ -25,13 +25,14 @@
 #include <calibration3d/helper.hpp>
 
 #include <data/mt/ObjectReadLock.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <services/macros.hpp>
 
 #include <Eigen/Core>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 namespace trackingCalibration
 {

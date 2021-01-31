@@ -16,7 +16,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -31,7 +31,7 @@
 
         <service uid="multiView_negato_bottom" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="1" />
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="snapshotNegatoEditor" type="::uiVisuQt::SnapshotEditor" />
+        <service uid="snapshotNegatoEditor" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
@@ -115,12 +115,12 @@
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="slider_negato" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider_negato" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
-        <service uid="distanceNegatoEditor" type="::uiMeasurementQt::editor::Distance">
+        <service uid="distanceNegatoEditor" type="::sight::modules::ui::qt::metrics::Distance">
             <inout key="image" uid="${image}" />
         </service>
 

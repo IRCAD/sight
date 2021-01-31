@@ -18,7 +18,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Blend" align="center" />
                     <view align="bottom" />
                 </layout>
@@ -32,7 +32,7 @@
 
         <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -46,7 +46,7 @@
 
         <service uid="sliderView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -60,7 +60,7 @@
 
         <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Background image" proportion="1" />
                     <view caption="Front image" proportion="1" />
@@ -74,7 +74,7 @@
 
         <service uid="bgBottomView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <spacer/>
@@ -87,7 +87,7 @@
 
         <service uid="frontBottomView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -100,7 +100,7 @@
             </registry>
         </service>
 
-        <service uid="snapshot" type="::uiVisuQt::SnapshotEditor" />
+        <service uid="snapshot" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
         <service uid="bgLockDump" type="::ctrlMemory::LockDumpSrv">
             <inout key="target" uid="${backgroundImageUid}" />
@@ -110,11 +110,11 @@
         <service uid="bg_medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
-        <service uid="slider" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
-        <service uid="bg_windowLevel" type="::uiImageQt::WindowLevel">
+        <service uid="bg_windowLevel" type="::sight::modules::ui::qt::image::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
             <inout key="tf" uid="${tfBackgroundImage}" />
         </service>
@@ -128,12 +128,12 @@
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="front_imageTransparency" type="::uiImageQt::ImageTransparency" autoConnect="yes">
+        <service uid="front_imageTransparency" type="::sight::modules::ui::qt::image::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
             <shortcut value="V" />
         </service>
 
-        <service uid="front_windowLevel" type="::uiImageQt::WindowLevel">
+        <service uid="front_windowLevel" type="::sight::modules::ui::qt::image::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
             <inout key="tf" uid="${tfFrontImage}" />
         </service>

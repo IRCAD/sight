@@ -80,7 +80,7 @@ bool SOpenCVWriter::defineLocationGUI()
     // Ask user for the file path
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);

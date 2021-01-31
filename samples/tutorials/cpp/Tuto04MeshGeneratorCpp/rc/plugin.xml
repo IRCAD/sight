@@ -9,7 +9,7 @@
     <requirement id="module_services" />
 
     <extension implements="::sight::services::registry::ServiceFactory" >
-        <type>::sight::gui::IActionSrv</type>
+        <type>::sight::ui::base::IActionSrv</type>
         <service>::Tuto04MeshGeneratorCpp::SMeshModifier</service>
         <object>::sight::data::Mesh</object>
     </extension>

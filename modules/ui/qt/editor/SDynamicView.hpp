@@ -80,7 +80,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::modules::ui::qt::editor::SDynamicView" autoConnect="yes" >
+   <service type="::sight::modules::ui::qt::editor::SDynamicView" autoConnect="yes" >
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
@@ -150,7 +150,7 @@ protected:
 
     /**
      * @brief Configure the view
-     * @see ui::base::IGuiContainerSrv::initialize()
+     * @see sight::ui::base::IGuiContainerSrv::initialize()
      */
     virtual void configuring() override;
 

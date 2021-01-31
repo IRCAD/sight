@@ -95,7 +95,7 @@ SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 
 void SSliceIndexDicomPullerEditor::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have "
@@ -131,8 +131,8 @@ void SSliceIndexDicomPullerEditor::starting()
     // Get pacs configuration
     m_pacsConfiguration = this->getInput< ::fwPacsIOdata::PacsConfiguration>(s_PACS_INPUT);
 
-    ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::base::IGuiContainerSrv::create();
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -427,7 +427,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& _message) const
 {
     SLM_WARN("Error: " + _message);
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage(_message);
     messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);

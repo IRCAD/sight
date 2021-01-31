@@ -32,13 +32,14 @@
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/helper/PointList.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <services/macros.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
+
+#include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 namespace ctrlPicking
 {
@@ -118,7 +119,7 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
         {
             const double* const pickedCoord = _info.m_worldPos;
             const ::glm::dvec4 pickedPoint  = ::glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const ::glm::dmat4x4 mat        = data::tools::TransformationMatrix3D::getMatrixFromTF3D(
+            const ::glm::dmat4x4 mat        = geometry::data::getMatrixFromTF3D(
                 matrix.get_shared());
 
             const ::glm::dvec4 modifiedPickedPoint = mat*pickedPoint;

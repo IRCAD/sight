@@ -18,17 +18,14 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
 
     # Reader
     module_io_vtk
     module_io_file
 
     # Services
-    uiVisuQt
     uiIO
     ctrlSelection
-    uiImageQt
 
     # Generic Scene
     visuVTKAdaptor

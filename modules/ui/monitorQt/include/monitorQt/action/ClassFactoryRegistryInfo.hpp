@@ -42,7 +42,7 @@ class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::sight::ui::base::I
 
 public:
 
-    fwCoreServiceMacro(ClassFactoryRegistryInfo,  ui::base::IActionSrv )
+    fwCoreServiceMacro(ClassFactoryRegistryInfo, sight::ui::base::IActionSrv )
 
     /// Does nothing
     MONITORQT_API ClassFactoryRegistryInfo() noexcept;

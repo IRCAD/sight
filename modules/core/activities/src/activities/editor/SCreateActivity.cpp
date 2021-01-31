@@ -58,7 +58,7 @@
 #include <QScrollArea>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activities::registry::ActivityInfo)
 
 #endif
 
@@ -85,9 +85,9 @@ const core::com::Signals::SignalKeyType SCreateActivity::s_LOAD_REQUESTED_SIG = 
 SCreateActivity::SCreateActivity() noexcept
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::editor::SCreateActivity' instead of 'activities::editor::SCreateActivity'");
+    SLM_FATAL("Use '::modules::ui::qt::editor::SCreateActivity' instead of 'activities::editor::SCreateActivity'");
 #else
-    FW_DEPRECATED("::activities::editor::SCreateActivity", "::uiActivitiesQt::editor::SCreateActivity", "21.0");
+    FW_DEPRECATED("::activities::editor::SCreateActivity", "::modules::ui::qt::editor::SCreateActivity", "21.0");
     newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     newSignal< LoadRequestedSignalType >(s_LOAD_REQUESTED_SIG);
 #endif
@@ -105,7 +105,7 @@ SCreateActivity::~SCreateActivity() noexcept
 
 void SCreateActivity::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 
     const auto cfg = this->getConfigTree();
 
@@ -131,9 +131,9 @@ void SCreateActivity::configuring()
 
 void SCreateActivity::starting()
 {
-    ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainerSrv::create();
 
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QGroupBox* groupBox = new QGroupBox(tr("Activities") );
 

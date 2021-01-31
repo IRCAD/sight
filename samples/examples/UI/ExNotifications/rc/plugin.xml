@@ -60,7 +60,7 @@ are already displayed and where they are displayed on screen.
 
             <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                     </layout>
                 </gui>
@@ -108,7 +108,7 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="::uiGenericQt::action::SDisplayTestNotifications" />
+            <service uid="testNotifierSrv" type="::sight::modules::ui::qt::action::SDisplayTestNotifications" />
 
             <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifierSrv" type="::sight::modules::ui::qt::SNotifier" >
@@ -119,7 +119,7 @@ are already displayed and where they are displayed on screen.
                 <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
             </service>
 
-            <service uid="styleChangerSrv" type="::style::SStyleSelector" />
+            <service uid="::sight::modules::ui::qtChangerSrv" type="::sight::modules::ui::qt::SStyleSelector" />
 
             <!-- ******************************* Connections ***************************************** -->
 
@@ -166,7 +166,7 @@ are already displayed and where they are displayed on screen.
             <start uid="mainFrame" />
             <start uid="notifierSrv" />
             <start uid="testNotifierSrv" />
-            <start uid="styleChangerSrv" />
+            <start uid="::sight::modules::ui::qtChangerSrv" />
 
         </config>
     </extension>

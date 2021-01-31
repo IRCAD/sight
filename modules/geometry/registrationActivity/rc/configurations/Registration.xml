@@ -65,7 +65,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="4" />
                     <view proportion="1" />
@@ -80,7 +80,7 @@
 
         <service uid="imagesAndManagersView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -94,7 +94,7 @@
 
         <service uid="scenesView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::TabLayoutManager">
+                <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="Manual" />
                     <view caption="Landmark" />
                 </layout>
@@ -107,7 +107,7 @@
 
         <service uid="windowLevelEditors" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" caption="Reference editor"/>
                     <view proportion="1" caption="Target editor"/>
@@ -119,19 +119,19 @@
             </registry>
         </service>
 
-        <service uid="targetWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+        <service uid="targetWindowLevel" type="::sight::modules::ui::qt::image::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <inout key="tf" uid="targetTransferFunction" />
         </service>
 
-        <service uid="referenceWindowLevel" type="::uiImageQt::WindowLevel" autoConnect="yes">
+        <service uid="referenceWindowLevel" type="::sight::modules::ui::qt::image::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
             <inout key="tf" uid="referenceTransferFunction" />
         </service>
 
         <service uid="ParamView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::TabLayoutManager">
+                <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="Automatic" />
                     <view caption="Manual" />
                     <view caption="Transfer function" />
@@ -146,7 +146,7 @@
 
         <service uid="automaticRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" caption="Import/Export registration" />
                     <view proportion="0" />
@@ -169,7 +169,7 @@
 
         <service uid="multiResolutionView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" caption="Shrink" />
                     <view proportion="0" caption="Sigma" />
@@ -183,7 +183,7 @@
 
         <service uid="importExportButtons" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <spacer proportion="1" />
                     <view proportion="0" />
@@ -228,7 +228,7 @@
 
         <service uid="manualRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" caption="Flip image" />
@@ -243,7 +243,7 @@
 
         <service uid="flipEditor" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -259,7 +259,7 @@
 
         <service uid="TFView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -318,7 +318,7 @@
             <parameter replace="WID_PARENT" by="landmarkScene" />
         </service>
 
-        <service uid="referenceTFSelector" type="::uiTF::TransferFunctionEditor">
+        <service uid="referenceTFSelector" type="::sight::modules::ui::qt::image::TransferFunctionEditor">
             <inout key="tfPool" uid="referenceTFComposite" autoConnect="yes"/>
             <out key="tf" uid="referenceTransferFunction" />
         </service>
@@ -329,7 +329,7 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <service uid="transformEditor" type="::uiVisuQt::STransformEditor" >
+        <service uid="transformEditor" type="::sight::modules::ui::qt::viz::STransformEditor" >
             <inout key="matrix" uid="${transformUid}" autoConnect="yes" />
             <translation enabled="yes" min="-1500" max="1500" />
             <rotation enabled="no" />

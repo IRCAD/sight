@@ -33,7 +33,7 @@ Example:
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="100" />
                     <view proportion="1" />

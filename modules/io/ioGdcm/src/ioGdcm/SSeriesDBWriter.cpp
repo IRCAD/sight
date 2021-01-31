@@ -75,7 +75,7 @@ void SSeriesDBWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
@@ -123,15 +123,15 @@ void SSeriesDBWriter::updating()
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
-            ui::base::dialog::MessageDialog dialog;
+            sight::ui::base::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
                               "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
             dialog.setIcon(ui::base::dialog::MessageDialog::QUESTION);
-            dialog.addButton( ui::base::dialog::MessageDialog::YES_NO );
-            ui::base::dialog::MessageDialog::Buttons button = dialog.show();
+            dialog.addButton( sight::ui::base::dialog::MessageDialog::YES_NO );
+            sight::ui::base::dialog::MessageDialog::Buttons button = dialog.show();
 
-            if(button == ui::base::dialog::MessageDialog::NO)
+            if(button == sight::ui::base::dialog::MessageDialog::NO)
             {
                 m_writeFailed = true;
                 return;
@@ -156,7 +156,7 @@ void SSeriesDBWriter::updating()
             seriesDBHelper.add(series);
         }
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
         this->saveSeriesDB(folder, seriesDB);
         cursor.setDefaultCursor();
@@ -180,7 +180,7 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
 
     try
     {
-        ui::base::dialog::ProgressDialog progressMeterGUI("Saving series ");
+        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving series ");
         writer->addHandler( progressMeterGUI );
         writer->write();
     }
@@ -189,14 +189,14 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
         m_writeFailed = true;
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ui::base::dialog::MessageDialog::show(
-            "Warning", ss.str(), ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning", ss.str(), sight::ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_writeFailed = true;
-        ui::base::dialog::MessageDialog::show(
-            "Warning", "Warning during saving", ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning", "Warning during saving", sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -247,7 +247,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
         exportModes.push_back(comprehensive3DSRIOD);
 
         // Create selector
-        ui::base::dialog::SelectorDialog::sptr selector = ui::base::dialog::SelectorDialog::New();
+        sight::ui::base::dialog::SelectorDialog::sptr selector = sight::ui::base::dialog::SelectorDialog::New();
 
         selector->setTitle("Fiducials export mode");
         selector->setSelections(exportModes);

@@ -33,9 +33,10 @@
 #include <data/Reconstruction.hpp>
 #include <data/tools/helper/Composite.hpp>
 #include <data/tools/helper/Field.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -266,7 +267,7 @@ void SOrganTransformation::onResetClick()
             pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
         if (pTmpMat)
         {
-            data::tools::TransformationMatrix3D::identity(pTmpMat);
+            geometry::data::identity(pTmpMat);
             this->notitfyTransformationMatrix(pTmpMat);
         }
     }

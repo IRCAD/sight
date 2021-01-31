@@ -78,7 +78,7 @@ void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
@@ -160,20 +160,20 @@ void SSeriesDBReader::loadSeriesDB( const data::location::ILocation::VectPathTyp
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         m_readFailed = true;
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -188,7 +188,7 @@ void SSeriesDBReader::updating()
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);

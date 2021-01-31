@@ -80,7 +80,7 @@ namespace action
 class UIIO_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SSeriesDBMerger,  ui::base::IActionSrv)
+    fwCoreServiceMacro(SSeriesDBMerger, sight::ui::base::IActionSrv)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
     typedef core::com::Slot< void ( SPTR(core::jobs::IJob) ) > ForwardJobSlotType;

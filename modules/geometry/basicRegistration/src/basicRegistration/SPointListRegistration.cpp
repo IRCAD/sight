@@ -237,16 +237,17 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            ui::base::dialog::MessageDialog::show("Error",
-                                                  "You must enter 3 or more points for the registration to work.",
-                                                  ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show("Error",
+                                                         "You must enter 3 or more points for the registration to work.",
+                                                         sight::ui::base::dialog::IMessageDialog::WARNING);
         }
         else
         {
             std::string msg = "The pointlists doesn't have the same number of points : ";
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size());
-            ui::base::dialog::MessageDialog::show("Error", msg, ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show("Error", msg,
+                                                         sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }

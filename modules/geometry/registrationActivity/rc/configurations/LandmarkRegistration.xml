@@ -24,7 +24,7 @@
 
         <service uid="landmarkRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -39,7 +39,7 @@
 
         <service uid="editors" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="1" />
@@ -53,7 +53,7 @@
 
         <service uid="landmarkRegEditor" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <spacer proportion="1" />
                     <view proportion="0" />
@@ -84,7 +84,7 @@
 
         <service uid="registrationScenes" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="1" />
@@ -98,7 +98,7 @@
 
         <service uid="referenceSceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -110,14 +110,14 @@
             </registry>
         </service>
 
-        <service uid="referenceSliceSelector" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="referenceSliceSelector" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
         <service uid="mixedSceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -129,7 +129,7 @@
             </registry>
         </service>
 
-        <service uid="targetSliceSelector" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="targetSliceSelector" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>

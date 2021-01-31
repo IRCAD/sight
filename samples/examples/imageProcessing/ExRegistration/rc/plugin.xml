@@ -96,7 +96,7 @@ Detail of the ToolBar
 
             <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::CardinalLayoutManager" >
+                    <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="center" />
                     </layout>
                     <toolBar/>
@@ -130,7 +130,7 @@ Detail of the ToolBar
             <!-- service which create the three tabs of the application -->
             <service uid="multiView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::TabLayoutManager" >
+                    <layout type="::sight::ui::base::TabLayoutManager" >
                         <view caption="Point List 1" selected="yes" border="5" backgroundColor="#2E3034" />
                         <view caption="Point List 2" border="5" backgroundColor="#2E3034" />
                         <view caption="Registration" border="5" backgroundColor="#2E3034" />
@@ -146,7 +146,7 @@ Detail of the ToolBar
             <!-- NEGATO 1 VIEW    (Content of the first Tab)-->
             <service uid="image1View" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -314,7 +314,7 @@ Detail of the ToolBar
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegatoSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegatoSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="myImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>

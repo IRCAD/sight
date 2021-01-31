@@ -70,7 +70,7 @@ namespace ioPacs
  */
 class IOPACS_CLASS_API SQueryEditor final :
     public QObject,
-    public ui::base::editor::IEditor
+    public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT;
@@ -78,7 +78,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SQueryEditor,  ui::base::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::editor::IEditor )
 
     /// Creates the service.
     IOPACS_API SQueryEditor() noexcept;

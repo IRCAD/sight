@@ -44,13 +44,13 @@ namespace editor
  * @brief   This editor allows to draw a slider. It is designed to be used with SFrameGrabber to browse a video.
  */
 class VIDEOQT_CLASS_API SSlider : public QObject,
-                                  public ui::base::editor::IEditor
+                                  public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSlider, ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSlider, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
     VIDEOQT_API SSlider() noexcept;

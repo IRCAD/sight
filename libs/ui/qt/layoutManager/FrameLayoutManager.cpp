@@ -36,10 +36,10 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro( ::sight::ui::base::FrameLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::FrameLayoutManager,
                     ::sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 //-----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ void FrameLayoutManager::createFrame()
     ui::qt::QtMainFrame* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
 
-    ui::qt::QtMainFrame::CloseCallback fct = std::bind( &ui::base::FrameLayoutManager::onCloseFrame, this);
+    ui::qt::QtMainFrame::CloseCallback fct = std::bind( &ui::qt::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
@@ -204,4 +204,4 @@ bool FrameLayoutManager::isOnScreen(const QPoint& pos)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

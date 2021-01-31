@@ -82,7 +82,7 @@ services::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 
 void SExportSeries::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

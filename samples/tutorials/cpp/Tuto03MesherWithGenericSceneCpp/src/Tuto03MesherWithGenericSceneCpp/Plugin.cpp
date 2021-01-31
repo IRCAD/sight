@@ -108,18 +108,19 @@ void Plugin::initialize()
     auto medicaImageConverter = m_appManager->addService("::ctrlSelection::MedicalImageSrv", true);
 
     //editors
-    auto snapshotEditor  = m_appManager->addService("::uiVisuQt::SnapshotEditor", "snapshotEditor", true, false);
+    auto snapshotEditor = m_appManager->addService("::modules::ui::qt::viz::SnapshotEditor", "snapshotEditor", true,
+                                                   false);
     auto sliceListEditor = m_appManager->addService("::modules::ui::qt::editor::SSelectionMenuButton",
                                                     "sliceListEditor", true, false);
     auto showScanEditor = m_appManager->addService("::modules::ui::qt::editor::SSignalButton", "showScanEditor", true,
                                                    false);
-    auto sliderIndexEditor = m_appManager->addService("::uiImageQt::SliceIndexPositionEditor",
+    auto sliderIndexEditor = m_appManager->addService("::modules::ui::qt::image::SliceIndexPositionEditor",
                                                       "sliderIndexEditor", true, false);
     auto listOrganEditor = m_appManager->addService("::uiMedDataQt::editor::SModelSeriesList",
                                                     "listOrganEditor", true, false);
-    auto organMaterialEditor = m_appManager->addService("::uiReconstructionQt::SOrganMaterialEditor",
+    auto organMaterialEditor = m_appManager->addService("::modules::ui::qt::reconstruction::SOrganMaterialEditor",
                                                         "organMaterialEditor", true, false);
-    auto representationEditor = m_appManager->addService("::uiReconstructionQt::RepresentationEditor",
+    auto representationEditor = m_appManager->addService("::modules::ui::qt::reconstruction::RepresentationEditor",
                                                          "representationEditor", true, false);
     auto progressBar = m_appManager->addService("::modules::ui::base::editor::SJobBar", true, false);
 

@@ -69,7 +69,7 @@ void SShaderParameterEditor::starting()
 
     this->create();
 
-    auto qtContainer = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);

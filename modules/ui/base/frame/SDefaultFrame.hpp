@@ -57,19 +57,19 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters.
-     * @see ui::base::IFrameSrv::initialize()
+     * @see sight::ui::base::IFrameSrv::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 
     /**
      * @brief Register a view with defined id.
-     * @see ui::base::IFrameSrv::create()
+     * @see sight::ui::base::IFrameSrv::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
-     * @see ui::base::IFrameSrv::destroy()
+     * @see sight::ui::base::IFrameSrv::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 

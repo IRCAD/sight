@@ -76,30 +76,30 @@ void SDumpAll::updating( )
     }
     std::stringstream stream;
     stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped <<"/"<<buffInfoMap.size()<<").";
-    ui::base::dialog::MessageDialog::show(
+    sight::ui::base::dialog::MessageDialog::show(
         "Dump all",
         stream.str(),
-        ui::base::dialog::IMessageDialog::INFO);
+        sight::ui::base::dialog::IMessageDialog::INFO);
 }
 
 //------------------------------------------------------------------------------
 
 void SDumpAll::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SDumpAll::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void SDumpAll::stopping()
 {
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

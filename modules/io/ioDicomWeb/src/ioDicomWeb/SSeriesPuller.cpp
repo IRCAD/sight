@@ -164,7 +164,7 @@ void SSeriesPuller::updating()
     if(m_isPulling)
     {
         // Display a message to inform the user that the service is already pulling data.
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pulling Series");
         messageBox.setMessage( "The service is already pulling data. Please wait until the pulling is done "
                                "before sending a new pull request." );
@@ -175,7 +175,7 @@ void SSeriesPuller::updating()
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pulling Series");
         messageBox.setMessage( "Unable to pull series, there is no series selected. " );
         messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
@@ -383,7 +383,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 void SSeriesPuller::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
     messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);

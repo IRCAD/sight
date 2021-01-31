@@ -11,7 +11,7 @@
         <object uid="${imageID}" type="::sight::data::Image" src="ref" />
         <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
                 </layout>
@@ -74,7 +74,7 @@
         <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
-        <service uid="sliderIndexEditor" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderIndexEditor" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

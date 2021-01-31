@@ -112,7 +112,7 @@ void SSeriesPusher::updating()
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "The service is already pushing data. Please wait until the pushing is done "
                                "before sending a new push request." );
@@ -123,7 +123,7 @@ void SSeriesPusher::updating()
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage( "Unable to push series, there is no series selected." );
         messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
@@ -210,7 +210,7 @@ void SSeriesPusher::pushSeries()
 void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 {
     SLM_WARN_IF("Error: " + message, error);
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage( message );
     messageBox.setIcon(error ? (ui::base::dialog::IMessageDialog::CRITICAL): (ui::base::dialog::IMessageDialog::INFO));

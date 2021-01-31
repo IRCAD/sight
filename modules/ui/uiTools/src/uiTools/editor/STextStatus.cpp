@@ -102,7 +102,7 @@ void STextStatus::configuring()
 void STextStatus::starting()
 {
     this->create();
-    auto qtContainer = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QHBoxLayout* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);

@@ -54,7 +54,7 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activities::registry::ActivityInfo)
 
 #endif
 
@@ -77,9 +77,9 @@ const core::com::Signals::SignalKeyType SCreateActivity::s_ACTIVITY_SELECTED_SIG
 SCreateActivity::SCreateActivity() noexcept
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::action::SCreateActivity' instead of 'activities::action::SCreateActivity'");
+    SLM_FATAL("Use '::modules::ui::qt::action::SCreateActivity' instead of 'activities::action::SCreateActivity'");
 #else
-    FW_DEPRECATED("::activities::action::SCreateActivity", "::uiActivitiesQt::action::SCreateActivity", "21.0");
+    FW_DEPRECATED("::activities::action::SCreateActivity", "::modules::ui::qt::action::SCreateActivity", "21.0");
     m_sigActivityIDSelected = newSignal< ActivityIDSelectedSignalType >(s_ACTIVITY_ID_SELECTED_SIG);
     m_sigActivitySelected   = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SIG);
 #endif
@@ -109,7 +109,7 @@ void SCreateActivity::stopping()
 
 void SCreateActivity::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     const services::IService::ConfigType srvconfig = this->getConfigTree();
@@ -263,9 +263,9 @@ void SCreateActivity::updating()
     }
     else
     {
-        ui::base::dialog::MessageDialog::show("Activity launcher",
-                                              "No available activity for the current selection.",
-                                              ui::base::dialog::MessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Activity launcher",
+                                                     "No available activity for the current selection.",
+                                                     sight::ui::base::dialog::MessageDialog::WARNING);
     }
 }
 

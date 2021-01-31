@@ -71,7 +71,7 @@ void STextureSelector::starting()
 
     this->create();
 
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_loadButton = new QPushButton(QString("Load texture"));
@@ -136,7 +136,7 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv = services::add< ui::base::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
+    auto srv = services::add< sight::ui::base::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
     srv->registerInOut(image, io::base::services::s_DATA_KEY);
 
     srv->configure();

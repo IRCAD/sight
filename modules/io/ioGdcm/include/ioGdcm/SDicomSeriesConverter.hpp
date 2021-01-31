@@ -62,7 +62,7 @@ class IOGDCM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(SDicomSeriesConverter,  ui::base::IActionSrv )
+    fwCoreServiceMacro(SDicomSeriesConverter, sight::ui::base::IActionSrv )
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 

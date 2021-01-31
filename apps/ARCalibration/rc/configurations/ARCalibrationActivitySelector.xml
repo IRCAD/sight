@@ -21,7 +21,7 @@
 
         <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-            <layout type="::sight::gui::LineLayoutManager">
+            <layout type="::sight::ui::base::LineLayoutManager">
                 <orientation value="vertical" />
                     <view proportion="1" visible="false" backgroundColor="#2E3034" border="5" />
                     <view proportion="1" />
@@ -47,7 +47,7 @@
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="activityCreatorSrv" type="::uiActivitiesQt::editor::SCreateActivity">
+        <service uid="activityCreatorSrv" type="::sight::modules::ui::qt::editor::SCreateActivity">
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>

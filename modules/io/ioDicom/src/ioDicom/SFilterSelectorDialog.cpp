@@ -164,7 +164,7 @@ void SFilterSelectorDialog::updating()
         // Selection of extension when availableFilterNames.size() > 1
         if ( availableFilterNames.size() > 1 )
         {
-            ui::base::dialog::SelectorDialog::sptr selector = ui::base::dialog::SelectorDialog::New();
+            sight::ui::base::dialog::SelectorDialog::sptr selector = sight::ui::base::dialog::SelectorDialog::New();
 
             selector->setTitle("Filter to use");
             selector->setSelections(availableFilterNames);
@@ -196,7 +196,7 @@ void SFilterSelectorDialog::updating()
     else
     {
         SLM_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Filter not found");
         messageBox.setMessage( "There is no available filter for this reader." );
         messageBox.setIcon(ui::base::dialog::IMessageDialog::WARNING);

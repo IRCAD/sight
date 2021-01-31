@@ -35,10 +35,10 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro( ::sight::ui::base::LineLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::LineLayoutManager,
                     ::sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY )
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 //-----------------------------------------------------------------------------
@@ -187,4 +187,4 @@ void LineLayoutManager::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

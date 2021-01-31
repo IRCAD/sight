@@ -15,10 +15,8 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
 
     # Services
-    uiGenericQt
     uiPreferences
 )
 

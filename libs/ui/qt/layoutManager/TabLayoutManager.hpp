@@ -35,7 +35,7 @@ QT_BEGIN_NAMESPACE
 class QTabWidget;
 QT_END_NAMESPACE
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 /**
@@ -74,4 +74,4 @@ private:
     QPointer<QTabWidget> m_tabWidget;
 };
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

@@ -87,7 +87,7 @@ namespace action
 class UIIO_CLASS_API SExportWithSeriesDB : public ::sight::ui::base::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SExportWithSeriesDB,  ui::base::IActionSrv)
+    fwCoreServiceMacro(SExportWithSeriesDB, sight::ui::base::IActionSrv)
 
     /**
      * @name Signal/Slot typedefs

@@ -66,14 +66,14 @@
 
         <!--
             Default view service:
-            The type '::sight::gui::LineLayoutManager' represents a layout where the view are aligned
+            The type '::sight::ui::base::LineLayoutManager' represents a layout where the view are aligned
             horizontally or vertically (set orientation value 'horizontal' or 'vertical').
             It is possible to add a 'proportion' attribute for the <view> to defined the proportion
             used by the view compared to the others.
         -->
         <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" backgroundColor="#36393E" />
@@ -87,7 +87,7 @@
 
         <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="4" />
@@ -99,7 +99,7 @@
             </registry>
         </service>
 
-        <service uid="matrixView" type="::uiVisuQt::STransformEditor" autoConnect="no" >
+        <service uid="matrixView" type="::sight::modules::ui::qt::viz::STransformEditor" autoConnect="no" >
             <inout key="matrix" uid="matrix" />
             <translation enabled="yes" min="-300" />
             <rotation enabled="yes" min="-180" max="180" />

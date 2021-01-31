@@ -3,27 +3,27 @@
 
     
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::ioDicom::SFilterSelectionEditor</service>
         <object>::sight::data::Vector</object>
         <desc>Filter Selection Editor</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IDialogEditor</type>
+        <type>::sight::ui::base::editor::IDialogEditor</type>
         <service>::ioDicom::SFilterSelectorDialog</service>
         <object>::sight::data::String</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::IActionSrv</type>
+        <type>::sight::ui::base::IActionSrv</type>
         <service>::ioDicom::SSeriesDBMerger</service>
         <object>::sight::data::Vector</object>
         <desc>Push Series to SeriesDB</desc>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::editor::IEditor</type>
+        <type>::sight::ui::base::editor::IEditor</type>
         <service>::ioDicom::SSliceIndexDicomEditor</service>
         <object>::sight::data::DicomSeries</object>
         <desc>Slice Index Dicom Editor</desc>

@@ -34,10 +34,10 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro( ::sight::ui::base::TabLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::TabLayoutManager,
                     ::sight::ui::base::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 //-----------------------------------------------------------------------------
@@ -151,4 +151,4 @@ void TabLayoutManager::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

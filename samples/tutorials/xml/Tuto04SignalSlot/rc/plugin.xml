@@ -56,7 +56,7 @@
 
             <!--
                 Default view service:
-                This service defines the view layout. The type '::sight::gui::CardinalLayoutManager' represents a main
+                This service defines the view layout. The type '::sight::ui::base::CardinalLayoutManager' represents a main
                 central view and other views at the 'right', 'left', 'bottom' or 'top'.
                 Here the application contains a central view at the right.
 
@@ -65,7 +65,7 @@
             -->
             <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::CardinalLayoutManager" >
+                    <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="center" />
                         <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
                         <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />

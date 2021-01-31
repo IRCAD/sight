@@ -16,7 +16,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::TabLayoutManager">
+                <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="Blend" selected="yes" />
                     <view caption="Background image" />
                     <view caption="Front image" />

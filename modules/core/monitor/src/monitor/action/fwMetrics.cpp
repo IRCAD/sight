@@ -68,7 +68,7 @@ void fwMetrics::updating()
     stream << "IService: ";
     stream << services::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
 
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("FactoryRegistry Information");
     messageBox.setMessage( stream.str() );
     messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
@@ -80,21 +80,21 @@ void fwMetrics::updating()
 
 void fwMetrics::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::stopping()
 {
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

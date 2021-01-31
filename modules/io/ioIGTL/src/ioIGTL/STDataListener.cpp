@@ -102,7 +102,7 @@ void STDataListener::configuring()
 
 void STDataListener::runClient()
 {
-    ui::base::dialog::MessageDialog msgDialog;
+    sight::ui::base::dialog::MessageDialog msgDialog;
 
     data::Composite::sptr composite = data::Composite::New();
 

@@ -35,7 +35,7 @@ QT_BEGIN_NAMESPACE
 class QMainWindow;
 QT_END_NAMESPACE
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 /**
@@ -74,4 +74,4 @@ private:
     QPointer<QMainWindow> m_qtWindow;
 };
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

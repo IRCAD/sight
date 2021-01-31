@@ -38,7 +38,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>sequencerServiceConfigName</id>
-        <service>::uiActivitiesQt::editor::SActivitySequencer</service>
+        <service>::sight::modules::ui::qt::editor::SActivitySequencer</service>
         <desc>Configuration for the sequencer</desc>
         <config>
             <activity id="activity1" name="my activity 1" />
@@ -83,7 +83,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -100,7 +100,7 @@
 
         <service uid="stepperView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -178,7 +178,7 @@
         </service>
 
         <!-- Launch the activity sequentially -->
-        <service uid="activitySequencer" type="::uiActivitiesQt::editor::SActivitySequencer" config="${SEQUENCER_CONFIG}" >
+        <service uid="activitySequencer" type="::sight::modules::ui::qt::editor::SActivitySequencer" config="${SEQUENCER_CONFIG}" >
             <inout key="seriesDB" uid="${seriesDB}" autoConnect="yes" />
         </service>
 

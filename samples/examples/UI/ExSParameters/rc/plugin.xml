@@ -31,7 +31,7 @@ This example shows the possibilities of SParameters:
 
             <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -45,7 +45,7 @@ This example shows the possibilities of SParameters:
 
             <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -59,7 +59,7 @@ This example shows the possibilities of SParameters:
 
             <service uid="minmaxParametersSrvView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="1" backgroundColor="#36393E" />

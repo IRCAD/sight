@@ -81,7 +81,7 @@ void SCalibrationInfoReader::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
@@ -136,7 +136,7 @@ void SCalibrationInfoReader::updating()
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         using DetectionPairType = std::pair< data::Image::sptr, data::PointList::sptr >;
@@ -186,12 +186,12 @@ void SCalibrationInfoReader::updating()
             if(!errorMessage.empty())
             {
                 errorMessage += "\n\n Abort reading?";
-                ui::base::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
-                                                           ui::base::dialog::MessageDialog::WARNING);
+                sight::ui::base::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
+                                                                  sight::ui::base::dialog::MessageDialog::WARNING);
 
                 messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
 
-                if(messageBox.show() & ui::base::dialog::IMessageDialog::YES)
+                if(messageBox.show() & sight::ui::base::dialog::IMessageDialog::YES)
                 {
                     filenameDetectionMap.clear();
                     m_readFailed = true;

@@ -80,7 +80,7 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
 
 void SSliceIndexDicomEditor::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicom::SSliceIndexDicomEditor must have "
@@ -113,8 +113,8 @@ void SSliceIndexDicomEditor::starting()
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
-    ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::base::IGuiContainerSrv::create();
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();
 
@@ -349,7 +349,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) const
 {
     SLM_WARN("Error: " + message);
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );
     messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);

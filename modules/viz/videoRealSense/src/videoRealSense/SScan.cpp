@@ -196,7 +196,7 @@ std::string SScan::selectDevice()
     // Several devices found -> open a selector dialog.
     else if(device_count > 1)
     {
-        ui::base::dialog::SelectorDialog dial;
+        sight::ui::base::dialog::SelectorDialog dial;
         dial.setTitle("Select realsense camera");
 
         std::vector< std::string > selections;
@@ -659,7 +659,7 @@ void SScan::record()
     // If file already exists, should we erase it ?
     if(std::filesystem::exists(m_recordingFileName))
     {
-        ui::base::dialog::MessageDialog warnDial;
+        sight::ui::base::dialog::MessageDialog warnDial;
         warnDial.setIcon(ui::base::dialog::IMessageDialog::WARNING);
         warnDial.setTitle("File already exists");
         warnDial.setMessage("File: " + m_recordingFileName
@@ -670,7 +670,7 @@ void SScan::record()
 
         const auto res = warnDial.show();
 
-        if(res == ui::base::dialog::IMessageDialog::Buttons::NO)
+        if(res == sight::ui::base::dialog::IMessageDialog::Buttons::NO)
         {
             erase = false;
         }
@@ -706,7 +706,7 @@ void SScan::record()
 void SScan::configureRecordingPath()
 {
     // Ask user for a new file name.
-    ui::base::dialog::LocationDialog dial;
+    sight::ui::base::dialog::LocationDialog dial;
     dial.setTitle("Name of recording file");
     dial.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
     dial.setOption(ui::base::dialog::ILocationDialog::WRITE);
@@ -943,8 +943,8 @@ void SScan::setDoubleParameter(double _value, std::string _key)
 
 void SScan::popMessageDialog(const std::string& _message)
 {
-    ui::base::dialog::MessageDialog::show(
-        "RealSense Error", _message, ui::base::dialog::IMessageDialog::CRITICAL);
+    sight::ui::base::dialog::MessageDialog::show(
+        "RealSense Error", _message, sight::ui::base::dialog::IMessageDialog::CRITICAL);
 }
 
 //-----------------------------------------------------------------------------

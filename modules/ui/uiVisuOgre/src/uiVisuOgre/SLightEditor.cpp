@@ -75,7 +75,7 @@ void SLightEditor::starting()
 {
     this->create();
 
-    const ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
 
     m_lightNameLabel = new QLabel("No light selected");
@@ -486,7 +486,7 @@ void SLightEditor::editLight(viz::ogre::ILight::sptr _lightAdaptor)
 
 ::Ogre::ColourValue SLightEditor::editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title)
 {
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 

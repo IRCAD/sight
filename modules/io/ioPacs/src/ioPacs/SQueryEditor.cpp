@@ -72,7 +72,7 @@ SQueryEditor::~SQueryEditor() noexcept
 
 void SQueryEditor::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 
     const auto configTree = this->getConfigTree();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
@@ -98,8 +98,8 @@ void SQueryEditor::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the GUI.
-    ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::base::IGuiContainerSrv::create();
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* const mainLayout = new QVBoxLayout();
 

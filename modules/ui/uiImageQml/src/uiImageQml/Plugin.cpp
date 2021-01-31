@@ -62,4 +62,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace uiImageQt
+} // namespace sight::modules::ui::qt::image

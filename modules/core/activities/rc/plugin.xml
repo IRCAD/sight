@@ -5,13 +5,13 @@
     <requirement id="module_services"/>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::IActionSrv</type>
+        <type>::sight::ui::base::IActionSrv</type>
         <service>::activities::action::SActivityLauncher</service>
         <object>::sight::data::Vector</object>
     </extension>
 
     <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::gui::IActionSrv</type>
+        <type>::sight::ui::base::IActionSrv</type>
         <service>::activities::action::SCreateActivity</service>
         <object>::sight::data::Vector</object>
     </extension>

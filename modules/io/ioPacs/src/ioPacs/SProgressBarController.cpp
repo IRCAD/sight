@@ -80,7 +80,7 @@ void SProgressBarController::stopping()
 void SProgressBarController::startProgress(std::string _id)
 {
     core::mt::ScopedLock lock(m_mutex);
-    m_progressDialogs[_id] = ui::base::dialog::ProgressDialog::New();
+    m_progressDialogs[_id] = sight::ui::base::dialog::ProgressDialog::New();
 }
 
 //------------------------------------------------------------------------------

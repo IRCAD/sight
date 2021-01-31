@@ -12,16 +12,12 @@ set( REQUIREMENTS
     ctrlSelection
     data
     uiVisu
-    uiVisuQt
     module_services
     visuVTKQt
     visuVTKAdaptor
     uiIO
     uiMedDataQt
-    uiImageQt
     uiMeasurement
-    uiMeasurementQt
-    uiReconstructionQt
     uiMedDataQt
     media
     dataManagerConfig

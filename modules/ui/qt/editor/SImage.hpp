@@ -41,7 +41,7 @@ namespace editor
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." type="::modules::ui::qt::editor::SImage" >
+   <service uid="..." type="::sight::modules::ui::qt::editor::SImage" >
         <path>...</path>
         <width>...</width>
         <height>...</height>

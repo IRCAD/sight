@@ -69,7 +69,7 @@ void SCompositorSelector::starting()
 {
     this->create();
 
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_layersBox       = new QComboBox();

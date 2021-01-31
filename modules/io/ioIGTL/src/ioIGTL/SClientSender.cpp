@@ -99,7 +99,7 @@ void SClientSender::starting()
         }
         catch (core::Exception& ex)
         {
-            ui::base::dialog::MessageDialog::show("Connection error", ex.what());
+            sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
             SLM_ERROR(ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
@@ -120,7 +120,7 @@ void SClientSender::stopping()
     }
     catch (core::Exception& e)
     {
-        ui::base::dialog::MessageDialog::show("Error", e.what());
+        sight::ui::base::dialog::MessageDialog::show("Error", e.what());
         SLM_ERROR(e.what());
     }
 }

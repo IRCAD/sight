@@ -65,13 +65,13 @@ namespace ioDicomWeb
 
  */
 class IODICOMWEB_CLASS_API SQueryEditor : public QObject,
-                                          public ui::base::editor::IEditor
+                                          public sight::ui::base::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  ui::base::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::editor::IEditor )
 
     /// Constructor
     IODICOMWEB_API SQueryEditor() noexcept;

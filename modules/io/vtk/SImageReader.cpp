@@ -100,7 +100,7 @@ void SImageReader::openLocationDialog()
         }
     }
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
@@ -169,7 +169,7 @@ void SImageReader::updating()
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
         try
         {
@@ -275,10 +275,10 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
@@ -288,18 +288,18 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
 

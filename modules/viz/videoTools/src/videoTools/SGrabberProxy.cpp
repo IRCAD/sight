@@ -352,8 +352,8 @@ void SGrabberProxy::startCamera()
                 if (descriptions.size() == 0)
                 {
                     const std::string msg = "No video grabber implementation found.\n";
-                    ui::base::dialog::MessageDialog::show("Error", msg,
-                                                          ui::base::dialog::MessageDialog::Icons::WARNING);
+                    sight::ui::base::dialog::MessageDialog::show("Error", msg,
+                                                                 sight::ui::base::dialog::MessageDialog::Icons::WARNING);
                     return;
                 }
                 else if (descriptions.size() == 1)
@@ -366,7 +366,8 @@ void SGrabberProxy::startCamera()
                     // Sort the description list.
                     std::sort(std::begin(descriptions), std::end(descriptions));
 
-                    ui::base::dialog::SelectorDialog::sptr selector = ui::base::dialog::SelectorDialog::New();
+                    sight::ui::base::dialog::SelectorDialog::sptr selector =
+                        sight::ui::base::dialog::SelectorDialog::New();
                     selector->setTitle(m_guiTitle);
                     selector->setSelections(descriptions);
 
@@ -379,7 +380,7 @@ void SGrabberProxy::startCamera()
             if(m_grabberImpl.empty())
             {
                 const std::string msg = "No video grabber chosen, aborting...\n";
-                ui::base::dialog::MessageDialog::show("Warning", msg);
+                sight::ui::base::dialog::MessageDialog::show("Warning", msg);
                 return;
             }
             m_services.resize(implToNumTL[m_grabberImpl]);

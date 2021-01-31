@@ -19,7 +19,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="top"/>
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
@@ -50,7 +50,7 @@
 
         <service uid="topView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="DICOM Query" align="center" minWidth="200" />
                 </layout>
@@ -62,7 +62,7 @@
 
         <service uid="centerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Pacs Information" align="center" minWidth="200" />
                     <view caption="Pacs Preview" align="right" minWidth="200" />
@@ -76,7 +76,7 @@
 
         <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Local Series" align="center" minWidth="200" />
                     <view caption="Local Preview" align="right" minWidth="200" />

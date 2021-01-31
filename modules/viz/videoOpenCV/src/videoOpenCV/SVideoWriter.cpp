@@ -98,7 +98,7 @@ void SVideoWriter::configureWithIHM()
 void SVideoWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("mp4", "*.mp4");
@@ -225,7 +225,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
                 }
                 else
                 {
-                    ui::base::dialog::MessageDialog::show(
+                    sight::ui::base::dialog::MessageDialog::show(
                         "Video recording",
                         "The extension "+ extensionToUse+ " is not supported. Unable to write the file: " +
                         path.string());
@@ -241,7 +241,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 
                 if (!m_writer->isOpened())
                 {
-                    ui::base::dialog::MessageDialog::show(
+                    sight::ui::base::dialog::MessageDialog::show(
                         "Video recording", "Unable to write the video in the file: " + path.string());
                     this->stopRecord();
                 }

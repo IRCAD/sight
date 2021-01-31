@@ -13,7 +13,6 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
 
     # Generic Scene
     scene2D

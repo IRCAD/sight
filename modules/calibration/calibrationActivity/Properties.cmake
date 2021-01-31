@@ -22,7 +22,7 @@ set( REQUIREMENTS
     media
     uiTools
     uiIO
-    uiCalibration
+    module_ui_qt
     uiPreferences
     uiMedDataQt
 

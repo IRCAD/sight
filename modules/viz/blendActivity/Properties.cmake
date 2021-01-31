@@ -9,12 +9,9 @@ set( REQUIREMENTS
     ctrlMemory
     ctrlSelection
     uiVisu
-    uiVisuQt
     visuVTKAdaptor
-    uiImageQt
     scene2D
     data
-    uiTF
     uiMedDataQt
     media
     qtSceneConfig

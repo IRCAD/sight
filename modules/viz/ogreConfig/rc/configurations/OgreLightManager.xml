@@ -12,7 +12,7 @@
 
         <service uid="LightView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::ToolboxLayoutManager" >
+                <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                     <view caption="Light selector" expanded="true" />
                     <view caption="Light editor" expanded="true" />

@@ -61,13 +61,13 @@ protected:
 
     /**
      * @brief Create the toolBar
-     * @see ui::base::IToolBarSrv::create()
+     * @see sight::ui::base::IToolBarSrv::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
-     * @see ui::base::IToolBarSrv::destroy()
+     * @see sight::ui::base::IToolBarSrv::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 
@@ -119,7 +119,8 @@ protected:
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
      *
-     *  @see ui::base::IToolBarSrv::initialize(), ui::base::layoutManager::IToolBarLayoutManager::initialize()
+     *  @see sight::ui::base::IToolBarSrv::initialize(),
+     * sight::ui::base::layoutManager::IToolBarLayoutManager::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 

@@ -99,7 +99,7 @@ void TransformationMatrix3DReaderService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("TRF files", "*.trf");

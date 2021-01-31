@@ -209,10 +209,10 @@ void SScan::startCamera()
     if (m_status != ::openni::STATUS_OK)
     {
         SLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Sense Error",
             "Sense device is not available. Please check if it is plugged in.",
-            ui::base::dialog::IMessageDialog::CRITICAL);
+            sight::ui::base::dialog::IMessageDialog::CRITICAL);
         return;
     }
 

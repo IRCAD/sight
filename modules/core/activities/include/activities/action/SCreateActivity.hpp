@@ -109,7 +109,7 @@ protected:
 
     /**
      * @brief Initialize the action.
-     * @see ui::base::IActionSrv::initialize()
+     * @see sight::ui::base::IActionSrv::initialize()
      */
     virtual void configuring() override;
 

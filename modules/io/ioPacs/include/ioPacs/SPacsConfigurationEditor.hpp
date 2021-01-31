@@ -63,7 +63,7 @@ namespace ioPacs
  *                                                 notification.
  */
 class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
-                                                  public ui::base::editor::IEditor
+                                                  public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT;
@@ -71,7 +71,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPacsConfigurationEditor,  ui::base::editor::IEditor )
+    fwCoreServiceMacro(SPacsConfigurationEditor,  sight::ui::base::editor::IEditor )
 
     /// Creates the service.
     IOPACS_API SPacsConfigurationEditor() noexcept;

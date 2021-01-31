@@ -13,6 +13,5 @@ set( DEPENDENCIES
     )
 set( REQUIREMENTS
     module_services
-    uiImageQt
     ctrlSelection
 )

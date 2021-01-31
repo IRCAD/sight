@@ -79,31 +79,31 @@ void MemoryInfo::updating( )
     stream << "DumpedBuffer size   = "  << dumpedBufferSize/mo << " Mo" << std::endl;
 
     // Information message box
-    ui::base::dialog::MessageDialog::show(
+    sight::ui::base::dialog::MessageDialog::show(
         "MemoryInfo",
         stream.str(),
-        ui::base::dialog::IMessageDialog::INFO);
+        sight::ui::base::dialog::IMessageDialog::INFO);
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::stopping()
 {
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

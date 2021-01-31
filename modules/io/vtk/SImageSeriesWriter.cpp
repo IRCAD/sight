@@ -85,7 +85,7 @@ void SImageSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
@@ -147,7 +147,7 @@ void SImageSeriesWriter::updating()
 
         SLM_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try

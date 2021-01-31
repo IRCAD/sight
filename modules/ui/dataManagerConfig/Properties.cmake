@@ -8,10 +8,8 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     uiMedDataQt
-    uiReconstructionQt
     ctrlSelection
     media
-    uiImageQt
     module_services
     data
 )

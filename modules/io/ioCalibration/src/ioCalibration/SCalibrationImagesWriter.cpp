@@ -75,7 +75,7 @@ void SCalibrationImagesWriter::openLocationDialog()
 {
     static std::filesystem::path s_defaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(s_defaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
@@ -121,7 +121,7 @@ void SCalibrationImagesWriter::updating()
             this->getInput< data::CalibrationInfo >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info input.", calibInfo);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         size_t count(0);
@@ -155,9 +155,9 @@ void SCalibrationImagesWriter::updating()
             catch(const ::cv::Exception& e)
             {
                 m_writeFailed = true;
-                ui::base::dialog::MessageDialog::show("Error writing calibration images.",
-                                                      e.what(),
-                                                      ui::base::dialog::MessageDialog::CRITICAL);
+                sight::ui::base::dialog::MessageDialog::show("Error writing calibration images.",
+                                                             e.what(),
+                                                             sight::ui::base::dialog::MessageDialog::CRITICAL);
             }
         }
 

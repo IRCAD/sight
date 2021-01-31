@@ -9,16 +9,13 @@ set( REQUIREMENTS
     module_ui_qt
     data
     uiMeasurement
-    uiMeasurementQt
     ctrlCamp
     ctrlMemory
     ctrlSelection
     module_services
-    uiImageQt
     uiIO
     uiMedDataQt
     uiVisu
-    uiVisuQt
     visuVTKAdaptor
     visuVTKQt
     media 

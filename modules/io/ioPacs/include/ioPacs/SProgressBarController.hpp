@@ -88,7 +88,7 @@ private:
     void stopProgress(std::string _id);
 
     /// Stores progress bars.
-    std::map< std::string, ui::base::dialog::ProgressDialog::sptr > m_progressDialogs;
+    std::map< std::string, sight::ui::base::dialog::ProgressDialog::sptr > m_progressDialogs;
 
     /// Synchronizes progress bars access.
     core::mt::Mutex m_mutex;

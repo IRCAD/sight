@@ -36,10 +36,10 @@
 
 #include <ui/base/registry/macros.hpp>
 
-fwGuiRegisterMacro( ::sight::ui::base::CardinalLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::CardinalLayoutManager,
                     ::sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 //-----------------------------------------------------------------------------

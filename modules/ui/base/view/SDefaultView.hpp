@@ -35,7 +35,7 @@ namespace view
 
 /**
  * @brief Defines the generic layout for application.
- * @see ui::base::IGuiContainer for the service configuration
+ * @see sight::ui::base::IGuiContainer for the service configuration
  */
 class MODULE_UI_BASE_CLASS_API SDefaultView : public ::sight::ui::base::view::IView
 {
@@ -58,19 +58,19 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters.
-     * @see ui::base::IGuiContainerSrv::initialize()
+     * @see sight::ui::base::IGuiContainerSrv::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 
     /**
      * @brief Register a view with defined id.
-     * @see ui::base::IGuiContainerSrv::create()
+     * @see sight::ui::base::IGuiContainerSrv::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
-     * @see ui::base::IGuiContainerSrv::destroy()
+     * @see sight::ui::base::IGuiContainerSrv::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 

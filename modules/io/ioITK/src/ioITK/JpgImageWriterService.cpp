@@ -82,7 +82,7 @@ void JpgImageWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
@@ -126,7 +126,7 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(data::Image)& img)
 {
     ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
-    ui::base::dialog::ProgressDialog progressMeterGUI("Saving image... ");
+    sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
     data::location::Folder::sptr loc = data::location::Folder::New();
     loc->setFolder(imgPath);
@@ -143,15 +143,15 @@ void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, cons
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ui::base::dialog::MessageDialog::show("Warning",
-                                              ss.str(),
-                                              ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Warning",
+                                                     ss.str(),
+                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ui::base::dialog::MessageDialog::show("Warning",
-                                              "Warning during saving",
-                                              ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Warning",
+                                                     "Warning during saving",
+                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -166,7 +166,7 @@ void JpgImageWriterService::updating()
         data::Image::csptr image = this->getInput< data::Image >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
         saveImage(this->getFolder(), image);
         cursor.setDefaultCursor();

@@ -91,7 +91,7 @@
 
         <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" />
                 </layout>
@@ -129,7 +129,7 @@
         </service>
 
         <!-- Action to create/update an activity. -->
-        <service uid="newActivityAct" type="::uiActivitiesQt::action::SCreateActivity">
+        <service uid="newActivityAct" type="::sight::modules::ui::qt::action::SCreateActivity">
             <in key="series" uid="selections" />
             <filter>
                 <mode>include</mode>

@@ -112,7 +112,7 @@ void SFrameWriter::configureWithIHM()
 void SFrameWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);

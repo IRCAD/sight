@@ -84,7 +84,7 @@ void WindowInteractor::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void WindowInteractor::createContainer( ui::base::container::fwContainer::sptr _parent,
+void WindowInteractor::createContainer( sight::ui::base::container::fwContainer::sptr _parent,
                                         bool _renderOnDemand,
                                         bool _fullscreen)
 {

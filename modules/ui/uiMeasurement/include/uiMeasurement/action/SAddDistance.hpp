@@ -52,7 +52,7 @@ class UIMEASUREMENT_CLASS_API SAddDistance final : public ::sight::ui::base::IAc
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SAddDistance,  ui::base::IActionSrv)
+    fwCoreServiceMacro(SAddDistance, sight::ui::base::IActionSrv)
 
     /// Creates the service.
     UIMEASUREMENT_API SAddDistance() noexcept;

@@ -74,7 +74,7 @@ class UIMEASUREMENT_CLASS_API SRemoveDistance final : public ::sight::ui::base::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SRemoveDistance,  ui::base::IActionSrv)
+    fwCoreServiceMacro(SRemoveDistance, sight::ui::base::IActionSrv)
 
     /// Initialize slots.
     UIMEASUREMENT_API SRemoveDistance() noexcept;

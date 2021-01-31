@@ -38,10 +38,10 @@
 
 #include <functional>
 
-fwGuiRegisterMacro( ::sight::ui::base::layoutManager::ToolBarLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::ToolBarLayoutManager,
                     ::sight::ui::base::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 namespace layoutManager
 {
@@ -257,4 +257,4 @@ void ToolBarLayoutManager::menuItemSetChecked(ui::base::container::fwMenuItem::s
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

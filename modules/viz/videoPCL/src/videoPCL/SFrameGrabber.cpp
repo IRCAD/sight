@@ -132,7 +132,7 @@ void SFrameGrabber::startCamera()
     else
     {
         this->setStartState(false);
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Grabber",
             "This video source is not managed by this grabber.");
     }

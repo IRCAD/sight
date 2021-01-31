@@ -441,7 +441,7 @@ DumpEditor::~DumpEditor() noexcept
 
 void DumpEditor::starting()
 {
-    this->ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainerSrv::create();
 
     ui::qt::container::QtContainer::sptr qtContainer
         = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
@@ -532,7 +532,7 @@ void DumpEditor::stopping()
 
 void DumpEditor::configuring()
 {
-    this->ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -716,7 +716,7 @@ void DumpEditor::changeStatus( int index )
         iter = buffInfoMap.find(selectedBuffer);
         if( iter != buffInfoMap.end())
         {
-            ui::base::Cursor cursor;
+            sight::ui::base::Cursor cursor;
             cursor.setCursor(ui::base::ICursor::BUSY);
             const core::memory::BufferInfo& dumpBuffInfo = iter->second;
 

@@ -32,7 +32,7 @@
 #include <ui/base/container/fwMenuBar.hpp>
 #include <ui/base/layoutManager/IMenuBarLayoutManager.hpp>
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 namespace layoutManager
 {
@@ -78,4 +78,4 @@ protected:
 };
 
 } // namespace layoutManager
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

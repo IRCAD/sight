@@ -150,7 +150,7 @@
 
         <service uid="backgroundView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E2F30" />
                 </layout>
@@ -162,7 +162,7 @@
 
         <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -176,7 +176,7 @@
 
         <service uid="sub1View" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" toolTip="View with tabs inside" backgroundColor="#36393E" />
                     <view proportion="1" toolTip="Empty view" backgroundColor="#36393E" />
@@ -193,7 +193,7 @@
 
         <service uid="sub2View" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager" >
+                <layout type="::sight::ui::base::CardinalLayoutManager" >
                     <view align="center" backgroundColor="#36393E" />
                     <view caption="CardinalView2" align="right" minWidth="400" />
                     <view caption="CardinalView3" align="right" minWidth="400" />
@@ -206,7 +206,7 @@
 
         <service uid="sub3View" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::TabLayoutManager" >
+                <layout type="::sight::ui::base::TabLayoutManager" >
                     <view caption="TabView1"  />
                     <view caption="TabView2" selected="yes" />
                     <view caption="TabView3" />
@@ -217,7 +217,7 @@
 
         <service uid="sub4View" type="::sight::modules::ui::base::view::SDefaultView" >
         <gui>
-            <layout type="::sight::gui::LineLayoutManager" >
+            <layout type="::sight::ui::base::LineLayoutManager" >
                 <orientation value="horizontal" />
                 <spacer/>
                 <view proportion="0" />
@@ -231,7 +231,7 @@
 
         <service uid="sub5View" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <spacer/>
                     <view proportion="0" />
@@ -245,7 +245,7 @@
 
         <service uid="view12" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view toolTip="This is a nice tooltip"  />
                     <view toolTip="You can put some useful information here"  />

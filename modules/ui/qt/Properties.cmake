@@ -7,6 +7,8 @@ set( DEPENDENCIES
     activities
     core
     data
+    geometry_data
+    io_base
     services
     ui_qt
 )
@@ -17,4 +19,8 @@ set( PLUGINS
     platforms
     imageformats
     styles
+    QtQml
+    QtQuick
+    QtQuick.2
 )
+

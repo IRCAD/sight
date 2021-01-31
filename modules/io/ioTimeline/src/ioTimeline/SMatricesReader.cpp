@@ -139,7 +139,7 @@ void SMatricesReader::configureWithIHM()
 void SMatricesReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
@@ -202,7 +202,7 @@ void SMatricesReader::readPrevious()
         }
         else
         {
-            ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "MatricesReader", "No previous Matrices.");
         }
 
@@ -229,7 +229,7 @@ void SMatricesReader::readNext()
         }
         else
         {
-            ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "MatricesReader", "No more matrices to read.");
         }
     }

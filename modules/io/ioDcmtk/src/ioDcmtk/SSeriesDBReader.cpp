@@ -73,7 +73,7 @@ void SSeriesDBReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
@@ -198,20 +198,20 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
 
     if(myLoader->isDicomDirAvailable())
     {
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
         messageBox.setMessage( "There is a dicomdir file in the root folder. "
                                "Would you like to use it for the reading process ?" );
         messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
-        ui::base::dialog::IMessageDialog::Buttons button = messageBox.show();
+        sight::ui::base::dialog::IMessageDialog::Buttons button = messageBox.show();
 
-        myLoader->setDicomdirActivated(button == ui::base::dialog::IMessageDialog::YES);
+        myLoader->setDicomdirActivated(button == sight::ui::base::dialog::IMessageDialog::YES);
     }
 
     try
     {
-        ui::base::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
+        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
@@ -219,13 +219,13 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const std::filesystem::path
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        ui::base::dialog::MessageDialog::show(
-            "Warning", ss.str(), ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning", ss.str(), sight::ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ui::base::dialog::MessageDialog::show(
-            "Warning", "Warning during loading", ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show(
+            "Warning", "Warning during loading", sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 
     return myLoader->getConcreteObject();
@@ -247,7 +247,7 @@ void SSeriesDBReader::updating()
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
             associatedSeriesDB->shallowCopy( seriesDB );
 
-            ui::base::Cursor cursor;
+            sight::ui::base::Cursor cursor;
             cursor.setCursor(ui::base::ICursor::BUSY);
             this->notificationOfDBUpdate();
             cursor.setDefaultCursor();
@@ -257,9 +257,9 @@ void SSeriesDBReader::updating()
         else
         {
             m_readFailed = true;
-            ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Image Reader", "This file can not be read. Retry with another file reader.",
-                ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
     else

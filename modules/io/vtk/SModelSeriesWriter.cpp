@@ -86,7 +86,7 @@ void SModelSeriesWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialog;
+    sight::ui::base::dialog::LocationDialog dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
@@ -101,13 +101,13 @@ void SModelSeriesWriter::openLocationDialog()
             break;
         }
         // message box
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
         messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
         messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-        if( messageBox.show() == ui::base::dialog::IMessageDialog::YES)
+        if( messageBox.show() == sight::ui::base::dialog::IMessageDialog::YES)
         {
             break;
         }
@@ -138,7 +138,7 @@ void SModelSeriesWriter::openLocationDialog()
                 {
                     return pair.first;
                 });
-            ui::base::dialog::SelectorDialog extensionDialog;
+            sight::ui::base::dialog::SelectorDialog extensionDialog;
             extensionDialog.setTitle("Extensions");
             extensionDialog.setMessage("Choose the extensions: ");
             extensionDialog.setSelections(descriptions);
@@ -257,7 +257,7 @@ void SModelSeriesWriter::updating()
         const auto modelSeriesLockedPtr =
             this->getLockedInput< const data::ModelSeries >(sight::io::base::services::s_DATA_KEY);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         const auto modelSeries                                  = modelSeriesLockedPtr.get_shared();
@@ -281,18 +281,18 @@ void SModelSeriesWriter::updating()
                 std::stringstream ss;
                 ss << "Warning during saving : " << e.what();
 
-                ui::base::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     ss.str(),
-                    ui::base::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
             }
             catch( ... )
             {
                 m_writeFailed = true;
-                ui::base::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Warning during saving",
-                    ui::base::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
             }
         }
 

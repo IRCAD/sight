@@ -31,7 +31,7 @@ namespace sight::viz::ogre
 
 //-----------------------------------------------------------------------------
 
-const std::string ILight::REGISTRY_KEY = "::viz::ogre::ILight::REGISTRY_KEY";
+const std::string ILight::REGISTRY_KEY = "::sight::viz::ogre::ILight::REGISTRY_KEY";
 
 const std::string ILight::s_POINT_LIGHT       = "Point";
 const std::string ILight::s_DIRECTIONAL_LIGHT = "Directional";

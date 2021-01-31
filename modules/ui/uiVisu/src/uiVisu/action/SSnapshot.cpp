@@ -58,21 +58,21 @@ SSnapshot::~SSnapshot() noexcept
 
 void SSnapshot::starting()
 {
-    ui::base::IActionSrv::actionServiceStarting();
+    sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::stopping()
 {
-    ui::base::IActionSrv::actionServiceStopping();
+    sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::configuring()
 {
-    ui::base::IActionSrv::initialize();
+    sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------

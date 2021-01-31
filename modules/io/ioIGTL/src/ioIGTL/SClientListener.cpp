@@ -114,7 +114,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ui::base::dialog::MessageDialog::show("Connection error", ex.what());
+            sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -166,7 +166,7 @@ void SClientListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ui::base::dialog::MessageDialog::show("Error", ex.what());
+            sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -200,7 +200,7 @@ void SClientListener::stopping()
     }
     catch (core::Exception& ex)
     {
-        ui::base::dialog::MessageDialog::show("Connection error", ex.what());
+        sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
         SLM_ERROR(ex.what());
     }
 }

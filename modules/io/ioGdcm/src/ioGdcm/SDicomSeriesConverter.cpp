@@ -95,7 +95,7 @@ void SDicomSeriesConverter::updating()
 
     if(dicomSeriesDB->empty())
     {
-        ui::base::dialog::MessageDialog messageBox;
+        sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
         messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
         messageBox.setTitle("Read DICOM series");
@@ -124,7 +124,8 @@ void SDicomSeriesConverter::updating()
             bool result = false;
             if(!job->cancelRequested())
             {
-                result = ui::base::dialog::LoggerDialog::showLoggerDialog("Reading process over", ss.str(), logger);
+                result = sight::ui::base::dialog::LoggerDialog::showLoggerDialog("Reading process over",
+                                                                                 ss.str(), logger);
             }
 
             // If the user cancel the reading process we delete the loaded series
@@ -144,13 +145,13 @@ void SDicomSeriesConverter::updating()
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
-            ui::base::dialog::MessageDialog::show(
-                "Warning", ss.str(), ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show(
+                "Warning", ss.str(), sight::ui::base::dialog::IMessageDialog::WARNING);
         }
         catch( ... )
         {
-            ui::base::dialog::MessageDialog::show(
-                "Warning", "Warning during loading", ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show(
+                "Warning", "Warning during loading", sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
 }

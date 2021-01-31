@@ -80,7 +80,7 @@ void SMeshWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("OBJ File(.obj)", "*.obj");
@@ -150,7 +150,7 @@ void SMeshWriter::updating()
         // Retrieve dataStruct associated with this service
         const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(sight::io::base::services::s_DATA_KEY);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         std::filesystem::path fileToWrite   = this->getFile();
@@ -211,10 +211,10 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
             // Raise exception  for superior level
             FW_RAISE_EXCEPTION(e);
         }
@@ -224,18 +224,18 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 ss.str(),
-                ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
         }
         catch( ... )
         {
             m_writeFailed = true;
-            ui::base::dialog::MessageDialog::show(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
                 "Warning during saving",
-                ui::base::dialog::IMessageDialog::WARNING);
+                sight::ui::base::dialog::IMessageDialog::WARNING);
         }
 
         cursor.setDefaultCursor();

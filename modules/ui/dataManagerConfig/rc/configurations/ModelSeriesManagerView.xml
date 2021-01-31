@@ -21,7 +21,7 @@ Example
 
         <service uid="multiViewOrgans" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::ToolboxLayoutManager">
+                <layout type="::sight::ui::base::ToolboxLayoutManager">
                     <view caption="Organs" expanded="true" />
                     <view caption="Material" expanded="true" />
                     <view caption="Representation" />
@@ -39,11 +39,11 @@ Example
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="::uiReconstructionQt::OrganMaterialEditor" >
+        <service uid="organMaterialEditor" type="::sight::modules::ui::qt::reconstruction::OrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="representationEditor" type="::uiReconstructionQt::RepresentationEditor" >
+        <service uid="representationEditor" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 

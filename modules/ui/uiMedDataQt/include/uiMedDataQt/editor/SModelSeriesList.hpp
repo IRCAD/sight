@@ -58,8 +58,8 @@ class ValueView;
  * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
  * It also allows to select a Reconstruction: associated to the ::ctrlSelection::updater::SObjFromSlot, the
  * reconstruction is available to be used by other services.
- * It is mostly associated to ::uiReconstructionQt::SOrganMaterialEditor and
- * ::uiReconstructionQt::RepresentationEditor to update the reconstrution color, transparency, ....
+ * It is mostly associated to modules::ui::qt::reconstruction::SOrganMaterialEditor and
+ * modules::ui::qt::reconstruction::RepresentationEditor to update the reconstrution color, transparency, ....
  *
  * @section Signals Signals
  * - \b reconstructionSelected(data::Object::sptr): this signal emits the selected reconstruction

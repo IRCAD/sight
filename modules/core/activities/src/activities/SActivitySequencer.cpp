@@ -208,7 +208,7 @@ bool SActivitySequencer::checkValidity(const data::ActivitySeries::csptr& activi
 
     if (!ok && showDialog)
     {
-        ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
+        sight::ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
     }
     return ok;
 }

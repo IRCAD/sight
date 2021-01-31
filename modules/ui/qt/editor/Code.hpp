@@ -47,7 +47,7 @@ namespace editor
  *
  * @section XML XML Configuration
  *  @code{.xml}
-    <service uid="codeEditor" type="::modules::ui::qt::editor::Code" autoConnect="yes">
+    <service uid="codeEditor" type="::sight::modules::ui::qt::editor::Code" autoConnect="yes">
         <inout key="string" uid="..." />
         <config>
             <language name="Python" />

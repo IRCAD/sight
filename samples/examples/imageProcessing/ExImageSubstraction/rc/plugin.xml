@@ -89,7 +89,7 @@
 
             <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::CardinalLayoutManager" >
+                    <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="center" />
                     </layout>
                     <toolBar/>
@@ -121,7 +121,7 @@
             <!-- service which create the three tabs of the application -->
             <service uid="multiView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::TabLayoutManager" >
+                    <layout type="::sight::ui::base::TabLayoutManager" >
                         <view caption="Image 1" selected="yes" border="5" backgroundColor="#2E3034" />
                         <view caption="Image 2" border="5" backgroundColor="#2E3034" />
                         <view caption="Substraction" border="5" backgroundColor="#2E3034" />
@@ -137,7 +137,7 @@
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
             <service uid="image1View" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -151,7 +151,7 @@
 
             <service uid="image1BottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
@@ -166,7 +166,7 @@
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
             <service uid="image2View" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -180,7 +180,7 @@
 
             <service uid="image2BottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
@@ -195,7 +195,7 @@
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
             <service uid="substractionView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -209,7 +209,7 @@
 
             <service uid="substractionContainerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -223,7 +223,7 @@
 
             <service uid="substractionBottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
@@ -366,7 +366,7 @@
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegato1Srv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato1Srv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image1" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -381,7 +381,7 @@
             </service>
 
             <!-- Editors for Negato2 -->
-            <service uid="sliderNegato2Srv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato2Srv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image2" />
                 <sliceIndex>axial</sliceIndex>
             </service>
@@ -397,7 +397,7 @@
             </service>
 
             <!-- Editors for Negato3 -->
-            <service uid="sliderNegato3Srv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato3Srv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="imageResult" />
                 <sliceIndex>axial</sliceIndex>
             </service>

@@ -404,7 +404,7 @@ void SOpenCVExtrinsic::updating()
         // If one of those stringstream are not empty we should display the popup and not perform calibration.
         if(!messageIm1.str().empty() || !messageIm2.str().empty())
         {
-            ui::base::dialog::MessageDialog::sptr dialog = ui::base::dialog::MessageDialog::New();
+            sight::ui::base::dialog::MessageDialog::sptr dialog = sight::ui::base::dialog::MessageDialog::New();
             dialog->setTitle("Calibration Error");
             dialog->setIcon(ui::base::dialog::IMessageDialog::Icons::WARNING);
             dialog->setMessage("Extrinsic Calibration cannot be performed due to degenerate configuration. "

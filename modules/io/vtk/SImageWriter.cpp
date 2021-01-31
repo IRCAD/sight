@@ -82,7 +82,7 @@ void SImageWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
@@ -141,7 +141,7 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     bool bValue = true;
 
     sight::io::base::writer::IObjectWriter::sptr myWriter;
-    ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
+    sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
     std::string ext = imgFile.extension().string();
     ::boost::algorithm::to_lower(ext);
 
@@ -178,20 +178,20 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
             // Check data type
             if(type != "uint8" && type != "uint16")
             {
-                ui::base::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
-                    ui::base::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
             // Check number of components
             if(noc < 1 || noc > 4)
             {
-                ui::base::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported number of components (" + std::to_string(noc) + ") for " +
                     ext + " export.\n The image will not be exported.",
-                    ui::base::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
         }
@@ -200,20 +200,20 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         {
             if(type != "uint8")
             {
-                ui::base::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
-                    ui::base::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
             // Check number of components
             if(noc < 1 || noc > 3)
             {
-                ui::base::dialog::MessageDialog::show(
+                sight::ui::base::dialog::MessageDialog::show(
                     "Warning",
                     "Unsupported number of components (" + std::to_string(noc) + ") for " +
                     ext + " export.\n The image will not be exported.",
-                    ui::base::dialog::IMessageDialog::WARNING);
+                    sight::ui::base::dialog::IMessageDialog::WARNING);
                 return false;
             }
         }
@@ -242,18 +242,18 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         bValue = false;
     }
     catch( ... )
     {
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during saving.",
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         bValue = false;
     }
     return bValue;
@@ -270,7 +270,7 @@ void SImageWriter::updating()
         data::Image::csptr pImage = this->getInput< data::Image >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", pImage);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try

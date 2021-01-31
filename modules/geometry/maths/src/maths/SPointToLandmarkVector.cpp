@@ -26,12 +26,13 @@
 #include <core/com/Slots.hxx>
 
 #include <data/PointList.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <glm/glm.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 namespace maths
 {
@@ -140,7 +141,7 @@ void SPointToLandmarkVector::updating()
     pointToTargetMat[2] = ::glm::dvec4(front, 0.0);
     pointToTargetMat[3] = ::glm::dvec4(sourcePt, 1.0);
 
-    data::tools::TransformationMatrix3D::setTF3DFromMatrix(transform, pointToTargetMat);
+    geometry::data::setTF3DFromMatrix(transform, pointToTargetMat);
     auto sig = transform->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 

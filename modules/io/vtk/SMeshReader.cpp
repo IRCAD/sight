@@ -81,7 +81,7 @@ void SMeshReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
@@ -195,10 +195,10 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
@@ -208,20 +208,20 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Warning",
             "Warning during loading.",
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
     }
 
@@ -234,7 +234,7 @@ void SMeshReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         this->loadMesh(this->getFile());

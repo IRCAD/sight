@@ -85,7 +85,7 @@ void SDicomSeriesAnonymizer::updating()
 {
     data::Vector::sptr vector = this->getInOut< data::Vector >("selectedSeries");
 
-    ui::base::dialog::MessageDialog dialog;
+    sight::ui::base::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
 
     // If the selection is not empty
@@ -95,11 +95,11 @@ void SDicomSeriesAnonymizer::updating()
         dialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
         dialog.addButton(ui::base::dialog::IMessageDialog::YES);
         dialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-        ui::base::dialog::IMessageDialog::Buttons answer = dialog.show();
+        sight::ui::base::dialog::IMessageDialog::Buttons answer = dialog.show();
 
-        if ( answer == ui::base::dialog::IMessageDialog::YES )
+        if ( answer == sight::ui::base::dialog::IMessageDialog::YES )
         {
-            ui::base::Cursor cursor;
+            sight::ui::base::Cursor cursor;
             cursor.setCursor(ui::base::ICursor::BUSY);
             this->anonymize();
             cursor.setDefaultCursor();

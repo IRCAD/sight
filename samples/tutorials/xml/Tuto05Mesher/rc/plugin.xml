@@ -79,14 +79,14 @@
 
             <!--
                 Default view service:
-                The type '::sight::gui::LineLayoutManager' represents a layout where the view are aligned
+                The type '::sight::ui::base::LineLayoutManager' represents a layout where the view are aligned
                 horizontally or vertically (set orientation value 'horizontal' or 'vertical').
                 It is possible to add a 'proportion' attribute for the <view> to defined the proportion
                 used by the view compared to the others.
             -->
             <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view/>
                         <view/>

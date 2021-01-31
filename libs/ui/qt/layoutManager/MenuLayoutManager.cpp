@@ -34,10 +34,10 @@
 
 #include <functional>
 
-fwGuiRegisterMacro( ::sight::ui::base::layoutManager::MenuLayoutManager,
+fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::MenuLayoutManager,
                     ::sight::ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 namespace layoutManager
 {
@@ -182,4 +182,4 @@ void MenuLayoutManager::menuItemSetChecked(ui::base::container::fwMenuItem::sptr
 //-----------------------------------------------------------------------------
 
 } // namespace layoutManager
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

@@ -16,7 +16,7 @@
 
         <service uid="organView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::ToolboxLayoutManager" >
+                <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <view caption="Organs" expanded="true"  />
                     <view caption="Material" expanded="true" />
                     <view caption="Representation" expanded="true" />
@@ -51,10 +51,10 @@
             <config enableDelete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
         </service>
 
-        <service uid="organMaterialEditorSrv" type="::uiReconstructionQt::SOrganMaterialEditor" >
+        <service uid="organMaterialEditorSrv" type="::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="representationEditorSrv" type="::uiReconstructionQt::RepresentationEditor" >
+        <service uid="representationEditorSrv" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
         <service uid="textureSelectorSrv" type="::uiVisuOgre::STextureSelector" >

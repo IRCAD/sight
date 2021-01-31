@@ -21,7 +21,7 @@
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar/>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -62,7 +62,7 @@
 
         <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -76,7 +76,7 @@
 
         <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
@@ -181,17 +181,17 @@
             </out>
         </service>
 
-        <service uid="cameraSeriesInfoSrv" type="::uiCalibration::SCameraSeriesEditor">
+        <service uid="cameraSeriesInfoSrv" type="::sight::modules::ui::qt::calibration::SCameraSeriesEditor">
             <in key="cameraSeries" uid="${cameraSeries}" autoConnect="yes" />
             <in key="notUsed" uid="camera1" />
             <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>
 
-        <service uid="cameraInfo1Srv" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo1Srv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="camera0" />
         </service>
 
-        <service uid="cameraInfo2Srv" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo2Srv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="camera1" />
         </service>
 

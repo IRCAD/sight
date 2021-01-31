@@ -71,7 +71,7 @@ void SFilterSelectionEditor::info(std::ostream& _sstream )
 
 void SFilterSelectionEditor::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -86,8 +86,8 @@ void SFilterSelectionEditor::starting()
     data::Vector::csptr dataVector = this->getInput< data::Vector >("selection");
     SLM_ASSERT("Vector object should not be null.", dataVector);
 
-    ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::base::IGuiContainerSrv::create();
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setAlignment(Qt::AlignTop);
@@ -198,10 +198,10 @@ void SFilterSelectionEditor::onForceChecked(int state)
 {
     if(state == Qt::Checked)
     {
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Be careful",
             "You asked to ignore reading errors, there are high risks of issues for resulting image.",
-            ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -399,7 +399,7 @@ void SFilterSelectionEditor::applyFilters()
     SLM_ASSERT("Vector object should not be null.", vector);
 
     // Display the informations
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
     messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.setTitle("Filters information");

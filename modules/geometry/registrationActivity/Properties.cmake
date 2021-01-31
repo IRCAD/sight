@@ -16,11 +16,8 @@ set( REQUIREMENTS
     module_ui_qt
     ctrlSelection
     ctrlCamp
-    uiVisuQt
     visuVTKAdaptor
-    uiImageQt
     scene2D
-    uiTF
     media
     maths
     visuVTKQt

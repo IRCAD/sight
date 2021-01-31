@@ -19,7 +19,6 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
     flatIcon
 
     # Grabber

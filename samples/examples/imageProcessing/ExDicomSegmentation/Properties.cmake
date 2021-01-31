@@ -21,7 +21,6 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
     flatIcon
 
     # Reader
@@ -42,9 +41,6 @@ set( REQUIREMENTS
     uiMedDataQt
     ctrlSelection
     uiIO
-    uiActivitiesQt
-    uiReconstructionQt
-    uiImageQt
 
     # Generic Scene
 )

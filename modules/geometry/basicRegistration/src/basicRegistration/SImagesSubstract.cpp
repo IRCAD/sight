@@ -50,7 +50,7 @@ namespace basicRegistration
 {
 
 SImagesSubstract::SImagesSubstract() noexcept :
-    ui::base::editor::IEditor(),
+    sight::ui::base::editor::IEditor(),
     mpComputeButton(0)
 {
 
@@ -72,7 +72,7 @@ void SImagesSubstract::configuring()
 void SImagesSubstract::starting()
 {
     this->create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
@@ -140,16 +140,16 @@ void SImagesSubstract::updating()
         }
         else
         {
-            ui::base::dialog::MessageDialog::show("Warning",
-                                                  "Both images must have the same size.",
-                                                  ui::base::dialog::IMessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show("Warning",
+                                                         "Both images must have the same size.",
+                                                         sight::ui::base::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
-        ui::base::dialog::MessageDialog::show("Warning",
-                                              "Both Images must have signed short as type.",
-                                              ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Warning",
+                                                     "Both Images must have signed short as type.",
+                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 

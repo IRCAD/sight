@@ -63,7 +63,7 @@
 
             <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" backgroundColor="#36393E" border="5" />
                         <view proportion="1" />
@@ -79,7 +79,7 @@
 
             <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" caption="[background image] Pixel info" />
                         <view proportion="0" caption="[background image] Window Level" />
@@ -100,7 +100,7 @@
 
             <service uid="blendSceneView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#3E4453" border="5" />
@@ -114,7 +114,7 @@
 
             <service uid="blendSceneBottomView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="30" />
@@ -128,7 +128,7 @@
 
             <service uid="imagesView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" minWidth="300" />
                         <view proportion="1" />
@@ -267,7 +267,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotBlendSceneEditorSrv" type="::uiVisuQt::SnapshotEditor" />
+            <service uid="snapshotBlendSceneEditorSrv" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
             <service uid="backgroundImageReaderSrv" type="::uiIO::editor::SIOSelector" >
                 <inout key="data" uid="backgroundImage" />
@@ -284,17 +284,17 @@
                 <inout key="image" uid="backgroundImage" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="backgroundImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <!-- Editors of background image -->
-            <service uid="imageInfoSrv" type="::uiImageQt::ImageInfo" >
+            <service uid="imageInfoSrv" type="::sight::modules::ui::qt::image::ImageInfo" >
                 <in key="image" uid="backgroundImage" autoConnect="yes" />
             </service>
 
-            <service uid="windowLevelSrv" type="::uiImageQt::WindowLevel" >
+            <service uid="windowLevelSrv" type="::sight::modules::ui::qt::image::WindowLevel" >
                 <inout key="image" uid="backgroundImage" autoConnect="yes" />
             </service>
 
@@ -304,16 +304,16 @@
             </service>
 
             <!-- Editors of front image -->
-            <service uid="imageInfo2Srv" type="::uiImageQt::ImageInfo" >
+            <service uid="imageInfo2Srv" type="::sight::modules::ui::qt::image::ImageInfo" >
                 <in key="image" uid="frontImage" autoConnect="yes" />
             </service>
 
-            <service uid="imageTransparencySrv" type="::uiImageQt::ImageTransparency" autoConnect="yes" >
+            <service uid="imageTransparencySrv" type="::sight::modules::ui::qt::image::ImageTransparency" autoConnect="yes" >
                 <inout key="image" uid="frontImage" autoConnect="yes" />
                 <shortcut value="V" />
             </service>
 
-            <service uid="windowLevel2Srv" type="::uiImageQt::WindowLevel" >
+            <service uid="windowLevel2Srv" type="::sight::modules::ui::qt::image::WindowLevel" >
                 <inout key="image" uid="frontImage" autoConnect="yes" />
             </service>
 

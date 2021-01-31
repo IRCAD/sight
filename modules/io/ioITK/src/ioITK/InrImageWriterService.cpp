@@ -83,7 +83,7 @@ void InrImageWriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Inrimage", "*.inr.gz");
@@ -133,7 +133,7 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
 
     try
     {
-        ui::base::dialog::ProgressDialog progressMeterGUI("Saving Image ");
+        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving Image ");
         myWriter->addHandler( progressMeterGUI );
         myWriter->write();
 
@@ -142,15 +142,15 @@ void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, con
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        ui::base::dialog::MessageDialog::show("Warning",
-                                              ss.str(),
-                                              ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Warning",
+                                                     ss.str(),
+                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
-        ui::base::dialog::MessageDialog::show("Warning",
-                                              "Warning during saving",
-                                              ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show("Warning",
+                                                     "Warning during saving",
+                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -165,7 +165,7 @@ void InrImageWriterService::updating()
         data::Image::csptr image = this->getInput< data::Image >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
         saveImage(this->getFile(), image);
         cursor.setDefaultCursor();

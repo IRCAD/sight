@@ -112,7 +112,7 @@ void SCamera::starting()
 {
     this->create();
 
-    const ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
@@ -212,7 +212,7 @@ void SCamera::onChooseFile()
 
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("All files", "*.*");
     dialogFile.addFilter("videos", "*.avi *.m4v *.mkv *.mp4 *.ogv");
@@ -345,7 +345,7 @@ void SCamera::onChooseStream()
     size_t count = 0;
     for(auto& camera : cameras)
     {
-        ui::base::dialog::InputDialog inputDialog;
+        sight::ui::base::dialog::InputDialog inputDialog;
         inputDialog.setTitle("Enter stream url for video source #" + std::to_string(count++));
 
         const std::string streamSource = inputDialog.getInput();

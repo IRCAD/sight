@@ -54,7 +54,7 @@ class IODICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IActionSrv
 {
 public:
 
-    fwCoreServiceMacro(SSeriesDBMerger,  ui::base::IActionSrv )
+    fwCoreServiceMacro(SSeriesDBMerger, sight::ui::base::IActionSrv )
 
     /// Constructor
     IODICOM_API SSeriesDBMerger() noexcept;

@@ -28,7 +28,7 @@
         <!-- *************************** Begin layouts declaration **************************** -->
         <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>

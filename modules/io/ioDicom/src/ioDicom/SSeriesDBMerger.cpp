@@ -99,7 +99,7 @@ void SSeriesDBMerger::updating()
     sDBhelper.notify();
 
     // Display the informations
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
     messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
     messageBox.setTitle("Push Series");

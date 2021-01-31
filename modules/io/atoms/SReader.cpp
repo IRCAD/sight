@@ -212,7 +212,7 @@ void SReader::updating()
         SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.",
                    m_outputMode || data);
 
-        ui::base::Cursor cursor;
+        sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
 
         try
@@ -411,14 +411,14 @@ void SReader::updating()
         {
             m_readFailed = true;
             SLM_ERROR( e.what() );
-            ui::base::dialog::MessageDialog::show("Atoms reader failed", e.what(),
-                                                  ui::base::dialog::MessageDialog::CRITICAL);
+            sight::ui::base::dialog::MessageDialog::show("Atoms reader failed", e.what(),
+                                                         sight::ui::base::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
             m_readFailed = true;
-            ui::base::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
-                                                  ui::base::dialog::MessageDialog::CRITICAL);
+            sight::ui::base::dialog::MessageDialog::show("Atoms reader failed", "Aborting operation.",
+                                                         sight::ui::base::dialog::MessageDialog::CRITICAL);
         }
 
         cursor.setDefaultCursor();
@@ -464,7 +464,7 @@ void SReader::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);

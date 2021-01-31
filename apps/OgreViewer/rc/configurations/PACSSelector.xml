@@ -44,7 +44,7 @@
 
         <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <view proportion="1" />
@@ -58,7 +58,7 @@
 
         <service uid="queryView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -81,7 +81,7 @@
             <gui>
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" hOffset="50%" />
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" />
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -97,7 +97,7 @@
 
         <service uid="advancedQueryEditorSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -110,7 +110,7 @@
 
         <service uid="configurePACSSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -123,7 +123,7 @@
 
         <service uid="previewView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -137,7 +137,7 @@
 
         <service uid="previewSceneView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -151,7 +151,7 @@
 
         <service uid="previewSceneSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -164,7 +164,7 @@
 
         <service uid="previewDICOMSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -180,7 +180,7 @@
 
         <service uid="localView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -194,7 +194,7 @@
 
         <service uid="localSceneView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -208,7 +208,7 @@
 
         <service uid="localSceneSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -221,7 +221,7 @@
 
         <service uid="localSliderView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <spacer />
                     <view proportion="0" />

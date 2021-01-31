@@ -64,7 +64,7 @@
                         ]]>
                     </styleSheet>
                 </slideView>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -90,7 +90,7 @@
         <service uid="topToolbarSliderView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                 </layout>
             </gui>
@@ -117,7 +117,7 @@
 
         <service uid="topNegatoSlicerSliderView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                 </layout>
@@ -129,7 +129,7 @@
 
         <service uid="bottomNegatoSlicerSliderView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000"/>
@@ -142,7 +142,7 @@
 
         <service uid="bottomNegatoSlicerView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
@@ -443,17 +443,17 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="axialNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="axialNegatoSlicerSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Axial</sliceIndex>
         </service>
 
-        <service uid="sagittalNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sagittalNegatoSlicerSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
-        <service uid="frontalNegatoSlicerSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="frontalNegatoSlicerSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Frontal</sliceIndex>
         </service>

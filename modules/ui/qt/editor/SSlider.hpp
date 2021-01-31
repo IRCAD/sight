@@ -51,7 +51,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::modules::ui::qt::editor::SSlider" autoConnect="no"/>
+    <service uid="..." type="::sight::modules::ui::qt::editor::SSlider" autoConnect="no"/>
         <editBox>false</editBox>
         <resetButton>false</resetButton>
         <defaultValue>200</defaultValue>

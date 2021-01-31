@@ -102,7 +102,7 @@ void SPdfWriter::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
-    ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
     dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("pdf", "*.pdf");
@@ -205,14 +205,14 @@ void SPdfWriter::starting()
     for(const auto& id : m_containersIDs)
     {
         ui::qt::container::QtContainer::sptr containerElt;
-        ui::base::container::fwContainer::sptr fwContainerFromConfig;
-        if ( ui::base::GuiRegistry::hasSIDContainer( id ) )
+        sight::ui::base::container::fwContainer::sptr fwContainerFromConfig;
+        if ( sight::ui::base::GuiRegistry::hasSIDContainer( id ) )
         {
-            fwContainerFromConfig = ui::base::GuiRegistry::getSIDContainer( id );
+            fwContainerFromConfig = sight::ui::base::GuiRegistry::getSIDContainer( id );
         }
         else
         {
-            fwContainerFromConfig = ui::base::GuiRegistry::getWIDContainer( id );
+            fwContainerFromConfig = sight::ui::base::GuiRegistry::getWIDContainer( id );
         }
         if (fwContainerFromConfig)
         {

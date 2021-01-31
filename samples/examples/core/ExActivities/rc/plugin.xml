@@ -71,7 +71,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig" >
         <id>ExActivities_Sequencer_SrvCfg</id>
-        <service>::uiActivitiesQt::editor::SActivitySequencer</service>
+        <service>::sight::modules::ui::qt::editor::SActivitySequencer</service>
         <desc>Configuration for sequencer</desc>
         <config>
             <activity id="ExImage_Import_Activity" name="Import" />

@@ -28,7 +28,7 @@
 
         <service uid="blendSceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -111,7 +111,7 @@
             <config orientation="${orientation}" />
         </service>
 
-        <service uid="negatoSliceSelector" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="negatoSliceSelector" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

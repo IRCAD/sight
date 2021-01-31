@@ -28,9 +28,10 @@
 
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 fwServicesRegisterMacro( ::sight::services::IController, ::maths::SConcatenateMatrices, data::TransformationMatrix3D)
 
@@ -91,7 +92,7 @@ void SConcatenateMatrices::updating()
     {
         data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
 
-        data::tools::TransformationMatrix3D::identity(outputMatrix);
+        geometry::data::identity(outputMatrix);
 
         auto inverse = data::TransformationMatrix3D::New();
 
@@ -103,12 +104,12 @@ void SConcatenateMatrices::updating()
 
             if (invertCurrentMatrix)
             {
-                data::tools::TransformationMatrix3D::invert(inputMatrix, inverse);
-                data::tools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
+                geometry::data::invert(inputMatrix, inverse);
+                geometry::data::multiply(outputMatrix, inverse, outputMatrix);
             }
             else
             {
-                data::tools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
+                geometry::data::multiply(outputMatrix, inputMatrix, outputMatrix);
             }
         }
     }

@@ -29,12 +29,13 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 namespace opItkRegistration
 {
@@ -96,7 +97,7 @@ void SImageCenter::updating()
 
     data::mt::ObjectWriteLock matLock(matrix);
 
-    data::tools::TransformationMatrix3D::identity(matrix);
+    geometry::data::identity(matrix);
 
     //compute the center
     const data::Image::Size size       = image->getSize2();

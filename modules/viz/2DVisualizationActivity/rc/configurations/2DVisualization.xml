@@ -20,7 +20,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato1" align="center" />
                     <view caption="Negato2" align="right" />
                     <view caption="Negato3" align="right" />
@@ -118,7 +118,7 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="landmarksEditor" type="::uiMeasurementQt::editor::SLandmarks" autoConnect="yes">
+        <service uid="landmarksEditor" type="::sight::modules::ui::qt::metrics::SLandmarks" autoConnect="yes">
             <inout key="landmarks" uid="${landmarks}" />
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>

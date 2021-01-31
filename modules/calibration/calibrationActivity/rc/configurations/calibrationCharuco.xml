@@ -23,7 +23,7 @@
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
                 <toolBar/>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -66,7 +66,7 @@
             </slots>
         </service>
 
-        <service uid="cameraLauncherAct" type="::uiCalibration::SCameraConfigLauncher">
+        <service uid="cameraLauncherAct" type="::sight::modules::ui::qt::calibration::SCameraConfigLauncher">
             <inout key="cameraSeries" uid="${cameraSeries}" />
             <inout key="activitySeries" uid="${AS_UID}" />
             <config>

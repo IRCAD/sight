@@ -28,7 +28,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager" >
+                <layout type="::sight::ui::base::CardinalLayoutManager" >
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
                 </layout>

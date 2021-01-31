@@ -15,7 +15,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato" align="center" />
                     <view caption="TF selection" align="right" minWidth="450" />
                 </layout>
@@ -29,7 +29,7 @@
 
         <service uid="sceneView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -43,7 +43,7 @@
 
         <service uid="sceneView_bottom" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="1" />
@@ -55,11 +55,11 @@
             </registry>
         </service>
 
-        <service uid="snapshotEditor" type="::uiVisuQt::SnapshotEditor" />
+        <service uid="snapshotEditor" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
         <service uid="tfView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -136,13 +136,13 @@
             <push field="m_transferFunctionCompositeId" />
         </service>
 
-        <service uid="tfSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
+        <service uid="tfSelector" type="::sight::modules::ui::qt::image::TransferFunctionEditor" autoConnect="yes">
             <inout key="tfPool" uid="TFSet" />
             <out key="tf" uid="${transferFunction}" />
         </service>
 
         <!-- Editors for Negato2 -->
-        <service uid="slider" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>

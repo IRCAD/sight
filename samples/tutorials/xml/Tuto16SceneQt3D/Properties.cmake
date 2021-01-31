@@ -15,8 +15,6 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
-    uiIO
 
     # Reader
     module_io_vtk

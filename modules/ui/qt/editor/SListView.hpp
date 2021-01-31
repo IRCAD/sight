@@ -40,7 +40,7 @@ namespace editor
  * The currently selected item can be deleted by pressing on "del" key
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::modules::ui::qt::editor::SListView"/>
+    <service uid="..." type="::sight::modules::ui::qt::editor::SListView"/>
     </service>
    @endcode
  *

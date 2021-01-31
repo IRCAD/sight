@@ -37,7 +37,7 @@ class MONITOR_CLASS_API MemoryInfo : public ::sight::ui::base::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(MemoryInfo,  ui::base::IActionSrv )
+    fwCoreServiceMacro(MemoryInfo, sight::ui::base::IActionSrv )
 
     /// Does nothing
     MONITOR_API MemoryInfo() noexcept;

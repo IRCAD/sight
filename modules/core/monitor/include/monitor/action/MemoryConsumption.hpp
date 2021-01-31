@@ -37,7 +37,7 @@ class MONITOR_CLASS_API MemoryConsumption : public ::sight::ui::base::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(MemoryConsumption,   ui::base::IActionSrv )
+    fwCoreServiceMacro(MemoryConsumption,   sight::ui::base::IActionSrv )
 
     /// Does nothing
     MONITOR_API MemoryConsumption() noexcept;

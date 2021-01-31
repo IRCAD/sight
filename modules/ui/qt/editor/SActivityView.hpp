@@ -56,7 +56,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::modules::ui::qt::editor::SActivityView" autoConnect="yes" >
+   <service type="::sight::modules::ui::qt::editor::SActivityView" autoConnect="yes" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />

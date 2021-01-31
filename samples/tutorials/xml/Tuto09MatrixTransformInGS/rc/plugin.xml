@@ -114,7 +114,7 @@
 
             <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::LineLayoutManager" >
+                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="no" backgroundColor="#3E4453" />
@@ -197,7 +197,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="matrixEditorSrv" type="::uiVisuQt::STransformEditor" >
+            <service uid="matrixEditorSrv" type="::sight::modules::ui::qt::viz::STransformEditor" >
                 <inout key="matrix" uid="matrixE" />
                 <translation enabled="no" />
                 <rotation enabled="y" min="0" max="360" />

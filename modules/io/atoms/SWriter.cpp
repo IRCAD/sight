@@ -273,7 +273,7 @@ bool SWriter::versionSelection()
                 }
             }
 
-            ui::base::dialog::SelectorDialog dialogVersion;
+            sight::ui::base::dialog::SelectorDialog dialogVersion;
 
             dialogVersion.setTitle("Archive version");
             dialogVersion.setMessage("Select an archive version");
@@ -288,7 +288,7 @@ bool SWriter::versionSelection()
             std::string result = dialogVersion.show();
             if(selectAmongstAllVersions)
             {
-                ui::base::dialog::SelectorDialog dialogVersionAll;
+                sight::ui::base::dialog::SelectorDialog dialogVersionAll;
 
                 dialogVersionAll.setTitle("Archive version");
                 dialogVersionAll.setMessage("Select an archive version");
@@ -325,7 +325,7 @@ void SWriter::updating()
     data::Object::csptr obj = this->getInput< data::Object >(sight::sight::io::base::services::s_DATA_KEY);
     SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
 
-    ui::base::Cursor cursor;
+    sight::ui::base::Cursor cursor;
     cursor.setCursor(ui::base::ICursor::BUSY);
 
     // Get the selected extension
@@ -343,9 +343,9 @@ void SWriter::updating()
         else
         {
             const std::string errorMessage("File extension '" + requestedExtension + "' is not handled.");
-            ui::base::dialog::MessageDialog::show("Medical data writer failed",
-                                                  errorMessage,
-                                                  ui::base::dialog::IMessageDialog::CRITICAL);
+            sight::ui::base::dialog::MessageDialog::show("Medical data writer failed",
+                                                         errorMessage,
+                                                         sight::ui::base::dialog::IMessageDialog::CRITICAL);
             m_writeFailed = true;
             return;
         }
@@ -518,9 +518,9 @@ void SWriter::updating()
 
         // Handle the error.
         SLM_ERROR(_e.what());
-        ui::base::dialog::MessageDialog::show("Medical data writer failed",
-                                              _e.what(),
-                                              ui::base::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show("Medical data writer failed",
+                                                     _e.what(),
+                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
     catch(...)
@@ -532,9 +532,9 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        ui::base::dialog::MessageDialog::show("Medical data writer failed",
-                                              "Writing process aborted",
-                                              ui::base::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show("Medical data writer failed",
+                                                     "Writing process aborted",
+                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
         m_writeFailed = true;
     }
 
@@ -563,7 +563,7 @@ void SWriter::openLocationDialog()
 
     if( !m_useAtomsPatcher || versionSelection() )
     {
-        ui::base::dialog::LocationDialog dialogFile;
+        sight::ui::base::dialog::LocationDialog dialogFile;
         dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
         dialogFile.setDefaultLocation( data::location::Folder::New(_sDefaultPath) );
         dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);

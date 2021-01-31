@@ -72,7 +72,7 @@
 
             <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
-                    <layout type="::sight::gui::CardinalLayoutManager" >
+                    <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="left" />
                         <view align="right" />
                         <view align="left" />

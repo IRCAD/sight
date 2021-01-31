@@ -52,7 +52,7 @@ namespace action
 class UIIO_CLASS_API SFolderSelector : public ::sight::ui::base::IActionSrv
 {
 public:
-    fwCoreServiceMacro(SFolderSelector,  ui::base::IActionSrv)
+    fwCoreServiceMacro(SFolderSelector, sight::ui::base::IActionSrv)
 
     /**
      * @name Signals API

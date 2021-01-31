@@ -93,7 +93,7 @@ SSelector::~SSelector() noexcept
 
 void SSelector::configuring()
 {
-    this->ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainerSrv::initialize();
 
     // Deprecated configuration.
 
@@ -230,9 +230,9 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    this->ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainerSrv::create();
 
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
     m_selectorWidget = new ::uiMedDataQt::widget::Selector();

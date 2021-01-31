@@ -20,13 +20,9 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
     uiVisuOgre
     uiIO
-    uiImageQt
-    uiTF
     flatIcon
-    uiMeasurementQt
 
     # Reader
     module_io_vtk

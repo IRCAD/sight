@@ -90,9 +90,9 @@ void SServerListener::starting()
     }
     catch (core::Exception& e)
     {
-        ui::base::dialog::MessageDialog::show("Error", "Cannot start the server: " +
-                                              std::string(e.what()),
-                                              ui::base::dialog::IMessageDialog::CRITICAL);
+        sight::ui::base::dialog::MessageDialog::show("Error", "Cannot start the server: " +
+                                                     std::string(e.what()),
+                                                     sight::ui::base::dialog::IMessageDialog::CRITICAL);
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SLM_ERROR(e.what());
         this->slot(s_STOP_SLOT)->asyncRun();
@@ -115,7 +115,7 @@ void SServerListener::stopping()
     }
     catch (core::Exception& e)
     {
-        ui::base::dialog::MessageDialog::show("Error", e.what());
+        sight::ui::base::dialog::MessageDialog::show("Error", e.what());
     }
     catch (std::future_error&)
     {
@@ -166,7 +166,7 @@ void SServerListener::receiveObject()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            ui::base::dialog::MessageDialog::show("Error", ex.what());
+            sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else

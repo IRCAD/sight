@@ -96,13 +96,13 @@ namespace ioDicomWeb
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
 class IODICOMWEB_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
-                                                          public ui::base::editor::IEditor
+                                                          public sight::ui::base::editor::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  ui::base::editor::IEditor )
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  sight::ui::base::editor::IEditor )
 
     /**
      * @brief Constructor

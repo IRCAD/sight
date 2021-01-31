@@ -9,7 +9,7 @@
         <object uid="image" type="::sight::data::Image" src="deferred" />
         <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
                 </layout>

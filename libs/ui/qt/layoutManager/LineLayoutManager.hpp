@@ -29,7 +29,7 @@
 
 #include <ui/base/layoutManager/LineLayoutManagerBase.hpp>
 
-namespace sight::ui::base
+namespace sight::ui::qt
 {
 
 /**
@@ -64,4 +64,4 @@ private:
     ui::qt::container::QtContainer::sptr m_parentContainer;
 };
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

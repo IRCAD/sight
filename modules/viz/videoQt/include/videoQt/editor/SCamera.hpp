@@ -90,14 +90,14 @@ namespace editor
  * - \b label (optional, default="Video source: "): label of the selector.
  */
 class VIDEOQT_CLASS_API SCamera final : public QObject,
-                                        public ui::base::editor::IEditor
+                                        public sight::ui::base::editor::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCamera, ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCamera, sight::ui::base::editor::IEditor)
 
     /// Initialize signals and slots.
     VIDEOQT_API SCamera();

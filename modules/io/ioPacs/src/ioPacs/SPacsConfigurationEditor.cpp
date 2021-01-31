@@ -65,7 +65,7 @@ SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 
 void SPacsConfigurationEditor::configuring()
 {
-    ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainerSrv::initialize();
 
     const ConfigType configType = this->getConfigTree();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -85,8 +85,8 @@ void SPacsConfigurationEditor::starting()
 
     const auto pacsConfiguration = this->getLockedInOut< const ::fwPacsIOdata::PacsConfiguration >(s_CONFIG_INOUT);
 
-    ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::base::IGuiContainerSrv::create();
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QGridLayout* gridLayout = new QGridLayout();
 
@@ -364,7 +364,7 @@ void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 
 void SPacsConfigurationEditor::showDialog(const std::string _title, const std::string _message)
 {
-    ui::base::dialog::MessageDialog messageBox;
+    sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle(_title);
     messageBox.setMessage(_message);
     messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);

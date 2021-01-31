@@ -62,10 +62,10 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
     {
         std::stringstream msg;
         msg << "Cannot allocate buffer ("<< memorySizeInBytes/(1024*1024) <<" Mo) :\n" << e.what() << std::endl;
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Action increase memory",
             msg.str(),
-            ui::base::dialog::IMessageDialog::CRITICAL);
+            sight::ui::base::dialog::IMessageDialog::CRITICAL);
     }
 }
 
@@ -105,7 +105,7 @@ void MemoryConsumption::updating()
 
 void MemoryConsumption::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 
     core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
@@ -128,13 +128,13 @@ void MemoryConsumption::configuring()
 
 void MemoryConsumption::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void MemoryConsumption::stopping()
 {
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -74,14 +74,14 @@ void ClassFactoryRegistryInfo::updating( )
 
 void ClassFactoryRegistryInfo::configuring()
 {
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ClassFactoryRegistryInfo::starting()
 {
-    this->ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IActionSrv::actionServiceStarting();
 
     QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
@@ -110,7 +110,7 @@ void ClassFactoryRegistryInfo::stopping()
     delete m_tree;
     delete m_dialog;
 
-    this->ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IActionSrv::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

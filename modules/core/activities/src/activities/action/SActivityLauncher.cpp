@@ -64,7 +64,7 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 
-Q_DECLARE_METATYPE(activities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activities::registry::ActivityInfo)
 
 #endif
 
@@ -92,9 +92,9 @@ SActivityLauncher::SActivityLauncher() noexcept :
     m_mode("message")
 {
 #ifndef KEEP_OLD_SERVICE
-    SLM_FATAL("Use '::uiActivitiesQt::action::SActivityLauncher' instead of 'activities::action::SActivityLauncher'");
+    SLM_FATAL("Use '::modules::ui::qt::action::SActivityLauncher' instead of 'activities::action::SActivityLauncher'");
 #else
-    FW_DEPRECATED("::activities::action::SActivityLauncher", "::uiActivitiesQt::action::SActivityLauncher", "21.0");
+    FW_DEPRECATED("::activities::action::SActivityLauncher", "::modules::ui::qt::action::SActivityLauncher", "21.0");
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
@@ -129,7 +129,7 @@ void SActivityLauncher::stopping()
 void SActivityLauncher::configuring()
 {
 #ifdef KEEP_OLD_SERVICE
-    this->ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IActionSrv::initialize();
     typedef services::IService::ConfigType ConfigType;
 
     m_parameters.clear();
@@ -330,9 +330,9 @@ void SActivityLauncher::updating()
         }
         else
         {
-            ui::base::dialog::MessageDialog::show("Activity launcher",
-                                                  "Not available activity for the current selection.",
-                                                  ui::base::dialog::MessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show("Activity launcher",
+                                                         "Not available activity for the current selection.",
+                                                         sight::ui::base::dialog::MessageDialog::WARNING);
         }
     }
 }
@@ -412,8 +412,8 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
     {
         std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
                           "> failed.";
-        ui::base::dialog::MessageDialog::show( "Activity can not be launched", msg,
-                                               ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::base::dialog::MessageDialog::show( "Activity can not be launched", msg,
+                                                      sight::ui::base::dialog::IMessageDialog::WARNING);
         SLM_ERROR(msg);
         return;
     }
@@ -436,9 +436,9 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
                 {
                     std::string message = "The activity '" + info.title + "' can not be launched:\n" +
                                           validation.second;
-                    ui::base::dialog::MessageDialog::show("Activity launch",
-                                                          message,
-                                                          ui::base::dialog::IMessageDialog::CRITICAL);
+                    sight::ui::base::dialog::MessageDialog::show("Activity launch",
+                                                                 message,
+                                                                 sight::ui::base::dialog::IMessageDialog::CRITICAL);
                     return;
                 }
             }
@@ -454,7 +454,7 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
     }
     else
     {
-        ui::base::LockAction lock(this->getSptr());
+        sight::ui::base::LockAction lock(this->getSptr());
 
         std::string viewConfigID                                     = msg.getAppConfigID();
         activities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
@@ -503,10 +503,10 @@ void SActivityLauncher::sendConfig( const activities::registry::ActivityInfo& in
 
     if(!validation.first)
     {
-        ui::base::dialog::MessageDialog::show(
+        sight::ui::base::dialog::MessageDialog::show(
             "Activity can not be launched",
             "The activity " + info.title + " can't be launched. Reason : " + validation.second,
-            ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::base::dialog::IMessageDialog::WARNING
             );
     }
     else
@@ -570,9 +570,9 @@ void SActivityLauncher::launchSeries(data::Series::sptr series)
         }
         else
         {
-            ui::base::dialog::MessageDialog::show("Activity launcher",
-                                                  "Not available activity for the current selection.",
-                                                  ui::base::dialog::MessageDialog::WARNING);
+            sight::ui::base::dialog::MessageDialog::show("Activity launcher",
+                                                         "Not available activity for the current selection.",
+                                                         sight::ui::base::dialog::MessageDialog::WARNING);
         }
     }
 }
@@ -602,9 +602,9 @@ void SActivityLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
                 {
                     std::string message = "The activity '" + info.title + "' can not be launched:\n" +
                                           validation.second;
-                    ui::base::dialog::MessageDialog::show("Activity launch",
-                                                          message,
-                                                          ui::base::dialog::IMessageDialog::CRITICAL);
+                    sight::ui::base::dialog::MessageDialog::show("Activity launch",
+                                                                 message,
+                                                                 sight::ui::base::dialog::IMessageDialog::CRITICAL);
                     return;
                 }
             }

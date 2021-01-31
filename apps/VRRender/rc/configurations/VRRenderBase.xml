@@ -114,7 +114,7 @@
              </preference>
         </service>
 
-        <service uid="action_about" type="::uiGenericQt::action::SShowAbout">
+        <service uid="action_about" type="::sight::modules::ui::qt::action::SShowAbout">
             <filename id="VRRender-${appVersion}/about/about.html" />
         </service>
 
@@ -130,7 +130,7 @@
 
         <service uid="progress_statusbar" type="::sight::modules::ui::base::editor::SJobBar" />
 
-         <service uid="styleSelector" type="::style::SStyleSelector" />
+         <service uid="::sight::modules::ui::qtSelector" type="::sight::modules::ui::qt::SStyleSelector" />
 
         <connect channel="progressStatus">
             <signal>SDBWriter/jobCreated</signal>
@@ -148,7 +148,7 @@
 
         <start uid="mainFrame" />
         <start uid="progress_statusbar" />
-        <start uid="styleSelector" />
+        <start uid="::sight::modules::ui::qtSelector" />
 
     </config>
 </extension>

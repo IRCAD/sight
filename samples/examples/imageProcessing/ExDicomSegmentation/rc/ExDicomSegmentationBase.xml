@@ -16,7 +16,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E3034" />
                 </layout>
@@ -30,7 +30,7 @@
         <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
                 <toolBar/>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" />
                     <view proportion="1" backgroundColor="#2E3034" border="5" />
@@ -68,7 +68,7 @@
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="exportAct" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes" >
+        <service uid="exportAct" type="::sight::modules::ui::qt::action::SActivityLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -83,7 +83,7 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes" >
+        <service uid="mesherAct" type="::sight::modules::ui::qt::action::SActivityLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -96,7 +96,7 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="::uiActivitiesQt::action::SActivityLauncher" autoConnect="yes" >
+        <service uid="thresholdAct" type="::sight::modules::ui::qt::action::SActivityLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>

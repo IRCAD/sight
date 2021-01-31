@@ -59,7 +59,7 @@ SMesh::~SMesh() noexcept
 
 void SMesh::configuring()
 {
-    this->ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainerSrv::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -78,12 +78,12 @@ void SMesh::configuring()
 
 void SMesh::starting()
 {
-    this->ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainerSrv::create();
 
-    ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());
     const auto genericSceneId = this->getID() + "-genericScene";
-    ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
+    sight::ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
 
     auto mesh = this->getLockedInput< data::Object>(s_MESH_INPUT);
 
@@ -170,7 +170,7 @@ void SMesh::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
+    sight::ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
     services::OSR::unregisterService(m_cameraSrv);
     services::OSR::unregisterService(m_meshSrv);

@@ -18,7 +18,6 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    style
     flatIcon
 
     # Reader
@@ -28,8 +27,6 @@ set( REQUIREMENTS
 
     # Services
     uiIO
-    uiImageQt
-    uiVisuQt
     ctrlSelection
 
     # Generic Scene

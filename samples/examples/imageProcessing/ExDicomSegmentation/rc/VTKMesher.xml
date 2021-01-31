@@ -22,7 +22,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" minWidth="300" />
@@ -52,7 +52,7 @@
 
         <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -66,7 +66,7 @@
 
         <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::LineLayoutManager" >
+                <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="50" />
                     <view proportion="1" />
@@ -82,7 +82,7 @@
 
         <service uid="materialView" type="::sight::modules::ui::base::view::SDefaultView" >
             <gui>
-                <layout type="::sight::gui::ToolboxLayoutManager" >
+                <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                     <view caption="Organs" expanded="true" />
                     <view caption="Material" expanded="true" />
@@ -162,7 +162,7 @@
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="sliceIndexEditorSrv" type="::uiImageQt::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sliceIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
@@ -178,11 +178,11 @@
             <out key="object" uid="reconstructionUID" />
         </service>
 
-        <service uid="materialEditorSrv" type="::uiReconstructionQt::OrganMaterialEditor" autoConnect="yes" >
+        <service uid="materialEditorSrv" type="::sight::modules::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="yes" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
-        <service uid="representationSrv" type="::uiReconstructionQt::RepresentationEditor" autoConnect="yes" >
+        <service uid="representationSrv" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 

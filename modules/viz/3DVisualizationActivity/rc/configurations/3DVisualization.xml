@@ -27,7 +27,7 @@
 
         <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
             <gui>
-                <layout type="::sight::gui::CardinalLayoutManager">
+                <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view align="center" />
                     <view align="right"  />
@@ -47,7 +47,7 @@
         <service uid="view_negato2_and_3" type="::sight::modules::ui::base::view::SDefaultView">
             <in key="image" uid="optionalInputImage" />
             <gui>
-                <layout type="::sight::gui::LineLayoutManager">
+                <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -261,7 +261,7 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="landmarksEditor" type="::uiMeasurementQt::editor::SLandmarks" autoConnect="yes">
+        <service uid="landmarksEditor" type="::sight::modules::ui::qt::metrics::SLandmarks" autoConnect="yes">
             <inout key="landmarks" uid="${landmarks}" />
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>

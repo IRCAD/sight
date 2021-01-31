@@ -37,7 +37,7 @@ class MONITOR_CLASS_API fwMetrics : public ::sight::ui::base::IActionSrv
 
 public:
 
-    fwCoreServiceMacro(fwMetrics,  ui::base::IActionSrv )
+    fwCoreServiceMacro(fwMetrics, sight::ui::base::IActionSrv )
 
     /// Does nothing
     MONITOR_API fwMetrics() noexcept;
