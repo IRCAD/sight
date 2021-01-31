@@ -190,7 +190,8 @@ private:
     void createNewObject();
 
     /**
-     * @brief Calls @ref ::uiIO::editor::SIOSelector service to read the object. Return true if the object is properly
+     * @brief Calls @ref modules::ui::base::editor::SIOSelector service to read the object. Return true if the object is
+     * properly
      * read.
      * @param _classname the class name of the object to read.
      * @param _ioSelectorSrvConfig the IO selector configuration.

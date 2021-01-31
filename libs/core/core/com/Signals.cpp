@@ -38,7 +38,7 @@ Signals::Signals()
 
 Signals::~Signals()
 {
-#ifdef DEBUG
+#if 0
     for( SignalMapType::value_type elem :  m_signals )
     {
         SLM_ASSERT( "Signal '"<< elem.first <<"' has connected slots", elem.second->getNumberOfConnections() == 0 );

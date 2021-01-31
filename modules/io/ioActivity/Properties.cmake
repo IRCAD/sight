@@ -6,8 +6,6 @@ set( REQUIREMENTS
         activities
         ctrlSelection
         module_ui_base
-        uiIO
-    uiIO
     uiMedDataQt
         media
         data

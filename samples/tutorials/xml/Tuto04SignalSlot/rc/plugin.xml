@@ -88,7 +88,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
             </service>

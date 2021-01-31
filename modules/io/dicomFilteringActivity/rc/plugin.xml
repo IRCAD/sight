@@ -21,7 +21,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
         <config>
             <type mode="reader" />

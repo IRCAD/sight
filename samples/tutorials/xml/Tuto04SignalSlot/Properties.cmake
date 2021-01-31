@@ -19,7 +19,6 @@ set( REQUIREMENTS
     module_io_vtk
 
     # Services
-    uiIO
     module_viz_sample
 )
 

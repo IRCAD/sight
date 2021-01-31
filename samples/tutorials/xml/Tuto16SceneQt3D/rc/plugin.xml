@@ -97,7 +97,7 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="meshReaderAct" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderAct" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
                 <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::sight::modules::io::atoms::SReader" />

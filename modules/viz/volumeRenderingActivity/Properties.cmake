@@ -12,11 +12,9 @@ set( REQUIREMENTS
     ctrlCamp
     ctrlMemory
     ctrlSelection
-    uiVisu
     visuVTKAdaptor
     visuVTKVRAdaptor
     scene2D
-    uiIO
     uiMedDataQt
     media
     imageConfig

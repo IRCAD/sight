@@ -137,7 +137,7 @@
 
             <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
-            <service uid="openAct" type="::uiIO::action::SSeriesDBMerger" >
+            <service uid="openAct" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
@@ -166,7 +166,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="SDBWriterSrv" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+            <service uid="SDBWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
                 <inout key="data" uid="seriesDB" />
             </service>
 

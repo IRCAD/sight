@@ -7,6 +7,5 @@ set( REQUIREMENTS
     data
     module_services
     module_ui_base
-    uiIO
     uiVisuOgre
 )

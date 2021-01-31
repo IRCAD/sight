@@ -101,8 +101,7 @@ void SHandEyeEditor::configuring()
 void SHandEyeEditor::starting()
 {
     sight::ui::base::IGuiContainerSrv::create();
-    ui::qt::container::QtContainer::sptr qtContainer =
-        ui::qt::container::QtContainer::dynamicCast(getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Creation of the Qt elements
 

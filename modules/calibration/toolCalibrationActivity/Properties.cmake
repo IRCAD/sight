@@ -20,8 +20,5 @@ set( REQUIREMENTS
         ioIGTL
         ioTimeline
         syncTimeline
-        uiTools
-        uiIO
-        uiPreferences
         )
 

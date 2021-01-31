@@ -443,8 +443,7 @@ void DumpEditor::starting()
 {
     this->sight::ui::base::IGuiContainerSrv::create();
 
-    ui::qt::container::QtContainer::sptr qtContainer
-        = ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
     m_updateTimer = new QTimer(qtContainer->getQtContainer());
     m_updateTimer->setInterval(300);
@@ -717,7 +716,7 @@ void DumpEditor::changeStatus( int index )
         if( iter != buffInfoMap.end())
         {
             sight::ui::base::Cursor cursor;
-            cursor.setCursor(ui::base::ICursor::BUSY);
+            cursor.setCursor(sight::ui::base::ICursor::BUSY);
             const core::memory::BufferInfo& dumpBuffInfo = iter->second;
 
             bool isLock = dumpBuffInfo.lockCount() > 0;

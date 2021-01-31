@@ -63,7 +63,7 @@
         <config>
             <object uid="${selection}" src="ref" />
 
-            <service uid="export_selection" type="::uiIO::editor::SIOSelector">
+            <service uid="export_selection" type="::sight::modules::ui::base::editor::SIOSelector">
                 <inout key="data" uid="${selection}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
@@ -83,7 +83,7 @@
         <config>
             <object uid="${model}" type="::sight::data::ModelSeries" src="ref" />
 
-            <service uid="exportSelection" type="::uiIO::editor::SIOSelector">
+            <service uid="exportSelection" type="::sight::modules::ui::base::editor::SIOSelector">
                 <inout key="data" uid="${model}" />
                 <type mode="writer" />
                 <selection mode="include" />
@@ -98,7 +98,7 @@
     <!-- Service config used to read SeriesDB without using ioAtoms. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>SDBReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
@@ -111,7 +111,7 @@
     <!-- Service config used to read seriesDB using ioAtoms. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>SDBAtomsReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB reader.</desc>
         <config>
             <type mode="reader" />
@@ -124,7 +124,7 @@
     <!-- Service config used to write a seriesDB using ioAtoms. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>SDBAtomsWriterIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB writer.</desc>
         <config>
             <type mode="writer" />
@@ -137,7 +137,7 @@
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>FullSDBReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
@@ -173,7 +173,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ActivityReaderConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Activity reader</desc>
         <config>
             <type mode="reader" />
@@ -185,7 +185,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ActivityWriterConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Activity writer</desc>
         <config>
             <type mode="writer" />

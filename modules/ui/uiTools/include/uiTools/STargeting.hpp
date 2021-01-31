@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "uiTools/config.hpp"
-
-#include <services/IService.hpp>
+#include "modules/ui/base/config.hpp"
 
 #include <glm/vec3.hpp>
 
-namespace uiTools
+#include <services/IService.hpp>
+
+namespace sight::modules::ui::base
 {
 
 /**
@@ -41,7 +41,7 @@ namespace uiTools
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::uiTools::STargeting">
+        <service type="::sight::modules::ui::base::STargeting">
             <in key="landmark" uid="..." />
             <in key="matrix" uid="..." />
             <inout key="pointList" uid="..." />
@@ -123,4 +123,4 @@ private:
     int m_width{400};
 
 };
-} // namespace uiTools
+} // namespace sight::modules::ui::base

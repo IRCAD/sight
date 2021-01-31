@@ -3,6 +3,6 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-        uiIO
+        module_ui_base
         filterUnknownSeries
 )

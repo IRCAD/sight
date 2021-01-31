@@ -91,8 +91,7 @@ void SOrganTransformation::configuring()
 void SOrganTransformation::starting()
 {
     this->create();
-    ui::qt::container::QtContainer::sptr qtContainer =
-        ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
 
@@ -176,8 +175,7 @@ void SOrganTransformation::refresh()
 
     data::ModelSeries::sptr series = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
-    ui::qt::container::QtContainer::sptr qtContainer =
-        ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 

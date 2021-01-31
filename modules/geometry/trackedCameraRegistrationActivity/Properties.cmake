@@ -13,7 +13,6 @@ set( REQUIREMENTS
     media
     registrationCV
     trackerAruco
-    uiIO
     videoQt
     videoTools
     visuVTKAdaptor

@@ -139,12 +139,12 @@
                 <in key="image" uid="myImage" autoConnect="yes" />
             </service>
 
-            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
 
-            <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="writer" />
             </service>
@@ -157,12 +157,12 @@
                 <in key="mesh" uid="myMesh" autoConnect="yes" />
             </service>
 
-            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>

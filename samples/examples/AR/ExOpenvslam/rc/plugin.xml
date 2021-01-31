@@ -378,7 +378,7 @@
 
             <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
 
-            <service uid="openvslamInitSrvStatus" type="::uiTools::editor::SStatus" >
+            <service uid="openvslamInitSrvStatus" type="::sight::modules::ui::base::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -390,7 +390,7 @@
                 <orange>Initializing...</orange>
             </service>
 
-            <service uid="openvslamTrackingStatusSrv" type="::uiTools::editor::SStatus" >
+            <service uid="openvslamTrackingStatusSrv" type="::sight::modules::ui::base::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -402,7 +402,7 @@
                 <orange>relocalization</orange>
             </service>
 
-            <service uid="openvslamVocStatusSrv" type="::uiTools::editor::SStatus" >
+            <service uid="openvslamVocStatusSrv" type="::sight::modules::ui::base::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -472,7 +472,7 @@
                 <out key="pointCloud" uid="openvslamPointCloud" />
             </service>
 
-            <service uid="meshWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="openvslamPointCloud" />
                 <type mode="writer" />
                 <selection mode="include" />

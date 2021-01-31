@@ -109,7 +109,7 @@
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
-            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="image" />
             </service>
 

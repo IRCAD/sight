@@ -21,9 +21,7 @@ set( REQUIREMENTS
     ioGdcm
     module_io_file
 
-    uiIO
     uiMedDataQt
-    uiPreferences
 
     2DVisualizationActivity
     3DVisualizationActivity

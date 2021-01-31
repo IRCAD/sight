@@ -85,7 +85,7 @@
            </slots>
         </service>
 
-        <service uid="actionComputeCalibration" type="::uiTools::action::STimestampSlotCaller" >
+        <service uid="actionComputeCalibration" type="::sight::modules::ui::base::action::STimestampSlotCaller" >
            <slots>
                <slot>toolCalibration/computeRegistration</slot>
            </slots>
@@ -122,14 +122,14 @@
             </inout>
         </service>
 
-        <service uid="status" type="::uiTools::editor::SStatus" >
+        <service uid="status" type="::sight::modules::ui::base::editor::SStatus" >
             <form>circle</form>
             <labelStatus>Sensor status</labelStatus>
             <green>Sensor is tracked</green>
             <red>Sensor is not tracked</red>
         </service>
 
-        <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
+        <service uid="configureClient" type="::sight::modules::ui::base::action::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Tracker hostname</name>
@@ -162,7 +162,7 @@
            <inout key="vector" uid="matricesVector" />
         </service>
 
-        <service uid="calibrationMatrixWriter" type="::uiIO::editor::SIOSelector" >
+        <service uid="calibrationMatrixWriter" type="::sight::modules::ui::base::editor::SIOSelector" >
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />

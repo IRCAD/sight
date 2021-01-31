@@ -332,7 +332,7 @@
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="transformReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="registrationMatrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
@@ -340,7 +340,7 @@
             </service>
 
             <!-- Reader to open seriesDB data (.jsonz format) -->
-            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="seriesDB" />
             </service>
 

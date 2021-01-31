@@ -10,7 +10,6 @@ set( REQUIREMENTS
         module_ui_qt
         filterUnknownSeries
         ioActivity
-        uiIO
         uiMedDataQt
         media
         flatIcon

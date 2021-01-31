@@ -279,7 +279,7 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesDBAct" type="::uiIO::editor::SIOSelector" worker="COMPUTING_THREAD" >
+            <service uid="openSeriesDBAct" type="::sight::modules::ui::base::editor::SIOSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
@@ -419,17 +419,17 @@
             <service uid="axisVisibilityAct" type="::sight::modules::ui::base::action::SSignal" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="::uiMeasurement::action::SAddDistance">
+            <service uid="addDistanceAct" type="::sight::modules::ui::base::metrics::action::SAddDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="removeDistanceAct" type="::uiMeasurement::action::SRemoveDistance">
+            <service uid="removeDistanceAct" type="::sight::modules::ui::base::metrics::action::SRemoveDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="hideDistanceAct" type="::uiMeasurement::action::SShowDistance" autoConnect="yes" >
+            <service uid="hideDistanceAct" type="::sight::modules::ui::base::metrics::action::SShowDistance" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>

@@ -360,7 +360,7 @@
                 <inout key="image" uid="image1" />
             </service>
 
-            <service uid="readerFile1Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="readerFile1Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="image1" />
                 <type mode="reader" />
             </service>
@@ -375,7 +375,7 @@
                 <inout key="image" uid="image2" />
             </service>
 
-            <service uid="readerFile2Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="readerFile2Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="image2" />
                 <type mode="reader" />
             </service>
@@ -402,22 +402,22 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="imageResult" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter1Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriter1Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="snapshot1" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter2Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriter2Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="snapshot2" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter3Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriter3Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="snapshot3" />
                 <type mode="writer" />
             </service>

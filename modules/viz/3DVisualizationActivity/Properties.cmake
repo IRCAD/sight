@@ -11,13 +11,10 @@ set( REQUIREMENTS
     ctrlMemory
     ctrlSelection
     data
-    uiVisu
     module_services
     visuVTKQt
     visuVTKAdaptor
-    uiIO
     uiMedDataQt
-    uiMeasurement
     uiMedDataQt
     media
     dataManagerConfig

@@ -94,7 +94,7 @@ private:
     struct ShaderEditorInfo
     {
         std::string uuid;
-        ui::qt::container::QtContainer::sptr editorPanel;
+        sight::ui::qt::container::QtContainer::sptr editorPanel;
         services::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };

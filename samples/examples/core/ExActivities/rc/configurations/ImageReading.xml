@@ -41,7 +41,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="::uiIO::editor::SIOSelector" >
+        <service uid="importAct" type="::sight::modules::ui::base::editor::SIOSelector" >
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />

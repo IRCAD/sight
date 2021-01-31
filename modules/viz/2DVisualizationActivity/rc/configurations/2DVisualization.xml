@@ -127,7 +127,7 @@
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="ActionSFocusLandmark" type="::uiMeasurement::action::SFocusLandmark" >
+        <service uid="ActionSFocusLandmark" type="::sight::modules::ui::base::metrics::action::SFocusLandmark" >
             <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
             <inout key="image" uid="${image}" />
         </service>
@@ -149,13 +149,13 @@
                 <slot>landmarksEditor/setVisible</slot>
             </slots>
         </service>
-        <service uid="ActionAddDistance" type="::uiMeasurement::action::AddDistance" >
+        <service uid="ActionAddDistance" type="::sight::modules::ui::base::metrics::action::AddDistance" >
             <inout key="image" uid="${image}" />
         </service>
-        <service uid="ActionRemoveDistance" type="::uiMeasurement::action::RemoveDistance" >
+        <service uid="ActionRemoveDistance" type="::sight::modules::ui::base::metrics::action::RemoveDistance" >
             <inout key="image" uid="${image}" />
         </service>
-        <service uid="ActionHideDistance" type="::uiMeasurement::action::ShowDistance" autoConnect="yes" >
+        <service uid="ActionHideDistance" type="::sight::modules::ui::base::metrics::action::ShowDistance" autoConnect="yes" >
             <inout key="image" uid="${image}" />
         </service>
 
@@ -169,7 +169,7 @@
             <state visible="false" />
         </service>
 
-        <service uid="LoadLandmark" type="::uiIO::editor::SIOSelector" >
+        <service uid="LoadLandmark" type="::sight::modules::ui::base::editor::SIOSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
             <selection mode="include" />
@@ -177,7 +177,7 @@
             <config id="LandmarksAtomsConfig" service="::sight::modules::io::atoms::SReader" />
         </service>
 
-        <service uid="SaveLandmark" type="::uiIO::editor::SIOSelector" >
+        <service uid="SaveLandmark" type="::sight::modules::ui::base::editor::SIOSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="writer" />
             <selection mode="include" />
@@ -185,16 +185,16 @@
             <config id="LandmarksAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </service>
 
-        <service uid="ActionHideCross" type="::uiVisu::action::CrossTypeAction">
+        <service uid="ActionHideCross" type="::sight::modules::ui::base::viz::action::CrossTypeAction">
             <in key="image" uid="${image}" />
             <crossType>hide</crossType>
         </service>
-        <service uid="ActionShowNormalCross" type="::uiVisu::action::CrossTypeAction">
+        <service uid="ActionShowNormalCross" type="::sight::modules::ui::base::viz::action::CrossTypeAction">
             <in key="image" uid="${image}" />
             <crossType>half</crossType>
             <state active="true" />
         </service>
-        <service uid="ActionShowFullCross" type="::uiVisu::action::CrossTypeAction">
+        <service uid="ActionShowFullCross" type="::sight::modules::ui::base::viz::action::CrossTypeAction">
             <in key="image" uid="${image}" />
             <crossType>full</crossType>
         </service>

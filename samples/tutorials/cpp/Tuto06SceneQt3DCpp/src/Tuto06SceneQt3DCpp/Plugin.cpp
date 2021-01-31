@@ -72,9 +72,10 @@ void Plugin::initialize()
     const auto mainView   =
         m_appManager->addService("::modules::ui::base::view::SDefaultView", "mainView", true, false);
 
-    const auto meshReaderSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "meshReader", true, false);
-    const auto renderSrv     = m_appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
-    const auto meshAdaptor   = m_appManager->addService("::visuQt3DAdaptor::SMesh", "meshAdaptor", true, false);
+    const auto meshReaderSrv = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "meshReader", true,
+                                                        false);
+    const auto renderSrv   = m_appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
+    const auto meshAdaptor = m_appManager->addService("::visuQt3DAdaptor::SMesh", "meshAdaptor", true, false);
 
     /* **************************************************************************************
     *              GUI configuration

@@ -192,14 +192,14 @@
                 <state executable="false" />
             </service>
 
-            <service uid="registerAct" type="::uiTools::action::STimestampSlotCaller" >
+            <service uid="registerAct" type="::sight::modules::ui::base::action::STimestampSlotCaller" >
                 <slots>
                     <slot>solvePnPSrv/computeRegistration</slot>
                 </slots>
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::uiPreferences::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>

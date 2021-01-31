@@ -38,7 +38,7 @@ Slots::Slots()
 
 Slots::~Slots()
 {
-#ifdef DEBUG
+#if 0
     for( SlotMapType::value_type elem :  m_slots )
     {
         SLM_ASSERT( "Slot '"<< elem.first <<"' has connected signals", elem.second->getNumberOfConnections() == 0 );

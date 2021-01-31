@@ -149,7 +149,7 @@
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::uiPreferences::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -177,7 +177,7 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="motionStatusSrv" type="::uiTools::editor::SStatus" >
+            <service uid="motionStatusSrv" type="::sight::modules::ui::base::editor::SStatus" >
                 <form>circle</form>
                 <size>
                     <width>20</width>

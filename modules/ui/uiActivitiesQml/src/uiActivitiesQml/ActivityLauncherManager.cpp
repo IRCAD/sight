@@ -136,10 +136,11 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 void ActivityLauncherManager::open()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto reader          = services::add("::uiIO::editor::SIOSelector");
+    auto reader          = services::add("::modules::ui::base::editor::SIOSelector");
     reader->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = services::registry::ServiceConfig::getDefault();
-    const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityReaderConfig", "::uiIO::editor::SIOSelector");
+    const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityReaderConfig",
+                                                                "::modules::ui::base::editor::SIOSelector");
     reader->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     reader->configure();
 
@@ -157,10 +158,11 @@ void ActivityLauncherManager::open()
 void ActivityLauncherManager::save()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto writer          = services::add("::uiIO::editor::SIOSelector");
+    auto writer          = services::add("::modules::ui::base::editor::SIOSelector");
     writer->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = services::registry::ServiceConfig::getDefault();
-    const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityWriterConfig", "::uiIO::editor::SIOSelector");
+    const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityWriterConfig",
+                                                                "::modules::ui::base::editor::SIOSelector");
     writer->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     writer->configure();
     writer->start();

@@ -187,7 +187,7 @@
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+        <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />

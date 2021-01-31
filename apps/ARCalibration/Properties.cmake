@@ -18,7 +18,6 @@ set( REQUIREMENTS
     # UI declaration/Actions
     module_ui_base
     flatIcon
-    uiIO
     uiMedDataQt
     media
 
@@ -30,7 +29,6 @@ set( REQUIREMENTS
 
     # Services
     module_io_base
-    uiPreferences
     filterUnknownSeries
     activities
     calibrationActivity
@@ -45,8 +43,8 @@ moduleParam(module_ui_qt
         resource
         stylesheet
     PARAM_VALUES
-        style-0.1/flatdark.rcc
-        style-0.1/flatdark.qss
+        module_ui_qt-0.1/flatdark.rcc
+        module_ui_qt-0.1/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
 moduleParam(

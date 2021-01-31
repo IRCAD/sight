@@ -759,11 +759,11 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
 {
     data::Object::sptr obj;
     services::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = services::add("::uiIO::editor::SIOSelector");
+    ioSelectorSrv = services::add("::modules::ui::base::editor::SIOSelector");
 
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
-                                                                              "::uiIO::editor::SIOSelector");
+                                                                              "::modules::ui::base::editor::SIOSelector");
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");

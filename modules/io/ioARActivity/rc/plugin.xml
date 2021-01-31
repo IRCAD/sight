@@ -5,7 +5,7 @@
     <!-- Service config used to read a seriesDB using ioAtoms. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ARSDBAtomsReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB reader for arData.</desc>
         <config>
             <type mode="reader" />
@@ -18,7 +18,7 @@
     <!-- Service config used to write a seriesDB using ioAtoms. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ARSDBAtomsWriterIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB reader for arData.</desc>
         <config>
             <type mode="writer" />
@@ -31,7 +31,7 @@
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ARFullSDBReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
@@ -43,7 +43,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ARActivityReaderConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB reader for arData.</desc>
         <config>
             <type mode="reader" />
@@ -55,7 +55,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>ARActivityWriterConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
+        <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>SExportWithSeriesDB config for SeriesDB writer</desc>
         <config>
             <type mode="writer" />

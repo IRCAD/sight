@@ -308,7 +308,7 @@ Detail of the ToolBar
                 <inout key="image" uid="myImage" />
             </service>
 
-            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
@@ -319,12 +319,12 @@ Detail of the ToolBar
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="meshReader1Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReader1Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="meshOnNegato1" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshReader2Srv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReader2Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="meshOnNegato2" />
                 <type mode="reader" />
             </service>

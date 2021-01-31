@@ -41,7 +41,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::ui::base::action::SSignal" />
+        <service type="::sight::modules::ui::base::action::SSignal" />
    @endcode
  *
  * See also sight::ui::base::IActionSrv::initialize for more configuration parameters.

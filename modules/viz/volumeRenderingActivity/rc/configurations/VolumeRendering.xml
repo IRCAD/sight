@@ -94,7 +94,7 @@
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
         </service>
 
-        <service uid="ActionSnapshotVR" type="::uiVisu::action::SSnapshot" />
+        <service uid="ActionSnapshotVR" type="::sight::modules::ui::base::viz::action::SSnapshot" />
         <!-- Generic Scene VR -->
         <!-- *************************** Begin generic scene *************************** -->
 

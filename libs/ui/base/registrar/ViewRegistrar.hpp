@@ -75,7 +75,7 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-        <service uid="subView1" type="::modules::ui::base::view::SDefaultView" autoConnect="no" >
+        <service uid="subView1" type="::sight::modules::ui::base::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />

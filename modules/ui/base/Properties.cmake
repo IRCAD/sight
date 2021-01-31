@@ -8,6 +8,7 @@ set( DEPENDENCIES
     data
     services
     activities
+    io_base
     ui_base
 )
 set( REQUIREMENTS

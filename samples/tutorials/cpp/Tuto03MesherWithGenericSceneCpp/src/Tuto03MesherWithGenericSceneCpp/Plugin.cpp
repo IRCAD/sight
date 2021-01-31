@@ -100,8 +100,10 @@ void Plugin::initialize()
     auto actionQuit = m_appManager->addService("::modules::ui::base::action::SQuit", "actionQuit", true, false);
 
     //readers/writers
-    auto imageSeriesReader = m_appManager->addService("::uiIO::editor::SIOSelector", "imageSeriesReader", true, false);
-    auto modelSeriesWriter = m_appManager->addService("::uiIO::editor::SIOSelector", "modelSeriesWriter", true, false);
+    auto imageSeriesReader = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "imageSeriesReader",
+                                                      true, false);
+    auto modelSeriesWriter = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "modelSeriesWriter",
+                                                      true, false);
 
     // extrator/converter
     auto extractImage         = m_appManager->addService("::ctrlCamp::SExtractObj", true, true);

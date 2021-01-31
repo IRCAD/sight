@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiTools/STargeting.hpp"
+#include "modules/ui/base/STargeting.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -39,7 +39,7 @@
 #include <glm/gtx/intersect.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-namespace uiTools
+namespace sight::modules::ui::base
 {
 
 // -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::uiTools::STargeting )
+fwServicesRegisterMacro( ::sight::services::IService, modules::ui::base::STargeting )
 
 // -----------------------------------------------------------------------------
 
@@ -269,4 +269,4 @@ void STargeting::removePoint()
 
 // -----------------------------------------------------------------------------
 
-}// namespace uiTools
+}// namespace sight::modules::ui::base

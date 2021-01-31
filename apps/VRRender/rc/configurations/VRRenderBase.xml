@@ -8,14 +8,14 @@
     <config>
         <object uid="seriesDB" type="::sight::data::SeriesDB" />
 
-        <service uid="action_open" type="::uiIO::action::SSeriesDBMerger">
+        <service uid="action_open" type="::sight::modules::ui::base::action::SSeriesDBMerger">
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
         <service uid="action_save" type="::sight::modules::ui::base::action::SStarter">
             <start uid="SDBWriter" />
         </service>
-        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector">
+        <service uid="SDBWriter" type="::sight::modules::ui::base::editor::SIOSelector">
             <inout key="data" uid="seriesDB" />
             <type mode="writer" />
             <selection mode="include" />
@@ -92,7 +92,7 @@
 
         <service uid="action_quit" type="::sight::modules::ui::base::action::SQuit" />
 
-        <service uid="action_configuration" type="::uiPreferences::action::SPreferencesConfiguration">
+        <service uid="action_configuration" type="::sight::modules::ui::base::action::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Pacs Server Hostname</name>

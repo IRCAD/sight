@@ -118,7 +118,7 @@
         </service>
 
         <!-- READING SELECTION -->
-        <service uid="action_readDicomSeries" type="::uiIO::action::SSeriesDBMerger" >
+        <service uid="action_readDicomSeries" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
             <inout key="seriesDB" uid="readingSeriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>

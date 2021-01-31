@@ -12,7 +12,7 @@ set( REQUIREMENTS
     guiQml
     data
     module_io_vtk
-    uiIO
+    module_ui_base
     module_services
     fwlauncher
     visuQt3DAdaptor

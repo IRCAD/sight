@@ -20,10 +20,7 @@ set( REQUIREMENTS
     # UI declaration/Actions
     module_ui_base
     media
-    uiTools
-    uiIO
     module_ui_qt
-    uiPreferences
     uiMedDataQt
 
     # Reader

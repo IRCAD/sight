@@ -203,7 +203,7 @@
                 <rotation enabled="y" min="0" max="360" />
             </service>
 
-            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>

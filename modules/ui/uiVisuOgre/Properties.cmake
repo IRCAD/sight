@@ -13,5 +13,5 @@ set( DEPENDENCIES
 )
 
 set( REQUIREMENTS
-        uiIO
+        module_ui_base
 )

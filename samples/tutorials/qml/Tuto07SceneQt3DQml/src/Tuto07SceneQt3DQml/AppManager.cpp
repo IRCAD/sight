@@ -92,7 +92,7 @@ void AppManager::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
 void AppManager::onOpenModel()
 {
     // Reads a mesh.
-    const auto meshReader = services::add("::uiIO::editor::SIOSelector");
+    const auto meshReader = services::add("::modules::ui::base::editor::SIOSelector");
     services::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
     meshReaderConfig.put("type.<xmlattr>.class", "::sight::data::Mesh");

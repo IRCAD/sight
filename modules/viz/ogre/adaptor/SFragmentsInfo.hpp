@@ -36,7 +36,7 @@ namespace sight::modules::viz::ogre::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::modules::viz::ogre::adaptor::SFragmentsInfo">
+    <service uid="..." type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo">
         <config layer="default  width="1280" height="720"/>
         <inout key="image" uid="..." />
         <inout key="depth" uid="..." />

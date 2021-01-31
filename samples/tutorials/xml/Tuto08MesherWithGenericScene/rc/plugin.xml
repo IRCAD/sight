@@ -242,12 +242,12 @@
                 </config>
             </service>
 
-            <service uid="modelSeriesWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="modelSeriesWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="modelSeries" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>
@@ -280,7 +280,7 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />

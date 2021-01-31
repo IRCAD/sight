@@ -166,19 +166,19 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Image displayed in the scene -->
-            <service uid="imageReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
             <!-- Mesh reader -->
-            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
             <!-- texture reader -->
-            <service uid="textureReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="textureReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="texture" />
                 <type mode="reader" />
             </service>
@@ -216,7 +216,7 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />

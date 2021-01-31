@@ -77,8 +77,7 @@ void SMaterialSelector::starting()
 {
     this->create();
 
-    ui::qt::container::QtContainer::sptr qtContainer =
-        ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
     // Selection
     QLabel* currentMaterial = new QLabel();

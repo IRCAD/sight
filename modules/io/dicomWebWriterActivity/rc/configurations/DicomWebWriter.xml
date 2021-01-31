@@ -45,7 +45,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="::uiIO::action::SSeriesDBMerger" >
+        <service uid="action_import" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>

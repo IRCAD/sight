@@ -202,7 +202,7 @@
             <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::uiPreferences::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -413,18 +413,18 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelLeftSrv" type="::uiTools::editor::STextStatus" >
+            <service uid="errorLabelLeftSrv" type="::sight::modules::ui::base::editor::STextStatus" >
                 <label>Reprojection Error Left (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
-            <service uid="errorLabelRightSrv" type="::uiTools::editor::STextStatus" >
+            <service uid="errorLabelRightSrv" type="::sight::modules::ui::base::editor::STextStatus" >
                 <label>Reprojection Error Right (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
             <!-- GUI to display a state -->
-            <service uid="reprojectionMatrixStatusSrv" type="::uiTools::editor::SStatus" >
+            <service uid="reprojectionMatrixStatusSrv" type="::sight::modules::ui::base::editor::SStatus" >
                 <form>circle</form>
                 <labelStatus>Reprojection matrix computed</labelStatus>
                 <red>No reprojection matrix</red>

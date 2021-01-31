@@ -8,14 +8,11 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     data
-    uiMeasurement
     ctrlCamp
     ctrlMemory
     ctrlSelection
     module_services
-    uiIO
     uiMedDataQt
-    uiVisu
     visuVTKAdaptor
     visuVTKQt
     media 

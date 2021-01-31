@@ -136,7 +136,7 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv = services::add< sight::ui::base::editor::IDialogEditor >("::uiIO::editor::SIOSelector");
+    auto srv = services::add< sight::ui::base::editor::IDialogEditor >("::modules::ui::base::editor::SIOSelector");
     srv->registerInOut(image, io::base::services::s_DATA_KEY);
 
     srv->configure();

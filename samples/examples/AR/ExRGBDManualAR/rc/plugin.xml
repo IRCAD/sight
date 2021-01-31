@@ -240,7 +240,7 @@
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::uiPreferences::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -314,7 +314,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="seriesDB" />
                 <type mode="reader" />
             </service>
@@ -335,7 +335,7 @@
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="::uiIO::editor::SIOSelector" >
+            <service uid="transformReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />

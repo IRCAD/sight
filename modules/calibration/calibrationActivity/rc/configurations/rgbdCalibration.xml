@@ -277,7 +277,7 @@
             <inout key="snapshotTLIR" uid="exportTLIR" />
         </service>
 
-        <service uid="actionRecord" type="::uiTools::action::STimestampSlotCaller">
+        <service uid="actionRecord" type="::sight::modules::ui::base::action::STimestampSlotCaller">
             <slots>
                 <slot>depthRecorder/saveFrame</slot>
                 <slot>rgbRecorder/saveFrame</slot>

@@ -374,7 +374,7 @@
             <height>70</height>
         </service>
 
-        <service uid="textStatusSrv" type="::uiTools::editor::STextStatus" >
+        <service uid="textStatusSrv" type="::sight::modules::ui::base::editor::STextStatus" >
              <in key="string" uid="text" />
              <label>Text status</label>
              <color>#6997BB</color>

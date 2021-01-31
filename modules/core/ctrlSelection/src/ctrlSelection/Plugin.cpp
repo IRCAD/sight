@@ -52,4 +52,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace uiIO
+} // namespace sight::modules::ui::base

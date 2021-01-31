@@ -401,7 +401,7 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelSrv" type="::uiTools::editor::STextStatus" >
+            <service uid="errorLabelSrv" type="::sight::modules::ui::base::editor::STextStatus" >
                 <label>Reprojection error (RMSE)</label>
                 <color>#D25252</color>
             </service>

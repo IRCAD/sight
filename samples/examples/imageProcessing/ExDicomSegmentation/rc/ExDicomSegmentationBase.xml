@@ -63,7 +63,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="::uiIO::action::SSeriesDBMerger" >
+        <service uid="importAct" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>

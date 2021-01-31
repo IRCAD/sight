@@ -343,7 +343,8 @@ void Plugin::initialize()
     }
 
     // Services.
-    auto imageReaderSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "imageReaderSrv", true, false);
+    auto imageReaderSrv = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "imageReaderSrv", true,
+                                                   false);
     {
         imageReaderSrv->registerInOut(image, "data");
         services::IService::ConfigType config;
@@ -351,7 +352,8 @@ void Plugin::initialize()
         imageReaderSrv->configure(config);
     }
 
-    auto meshReaderSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "meshReaderSrv", true, false);
+    auto meshReaderSrv = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "meshReaderSrv", true,
+                                                  false);
     {
         meshReaderSrv->registerInOut(mesh, "data");
         services::IService::ConfigType config;
@@ -359,7 +361,8 @@ void Plugin::initialize()
         meshReaderSrv->configure(config);
     }
 
-    auto textureReaderSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "textureReaderSrv", true, false);
+    auto textureReaderSrv = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "textureReaderSrv",
+                                                     true, false);
     {
         textureReaderSrv->registerInOut(texture, "data");
         services::IService::ConfigType config;
@@ -397,7 +400,8 @@ void Plugin::initialize()
         snapshotSrv->configure(config);
     }
 
-    auto imageWriterSrv = m_appManager->addService("::uiIO::editor::SIOSelector", "imageWriterSrv", true, false);
+    auto imageWriterSrv = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "imageWriterSrv", true,
+                                                   false);
     {
         imageWriterSrv->registerInOut(snapshot, "data");
         services::IService::ConfigType config;

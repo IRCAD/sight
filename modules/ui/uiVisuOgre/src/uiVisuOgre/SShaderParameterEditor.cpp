@@ -197,11 +197,11 @@ void SShaderParameterEditor::updateGuiInfo()
     }
 
     /// Getting this widget's container
-    auto qtContainer   = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer   = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
 
     QWidget* p2 = new QWidget( container );
-    m_editorInfo.editorPanel = ui::qt::container::QtContainer::New();
+    m_editorInfo.editorPanel = sight::ui::qt::container::QtContainer::New();
     m_editorInfo.editorPanel->setQtContainer(p2);
 
     const std::string uuid = this->getID();

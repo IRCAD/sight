@@ -49,7 +49,7 @@ namespace sight::services
     // Create and register a service
     // - readerService will be automatically started and updated
     // - mesherService will be automatically started but not updated
-    auto readerService = m_appMgr->addService("::uiIO::editor::SIOSelector", true, true);
+    auto readerService = m_appMgr->addService("::modules::ui::base::editor::SIOSelector", true, true);
     auto mesherService = m_appMgr->addService("::opVTKMesh::SVTKMesher", true, false);
 
     // configure the services ...

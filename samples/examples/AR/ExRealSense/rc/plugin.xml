@@ -468,7 +468,7 @@
                 </parameters>
             </service>
 
-            <service uid="distanceSrv" type="::uiTools::editor::STextStatus" >
+            <service uid="distanceSrv" type="::sight::modules::ui::base::editor::STextStatus" >
                 <label>Distance To Center (mm)</label>
                 <color>#D25252</color>
             </service>

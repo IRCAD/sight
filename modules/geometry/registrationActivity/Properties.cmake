@@ -9,7 +9,6 @@ set( REQUIREMENTS
     activities
     visuVTK
     ctrlPicking
-    uiIO
     module_io_file
     basicRegistration
     module_ui_base

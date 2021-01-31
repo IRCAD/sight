@@ -215,8 +215,7 @@ void SModelSeriesList::configuring()
 void SModelSeriesList::starting()
 {
     this->create();
-    ui::qt::container::QtContainer::sptr qtContainer
-        = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     QVBoxLayout* layout       = new QVBoxLayout;
     QHBoxLayout* layoutButton = new QHBoxLayout;
@@ -340,8 +339,7 @@ void SModelSeriesList::stopping()
 
 void SModelSeriesList::updateReconstructions()
 {
-    ui::qt::container::QtContainer::sptr qtContainer
-        = ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
 
     SLM_ASSERT("container not instanced", container);

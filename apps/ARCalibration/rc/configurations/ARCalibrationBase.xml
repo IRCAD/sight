@@ -119,7 +119,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="videoDirectoryAct" type="::uiPreferences::action::SPreferencesConfiguration" >
+        <service uid="videoDirectoryAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
             <preference>
                 <type>path</type>
                 <name>Video directory</name>
@@ -142,12 +142,12 @@
             </filter>
         </service>
 
-        <service uid="openSeriesAct" type="::uiIO::action::SSeriesDBMerger" >
+        <service uid="openSeriesAct" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
 
-        <service uid="openActivityAct" type="::uiIO::action::SSeriesDBMerger">
+        <service uid="openActivityAct" type="::sight::modules::ui::base::action::SSeriesDBMerger">
             <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
@@ -158,7 +158,7 @@
         </service>
 
         <!-- Save current activity. -->
-        <service uid="saveActivityAct" type="::uiIO::action::SExportWithSeriesDB" >
+        <service uid="saveActivityAct" type="::sight::modules::ui::base::action::SExportWithSeriesDB" >
             <inout key="series" uid="currentActivity" />
             <IOSelectorSrvConfig name="ActivityWriterConfig" />
         </service>
@@ -174,7 +174,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="seriesDBWriterSrv" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+        <service uid="seriesDBWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
             <inout key="data" uid="seriesDB" />
         </service>
 

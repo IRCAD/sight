@@ -287,13 +287,13 @@
 
         <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
 
-        <service uid="detectionStatusSrv" type="::uiTools::editor::SStatus">
+        <service uid="detectionStatusSrv" type="::sight::modules::ui::base::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabelSrv" type="::uiTools::editor::STextStatus">
+        <service uid="errorLabelSrv" type="::sight::modules::ui::base::editor::STextStatus">
             <label>Reprojection error (RMSE)</label>
             <color>#D25252</color>
         </service>

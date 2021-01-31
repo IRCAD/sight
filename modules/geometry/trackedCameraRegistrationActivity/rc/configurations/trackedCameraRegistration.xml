@@ -242,7 +242,7 @@
             </slots>
         </service>
 
-        <service uid="matrixWriter" type="::uiIO::editor::SIOSelector">
+        <service uid="matrixWriter" type="::sight::modules::ui::base::editor::SIOSelector">
             <inout key="data" uid="registrationMatrix" />
             <type mode="writer" />
             <selection mode="include" />

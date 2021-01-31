@@ -19,7 +19,7 @@ set( REQUIREMENTS
     module_io_vtk
 
     # Services
-    uiIO                    # Contains services to show dialogs for reader/writer selection
+                    # Contains services to show dialogs for reader/writer selection
     module_viz_sample
 )
 
