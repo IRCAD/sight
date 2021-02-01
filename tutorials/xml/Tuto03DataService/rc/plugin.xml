@@ -43,7 +43,7 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::disrumpere::modules::nav::ultrasound" >
                 <gui>
                     <layout>
                         <menu name="File" />
