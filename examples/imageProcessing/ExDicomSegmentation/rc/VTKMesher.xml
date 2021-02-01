@@ -98,7 +98,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="mesherAct" type="::opVTKMesh::SVTKMesher" >
+        <service uid="mesherAct" type="::sight::modules::filter::mesh::SVTKMesher" >
             <in key="imageSeries" uid="${imageSeries}" />
             <out key="modelSeries" uid="modelSeries" />
             <config>

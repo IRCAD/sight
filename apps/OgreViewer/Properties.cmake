@@ -32,7 +32,7 @@ set( REQUIREMENTS
     scene2D
     ctrlCamp
     ctrlTF
-    opImageFilter
+    module_filter_image
     ioPacs
     uiMedDataQt
     ctrlSelection

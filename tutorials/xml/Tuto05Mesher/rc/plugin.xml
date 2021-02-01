@@ -118,7 +118,7 @@
                 <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="createMeshAct" type="::opVTKMesh::action::SMeshCreation" >
+            <service uid="createMeshAct" type="::sight::modules::filter::mesh::action::SMeshCreation" >
                 <in key="image" uid="myImage" />
                 <inout key="mesh" uid="myMesh" />
                 <percentReduction value="0" />

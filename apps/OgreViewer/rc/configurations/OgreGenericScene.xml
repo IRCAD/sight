@@ -478,7 +478,7 @@
             <addSelection service="::sight::modules::io::atoms::SWriter" />
         </service>
 
-        <service uid="imageExtruderSrv" type="::opImageFilter::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >
+        <service uid="imageExtruderSrv" type="::sight::modules::filter::image::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >
             <in key="meshes" uid="${extrudedModelSeries}" />
             <in key="image" uid="${image}" />
             <inout key="extrudedImage" uid="extrudedImage" />

@@ -260,4 +260,4 @@ void CardinalLayoutManager::destroyLayout()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui::base
+} // namespace sight::ui::qt

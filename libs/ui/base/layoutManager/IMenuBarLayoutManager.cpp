@@ -33,7 +33,7 @@ namespace sight::ui::base
 namespace layoutManager
 {
 
-const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY = "::ui::base::MenuBarLayoutManager";
+const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY = "::sight::ui::base::MenuBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 

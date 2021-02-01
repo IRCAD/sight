@@ -37,7 +37,7 @@ namespace layoutManager
 {
 //-----------------------------------------------------------------------------
 
-const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY = "::ui::base::LineLayoutManager";
+const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY = "::sight::ui::base::LineLayoutManager";
 
 //-----------------------------------------------------------------------------
 

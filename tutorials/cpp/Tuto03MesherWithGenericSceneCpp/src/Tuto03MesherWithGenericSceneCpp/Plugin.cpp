@@ -127,8 +127,8 @@ void Plugin::initialize()
     auto progressBar = m_appManager->addService("::modules::ui::base::editor::SJobBar", true, false);
 
     // meshers
-    auto mesher50 = m_appManager->addService("::opVTKMesh::SVTKMesher", "mesher50", true, false);
-    auto mesher80 = m_appManager->addService("::opVTKMesh::SVTKMesher", "mesher80", true, false);
+    auto mesher50 = m_appManager->addService("::modules::filter::mesh::SVTKMesher", "mesher50", true, false);
+    auto mesher80 = m_appManager->addService("::modules::filter::mesh::SVTKMesher", "mesher80", true, false);
 
     // generic scene
     auto renderSrv          = m_appManager->addService("::fwRenderVTK::SRender", "genericScene", true, false);

@@ -38,7 +38,7 @@ namespace layoutManager
 //-----------------------------------------------------------------------------
 
 const ToolboxLayoutManagerBase::RegistryKeyType ToolboxLayoutManagerBase::REGISTRY_KEY =
-    "::ui::base::ToolboxLayoutManager";
+    "::sight::ui::base::ToolboxLayoutManager";
 
 //-----------------------------------------------------------------------------
 

@@ -35,9 +35,9 @@ set( REQUIREMENTS
     2DVisualizationActivity
 
     # Services
-    opImageFilter
+    module_filter_image
     ctrlCamp
-    opVTKMesh
+    module_filter_mesh
     uiMedDataQt
     ctrlSelection
 

@@ -31,7 +31,7 @@ namespace sight::ui::base
 namespace layoutManager
 {
 
-const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::ui::base::ToolBarLayoutManager";
+const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::sight::ui::base::ToolBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 

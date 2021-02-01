@@ -29,7 +29,7 @@ set( REQUIREMENTS
     uiMedDataQt
     ctrlSelection
     ctrlCamp
-    opVTKMesh
+    module_filter_mesh
 
     # Generic Scene
 )

@@ -52,7 +52,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="thresholdAct" type="::opImageFilter::SThreshold" >
+        <service uid="thresholdAct" type="::sight::modules::filter::image::SThreshold" >
             <in key="source" uid="${imageSeries}" />
             <out key="target" uid="imageSeriesMask" />
             <config>

@@ -129,7 +129,7 @@
                 output image is 'myImage2'.
                 The two images are declared above.
              -->
-            <service uid="imageFilterSrv" type="::opImageFilter::SThreshold" >
+            <service uid="imageFilterSrv" type="::sight::modules::filter::image::SThreshold" >
                 <in key="source" uid="myImage1" />
                 <out key="target" uid="myImage2" />
                 <config>
@@ -143,7 +143,7 @@
                 output image is 'myImage2'.
                 The two images are declared above.
              -->
-            <service uid="imageFlipperSrv" type="::opImageFilter::SFlip" >
+            <service uid="imageFlipperSrv" type="::sight::modules::filter::image::SFlip" >
                 <in key="source" uid="myImage1" />
                 <out key="target" uid="myImage2" />
             </service>

@@ -490,7 +490,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
         data::TransferFunction::sptr tf          = data::TransferFunction::New();
         io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
-            "::modules::io::atoms::SReader");
+            "::sight::modules::io::atoms::SReader");
         reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");

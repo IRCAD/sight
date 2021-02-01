@@ -20,7 +20,7 @@ set( REQUIREMENTS
 
     # Services
     module_viz_sample   # contains a visualization service of mesh.
-    opVTKMesh       # provides services to generate a mesh from an image.
+    module_filter_mesh       # provides services to generate a mesh from an image.
 )
 
 moduleParam(module_ui_qt

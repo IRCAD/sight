@@ -20,7 +20,7 @@ set( REQUIREMENTS
 
     # Services
     module_viz_sample
-    opImageFilter # module containing the action to performs a threshold
+    module_filter_image # module containing the action to performs a threshold
 )
 
 moduleParam(module_ui_qt

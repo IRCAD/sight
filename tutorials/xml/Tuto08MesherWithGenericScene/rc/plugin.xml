@@ -226,7 +226,7 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="mesher50Srv" type="::opVTKMesh::SVTKMesher" >
+            <service uid="mesher50Srv" type="::sight::modules::filter::mesh::SVTKMesher" >
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
                 <config>
@@ -234,7 +234,7 @@
                 </config>
             </service>
 
-            <service uid="mesher80Srv" type="::opVTKMesh::SVTKMesher" >
+            <service uid="mesher80Srv" type="::sight::modules::filter::mesh::SVTKMesher" >
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
                 <config>

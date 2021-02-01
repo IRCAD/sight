@@ -50,7 +50,7 @@ namespace sight::services
     // - readerService will be automatically started and updated
     // - mesherService will be automatically started but not updated
     auto readerService = m_appMgr->addService("::modules::ui::base::editor::SIOSelector", true, true);
-    auto mesherService = m_appMgr->addService("::opVTKMesh::SVTKMesher", true, false);
+    auto mesherService = m_appMgr->addService("::modules::filter::mesh::SVTKMesher", true, false);
 
     // configure the services ...
 
@@ -104,7 +104,7 @@ namespace sight::services
 
         if (this->checkInputs())
         {
-            auto mesher = this->addService("::opVTKMesh::SVTKMesher", true, true);
+            auto mesher = this->addService("::modules::filter::mesh::SVTKMesher", true, true);
             mesher->setObjectId("imageSeries", this->getInputID(s_IMAGE_ID));
             mesher->setObjectId("modelSeries", this->getInputID(s_MODEL_ID));
 
