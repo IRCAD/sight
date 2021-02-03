@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,13 +86,13 @@ const std::regex Native::getNativeName() const
 
 #if defined(linux) || defined(__linux)
     nativeName = std::regex(
-        "lib" + m_name + "\\.so\\.?[0-9\\.]*" );
+        "libsight_(module_)?" + m_name + "\\.so\\.?[0-9\\.]*" );
 #elif defined(WIN32)
     nativeName = std::regex(
-        m_name + "\\.dll");
+        "sight_(module_)?" + m_name + "\\.dll");
 #elif defined (__APPLE__)
     nativeName = std::regex(
-        "lib" + m_name + "[0-9\\.]*\\.dylib" );
+        "libsight_(module_)?" + m_name + "[0-9\\.]*\\.dylib" );
 #endif
 
     return nativeName;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,18 +75,18 @@ void RuntimeTest::testPosix()
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("libservicesReg.so.0.1", nativeName));
-    CPPUNIT_ASSERT( std::regex_match("libservicesReg.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libservicesReg", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("servicesReg", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libsight_module_servicesReg.so.0.1", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("libsight_module_servicesReg.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libsight_module_servicesReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("sight_module_servicesReg", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
 
     auto path = nativeLibrary->getPath();
     // The library picked will be one of these
-    const bool testPath = std::filesystem::path("libservicesReg.so.0.1") == path ||
-                          std::filesystem::path("libservicesReg.so.0") == path ||
-                          std::filesystem::path("libservicesReg.so") == path;
-    CPPUNIT_ASSERT_EQUAL( testPath, true);
+    const bool testPath = std::filesystem::path("libsight_module_servicesReg.so.0.1") == path ||
+                          std::filesystem::path("libsight_module_servicesReg.so.0") == path ||
+                          std::filesystem::path("libsight_module_servicesReg.so") == path;
+    CPPUNIT_ASSERT_EQUAL( true, testPath);
 }
 
 #elif defined(WIN32)
@@ -102,10 +102,10 @@ void RuntimeTest::testWin32()
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 
-    CPPUNIT_ASSERT( std::regex_match("servicesReg.dll", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libservicesReg.so", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("libservicesReg", nativeName));
-    CPPUNIT_ASSERT(!std::regex_match("servicesReg", nativeName));
+    CPPUNIT_ASSERT( std::regex_match("sight_module_servicesReg.dll", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libsight_module_servicesReg.so", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("libsight_module_servicesReg", nativeName));
+    CPPUNIT_ASSERT(!std::regex_match("sight_module_servicesReg", nativeName));
     CPPUNIT_ASSERT(!std::regex_match("libfoo.so", nativeName));
 
     auto path = nativeLibrary->getPath();

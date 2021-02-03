@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ void RuntimeTest::testModule()
 
     auto runtime           = ::fwRuntime::Runtime::getDefault();
     const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
-    CPPUNIT_ASSERT_EQUAL(libLocation / "servicesReg-0.1",  module->getLibraryLocation());
+    CPPUNIT_ASSERT_EQUAL(libLocation,  module->getLibraryLocation());
     const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
     CPPUNIT_ASSERT_EQUAL(rcLocation / "servicesReg-0.1",  module->getResourcesLocation());
 

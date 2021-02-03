@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ Module::Module( const std::filesystem::path& location,
     SLM_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
 
     // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
-    std::string strLocation           = location.string();
+    std::string strLocation           = location.parent_path().string();
     std::filesystem::path strRCPrefix = MODULE_RC_PREFIX;
     const auto itModule               = strLocation.find(strRCPrefix.string());
     if(itModule != std::string::npos)
