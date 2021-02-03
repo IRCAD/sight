@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,17 +52,13 @@
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataCamp/Version.hpp>
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
 
 #include <fwTest/generator/Object.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
@@ -83,13 +79,6 @@ namespace ut
 // Set up context before running a test.
 void ConversionTest::setUp()
 {
-    //Force link with fwDataCamp
-    m_fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwDataVersion);
-
-    //Force link with fwMedDataCamp
-    m_fwMedDataVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwMedDataVersion);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,10 +92,10 @@ void ConversionTest::tearDown()
 
 void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 {
-    ::fwDataCamp::visitor::CompareObjects visitor;
+    ::fwData::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

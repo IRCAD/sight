@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,7 @@
 #include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwData/Composite.hpp>
-
-#include <fwDataCamp/visitor/RecursiveLock.hpp>
+#include <fwData/reflection/visitor/RecursiveLock.hpp>
 
 #include <fwPreferences/helper.hpp>
 
@@ -46,7 +45,7 @@
 namespace preferences
 {
 
-fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::fwData::Composite )
 
 //-----------------------------------------------------------------------------
 
@@ -119,7 +118,7 @@ void SPreferences::save()
     SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
 
     // Mutex data lock
-    ::fwDataCamp::visitor::RecursiveLock recursiveLock(obj);
+    ::fwData::reflection::visitor::RecursiveLock recursiveLock(obj);
 
     // Convert data to atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert(obj);

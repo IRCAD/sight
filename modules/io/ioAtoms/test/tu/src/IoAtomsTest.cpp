@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,7 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
@@ -77,8 +76,8 @@ void IoAtomsTest::tearDown()
 template <typename T>
 void compareLog(T& comparator)
 {
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
-    for(::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
+    for(::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
     }
@@ -152,7 +151,7 @@ void writeReadFile(const ::fwServices::IService::ConfigType& srvCfg, const SPTR(
     SPTR(T) readObj = read<T>(srvCfg, reader);
 
     // Compare
-    using namespace ::fwDataCamp::visitor;
+    using namespace ::fwData::reflection::visitor;
     CompareObjects visitor;
 
     visitor.compare(readObj, obj);
@@ -183,7 +182,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -192,7 +191,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -204,7 +203,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -214,7 +213,7 @@ void atomTest(const std::filesystem::path& filePath)
     readSeriesDB = readOut< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -242,7 +241,7 @@ void atomTest(const std::filesystem::path& filePath)
 
         CPPUNIT_ASSERT_MESSAGE("Data have not the same pointer", seriesDB == readSeriesDB);
 
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDB, readSeriesDB);
         compareLog(visitor);
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
@@ -278,7 +277,7 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
     ::fwData::Array::sptr readArray = read< ::fwData::Array >(srvCfg, "::ioAtoms::SReader");
 
     {
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(array, readArray);
         compareLog(visitor);
         for(const auto& it : *visitor.getDifferences())

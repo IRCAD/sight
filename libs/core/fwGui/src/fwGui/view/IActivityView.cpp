@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,9 +32,8 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwRuntime/operations.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,11 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
-
-#include <fwDataCamp/visitor/RecursiveLock.hpp>
+#include <fwData/reflection/visitor/RecursiveLock.hpp>
 
 #include <fwTest/generator/Image.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataCamp::ut::RecursiveLockTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::reflection::ut::RecursiveLockTest );
 
 namespace fwData
 {

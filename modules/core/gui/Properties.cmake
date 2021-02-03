@@ -14,7 +14,6 @@ set( DEPENDENCIES
     fwThread
     fwJobs
     fwMedData
-    fwDataCamp
     fwActivities
 )
 set( REQUIREMENTS

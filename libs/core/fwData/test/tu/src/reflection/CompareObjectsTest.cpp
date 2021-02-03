@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,17 +27,16 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwCore/Exception.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
 
 #include <fwTools/Type.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataCamp::ut::CompareObjectsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::reflection::ut::CompareObjectsTest );
 
 namespace fwData
 {

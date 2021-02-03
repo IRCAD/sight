@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,8 @@
 #include "fwActivities/builder/registry/macros.hpp"
 
 #include <fwData/Composite.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/Patient.hpp>
@@ -78,7 +77,7 @@ ActivitySeries::~ActivitySeries()
         }
         else
         {
-            (*composite)[keyTag.key] = ::fwDataCamp::getObject( obj, keyTag.path );
+            (*composite)[keyTag.key] = ::fwData::reflection::getObject( obj, keyTag.path );
         }
     }
 

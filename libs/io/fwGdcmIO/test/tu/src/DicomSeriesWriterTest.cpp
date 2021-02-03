@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,10 @@
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/helper/compare.hpp>
@@ -66,11 +64,6 @@ void DicomSeriesWriterTest::setUp()
     {
         std::cout << std::endl << "Executing slow tests.." << std::endl;
     }
-    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
-    m_medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-
-    // HACK, we don't want the compiler to optimize 'm_medDataCampVersion' out.
-    CPPUNIT_ASSERT_EQUAL(::fwMedDataCamp::Version::s_CURRENT_VERSION, m_medDataCampVersion);
 
     // Set up context before running a test.
     ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::New();

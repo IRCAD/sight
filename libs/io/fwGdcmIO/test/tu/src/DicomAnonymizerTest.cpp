@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,7 @@
 #include <fwGdcmIO/writer/Series.hpp>
 
 #include <fwData/Image.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -46,10 +45,11 @@
 
 #include <fwTools/System.hpp>
 
-#include <filesystem>
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
 #include <gdcmReader.h>
+
+#include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGdcmIO::ut::DicomAnonymizerTest );

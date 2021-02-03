@@ -12,7 +12,6 @@ set( DEPENDENCIES
     fwTools
     fwCore
     fwData
-    fwDataCamp
     fwDataTools
     fwGui
     fwJobs

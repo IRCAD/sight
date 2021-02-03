@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,8 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/reflection/exception/NullPointer.hpp>
-
-#include <fwDataCamp/exception/ObjectNotFound.hpp>
-#include <fwDataCamp/getObject.hpp>
+#include <fwData/reflection/exception/ObjectNotFound.hpp>
+#include <fwData/reflection/getObject.hpp>
 
 namespace ctrlCamp
 {
@@ -155,9 +154,9 @@ void SCopy::copy()
         ::fwData::Object::sptr object;
         try
         {
-            object = ::fwDataCamp::getObject(sourceObject.get_shared(), m_path, true );
+            object = ::fwData::reflection::getObject(sourceObject.get_shared(), m_path, true );
         }
-        catch(const ::fwDataCamp::exception::ObjectNotFound&)
+        catch(const ::fwData::reflection::exception::ObjectNotFound&)
         {
             SLM_WARN("Object from '" + m_path + "' not found");
         }

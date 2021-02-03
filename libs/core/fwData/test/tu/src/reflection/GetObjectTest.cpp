@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,16 +27,15 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/reflection/exception/NullPointer.hpp>
+#include <fwData/reflection/exception/ObjectNotFound.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataCamp/exception/NullPointer.hpp>
-#include <fwDataCamp/exception/ObjectNotFound.hpp>
-#include <fwDataCamp/getObject.hpp>
-
 #include <fwTest/generator/Image.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataCamp::ut::GetObjectTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::reflection::ut::GetObjectTest );
 
 namespace fwData
 {
@@ -71,11 +70,12 @@ void GetObjectTest::getTest()
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
     composite->getContainer()["img1"]   = img1;
     composite->getContainer()["img2"]   = img2;
-    ::fwData::Object::sptr subObj1      = ::fwDataCamp::getObject( composite, "@values.img2" );
+    ::fwData::Object::sptr subObj1      = ::fwData::reflection::getObject( composite, "@values.img2" );
     CPPUNIT_ASSERT_MESSAGE("Image must be equal", subObj1 == img2);
 
     // Visit 2
-    ::fwData::Float::sptr zspacing = ::fwDataCamp::getObject< ::fwData::Float >( composite, "@values.img2.spacing.2" );
+    ::fwData::Float::sptr zspacing = ::fwData::reflection::getObject< ::fwData::Float >( composite,
+                                                                                         "@values.img2.spacing.2" );
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
                            img2->getSpacing2()[2] - 0.001 < zspacing->value() &&
                            zspacing->value() < img2->getSpacing2()[2] + 0.001 );
@@ -83,7 +83,7 @@ void GetObjectTest::getTest()
     // Visit 3
     composite->setField("myImage1", img1);
     img1->setField("myImage2", img2);
-    ::fwData::Object::sptr subObj2 = ::fwDataCamp::getObject( composite, "@fields.myImage1.fields.myImage2" );
+    ::fwData::Object::sptr subObj2 = ::fwData::reflection::getObject( composite, "@fields.myImage1.fields.myImage2" );
     CPPUNIT_ASSERT_MESSAGE("Image must be equal", subObj2 == img2 );
 }
 
@@ -107,20 +107,20 @@ void GetObjectTest::invalidPathTest()
     (*composite)["vector"] = vector;
 
     // no exception version
-    ::fwData::Object::sptr obj = ::fwDataCamp::getObject( composite, "@values.string" );
+    ::fwData::Object::sptr obj = ::fwData::reflection::getObject( composite, "@values.string" );
     CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj == text );
 
     // with exception version
-    obj = ::fwDataCamp::getObject( composite, "@values.string", true );
+    obj = ::fwData::reflection::getObject( composite, "@values.string", true );
     CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj == text );
 
     // no exception version
-    ::fwData::Object::sptr invalidObj = ::fwDataCamp::getObject( composite, "@values.invalidPath", false );
+    ::fwData::Object::sptr invalidObj = ::fwData::reflection::getObject( composite, "@values.invalidPath", false );
     CPPUNIT_ASSERT_MESSAGE("Object must not exist", !invalidObj );
 
     // exception version : path is invalid
     CPPUNIT_ASSERT_THROW(
-        ::fwDataCamp::getObject( composite, "@values.invalidPath", true ),
+        ::fwData::reflection::getObject( composite, "@values.invalidPath", true ),
         ::fwData::reflection::exception::ObjectNotFound
         );
     CPPUNIT_ASSERT_EQUAL(size_t(2), composite->size() );
@@ -129,35 +129,35 @@ void GetObjectTest::invalidPathTest()
     /// Vector tests
 
     // no exception version
-    obj = ::fwDataCamp::getObject( composite, "@values.vector.values.0" );
+    obj = ::fwData::reflection::getObject( composite, "@values.vector.values.0" );
     CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj == intValue );
 
     // with exception version
-    obj = ::fwDataCamp::getObject( composite, "@values.vector.values.0", true );
+    obj = ::fwData::reflection::getObject( composite, "@values.vector.values.0", true );
     CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj == intValue );
 
     /// This is important to test vectors subobjects properties to ensure the visitor path is correct
 
     // no exception version
-    obj                            = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.2" );
+    obj                            = ::fwData::reflection::getObject( composite, "@values.vector.values.2.spacing.2" );
     ::fwData::Float::sptr zspacing = ::std::dynamic_pointer_cast< ::fwData::Float >(obj);
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
                            img->getSpacing2()[2] - 0.001 < zspacing->value() &&
                            zspacing->value() < img->getSpacing2()[2] + 0.001 );
 
     // with exception version
-    obj      = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.2", true );
+    obj      = ::fwData::reflection::getObject( composite, "@values.vector.values.2.spacing.2", true );
     zspacing = ::std::dynamic_pointer_cast< ::fwData::Float >(obj);
     CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
                            img->getSpacing2()[2] - 0.001 < zspacing->value() &&
                            zspacing->value() < img->getSpacing2()[2] + 0.001 );
 
     // out of bounds, no exception version
-    invalidObj = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.15", false );
+    invalidObj = ::fwData::reflection::getObject( composite, "@values.vector.values.2.spacing.15", false );
     CPPUNIT_ASSERT_MESSAGE("Object must not exist", !invalidObj );
 
     // out of bounds, with exception version
-    CPPUNIT_ASSERT_THROW( ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.15", true ),
+    CPPUNIT_ASSERT_THROW( ::fwData::reflection::getObject( composite, "@values.vector.values.2.spacing.15", true ),
                           ::fwData::reflection::exception::NullPointer);
 
 }

@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwTest
     fwTools
     fwData
-    fwDataCamp
     fwServices
     fwRuntime
     fwMedData

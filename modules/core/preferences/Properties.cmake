@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwTools
     fwRuntime
     fwData
-    fwDataCamp
     fwServices
     fwAtomsBoostIO
     fwAtomConversion

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,9 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -114,7 +113,7 @@ void SSeriesViewer::updating()
 
             for(const ReplaceValuesMapType::value_type& elt :  info.extractValues)
             {
-                ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
+                ::fwData::Object::sptr object = ::fwData::reflection::getObject( obj, elt.second );
                 SLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }

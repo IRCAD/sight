@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,13 +58,6 @@ public:
     void objectTest();
     void validatorTest();
     void bigActivityTest();
-
-private:
-
-    /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp modules
-    /// Recent GCC versions (>= 5.4) strip local variables with -O2
-    int m_fwDataCampVersion;
-    int m_fwMedDataCampVersion;
 };
 
 } //namespace ut

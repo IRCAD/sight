@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,22 +21,21 @@
  ***********************************************************************/
 
 #include "fwActivities/IActivityValidator.hpp"
+
 #include "fwActivities/IObjectValidator.hpp"
 
 #include <fwData/Composite.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataCamp/getObject.hpp>
-
 #include <fwMedData/ActivitySeries.hpp>
-
 
 namespace fwActivities
 {
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkRequirements(const ::fwMedData::ActivitySeries::csptr &activity)
+IValidator::ValidationType IActivityValidator::checkRequirements(const ::fwMedData::ActivitySeries::csptr& activity)
 const
 {
     IValidator::ValidationType validation;
@@ -217,7 +216,7 @@ const
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData::ActivitySeries::csptr &activity) const
+IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData::ActivitySeries::csptr& activity) const
 {
     IValidator::ValidationType validation;
     validation.first  = true;
@@ -235,11 +234,11 @@ IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData
         if (param.isSeshat())
         {
             std::string path = param.by;
-            if (path.substr(0,1) == "!")
+            if (path.substr(0, 1) == "!")
             {
                 path.replace(0, 1, "@");
             }
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(composite, path);
+            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(composite, path);
             if (!obj)
             {
                 validation.first   = false;
@@ -253,8 +252,8 @@ IValidator::ValidationType IActivityValidator::checkParameters(const ::fwMedData
 
 //------------------------------------------------------------------------------
 
-IValidator::ValidationType IActivityValidator::checkObject(const ::fwData::Object::csptr &object,
-                                                           const std::string &validatorImpl) const
+IValidator::ValidationType IActivityValidator::checkObject(const ::fwData::Object::csptr& object,
+                                                           const std::string& validatorImpl) const
 {
     ::fwActivities::IValidator::ValidationType validation;
     validation.first  = true;
@@ -288,4 +287,3 @@ IValidator::ValidationType IActivityValidator::checkObject(const ::fwData::Objec
 //------------------------------------------------------------------------------
 
 } // namespace fwActivities
-

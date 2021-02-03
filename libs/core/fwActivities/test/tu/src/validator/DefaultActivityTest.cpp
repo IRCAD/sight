@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,9 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataCamp/Version.hpp>
-
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
 
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/Module.hpp>
@@ -63,14 +59,6 @@ namespace ut
 
 void DefaultActivityTest::setUp()
 {
-    //Force link with fwDataCamp, it is used by the validator to parse the objects
-    m_fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwDataCampVersion);
-
-    //Force link with fwMedDataCamp, it is used by the validator to parse the objects
-    m_fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(m_fwMedDataCampVersion);
-
     // Set up context before running a test.
     ::fwRuntime::addModules(::fwRuntime::getResourceFilePath("tu_exec_fwActivities-0.0"));
     ::fwRuntime::loadModule("tu_validator");

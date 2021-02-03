@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwActivities
     fwCom
     fwData
-    fwDataCamp
     fwGui
     fwGuiQt
     fwMedData

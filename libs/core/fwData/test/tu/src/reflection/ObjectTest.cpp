@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #define CAMP_COMPILATION
 #include <fwData/Image.hpp>
 
-#include <fwDataCamp/getObject.hpp>
+#include <fwData/reflection/getObject.hpp>
 
 #include <camp/class.hpp>
 #include <camp/userobject.hpp>

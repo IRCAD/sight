@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2018 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,10 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, ::fwData::TransformationMatrix3D)
 
 static const ::fwServices::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
-static const ::fwServices::IService::KeyType s_OUTPUT             = "output";
+static const ::fwServices::IService::KeyType s_OUTPUT = "output";
 
 namespace maths
 {
@@ -53,18 +53,18 @@ SConcatenateMatrices::SConcatenateMatrices() noexcept
 void SConcatenateMatrices::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    std::vector< ConfigurationType > inCfgs = m_configuration->find("in");
+    std::vector<ConfigurationType> inCfgs = m_configuration->find("in");
     SLM_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
 
     SLM_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == s_MATRIX_GROUP_INOUT);
 
-    std::vector< ConfigurationType > matrixCfgs = inCfgs[0]->find("key");
+    std::vector<ConfigurationType> matrixCfgs = inCfgs[0]->find("key");
 
-    for(ConfigurationType cfg : matrixCfgs)
+    for (ConfigurationType cfg : matrixCfgs)
     {
         bool invertCurrentMatrix  = false;
         const std::string inverse = cfg->getAttributeValue("inverse");
-        if(!inverse.empty())
+        if (!inverse.empty())
         {
             invertCurrentMatrix = (inverse == "true");
         }
@@ -88,7 +88,7 @@ void SConcatenateMatrices::stopping()
 
 void SConcatenateMatrices::updating()
 {
-    auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_OUTPUT);
+    auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D>(s_OUTPUT);
     SLM_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
     {
         ::fwData::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
@@ -98,12 +98,12 @@ void SConcatenateMatrices::updating()
         auto inverse = ::fwData::TransformationMatrix3D::New();
 
         size_t index = 0;
-        for( const bool invertCurrentMatrix : m_invertVector)
+        for (const bool invertCurrentMatrix : m_invertVector)
         {
-            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_MATRIX_GROUP_INOUT, index++);
+            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D>(s_MATRIX_GROUP_INOUT, index++);
             ::fwData::mt::ObjectReadLock inputMatrixLock(inputMatrix);
 
-            if( invertCurrentMatrix )
+            if (invertCurrentMatrix)
             {
                 ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
                 ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
@@ -115,7 +115,7 @@ void SConcatenateMatrices::updating()
         }
     }
 
-    auto sig = outputMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = outputMatrix->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -135,4 +135,4 @@ void SConcatenateMatrices::updating()
 
 // ----------------------------------------------------------------------------
 
-}  // namespace maths
+} // namespace maths

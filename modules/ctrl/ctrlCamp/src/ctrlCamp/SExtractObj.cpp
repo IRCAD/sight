@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,10 +23,9 @@
 #include "ctrlCamp/SExtractObj.hpp"
 
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataCamp/exception/NullPointer.hpp>
-#include <fwDataCamp/exception/ObjectNotFound.hpp>
-#include <fwDataCamp/getObject.hpp>
+#include <fwData/reflection/exception/NullPointer.hpp>
+#include <fwData/reflection/exception/ObjectNotFound.hpp>
+#include <fwData/reflection/getObject.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -93,13 +92,13 @@ void SExtractObj::updating()
         ::fwData::Object::sptr object;
         try
         {
-            object = ::fwDataCamp::getObject( sourceObject, from, true );
+            object = ::fwData::reflection::getObject( sourceObject, from, true );
         }
-        catch(::fwDataCamp::exception::NullPointer&)
+        catch(::fwData::reflection::exception::NullPointer&)
         {
             this->setOutput("target", nullptr, index);
         }
-        catch(::fwDataCamp::exception::ObjectNotFound&)
+        catch(::fwData::reflection::exception::ObjectNotFound&)
         {
             SLM_WARN("Object from '"+ from +"' not found");
         }

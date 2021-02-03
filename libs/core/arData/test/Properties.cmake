@@ -6,8 +6,7 @@ set( DEPENDENCIES
     fwTest
     fwTools
     fwData
-    arData
-    arDataCamp
+    arData    
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchCamp )

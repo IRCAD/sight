@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,10 +41,6 @@
 #include <fwData/Array.hpp>
 #include <fwData/reflection/mapper.hpp>
 
-#include <fwDataCamp/Version.hpp>
-
-#include <fwMedDataCamp/Version.hpp>
-
 #include <fwMemory/BufferObject.hpp>
 
 #include <fwTools/UUID.hpp>
@@ -57,9 +53,6 @@
 
 namespace fwAtomConversion
 {
-
-static int dataCampVersion    = ::fwDataCamp::Version::s_CURRENT_VERSION; // Hack to force link with fwDataCamp
-static int medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION; // Hack to force link with fwMedDataCamp
 
 const std::string DataVisitor::CLASSNAME_METAINFO = "CLASSNAME_METAINFO";
 const std::string DataVisitor::ID_METAINFO        = "ID_METAINFO";

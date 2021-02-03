@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,8 +38,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
-
-#include <fwDataCamp/visitor/RecursiveLock.hpp>
+#include <fwData/reflection/visitor/RecursiveLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -388,7 +387,7 @@ void SWriter::updating()
     }
 
     // Mutex data lock
-    ::fwDataCamp::visitor::RecursiveLock recursiveLock(obj);
+    ::fwData::reflection::visitor::RecursiveLock recursiveLock(obj);
 
     ::fwAtoms::Object::sptr atom;
     const unsigned int progressBarOffset = 10;

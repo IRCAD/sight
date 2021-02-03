@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2021 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,7 @@
 #include "detail/reflection/DataCampHelper.hpp"
 
 #include <fwData/GenericFieldBase.hpp>
-
-#include <fwDataCamp/getObject.hpp>
+#include <fwData/reflection/getObject.hpp>
 
 #include <camp/class.hpp>
 
@@ -59,7 +58,7 @@ void compareSimplePropertyValue(::fwData::Object::sptr obj,
                                 const std::string& value)
 {
     ::fwData::GenericFieldBase::sptr field;
-    field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, propertyPath);
+    field = ::fwData::reflection::getObject< ::fwData::GenericFieldBase >(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, field);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Retrieve property "+propertyPath+" not equal with value.", value, field->toString());
 }
@@ -71,7 +70,7 @@ void compareObjectPropertyValue(::fwData::Object::sptr obj,
                                 ::fwData::Object::sptr value)
 {
     ::fwData::Object::sptr subObj;
-    subObj = ::fwDataCamp::getObject(obj, propertyPath);
+    subObj = ::fwData::reflection::getObject(obj, propertyPath);
     CPPUNIT_ASSERT_MESSAGE("Retrieve failed for property "+propertyPath, subObj);
     CPPUNIT_ASSERT_MESSAGE("Retrieve property "+propertyPath+" not equal with value.", value == subObj);
 }

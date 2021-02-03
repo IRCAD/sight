@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
+ * Copyright (C) 2019-2021 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,8 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/mt/locked_ptr.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwRuntime/Module.hpp>
 #include <fwRuntime/operations.hpp>
@@ -205,7 +204,7 @@ void IActivityLauncher::translateParameters( const ::fwData::Object::csptr& sour
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(sourceObj, parameterToReplace);
+            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(sourceObj, parameterToReplace);
             SLM_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);

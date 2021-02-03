@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <fwVtkIO/VtpMeshReader.hpp>
 #include <fwVtkIO/VtpMeshWriter.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 
@@ -64,10 +64,10 @@ namespace ut
 
 void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 {
-    ::fwDataCamp::visitor::CompareObjects visitor;
+    ::fwData::reflection::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

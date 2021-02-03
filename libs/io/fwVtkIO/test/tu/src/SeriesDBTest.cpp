@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,7 @@
 #include <fwData/Array.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -108,10 +107,10 @@ void SeriesDBTest::testImportSeriesDB()
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), (::fwData::Mesh::Size)720);
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), (::fwData::Mesh::Size)362);
 
-    ::fwDataCamp::visitor::CompareObjects visitor;
+    ::fwData::reflection::visitor::CompareObjects visitor;
     visitor.compare(mesh1, mesh2);
-    SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
+    SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+    for( ::fwData::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,9 +31,8 @@
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
@@ -418,7 +417,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
 
             submatch.replace(0, 1, "@");
 
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(activitySeries->getData(), submatch);
+            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(activitySeries->getData(), submatch);
             SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);

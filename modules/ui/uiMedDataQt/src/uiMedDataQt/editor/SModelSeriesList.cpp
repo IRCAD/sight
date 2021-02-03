@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,9 +36,8 @@
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwDataTools/helper/Field.hpp>
 
@@ -390,7 +389,7 @@ void SModelSeriesList::fillTree(const ::fwData::mt::locked_ptr< ::fwMedData::Mod
         QStringList info;
         for(auto const& cIt :  m_displayedInfo)
         {
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(reconstruction, cIt.first);
+            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(reconstruction, cIt.first);
             SLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
             info << QString::fromStdString(cIt.second->apply(obj));
         }

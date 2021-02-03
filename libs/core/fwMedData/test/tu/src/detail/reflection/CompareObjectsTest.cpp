@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 
 #include <fwCore/Exception.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
 
@@ -68,10 +68,10 @@ void CompareObjectsTest::compareSeriesDBTest()
     ::fwMedData::SeriesDB::sptr seriesDBComp = ::fwData::Object::copy< ::fwMedData::SeriesDB >(seriesDBRef);
 
     {
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDBRef, seriesDBComp);
 
-        SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+        SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(size_t(0), props->size());
     }
 
@@ -87,10 +87,10 @@ void CompareObjectsTest::compareSeriesDBTest()
         patient->setSex("M");
         patient->setPatientId("42");
 
-        ::fwDataCamp::visitor::CompareObjects visitor;
+        ::fwData::reflection::visitor::CompareObjects visitor;
         visitor.compare(seriesDBRef, seriesDBComp);
 
-        SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
+        SPTR(::fwData::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
         CPPUNIT_ASSERT_EQUAL(props->size(), (size_t)3);
 
         CPPUNIT_ASSERT(props->find("values.0.patient.name") != props->end());

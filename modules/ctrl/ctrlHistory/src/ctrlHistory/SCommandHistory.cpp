@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017 IRCAD France
+ * Copyright (C) 2017-2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,16 +31,15 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwDataCamp/exception/ObjectNotFound.hpp>
-#include <fwDataCamp/getObject.hpp>
+#include <fwData/reflection/exception/ObjectNotFound.hpp>
+#include <fwData/reflection/getObject.hpp>
 
 #include <numeric>
 
 namespace ctrlHistory
 {
 
-fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, ::fwData::Object);
+fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, ::fwData::Object)
 
 static const ::fwCom::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const ::fwCom::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,6 @@ public:
     void writeReadTest();
     void writeReadAnonymiseTest();
     void writeReadDirArchiveTest();
-
-    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
-    int m_medDataCampVersion;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,9 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
+#include <fwData/reflection/getObject.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataCamp/getObject.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -619,7 +618,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(workingObj, parameterToReplace);
+            ::fwData::Object::sptr obj = ::fwData::reflection::getObject(workingObj, parameterToReplace);
             SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);

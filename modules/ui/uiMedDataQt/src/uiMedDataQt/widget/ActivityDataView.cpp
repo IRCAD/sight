@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
+ * Copyright (C) 2016-2021 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,12 +30,11 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/reflection/getObject.hpp>
+#include <fwData/reflection/visitor/CompareObjects.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
-
-#include <fwDataCamp/getObject.hpp>
-#include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwIO/ioTypes.hpp>
 
@@ -523,7 +522,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr& 
                         }
                         else
                         {
-                            (*composite)[key] = ::fwDataCamp::getObject( obj, path );
+                            (*composite)[key] = ::fwData::reflection::getObject( obj, path );
                         }
                     }
                     else
