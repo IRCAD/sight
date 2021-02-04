@@ -345,7 +345,7 @@
             </service>
 
             <!-- Extract the modelSeries from the loaded seriesDB -->
-            <service uid="extractModelSeriesSrv" type="::ctrlCamp::SExtractObj" >
+            <service uid="extractModelSeriesSrv" type="::sight::modules::data::SExtractObj" >
                 <inout key="source" uid="seriesDB" >
                     <extract from="@values.0" />
                 </inout>
@@ -355,7 +355,7 @@
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
-            <service uid="extractSkinSrv" type="::ctrlCamp::SExtractMeshByType" >
+            <service uid="extractSkinSrv" type="::sight::modules::data::SExtractMeshByType" >
                <inout key="source" uid="modelSeries" >
                    <extract type="Skin" />
                </inout>
@@ -365,7 +365,7 @@
             </service>
 
             <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
-            <service uid="extractCameraSrv" type="::ctrlCamp::SExtractObj" >
+            <service uid="extractCameraSrv" type="::sight::modules::data::SExtractObj" >
                 <!-- Source -->
                 <inout key="source" uid="RGBDCameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->

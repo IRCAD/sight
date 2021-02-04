@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
 )
 set( REQUIREMENTS
-    module_io_base             # Start the module, load file location or window module_io_base
+    module_ui_base             # Start the module, load file location or window module_ui_base
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_viz_ogreQt              # Enable Ogre to render things in Qt window.
     validators
@@ -35,7 +35,7 @@ set( REQUIREMENTS
     videoOpenni
     videoTools
     registrationCV
-    ctrlCamp
+    module_data
 
     # Generic Scene
 )

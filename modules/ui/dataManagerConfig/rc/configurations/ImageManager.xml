@@ -54,7 +54,7 @@ Example:
         </service>
 
         <!-- Service to add field used to properly display and manage image: Slice index, TransferFunction, ... -->
-        <service uid="medicalImageConverterImage" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="medicalImageConverterImage" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="${image}" />
         </service>
 

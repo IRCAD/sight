@@ -56,7 +56,7 @@ class ValueView;
  *
  * It allows to show/hide a Reconstruction when it is associated to a render scene with a Model series adaptor
  * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
- * It also allows to select a Reconstruction: associated to the ::ctrlSelection::updater::SObjFromSlot, the
+ * It also allows to select a Reconstruction: associated to the modules::data::updater::SObjFromSlot, the
  * reconstruction is available to be used by other services.
  * It is mostly associated to modules::ui::qt::reconstruction::SOrganMaterialEditor and
  * modules::ui::qt::reconstruction::RepresentationEditor to update the reconstrution color, transparency, ....

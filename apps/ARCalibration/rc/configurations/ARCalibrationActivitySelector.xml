@@ -67,7 +67,7 @@
             </filter>
         </service>
 
-        <service uid="activitySeriesCleanerSrv" type="::ctrlSelection::SManage">
+        <service uid="activitySeriesCleanerSrv" type="::sight::modules::data::SManage">
             <inout key="seriesDB" uid="${LOADING_SERIESDB}" />
         </service>
 

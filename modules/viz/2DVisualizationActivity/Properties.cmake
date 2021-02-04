@@ -8,9 +8,8 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     data
-    ctrlCamp
+    module_data
     ctrlMemory
-    ctrlSelection
     module_services
     uiMedDataQt
     visuVTKAdaptor

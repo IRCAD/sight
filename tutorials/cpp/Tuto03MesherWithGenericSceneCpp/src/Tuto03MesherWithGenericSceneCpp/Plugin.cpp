@@ -106,8 +106,8 @@ void Plugin::initialize()
                                                       true, false);
 
     // extrator/converter
-    auto extractImage         = m_appManager->addService("::ctrlCamp::SExtractObj", true, true);
-    auto medicaImageConverter = m_appManager->addService("::ctrlSelection::MedicalImageSrv", true);
+    auto extractImage         = m_appManager->addService("::modules::data::SExtractObj", true, true);
+    auto medicaImageConverter = m_appManager->addService("::modules::data::MedicalImageSrv", true);
 
     //editors
     auto snapshotEditor = m_appManager->addService("::modules::ui::qt::viz::SnapshotEditor", "snapshotEditor", true,

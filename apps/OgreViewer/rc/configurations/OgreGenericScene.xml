@@ -459,7 +459,7 @@
         </service>
 
         <!-- Reset the clipping box matreix -->
-        <service uid="clippingBoxResetSrv" type="::ctrlCamp::SCopy" >
+        <service uid="clippingBoxResetSrv" type="::sight::modules::data::SCopy" >
             <in key="source" uid="identityMatrix" />
             <inout key="target" uid="clippingMatrix" />
         </service>

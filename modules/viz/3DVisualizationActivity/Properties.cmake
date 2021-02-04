@@ -5,11 +5,10 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     activities
-    ctrlCamp
+    module_data
     module_ui_base
     module_ui_qt
     ctrlMemory
-    ctrlSelection
     data
     module_services
     visuVTKQt

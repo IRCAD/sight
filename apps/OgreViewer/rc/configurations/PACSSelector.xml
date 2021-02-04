@@ -369,13 +369,13 @@
             <duration>5000</duration>
         </service>
 
-        <service uid="resetPreviewSrv" type="::ctrlCamp::SCopy" >
+        <service uid="resetPreviewSrv" type="::sight::modules::data::SCopy" >
             <in key="source" uid="previewImageReset" />
             <inout key="target" uid="previewImage" />
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="resetLocalSrv" type="::ctrlCamp::SCopy" >
+        <service uid="resetLocalSrv" type="::sight::modules::data::SCopy" >
             <in key="source" uid="previewImageReset" />
             <inout key="target" uid="localImage" />
             <mode>copyOnUpdate</mode>
@@ -397,7 +397,7 @@
             <start uid="lNegatoAdp" />
         </service>
 
-        <service uid="medicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+        <service uid="medicalImageSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
             <inout key="image" uid="localImage" />
         </service>
 
@@ -441,7 +441,7 @@
             <config selectionMode="extended" allowedRemove="false" />
         </service>
 
-        <service uid="extractPreviewSrv" type="::ctrlCamp::SCopy" >
+        <service uid="extractPreviewSrv" type="::sight::modules::data::SCopy" >
             <in key="source" uid="previewSelections" >
               <extract from="@values.0" />
             </in>
@@ -474,7 +474,7 @@
                     removeSerieIcon="module_ui_flaticon-0.1/icons/RemoveMedecine.svg" />
         </service>
 
-        <service uid="extractLocalSrv" type="::ctrlCamp::SCopy" >
+        <service uid="extractLocalSrv" type="::sight::modules::data::SCopy" >
             <in key="source" uid="localSelections" >
               <extract from="@values.0.image" />
             </in>
@@ -482,7 +482,7 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="exportImageSrv" type="::ctrlCamp::SCopy" >
+        <service uid="exportImageSrv" type="::sight::modules::data::SCopy" >
             <in key="source" uid="localImage" />
             <inout key="target" uid="${image}" />
             <mode>copyOnUpdate</mode>

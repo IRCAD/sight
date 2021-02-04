@@ -296,7 +296,7 @@
             </service>
 
             <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
-            <service uid="cameraExtractorSrv" type="::ctrlCamp::SExtractObj" >
+            <service uid="cameraExtractorSrv" type="::sight::modules::data::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
                 </inout>

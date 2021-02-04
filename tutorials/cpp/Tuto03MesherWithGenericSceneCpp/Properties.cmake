@@ -7,7 +7,7 @@ set( DEPENDENCIES
     services
 )
 set( REQUIREMENTS
-    ctrlCamp
+    module_data
     data
     module_ui_base
     module_ui_qt

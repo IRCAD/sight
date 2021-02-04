@@ -166,7 +166,7 @@
             <inout key="imageOut" uid="transformedImage" />
         </service>
 
-        <service uid="resetTransformedImage" type="::ctrlCamp::SCopy">
+        <service uid="resetTransformedImage" type="::sight::modules::data::SCopy">
             <in key="source" uid="emptyImage" />
             <inout key="target" uid="transformedImage" />
         </service>

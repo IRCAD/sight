@@ -294,7 +294,7 @@
             </config>
         </service>
 
-        <service uid="medicalImageTargetSrv" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="medicalImageTargetSrv" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="${targetImageUid}" />
         </service>
 
@@ -417,22 +417,22 @@
             <inout key="transform" uid="centerTransformReference" />
         </service>
 
-        <service uid="copyFlipAxial" type="::ctrlCamp::SCopy">
+        <service uid="copyFlipAxial" type="::sight::modules::data::SCopy">
             <in key="source" uid="flipAxialMatrix" />
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="copyFlipFrontal" type="::ctrlCamp::SCopy">
+        <service uid="copyFlipFrontal" type="::sight::modules::data::SCopy">
             <in key="source" uid="flipFrontalMatrix" />
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="copyFlipSagittal" type="::ctrlCamp::SCopy">
+        <service uid="copyFlipSagittal" type="::sight::modules::data::SCopy">
             <in key="source" uid="flipSagittalMatrix" />
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="resetFlip" type="::ctrlCamp::SCopy">
+        <service uid="resetFlip" type="::sight::modules::data::SCopy">
             <in key="source" uid="identityMatrix" />
             <inout key="target" uid="flipTransform" />
         </service>

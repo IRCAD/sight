@@ -157,7 +157,7 @@
         </service>
 
 
-        <service uid="manageVector" type="::ctrlSelection::SManage">
+        <service uid="manageVector" type="::sight::modules::data::SManage">
            <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matricesVector" />
         </service>

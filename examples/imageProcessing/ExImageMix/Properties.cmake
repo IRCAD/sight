@@ -7,7 +7,7 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_io_base             # Start the module, load file location or window module_io_base
+    module_ui_base             # Start the module, load file location or window module_ui_base
     visuVTK                 # Start the module, allow to use fwRenderVTK
     module_ui_qt                   # Start the module, allow dark theme
     visuVTKQt               # Enable VTK to render things in Qt window
@@ -24,7 +24,7 @@ set( REQUIREMENTS
     module_io_file
 
     # Services
-    ctrlSelection
+    module_data
 
     # Generic Scene
     visuVTKAdaptor

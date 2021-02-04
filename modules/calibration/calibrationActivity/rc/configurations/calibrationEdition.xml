@@ -165,12 +165,12 @@
 
         <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
 
-        <service uid="copyCameraSeriesSrv" type="::ctrlCamp::SCopy">
+        <service uid="copyCameraSeriesSrv" type="::sight::modules::data::SCopy">
             <in key="source" uid="${cameraSeries}" />
             <out key="target" uid="newCameraSeries" />
         </service>
 
-        <service uid="extractCamerasSrv" type="::ctrlCamp::SExtractObj">
+        <service uid="extractCamerasSrv" type="::sight::modules::data::SExtractObj">
             <inout key="source" uid="newCameraSeries">
                 <extract from="@cameras.0" />
                 <extract from="@cameras.1" />

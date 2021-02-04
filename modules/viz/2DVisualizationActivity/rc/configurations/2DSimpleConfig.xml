@@ -71,7 +71,7 @@
             <inout key="target" uid="${imageID}" />
         </service>
 
-        <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="medicalImgConverter" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
         <service uid="sliderIndexEditor" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">

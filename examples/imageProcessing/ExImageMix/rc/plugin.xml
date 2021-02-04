@@ -280,7 +280,7 @@
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="::ctrlSelection::MedicalImageSrv" >
+            <service uid="medicalImageConverterSrv" type="::sight::modules::data::MedicalImageSrv" >
                 <inout key="image" uid="backgroundImage" />
             </service>
 
@@ -299,7 +299,7 @@
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv2" type="::ctrlSelection::MedicalImageSrv" >
+            <service uid="medicalImageConverterSrv2" type="::sight::modules::data::MedicalImageSrv" >
                 <inout key="image" uid="frontImage" />
             </service>
 
@@ -318,7 +318,7 @@
             </service>
 
             <!-- Service to forward signal from backgroundImage to front image -->
-            <service uid="forwarderMsgSrv" type="::ctrlSelection::wrapper::SImageSignalForwarder" >
+            <service uid="forwarderMsgSrv" type="::sight::modules::data::wrapper::SImageSignalForwarder" >
                 <in key="target" uid="frontImage" />
                 <in key="source" uid="backgroundImage" />
                 <forward>sliceIndexModified</forward>

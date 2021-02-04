@@ -159,7 +159,7 @@
             <push srcKey="OptionalInputImageKey" />
         </service>
 
-        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+        <service uid="extractLandmarks" type="::sight::modules::data::SCopy" >
             <in key="source" uid="optionalInputImage">
                 <extract from="@fields.m_landmarksId" />
             </in>
@@ -252,7 +252,7 @@
             <inout key="image" uid="optionalInputImage" />
             <crossType>full</crossType>
         </service>
-        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="MedicalImageSrv" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="optionalInputImage" />
         </service>
 

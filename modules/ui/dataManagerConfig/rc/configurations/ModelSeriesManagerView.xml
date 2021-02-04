@@ -35,7 +35,7 @@ Example
             </registry>
         </service>
 
-        <service uid="updaterReconst" type="::ctrlSelection::updater::SObjFromSlot">
+        <service uid="updaterReconst" type="::sight::modules::data::updater::SObjFromSlot">
             <out key="object" uid="reconstruction" />
         </service>
 

@@ -304,7 +304,7 @@ Detail of the ToolBar
                 <config mode="rigid" />
             </service>
 
-            <service uid="medicalImageSrv" type="::ctrlSelection::MedicalImageSrv" >
+            <service uid="medicalImageSrv" type="::sight::modules::data::MedicalImageSrv" >
                 <inout key="image" uid="myImage" />
             </service>
 

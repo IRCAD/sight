@@ -5,7 +5,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
         data
         activities
-        ctrlSelection
+        module_data
         module_ui_base
         module_ui_qt
         filterUnknownSeries

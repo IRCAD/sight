@@ -190,7 +190,7 @@
             </config>
         </service>
 
-        <service uid="extractFirstCamera" type="::ctrlCamp::SExtractObj">
+        <service uid="extractFirstCamera" type="::sight::modules::data::SExtractObj">
             <inout key="source" uid="${firstCameraSeries}">
                 <extract from="@cameras.0" />
             </inout>
@@ -199,7 +199,7 @@
            </out>
         </service>
 
-        <service uid="extractSecondCamera" type="::ctrlCamp::SExtractObj">
+        <service uid="extractSecondCamera" type="::sight::modules::data::SExtractObj">
             <inout key="source" uid="${secondCameraSeries}" >
                 <extract from="@cameras.0" />
             </inout>

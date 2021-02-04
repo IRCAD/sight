@@ -30,11 +30,11 @@
             </registry>
         </service>
 
-        <service uid="medicalImageFrontSrv" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="medicalImageFrontSrv" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="medicalImageBgSrv" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="medicalImageBgSrv" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
 

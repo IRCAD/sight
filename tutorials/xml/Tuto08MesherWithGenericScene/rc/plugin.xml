@@ -253,7 +253,7 @@
             </service>
 
             <!-- extract a ::sight::data::Image from the ::sight::data::ImageSeries -->
-            <service uid="extractImageSrv" type="::ctrlCamp::SExtractObj" >
+            <service uid="extractImageSrv" type="::sight::modules::data::SExtractObj" >
                <inout key="source" uid="imageSeries" >
                    <extract from="@image" />
                </inout>
@@ -263,11 +263,11 @@
             </service>
 
             <!-- This service converts a simple fwData::Image to medical Image -->
-            <service uid="medicaImageConverterSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicaImageConverterSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image" />
             </service>
 
-            <service uid="updaterReconstSrv" type="::ctrlSelection::updater::SObjFromSlot" >
+            <service uid="updaterReconstSrv" type="::sight::modules::data::updater::SObjFromSlot" >
                 <out key="object" uid="reconstruction" />
             </service>
 

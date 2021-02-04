@@ -179,7 +179,7 @@
         </service>
 
         <!-- Service to select the current activity into the composite. -->
-        <service uid="activitySeriesUpdaterSrv" type="::ctrlSelection::updater::SObjFromSlot">
+        <service uid="activitySeriesUpdaterSrv" type="::sight::modules::data::updater::SObjFromSlot">
             <out key="object" uid="currentActivity" />
         </service>
 

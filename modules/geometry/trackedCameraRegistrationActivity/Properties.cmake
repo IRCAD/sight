@@ -6,7 +6,7 @@ set( DEPENDENCIES)
 set( REQUIREMENTS
     activities
     data
-    ctrlCamp
+    module_data
     module_ui_base
     module_ui_qt
     maths

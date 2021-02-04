@@ -478,14 +478,14 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Extract the model or the image from the series -->
-            <service uid="extractImageSrv" type="::ctrlCamp::SCopy" >
+            <service uid="extractImageSrv" type="::sight::modules::data::SCopy" >
                 <in key="source" uid="seriesDB" >
                     <extract from="@values.0.image" />
                 </in>
                 <inout key="target" uid="image" />
             </service>
 
-            <service uid="extractMeshSrv" type="::ctrlCamp::SCopy" >
+            <service uid="extractMeshSrv" type="::sight::modules::data::SCopy" >
                 <in key="source" uid="seriesDB" >
                     <extract from="@values.0" />
                 </in>

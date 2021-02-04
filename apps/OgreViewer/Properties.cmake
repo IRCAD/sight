@@ -6,7 +6,7 @@ set( REQUIREMENTS
     fwlauncher              # Just to build the launcher
     module_appXml                  # XML configurations
 
-    module_io_base             # Start the module, load file location or window module_io_base
+    module_ui_base             # Start the module, load file location or window module_ui_base
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_ui_qt                   # Start the module, allow dark theme
     patchMedicalData        # Patch old atoms data
@@ -30,12 +30,11 @@ set( REQUIREMENTS
 
     # Services
     scene2D
-    ctrlCamp
+    module_data
     ctrlTF
     module_filter_image
     ioPacs
     uiMedDataQt
-    ctrlSelection
 
     # Configuration launchers
     ogreConfig

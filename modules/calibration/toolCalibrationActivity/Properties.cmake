@@ -7,7 +7,7 @@ set( DEPENDENCIES )
 set( REQUIREMENTS
         module_ui_base
         module_ui_qt
-        ctrlSelection
+        module_data
         visuVTKAdaptor
         media
         videoQt

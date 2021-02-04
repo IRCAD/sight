@@ -7,7 +7,7 @@ set( REQUIREMENTS
     2DVisualizationActivity
     activities
     ctrlMemory
-    ctrlSelection
+    module_data
     data
     dicomAppConfig
     module_ui_base

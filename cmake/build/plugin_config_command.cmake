@@ -113,7 +113,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                             string(REPLACE "::" ";" OBJECT_SUB_IMPL ${OBJECT_IMPL})
 
                             # Create the include directive.
-                            set(INCLUDE_DIRECTIVE "#include <")
+                            set(INCLUDE_DIRECTIVE "#include <core/")
                             foreach(SUB_IMPL ${OBJECT_SUB_IMPL})
                                 string(APPEND INCLUDE_DIRECTIVE ${SUB_IMPL}/)
                             endforeach()

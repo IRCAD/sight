@@ -158,7 +158,7 @@
             </config>
         </service>
 
-        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+        <service uid="MedicalImageSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
             <inout key="image" uid="${image}" />
         </service>
 
@@ -174,7 +174,7 @@
             </columns>
         </service>
 
-        <service uid="reconstructionUpdaterSrv" type="::ctrlSelection::updater::SObjFromSlot" >
+        <service uid="reconstructionUpdaterSrv" type="::sight::modules::data::updater::SObjFromSlot" >
             <out key="object" uid="reconstructionUID" />
         </service>
 

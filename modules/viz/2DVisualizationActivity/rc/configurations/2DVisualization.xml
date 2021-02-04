@@ -106,7 +106,7 @@
             <parameter replace="orientation" by="sagittal" />
         </service>
 
-        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+        <service uid="extractLandmarks" type="::sight::modules::data::SCopy" >
             <in key="source" uid="${image}">
                 <extract from="@fields.m_landmarksId" />
             </in>
@@ -123,7 +123,7 @@
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>
 
-        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+        <service uid="MedicalImageSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${image}" />
         </service>
 

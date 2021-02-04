@@ -9,7 +9,7 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
 
-    module_io_base             # Start the module, load file location or window module_io_base
+    module_ui_base             # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
     visuQt3DQt              # Enable Qt3D to render things in Qt window
 

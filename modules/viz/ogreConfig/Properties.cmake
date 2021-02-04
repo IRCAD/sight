@@ -12,6 +12,6 @@ set( REQUIREMENTS
     qtSceneConfig
     uiVisuOgre
     uiMedDataQt
-    ctrlSelection
+    module_data
 )
 

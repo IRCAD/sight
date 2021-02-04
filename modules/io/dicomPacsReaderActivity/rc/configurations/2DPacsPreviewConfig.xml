@@ -62,7 +62,7 @@
             <inout key="target" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
+        <service uid="medicalImgConverter" type="::sight::modules::data::MedicalImageSrv">
             <inout key="image" uid="image" />
         </service>
 

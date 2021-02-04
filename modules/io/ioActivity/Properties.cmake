@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
         activities
-        ctrlSelection
+        module_data
         module_ui_base
     uiMedDataQt
         media

@@ -107,7 +107,7 @@
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service uid="bg_medicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+        <service uid="bg_medicalImageConverter" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
         <service uid="slider" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
@@ -124,7 +124,7 @@
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service uid="frontMedicalImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+        <service uid="frontMedicalImageConverter" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 

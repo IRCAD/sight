@@ -13,5 +13,5 @@ set( DEPENDENCIES
     )
 set( REQUIREMENTS
     module_services
-    ctrlSelection
+    module_data
 )

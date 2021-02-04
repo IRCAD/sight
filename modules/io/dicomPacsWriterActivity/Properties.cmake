@@ -7,7 +7,7 @@ set( REQUIREMENTS
     activities
     dicomAppConfig
     ctrlMemory
-    ctrlSelection
+    module_data
     data
     dicomPacsReaderActivity
     module_ui_base

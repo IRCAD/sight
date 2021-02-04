@@ -8,7 +8,7 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     uiMedDataQt
-    ctrlSelection
+    module_data
     media
     module_services
     data

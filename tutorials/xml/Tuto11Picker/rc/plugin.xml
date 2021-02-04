@@ -187,7 +187,7 @@
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImageConverterSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image" />
             </service>
 

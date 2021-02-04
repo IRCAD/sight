@@ -13,8 +13,7 @@ set( REQUIREMENTS
     basicRegistration
     module_ui_base
     module_ui_qt
-    ctrlSelection
-    ctrlCamp
+    module_data
     visuVTKAdaptor
     scene2D
     media

@@ -83,7 +83,7 @@
             <parameter replace="patient_name" by="Mask Image" />
         </service>
 
-        <service uid="extractImage1Srv" type="::ctrlCamp::SExtractObj" >
+        <service uid="extractImage1Srv" type="::sight::modules::data::SExtractObj" >
            <inout key="source" uid="${imageSeries}" >
                <extract from="@image" />
            </inout>
@@ -92,7 +92,7 @@
            </out>
         </service>
 
-        <service uid="extractImage2Srv" type="::ctrlCamp::SExtractObj" >
+        <service uid="extractImage2Srv" type="::sight::modules::data::SExtractObj" >
            <inout key="source" uid="imageSeriesMask" >
                <extract from="@image" />
            </inout>

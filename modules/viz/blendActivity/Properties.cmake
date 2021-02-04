@@ -7,7 +7,7 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     ctrlMemory
-    ctrlSelection
+    module_data
     visuVTKAdaptor
     scene2D
     data

@@ -38,7 +38,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="updaterReconstSrv" type="::ctrlSelection::updater::SObjFromSlot" >
+        <service uid="updaterReconstSrv" type="::sight::modules::data::updater::SObjFromSlot" >
             <out key="object" uid="reconstruction" />
         </service>
 

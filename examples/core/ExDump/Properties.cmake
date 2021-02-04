@@ -6,7 +6,7 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_io_base             # Start the module, load file location or window module_io_base
+    module_ui_base             # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, allow dark theme
 
     # Objects declaration

@@ -43,7 +43,7 @@ set( REQUIREMENTS
 
     filterUnknownSeries
 
-    module_io_base
+    module_ui_base
 )
 
 moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
