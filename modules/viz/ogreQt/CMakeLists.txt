@@ -2,7 +2,7 @@ fwLoadProperties()
 
 add_definitions("-DQT_NO_KEYWORDS")
 
-if(UNIX AND NOT APPLE)
+if(UNIX)
     find_package(Qt5 QUIET COMPONENTS Core Gui Widgets X11Extras REQUIRED)
 else()
     find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
@@ -20,7 +20,7 @@ fwLink(
     ${Qt5Widgets_LIBRARIES}
 )
 
-if(UNIX AND NOT APPLE)
+if(UNIX)
     fwForwardInclude(${Qt5X11Extras_INCLUDE_DIRS})
     fwLink(${Qt5X11Extras_LIBRARIES})
 endif()

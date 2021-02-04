@@ -8,7 +8,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC ${DCMTK_LIBRARIES})
 set(STORESCP "/etc/dcmtk/storescp.cfg")
 
 # try various paths, depending of the package manager / platforms / ...
-if(WIN32 OR (NOT USE_SYSTEM_LIB))    
+if(VCPKG_TARGET_TRIPLET)    
     if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND (EXISTS "${DCMTK_DIR}/../../debug${STORESCP}"))
         set(STORESCP "${DCMTK_DIR}/../../debug${STORESCP}")
     elseif(EXISTS "${DCMTK_DIR}/..${STORESCP}")

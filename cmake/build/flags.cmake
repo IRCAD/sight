@@ -35,14 +35,12 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
     "$<$<CXX_COMPILER_ID:Clang>:-fvisibility=hidden;-fvisibility-inlines-hidden>"
-    "$<$<CXX_COMPILER_ID:AppleClang>:-fvisibility-ms-compat;-fvisibility-inlines-hidden>"
 )
 
 # Warning level
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
     "$<$<CXX_COMPILER_ID:Clang>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
-    "$<$<CXX_COMPILER_ID:AppleClang>:-Wall;-Wextra;-Wconversion;-Wno-unused-parameter;-Wno-ignored-qualifiers>"
     "$<$<CXX_COMPILER_ID:MSVC>:/W4>"
 )
 
@@ -94,7 +92,6 @@ endif()
 if(CMAKE_GENERATOR STREQUAL "Ninja")
     add_compile_options(
         "$<$<CXX_COMPILER_ID:Clang>:-fcolor-diagnostics>"
-        "$<$<CXX_COMPILER_ID:AppleClang>:-fcolor-diagnostics>"
         "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>"
     )
 endif()

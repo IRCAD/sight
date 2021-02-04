@@ -212,7 +212,6 @@ build:debian:
       -DBUILD_TESTS=OFF
       -DBUILD_DOCUMENTATION=OFF
       -DENABLE_PCH=OFF
-      -DUSE_SYSTEM_LIB=ON
       -DPROJECTS_TO_BUILD=VRRender
     - ninja
     - ccache -s

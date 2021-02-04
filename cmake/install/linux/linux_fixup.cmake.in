@@ -29,8 +29,8 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
 
     endif()
 
-    set(USE_SYSTEM_LIB @USE_SYSTEM_LIB@)
-    if(NOT USE_SYSTEM_LIB)
+    set(VCPKG_TARGET_TRIPLET @VCPKG_TARGET_TRIPLET@)
+    if(VCPKG_TARGET_TRIPLET)
         #Look for all directories containing '.so*' files
         findLibsAndModules(LIBS_MODULES_DIRECTORIES)
 

@@ -136,9 +136,6 @@ function(assign_precompiled_header _target _pch _pch_header)
             endif()
 
             set(_pch_compile_flags "${_pch_compile_flags} -Winvalid-pch")
-            if(APPLE)
-                set(_pch_compile_flags "${_pch_compile_flags} --relocatable-pch")
-            endif()
 
             if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
                 set(_pch_compile_flags "${_pch_compile_flags} -include-pch \"${_pch}\"")
@@ -280,17 +277,6 @@ function(add_precompiled_header _target _input)
 
     # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
     list(APPEND CXXFLAGS "-std=gnu++17" "-fPIC")
-
-    # Append macOS specific flags
-    if(APPLE)
-        if(EXISTS "${CMAKE_OSX_SYSROOT}")
-            list(APPEND CXXFLAGS "-isysroot" "${CMAKE_OSX_SYSROOT}")
-        endif()
-
-        if(NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
-            list(APPEND CXXFLAGS "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
-        endif()
-    endif()
 
     # Hacky custom command to remove the custom defines that would prevent from sharing the pch
     # and they should be useless anyway

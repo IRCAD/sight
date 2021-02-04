@@ -24,7 +24,7 @@ endif()
 project (sight)
 
 if(APPLE)
-    message(WARNING "macOS is no more officially supported and complete support will be removed in sight 21.0")
+    message(FATAL_ERROR "macOS is no more supported.")
 endif()
 
 enable_testing()
@@ -101,16 +101,14 @@ endif()
 # External libraries management
 ########################################################################################################################
 
-if(UNIX)
-    option(USE_SYSTEM_LIB "Use system libraries to compile sight" ON)
-endif()
-
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
-if(USE_SYSTEM_LIB)
-    # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
+# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
+list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+
+if(NOT VCPKG_TARGET_TRIPLET)
     list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
-    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     if(UNIX)
       list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
@@ -428,40 +426,7 @@ if(BUILD_SDK)
         dev
     )
 
-    if(APPLE)
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/osx_install.cmake"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/macos/rc/app.icns"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install/macos/rc
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-          "${CMAKE_SOURCE_DIR}/cmake/install/macos/osx_install_name_tool.py"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install/macos/
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-          "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/build/linux
-          COMPONENT
-            dev
-        )
-    elseif(WIN32)
+    if(WIN32)
         install(
           FILES
             "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"

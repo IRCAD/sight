@@ -13,7 +13,7 @@ endif()
 
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 macro(setExternalLibrariesDir)
-    if(NOT USE_SYSTEM_LIB)
+    if(VCPKG_TARGET_TRIPLET)
         if(FW_BUILD_EXTERNAL)
             if(WIN32)
                 set(FW_EXTERNAL_LIBRARIES_DIR "${Sight_BINARY_DIR}")
@@ -128,11 +128,6 @@ macro(initProject PRJNAME )
     file(GLOB ${FWPROJECT_NAME}_CMAKE_FILES "${PRJ_SOURCE_DIR}/*.txt" "${PRJ_SOURCE_DIR}/*.cmake")
     set(${FWPROJECT_NAME}_CMAKE_FILES ${${FWPROJECT_NAME}_CMAKE_FILES} PARENT_SCOPE)
     set_source_files_properties(${${FWPROJECT_NAME}_CMAKE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
-
-    if (APPLE)
-        set_source_files_properties(${${FWPROJECT_NAME}_RC_FILES} PROPERTIES XCODE_LAST_KNOWN_FILE_TYPE YES)
-        set_source_files_properties(${${FWPROJECT_NAME}_CMAKE_FILES} PROPERTIES XCODE_LAST_KNOWN_FILE_TYPE YES)
-    endif()
 
     groupMaker(${FWPROJECT_NAME})
 endmacro()
@@ -312,7 +307,6 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-        qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each modules
         install(
             TARGETS ${FWPROJECT_NAME}
             RUNTIME DESTINATION bin
@@ -670,7 +664,6 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME sight_${FWPROJECT_NAME})
         
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            qt_plugins_setup(${FWPROJECT_NAME}) # search and setup qt plugins for each modules
             install(
                 TARGETS ${FWPROJECT_NAME}
                 RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
