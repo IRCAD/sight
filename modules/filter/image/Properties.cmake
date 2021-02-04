@@ -6,5 +6,6 @@ set( DEPENDENCIES
     data
     services
     imageFilterOp
+    fwCommand
 )
 set( REQUIREMENTS )

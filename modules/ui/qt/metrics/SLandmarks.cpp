@@ -35,8 +35,11 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
+#include <data/TransformationMatrix3D.hpp>
 
 #include <services/macros.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -54,8 +57,10 @@ namespace sight::modules::ui::qt::metrics
 //------------------------------------------------------------------------------
 
 static const services::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
-static const char* s_GROUP_PROPERTY_NAME                   = "group";
-static const int s_GROUP_NAME_ROLE                         = ::Qt::UserRole + 1;
+static const services::IService::KeyType s_MATRIX_IN       = "matrix";
+
+static const char* s_GROUP_PROPERTY_NAME = "group";
+static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
 
 static const core::com::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const core::com::Slots::SlotKeyType s_PICK_SLOT             = "pick";
@@ -671,8 +676,21 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
         // Adds a new landmark.
         if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
-            const double* const pickedPos             = _info.m_worldPos;
-            const data::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
+            const double* const pickedPos       = _info.m_worldPos;
+            data::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
+
+            const auto matrix = this->getLockedInput< data::TransformationMatrix3D >(s_MATRIX_IN);
+            if(matrix)
+            {
+                const auto pickedPoint = ::glm::dvec4 {pickedPos[0], pickedPos[1], pickedPos[2], 1.0};
+                const auto mat         = geometry::data::getMatrixFromTF3D(matrix.get_shared());
+
+                const auto modifiedPoint = mat*pickedPoint;
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    newPoint[i] = modifiedPoint[i];
+                }
+            }
 
             const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
             SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
@@ -760,7 +778,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             // 10.0 is an acceptable delta to remove a landmark.
             if(!foundGroupname.empty() && closest < 10.)
             {
-                // If the groupd contains only one point, we remove it.
+                // If the group contains only one point, we remove it.
                 if(landmarks->getNumberOfPoints(foundGroupname) == 1)
                 {
                     this->removeGroup(foundGroupname);

@@ -516,7 +516,7 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="::sight::modules::ui::qt::metrics::editor::SLandmarks" >
+            <service uid="landmarksParameterSrv" type="::sight::modules::ui::qt::metrics::editor::SLandmarks" autoConnect="yes" >
                 <inout key="landmarks" uid="landmarks" />
                 <advanced>yes</advanced>
             </service>
