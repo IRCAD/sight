@@ -28,7 +28,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <imageFilterOp/ImageExtruder.hpp>
+#include <filter/image/ImageExtruder.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -141,7 +141,7 @@ void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorT
 void SImageExtruder::extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const
 {
     // Extrude the image.
-    ::imageFilterOp::ImageExtruder::extrude(_image, _mesh);
+    sight::filter::image::ImageExtruder::extrude(_image, _mesh);
 
     // Send signals.
     const auto sig =

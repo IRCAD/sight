@@ -30,11 +30,10 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwItkIO/ImageReader.hpp>
-
 #include <services/macros.hpp>
 
 #include <io/base/services/IReader.hpp>
+#include <io/itk/ImageReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -118,8 +117,8 @@ void InrImageReaderService::info(std::ostream& _sstream )
 bool InrImageReaderService::createImage( const std::filesystem::path& inrFileDir,
                                          const data::Image::sptr& _pImg )
 {
-    ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
-    bool ok = true;
+    io::itk::ImageReader::sptr myLoader = io::itk::ImageReader::New();
+    bool ok                             = true;
 
     myLoader->setObject(_pImg);
     myLoader->setFile(inrFileDir);

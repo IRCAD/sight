@@ -25,8 +25,8 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <fwItkIO/helper/Transform.hpp>
-#include <fwItkIO/itk.hpp>
+#include <io/itk/helper/Transform.hpp>
+#include <io/itk/itk.hpp>
 
 #include <itkAffineTransform.h>
 #include <itkBoundingBox.h>
@@ -54,7 +54,7 @@ struct Resampling
     void operator()(Parameters& params)
     {
         typedef typename ::itk::Image< PIXELTYPE, 3 > ImageType;
-        const typename ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory< ImageType >(params.i_image);
+        const typename ImageType::Pointer itkImage = io::itk::itkImageFactory< ImageType >(params.i_image);
 
         typename ::itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
             ::itk::ResampleImageFilter<ImageType, ImageType>::New();
@@ -99,7 +99,7 @@ struct Resampling
 
         typename ImageType::Pointer outputImage = resampler->GetOutput();
 
-        ::fwItkIO::itkImageToFwDataImage(outputImage, params.o_image);
+        io::itk::itkImageToFwDataImage(outputImage, params.o_image);
     }
 };
 
@@ -110,7 +110,7 @@ void Resampler::resample(const data::Image::csptr& _inImage,
                          const data::TransformationMatrix3D::csptr& _trf,
                          const data::Image::csptr& _targetImg)
 {
-    const itk::Matrix<double, 4, 4 > itkMatrix = ::fwItkIO::helper::Transform::convertToITK(_trf);
+    const itk::Matrix<double, 4, 4 > itkMatrix = io::itk::helper::Transform::convertToITK(_trf);
 
     // We need to extract a 3x3 matrix and a vector to set the affine transform.
     itk::Matrix<double, 3, 3> transformMat;
@@ -184,7 +184,7 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
     inputBB->SetMaximum(max);
 
     const auto inputCorners = inputBB->GetCorners();
-    const ::itk::Matrix<double, 4, 4> matrix(::fwItkIO::helper::Transform::convertToITK(_trf).GetInverse());
+    const ::itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
 
     // Apply transform matrix to all bounding box corners.
     typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();

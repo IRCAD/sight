@@ -20,26 +20,26 @@
  *
  ***********************************************************************/
 
-#include "opImageFilter/SMatrixRegressor.hpp"
+#include "modules/filter/image/SMatrixRegressor.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Vector.hpp>
+#include <data/PointList.hpp>
+#include <data/TransformationMatrix3D.hpp>
+#include <data/Vector.hpp>
 
-#include <fwServices/macros.hpp>
+#include <services/macros.hpp>
 
-#include <imageFilterOp/MatrixRegressor.hpp>
+#include <filter/image/MatrixRegressor.hpp>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SMatrixRegressor, ::fwData::Vector)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SMatrixRegressor, data::Vector)
 
-static const ::fwServices::IService::KeyType s_MATRIX_LIST_IN = "matrixList";
-static const ::fwServices::IService::KeyType s_POINT_LIST_IN        = "pointList";
-static const ::fwServices::IService::KeyType s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
+static const services::IService::KeyType s_MATRIX_LIST_IN = "matrixList";
+static const services::IService::KeyType s_POINT_LIST_IN        = "pointList";
+static const services::IService::KeyType s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
 
 //-----------------------------------------------------------------------------
 
@@ -73,33 +73,33 @@ void SMatrixRegressor::starting()
 
 void SMatrixRegressor::updating()
 {
-    const auto matrixList = this->getLockedInput< ::fwData::Vector >(s_MATRIX_LIST_IN);
-    const auto pointList  = this->getLockedInput< ::fwData::PointList >(s_POINT_LIST_IN);
+    const auto matrixList = this->getLockedInput< data::Vector >(s_MATRIX_LIST_IN);
+    const auto pointList  = this->getLockedInput< data::PointList >(s_POINT_LIST_IN);
 
     SLM_ASSERT("'matrixList' does not exist", matrixList);
     SLM_ASSERT("'pointList' does not exist", pointList);
 
-    const auto optimalMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_OPTIMAL_MATRIX_INOUT);
+    const auto optimalMatrix = this->getLockedInOut< data::TransformationMatrix3D >(s_OPTIMAL_MATRIX_INOUT);
 
     SLM_ASSERT("'optimalMatrix' does not exist", optimalMatrix);
 
-    std::vector< ::imageFilterOp::MatrixRegressor::PointType > ptList;
+    std::vector< sight::filter::image::MatrixRegressor::PointType > ptList;
 
     // Convert the point list.
     for(const auto& pt : pointList->getPoints())
     {
         const auto& ptCoords = pt->getCoord();
-        ptList.push_back( ::imageFilterOp::MatrixRegressor::PointType(ptCoords[0], ptCoords[1], ptCoords[2], 1.));
+        ptList.push_back( sight::filter::image::MatrixRegressor::PointType(ptCoords[0], ptCoords[1], ptCoords[2], 1.));
     }
 
     if(!matrixList->empty() && !ptList.empty())
     {
-        ::imageFilterOp::MatrixRegressor regressor(matrixList.get_shared(), ptList);
+        sight::filter::image::MatrixRegressor regressor(matrixList.get_shared(), ptList);
 
-        ::fwData::TransformationMatrix3D::csptr initVal =
-            ::fwData::TransformationMatrix3D::dynamicCast((*matrixList)[0]);
+        data::TransformationMatrix3D::csptr initVal =
+            data::TransformationMatrix3D::dynamicCast((*matrixList)[0]);
 
-        ::fwData::TransformationMatrix3D::sptr res = regressor.minimize(initVal, 1., 1e-4, 1e-4);
+        data::TransformationMatrix3D::sptr res = regressor.minimize(initVal, 1., 1e-4, 1e-4);
         optimalMatrix->deepCopy(res);
 
         m_sigComputed->asyncEmit();
@@ -115,17 +115,17 @@ void SMatrixRegressor::stopping()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SMatrixRegressor::getAutoConnections() const
+services::IService::KeyConnectionsMap SMatrixRegressor::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_LIST_IN, ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_LIST_IN, ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_LIST_IN, ::fwData::Vector::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINT_LIST_IN, ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINT_LIST_IN, ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINT_LIST_IN, ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    services::IService::KeyConnectionsMap connections;
+    connections.push(s_MATRIX_LIST_IN, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_LIST_IN, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_LIST_IN, data::Vector::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINT_LIST_IN, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINT_LIST_IN, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINT_LIST_IN, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

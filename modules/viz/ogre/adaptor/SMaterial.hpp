@@ -77,7 +77,7 @@ namespace sight::modules::viz::ogre::adaptor
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
  * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
- *      ::visuOgreAdaptor:SMesh or a ::visuOgreAdaptor:SModelSeries to this material;
+ *      ::sight::modules::viz::ogre:SMesh or a ::sight::modules::viz::ogre:SModelSeries to this material;
  *      simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
  *      reference a texture managed by an another modules::viz::ogre::adaptor::STexture.

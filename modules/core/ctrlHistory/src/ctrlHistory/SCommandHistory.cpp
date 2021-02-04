@@ -112,7 +112,7 @@ void SCommandHistory::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::enqueue(fwCommand::ICommand::sptr command)
+void SCommandHistory::enqueue(ui::history::ICommand::sptr command)
 {
     m_undoRedoManager.enqueue(command);
     this->emitModifSig();

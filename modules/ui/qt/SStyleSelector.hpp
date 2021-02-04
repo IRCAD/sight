@@ -64,7 +64,7 @@ namespace sight::modules::ui::qt
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::modules::ui::qt::SStyleSelector" />
+        <service uid="..." type="::sight::modules::ui::qt::SStyleSelector" />
    @endcode
  */
 class MODULE_UI_QT_CLASS_API SStyleSelector : public services::IController

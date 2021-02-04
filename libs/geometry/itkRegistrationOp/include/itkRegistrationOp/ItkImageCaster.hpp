@@ -27,7 +27,7 @@
 
 #include <data/Image.hpp>
 
-#include <fwItkIO/itk.hpp>
+#include <io/itk/itk.hpp>
 
 #include <itkCastImageFilter.h>
 
@@ -50,7 +50,7 @@ struct ItkImageCaster
         using InputImageType = ::itk::Image<INPUT_PIXELTYPE, 3>;
 
         // Convert to ITK.
-        typename InputImageType::Pointer tmp = ::fwItkIO::itkImageFactory< InputImageType >(p.i_img);
+        typename InputImageType::Pointer tmp = io::itk::itkImageFactory< InputImageType >(p.i_img);
 
         // Cast to the desired pixel type.
         auto castFilter = ::itk::CastImageFilter<InputImageType, OutputImageType>::New();

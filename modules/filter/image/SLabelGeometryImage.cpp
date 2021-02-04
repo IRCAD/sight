@@ -20,35 +20,33 @@
  *
  ***********************************************************************/
 
-#include "opImageFilter/SLabelGeometryImage.hpp"
+#include "modules/filter/image/SLabelGeometryImage.hpp"
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slots.hxx>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
+#include <core/tools/IntrinsicTypes.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
+#include <data/Image.hpp>
+#include <data/String.hpp>
+#include <data/tools/fieldHelper/Image.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/helper/Image.hpp>
 
-#include <fwDataTools/fieldHelper/Image.hpp>
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/Image.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
-
-#include <imageFilterOp/Labeling.hpp>
+#include <services/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
-namespace opImageFilter
+#include <filter/image/Labeling.hpp>
+
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SLabelGeometryImage, ::fwData::Image)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SLabelGeometryImage, data::Image)
 
-const ::fwCom::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
+const core::com::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
 
 //-----------------------------------------------------------------------------
 
@@ -67,11 +65,11 @@ SLabelGeometryImage::~SLabelGeometryImage()
 
 void SLabelGeometryImage::configuring()
 {
-    const ::fwRuntime::ConfigurationElement::sptr clusters = m_configuration->findConfigurationElement("clusters");
+    const core::runtime::ConfigurationElement::sptr clusters = m_configuration->findConfigurationElement("clusters");
     if(clusters)
     {
         SLM_ASSERT("pointList is needed in output key", m_configuration->findConfigurationElement("out"));
-        std::vector< ::fwRuntime::ConfigurationElement::sptr> clusterVect = clusters->find("cluster");
+        std::vector< core::runtime::ConfigurationElement::sptr> clusterVect = clusters->find("cluster");
 
         SLM_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
 
@@ -88,7 +86,7 @@ void SLabelGeometryImage::configuring()
             }
 
             m_lPointListLabels.push_back(clusterLabels);
-            m_lPointListCentroids.push_back(::fwData::PointList::New());
+            m_lPointListCentroids.push_back(data::PointList::New());
         }
     }
 }
@@ -103,9 +101,9 @@ void SLabelGeometryImage::starting()
 
 void SLabelGeometryImage::updating()
 {
-    const auto image = this->getLockedInOut< ::fwData::Image >("image");
+    const auto image = this->getLockedInOut< data::Image >("image");
 
-    ::fwDataTools::helper::Image imageHelper(image.get_shared());
+    data::tools::helper::Image imageHelper(image.get_shared());
     if (!imageHelper.getBuffer())
     {
         SLM_INFO("Image is not set.");
@@ -113,20 +111,20 @@ void SLabelGeometryImage::updating()
     }
 
     // Call the ITK operator
-    ::imageFilterOp::computeCentroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);
+    sight::filter::image::computeCentroids(image.get_shared(), m_lPointListCentroids, m_lPointListLabels);
 
     if(m_lPointListCentroids.empty())
     {
         //get landmarks
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks( image.get_shared() );
-        ::fwData::PointList::sptr landmarks =
-            image->getField< ::fwData::PointList >( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+        data::tools::fieldHelper::MedicalImageHelpers::checkLandmarks( image.get_shared() );
+        data::PointList::sptr landmarks =
+            image->getField< data::PointList >( data::tools::fieldHelper::Image::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
         {
             // notify
-            auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
+            auto sig = image->signal< data::Image::LandmarkAddedSignalType >(data::Image::s_LANDMARK_ADDED_SIG);
             sig->asyncEmit(point);
         }
     }
@@ -156,12 +154,12 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
     {
         indexPlane--;
     }
-    ::fwData::PointList::sptr selectedPointList = m_lPointListCentroids.at(indexPlane);
+    data::PointList::sptr selectedPointList = m_lPointListCentroids.at(indexPlane);
 
     for(size_t idPoint = 0; idPoint < selectedPointList->getPoints().size(); ++idPoint)
     {
-        ::fwData::String::sptr label = ::fwData::String::New(std::to_string(idPoint));
-        selectedPointList->getPoints().at(idPoint)->setField( ::fwDataTools::fieldHelper::Image::m_labelId, label );
+        data::String::sptr label = data::String::New(std::to_string(idPoint));
+        selectedPointList->getPoints().at(idPoint)->setField( data::tools::fieldHelper::Image::m_labelId, label );
     }
 
     this->setOutput("pointList", m_lPointListCentroids.at(indexPlane));
@@ -169,4 +167,4 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
 
 //-----------------------------------------------------------------------------
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

@@ -26,10 +26,9 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Color.hpp>
+#include <data/Mesh.hpp>
 
 #include <services/macros.hpp>
-
-#include <fwData/Mesh.hpp>
 
 #include <geometry/data/Mesh.hpp>
 
@@ -52,9 +51,9 @@ namespace sight::modules::geometry
 namespace generator
 {
 
-fwServicesRegisterMacro( ::sight::services::IGenerator, ::sight::modules::geometry::SNeedle, ::fwData::Mesh)
+fwServicesRegisterMacro( ::sight::services::IGenerator, ::sight::modules::geometry::SNeedle, data::Mesh)
 
-const ::fwCom::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
+const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
 
 // ------------------------------------------------------------------------------
 
@@ -100,7 +99,7 @@ void SNeedle::configuring()
                         needleColor [0] == '#'
                         && ( needleColor.length() == 7 || needleColor.length() == 9)
                         );
-            ::fwDataTools::Color::hexaStringToRGBA(needleColor, m_needleColor);
+            data::tools::Color::hexaStringToRGBA(needleColor, m_needleColor);
         }
 
         const auto minorStepsConfigTree = (*needleConfigTree).get_child_optional("minorSteps");
@@ -116,7 +115,7 @@ void SNeedle::configuring()
                             minorStepsColor [0] == '#'
                             && ( minorStepsColor.length() == 7 || minorStepsColor.length() == 9)
                             );
-                ::fwDataTools::Color::hexaStringToRGBA(minorStepsColor, m_needleMinorStepsColor);
+                data::tools::Color::hexaStringToRGBA(minorStepsColor, m_needleMinorStepsColor);
             }
 
             m_needleMinorStepsLength = minorStepsConfig.get<double>("length", m_needleMinorStepsLength);
@@ -135,7 +134,7 @@ void SNeedle::configuring()
                             majorStepsColor [0] == '#'
                             && ( majorStepsColor.length() == 7 || majorStepsColor.length() == 9)
                             );
-                ::fwDataTools::Color::hexaStringToRGBA(majorStepsColor, m_needleMajorStepsColor);
+                data::tools::Color::hexaStringToRGBA(majorStepsColor, m_needleMajorStepsColor);
             }
 
             m_needleMajorSteps = majorStepsConfig.get<unsigned int>("steps", m_needleMajorSteps);
@@ -177,11 +176,11 @@ void SNeedle::updating()
         vtkMesh = triangleFilter->GetOutput();
     }
 
-    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >("mesh");
+    data::Mesh::sptr mesh = this->getInOut< data::Mesh >("mesh");
     ::fwVtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    data::Object::ModifiedSignalType::sptr sig;
+    sig = mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

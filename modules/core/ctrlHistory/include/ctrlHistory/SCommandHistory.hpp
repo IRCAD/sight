@@ -26,11 +26,11 @@
 
 #include <core/base.hpp>
 
-#include <fwCommand/ICommand.hpp>
-#include <fwCommand/UndoRedoManager.hpp>
-
 #include <services/IService.hpp>
 #include <services/macros.hpp>
+
+#include <ui/history/ICommand.hpp>
+#include <ui/history/UndoRedoManager.hpp>
 
 namespace ctrlHistory
 {
@@ -44,7 +44,7 @@ namespace ctrlHistory
  * - \b canRedo(bool) : sent when the history is modified, notifies if an redo is still possible.
  *
  * @section Slots Slots
- * - \b enqueue(::fwCommand::ICommand::sptr) : add a command to the history.
+ * - \b enqueue(ui::history::ICommand::sptr) : add a command to the history.
  * - \b undo() : undo the last command.
  * - \b redo() : redo the next command.
  * - \b clear() : clear the history (delete all commands).
@@ -94,7 +94,7 @@ private:
     typedef core::com::Signal<void (bool)> CanDoSignalType;
 
     /// SLOT: add a command to the history.
-    void enqueue(::fwCommand::ICommand::sptr command);
+    void enqueue(ui::history::ICommand::sptr command);
 
     /// SLOT: undo the last command.
     void undo();
@@ -112,7 +112,7 @@ private:
 
     CanDoSignalType::sptr m_canRedoSig;
 
-    ::fwCommand::UndoRedoManager m_undoRedoManager;
+    ui::history::UndoRedoManager m_undoRedoManager;
 };
 
 } // namespace ctrlHistory

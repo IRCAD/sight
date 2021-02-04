@@ -37,7 +37,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::filter::image::SThreshold">
+        <service type="::sight::modules::filter::image::SThreshold">
             <in key="source" uid="..." />
             <out key="target" uid="..." />
             <config>
@@ -62,7 +62,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SThreshold : public services::IOperator
 
 public:
 
-    fwCoreServiceMacro(SThreshold, services::IOperator)
+    fwCoreServiceMacro(SThreshold, ::sight::services::IOperator)
 
     MODULE_FILTER_IMAGE_API SThreshold() noexcept;
 

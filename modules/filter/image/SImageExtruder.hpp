@@ -49,7 +49,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::modules::filter::image::SImageExtruder">
+    <service uid="..." type="::sight::modules::filter::image::SImageExtruder">
         <in key="meshes" uid="..." />
         <in key="image" uid="..." />
         <inout key="extrudedImage" uid="..." />
@@ -68,7 +68,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public services::IOpe
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImageExtruder, services::IOperator)
+    fwCoreServiceMacro(SImageExtruder, ::sight::services::IOperator)
 
     /// Initializes the slot.
     MODULE_FILTER_IMAGE_API SImageExtruder();

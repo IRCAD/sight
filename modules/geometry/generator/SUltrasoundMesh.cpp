@@ -58,7 +58,7 @@ static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
 static const services::IService::KeyType s_MESH_INOUT = "mesh";
 
-fwServicesRegisterMacro(services::IGenerator, ::sight::modules::filter::mesh::generator::SUltrasoundMesh)
+fwServicesRegisterMacro(::sight::services::IGenerator, ::sight::modules::filter::mesh::generator::SUltrasoundMesh)
 
 // -----------------------------------------------------------------------------
 

@@ -28,7 +28,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <imageFilterOp/Flipper.hpp>
+#include <filter/image/Flipper.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -84,7 +84,7 @@ void SFlip::updating()
 
         data::Image::sptr outImg = data::Image::New();
 
-        ::imageFilterOp::Flipper::flip(inImg, outImg, m_flipAxes);
+        sight::filter::image::Flipper::flip(inImg, outImg, m_flipAxes);
 
         this->setOutput(s_IMAGE_OUT, outImg);
 

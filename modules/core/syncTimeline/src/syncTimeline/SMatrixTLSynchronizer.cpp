@@ -40,7 +40,7 @@ namespace syncTimeline
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(services::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, data::MatrixTL)
+fwServicesRegisterMacro(::sight::services::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, data::MatrixTL)
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";

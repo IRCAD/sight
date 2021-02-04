@@ -7,7 +7,7 @@ set( DEPENDENCIES
     core
     data
     services
-    fwCommand
+    ui_history
 )
 
 set( REQUIREMENTS  )

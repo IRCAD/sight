@@ -35,7 +35,7 @@ namespace generator
 {
 
 /**
- * @brief Generates a cylinder shape into a ::fwData::Mesh using VTK.
+ * @brief Generates a cylinder shape into a data::Mesh using VTK.
  *
  * @section Slots Slots
  * - \b updateHeight(): Update the height of the cylinder.
@@ -68,7 +68,7 @@ namespace generator
  * mm by default).
  *
  * @subsection In-Out In-Out:
- * - \b mesh [::fwData::Mesh]: generated mesh.
+ * - \b mesh [data::Mesh]: generated mesh.
  */
 class MODULE_GEOMETRY_GENERATOR_CLASS_API SNeedle final : public services::IGenerator
 {

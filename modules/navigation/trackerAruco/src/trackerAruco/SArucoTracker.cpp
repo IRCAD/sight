@@ -46,7 +46,7 @@
 
 namespace trackerAruco
 {
-fwServicesRegisterMacro(services::ITracker, ::trackerAruco::SArucoTracker)
+fwServicesRegisterMacro(::sight::services::ITracker, ::trackerAruco::SArucoTracker)
 //-----------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";

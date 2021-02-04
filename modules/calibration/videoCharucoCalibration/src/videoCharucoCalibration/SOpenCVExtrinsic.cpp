@@ -57,7 +57,7 @@
 #include <fstream>
 #include <iostream>
 
-fwServicesRegisterMacro(services::ICalibration, ::videoCharucoCalibration::SOpenCVExtrinsic,
+fwServicesRegisterMacro(::sight::services::ICalibration, ::videoCharucoCalibration::SOpenCVExtrinsic,
                         data::CameraSeries)
 
 namespace videoCharucoCalibration

@@ -39,7 +39,7 @@
 
 #include <services/macros.hpp>
 
-fwServicesRegisterMacro(services::ISynchronizer, ::videoTools::SMatrixSynchronizer,
+fwServicesRegisterMacro(::sight::services::ISynchronizer, ::videoTools::SMatrixSynchronizer,
                         data::TransformationMatrix3D)
 
 // ----------------------------------------------------------------------------

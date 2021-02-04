@@ -31,7 +31,7 @@
 #include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwItkIO/itk.hpp>
+#include <io/itk/itk.hpp>
 
 #include <itkFFTNormalizedCorrelationImageFilter.h>
 #include <itkIdentityTransform.h>

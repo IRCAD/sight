@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     data
     module_ui_qt
-    fwItkIO
+    io_itk
     ui_base
 )
 set( REQUIREMENTS )

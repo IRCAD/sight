@@ -43,7 +43,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::modules::filter::image::SFlip">
+       <service type="::sight::modules::filter::image::SFlip">
            <in key="source" uid="..." autoConnect="yes" />
            <out key="target" uid="..." />
        </service>
@@ -57,7 +57,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SFlip : public services::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SFlip, services::IOperator)
+    fwCoreServiceMacro(SFlip, ::sight::services::IOperator)
 
     MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
     MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXISY_SLOT;

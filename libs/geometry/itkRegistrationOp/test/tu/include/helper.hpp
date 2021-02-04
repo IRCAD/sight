@@ -24,8 +24,8 @@
 
 #include <data/Image.hpp>
 
-#include <fwItkIO/itk.hpp>
-#include <fwItkIO/itk.hxx>
+#include <io/itk/itk.hpp>
+#include <io/itk/itk.hxx>
 
 #include <itkEllipseSpatialObject.h>
 #include <itkImage.h>
@@ -86,7 +86,7 @@ data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Ve
     image->Graft(imageFilter->GetOutput());
 
     data::Image::sptr outputImage = data::Image::New();
-    ::fwItkIO::itkImageToFwDataImage(image, outputImage);
+    io::itk::itkImageToFwDataImage(image, outputImage);
 
     return outputImage;
 }

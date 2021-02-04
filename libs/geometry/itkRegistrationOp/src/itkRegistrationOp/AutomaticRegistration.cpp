@@ -24,8 +24,8 @@
 
 #include "itkRegistrationOp/ItkImageCaster.hpp"
 
-#include <fwItkIO/helper/Transform.hpp>
-#include <fwItkIO/itk.hpp>
+#include <io/itk/helper/Transform.hpp>
+#include <io/itk/itk.hpp>
 
 #include <itkCommand.h>
 #include <itkCorrelationImageToImageMetricv4.h>

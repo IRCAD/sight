@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "visuOgreAdaptor/SMeshList.hpp"
+#include "SMeshList.hpp"
 
-#include <fwCom/Slots.hxx>
+#include <core/com/Slots.hxx>
 
-#include <fwData/Mesh.hpp>
+#include <data/Mesh.hpp>
 
-namespace visuOgreAdaptor
+namespace sight::modules::viz::ogre
 {
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT   = "add";
-static const ::fwCom::Slots::SlotKeyType s_CLEAR_SLOT = "clear";
+static const core::com::Slots::SlotKeyType s_ADD_SLOT   = "add";
+static const core::com::Slots::SlotKeyType s_CLEAR_SLOT = "clear";
 
 static const std::string s_TEXTURE_INPUT   = "texture";
 static const std::string s_TRANSFORM_INPUT = "transform";
@@ -77,28 +77,28 @@ void SMeshList::starting()
     this->initialize();
 
     // Get the inputs.
-    const auto mesh           = this->getWeakInOut< ::fwData::Mesh >(s_MESH_INOUT);
-    const auto transformInOut = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
-    const auto imageInput     = this->getLockedInput< ::fwData::Image >(s_TEXTURE_INPUT);
+    const auto mesh           = this->getWeakInOut< data::Mesh >(s_MESH_INOUT);
+    const auto transformInOut = this->getLockedInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+    const auto imageInput     = this->getLockedInput< data::Image >(s_TEXTURE_INPUT);
 
     // initialise N meshes adaptor
     for (size_t i = 0; i < m_capacity; ++i)
     {
         // Matrix and Image are copied because the input ones will change. Mesh is not copied because we want to use
         // the same mesh of all the adaptors
-        const auto transform = ::fwData::TransformationMatrix3D::copy(transformInOut.get_shared());
-        const auto image     = ::fwData::Image::copy(imageInput.get_shared());
+        const auto transform = data::TransformationMatrix3D::copy(transformInOut.get_shared());
+        const auto image     = data::Image::copy(imageInput.get_shared());
 
         // Create adaptors configurations
         const std::string transformID = this->getID() + transform->getID();
-        ::fwServices::IService::ConfigType config;
+        services::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", m_layerID);
         config.add("config.<xmlattr>." + s_TRANSFORM_INPUT, transformID);
         config.add("config.<xmlattr>.autoresetcamera", "no");
 
         // Create the transform adaptor.
         const sight::viz::ogre::IAdaptor::sptr transformAdaptor
-            = this->registerService< sight::viz::ogre::IAdaptor >("::visuOgreAdaptor::STransform");
+            = this->registerService< sight::viz::ogre::IAdaptor >("::sight::viz::ogre::STransform");
 
         transformAdaptor->setLayerID(m_layerID);
         transformAdaptor->setRenderService(this->getRenderService());
@@ -112,9 +112,9 @@ void SMeshList::starting()
 
         // Create the texture adaptor
         const sight::viz::ogre::IAdaptor::sptr textureAdaptor =
-            this->registerService< sight::viz::ogre::IAdaptor >("::visuOgreAdaptor::STexture");
+            this->registerService< sight::viz::ogre::IAdaptor >("::sight::viz::ogre::STexture");
 
-        ::fwServices::IService::ConfigType textureConfig = config;
+        services::IService::ConfigType textureConfig = config;
         textureConfig.add("config.<xmlattr>.textureName", image->getID());
         textureConfig.add("config.<xmlattr>.useAlpha", "true");
 
@@ -129,9 +129,9 @@ void SMeshList::starting()
 
         // Creates the mesh adaptor.
         const sight::viz::ogre::IAdaptor::sptr meshAdaptor =
-            this->registerService< sight::viz::ogre::IAdaptor >("::visuOgreAdaptor::SMesh");
+            this->registerService< sight::viz::ogre::IAdaptor >("::sight::viz::ogre::SMesh");
 
-        ::fwServices::IService::ConfigType meshConfig = config;
+        services::IService::ConfigType meshConfig = config;
         meshConfig.add("config.<xmlattr>.textureName", image->getID());
 
         meshAdaptor->setLayerID(m_layerID);
@@ -152,10 +152,10 @@ void SMeshList::starting()
 
 //-----------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsMap SMeshList::getAutoConnections() const
+services::IService::KeyConnectionsMap SMeshList::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_SLOT);
+    services::IService::KeyConnectionsMap connections;
+    connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_SLOT);
     return connections;
 }
 
@@ -216,12 +216,12 @@ void SMeshList::add()
         const sight::viz::ogre::IAdaptor::sptr textureAdp = instance.m_texture;
         {
             // set current image
-            const auto image = textureAdp->getLockedInput< ::fwData::Image >("image");
+            const auto image = textureAdp->getLockedInput< data::Image >("image");
 
-            const auto textureInput = this->getLockedInput< ::fwData::Image >(s_TEXTURE_INPUT);
+            const auto textureInput = this->getLockedInput< data::Image >(s_TEXTURE_INPUT);
 
-            if (m_generateAlpha && textureInput->getType() == ::fwTools::Type::s_UINT8 &&
-                (textureInput->getPixelFormat() == ::fwData::Image::PixelFormat::GRAY_SCALE ||
+            if (m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8 &&
+                (textureInput->getPixelFormat() == data::Image::PixelFormat::GRAY_SCALE ||
                  textureInput->getNumberOfComponents() == 1))
             {
                 // transform the image into RGBA with a transparent texture
@@ -229,14 +229,14 @@ void SMeshList::add()
                 if (textureInput->getAllocatedSizeInBytes()*4 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
-                    instance.m_image->setPixelFormat(::fwData::Image::PixelFormat::RGBA);
+                    instance.m_image->setPixelFormat(data::Image::PixelFormat::RGBA);
                     instance.m_image->setNumberOfComponents(4);
                     instance.m_image->resize();
                 }
 
                 auto inItr = textureInput->begin< std::uint8_t >();
                 auto inEnd = textureInput->end< std::uint8_t >();
-                auto itr   = instance.m_image->begin< ::fwData::iterator::RGBA >();
+                auto itr   = instance.m_image->begin< data::iterator::RGBA >();
 
                 for (; inItr != inEnd; ++inItr, ++itr)
                 {
@@ -246,8 +246,8 @@ void SMeshList::add()
                     itr->a = *inItr;
                 }
             }
-            else if (m_generateAlpha && textureInput->getType() == ::fwTools::Type::s_UINT8 &&
-                     (textureInput->getPixelFormat() == ::fwData::Image::PixelFormat::RGB ||
+            else if (m_generateAlpha && textureInput->getType() == core::tools::Type::s_UINT8 &&
+                     (textureInput->getPixelFormat() == data::Image::PixelFormat::RGB ||
                       textureInput->getNumberOfComponents() == 3))
             {
                 // transform the image into RGBA with a transparent texture
@@ -255,14 +255,14 @@ void SMeshList::add()
                 if (textureInput->getAllocatedSizeInBytes()*4/3 != instance.m_image->getAllocatedSizeInBytes())
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
-                    instance.m_image->setPixelFormat(::fwData::Image::PixelFormat::RGBA);
+                    instance.m_image->setPixelFormat(data::Image::PixelFormat::RGBA);
                     instance.m_image->setNumberOfComponents(4);
                     instance.m_image->resize();
                 }
 
-                auto inItr = textureInput->begin< ::fwData::iterator::RGB >();
-                auto inEnd = textureInput->end< ::fwData::iterator::RGB >();
-                auto itr   = instance.m_image->begin< ::fwData::iterator::RGBA >();
+                auto inItr = textureInput->begin< data::iterator::RGB >();
+                auto inEnd = textureInput->end< data::iterator::RGB >();
+                auto itr   = instance.m_image->begin< data::iterator::RGBA >();
 
                 for (; inItr != inEnd; ++inItr, ++itr)
                 {
@@ -284,9 +284,9 @@ void SMeshList::add()
         const sight::viz::ogre::IAdaptor::sptr transformAdp = instance.m_transform;
         {
             // set current matrix
-            const auto transform = transformAdp->getLockedInOut< ::fwData::TransformationMatrix3D >("transform");
+            const auto transform = transformAdp->getLockedInOut< data::TransformationMatrix3D >("transform");
 
-            const auto transformInOut = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+            const auto transformInOut = this->getLockedInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
             transform->deepCopy(transformInOut.get_shared());
 
         }
@@ -311,4 +311,4 @@ void SMeshList::clear()
     m_meshCount = 0;
 }
 
-} // namespace visuOgreAdaptor.
+} // namespace sight::modules::viz::ogre.

@@ -23,7 +23,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-#include <fwItkIO/itk.hpp>
+#include <io/itk/itk.hpp>
 
 #include <core/com/Signal.hxx>
 
@@ -114,10 +114,10 @@ void SImagesSubstract::updating()
         {
             typedef itk::Image< std::int16_t, 3 > ImageType;
 
-            ImageType::Pointer itkImage1 = ::fwItkIO::itkImageFactory< ImageType >( image1 );
+            ImageType::Pointer itkImage1 = io::itk::itkImageFactory< ImageType >( image1 );
             SLM_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
 
-            ImageType::Pointer itkImage2 = ::fwItkIO::itkImageFactory< ImageType >( image2 );
+            ImageType::Pointer itkImage2 = io::itk::itkImageFactory< ImageType >( image2 );
             SLM_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
@@ -133,7 +133,7 @@ void SImagesSubstract::updating()
             filter->Update();
             output = filter->GetOutput();
             assert(output->GetSource());
-            ::fwItkIO::dataImageFactory< ImageType >( output, imageResult, true );
+            io::itk::dataImageFactory< ImageType >( output, imageResult, true );
 
             auto sig = imageResult->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
             sig->asyncEmit();

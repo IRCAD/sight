@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "opImageFilter/config.hpp"
+#include "modules/filter/image/config.hpp"
 
-#include <fwData/PointList.hpp>
+#include <data/PointList.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 /**
  * @brief Gets centroids of shapes from a labeled image and adds them as a 'landmark' field to it.
@@ -42,7 +42,7 @@ namespace opImageFilter
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::opImageFilter::SLabelGeometryImage">
+       <service uid="..." type="::sight::modules::filter::image::SLabelGeometryImage">
            <inout key="image" uid="..."/>
            <out key="pointList" uid"..."/>
            <clusters>
@@ -54,42 +54,42 @@ namespace opImageFilter
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [::fwData::Image]: labeled image to which the 'landmark' field will be added.
+ * - \b image [data::Image]: labeled image to which the 'landmark' field will be added.
  *
  * @subsection Out Out
- * - \b pointList [::fwData::PointList]: PointList containing centroid points position. Each Point contains a label in
+ * - \b pointList [data::PointList]: PointList containing centroid points position. Each Point contains a label in
  * field. This pointList is optional.
  *
  * @subsection Configuration Configuration
  * - \b clusters: Must contains a group a clusters.
  * - \b cluster: Contains a list of size_t labels value.
  */
-class OPIMAGEFILTER_CLASS_API SLabelGeometryImage final : public ::fwServices::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLabelGeometryImage, ::fwServices::IOperator)
+    fwCoreServiceMacro(SLabelGeometryImage, services::IOperator)
 
     /// Initializes slots.
-    OPIMAGEFILTER_API SLabelGeometryImage();
+    MODULE_FILTER_IMAGE_API SLabelGeometryImage();
 
     /// Destroys the service.
-    OPIMAGEFILTER_API ~SLabelGeometryImage() override;
+    MODULE_FILTER_IMAGE_API ~SLabelGeometryImage() override;
 
 protected:
 
     /// Does nothing.
-    OPIMAGEFILTER_API void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Configures the service.
-    OPIMAGEFILTER_API void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /// Compute centroids.
-    OPIMAGEFILTER_API void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
 private:
 
@@ -101,7 +101,7 @@ private:
     void updateSelectedPointList(std::string value, std::string key);
 
     std::vector< std::vector<size_t> > m_lPointListLabels;
-    std::vector< ::fwData::PointList::sptr > m_lPointListCentroids;
+    std::vector< data::PointList::sptr > m_lPointListCentroids;
 };
 
-} // namespace opImageFilter
+} // namespace sight::modules::filter::image

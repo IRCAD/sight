@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     data
     services
-    imageFilterOp
-    fwCommand
+    filter_image
+    ui_history
 )
 set( REQUIREMENTS )

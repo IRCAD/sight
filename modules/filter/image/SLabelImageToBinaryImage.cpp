@@ -20,17 +20,17 @@
  *
  ***********************************************************************/
 
-#include "opImageFilter/SLabelImageToBinaryImage.hpp"
+#include "modules/filter/image/SLabelImageToBinaryImage.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
 
-#include <fwData/Image.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Vector.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
+#include <data/Vector.hpp>
 
-#include <fwItkIO/itk.hpp>
+#include <services/macros.hpp>
 
-#include <fwServices/macros.hpp>
+#include <io/itk/itk.hpp>
 
 #include <itkImage.h>
 #include <itkUnaryFunctorImageFilter.h>
@@ -39,13 +39,13 @@
 #include <bitset>
 #include <functional>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SLabelImageToBinaryImage)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SLabelImageToBinaryImage)
 
-static const ::fwServices::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
-static const ::fwServices::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
+static const services::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
+static const services::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
 
 typedef std::function< std::uint8_t(const std::uint8_t&) > FunctionType;
 
@@ -117,19 +117,19 @@ void SLabelImageToBinaryImage::updating()
 {
     typedef typename ::itk::Image< std::uint8_t, 3 > ImageType;
 
-    const auto labelImage = this->getLockedInput< ::fwData::Image >(s_LABEL_IMAGE_INPUT);
+    const auto labelImage = this->getLockedInput< data::Image >(s_LABEL_IMAGE_INPUT);
     SLM_ASSERT("No 'labelImage' input.", labelImage);
 
-    const auto maskImage = this->getLockedInOut< ::fwData::Image >(s_BINARY_MASK_INOUT);
+    const auto maskImage = this->getLockedInOut< data::Image >(s_BINARY_MASK_INOUT);
     SLM_ASSERT("No 'maskImage' inout.", maskImage);
 
     SLM_ASSERT("The label image must be a greyscale image with uint8 values.",
-               labelImage->getType() == ::fwTools::Type::s_UINT8 && labelImage->getNumberOfComponents() == 1);
+               labelImage->getType() == core::tools::Type::s_UINT8 && labelImage->getNumberOfComponents() == 1);
 
     LambdaFunctor functor;
     if(m_labelSetFieldName)
     {
-        ::fwData::Vector::csptr labels = labelImage->getField< ::fwData::Vector >(m_labelSetFieldName.value());
+        data::Vector::csptr labels = labelImage->getField< data::Vector >(m_labelSetFieldName.value());
 
         if(!labels)
         {
@@ -139,9 +139,9 @@ void SLabelImageToBinaryImage::updating()
 
         std::bitset< std::numeric_limits< std::uint8_t >::max() + 1 > labelSet;
 
-        std::for_each(labels->begin(), labels->end(), [&labelSet](::fwData::Object::csptr _o)
+        std::for_each(labels->begin(), labels->end(), [&labelSet](data::Object::csptr _o)
             {
-                ::fwData::Integer::csptr intObj = ::fwData::Integer::dynamicConstCast(_o);
+                data::Integer::csptr intObj = data::Integer::dynamicConstCast(_o);
                 SLM_ASSERT("The label vector should only contain integers.", intObj);
                 const int val = intObj->value();
                 SLM_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255 );
@@ -161,7 +161,7 @@ void SLabelImageToBinaryImage::updating()
             });
     }
 
-    typename ImageType::Pointer itkLabelImg = ::fwItkIO::itkImageFactory< ImageType >(labelImage.get_shared());
+    typename ImageType::Pointer itkLabelImg = io::itk::itkImageFactory< ImageType >(labelImage.get_shared());
 
     ::itk::UnaryFunctorImageFilter< ImageType, ImageType, LambdaFunctor >::Pointer labelToMaskFilter =
         ::itk::UnaryFunctorImageFilter< ImageType, ImageType, LambdaFunctor >::New();
@@ -172,8 +172,8 @@ void SLabelImageToBinaryImage::updating()
 
     typename ImageType::Pointer itkMaskImg = labelToMaskFilter->GetOutput();
 
-    ::fwItkIO::itkImageToFwDataImage< ImageType::Pointer >(itkMaskImg, maskImage.get_shared());
-    const auto modifiedSig = maskImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Image::s_MODIFIED_SIG);
+    io::itk::itkImageToFwDataImage< ImageType::Pointer >(itkMaskImg, maskImage.get_shared());
+    const auto modifiedSig = maskImage->signal< data::Object::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);
 
     modifiedSig->asyncEmit();
 
@@ -188,14 +188,14 @@ void SLabelImageToBinaryImage::stopping()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
+services::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_LABEL_IMAGE_INPUT, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_LABEL_IMAGE_INPUT, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LABEL_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

@@ -37,13 +37,12 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <fwItkIO/ImageReader.hpp>
-
 #include <services/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <io/base/services/IReader.hpp>
+#include <io/itk/ImageReader.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -124,8 +123,8 @@ void SInrSeriesDBReader::openLocationDialog()
 
 bool SInrSeriesDBReader::createImage( const std::filesystem::path inrFile, data::Image::sptr image )
 {
-    ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
-    bool ok = true;
+    io::itk::ImageReader::sptr myLoader = io::itk::ImageReader::New();
+    bool ok                             = true;
 
     myLoader->setObject(image);
     myLoader->setFile(inrFile);

@@ -22,18 +22,18 @@
 
 #pragma once
 
-#include "opImageFilter/config.hpp"
+#include "modules/filter/image/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 /**
  * @brief Implements the AND bitwise operator pixel-wise between two images.
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::opImageFilter::SBitwiseAnd">
+       <service uid="..." type="::sight::modules::filter::image::SBitwiseAnd">
            <in key="image" uid="..."/>
            <in key="mask" uid="..."/>
            <out key="outputImage" uid="..." />
@@ -41,39 +41,39 @@ namespace opImageFilter
    @endcode
  *
  * @subsection Input Input
- * - \b image [::fwData::Image]: input image
- * - \b mask [::fwData::Image]: mask
+ * - \b image [data::Image]: input image
+ * - \b mask [data::Image]: mask
  *
  * @subsection Output Output
- * - \b outputImage [::fwData::Image]: result of operation 'AND' between input image and mask
+ * - \b outputImage [data::Image]: result of operation 'AND' between input image and mask
  */
-class OPIMAGEFILTER_CLASS_API SBitwiseAnd final : public ::fwServices::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SBitwiseAnd, ::fwServices::IOperator)
+    fwCoreServiceMacro(SBitwiseAnd, ::sight::services::IOperator)
 
     /// Does nothing.
-    OPIMAGEFILTER_API SBitwiseAnd();
+    MODULE_FILTER_IMAGE_API SBitwiseAnd();
 
     /// Destroys the service.
-    OPIMAGEFILTER_API ~SBitwiseAnd() override;
+    MODULE_FILTER_IMAGE_API ~SBitwiseAnd() override;
 
 protected:
 
     /// Does nothing.
-    OPIMAGEFILTER_API void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /// Computes centroids.
-    OPIMAGEFILTER_API void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
 };
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

@@ -11,7 +11,7 @@
             "item_0":
             {
                 "key": "CLASSNAME_METAINFO",
-                "value": "::fwData::TransferFunction"
+                "value": "data::TransferFunction"
             },
             "item_1":
             {

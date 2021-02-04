@@ -35,14 +35,14 @@
 #include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwItkIO/itk.hpp>
-
-#include <utestData/generator/Image.hpp>
-
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
+
+#include <utestData/generator/Image.hpp>
+
+#include <io/itk/itk.hpp>
 
 #include <itkImage.h>
 #include <itkRegionOfInterestImageFilter.h>
@@ -149,7 +149,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
         }
     };
 
-    auto itkFixed = ::fwItkIO::itkImageFactory<ImageType>(fixed, false);
+    auto itkFixed = io::itk::itkImageFactory<ImageType>(fixed, false);
 
     // Resample the image to get a different spacing
     ImageType::SizeType newSize;
@@ -165,7 +165,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     resample->SetOutputOrigin(itkFixed->GetOrigin());
     resample->Update();
     auto resampled         = resample->GetOutput();
-    auto resampledF4sFixed = ::fwItkIO::dataImageFactory<ImageType>(resampled, true);
+    auto resampledF4sFixed = io::itk::dataImageFactory<ImageType>(resampled, true);
 
     ::itkRegistrationOp::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;

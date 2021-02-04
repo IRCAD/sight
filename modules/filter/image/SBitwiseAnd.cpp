@@ -20,42 +20,41 @@
  *
  ***********************************************************************/
 
-#include "opImageFilter/SBitwiseAnd.hpp"
+#include "SBitwiseAnd.hpp"
 
-#include <fwCom/Signal.hxx>
+#include <core/com/Signal.hxx>
+#include <core/tools/Dispatcher.hpp>
+#include <core/tools/DynamicTypeKeyTypeMapping.hpp>
+#include <core/tools/IntegerTypes.hpp>
 
-#include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/tools/helper/ImageGetter.hpp>
 
-#include <fwDataTools/helper/ImageGetter.hpp>
+#include <services/macros.hpp>
 
-#include <fwItkIO/itk.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/IntegerTypes.hpp>
+#include <io/itk/itk.hpp>
 
 #include <itkAndImageFilter.h>
 #include <itkCastImageFilter.h>
 #include <itkRescaleIntensityImageFilter.h>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SBitwiseAnd, ::fwData::Image)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SBitwiseAnd,
+                        ::sight::data::Image)
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN = "image";
-static const ::fwServices::IService::KeyType s_MASK_IN = "mask";
+static const services::IService::KeyType s_IMAGE_IN = "image";
+static const services::IService::KeyType s_MASK_IN = "mask";
 
-static const ::fwServices::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
+static const services::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
 
 struct AndImageFilterParameters
 {
-    ::fwData::Image::csptr inputImage;
-    ::fwData::Image::csptr mask;
-    ::fwData::Image::sptr outputImage;
+    data::Image::csptr inputImage;
+    data::Image::csptr mask;
+    data::Image::sptr outputImage;
 };
 
 //------------------------------------------------------------------------------
@@ -68,9 +67,9 @@ struct AndImageFilter
     template<class MASK_PIXELTYPE>
     void operator()(AndImageFilterParameters& params)
     {
-        ::fwData::Image::csptr inputImage = params.inputImage;
-        ::fwData::Image::csptr mask       = params.mask;
-        ::fwData::Image::sptr outputImage = params.outputImage;
+        data::Image::csptr inputImage = params.inputImage;
+        data::Image::csptr mask       = params.mask;
+        data::Image::sptr outputImage = params.outputImage;
 
         const unsigned int dimension = 3;
         SLM_ASSERT("Only image dimension 3 managed.", inputImage->getNumberOfDimensions() == dimension);
@@ -79,8 +78,8 @@ struct AndImageFilter
         typedef typename ::itk::Image<MASK_PIXELTYPE, dimension>  MaskImageType;
         typedef typename ::itk::Image<PIXELTYPE, dimension> OutputImageType;
 
-        typename InputImageType::Pointer itkInputImage = ::fwItkIO::itkImageFactory<InputImageType>( inputImage );
-        typename MaskImageType::Pointer itkMaskImage   = ::fwItkIO::itkImageFactory<MaskImageType>( mask );
+        typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>( inputImage );
+        typename MaskImageType::Pointer itkMaskImage   = io::itk::itkImageFactory<MaskImageType>( mask );
         typename OutputImageType::Pointer itkOutputImage;
 
         // We assume that the mask pixel type has a lower size in bits than the image pixel type
@@ -107,7 +106,7 @@ struct AndImageFilter
         filter->Update();
 
         itkOutputImage->GetSource()->Update();
-        ::fwItkIO::dataImageFactory< OutputImageType >( itkOutputImage, outputImage );
+        io::itk::dataImageFactory< OutputImageType >( itkOutputImage, outputImage );
     }
 };
 
@@ -120,8 +119,8 @@ struct AndImageFilterCaller
     template<class PIXELTYPE>
     void operator() (AndImageFilterParameters& params)
     {
-        const ::fwTools::DynamicType maskType = params.mask->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
+        const core::tools::DynamicType maskType = params.mask->getPixelType();
+        core::tools::Dispatcher< core::tools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
     }
 };
 
@@ -153,24 +152,24 @@ void SBitwiseAnd::starting()
 
 void SBitwiseAnd::updating()
 {
-    const auto image = this->getLockedInput< ::fwData::Image >(s_IMAGE_IN);
+    const auto image = this->getLockedInput< data::Image >(s_IMAGE_IN);
     SLM_ASSERT("image does not exist.", image);
 
-    const auto mask = this->getLockedInput< ::fwData::Image >(s_MASK_IN);
+    const auto mask = this->getLockedInput< data::Image >(s_MASK_IN);
     SLM_ASSERT("mask does not exist.", mask);
 
-    ::fwDataTools::helper::ImageGetter imageHelper(image.get_shared());
-    ::fwDataTools::helper::ImageGetter maskHelper(mask.get_shared());
+    data::tools::helper::ImageGetter imageHelper(image.get_shared());
+    data::tools::helper::ImageGetter maskHelper(mask.get_shared());
 
-    ::fwData::Image::sptr outputImage = ::fwData::Image::New();
+    data::Image::sptr outputImage = data::Image::New();
 
     AndImageFilterParameters params;
     params.inputImage  = image.get_shared();
     params.mask        = mask.get_shared();
     params.outputImage = outputImage;
 
-    ::fwTools::DynamicType type = image->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntegerTypes, AndImageFilterCaller >::invoke(type, params);
+    core::tools::DynamicType type = image->getPixelType();
+    core::tools::Dispatcher< core::tools::IntegerTypes, AndImageFilterCaller >::invoke(type, params);
 
     this->setOutput(s_OUTPUTIMAGE_OUT, outputImage);
 
@@ -185,4 +184,4 @@ void SBitwiseAnd::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

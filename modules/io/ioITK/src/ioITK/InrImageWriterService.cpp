@@ -28,11 +28,10 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <fwItkIO/ImageWriter.hpp>
-
 #include <services/macros.hpp>
 
 #include <io/base/services/IWriter.hpp>
+#include <io/itk/ImageWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -126,7 +125,7 @@ void InrImageWriterService::info(std::ostream& _sstream )
 
 void InrImageWriterService::saveImage( const std::filesystem::path& inrFile, const data::Image::csptr& image )
 {
-    ::fwItkIO::ImageWriter::sptr myWriter = ::fwItkIO::ImageWriter::New();
+    io::itk::ImageWriter::sptr myWriter = io::itk::ImageWriter::New();
 
     myWriter->setObject(image);
     myWriter->setFile(inrFile);

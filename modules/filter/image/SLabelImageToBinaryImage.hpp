@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "opImageFilter/config.hpp"
+#include "modules/filter/image/config.hpp"
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
 #include <boost/optional.hpp>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 
 /**
@@ -46,7 +46,7 @@ namespace opImageFilter
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::opImageFilter::SLabelImageToBinaryImage">
+   <service type="::sight::modules::filter::image::SLabelImageToBinaryImage">
        <in key="labelImage" uid="..." autoConnect="yes" />
        <inout key="binaryMask" uid="..." />
        <config labelsField="maskLabels" />
@@ -54,51 +54,51 @@ namespace opImageFilter
    @endcode
  *
  * @subsection Input Input
- * - \b labelImage [::fwData::Image]: Image from which we extract the mask.
+ * - \b labelImage [data::Image]: Image from which we extract the mask.
  *
  * @subsection InOut InOut
- * - \b binaryMask [::fwData::Image]: The binary mask, extracted from the set of labels or all non zero values.
+ * - \b binaryMask [data::Image]: The binary mask, extracted from the set of labels or all non zero values.
  *
  * @subsection Configuration Configuration
  * If you decide to set your own parameters:
  * - \b config (optional):
  *     - \b labelsField (optional): name of the field holding the list of labels to add to the mask.
  */
-class OPIMAGEFILTER_CLASS_API SLabelImageToBinaryImage final : public ::fwServices::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage final : public services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLabelImageToBinaryImage, ::fwServices::IOperator)
+    fwCoreServiceMacro(SLabelImageToBinaryImage, services::IOperator)
 
     /// Does nothing.
-    OPIMAGEFILTER_CLASS_API SLabelImageToBinaryImage();
+    MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage();
 
     /// Destroys the service.
-    OPIMAGEFILTER_CLASS_API ~SLabelImageToBinaryImage() override;
+    MODULE_FILTER_IMAGE_CLASS_API ~SLabelImageToBinaryImage() override;
 
 protected:
 
     /// Configures this service.
-    OPIMAGEFILTER_API void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Computes the mask from the labeled image.
-    OPIMAGEFILTER_API void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Image::s_BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to s_UPDATE_SLOT
-     * Connect ::fwData::Image::s_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to s_UPDATE_SLOT
      */
-    OPIMAGEFILTER_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -106,4 +106,4 @@ private:
 
 };
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

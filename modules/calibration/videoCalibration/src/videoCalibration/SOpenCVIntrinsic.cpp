@@ -48,7 +48,7 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(services::ICalibration, ::videoCalibration::SOpenCVIntrinsic, data::Camera)
+fwServicesRegisterMacro(::sight::services::ICalibration, ::videoCalibration::SOpenCVIntrinsic, data::Camera)
 
 namespace videoCalibration
 {

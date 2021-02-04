@@ -27,11 +27,10 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <fwItkIO/JpgImageWriter.hpp>
-
 #include <services/macros.hpp>
 
 #include <io/base/services/IWriter.hpp>
+#include <io/itk/JpgImageWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -125,7 +124,7 @@ void JpgImageWriterService::info(std::ostream& _sstream )
 
 void JpgImageWriterService::saveImage(const std::filesystem::path& imgPath, const CSPTR(data::Image)& img)
 {
-    ::fwItkIO::JpgImageWriter::sptr writer = ::fwItkIO::JpgImageWriter::New();
+    io::itk::JpgImageWriter::sptr writer = io::itk::JpgImageWriter::New();
     sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving image... ");
 
     data::location::Folder::sptr loc = data::location::Folder::New();

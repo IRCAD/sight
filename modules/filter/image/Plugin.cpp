@@ -29,7 +29,8 @@ namespace sight::modules::filter::image
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::modules::filter::image::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+    "::sight::modules::filter::image::Plugin");
 
 //-----------------------------------------------------------------------------
 

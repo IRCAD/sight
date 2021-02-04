@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "opImageFilter/config.hpp"
+#include "modules/filter/image/config.hpp"
 
-#include <fwCore/base.hpp>
+#include <core/base.hpp>
 
-#include <fwServices/IOperator.hpp>
+#include <services/IOperator.hpp>
 
-#include <imageFilterOp/MatrixRegressor.hpp>
+#include <filter/image/MatrixRegressor.hpp>
 
-namespace opImageFilter
+namespace sight::modules::filter::image
 {
 
 /**
@@ -41,7 +41,7 @@ namespace opImageFilter
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::opImageFilter::SMatrixRegressor">
+   <service type="::sight::modules::filter::image::SMatrixRegressor">
        <in key="matrixList" uid="..." autoConnect="yes" />
        <in key="pointList" uid="..." />
        <inout key="optimalMatrix" uid="..." />
@@ -49,52 +49,52 @@ namespace opImageFilter
    @endcode
  *
  * @subsection Input Input
- * - \b matrixList [::fwData::Vector]: The list of matrices used to compute an optimal one.
- * - \b pointList [::fwData::PointList]: A list of relevant points used to evaluate the distance to the optimal matrix.
+ * - \b matrixList [data::Vector]: The list of matrices used to compute an optimal one.
+ * - \b pointList [data::PointList]: A list of relevant points used to evaluate the distance to the optimal matrix.
  *
  * @subsection In-Out In-Out
- * - \b optimalMatrix [::fwData::TransformationMatrix3D]: The optimal matrix.
+ * - \b optimalMatrix [data::TransformationMatrix3D]: The optimal matrix.
  */
-class OPIMAGEFILTER_CLASS_API SMatrixRegressor : public ::fwServices::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMatrixRegressor, ::fwServices::IOperator)
+    fwCoreServiceMacro(SMatrixRegressor, services::IOperator)
 
     /// Does nothing.
-    OPIMAGEFILTER_API SMatrixRegressor();
+    MODULE_FILTER_IMAGE_API SMatrixRegressor();
 
     /// Destroys the service.
-    OPIMAGEFILTER_API ~SMatrixRegressor() override;
+    MODULE_FILTER_IMAGE_API ~SMatrixRegressor() override;
 
 protected:
 
     /// Does nothing.
-    OPIMAGEFILTER_API void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Compute the optimal matrix.
-    OPIMAGEFILTER_API void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Vector::s_ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
-     * Connect ::fwData::Vector::s_REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
-     * Connect ::fwData::Vector::s_MODIFIED_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
-     * Connect ::fwData::PointList::s_POINT_ADDED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
-     * Connect ::fwData::PointList::s_POINT_REMOVED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
-     * Connect ::fwData::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
+     * Connect data::Vector::s_ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
+     * Connect data::Vector::s_REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
+     * Connect data::Vector::s_MODIFIED_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
+     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
+     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
+     * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
      */
-    OPIMAGEFILTER_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 
 };
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.

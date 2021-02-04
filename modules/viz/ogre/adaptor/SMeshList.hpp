@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "visuOgreAdaptor/config.hpp"
+#include "modules/viz/ogre/config.hpp"
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <fwRenderOgre/IAdaptor.hpp>
+#include <viz/ogre/IAdaptor.hpp>
 
 #include <queue>
 
-namespace visuOgreAdaptor
+namespace sight::modules::viz::ogre
 {
 
 /**
@@ -46,7 +46,7 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::visuOgreAdaptor::SMeshList">
+    <service uid="..." type="::sight::modules::viz::ogre::SMeshList">
         <inout key="mesh" uid="..." />
         <in key="transform" uid="..." />
         <in key="texture" uid="..." />
@@ -69,7 +69,7 @@ namespace visuOgreAdaptor
  * - \b textureAlpha (optional, bool, default=false): generates alpha value for the texture if the image contains only
  * 1 or 3 channels. It may be slower.
  */
-class VISUOGREADAPTOR_CLASS_API SMeshList final : public sight::viz::ogre::IAdaptor
+class MODULE_VIZ_OGRE_CLASS_API SMeshList final : public sight::viz::ogre::IAdaptor
 {
 
 public:
@@ -151,4 +151,4 @@ private:
 
 };
 
-} // namespace visuOgreAdaptor.
+} // namespace sight::modules::viz::ogre.

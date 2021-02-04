@@ -20,36 +20,37 @@
  *
  ***********************************************************************/
 
-#include "opImageFilter/SPropagator.hpp"
+#include "modules/filter/image/SPropagator.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <core/com/Signal.hpp>
+#include <core/com/Signal.hxx>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hpp>
+#include <core/com/Slots.hxx>
 
-#include <fwCommand/ImageDiffCommand.hpp>
+#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/tools/helper/MedicalImage.hpp>
 
-#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwDataTools/helper/MedicalImage.hpp>
-#include <fwDataTools/ImageDiff.hpp>
+#include <services/macros.hpp>
 
-#include <fwServices/macros.hpp>
+#include <filter/image/ImageDiff.hpp>
 
-namespace opImageFilter
+#include <ui/history/ImageDiffCommand.hpp>
+
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::fwServices::IOperator, ::opImageFilter::SPropagator, ::fwData::Image)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SPropagator, data::Image)
 
-static const ::fwCom::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
+static const core::com::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
 
-static const ::fwCom::Slots::SlotKeyType s_DRAW_SLOT            = "draw";
-static const ::fwCom::Slots::SlotKeyType s_SET_ORIENTATION_SLOT = "setOrientation";
-static const ::fwCom::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawing";
+static const core::com::Slots::SlotKeyType s_DRAW_SLOT            = "draw";
+static const core::com::Slots::SlotKeyType s_SET_ORIENTATION_SLOT = "setOrientation";
+static const core::com::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawing";
 
-static const ::fwServices::IService::KeyType s_IMAGE_IN    = "imageIn";
-static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "imageOut";
+static const services::IService::KeyType s_IMAGE_IN    = "imageIn";
+static const services::IService::KeyType s_IMAGE_INOUT = "imageOut";
 
 //-----------------------------------------------------------------------------
 
@@ -75,7 +76,7 @@ SPropagator::~SPropagator()
 
 void SPropagator::configuring()
 {
-    ::fwServices::IService::ConfigType config = this->getConfigTree();
+    services::IService::ConfigType config = this->getConfigTree();
 
     m_value     = config.get< int >("value", 1);
     m_overwrite = config.get< bool >("overwrite", true);
@@ -85,15 +86,15 @@ void SPropagator::configuring()
 
     if(mode == "min")
     {
-        m_mode = ::imageFilterOp::MinMaxPropagation::MIN;
+        m_mode = sight::filter::image::MinMaxPropagation::MIN;
     }
     else if(mode == "max")
     {
-        m_mode = ::imageFilterOp::MinMaxPropagation::MAX;
+        m_mode = sight::filter::image::MinMaxPropagation::MAX;
     }
     else if(mode == "minmax")
     {
-        m_mode = ::imageFilterOp::MinMaxPropagation::MINMAX;
+        m_mode = sight::filter::image::MinMaxPropagation::MINMAX;
     }
     else
     {
@@ -104,15 +105,15 @@ void SPropagator::configuring()
 
     if(orientation == "sagital")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImage::X_AXIS;
+        m_orientation = data::tools::helper::MedicalImage::X_AXIS;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImage::Y_AXIS;
+        m_orientation = data::tools::helper::MedicalImage::Y_AXIS;
     }
     else if(orientation == "axial")
     {
-        m_orientation = ::fwDataTools::helper::MedicalImage::Z_AXIS;
+        m_orientation = data::tools::helper::MedicalImage::Z_AXIS;
     }
     else
     {
@@ -124,25 +125,24 @@ void SPropagator::configuring()
 
 void SPropagator::starting()
 {
-    const auto imgInLock  = this->getLockedInput< ::fwData::Image >(s_IMAGE_IN);
-    const auto imgOutLock = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    ::fwData::Image::csptr imgIn = imgInLock.get_shared();
-    ::fwData::Image::sptr imgOut = imgOutLock.get_shared();
+    const auto imgInLock     = this->getLockedInput< data::Image >(s_IMAGE_IN);
+    const auto imgOutLock    = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    data::Image::csptr imgIn = imgInLock.get_shared();
+    data::Image::sptr imgOut = imgOutLock.get_shared();
 
     SLM_ASSERT("'imageIn' does not exist", imgIn);
     SLM_ASSERT("'imageOut' does not exist", imgOut);
 
-    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn) &&
-                   ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
+    bool isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn) &&
+                   data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
 
     SLM_FATAL_IF("Input and output image must have the same size.", imgIn->getSize2() != imgOut->getSize2());
     SLM_WARN_IF("Input and output image must have the same spacing.", imgIn->getSpacing2() != imgOut->getSpacing2());
 
     if (isValid)
     {
-        m_propagator =
-            UPTR(::imageFilterOp::MinMaxPropagation)(new ::imageFilterOp::MinMaxPropagation(imgIn, imgOut, nullptr));
-        m_lineDrawer = UPTR(::imageFilterOp::LineDrawer)(new ::imageFilterOp::LineDrawer(imgOut, nullptr));
+        m_propagator = std::make_unique<sight::filter::image::MinMaxPropagation>(imgIn, imgOut, nullptr);
+        m_lineDrawer = std::make_unique<sight::filter::image::LineDrawer>(imgOut, nullptr);
     }
 }
 
@@ -218,15 +218,15 @@ void SPropagator::setEnumParameter(std::string val, std::string key)
     {
         if(val == "min")
         {
-            m_mode = ::imageFilterOp::MinMaxPropagation::MIN;
+            m_mode = sight::filter::image::MinMaxPropagation::MIN;
         }
         else if (val == "max")
         {
-            m_mode = ::imageFilterOp::MinMaxPropagation::MAX;
+            m_mode = sight::filter::image::MinMaxPropagation::MAX;
         }
         else if(val == "minmax")
         {
-            m_mode = ::imageFilterOp::MinMaxPropagation::MINMAX;
+            m_mode = sight::filter::image::MinMaxPropagation::MINMAX;
         }
         else
         {
@@ -245,20 +245,20 @@ void SPropagator::resetDrawing()
 
 //-----------------------------------------------------------------------------
 
-void SPropagator::draw(::fwDataTools::PickingInfo pickingInfo)
+void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 {
     SLM_ASSERT("Drawer not instantiated, have you started the service ?", m_lineDrawer);
 
-    const auto imgInLock  = this->getLockedInput< ::fwData::Image >(s_IMAGE_IN);
-    const auto imgOutLock = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    ::fwData::Image::sptr image = imgOutLock.get_shared();
+    const auto imgInLock    = this->getLockedInput< data::Image >(s_IMAGE_IN);
+    const auto imgOutLock   = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+    data::Image::sptr image = imgOutLock.get_shared();
 
     SLM_ASSERT("'image' does not exist", image);
 
-    SPTR(::fwData::Image::BufferType) val =
-        ::fwDataTools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, m_value);
+    SPTR(data::Image::BufferType) val =
+        data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, m_value);
 
-    const ::fwData::Image::Spacing imgSpacing = image->getSpacing2();
+    const data::Image::Spacing imgSpacing = image->getSpacing2();
     // Draw lines as thick as a single voxel.
     const double thickness = *std::min_element(imgSpacing.begin(), imgSpacing.end());
 
@@ -267,7 +267,7 @@ void SPropagator::draw(::fwDataTools::PickingInfo pickingInfo)
                                   static_cast< CoordinatesType::value_type >(pickingInfo.m_worldPos[2]) }};
 
     bool imgBufferModified = false;
-    if(pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_DOWN)
+    if(pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN)
     {
         m_drawing  = true;
         m_oldPoint = newPoint;
@@ -276,24 +276,24 @@ void SPropagator::draw(::fwDataTools::PickingInfo pickingInfo)
 
         imgBufferModified = m_diff.getNumberOfElements() > 0;
     }
-    else if(m_drawing && pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
+    else if(m_drawing && pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
-        const ::fwDataTools::ImageDiff diff = m_lineDrawer->draw(m_orientation, m_oldPoint, newPoint,
-                                                                 val.get(), thickness, m_overwrite);
+        const auto diff = m_lineDrawer->draw(m_orientation, m_oldPoint, newPoint,
+                                             val.get(), thickness, m_overwrite);
         m_oldPoint = newPoint;
 
         imgBufferModified = this->appendDiff(diff);
     }
-    else if(m_drawing && pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
+    else if(m_drawing && pickingInfo.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
     {
-        const ::fwDataTools::ImageDiff diff = m_lineDrawer->draw(m_orientation, m_oldPoint, newPoint,
-                                                                 val.get(), thickness, m_overwrite);
+        const auto diff = m_lineDrawer->draw(m_orientation, m_oldPoint, newPoint,
+                                             val.get(), thickness, m_overwrite);
 
         imgBufferModified = this->appendDiff(diff);
 
         auto seeds = this->convertDiffToSeeds();
 
-        ::fwDataTools::ImageDiff propagDiff;
+        sight::filter::image::ImageDiff propagDiff;
 
         propagDiff = m_propagator->propagate(seeds, val.get(), m_radius, m_overwrite, m_mode);
 
@@ -301,7 +301,7 @@ void SPropagator::draw(::fwDataTools::PickingInfo pickingInfo)
 
         if(m_diff.getNumberOfElements() > 0)
         {
-            ::fwCommand::ImageDiffCommand::sptr diffCommand(new ::fwCommand::ImageDiffCommand(image, m_diff));
+            ui::history::ImageDiffCommand::sptr diffCommand(new ui::history::ImageDiffCommand(image, m_diff));
             m_sigDrawn->asyncEmit(diffCommand);
             m_diff.clear();
         }
@@ -313,15 +313,15 @@ void SPropagator::draw(::fwDataTools::PickingInfo pickingInfo)
 
     if(imgBufferModified)
     {
-        auto sig = image->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG);
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        auto sig = image->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);
+        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool SPropagator::appendDiff(const fwDataTools::ImageDiff& diff)
+bool SPropagator::appendDiff(const sight::filter::image::ImageDiff& diff)
 {
     const bool append = (diff.getNumberOfElements() > 0);
 
@@ -335,19 +335,19 @@ bool SPropagator::appendDiff(const fwDataTools::ImageDiff& diff)
 
 //-----------------------------------------------------------------------------
 
-::imageFilterOp::MinMaxPropagation::SeedsType SPropagator::convertDiffToSeeds() const
+sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSeeds() const
 {
-    const auto imgOut = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+    const auto imgOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const ::fwData::Image::Size& imgSize = imgOut->getSize2();
+    const data::Image::Size& imgSize = imgOut->getSize2();
 
-    ::imageFilterOp::MinMaxPropagation::SeedsType seeds;
+    sight::filter::image::MinMaxPropagation::SeedsType seeds;
 
     const size_t nbElts = m_diff.getNumberOfElements();
     for(size_t i = 0; i < nbElts; ++i)
     {
-        ::fwData::Image::IndexType index = m_diff.getElementDiffIndex(i);
-        ::imageFilterOp::MinMaxPropagation::CoordinatesType coords;
+        data::Image::IndexType index = m_diff.getElementDiffIndex(i);
+        sight::filter::image::MinMaxPropagation::CoordinatesType coords;
         coords[0] = index % imgSize[0];
         coords[1] = (index / imgSize[0]) % imgSize[1];
         coords[2] = (index / imgSize[0]) / imgSize[1];
@@ -360,14 +360,14 @@ bool SPropagator::appendDiff(const fwDataTools::ImageDiff& diff)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
+services::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT);
-    connections.push(s_IMAGE_IN, ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING);
+    services::IService::KeyConnectionsMap connections;
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING);
 
     return connections;
 }
 
-} // namespace opImageFilter.
+} // namespace sight::modules::filter::image.
