@@ -79,7 +79,7 @@ class MODULE_VIZ_OGRE_CLASS_API SModelSeries final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SModelSeries, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SModelSeries, ::sight::viz::ogre::IAdaptor)
 
     /// Initialisa slots.
     MODULE_VIZ_OGRE_API SModelSeries() noexcept;

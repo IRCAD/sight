@@ -76,7 +76,7 @@ class MODULE_VIZ_OGRE_CLASS_API SLight final : public ::sight::viz::ogre::ILight
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLight, sight::viz::ogre::ILight)
+    fwCoreServiceMacro(SLight, ::sight::viz::ogre::ILight)
 
     /// Creates the service.
     MODULE_VIZ_OGRE_API SLight() noexcept;

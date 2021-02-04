@@ -92,7 +92,7 @@ class MODULE_VIZ_OGRE_CLASS_API SMaterial final : public sight::viz::ogre::IAdap
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMaterial, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SMaterial, ::sight::viz::ogre::IAdaptor)
 
     /**
      * @name Slots API

@@ -38,9 +38,9 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
                         <spacer/>
                         <menuItem name="Previous" />
                         <menuItem name="Next" />

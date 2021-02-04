@@ -100,12 +100,12 @@
                 <gui>
                     <layout>
                         <editor />
-                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
-                        <menuItem name="Record" icon="flatIcon-0.1/icons/RedCircle.svg" style="check" />
+                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Record" icon="module_ui_flaticon-0.1/icons/RedCircle.svg" style="check" />
                         <separator/>
                         <editor />
                         <editor />
@@ -114,8 +114,8 @@
                         <separator/>
                         <editor />
                         <spacer />
-                        <menuItem name="Configure recording path" icon="flatIcon-0.1/icons/BlueSave.svg" />
-                        <menuItem name="Show/hide filter Settings" icon="flatIcon-0.1/icons/BlueParameters.svg" style="check" />
+                        <menuItem name="Configure recording path" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                        <menuItem name="Show/hide filter Settings" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

@@ -12,5 +12,5 @@ set( REQUIREMENTS
         ioActivity
         uiMedDataQt
         media
-        flatIcon
+        module_ui_flaticon
     )

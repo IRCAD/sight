@@ -45,15 +45,15 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Load mesh" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                        <menuItem name="Load mesh" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
                         <separator/>
-                        <menuItem name="start sender" icon="flatIcon-0.1/icons/GreenServerConnected.svg" />
-                        <menuItem name="stop sender" icon="flatIcon-0.1/icons/RedServerDisconnected.svg" />
-                        <menuItem name="configure sender" icon="flatIcon-0.1/icons/BlueParametersConnected.svg" />
+                        <menuItem name="start sender" icon="module_ui_flaticon-0.1/icons/GreenServerConnected.svg" />
+                        <menuItem name="stop sender" icon="module_ui_flaticon-0.1/icons/RedServerDisconnected.svg" />
+                        <menuItem name="configure sender" icon="module_ui_flaticon-0.1/icons/BlueParametersConnected.svg" />
                         <separator/>
-                        <menuItem name="start listener" icon="flatIcon-0.1/icons/GreenServerConnected.svg" />
-                        <menuItem name="stop listener" icon="flatIcon-0.1/icons/RedServerDisconnected.svg" />
-                        <menuItem name="configure listener" icon="flatIcon-0.1/icons/BlueParametersConnected.svg" />
+                        <menuItem name="start listener" icon="module_ui_flaticon-0.1/icons/GreenServerConnected.svg" />
+                        <menuItem name="stop listener" icon="module_ui_flaticon-0.1/icons/RedServerDisconnected.svg" />
+                        <menuItem name="configure listener" icon="module_ui_flaticon-0.1/icons/BlueParametersConnected.svg" />
                         <separator/>
                     </layout>
                 </gui>

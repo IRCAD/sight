@@ -75,7 +75,7 @@ class MODULE_VIZ_OGRE_CLASS_API SVoxelPicker final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SVoxelPicker, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SVoxelPicker, ::sight::viz::ogre::IAdaptor)
 
     /// Initializes the adaptor.
     MODULE_VIZ_OGRE_API SVoxelPicker() noexcept;

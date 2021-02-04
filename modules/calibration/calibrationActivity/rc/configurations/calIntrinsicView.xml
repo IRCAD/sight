@@ -72,13 +72,13 @@
                 <layout>
                     <editor />
                     <separator />
-                    <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                    <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
-                    <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
+                    <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                    <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
                     <separator />
-                    <menuItem name="Undistort video" icon="flatIcon-0.1/icons/YellowDistortion.svg" style="check" />
+                    <menuItem name="Undistort video" icon="module_ui_flaticon-0.1/icons/YellowDistortion.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -112,14 +112,14 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Add" icon="flatIcon-0.1/icons/GreenPlus.svg"  shortcut="A" />
-                    <menuItem name="Remove" icon="flatIcon-0.1/icons/RedMinus.svg" />
-                    <menuItem name="Calibrate" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="Return" />
-                    <menuItem name="Display" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
-                    <menuItem name="Edit" icon="flatIcon-0.1/icons/BlueParametersCamera.svg" />
-                    <menuItem name="Reset" icon="flatIcon-0.1/icons/RedReset.svg" />
-                    <menuItem name="Save calibration images" icon="flatIcon-0.1/icons/BlueLoad.svg" />
-                    <menuItem name="Load calibration images" icon="flatIcon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="Add" icon="module_ui_flaticon-0.1/icons/GreenPlus.svg"  shortcut="A" />
+                    <menuItem name="Remove" icon="module_ui_flaticon-0.1/icons/RedMinus.svg" />
+                    <menuItem name="Calibrate" icon="module_ui_flaticon-0.1/icons/YellowPhoto.svg" shortcut="Return" />
+                    <menuItem name="Display" icon="module_ui_flaticon-0.1/icons/YellowFullscreen.svg" />
+                    <menuItem name="Edit" icon="module_ui_flaticon-0.1/icons/BlueParametersCamera.svg" />
+                    <menuItem name="Reset" icon="module_ui_flaticon-0.1/icons/RedReset.svg" />
+                    <menuItem name="Save calibration images" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
+                    <menuItem name="Load calibration images" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
                 </layout>
             </gui>
             <registry>

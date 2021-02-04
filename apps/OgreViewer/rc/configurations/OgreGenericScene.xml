@@ -102,9 +102,9 @@
         <service uid="topToolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Fullscreen" icon="flatIcon-0.1/icons/YellowFullscreen.svg" />
-                    <menuItem name="Windowed" icon="flatIcon-0.1/icons/YellowMinimize.svg" shortcut="Escape" />
-                    <menuItem name="Snapshot" icon="flatIcon-0.1/icons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <menuItem name="Fullscreen" icon="module_ui_flaticon-0.1/icons/YellowFullscreen.svg" />
+                    <menuItem name="Windowed" icon="module_ui_flaticon-0.1/icons/YellowMinimize.svg" shortcut="Escape" />
+                    <menuItem name="Snapshot" icon="module_ui_flaticon-0.1/icons/YellowPhoto.svg" shortcut="CTRL+S" />
                     <spacer/>
                 </layout>
             </gui>

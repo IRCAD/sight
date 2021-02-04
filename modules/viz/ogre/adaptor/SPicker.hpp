@@ -59,7 +59,7 @@ class MODULE_VIZ_OGRE_CLASS_API SPicker final : public sight::viz::ogre::IAdapto
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPicker, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SPicker, ::sight::viz::ogre::IAdaptor)
 
     /// Initializes the adaptor.
     MODULE_VIZ_OGRE_API SPicker() noexcept;

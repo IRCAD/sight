@@ -80,7 +80,7 @@ public:
     typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SNegato2D, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SNegato2D, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_OGRE_API SNegato2D() noexcept;

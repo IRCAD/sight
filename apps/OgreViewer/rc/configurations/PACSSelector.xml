@@ -285,7 +285,7 @@
         <service uid="seriesPullerAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Pull selected series</toolTip>
@@ -296,7 +296,7 @@
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
-               <icon>flatIcon-0.1/icons/BlueWait.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/BlueWait.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Pulling selected series</toolTip>
@@ -307,7 +307,7 @@
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
-               <icon>flatIcon-0.1/icons/YellowPull.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Load the image</toolTip>
@@ -319,7 +319,7 @@
         <service uid="showAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>flatIcon-0.1/icons/YellowBottomChevron.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/YellowBottomChevron.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -328,7 +328,7 @@
         <service uid="hideAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>flatIcon-0.1/icons/YellowTopChevron.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/YellowTopChevron.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -337,7 +337,7 @@
         <service uid="showPACSConfigurationSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/BlueParametersConnected.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -346,7 +346,7 @@
         <service uid="hidePACSConfigurationSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>flatIcon-0.1/icons/BlueParametersConnected.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/BlueParametersConnected.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -423,20 +423,20 @@
         <service uid="queryEditorSrv" type="::ioPacs::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
-            <config icon="flatIcon-0.1/icons/BlueMagnifyingGlass.svg" advanced="false" />
+            <config icon="module_ui_flaticon-0.1/icons/BlueMagnifyingGlass.svg" advanced="false" />
         </service>
 
         <service uid="advancedQueryEditorSrv" type="::ioPacs::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
-            <config icon="flatIcon-0.1/icons/BlueMagnifyingGlass.svg" />
+            <config icon="module_ui_flaticon-0.1/icons/BlueMagnifyingGlass.svg" />
         </service>
 
         <service uid="previewSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
-                <icon series="::sight::data::DicomSeries" icon="flatIcon-0.1/icons/GreenMedicine.svg" />
+                <icon series="::sight::data::DicomSeries" icon="module_ui_flaticon-0.1/icons/GreenMedicine.svg" />
             </icons>
             <config selectionMode="extended" allowedRemove="false" />
         </service>
@@ -467,11 +467,11 @@
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>
-                <icon series="::sight::data::ImageSeries" icon="flatIcon-0.1/icons/Volume.svg" />
+                <icon series="::sight::data::ImageSeries" icon="module_ui_flaticon-0.1/icons/Volume.svg" />
             </icons>
             <config selectionMode="extended"
-                    removeStudyIcon="flatIcon-0.1/icons/RedCross.svg"
-                    removeSerieIcon="flatIcon-0.1/icons/RemoveMedecine.svg" />
+                    removeStudyIcon="module_ui_flaticon-0.1/icons/RedCross.svg"
+                    removeSerieIcon="module_ui_flaticon-0.1/icons/RemoveMedecine.svg" />
         </service>
 
         <service uid="extractLocalSrv" type="::ctrlCamp::SCopy" >

@@ -98,7 +98,7 @@ void SMeshList::starting()
 
         // Create the transform adaptor.
         const sight::viz::ogre::IAdaptor::sptr transformAdaptor
-            = this->registerService< sight::viz::ogre::IAdaptor >("::sight::viz::ogre::STransform");
+            = this->registerService< sight::viz::ogre::IAdaptor >("::sight::modules::viz::ogre::adaptor::STransform");
 
         transformAdaptor->setLayerID(m_layerID);
         transformAdaptor->setRenderService(this->getRenderService());
@@ -112,7 +112,7 @@ void SMeshList::starting()
 
         // Create the texture adaptor
         const sight::viz::ogre::IAdaptor::sptr textureAdaptor =
-            this->registerService< sight::viz::ogre::IAdaptor >("::sight::viz::ogre::STexture");
+            this->registerService< sight::viz::ogre::IAdaptor >("::sight::modules::viz::ogre::adaptor::STexture");
 
         services::IService::ConfigType textureConfig = config;
         textureConfig.add("config.<xmlattr>.textureName", image->getID());
@@ -129,7 +129,7 @@ void SMeshList::starting()
 
         // Creates the mesh adaptor.
         const sight::viz::ogre::IAdaptor::sptr meshAdaptor =
-            this->registerService< sight::viz::ogre::IAdaptor >("::sight::viz::ogre::SMesh");
+            this->registerService< sight::viz::ogre::IAdaptor >("::sight::modules::viz::ogre::adaptor::SMesh");
 
         services::IService::ConfigType meshConfig = config;
         meshConfig.add("config.<xmlattr>.textureName", image->getID());

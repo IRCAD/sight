@@ -1,5 +1,5 @@
 <plugin id="::sight::modules::io::file" class="::sight::modules::io::file::Plugin"  version="@PROJECT_VERSION@" >
-    <library name="io_file" />
+    <library name="module_io_file" />
 
     <extension implements="::sight::services::registry::ServiceFactory">
         <type>::sight::io::base::services::IReader</type>

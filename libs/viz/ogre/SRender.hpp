@@ -312,7 +312,7 @@ private:
 template<class T>
 std::vector<SPTR(T)> SRender::getAdaptors() const
 {
-    auto servicesVector = services::OSR::getServices("::viz::ogre::IAdaptor");
+    auto servicesVector = services::OSR::getServices("::sight::viz::ogre::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
     for(auto& sceneAdaptor : servicesVector)

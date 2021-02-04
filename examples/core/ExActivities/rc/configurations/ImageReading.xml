@@ -31,7 +31,7 @@
         <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import image" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                    <menuItem name="Import image" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
                 </layout>
             </gui>
             <registry>

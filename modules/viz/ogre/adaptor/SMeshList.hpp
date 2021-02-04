@@ -75,7 +75,7 @@ class MODULE_VIZ_OGRE_CLASS_API SMeshList final : public sight::viz::ogre::IAdap
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMeshList, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SMeshList, ::sight::viz::ogre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_OGRE_API SMeshList() noexcept;

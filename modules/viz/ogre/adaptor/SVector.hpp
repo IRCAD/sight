@@ -73,7 +73,7 @@ class MODULE_VIZ_OGRE_CLASS_API SVector final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SVector, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SVector, ::sight::viz::ogre::IAdaptor)
 
     /// Initialise slots.
     MODULE_VIZ_OGRE_API SVector() noexcept;

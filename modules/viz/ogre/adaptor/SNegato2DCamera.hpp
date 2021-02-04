@@ -80,7 +80,7 @@ class MODULE_VIZ_OGRE_CLASS_API SNegato2DCamera final : public sight::viz::ogre:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SNegato2DCamera, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SNegato2DCamera, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_OGRE_API SNegato2DCamera() noexcept;

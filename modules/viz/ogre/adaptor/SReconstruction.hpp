@@ -75,7 +75,7 @@ class MODULE_VIZ_OGRE_CLASS_API SReconstruction final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SReconstruction, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SReconstruction, ::sight::viz::ogre::IAdaptor)
 
     /// Initialise slots.
     MODULE_VIZ_OGRE_API SReconstruction() noexcept;

@@ -47,10 +47,10 @@
         <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="flatIcon-0.1/icons/BlueLoad.svg" />
-                    <menuItem name="Export" icon="flatIcon-0.1/icons/BlueSave.svg" />
-                    <menuItem name="Threshold" icon="flatIcon-0.1/icons/YellowMenu.svg" />
-                    <menuItem name="Mesher" icon="flatIcon-0.1/icons/YellowMenu.svg" />
+                    <menuItem name="Import" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
+                    <menuItem name="Export" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="Threshold" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
+                    <menuItem name="Mesher" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
                 </layout>
             </gui>
             <registry>

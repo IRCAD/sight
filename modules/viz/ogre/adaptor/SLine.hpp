@@ -73,7 +73,7 @@ class MODULE_VIZ_OGRE_CLASS_API SLine final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLine, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SLine, ::sight::viz::ogre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_OGRE_API SLine() noexcept;

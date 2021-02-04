@@ -194,8 +194,8 @@
             <service uid="showNegatoSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
-                    <icon>flatIcon-0.1/icons/RedCross.svg</icon>
-                    <icon2>flatIcon-0.1/icons/Layers.svg</icon2>
+                    <icon>module_ui_flaticon-0.1/icons/RedCross.svg</icon>
+                    <icon2>module_ui_flaticon-0.1/icons/Layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
@@ -211,7 +211,7 @@
             <service uid="snapshotSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>
+                   <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 

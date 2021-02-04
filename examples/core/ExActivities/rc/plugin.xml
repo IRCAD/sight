@@ -12,7 +12,7 @@
         <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
-        <icon>flatIcon-0.1/icons/BlueFile.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/BlueFile.svg</icon>
         <requirements>
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be read by this activity.</desc>
@@ -29,7 +29,7 @@
         <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
-        <icon>flatIcon-0.1/icons/Layers.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/Layers.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
@@ -51,7 +51,7 @@
         <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>
-        <icon>flatIcon-0.1/icons/Volume.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/Volume.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
@@ -95,7 +95,7 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::sight::data::Image" icon="flatIcon-0.1/icons/Volume.svg" />
+                <icon type="::sight::data::Image" icon="module_ui_flaticon-0.1/icons/Volume.svg" />
             </icons>
         </config>
     </extension>

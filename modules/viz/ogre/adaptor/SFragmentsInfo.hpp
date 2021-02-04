@@ -66,7 +66,7 @@ class MODULE_VIZ_OGRE_CLASS_API SFragmentsInfo final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SFragmentsInfo, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SFragmentsInfo, ::sight::viz::ogre::IAdaptor)
 
     /// Initializes the adaptor.
     MODULE_VIZ_OGRE_API SFragmentsInfo() noexcept;

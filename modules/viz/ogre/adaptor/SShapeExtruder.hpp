@@ -82,7 +82,7 @@ class MODULE_VIZ_OGRE_CLASS_API SShapeExtruder final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShapeExtruder, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SShapeExtruder, ::sight::viz::ogre::IAdaptor)
 
     /// Initializes the slot and the signal.
     MODULE_VIZ_OGRE_API SShapeExtruder() noexcept;

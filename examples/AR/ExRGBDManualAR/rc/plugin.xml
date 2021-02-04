@@ -83,23 +83,23 @@
             <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
+                        <menuItem name="Load calibration" icon="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
                         <separator/>
-                        <menuItem name="Load transformation" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                        <menuItem name="Load transformation" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
                         <separator/>
-                        <menuItem name="Load mesh" icon="flatIcon-0.1/icons/BlueLoad.svg" />
+                        <menuItem name="Load mesh" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
                         <separator/>
                         <editor/>
-                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
-                        <menuItem name="Manage organs" icon="flatIcon-0.1/icons/Stomach.svg" style="check" />
+                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Manage organs" icon="module_ui_flaticon-0.1/icons/Stomach.svg" style="check" />
                         <separator/>
-                        <menuItem name="Learn background model" icon="flatIcon-0.1/icons/Background.svg" />
-                        <menuItem name="Learn foreground model" icon="flatIcon-0.1/icons/Foreground.svg" />
-                        <menuItem name="Segmentation parameters" icon="flatIcon-0.1/icons/BlueParameters.svg" style="check" />
+                        <menuItem name="Learn background model" icon="module_ui_flaticon-0.1/icons/Background.svg" />
+                        <menuItem name="Learn foreground model" icon="module_ui_flaticon-0.1/icons/Foreground.svg" />
+                        <menuItem name="Segmentation parameters" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" style="check" />
                         <editor />
                         <editor />
                         <editor />

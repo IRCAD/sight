@@ -59,7 +59,7 @@ class MODULE_VIZ_OGRE_CLASS_API SRenderStats final : public sight::viz::ogre::IA
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SRenderStats, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SRenderStats, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_OGRE_API SRenderStats() noexcept;

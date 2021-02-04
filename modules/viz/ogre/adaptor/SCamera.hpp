@@ -79,7 +79,7 @@ class MODULE_VIZ_OGRE_CLASS_API SCamera final : public sight::viz::ogre::IAdapto
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SCamera, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SCamera, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the adaptor and initialize slots.
     MODULE_VIZ_OGRE_API SCamera() noexcept;

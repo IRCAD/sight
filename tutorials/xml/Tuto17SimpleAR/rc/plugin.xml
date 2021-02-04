@@ -66,23 +66,23 @@
             <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="flatIcon-0.1/icons/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
                         <editor/>
                         <separator/>
-                        <menuItem name="Start" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="flatIcon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="flatIcon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="flatIcon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="flatIcon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Enable video image undistortion" icon="flatIcon-0.1/icons/YellowUndistortion.svg" />
-                        <menuItem name="Disable video image undistortion" icon="flatIcon-0.1/icons/YellowDistortion.svg" />
-                        <menuItem name="Enable 3D rendering distortion" icon="flatIcon-0.1/icons/YellowDistortion.svg" />
-                        <menuItem name="Disable 3D rendering distortion" icon="flatIcon-0.1/icons/YellowUndistortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="module_ui_flaticon-0.1/icons/YellowUndistortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="module_ui_flaticon-0.1/icons/YellowDistortion.svg" />
+                        <menuItem name="Enable 3D rendering distortion" icon="module_ui_flaticon-0.1/icons/YellowDistortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="module_ui_flaticon-0.1/icons/YellowUndistortion.svg" />
                         <separator/>
-                        <menuItem name="Show Mesh on tag" icon="flatIcon-0.1/icons/Mask.svg" style="check" />
+                        <menuItem name="Show Mesh on tag" icon="module_ui_flaticon-0.1/icons/Mask.svg" style="check" />
                         <separator/>
-                        <menuItem name="Settings" icon="flatIcon-0.1/icons/BlueParameters.svg" style="check" />
+                        <menuItem name="Settings" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

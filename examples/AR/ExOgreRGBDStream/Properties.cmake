@@ -19,7 +19,7 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    flatIcon
+    module_ui_flaticon
 
     # Grabber
     videoQt

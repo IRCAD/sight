@@ -125,7 +125,7 @@ void TransformationMatrix3DWriterService::updating()
     {
         // Retrieve object
         data::TransformationMatrix3D::csptr matrix =
-            this->getInput< data::TransformationMatrix3D >(sight::sight::io::base::services::s_DATA_KEY);
+            this->getInput< data::TransformationMatrix3D >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", matrix);
 
         sight::io::base::writer::TransformationMatrix3DWriter::sptr writer =

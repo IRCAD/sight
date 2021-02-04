@@ -23,7 +23,7 @@
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>flatIcon-0.1/icons/YellowCamera.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -45,7 +45,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>flatIcon-0.1/icons/BlueParametersCamera.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/BlueParametersCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -62,7 +62,7 @@
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>flatIcon-0.1/icons/YellowCamera.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="RGBDCalibration">
@@ -75,7 +75,7 @@
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
-        <icon>flatIcon-0.1/icons/YellowCamera.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>

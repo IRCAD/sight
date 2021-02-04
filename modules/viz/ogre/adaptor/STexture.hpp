@@ -70,7 +70,7 @@ class MODULE_VIZ_OGRE_CLASS_API STexture final : public sight::viz::ogre::IAdapt
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STexture, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(STexture, ::sight::viz::ogre::IAdaptor)
 
     /// Defines the keys of the slot @ref textureSwapped().
     MODULE_VIZ_OGRE_API static const core::com::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;

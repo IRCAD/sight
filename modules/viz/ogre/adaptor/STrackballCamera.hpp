@@ -59,7 +59,7 @@ class MODULE_VIZ_OGRE_CLASS_API STrackballCamera final : public sight::viz::ogre
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STrackballCamera, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(STrackballCamera, ::sight::viz::ogre::IAdaptor)
 
     /// Constructor.
     MODULE_VIZ_OGRE_API STrackballCamera() noexcept;

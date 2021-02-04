@@ -96,7 +96,7 @@ class MODULE_VIZ_OGRE_CLASS_API SLandmarks final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLandmarks, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SLandmarks, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_OGRE_API SLandmarks() noexcept;

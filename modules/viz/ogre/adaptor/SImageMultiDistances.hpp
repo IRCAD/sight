@@ -81,7 +81,7 @@ class SImageMultiDistances final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImageMultiDistances, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SImageMultiDistances, ::sight::viz::ogre::IAdaptor)
 
     /// Initialize slots.
     MODULE_VIZ_OGRE_API SImageMultiDistances() noexcept;

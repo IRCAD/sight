@@ -13,5 +13,5 @@
     - Green : 97/150/71
     - Grey : 54/57/62
 -->
-<plugin id="flatIcon" version="@PROJECT_VERSION@" >
+<plugin id="module_ui_flaticon" version="@PROJECT_VERSION@" >
 </plugin>

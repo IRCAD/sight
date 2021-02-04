@@ -68,7 +68,7 @@ class MODULE_VIZ_OGRE_CLASS_API SShaderParameter final : public ::sight::viz::og
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShaderParameter, sight::viz::ogre::IParameter)
+    fwCoreServiceMacro(SShaderParameter, ::sight::viz::ogre::IParameter)
 
     /// Creates the adaptor.
     MODULE_VIZ_OGRE_API SShaderParameter() noexcept;

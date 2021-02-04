@@ -17,7 +17,7 @@
         <id>ARCalibrationActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for ARCalibration</desc>
-        <icon>flatIcon-0.1/icons/YellowCamera.svg</icon>
+        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
         <requirements />
         <appConfig id="ARCalibration_ActivitySelector_AppCfg">
             <parameters />
@@ -28,7 +28,7 @@
         <id>ARCalibration_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="ARCalibration @PROJECT_VERSION@" />
-            <param name="ICON_PATH" value="flatIcon-0.1/icons/YellowCamera.svg" />
+            <param name="ICON_PATH" value="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
         </parameters>
     </extension>
 

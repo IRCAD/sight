@@ -59,7 +59,7 @@ class MODULE_VIZ_OGRE_CLASS_API SResizeViewport final : public sight::viz::ogre:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SResizeViewport, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SResizeViewport, ::sight::viz::ogre::IAdaptor)
 
     /// Initializes slots.
     MODULE_VIZ_OGRE_API SResizeViewport() noexcept;

@@ -72,7 +72,7 @@ class MODULE_VIZ_OGRE_CLASS_API SFrustum final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SFrustum, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SFrustum, ::sight::viz::ogre::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_OGRE_API SFrustum() noexcept;

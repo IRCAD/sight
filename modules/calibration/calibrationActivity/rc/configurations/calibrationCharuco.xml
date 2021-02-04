@@ -39,13 +39,13 @@
                 <layout>
                     <menuItem name="Previous" icon="media-0.1/icons/Back.svg" />
                     <menuItem name="Next" icon="media-0.1/icons/Next.svg" />
-                    <menuItem name="Export camera series" icon="flatIcon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="Export camera series" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
                     <separator/>
-                    <menuItem name="Export xml/yaml" icon="flatIcon-0.1/icons/BlueFile.svg" />
+                    <menuItem name="Export xml/yaml" icon="module_ui_flaticon-0.1/icons/BlueFile.svg" />
                     <separator/>
                     <editor/>
                     <separator/>
-                    <menuItem name="Chessboard size" icon="flatIcon-0.1/icons/GreyChessboard.svg" />
+                    <menuItem name="Chessboard size" icon="module_ui_flaticon-0.1/icons/GreyChessboard.svg" />
                 </layout>
             </gui>
             <registry>

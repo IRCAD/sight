@@ -81,7 +81,7 @@ class MODULE_VIZ_OGRE_CLASS_API SText final : public sight::viz::ogre::IAdaptor
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SText, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SText, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_OGRE_API SText() noexcept;

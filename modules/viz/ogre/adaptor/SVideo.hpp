@@ -80,7 +80,7 @@ class MODULE_VIZ_OGRE_CLASS_API SVideo final : public sight::viz::ogre::IAdaptor
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SVideo, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SVideo, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the adaptor an initialize slots.
     MODULE_VIZ_OGRE_API SVideo() noexcept;

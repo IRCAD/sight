@@ -298,7 +298,7 @@ void SMaterial::setTextureName(const std::string& _textureName)
     }
     else
     {
-        auto textureAdaptors = this->getRenderService()->getAdaptors< modules::viz::ogre::adaptor::STexture>();
+        auto textureAdaptors = this->getRenderService()->getAdaptors< ::sight::modules::viz::ogre::adaptor::STexture>();
         auto result          =
             std::find_if(textureAdaptors.begin(), textureAdaptors.end(),
                          [_textureName](const modules::viz::ogre::adaptor::STexture::sptr& srv)

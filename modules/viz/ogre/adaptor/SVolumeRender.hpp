@@ -128,7 +128,7 @@ class MODULE_VIZ_OGRE_CLASS_API SVolumeRender final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SVolumeRender, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SVolumeRender, ::sight::viz::ogre::IAdaptor)
 
     /// Creates slots.
     MODULE_VIZ_OGRE_API SVolumeRender() noexcept;

@@ -135,7 +135,7 @@
                 <gui>
                     <layout>
                         <spacer />
-                        <menuItem name="Show parameters" icon="flatIcon-0.1/icons/YellowLeftChevron.svg" />
+                        <menuItem name="Show parameters" icon="module_ui_flaticon-0.1/icons/YellowLeftChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -168,13 +168,13 @@
             <service uid="parameterToolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Show volume parameters" icon="flatIcon-0.1/icons/Volume.svg" style="check" />
-                        <menuItem name="Show organs manager" icon="flatIcon-0.1/icons/Stomach.svg" style="check" />
-                        <menuItem name="Show landmarks manager" icon="flatIcon-0.1/icons/YellowLandmarks.svg" style="check" />
-                        <menuItem name="Show light manager" icon="flatIcon-0.1/icons/Light.svg" style="check" />
-                        <menuItem name="Show extruded meshes manager" icon="flatIcon-0.1/icons/Extrude.svg" style="check" />
+                        <menuItem name="Show volume parameters" icon="module_ui_flaticon-0.1/icons/Volume.svg" style="check" />
+                        <menuItem name="Show organs manager" icon="module_ui_flaticon-0.1/icons/Stomach.svg" style="check" />
+                        <menuItem name="Show landmarks manager" icon="module_ui_flaticon-0.1/icons/YellowLandmarks.svg" style="check" />
+                        <menuItem name="Show light manager" icon="module_ui_flaticon-0.1/icons/Light.svg" style="check" />
+                        <menuItem name="Show extruded meshes manager" icon="module_ui_flaticon-0.1/icons/Extrude.svg" style="check" />
                         <spacer/>
-                        <menuItem name="Close parameters" icon="flatIcon-0.1/icons/YellowRightChevron.svg" />
+                        <menuItem name="Close parameters" icon="module_ui_flaticon-0.1/icons/YellowRightChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -232,28 +232,28 @@
             <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load series" icon="flatIcon-0.1/icons/BlueLoad.svg" />
-                        <menuItem name="Open PACS" icon="flatIcon-0.1/icons/GreenServerConnected.svg" style="check" />
+                        <menuItem name="Load series" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
+                        <menuItem name="Open PACS" icon="module_ui_flaticon-0.1/icons/GreenServerConnected.svg" style="check" />
                         <separator/>
-                        <menuItem name="Negato view" icon="flatIcon-0.1/icons/Layers.svg" />
-                        <menuItem name="Volume view" icon="flatIcon-0.1/icons/Volume.svg" />
+                        <menuItem name="Negato view" icon="module_ui_flaticon-0.1/icons/Layers.svg" />
+                        <menuItem name="Volume view" icon="module_ui_flaticon-0.1/icons/Volume.svg" />
                         <separator/>
-                        <menuItem name="Show/Hide volume TF editor" icon="flatIcon-0.1/icons/TF1.svg" style="check" />
+                        <menuItem name="Show/Hide volume TF editor" icon="module_ui_flaticon-0.1/icons/TF1.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide mesh" icon="flatIcon-0.1/icons/Stomach.svg" style="check" />
-                        <menuItem name="Show/hide volume" icon="flatIcon-0.1/icons/Volume.svg" style="check" />
-                        <menuItem name="Show/hide negato" icon="flatIcon-0.1/icons/Layers.svg" style="check" />
+                        <menuItem name="Show/hide mesh" icon="module_ui_flaticon-0.1/icons/Stomach.svg" style="check" />
+                        <menuItem name="Show/hide volume" icon="module_ui_flaticon-0.1/icons/Volume.svg" style="check" />
+                        <menuItem name="Show/hide negato" icon="module_ui_flaticon-0.1/icons/Layers.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide cropping box" icon="flatIcon-0.1/icons/CroppingBox.svg" style="check" />
-                        <menuItem name="Reset cropping box" icon="flatIcon-0.1/icons/ResetCroppingBox.svg" />
-                        <menuItem name="Shape extruder" icon="flatIcon-0.1/icons/Extrude.svg" style="check" />
-                        <menuItem name="Revert shape extruder" icon="flatIcon-0.1/icons/ExtrudeRevert.svg" />
+                        <menuItem name="Show/hide cropping box" icon="module_ui_flaticon-0.1/icons/CroppingBox.svg" style="check" />
+                        <menuItem name="Reset cropping box" icon="module_ui_flaticon-0.1/icons/ResetCroppingBox.svg" />
+                        <menuItem name="Shape extruder" icon="module_ui_flaticon-0.1/icons/Extrude.svg" style="check" />
+                        <menuItem name="Revert shape extruder" icon="module_ui_flaticon-0.1/icons/ExtrudeRevert.svg" />
                         <separator/>
-                        <menuItem name="Add distance" icon="flatIcon-0.1/icons/AddDistance.svg" />
-                        <menuItem name="Remove distance" icon="flatIcon-0.1/icons/RemoveDistance.svg" />
-                        <menuItem name="Hide/show distance" icon="flatIcon-0.1/icons/Distance.svg" style="check" />
+                        <menuItem name="Add distance" icon="module_ui_flaticon-0.1/icons/AddDistance.svg" />
+                        <menuItem name="Remove distance" icon="module_ui_flaticon-0.1/icons/RemoveDistance.svg" />
+                        <menuItem name="Hide/show distance" icon="module_ui_flaticon-0.1/icons/Distance.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide axis" icon="flatIcon-0.1/icons/Axis.svg" style="check" />
+                        <menuItem name="Show/hide axis" icon="module_ui_flaticon-0.1/icons/Axis.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

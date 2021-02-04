@@ -40,8 +40,8 @@
         <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="VTK Mesher" icon="flatIcon-0.1/icons/YellowMenu.svg" />
-                    <menuItem name="Export ModelSeries" icon="flatIcon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="VTK Mesher" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
+                    <menuItem name="Export ModelSeries" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
                 </layout>
             </gui>
             <registry>
@@ -144,7 +144,7 @@
         <service uid="showHideNegatoSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                 <checkable>true</checkable>
-                <icon>flatIcon-0.1/icons/Layers.svg</icon>
+                <icon>module_ui_flaticon-0.1/icons/Layers.svg</icon>
                 <iconWidth>40</iconWidth>
                 <iconHeight>16</iconHeight>
                 <checked>true</checked>
@@ -154,7 +154,7 @@
         <service uid="snapshotSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>flatIcon-0.1/icons/YellowPhoto.svg</icon>
+               <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
             </config>
         </service>
 

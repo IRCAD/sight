@@ -75,7 +75,7 @@ class MODULE_VIZ_OGRE_CLASS_API SCompositorParameter final : public ::sight::viz
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SCompositorParameter, sight::viz::ogre::IParameter)
+    fwCoreServiceMacro(SCompositorParameter, ::sight::viz::ogre::IParameter)
 
     /// Creates the adaptor.
     MODULE_VIZ_OGRE_API SCompositorParameter() noexcept;

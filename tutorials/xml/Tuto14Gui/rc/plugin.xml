@@ -96,14 +96,14 @@
         <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
-                    <menuItem name="start" icon="flatIcon-0.1/icons/GreenStart.svg" />
-                    <menuItem name="pause" icon="flatIcon-0.1/icons/OrangePause.svg" />
-                    <menuItem name="stop"  icon="flatIcon-0.1/icons/RedStop.svg" />
+                    <menuItem name="start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" />
+                    <menuItem name="pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" />
+                    <menuItem name="stop"  icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
                     <separator />
                     <menuItem name="Item 1" style="check" icon="Tuto14Gui-0.1/icons/important.png" />
                     <separator />
-                    <menuItem name="Item 2" style="radio" icon="flatIcon-0.1/icons/BlueParameters.svg" />
-                    <menuItem name="Item 3" style="radio" icon="flatIcon-0.1/icons/BlueParameters.svg" />
+                    <menuItem name="Item 2" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
+                    <menuItem name="Item 3" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
                     <separator />
                     <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
                     <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
@@ -113,7 +113,7 @@
                     <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui-0.1/icons/monkey.png" />
                     <spacer/>
                     <menu name="Test Hide/Show" start="yes" />
-                    <menuItem name="Quit" icon="flatIcon-0.1/icons/RedCross.svg" />
+                    <menuItem name="Quit" icon="module_ui_flaticon-0.1/icons/RedCross.svg" />
                 </layout>
             </gui>
             <registry>
@@ -136,9 +136,9 @@
         <service uid="testHideShowView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
             <gui>
                 <layout>
-                    <menuItem name="start" icon="flatIcon-0.1/icons/GreenStart.svg" />
-                    <menuItem name="pause" icon="flatIcon-0.1/icons/OrangePause.svg" />
-                    <menuItem name="stop"  icon="flatIcon-0.1/icons/RedStop.svg" />
+                    <menuItem name="start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" />
+                    <menuItem name="pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" />
+                    <menuItem name="stop"  icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
                 </layout>
             </gui>
             <registry>
@@ -264,8 +264,8 @@
         <service uid="toolbar2View" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Item 2" style="radio" icon="flatIcon-0.1/icons/BlueParameters.svg" />
-                    <menuItem name="Item 3" style="radio" icon="flatIcon-0.1/icons/BlueParameters.svg" />
+                    <menuItem name="Item 2" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
+                    <menuItem name="Item 3" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
                     <separator />
                     <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
                     <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
@@ -363,8 +363,8 @@
         <service uid="checkableSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
                 <checkable>true</checkable>
-                <icon>flatIcon-0.1/icons/GreenStart.svg</icon>
-                <icon2>flatIcon-0.1/icons/RedStop.svg</icon2>
+                <icon>module_ui_flaticon-0.1/icons/GreenStart.svg</icon>
+                <icon2>module_ui_flaticon-0.1/icons/RedStop.svg</icon2>
                 <text>Check</text>
             </config>
         </service>

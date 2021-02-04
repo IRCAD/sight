@@ -102,7 +102,7 @@ class MODULE_VIZ_OGRE_CLASS_API SPointList final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPointList, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(SPointList, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     MODULE_VIZ_OGRE_API SPointList() noexcept;

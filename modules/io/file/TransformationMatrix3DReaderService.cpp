@@ -133,7 +133,7 @@ void TransformationMatrix3DReaderService::updating()
     {
         // Retrieve object
         data::TransformationMatrix3D::sptr matrix =
-            this->getInOut< data::TransformationMatrix3D >(sight::sight::io::base::services::s_DATA_KEY);
+            this->getInOut< data::TransformationMatrix3D >(sight::io::base::services::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", matrix);
 
         sight::io::base::reader::TransformationMatrix3DReader::sptr reader =

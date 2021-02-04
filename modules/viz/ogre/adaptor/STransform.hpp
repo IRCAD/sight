@@ -60,7 +60,7 @@ class MODULE_VIZ_OGRE_CLASS_API STransform final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STransform, sight::viz::ogre::IAdaptor)
+    fwCoreServiceMacro(STransform, ::sight::viz::ogre::IAdaptor)
 
     /// Creates the service.
     MODULE_VIZ_OGRE_API STransform() noexcept;
