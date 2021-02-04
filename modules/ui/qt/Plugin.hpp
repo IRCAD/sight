@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace thread
+namespace sight::core::thread
 {
 class Worker;
 } //namespace thread

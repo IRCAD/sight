@@ -31,7 +31,7 @@
 
 #include <functional>
 
-namespace thread
+namespace sight::core::thread
 {
 class Worker;
 } //namespace thread
