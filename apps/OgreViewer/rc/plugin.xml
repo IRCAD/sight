@@ -584,6 +584,12 @@
             </connect>
 
             <connect>
+                <signal>seriesDB/modified</signal>
+                <slot>extractImageSrv/update</slot>
+                <slot>extractMeshSrv/update</slot>
+            </connect>
+
+            <connect>
                 <signal>seriesDB/addedSeries</signal>
                 <slot>extractImageSrv/update</slot>
                 <slot>extractMeshSrv/update</slot>
