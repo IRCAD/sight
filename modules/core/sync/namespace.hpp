@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,27 +22,10 @@
 
 #pragma once
 
-#include "ctrlCom/config.hpp"
-
-#include <core/runtime/Plugin.hpp>
-
-namespace ctrlCom
-{
-
 /**
- * @brief   This class is started when the module is loaded.
+ * @brief   The namespace sight::modules::sync contains services that control the execution flow with signals and slots.
  */
-class CTRLCOM_CLASS_API Plugin : public core::runtime::Plugin
+namespace sight::modules::sync
 {
-public:
-    /// Destructor. Do nothing.
-    CTRLCOM_API ~Plugin() noexcept;
 
-    /// Do nothing.
-    CTRLCOM_API void start();
-
-    /// Do nothing
-    CTRLCOM_API void stop() noexcept;
-};
-
-} // namespace ctrlCom
+} // namespace sight::modules::sync

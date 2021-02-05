@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2015 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,16 +20,14 @@
  *
  ***********************************************************************/
 
-#include "syncTimeline/Plugin.hpp"
+#include "Plugin.hpp"
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <services/macros.hpp>
-
-namespace syncTimeline
+namespace sight::modules::sync
 {
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>
-registrar("syncTimeline::Plugin");
+
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::sync::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -46,4 +44,5 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
-} // namespace syncTimeline
+
+} // namespace sight::modules::sync

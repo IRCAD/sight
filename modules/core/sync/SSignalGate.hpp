@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "ctrlCom/config.hpp"
+#include "modules/sync/config.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
 #include <services/IController.hpp>
 
-namespace ctrlCom
+namespace sight::modules::sync
 {
 
 /**
@@ -41,7 +41,7 @@ namespace ctrlCom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::ctrlCom::SSignalGate">
+        <service uid="..." type="::sight::modules::sync::SSignalGate">
             <signal>data/modified</signal>
             <signal>object/changed</signal>
             <signal>service/computed</signal>
@@ -50,26 +50,26 @@ namespace ctrlCom
  * @subsection Configuration Configuration
  *  - \b signal: list of signals to wait for
  */
-class CTRLCOM_CLASS_API SSignalGate : public services::IController
+class MODULE_SYNC_CLASS_API SSignalGate : public services::IController
 {
 public:
 
-    fwCoreServiceMacro(SSignalGate, services::IController)
+    fwCoreServiceMacro(SSignalGate, sight::services::IController)
 
     /**
      * @name Signals API
      * @{
      */
-    CTRLCOM_API static const core::com::Signals::SignalKeyType s_ALL_RECEIVED_SIG;
+    MODULE_SYNC_API static const core::com::Signals::SignalKeyType s_ALL_RECEIVED_SIG;
     typedef core::com::Signal< void () > AllReceivedSignalType;
     typedef core::com::Slot< void () > ReceivedSignalType;
     /** @} */
 
     /// Constructor
-    CTRLCOM_API SSignalGate();
+    MODULE_SYNC_API SSignalGate();
 
     /// Destructor
-    CTRLCOM_API virtual ~SSignalGate() override;
+    MODULE_SYNC_API virtual ~SSignalGate() override;
 
     /// Slot: called when one of the signals is called
     void received(size_t _index);
@@ -77,16 +77,16 @@ public:
 protected:
 
     /// Does nothing
-    CTRLCOM_API virtual void configuring() override;
+    MODULE_SYNC_API virtual void configuring() override;
 
     /// Does nothing
-    CTRLCOM_API virtual void starting() override;
+    MODULE_SYNC_API virtual void starting() override;
 
     /// Does nothing
-    CTRLCOM_API virtual void stopping() override;
+    MODULE_SYNC_API virtual void stopping() override;
 
     /// Does nothing
-    CTRLCOM_API virtual void updating() override;
+    MODULE_SYNC_API virtual void updating() override;
 
 private:
 
@@ -99,4 +99,4 @@ private:
     core::com::helper::SigSlotConnection m_connections;
 };
 
-} // namespace ctrlCom
+} // namespace sight::modules::sync

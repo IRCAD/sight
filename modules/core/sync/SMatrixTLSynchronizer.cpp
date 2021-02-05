@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "syncTimeline/SMatrixTLSynchronizer.hpp"
+#include "SMatrixTLSynchronizer.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
@@ -36,11 +36,11 @@
 #include <functional>
 #include <sstream>
 
-namespace syncTimeline
+namespace sight::modules::sync
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(::sight::services::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer,
+fwServicesRegisterMacro(::sight::services::ISynchronizer, modules::sync::SMatrixTLSynchronizer,
                         ::sight::data::MatrixTL)
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
@@ -148,4 +148,4 @@ services::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections(
 }
 
 // ----------------------------------------------------------------------------
-}  // namespace syncTimeline
+}  // namespace sight::modules::sync

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "syncTimeline/config.hpp"
+#include "modules/sync/config.hpp"
 
 #include <core/base.hpp>
 #include <core/HiResClock.hpp>
@@ -45,7 +45,7 @@ class Image;
 class TransformationMatrix3D;
 }
 
-namespace syncTimeline
+namespace sight::modules::sync
 {
 /**
  * @brief   SMatrixTLSynchronizer service synchronizes tracking matrices.
@@ -57,7 +57,7 @@ namespace syncTimeline
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="matrixToolsSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
+     <service uid="matrixToolsSynchronizer" type="::modules::sync::SMatrixTLSynchronizer">
          <in key="matrixTL" uid="matrixToolsTL" autoConnect="yes" />
          <inout group="matrices">
              <key uid="markerEndoMX" />
@@ -74,7 +74,7 @@ namespace syncTimeline
  * @subsection In-Out In-Out
  * - \b matrices [data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */
-class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public services::ISynchronizer
+class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public services::ISynchronizer
 {
 
 public:
@@ -87,7 +87,7 @@ public:
     /**
      * @brief Constructor.
      */
-    SYNCTIMELINE_API SMatrixTLSynchronizer() noexcept;
+    MODULE_SYNC_API SMatrixTLSynchronizer() noexcept;
 
     /**
      * @brief Destructor.
@@ -101,25 +101,25 @@ public:
 protected:
 
     /// Does nothing
-    SYNCTIMELINE_API void configuring() override;
+    MODULE_SYNC_API void configuring() override;
 
     /// This method is used to initialize the service.
-    SYNCTIMELINE_API void starting() override;
+    MODULE_SYNC_API void starting() override;
 
     /// Does nothing.
-    SYNCTIMELINE_API void stopping() override;
+    MODULE_SYNC_API void stopping() override;
 
     /// Does nothing.
-    SYNCTIMELINE_API void updating() override;
+    MODULE_SYNC_API void updating() override;
 
     /// Synchronize
-    SYNCTIMELINE_API void synchronize();
+    MODULE_SYNC_API void synchronize();
 
-    SYNCTIMELINE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_SYNC_API services::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
     MatrixIndexNameType m_matrixIndexName;
 };
 
-} //namespace syncTimeline
+} //namespace sight::modules::sync

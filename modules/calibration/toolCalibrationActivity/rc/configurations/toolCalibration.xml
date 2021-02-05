@@ -115,7 +115,7 @@
             </TData>
         </service>
 
-        <service uid="trackerTLMatrixSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
+        <service uid="trackerTLMatrixSynchronizer" type="::sight::modules::sync::SMatrixTLSynchronizer">
             <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
             <inout group="matrices">
                 <key uid="trackerMatrix0" />

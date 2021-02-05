@@ -19,6 +19,6 @@ set( REQUIREMENTS
         videoCalibration
         ioIGTL
         ioTimeline
-        syncTimeline
+        module_sync
         )
 

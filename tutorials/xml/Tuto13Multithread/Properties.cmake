@@ -20,7 +20,6 @@ set( REQUIREMENTS
 
     # Services
     module_viz_sample
-    vtkSimpleMesh
 )
 
 moduleParam(module_ui_qt

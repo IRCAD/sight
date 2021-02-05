@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ctrlCom/SSignalGate.hpp"
+#include "SSignalGate.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -30,7 +30,7 @@
 #include <future>
 #include <regex>
 
-namespace ctrlCom
+namespace sight::modules::sync
 {
 
 // Public signal
@@ -148,4 +148,4 @@ void SSignalGate::received(size_t _index)
 
 //-----------------------------------------------------------------------------
 
-} // namespace ctrlCom
+} // namespace sight::modules::sync

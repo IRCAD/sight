@@ -16,7 +16,6 @@ set( REQUIREMENTS
     # Objects declaration
     module_services
     data
-    ioPacs
 
     # UI declaration/Actions
     module_ui_base

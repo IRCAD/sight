@@ -1,0 +1,11 @@
+<plugin id="::sight::modules::sync" class="sight::modules::sync::Plugin" version="@PROJECT_VERSION@" >
+
+    <library name="module_sync" />
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::services::ISynchronizer</type>
+        <service>::sight::modules::sync::SMatrixTLSynchronizer</service>
+        <object>::sight::data::MatrixTL</object>
+    </extension>
+
+</plugin>

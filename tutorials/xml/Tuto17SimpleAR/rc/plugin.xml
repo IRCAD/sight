@@ -491,7 +491,7 @@
             </service>
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrv" type="::ctrlCom::SSignalGate" >
+            <service uid="syncGenericSceneSrv" type="::sight::modules::sync::SSignalGate" >
                 <signal>sourceFrame/bufferModified</signal>
                 <signal>cameraToMarker/modified</signal>
             </service>
