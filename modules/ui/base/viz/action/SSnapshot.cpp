@@ -41,7 +41,7 @@ namespace action
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, modules::ui::base::viz::action::SSnapshot,
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::viz::action::SSnapshot,
                          ::sight::data::Object )
 
 SSnapshot::SSnapshot() noexcept

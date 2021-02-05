@@ -53,7 +53,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, modules::ui::base::STargeting )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::ui::base::STargeting )
 
 // -----------------------------------------------------------------------------
 

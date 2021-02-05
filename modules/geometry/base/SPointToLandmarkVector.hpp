@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <data/Landmarks.hpp>
 
 #include <services/IService.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -41,7 +41,7 @@ namespace maths
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::maths::SPointToLandmarkVector">
+        <service type="::sight::modules::geometry::base::SPointToLandmarkVector">
             <in key="landmark" uid="..." />
             <inout key="transform" uid="..." />
             <inout key="computedLandmark" uid="..." />
@@ -71,7 +71,7 @@ namespace maths
  * - \b sameAxialSliceLabel: (optional) (std::string, default="Same axial slice") label to prefix the message sent in
  * the sameSlice signal.
  */
-class MATHS_CLASS_API SPointToLandmarkVector final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkVector final : public services::IService
 {
 
 public:
@@ -80,24 +80,24 @@ public:
     fwCoreServiceMacro(SPointToLandmarkVector, services::IService)
 
     /// Initializes signals.
-    MATHS_API SPointToLandmarkVector() noexcept;
+    MODULE_GEOMETRY_BASE_API SPointToLandmarkVector() noexcept;
 
     /// Destroys the service.
-    MATHS_API ~SPointToLandmarkVector() noexcept override;
+    MODULE_GEOMETRY_BASE_API ~SPointToLandmarkVector() noexcept override;
 
 protected:
 
     /// Gets parameters from composite.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Computes the vector between a target and a point.
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// Configures the service's parameters.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -105,7 +105,7 @@ protected:
      *
      * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARK_INPUT to s_UPDATE_SLOT
      */
-    MATHS_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -131,4 +131,4 @@ private:
     /// Label to prefix the message sent in the sameSlice signal.
     std::string m_sameSliceLabel{"Same axial slice"};
 };
-} // namespace maths
+} // namespace sight::modules::geometry::base

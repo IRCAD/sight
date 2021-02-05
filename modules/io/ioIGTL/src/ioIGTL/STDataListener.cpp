@@ -39,7 +39,7 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::STDataListener, data::MatrixTL)
+fwServicesRegisterMacro(::ioIGTL::INetworkListener, ::ioIGTL::STDataListener, ::sight::data::MatrixTL)
 
 namespace ioIGTL
 {

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <core/base.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
@@ -32,7 +32,7 @@
 
 #include <services/IController.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -47,7 +47,7 @@ namespace maths
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::maths::SSwitchMatrices" autoConnect="yes">
+        <service uid="..." type="::sight::modules::geometry::base::SSwitchMatrices" autoConnect="yes">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." />
@@ -61,7 +61,7 @@ namespace maths
  * - \b output [data::TransformationMatrix3D]: Output matrix.
  *
  */
-class MATHS_CLASS_API SSwitchMatrices : public services::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SSwitchMatrices : public services::IController
 {
 
 public:
@@ -71,7 +71,7 @@ public:
     /**
      * @brief Constructor.
      */
-    MATHS_API SSwitchMatrices() noexcept;
+    MODULE_GEOMETRY_BASE_API SSwitchMatrices() noexcept;
 
     /**
      * @brief Destructor.
@@ -80,37 +80,37 @@ public:
     {
     }
 
-    MATHS_API static const core::com::Slots::SlotKeyType s_SWITCH_SLOT;
+    MODULE_GEOMETRY_BASE_API static const core::com::Slots::SlotKeyType s_SWITCH_SLOT;
     typedef core::com::Slot< void () > SwitchSlotType;
 
-    MATHS_API static const core::com::Slots::SlotKeyType s_SWITCH_TO_SLOT;
+    MODULE_GEOMETRY_BASE_API static const core::com::Slots::SlotKeyType s_SWITCH_TO_SLOT;
     typedef core::com::Slot<void (size_t)> SwitchToSlotType;
 
 protected:
 
     /// This method is used to configure the service.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /// This method is used to initialize the service.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Does nothing.
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// Switch to next Matrix
-    MATHS_API void switchMatrix();
+    MODULE_GEOMETRY_BASE_API void switchMatrix();
 
     /// Switch to Matrix "index"
-    MATHS_API void switchToMatrix(size_t index);
+    MODULE_GEOMETRY_BASE_API void switchToMatrix(size_t index);
 
-    MATHS_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
     size_t m_indexOfDesiredMatrix;
 };
 
-} //namespace maths
+} //namespace sight::modules::geometry::base

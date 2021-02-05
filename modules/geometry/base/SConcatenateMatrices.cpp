@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/SConcatenateMatrices.hpp"
+#include "modules/geometry/base/SConcatenateMatrices.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -33,13 +33,14 @@
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::maths::SConcatenateMatrices, data::TransformationMatrix3D)
+fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::base::SConcatenateMatrices,
+                         ::sight::data::TransformationMatrix3D)
+
+namespace sight::modules::geometry::base
+{
 
 static const services::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
-static const services::IService::KeyType s_OUTPUT = "output";
-
-namespace maths
-{
+static const services::IService::KeyType s_OUTPUT             = "output";
 
 // ----------------------------------------------------------------------------
 
@@ -92,7 +93,7 @@ void SConcatenateMatrices::updating()
     {
         data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
 
-        geometry::data::identity(outputMatrix);
+        sight::geometry::data::identity(outputMatrix);
 
         auto inverse = data::TransformationMatrix3D::New();
 
@@ -104,12 +105,12 @@ void SConcatenateMatrices::updating()
 
             if (invertCurrentMatrix)
             {
-                geometry::data::invert(inputMatrix, inverse);
-                geometry::data::multiply(outputMatrix, inverse, outputMatrix);
+                sight::geometry::data::invert(inputMatrix, inverse);
+                sight::geometry::data::multiply(outputMatrix, inverse, outputMatrix);
             }
             else
             {
-                geometry::data::multiply(outputMatrix, inputMatrix, outputMatrix);
+                sight::geometry::data::multiply(outputMatrix, inputMatrix, outputMatrix);
             }
         }
     }
@@ -134,4 +135,4 @@ services::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections()
 
 // ----------------------------------------------------------------------------
 
-} // namespace maths
+} // namespace sight::modules::geometry::base

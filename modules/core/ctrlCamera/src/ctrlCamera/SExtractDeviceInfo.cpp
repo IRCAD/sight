@@ -40,7 +40,7 @@
 namespace ctrlCamera
 {
 
-fwServicesRegisterMacro( ::sight::services::IController, ::ctrlCamera::SExtractDeviceInfo, data::Object)
+fwServicesRegisterMacro( ::sight::services::IController, ::ctrlCamera::SExtractDeviceInfo, ::sight::data::Object)
 
 //-----------------------------------------------------------------------------
 

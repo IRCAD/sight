@@ -34,7 +34,7 @@ set( REQUIREMENTS
     trackerAruco
     registrationCV
     videoCalibration
-    maths
+    module_geometry_base
     ctrlCom
 
     # Generic Scene

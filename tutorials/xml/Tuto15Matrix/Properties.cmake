@@ -24,7 +24,7 @@ set( REQUIREMENTS
     module_io_atoms
 
     # Services
-    maths
+    module_geometry_base
 
     # Generic Scene
 )

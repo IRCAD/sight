@@ -202,14 +202,14 @@
             Defines matrixDecomposerAdp service:
             This service decompose a matrix into a rotation matrix and a translation matrix
         -->
-        <service uid="matrixDecomposerAdp" type="::maths::SDecomposeMatrix" >
+        <service uid="matrixDecomposerAdp" type="::sight::modules::geometry::base::SDecomposeMatrix" >
             <in key="source" uid="matrix" autoConnect="yes" />
             <inout key="translation" uid="translationMatrix" />
             <inout key="rotation" uid="rotationMatrix" />
         </service>
 
         <!-- to multiply matrices -->
-        <service uid="concatenateTranslationAndRotationArv" type="::maths::SConcatenateMatrices" autoConnect="yes" >
+        <service uid="concatenateTranslationAndRotationArv" type="::sight::modules::geometry::base::SConcatenateMatrices" autoConnect="yes" >
             <in group="matrix" >
                 <key uid="translationMatrix" />
                 <key uid="rotationMatrix" />
@@ -218,7 +218,7 @@
         </service>
 
         <!-- to multiply matrices -->
-        <service uid="concatenateRotationAndTranslationSrv" type="::maths::SConcatenateMatrices" autoConnect="yes" >
+        <service uid="concatenateRotationAndTranslationSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" autoConnect="yes" >
             <in group="matrix" >
                 <key uid="rotationMatrix" />
                 <key uid="translationMatrix" />

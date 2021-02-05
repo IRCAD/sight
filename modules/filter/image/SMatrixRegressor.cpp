@@ -35,7 +35,8 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SMatrixRegressor, data::Vector)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SMatrixRegressor,
+                        ::sight::data::Vector)
 
 static const services::IService::KeyType s_MATRIX_LIST_IN = "matrixList";
 static const services::IService::KeyType s_POINT_LIST_IN        = "pointList";

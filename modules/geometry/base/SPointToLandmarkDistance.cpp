@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/SPointToLandmarkDistance.hpp"
+#include "modules/geometry/base/SPointToLandmarkDistance.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -33,12 +33,12 @@
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::maths::SPointToLandmarkDistance )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::SPointToLandmarkDistance )
 
 static const core::com::Signals::SignalKeyType DISTANCE_CHANGED_SIG = "distanceChanged";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
@@ -100,7 +100,7 @@ void SPointToLandmarkDistance::updating()
             this->getLockedInOut< data::TransformationMatrix3D>("pointToLandmarkMatrix");
         auto pointToLandmarkMat          = pointToLandmarkMatLocked.get_shared();
         const auto distanceText          = this->getLockedInOut< data::String>("distanceText");
-        const ::glm::dmat4x4 pointMatrix = geometry::data::getMatrixFromTF3D(
+        const ::glm::dmat4x4 pointMatrix = sight::geometry::data::getMatrixFromTF3D(
             pointMat.get_shared());
         const ::glm::dvec4 originPoint(0.0, 0.0, 0.0, 1.0);
         const ::glm::dvec3 point = ::glm::dvec3(pointMatrix*originPoint);
@@ -131,8 +131,8 @@ void SPointToLandmarkDistance::updating()
         cameraMatrix[1] = ::glm::dvec4(up, 0.0);
         cameraMatrix[2] = ::glm::dvec4(front, 0.0);
         cameraMatrix[3] = ::glm::dvec4(point, 1.0);
-        geometry::data::setTF3DFromMatrix(pointToLandmarkMat,
-                                          cameraMatrix);
+        sight::geometry::data::setTF3DFromMatrix(pointToLandmarkMat,
+                                                 cameraMatrix);
         auto sig =
             pointToLandmarkMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         {

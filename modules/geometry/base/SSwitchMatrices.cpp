@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/SSwitchMatrices.hpp"
+#include "modules/geometry/base/SSwitchMatrices.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -31,9 +31,10 @@
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::maths::SSwitchMatrices, data::TransformationMatrix3D)
+fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::base::SSwitchMatrices,
+                         ::sight::data::TransformationMatrix3D)
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
@@ -127,4 +128,4 @@ void SSwitchMatrices::switchToMatrix(size_t index)
 
 // ----------------------------------------------------------------------------
 
-}  // namespace maths
+}  // namespace sight::modules::geometry::base

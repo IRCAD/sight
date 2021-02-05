@@ -471,7 +471,7 @@
             </service>
 
             <!-- Multiply matrices (here only used to inverse "markerToCamera") -->
-            <service uid="matrixReverserSrv" type="::maths::SConcatenateMatrices" >
+            <service uid="matrixReverserSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="markerToCamera" autoConnect="yes" inverse="true" />
                 </in>

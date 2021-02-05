@@ -437,7 +437,7 @@
             <inout key="target" uid="flipTransform" />
         </service>
 
-        <service uid="flipAroundCenter" type="::maths::SConcatenateMatrices" >
+        <service uid="flipAroundCenter" type="::sight::modules::geometry::base::SConcatenateMatrices" >
             <in group="matrix"  >
                 <!-- Align centers -->
                 <key uid="centerTransformReference" />

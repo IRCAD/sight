@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <core/base.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
@@ -31,7 +31,7 @@
 
 #include <services/IController.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 /**
  * @brief   This service concatenates N matrices together.
@@ -42,7 +42,7 @@ namespace maths
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::maths::SConcatenateMatrices">
+        <service uid="..." type="::sight::modules::geometry::base::SConcatenateMatrices">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." inverse="true"/>
@@ -59,17 +59,17 @@ namespace maths
  * - \b output [data::TransformationMatrix3D]: Output matrix.
  */
 
-class MATHS_CLASS_API SConcatenateMatrices : public services::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SConcatenateMatrices : public services::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SConcatenateMatrices, services::IController)
+    fwCoreServiceMacro(SConcatenateMatrices, sight::services::IController)
 
     /**
      * @brief Constructor.
      */
-    MATHS_API SConcatenateMatrices() noexcept;
+    MODULE_GEOMETRY_BASE_API SConcatenateMatrices() noexcept;
 
     /**
      * @brief Destructor.
@@ -80,16 +80,16 @@ public:
 
 protected:
     /// This method is used to configure the service.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /// Does nothing.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Concatenates the matrices
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -97,7 +97,7 @@ protected:
      *
      * Connect TransformationMatrix3d::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MATHS_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -107,4 +107,4 @@ private:
     InvertVectorType m_invertVector;
 };
 
-} //namespace maths
+} //namespace sight::modules::geometry::base

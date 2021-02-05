@@ -9,7 +9,7 @@ set( REQUIREMENTS
     module_data
     module_ui_base
     module_ui_qt
-    maths
+    module_geometry_base
     media
     registrationCV
     trackerAruco

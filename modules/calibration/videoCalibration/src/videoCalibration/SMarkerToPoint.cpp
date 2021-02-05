@@ -38,7 +38,7 @@
 
 namespace videoCalibration
 {
-fwServicesRegisterMacro( ::sight::services::IController, ::videoCalibration::SMarkerToPoint, data::PointList)
+fwServicesRegisterMacro( ::sight::services::IController, ::videoCalibration::SMarkerToPoint, ::sight::data::PointList)
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,29 +20,30 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "modules/geometry/base/Plugin.hpp"
 
-#include "maths/config.hpp"
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <core/runtime/Plugin.hpp>
-
-namespace maths
+namespace sight::modules::geometry::base
 {
 
-/**
- * @brief This class is started when the module is loaded.
- */
-struct MATHS_CLASS_API Plugin final : public core::runtime::Plugin
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+    "::sight::modules::geometry::base::Plugin");
+
+Plugin::~Plugin() noexcept
 {
-    /// Destroys the plugin.
-    MATHS_API ~Plugin() noexcept override;
+}
 
-    /// Starts the plugin, does nothing here.
-    MATHS_API void start() override;
+//------------------------------------------------------------------------------
 
-    /// Stops the plugin, does nothing here.
-    MATHS_API void stop() noexcept override;
+void Plugin::start()
+{
+}
 
-};
+//------------------------------------------------------------------------------
 
-} // namespace maths
+void Plugin::stop() noexcept
+{
+}
+
+} // namespace sight::modules::geometry::base

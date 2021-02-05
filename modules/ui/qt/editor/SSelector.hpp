@@ -48,7 +48,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::modules::ui::qt::editor::SSelector">
+    <service uid="..." type="::sight::modules::ui::qt::editor::SSelector">
         <inout key="seriesDB" uid="..." />
         <inout key="selection" uid="..." />
         <icons>

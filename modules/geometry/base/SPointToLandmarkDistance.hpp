@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Slots.hpp>
@@ -33,7 +33,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -52,7 +52,7 @@ namespace maths
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::maths::SPointToLandmarkDistance">
+   <service type="::sight::modules::geometry::base::SPointToLandmarkDistance">
        <in key="pointMatrix" uid="..." />
        <in key="landmark" uid="..." />
        <inout key="pointToLandmarkMatrix" uid="..." />
@@ -74,7 +74,7 @@ namespace maths
  *    - \b unit: unit of the distance computed by this service
  *    - \b precision: precision of the displayed distance
  */
-class MATHS_CLASS_API SPointToLandmarkDistance final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkDistance final : public services::IService
 {
 
 public:
@@ -83,24 +83,24 @@ public:
     fwCoreServiceMacro(SPointToLandmarkDistance, services::IService)
 
     /// Initializes signals and slots.
-    MATHS_API SPointToLandmarkDistance() noexcept;
+    MODULE_GEOMETRY_BASE_API SPointToLandmarkDistance() noexcept;
 
     /// Destroys the service.
-    MATHS_API ~SPointToLandmarkDistance() noexcept override;
+    MODULE_GEOMETRY_BASE_API ~SPointToLandmarkDistance() noexcept override;
 
 protected:
 
     /// Does nothing.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Generates and updates the mesh.
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// Configures the service's parameters.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
 private:
 
@@ -128,4 +128,4 @@ private:
     int m_precision{6};
 };
 
-} // namespace maths
+} // namespace sight::modules::geometry::base

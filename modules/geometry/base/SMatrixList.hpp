@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <services/IService.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -53,7 +53,7 @@ namespace maths
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::maths::SMatrixList">
+        <service type="::sight::modules::geometry::base::SMatrixList">
             <inout group="matrices">
                 <key uid="..." />
                 <key uid="..." />
@@ -79,7 +79,7 @@ namespace maths
  * @subsection Output Output:
  * - \b vector [data::Vector]: vector containing matrices
  */
-class MATHS_CLASS_API SMatrixList final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API SMatrixList final : public services::IService
 {
 
 public:
@@ -88,24 +88,24 @@ public:
     fwCoreServiceMacro(SMatrixList, services::IService)
 
     /// Initializes signals.
-    MATHS_API SMatrixList() noexcept;
+    MODULE_GEOMETRY_BASE_API SMatrixList() noexcept;
 
     /// Destroys the service.
-    MATHS_API ~SMatrixList() noexcept override;
+    MODULE_GEOMETRY_BASE_API ~SMatrixList() noexcept override;
 
 protected:
 
     /// Gets parameters from composite.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Stores computed matrices from input vector into a list of strings.
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// This method is used to configure the service parameters.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
 private:
 
@@ -127,4 +127,4 @@ private:
     typedef core::com::Signal< void (int, std::string) > MatrixAddedSignalType;
     typedef core::com::Signal< void (int) > MatrixRemovedSignalType;
 };
-} // namespace maths.
+} // namespace sight::modules::geometry::base.

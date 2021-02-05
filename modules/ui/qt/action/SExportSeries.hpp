@@ -51,7 +51,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::ui::qt::action::SExportSeries" autoConnect="yes">
+        <service type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes">
             <inout key="series" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>

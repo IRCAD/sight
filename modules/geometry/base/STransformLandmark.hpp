@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <data/TransformationMatrix3D.hpp>
 
 #include <services/IService.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -45,7 +45,7 @@ namespace maths
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::maths::STransformLandmark">
+        <service type="::sight::modules::geometry::base::STransformLandmark">
             <in key="matrix" uid="..." />
             <inout key="landmark" uid="..." />
             <label></label>
@@ -61,7 +61,7 @@ namespace maths
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group
  */
-class MATHS_CLASS_API STransformLandmark final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API STransformLandmark final : public services::IService
 {
 
 public:
@@ -70,31 +70,31 @@ public:
     fwCoreServiceMacro( STransformLandmark, services::IService)
 
     /// Initializes signals.
-    MATHS_API STransformLandmark() noexcept;
+    MODULE_GEOMETRY_BASE_API STransformLandmark() noexcept;
 
     /// Destroys the service.
-    MATHS_API ~STransformLandmark() noexcept override;
+    MODULE_GEOMETRY_BASE_API ~STransformLandmark() noexcept override;
 
 protected:
 
     /// Gets the input matrix.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Applies the transform to the landmark.
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// This method is used to configure the service parameters.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
      */
-    MATHS_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -122,4 +122,4 @@ private:
     bool m_landmarkSelected{false};
 
 };
-} // namespace maths
+} // namespace sight::modules::geometry::base

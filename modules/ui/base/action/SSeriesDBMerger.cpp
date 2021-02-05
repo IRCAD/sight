@@ -43,7 +43,7 @@ namespace sight::modules::ui::base
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, modules::ui::base::action::SSeriesDBMerger,
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SSeriesDBMerger,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";

@@ -28,7 +28,7 @@ set( REQUIREMENTS
     # Services
     videoTools
     videoCalibration
-    maths
+    module_geometry_base
     registrationCV
     trackerAruco
     ioTimeline

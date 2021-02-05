@@ -538,7 +538,7 @@
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
-            <service uid="matrixReverserSrv" type="::maths::SConcatenateMatrices" >
+            <service uid="matrixReverserSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrix" autoConnect="yes" inverse="true" />
                 </in>
@@ -546,7 +546,7 @@
             </service>
 
             <!-- to multiply matrices -->
-            <service uid="concatenateSrv" type="::maths::SConcatenateMatrices" >
+            <service uid="concatenateSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="inverseMat" autoConnect="yes" inverse="false" />
                     <key uid="extrinsic" inverse="true" />

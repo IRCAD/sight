@@ -39,7 +39,7 @@
 namespace ctrlHistory
 {
 
-fwServicesRegisterMacro( ::sight::services::IService, ::ctrlHistory::SCommandHistory, data::Object)
+fwServicesRegisterMacro( ::sight::services::IService, ::ctrlHistory::SCommandHistory, ::sight::data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";

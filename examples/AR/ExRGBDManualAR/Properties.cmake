@@ -30,7 +30,7 @@ set( REQUIREMENTS
     # Services
     videoTools
     module_data
-    maths
+    module_geometry_base
     colourSegmentation
 
     # Configuration

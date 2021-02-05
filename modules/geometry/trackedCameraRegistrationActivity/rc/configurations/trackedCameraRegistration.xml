@@ -249,7 +249,7 @@
             <addSelection service="::sight::modules::io::file::TransformationMatrix3DWriterService" />
         </service>
 
-        <service uid="concatenateRegistrationMatrix" type="::maths::SConcatenateMatrices" >
+        <service uid="concatenateRegistrationMatrix" type="::sight::modules::geometry::base::SConcatenateMatrices" >
             <in group="matrix">
                 <key uid="firstTag2Matrix" inverse="true" />
                 <key uid="firstTag1Matrix" />
@@ -258,7 +258,7 @@
             <inout key="output" uid="registrationMatrix" />
         </service>
 
-        <service uid="concatenatesSecondCameraOpticalCenterMatrix" type="::maths::SConcatenateMatrices" >
+        <service uid="concatenatesSecondCameraOpticalCenterMatrix" type="::sight::modules::geometry::base::SConcatenateMatrices" >
             <in group="matrix">
                 <key uid="firstTag2Matrix" autoConnect="yes"/>
                 <key uid="registrationMatrix" autoConnect="yes" />
@@ -266,7 +266,7 @@
             <inout key="output" uid="secondCameraOpticalCenterMatrix" />
         </service>
 
-        <service uid="concatenateTag1ARMatrix" type="::maths::SConcatenateMatrices" >
+        <service uid="concatenateTag1ARMatrix" type="::sight::modules::geometry::base::SConcatenateMatrices" >
             <in group="matrix">
                 <key uid="firstTag2Matrix" autoConnect="yes" />
                 <key uid="registrationMatrix" autoConnect="yes" />
@@ -275,7 +275,7 @@
             <inout key="output" uid="arTag1Matrix" />
         </service>
 
-        <service uid="switchMatrices" type="::maths::SSwitchMatrices" autoConnect="yes">
+        <service uid="switchMatrices" type="::sight::modules::geometry::base::SSwitchMatrices" autoConnect="yes">
             <in group="matrix">
                 <key uid="firstTag1Matrix" />
                 <key uid="arTag1Matrix" />

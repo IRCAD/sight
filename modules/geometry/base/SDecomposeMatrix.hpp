@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "maths/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <services/IOperator.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -37,7 +37,7 @@ namespace maths
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::maths::SDecomposeMatrix">
+        <service uid="..." type="::sight::modules::geometry::base::SDecomposeMatrix">
             <in key="source" uid="..." autoConnect="yes" />
             <inout key="translation" uid="..." />
             <inout key="rotation" uid="..." />
@@ -52,17 +52,17 @@ namespace maths
  * - \b scale [data::TransformationMatrix3D] (optional): scaling matrix.
  *
  */
-class MATHS_CLASS_API SDecomposeMatrix : public services::IOperator
+class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public services::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SDecomposeMatrix, services::IOperator)
+    fwCoreServiceMacro(SDecomposeMatrix, ::sight::services::IOperator)
 
     /**
      * @brief Constructor.
      */
-    MATHS_API SDecomposeMatrix() noexcept;
+    MODULE_GEOMETRY_BASE_API SDecomposeMatrix() noexcept;
 
     /**
      * @brief Destructor.
@@ -74,16 +74,16 @@ public:
 protected:
 
     /// This method is used to configure the service.
-    MATHS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /// This method is used to initialize the service.
-    MATHS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    MATHS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Does nothing.
-    MATHS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -91,7 +91,7 @@ protected:
      *
      * Connect Object::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    MATHS_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
 };
 
-} //namespace maths
+} //namespace sight::modules::geometry::base

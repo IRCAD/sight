@@ -35,7 +35,7 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SResampler, data::Image)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SResampler, ::sight::data::Image)
 
 static const services::IService::KeyType s_IMAGE_IN = "imageIn";
 static const services::IService::KeyType s_IMAGE_INOUT = "imageOut";

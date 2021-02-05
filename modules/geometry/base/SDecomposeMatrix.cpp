@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/SDecomposeMatrix.hpp"
+#include "modules/geometry/base/SDecomposeMatrix.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -33,7 +33,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 const services::IService::KeyType s_SOURCE_INPUT      = "source";
@@ -82,7 +82,7 @@ void SDecomposeMatrix::updating()
     SLM_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
     data::mt::ObjectReadLock srcLock(matrix);
 
-    ::glm::dmat4 glmMatrix = geometry::data::getMatrixFromTF3D(matrix);
+    ::glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(matrix);
     ::glm::dvec3 scale;
     ::glm::dquat orientation;
     ::glm::dvec3 translation;
@@ -100,8 +100,8 @@ void SDecomposeMatrix::updating()
     if( rotation)
     {
         data::mt::ObjectWriteLock rotLock(rotation);
-        geometry::data::identity(rotation);
-        geometry::data::setTF3DFromMatrix(rotation, orientationMat);
+        sight::geometry::data::identity(rotation);
+        sight::geometry::data::setTF3DFromMatrix(rotation, orientationMat);
 
         auto rotSig = rotation->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
         rotSig->asyncEmit();
@@ -110,7 +110,7 @@ void SDecomposeMatrix::updating()
     if( translationMat)
     {
         data::mt::ObjectWriteLock transLock(translationMat);
-        geometry::data::identity(translationMat);
+        sight::geometry::data::identity(translationMat);
         for (size_t i = 0; i < 3; ++i)
         {
             translationMat->setCoefficient(i, 3, translation[i]);
@@ -123,7 +123,7 @@ void SDecomposeMatrix::updating()
     if( scaleMat)
     {
         data::mt::ObjectWriteLock scaleLock(scaleMat);
-        geometry::data::identity(scaleMat);
+        sight::geometry::data::identity(scaleMat);
         for (size_t i = 0; i < 3; ++i)
         {
             for (size_t j = 0; j < 3; j++)
@@ -143,4 +143,4 @@ void SDecomposeMatrix::updating()
 
 // ----------------------------------------------------------------------------
 
-}  // namespace maths
+}  // namespace sight::modules::geometry::base

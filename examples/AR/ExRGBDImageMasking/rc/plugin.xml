@@ -381,7 +381,7 @@
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
-            <service uid="concatenateSrv" type="::maths::SConcatenateMatrices" >
+            <service uid="concatenateSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="registrationMatrix" autoConnect="yes" inverse="true" />
                     <key uid="extrinsic" autoConnect="yes" inverse="true" />

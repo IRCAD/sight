@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/SMatrixList.hpp"
+#include "modules/geometry/base/SMatrixList.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -30,7 +30,7 @@
 
 #include <iomanip>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 static const core::com::Signals::SignalKeyType s_MATRIX_ADDED_SIG   = "matrixAdded";
 static const core::com::Signals::SignalKeyType s_MATRIX_REMOVED_SIG = "matrixRemoved";
@@ -44,7 +44,7 @@ const services::IService::KeyType s_SELECTED_INOUT = "selectedMatrix";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::maths::SMatrixList )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::SMatrixList )
 
 //-----------------------------------------------------------------------------
 

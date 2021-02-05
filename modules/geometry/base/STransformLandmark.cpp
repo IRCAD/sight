@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/STransformLandmark.hpp"
+#include "modules/geometry/base/STransformLandmark.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -34,7 +34,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 // -----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::maths::STransformLandmark )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::STransformLandmark )
 
 // -----------------------------------------------------------------------------
 

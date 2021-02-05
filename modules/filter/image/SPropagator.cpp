@@ -41,7 +41,8 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SPropagator, data::Image)
+fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SPropagator,
+                        ::sight::data::Image)
 
 static const core::com::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
 

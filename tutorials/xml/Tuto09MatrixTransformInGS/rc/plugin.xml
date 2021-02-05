@@ -208,7 +208,7 @@
                 <type mode="reader" />
             </service>
 
-            <service uid="rotation1Srv" type="::maths::SConcatenateMatrices" >
+            <service uid="rotation1Srv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixE" autoConnect="yes" />
                     <key uid="matrixA" />
@@ -217,7 +217,7 @@
                 <inout key="output" uid="rotation1" />
             </service>
 
-            <service uid="rotation2Srv" type="::maths::SConcatenateMatrices" >
+            <service uid="rotation2Srv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixB" />
                     <key uid="matrixE" autoConnect="yes" />
@@ -229,7 +229,7 @@
                 <inout key="output" uid="rotation2" />
             </service>
 
-            <service uid="rotation3Srv" type="::maths::SConcatenateMatrices" >
+            <service uid="rotation3Srv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixC" />
                     <key uid="matrixE" autoConnect="yes" />

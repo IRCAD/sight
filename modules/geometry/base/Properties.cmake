@@ -1,4 +1,4 @@
-set( NAME maths )
+set( NAME module_geometry_base )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES 
@@ -6,6 +6,7 @@ set( DEPENDENCIES
     core
     services
     ui_base
+    geometry_data
 )
 set( REQUIREMENTS data module_services)
 

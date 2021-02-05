@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "maths/SPointToLandmarkVector.hpp"
+#include "modules/geometry/base/SPointToLandmarkVector.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -34,7 +34,7 @@
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-namespace maths
+namespace sight::modules::geometry::base
 {
 
 // -----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSli
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::maths::SPointToLandmarkVector )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::SPointToLandmarkVector )
 
 // -----------------------------------------------------------------------------
 
@@ -141,7 +141,7 @@ void SPointToLandmarkVector::updating()
     pointToTargetMat[2] = ::glm::dvec4(front, 0.0);
     pointToTargetMat[3] = ::glm::dvec4(sourcePt, 1.0);
 
-    geometry::data::setTF3DFromMatrix(transform, pointToTargetMat);
+    sight::geometry::data::setTF3DFromMatrix(transform, pointToTargetMat);
     auto sig = transform->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 

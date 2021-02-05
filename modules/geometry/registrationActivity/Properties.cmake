@@ -17,7 +17,7 @@ set( REQUIREMENTS
     visuVTKAdaptor
     scene2D
     media
-    maths
+    module_geometry_base
     visuVTKQt
     qtSceneConfig
     opItkRegistration

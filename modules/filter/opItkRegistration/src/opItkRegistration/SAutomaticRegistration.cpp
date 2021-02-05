@@ -41,7 +41,8 @@
 namespace opItkRegistration
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SAutomaticRegistration, data::Image)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SAutomaticRegistration,
+                         ::sight::data::Image)
 
 static const services::IService::KeyType s_TARGET_IN = "target";
 static const services::IService::KeyType s_REFERENCE_IN = "reference";

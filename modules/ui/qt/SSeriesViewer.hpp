@@ -39,7 +39,7 @@ namespace sight::modules::ui::qt
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::modules::ui::qt::SSeriesViewer">
+    <service type="::sight::modules::ui::qt::SSeriesViewer">
         <in key="series" uid="..." autoConnect="yes" />
         <parentView>preview</parentView>
         <configs>

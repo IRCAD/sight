@@ -53,7 +53,8 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::services::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic, data::Camera)
+fwServicesRegisterMacro(::sight::services::ICalibration, ::videoCharucoCalibration::SOpenCVIntrinsic,
+                        ::sight::data::Camera)
 
 namespace videoCharucoCalibration
 {
