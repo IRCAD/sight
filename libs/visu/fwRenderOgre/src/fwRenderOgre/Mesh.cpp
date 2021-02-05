@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -225,36 +225,35 @@ void Mesh::updateMesh(const ::fwData::Mesh::sptr& _mesh, bool _pointsOnly)
         prevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
     }
 
-    if(prevNumVertices < numVertices)
+    if(!m_hasNormal && !_pointsOnly)
     {
-        FW_PROFILE("REALLOC MESH");
+        // Verify if mesh contains Tetra, Edge or Point
+        // If not, generate normals
+        auto cellItr        = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
+        const auto cellEnd  = _mesh->end< ::fwData::iterator::ConstCellIterator >();
+        bool computeNormals = true;
 
-        if(!m_hasNormal && !_pointsOnly)
+        for(; cellItr != cellEnd; ++cellItr)
         {
-            // Verify if mesh contains Tetra, Edge or Point
-            // If not, generate normals
-            auto cellItr        = _mesh->begin< ::fwData::iterator::ConstCellIterator >();
-            const auto cellEnd  = _mesh->end< ::fwData::iterator::ConstCellIterator >();
-            bool computeNormals = true;
-
-            for(; cellItr != cellEnd; ++cellItr)
+            auto cellType = *cellItr->type;
+            if(cellType == ::fwData::Mesh::CellType::EDGE || cellType == ::fwData::Mesh::CellType::TETRA
+               || cellType == ::fwData::Mesh::CellType::POINT)
             {
-                auto cellType = *cellItr->type;
-                if(cellType == ::fwData::Mesh::CellType::EDGE || cellType == ::fwData::Mesh::CellType::TETRA
-                   || cellType == ::fwData::Mesh::CellType::POINT)
-                {
-                    computeNormals = false;
-                    break;
-                }
-            }
-
-            if(computeNormals)
-            {
-                ::fwDataTools::Mesh::generatePointNormals(_mesh);
-                m_hasNormal = true;
+                computeNormals = false;
+                break;
             }
         }
 
+        if(computeNormals)
+        {
+            ::fwDataTools::Mesh::generatePointNormals(_mesh);
+            m_hasNormal = true;
+        }
+    }
+
+    if(prevNumVertices < numVertices)
+    {
+        FW_PROFILE("REALLOC MESH");
         // We need to reallocate
         m_ogreMesh->sharedVertexData->vertexCount = numVertices;
 
