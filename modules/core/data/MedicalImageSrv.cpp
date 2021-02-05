@@ -37,7 +37,7 @@ static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, modules::data::MedicalImageSrv, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::data::MedicalImageSrv, ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
 
@@ -131,4 +131,4 @@ services::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() cons
 
 //-----------------------------------------------------------------------------
 
-} // ctrlSelection
+} // sight::modules::data

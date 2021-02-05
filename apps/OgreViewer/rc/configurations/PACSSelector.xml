@@ -432,7 +432,7 @@
             <config icon="module_ui_flaticon-0.1/icons/BlueMagnifyingGlass.svg" />
         </service>
 
-        <service uid="previewSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
+        <service uid="previewSelectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
@@ -463,7 +463,7 @@
             <config dicomReader="::ioGdcm::SSeriesDBReader" />
         </service>
 
-        <service uid="localSelectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
+        <service uid="localSelectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>

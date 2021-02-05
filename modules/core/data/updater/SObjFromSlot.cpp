@@ -40,7 +40,7 @@ static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::modules::data::IUpdaterSrv, modules::data::updater::SObjFromSlot,
+fwServicesRegisterMacro( ::sight::modules::data::IUpdaterSrv, ::sight::modules::data::updater::SObjFromSlot,
                          ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
@@ -104,4 +104,4 @@ void SObjFromSlot::remove()
 //-----------------------------------------------------------------------------
 
 } // updater
-} // ctrlSelection
+} // sight::modules::data

@@ -26,7 +26,6 @@ set( REQUIREMENTS
 
     # Services
     memory
-    uiMedDataQt
     2DVisualizationActivity
     3DVisualizationActivity
     ioActivity

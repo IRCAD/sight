@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/editor/SModelSeriesList.hpp"
+#include "modules/ui/qt/editor/SModelSeriesList.hpp"
 
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
@@ -59,7 +59,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
@@ -68,6 +68,8 @@ class ValueView
 {
 
 public:
+    ValueView()          = default;
+    virtual ~ValueView() = default;
 
     //------------------------------------------------------------------------------
 
@@ -141,7 +143,8 @@ public:
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(ui::base::editor::IEditor, ::uiMedDataQt::editor::SModelSeriesList, data::ModelSeries)
+fwServicesRegisterMacro(::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SModelSeriesList,
+                        ::sight::data::ModelSeries)
 
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
@@ -232,26 +235,22 @@ void SModelSeriesList::starting()
         m_showCheckBox = new QCheckBox( tr("Hide all organs"));
         m_showCheckBox->setToolTip(tr("Show or hide all organs"));
         layoutButton->addWidget( m_showCheckBox, 0 );
-        QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this,
-                         &::uiMedDataQt::editor::SModelSeriesList::onShowReconstructions);
+        QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this, &SModelSeriesList::onShowReconstructions);
 
         m_checkAllButton = new QPushButton(tr("Check all"));
         layoutButton->addWidget(m_checkAllButton, 0);
-        QObject::connect(m_checkAllButton, &QPushButton::clicked, this,
-                         &::uiMedDataQt::editor::SModelSeriesList::onCheckAllCheckBox);
+        QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &SModelSeriesList::onCheckAllCheckBox);
 
         m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
         layoutButton->addWidget(m_unCheckAllButton, 0);
-        QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this,
-                         &::uiMedDataQt::editor::SModelSeriesList::onUnCheckAllCheckBox);
+        QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &SModelSeriesList::onUnCheckAllCheckBox);
     }
 
     if(m_enableDelete)
     {
         m_deleteAllButton = new QPushButton(tr("Delete all"));
         layoutButton->addWidget(m_deleteAllButton, 0);
-        QObject::connect(m_deleteAllButton, &QPushButton::clicked, this,
-                         &::uiMedDataQt::editor::SModelSeriesList::onDeleteAllCheckBox );
+        QObject::connect(m_deleteAllButton, &QPushButton::clicked, this, &SModelSeriesList::onDeleteAllCheckBox );
     }
 
     layout->addWidget( m_tree, 1 );
@@ -270,7 +269,7 @@ void SModelSeriesList::starting()
     {
         m_tree->setContextMenuPolicy(Qt::CustomContextMenu);
         QObject::connect(m_tree, &QTreeWidget::customContextMenuRequested, this,
-                         &::uiMedDataQt::editor::SModelSeriesList::onCustomContextMenuRequested);
+                         &SModelSeriesList::onCustomContextMenuRequested);
     }
 
 }
@@ -307,23 +306,16 @@ void SModelSeriesList::stopping()
 
     if(m_enableHideAll)
     {
-        QObject::disconnect(m_showCheckBox, &QCheckBox::stateChanged, this,
-                            &::uiMedDataQt::editor::SModelSeriesList::onShowReconstructions);
-
-        QObject::disconnect(m_checkAllButton, &QPushButton::clicked, this,
-                            &::uiMedDataQt::editor::SModelSeriesList::onCheckAllCheckBox);
-
-        QObject::disconnect(m_unCheckAllButton, &QPushButton::clicked, this,
-                            &::uiMedDataQt::editor::SModelSeriesList::onUnCheckAllCheckBox);
+        QObject::disconnect(m_showCheckBox, &QCheckBox::stateChanged, this, &SModelSeriesList::onShowReconstructions);
+        QObject::disconnect(m_checkAllButton, &QPushButton::clicked, this, &SModelSeriesList::onCheckAllCheckBox);
+        QObject::disconnect(m_unCheckAllButton, &QPushButton::clicked, this, &SModelSeriesList::onUnCheckAllCheckBox);
     }
 
     if(m_enableDelete)
     {
-        QObject::disconnect(m_deleteAllButton, &QPushButton::clicked, this,
-                            &::uiMedDataQt::editor::SModelSeriesList::onDeleteAllCheckBox );
-
+        QObject::disconnect(m_deleteAllButton, &QPushButton::clicked, this, &SModelSeriesList::onDeleteAllCheckBox );
         QObject::disconnect(m_tree, &QTreeWidget::customContextMenuRequested, this,
-                            &::uiMedDataQt::editor::SModelSeriesList::onCustomContextMenuRequested);
+                            &SModelSeriesList::onCustomContextMenuRequested);
     }
 
     QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
@@ -565,4 +557,4 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
 //------------------------------------------------------------------------------
 
 } // namespace editor.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
-#include "uiMedDataQt/widget/ActivityDataView.hpp"
+#include "modules/ui/qt/config.hpp"
+#include "modules/ui/qt/widget/ActivityDataView.hpp"
 
 #include <activities/registry/Activities.hpp>
 
@@ -44,7 +44,7 @@
 
 #include <ui/base/editor/IEditor.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
@@ -72,7 +72,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service impl="::uiMedDataQt::editor::SActivityWizard">
+   <service impl="::modules::ui::qt::editor::SActivityWizard">
      <inout key="seriesDB" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>
      <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
@@ -102,8 +102,8 @@ namespace editor
  *   emptied and the signal 'canceled' is emitted.
 
  */
-class UIMEDDATAQT_CLASS_API SActivityWizard : public QObject,
-                                              public sight::ui::base::editor::IEditor
+class MODULE_UI_QT_CLASS_API SActivityWizard : public QObject,
+                                               public sight::ui::base::editor::IEditor
 {
 
 public:
@@ -111,31 +111,31 @@ public:
     fwCoreServiceMacro(SActivityWizard, sight::ui::base::editor::IEditor)
 
     /// Constructor. Do nothing.
-    UIMEDDATAQT_API SActivityWizard() noexcept;
+    MODULE_UI_QT_API SActivityWizard() noexcept;
 
     /// Destructor. Do nothing.
-    UIMEDDATAQT_API virtual ~SActivityWizard() noexcept;
+    MODULE_UI_QT_API virtual ~SActivityWizard() noexcept;
 
     /**
      * @name Slot API
      * @{
      */
-    UIMEDDATAQT_API static const core::com::Slots::SlotKeyType s_CREATE_ACTIVITY_SLOT;
-    UIMEDDATAQT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SLOT;
-    UIMEDDATAQT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SERIES_SLOT;
+    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_CREATE_ACTIVITY_SLOT;
+    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SLOT;
+    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SERIES_SLOT;
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
+    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
     typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivityCreatedSignalType;
 
-    UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
+    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
     typedef core::com::Signal< void ( data::ActivitySeries::sptr ) > ActivityUpdatedSignalType;
 
-    UIMEDDATAQT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
+    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
     typedef core::com::Signal< void () > CanceledSignalType;
     /// @}
 
@@ -217,5 +217,5 @@ private:
 
 };
 
-} //editor
-} // uiMedDataQt
+} // editor
+} // sight::modules::ui::qt

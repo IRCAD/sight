@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/InsertSeries.hpp"
+#include "modules/ui/qt/InsertSeries.hpp"
 
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( ::uiMedDataQt::InsertSeries );
+fwDataRegisterMacro( ::sight::modules::ui::qt::InsertSeries );
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 
 InsertSeries::InsertSeries(data::Object::Key key) :
@@ -67,4 +67,4 @@ void InsertSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
 
 //------------------------------------------------------------------------------
 
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

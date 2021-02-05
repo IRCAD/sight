@@ -214,7 +214,7 @@
                 </config>
             </service>
 
-            <service uid="listOrganEditorSrv" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
+            <service uid="listOrganEditorSrv" type="::sight::modules::ui::qt::editor::SModelSeriesList" autoConnect="yes" >
                 <inout key="modelSeries" uid="modelSeries" />
                 <columns>
                     <organ_name>@organ_name</organ_name>

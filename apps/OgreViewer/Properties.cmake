@@ -34,7 +34,6 @@ set( REQUIREMENTS
     ctrlTF
     module_filter_image
     ioPacs
-    uiMedDataQt
 
     # Configuration launchers
     ogreConfig

@@ -93,4 +93,4 @@ private:
     std::vector< std::string > m_imageCompositeKeys;
 };
 
-} // ctrlSelection
+} // sight::modules::data

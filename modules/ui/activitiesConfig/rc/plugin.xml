@@ -8,7 +8,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>defaultWizardConfig</id>
-        <service>::uiMedDataQt::editor::SActivityWizard</service>
+        <service>::sight::modules::ui::qt::editor::SActivityWizard</service>
         <desc>Default configuration for activity wizard</desc>
         <config>
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>

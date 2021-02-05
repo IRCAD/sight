@@ -22,20 +22,20 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <data/factory/new.hpp>
 #include <data/Series.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 
 /**
- * @brief Used as a placeholder in ::uiMedDataQt::editor::SSelector UI to insert create and insert new series in a
+ * @brief Used as a placeholder in modules::ui::qt::editor::SSelector UI to insert create and insert new series in a
  * series
  * DB.
  */
-class UIMEDDATAQT_CLASS_API InsertSeries : public data::Series
+class MODULE_UI_QT_CLASS_API InsertSeries : public data::Series
 {
 
 public:
@@ -45,17 +45,17 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    UIMEDDATAQT_API InsertSeries(data::Object::Key key);
+    MODULE_UI_QT_API InsertSeries(data::Object::Key key);
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~InsertSeries();
+    MODULE_UI_QT_API virtual ~InsertSeries();
 
     /// Defines shallow copy
-    UIMEDDATAQT_API void shallowCopy( const data::Object::csptr& _source ) override;
+    MODULE_UI_QT_API void shallowCopy( const data::Object::csptr& _source ) override;
 
     /// Defines deep copy
-    UIMEDDATAQT_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& cache ) override;
+    MODULE_UI_QT_API void cachedDeepCopy( const data::Object::csptr& _source, DeepCopyCacheType& cache ) override;
 
 };
 
-}   //end namespace uiMedDataQt
+}   //end namespace sight::modules::ui::qt

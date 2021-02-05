@@ -21,7 +21,6 @@ set( REQUIREMENTS
     ioGdcm
     module_io_file
 
-    uiMedDataQt
 
     2DVisualizationActivity
     3DVisualizationActivity

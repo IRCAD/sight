@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <core/com/Slots.hpp>
 
@@ -31,7 +31,7 @@
 
 #include <ui/base/IActionSrv.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace action
 {
@@ -51,7 +51,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::uiMedDataQt::action::SExportSeries" autoConnect="yes">
+        <service type="::modules::ui::qt::action::SExportSeries" autoConnect="yes">
             <inout key="series" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
@@ -60,16 +60,16 @@ namespace action
  * - \b series [data::Series]: Source series to export.
  * - \b seriesDB [data::SeriesDB]: Target series database where the series should be exported.
  */
-class UIMEDDATAQT_CLASS_API SExportSeries : public ::sight::ui::base::IActionSrv
+class MODULE_UI_QT_CLASS_API SExportSeries : public ::sight::ui::base::IActionSrv
 {
 public:
     fwCoreServiceMacro(SExportSeries, ::sight::ui::base::IActionSrv)
 
     /// Constructor
-    UIMEDDATAQT_API SExportSeries();
+    MODULE_UI_QT_API SExportSeries();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SExportSeries() noexcept;
+    MODULE_UI_QT_API virtual ~SExportSeries() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -78,7 +78,7 @@ public:
      * Connect data::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
      * Connect data::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
@@ -123,4 +123,4 @@ private:
     std::string m_seriesId;
 };
 } // namespace action
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

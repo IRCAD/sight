@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <filesystem>
 
-fwServicesRegisterMacro( ::sight::services::IController, sight::modules::ui::qt::SStyleSelector )
+fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::qt::SStyleSelector )
 
 namespace sight::modules::ui::qt
 {

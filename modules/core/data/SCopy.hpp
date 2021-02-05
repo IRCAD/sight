@@ -89,7 +89,7 @@ class MODULE_DATA_CLASS_API SCopy final : public modules::data::ICamp
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SCopy, modules::data::ICamp)
+    fwCoreServiceMacro(SCopy, ::sight::modules::data::ICamp)
 
     /// Creates the service.
     MODULE_DATA_API SCopy();

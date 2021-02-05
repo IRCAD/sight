@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/action/SExportSeries.hpp"
+#include "modules/ui/qt/action/SExportSeries.hpp"
 
 #include <activities/registry/Activities.hpp>
 
@@ -39,14 +39,15 @@
 
 #include <ui/base/dialog/InputDialog.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 
 namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::uiMedDataQt::action::SExportSeries, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::SExportSeries,
+                         ::sight::data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
@@ -201,4 +202,4 @@ void SExportSeries::checkRemovedSeries(data::SeriesDB::ContainerType removedSeri
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

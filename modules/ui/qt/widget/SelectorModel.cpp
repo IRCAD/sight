@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/widget/SelectorModel.hpp"
+#include "modules/ui/qt/widget/SelectorModel.hpp"
 
-#include "uiMedDataQt/InsertSeries.hpp"
+#include "modules/ui/qt/InsertSeries.hpp"
 
 #include <activities/registry/Activities.hpp>
 
@@ -48,7 +48,7 @@
 
 #include <regex>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace widget
 {
@@ -402,7 +402,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
     if(m_insert)
     {
-        ::uiMedDataQt::InsertSeries::sptr insertSeries = ::uiMedDataQt::InsertSeries::dynamicCast(_series);
+        modules::ui::qt::InsertSeries::sptr insertSeries = modules::ui::qt::InsertSeries::dynamicCast(_series);
 
         const int nbColumns = studyRootItem->columnCount();
         for(int i = 0; i < nbColumns; ++i)
@@ -603,4 +603,4 @@ void SelectorModel::setSeriesIcons(const SeriesIconType& _seriesIcons)
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

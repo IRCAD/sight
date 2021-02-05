@@ -42,7 +42,7 @@
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditorSrv" type="::uiMedDataQt::editor::SModelSeriesList" autoConnect="yes" >
+        <service uid="listOrganEditorSrv" type="::sight::modules::ui::qt::editor::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="${organManagerModelSeries}" />
             <columns>
                 <organ_name>@organ_name</organ_name>

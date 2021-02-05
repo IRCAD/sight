@@ -11,7 +11,6 @@ set( REQUIREMENTS
     module_ui_qt
     qtSceneConfig
     uiVisuOgre
-    uiMedDataQt
     module_data
 )
 

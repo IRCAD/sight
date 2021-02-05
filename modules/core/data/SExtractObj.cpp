@@ -32,7 +32,7 @@
 namespace sight::modules::data
 {
 
-fwServicesRegisterMacro(sight::modules::data::ICamp, sight::modules::data::SExtractObj)
+fwServicesRegisterMacro(::sight::modules::data::ICamp, ::sight::modules::data::SExtractObj)
 
 static const std::string s_SOURCE_INOUT = "source";
 static const std::string s_TARGET_OUTPUT = "target";

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
-#include "uiMedDataQt/widget/Selector.hpp"
+#include "modules/ui/qt/config.hpp"
+#include "modules/ui/qt/widget/Selector.hpp"
 
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
@@ -38,7 +38,7 @@
 
 #include <ui/base/editor/IEditor.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
@@ -48,7 +48,7 @@ namespace editor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::uiMedDataQt::editor::SSelector">
+    <service uid="..." type="::modules::ui::qt::editor::SSelector">
         <inout key="seriesDB" uid="..." />
         <inout key="selection" uid="..." />
         <icons>
@@ -68,14 +68,14 @@ namespace editor
  * - \b selectionMode (optional, single/extended, default=extended): defines the selection mode for the series, where
  *                    extended means "multiple".
  * - \b allowedRemove (optional, bool, default=true): allows user to remove series.
- * - \b insertMode (optional, bool, default=false): only allows selection of uiMedDataQt::InsertSeries.
+ * - \b insertMode (optional, bool, default=false): only allows selection of modules::ui::qt::InsertSeries.
  * - \b removeStudyIcon (optional, string, default=""): remove study button icon.
  * - \b removeSerieIcon (optional, string, default=""): remove serie button icon.
  * - \b icons (optional): defines the icon to associate for a series.
  *     - \b series (mandatory, string): series name, e.g. {data::ImageSeries, data::ModelSeries, ...}.
  *     - \b icon (mandatory, string): icon path.
  */
-class UIMEDDATAQT_CLASS_API SSelector final :
+class MODULE_UI_QT_CLASS_API SSelector final :
     public QObject,
     public sight::ui::base::editor::IEditor
 {
@@ -88,18 +88,18 @@ public:
     fwCoreServiceMacro(SSelector, sight::ui::base::editor::IEditor)
 
     /// Creates the signal and slots.
-    UIMEDDATAQT_API SSelector();
+    MODULE_UI_QT_API SSelector();
 
     /// Destroys the service.
-    UIMEDDATAQT_API virtual ~SSelector() noexcept;
+    MODULE_UI_QT_API virtual ~SSelector() noexcept;
 
 protected:
 
     /// Configures the service according to the xml tags found.
-    UIMEDDATAQT_API void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /// Creates container and add selector.
-    UIMEDDATAQT_API void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -108,13 +108,13 @@ protected:
      * Connect data::SeriesDB::s_ADDED_SERIES_SIG of s_SERIES_DB_INOUT to s_ADD_SERIES_SLOT
      * Connect data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     /// Fills selector with the series contained in SeriesDB.
-    UIMEDDATAQT_API void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
     /// Destroys GUI.
-    UIMEDDATAQT_API void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
 protected Q_SLOTS:
 
@@ -155,13 +155,13 @@ private:
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;
 
     /// Contains the selector widget.
-    QPointer< ::uiMedDataQt::widget::Selector > m_selectorWidget { nullptr };
+    QPointer< modules::ui::qt::widget::Selector > m_selectorWidget { nullptr };
 
     /// Contains the signal emitted when there is a double click on a series.
     SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked { nullptr };
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
-    ::uiMedDataQt::widget::Selector::SeriesIconType m_seriesIcons;
+    modules::ui::qt::widget::Selector::SeriesIconType m_seriesIcons;
 
     /// Defines if series can be removed.
     bool m_allowedRemove { true };
@@ -169,7 +169,7 @@ private:
     /// Defines the behaviour of the treeview selection mode.
     QAbstractItemView::SelectionMode m_selectionMode { QAbstractItemView::ExtendedSelection };
 
-    /// Allows selection of uiMedDataQt::InsertSeries only.
+    /// Allows selection of modules::ui::qt::InsertSeries only.
     bool m_insertMode { false };
 
     /// Defines the path of the remove study button icon.
@@ -180,4 +180,4 @@ private:
 
 };
 } // namespace editor.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

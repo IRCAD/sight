@@ -67,7 +67,7 @@ class MODULE_DATA_CLASS_API SExtractObj : public modules::data::ICamp
 {
 public:
 
-    fwCoreServiceMacro(SExtractObj, modules::data::ICamp)
+    fwCoreServiceMacro(SExtractObj, ::sight::modules::data::ICamp)
 
     typedef std::map<std::string, std::string> ExtractMapType;
 

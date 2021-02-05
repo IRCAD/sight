@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/editor/SActivityWizard.hpp"
+#include "modules/ui/qt/editor/SActivityWizard.hpp"
 
 #include <activities/IValidator.hpp>
 
@@ -54,7 +54,7 @@
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
@@ -72,7 +72,7 @@ static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMedDataQt::editor::SActivityWizard,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SActivityWizard,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
@@ -522,4 +522,4 @@ void SActivityWizard::onBuildActivity()
 //------------------------------------------------------------------------------
 
 } //namespace editor
-} //namespace uiMedDataQt
+} //namespace sight::modules::ui::qt

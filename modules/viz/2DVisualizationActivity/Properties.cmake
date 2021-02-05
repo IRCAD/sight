@@ -11,7 +11,6 @@ set( REQUIREMENTS
     module_data
     ctrlMemory
     module_services
-    uiMedDataQt
     visuVTKAdaptor
     visuVTKQt
     media 

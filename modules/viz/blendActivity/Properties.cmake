@@ -11,7 +11,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     scene2D
     data
-    uiMedDataQt
     media
     qtSceneConfig
     module_services

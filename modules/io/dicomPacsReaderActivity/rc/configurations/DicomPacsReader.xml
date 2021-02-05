@@ -142,7 +142,7 @@
         </service>
 
         <!-- PREVIEW -->
-        <service uid="previewSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+        <service uid="previewSelector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
             <inout key="selection" uid="previewSelections" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
@@ -159,7 +159,7 @@
             <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomPacsReaderConfig" />
         </service>
 
-        <service uid="pacsViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+        <service uid="pacsViewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
@@ -170,12 +170,12 @@
         </service>
 
         <!-- LOCAL -->
-        <service uid="localSelector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+        <service uid="localSelector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="localSeriesDB" />
             <inout key="selection" uid="localSelections" />
         </service>
 
-        <service uid="localViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+        <service uid="localViewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>

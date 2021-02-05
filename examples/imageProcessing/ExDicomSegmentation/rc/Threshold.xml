@@ -60,7 +60,7 @@
             </config>
         </service>
 
-        <service uid="exportAct" type="::uiMedDataQt::action::SExportSeries" autoConnect="yes" >
+        <service uid="exportAct" type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="series" uid="imageSeriesMask" />
         </service>

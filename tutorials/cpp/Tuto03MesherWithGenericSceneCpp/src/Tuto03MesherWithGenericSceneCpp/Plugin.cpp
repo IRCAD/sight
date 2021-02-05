@@ -118,7 +118,7 @@ void Plugin::initialize()
                                                    false);
     auto sliderIndexEditor = m_appManager->addService("::modules::ui::qt::image::SliceIndexPositionEditor",
                                                       "sliderIndexEditor", true, false);
-    auto listOrganEditor = m_appManager->addService("::uiMedDataQt::editor::SModelSeriesList",
+    auto listOrganEditor = m_appManager->addService("::modules::ui::qt::editor::SModelSeriesList",
                                                     "listOrganEditor", true, false);
     auto organMaterialEditor = m_appManager->addService("::modules::ui::qt::reconstruction::SOrganMaterialEditor",
                                                         "organMaterialEditor", true, false);

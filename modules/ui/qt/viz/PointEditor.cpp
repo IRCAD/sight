@@ -50,7 +50,7 @@
 namespace sight::modules::ui::qt::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, sight::modules::ui::qt::viz::PointEditor,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::viz::PointEditor,
                          ::sight::data::Composite )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";

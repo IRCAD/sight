@@ -38,7 +38,6 @@ set( REQUIREMENTS
     module_filter_image
     module_data
     module_filter_mesh
-    uiMedDataQt
 
     # Generic Scene
 )

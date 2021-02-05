@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <data/Reconstruction.hpp>
 #include <data/TransformationMatrix3D.hpp>
@@ -41,7 +41,7 @@ class QListWidgetItem;
 class QComboBox;
 class QCheckBox;
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
@@ -50,7 +50,7 @@ namespace editor
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::uiMedDataQt::editor::SOrganTransformation">
+   <service type="::modules::ui::qt::editor::SOrganTransformation">
        <inout key="modelSeries" uid="..." />
        <inout key="composite" uid="..." />
    </service>
@@ -59,8 +59,8 @@ namespace editor
  * - \b modelSeries [data::ModelSeries]: modelSeries to modify.
  * - \b composite [data::Composite]: composite.
  */
-class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
-                                                   public sight::ui::base::editor::IEditor
+class MODULE_UI_QT_CLASS_API SOrganTransformation : public QObject,
+                                                    public sight::ui::base::editor::IEditor
 {
 Q_OBJECT
 public:
@@ -68,18 +68,18 @@ public:
     fwCoreServiceMacro(SOrganTransformation, sight::ui::base::editor::IEditor)
 
     /// constructor
-    UIMEDDATAQT_API SOrganTransformation() noexcept;
+    MODULE_UI_QT_API SOrganTransformation() noexcept;
     /// destructor
-    UIMEDDATAQT_API virtual ~SOrganTransformation() noexcept;
+    MODULE_UI_QT_API virtual ~SOrganTransformation() noexcept;
 
 protected:
 
-    UIMEDDATAQT_API virtual void configuring() override;
-    UIMEDDATAQT_API virtual void starting() override;
-    UIMEDDATAQT_API virtual void stopping() override;
-    UIMEDDATAQT_API virtual void swapping() override;
-    UIMEDDATAQT_API virtual void updating() override;
-    UIMEDDATAQT_API virtual void info( ::std::ostream& stream ) override;
+    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API virtual void swapping() override;
+    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API virtual void info( ::std::ostream& stream ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -93,7 +93,7 @@ protected:
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
     void onReconstructionCheck(QListWidgetItem* currentItem);
@@ -131,4 +131,4 @@ private:
 };
 
 } // namespace editor
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

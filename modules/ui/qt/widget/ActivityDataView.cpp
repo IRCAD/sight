@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/widget/ActivityDataView.hpp"
+#include "modules/ui/qt/widget/ActivityDataView.hpp"
 
 #include <activities/IActivityValidator.hpp>
 #include <activities/IObjectValidator.hpp>
@@ -67,7 +67,7 @@
 #include <algorithm>
 #include <iomanip>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace widget
 {
@@ -1116,4 +1116,4 @@ void ActivityDataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
 //-----------------------------------------------------------------------------
 
 } // namespace widget
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

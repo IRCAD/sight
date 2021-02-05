@@ -40,7 +40,7 @@ namespace action
 static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, sight::modules::ui::qt::action::SDisplayTestNotifications)
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::SDisplayTestNotifications)
 
 //------------------------------------------------------------------------------
 

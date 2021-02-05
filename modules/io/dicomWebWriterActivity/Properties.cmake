@@ -16,7 +16,6 @@ set( REQUIREMENTS
     ioPacs
     media
     module_services
-    uiMedDataQt
     visuVTK
     visuVTKAdaptor
     visuVTKQt

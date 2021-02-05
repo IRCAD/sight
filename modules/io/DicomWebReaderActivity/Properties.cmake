@@ -16,7 +16,6 @@ set( REQUIREMENTS
     ioDicomWeb
     media
     module_services
-    uiMedDataQt
     visuVTK
     visuVTKAdaptor
     visuVTKQt

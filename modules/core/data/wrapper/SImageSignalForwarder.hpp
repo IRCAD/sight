@@ -62,7 +62,7 @@ class MODULE_DATA_CLASS_API SImageSignalForwarder : public modules::data::IWrapp
 
 public:
 
-    fwCoreServiceMacro(SImageSignalForwarder, modules::data::IWrapperSrv)
+    fwCoreServiceMacro(SImageSignalForwarder, ::sight::modules::data::IWrapperSrv)
 
     MODULE_DATA_API SImageSignalForwarder() noexcept;
 
@@ -133,4 +133,4 @@ private:
 };
 
 } // wrapper
-} // ctrlSelection
+} // sight::modules::data

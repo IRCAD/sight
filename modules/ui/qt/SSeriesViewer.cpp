@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/SSeriesViewer.hpp"
+#include "modules/ui/qt/SSeriesViewer.hpp"
 
 #include <core/base.hpp>
 
@@ -32,12 +32,12 @@
 #include <services/macros.hpp>
 #include <services/registry/AppConfig.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, ::uiMedDataQt::SSeriesViewer, ::sight::data::Vector)
+fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::qt::SSeriesViewer, ::sight::data::Vector)
 
 static const services::IService::KeyType s_SERIES_INPUT = "series";
 
@@ -201,4 +201,4 @@ services::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

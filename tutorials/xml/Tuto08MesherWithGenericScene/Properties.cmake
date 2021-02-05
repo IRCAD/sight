@@ -26,7 +26,6 @@ set( REQUIREMENTS
     module_io_atoms
 
     # Services
-    uiMedDataQt
     module_data
     module_filter_mesh
 

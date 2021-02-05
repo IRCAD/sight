@@ -88,7 +88,7 @@
 
     <extension implements="::sight::services::registry::ServiceConfig" >
         <id>ExActivities_Wizard_SrvCfg</id>
-        <service>::uiMedDataQt::editor::SActivityWizard</service>
+        <service>::sight::modules::ui::qt::editor::SActivityWizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
         <config>
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>

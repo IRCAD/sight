@@ -170,7 +170,7 @@
                 <inout key="data" uid="seriesDB" />
             </service>
 
-            <service uid="selectorSrv" type="::uiMedDataQt::editor::SSelector" autoConnect="yes" >
+            <service uid="selectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <inout key="selection" uid="selections" />
             </service>
@@ -179,7 +179,7 @@
             <service uid="dumpEditorSrv" type="::monitorQt::DumpEditor" />
 
             <!-- Service to display the preview when an image or an mesh is selected -->
-            <service uid="seriesViewerSrv" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes" >
+            <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes" >
                 <in key="series" uid="selections" />
                 <parentView wid="previewView" />
                 <configs>

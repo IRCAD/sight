@@ -6,7 +6,7 @@ set( REQUIREMENTS
         activities
         module_data
         module_ui_base
-    uiMedDataQt
+    module_ui_qt
         media
         data
         filterUnknownSeries

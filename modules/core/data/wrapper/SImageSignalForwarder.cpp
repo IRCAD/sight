@@ -319,4 +319,4 @@ void SImageSignalForwarder::forwardRemovedFields(sight::data::Object::FieldsCont
 //-----------------------------------------------------------------------------
 
 } // wrapper
-} // ctrlSelection
+} // sight::modules::data

@@ -53,7 +53,7 @@ class MODULE_DATA_CLASS_API SObjFromSlot : public modules::data::IUpdaterSrv
 
 public:
 
-    fwCoreServiceMacro(SObjFromSlot, modules::data::IUpdaterSrv)
+    fwCoreServiceMacro(SObjFromSlot, ::sight::modules::data::IUpdaterSrv)
 
     /// Constructor.  Do nothing.
     MODULE_DATA_API SObjFromSlot() noexcept;
@@ -103,4 +103,4 @@ protected:
 };
 
 } // updater
-} // ctrlSelection
+} // sight::modules::data

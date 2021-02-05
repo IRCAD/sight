@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <activities/registry/Activities.hpp>
 
@@ -34,7 +34,7 @@
 #include <QTabWidget>
 #include <QTreeWidget>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace widget
 {
@@ -42,7 +42,7 @@ namespace widget
 /**
  * @brief This class displays a tab widget allowing to select the required data to create an activity.
  */
-class UIMEDDATAQT_CLASS_API ActivityDataView : public QTabWidget
+class MODULE_UI_QT_CLASS_API ActivityDataView : public QTabWidget
 {
 
 Q_OBJECT;
@@ -50,7 +50,7 @@ Q_OBJECT;
 public:
 
     /// Identifier of the role UID in the series tree item.
-    UIMEDDATAQT_API static const int s_UID_ROLE;
+    MODULE_UI_QT_API static const int s_UID_ROLE;
 
     typedef std::map< std::string, std::string > ObjectIconMapType;
 
@@ -97,10 +97,10 @@ public:
      * @brief Creates the tabbed widget.
      * @param _parent the parent of this widget.
      */
-    UIMEDDATAQT_API ActivityDataView(QWidget* _parent = 0);
+    MODULE_UI_QT_API ActivityDataView(QWidget* _parent = 0);
 
     /// Destroys the tabbed widget.
-    UIMEDDATAQT_API virtual ~ActivityDataView();
+    MODULE_UI_QT_API virtual ~ActivityDataView();
 
     /**
      * @brief Creates all tabs from an activity information.
@@ -110,13 +110,13 @@ public:
      *
      * @param _info the struct containing the activity configuration.
      */
-    UIMEDDATAQT_API void fillInformation(const activities::registry::ActivityInfo& _info);
+    MODULE_UI_QT_API void fillInformation(const activities::registry::ActivityInfo& _info);
 
     /**
      * @brief Creates all tabs from an activity series.
      * @param _actSeries the series containing activities.
      */
-    UIMEDDATAQT_API void fillInformation(const data::ActivitySeries::sptr& _actSeries);
+    MODULE_UI_QT_API void fillInformation(const data::ActivitySeries::sptr& _actSeries);
 
     /**
      * @brief Checks if all the required data are selected and fill activity data composite.
@@ -129,8 +129,8 @@ public:
      * @param _actSeries activitySeries to fill with the selected data.
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      */
-    UIMEDDATAQT_API bool checkAndComputeData(const data::ActivitySeries::sptr& _actSeries,
-                                             std::string& _errorMsg);
+    MODULE_UI_QT_API bool checkAndComputeData(const data::ActivitySeries::sptr& _actSeries,
+                                              std::string& _errorMsg);
 
     /**
      * @brief Checks if the current required data are selected And return this data.
@@ -138,7 +138,7 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    UIMEDDATAQT_API data::Object::sptr checkData(size_t _index, std::string& _errorMsg);
+    MODULE_UI_QT_API data::Object::sptr checkData(size_t _index, std::string& _errorMsg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
@@ -159,7 +159,7 @@ public:
     }
 
     /// Removes all the widget tabs.
-    UIMEDDATAQT_API virtual void clear();
+    MODULE_UI_QT_API virtual void clear();
 
     /**
      * @brief Sets the map that defines the icon associated to an object.
@@ -238,4 +238,4 @@ private:
 };
 
 } // namespace widget
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

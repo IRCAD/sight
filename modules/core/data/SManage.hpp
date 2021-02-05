@@ -187,4 +187,4 @@ private:
 
 };
 
-} // ctrlSelection
+} // sight::modules::data

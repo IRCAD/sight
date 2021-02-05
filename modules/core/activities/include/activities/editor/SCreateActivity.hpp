@@ -48,7 +48,7 @@ namespace editor
  * This editor proposes all the available activities according to the given configuration.
  * It sends a signal with the activity identifier when a button is pushed.
  *
- * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
+ * It should work with the modules::ui::qt::editor::SActivityWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it

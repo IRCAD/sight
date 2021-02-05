@@ -79,7 +79,7 @@ static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, sight::modules::ui::qt::metrics::SLandmarks )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::metrics::SLandmarks )
 
 //------------------------------------------------------------------------------
 

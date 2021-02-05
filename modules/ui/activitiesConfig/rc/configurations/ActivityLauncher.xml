@@ -173,7 +173,7 @@
         </service>
 
         <!-- Display the activity data selector -->
-        <service uid="activityCreator" type="::uiMedDataQt::editor::SActivityWizard" config="${WIZARD_CONFIG}">
+        <service uid="activityCreator" type="::sight::modules::ui::qt::editor::SActivityWizard" config="${WIZARD_CONFIG}">
             <inout key="seriesDB" uid="${seriesDB}" />
         </service>
 

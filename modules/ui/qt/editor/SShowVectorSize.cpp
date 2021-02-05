@@ -49,7 +49,7 @@ namespace editor
 const core::com::Slots::SlotKeyType SShowVectorSize::s_ADD_OBJECTS_SLOT    = "addObject";
 const core::com::Slots::SlotKeyType SShowVectorSize::s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, modules::ui::qt::editor::SShowVectorSize,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SShowVectorSize,
                          ::sight::data::Vector )
 
 //-----------------------------------------------------------------------------

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
-#include "uiMedDataQt/widget/SelectorModel.hpp"
+#include "modules/ui/qt/config.hpp"
+#include "modules/ui/qt/widget/SelectorModel.hpp"
 
 #include <data/Series.hpp>
 #include <data/Study.hpp>
@@ -38,7 +38,7 @@
 
 #include <map>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace widget
 {
@@ -46,7 +46,7 @@ namespace widget
 /**
  * @brief This selector represents the Series in a hierarchical view (Study/Patient->Series).
  */
-class UIMEDDATAQT_CLASS_API Selector : public QTreeView
+class MODULE_UI_QT_CLASS_API Selector : public QTreeView
 {
 
 Q_OBJECT
@@ -57,10 +57,10 @@ public:
     typedef SelectorModel::SeriesIconType SeriesIconType;
 
     /// Initializes the tree view.
-    UIMEDDATAQT_API Selector(QWidget* _parent = nullptr);
+    MODULE_UI_QT_API Selector(QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    UIMEDDATAQT_API ~Selector();
+    MODULE_UI_QT_API ~Selector();
 
     /// Clears all items in the tree.
     void clear();
@@ -70,28 +70,28 @@ public:
      * this study.
      * @param _series series to add in the tree.
      */
-    UIMEDDATAQT_API void addSeries(data::Series::sptr _series);
+    MODULE_UI_QT_API void addSeries(data::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UIMEDDATAQT_API void removeSeries(data::Series::sptr _series);
+    MODULE_UI_QT_API void removeSeries(data::Series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
-    UIMEDDATAQT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
+    MODULE_UI_QT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
 
     /// Catches the delete key event and remove the selected items.
-    UIMEDDATAQT_API void keyPressEvent(QKeyEvent* _event);
+    MODULE_UI_QT_API void keyPressEvent(QKeyEvent* _event);
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _seriesIcons map\<series classname, icon path\>
      */
-    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
+    MODULE_UI_QT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
 
     /// Allows removing items or not.
-    UIMEDDATAQT_API void setAllowedRemove(bool _allowed);
+    MODULE_UI_QT_API void setAllowedRemove(bool _allowed);
 
     /// Sets if the selector must be in insert mode.
     void setInsertMode(bool _insert);
@@ -207,4 +207,4 @@ inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
 //-----------------------------------------------------------------------------
 
 } // namespace widget.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

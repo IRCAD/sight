@@ -14,6 +14,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     module_ui_base
+    module_data
 )
 set( PLUGINS
     platforms
@@ -23,4 +24,3 @@ set( PLUGINS
     QtQuick
     QtQuick.2
 )
-

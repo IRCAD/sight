@@ -60,7 +60,7 @@
 namespace sight::modules::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, sight::modules::ui::qt::image::WindowLevel,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::image::WindowLevel,
                          ::sight::data::Image)
 
 static const services::IService::KeyType s_IMAGE_INOUT = "image";

@@ -72,7 +72,7 @@ class MODULE_DATA_CLASS_API SExtractMeshByType : public modules::data::ICamp
 {
 public:
 
-    fwCoreServiceMacro(SExtractMeshByType, modules::data::ICamp)
+    fwCoreServiceMacro(SExtractMeshByType, ::sight::modules::data::ICamp)
 
     typedef std::map<std::string, std::tuple< std::string, std::string, std::string > > ExtractMapType;
     typedef std::vector<std::pair< std::string, std::string > > ExtractVectorType;

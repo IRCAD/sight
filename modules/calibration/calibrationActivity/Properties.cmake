@@ -21,7 +21,6 @@ set( REQUIREMENTS
     module_ui_base
     media
     module_ui_qt
-    uiMedDataQt
 
     # Reader
     module_io_file

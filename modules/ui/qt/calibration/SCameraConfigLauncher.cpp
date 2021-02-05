@@ -52,7 +52,8 @@
 namespace sight::modules::ui::qt::calibration
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, sight::modules::ui::qt::calibration::SCameraConfigLauncher,
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor,
+                         ::sight::modules::ui::qt::calibration::SCameraConfigLauncher,
                          ::sight::data::Composite)
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept

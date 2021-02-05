@@ -13,8 +13,6 @@ set( REQUIREMENTS
     module_services
     visuVTKQt
     visuVTKAdaptor
-    uiMedDataQt
-    uiMedDataQt
     media
     dataManagerConfig
     2DVisualizationActivity

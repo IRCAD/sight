@@ -40,7 +40,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, sight::modules::ui::qt::action::LaunchBrowserActionService,
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::LaunchBrowserActionService,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------

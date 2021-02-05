@@ -14,7 +14,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKVRAdaptor
     scene2D
-    uiMedDataQt
     media
     imageConfig
     dataManagerConfig

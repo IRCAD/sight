@@ -49,9 +49,7 @@ namespace sight::modules::filter::mesh
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IOperator, modules::filter::mesh::SVTKMesher )
-
-static const std::string s_IMAGE_INPUT = "imageSeries";
+static const std::string s_IMAGE_INPUT  = "imageSeries";
 static const std::string s_MODEL_OUTPUT = "modelSeries";
 
 //-----------------------------------------------------------------------------

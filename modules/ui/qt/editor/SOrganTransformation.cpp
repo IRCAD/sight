@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/editor/SOrganTransformation.hpp"
+#include "modules/ui/qt/editor/SOrganTransformation.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
@@ -52,12 +52,12 @@
 
 #include <map>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMedDataQt::editor::SOrganTransformation )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SOrganTransformation )
 
 static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const services::IService::KeyType s_COMPOSITE_INOUT = "composite";
@@ -410,4 +410,4 @@ services::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections()
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

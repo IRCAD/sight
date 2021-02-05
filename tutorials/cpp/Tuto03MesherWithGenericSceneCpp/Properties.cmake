@@ -15,7 +15,6 @@ set( REQUIREMENTS
     module_io_vtk
     module_services
     module_filter_mesh
-    uiMedDataQt
     visuVTKAdaptor
     visuVTKQt
     media

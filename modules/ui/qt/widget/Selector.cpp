@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/widget/Selector.hpp"
+#include "modules/ui/qt/widget/Selector.hpp"
 
 #include <data/Equipment.hpp>
 #include <data/Image.hpp>
@@ -35,7 +35,7 @@
 #include <QStandardItem>
 #include <QString>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace widget
 {
@@ -303,4 +303,4 @@ void Selector::setSeriesIcons(const SeriesIconType& _seriesIcons)
 //-----------------------------------------------------------------------------
 
 } // namespace widget.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -44,7 +44,7 @@ class QCheckBox;
 class QListWidgetItem;
 class QTreeWidgetItem;
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace editor
 {
@@ -70,7 +70,7 @@ class ValueView;
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service ::uiMedDataQt::editor::SModelSeriesList">
+   <service modules::ui::qt::editor::SModelSeriesList">
        <inout key="modelSeries" uid="..." autoConnect="yes" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
@@ -94,7 +94,7 @@ class ValueView;
  *      The attribute 'view' is optional and has the following values:
  *  - positive: a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
-class UIMEDDATAQT_CLASS_API SModelSeriesList final :
+class MODULE_UI_QT_CLASS_API SModelSeriesList final :
     public QObject,
     public sight::ui::base::editor::IEditor
 {
@@ -107,10 +107,10 @@ public:
     fwCoreServiceMacro(SModelSeriesList, sight::ui::base::editor::IEditor)
 
     /// Initializes the slot and signals.
-    UIMEDDATAQT_API SModelSeriesList() noexcept;
+    MODULE_UI_QT_API SModelSeriesList() noexcept;
 
     /// Cleans ressources.
-    UIMEDDATAQT_API ~SModelSeriesList() noexcept override;
+    MODULE_UI_QT_API ~SModelSeriesList() noexcept override;
 
 protected:
 
@@ -233,4 +233,4 @@ private:
 };
 
 } // namespace editor.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

@@ -18,7 +18,6 @@ set( REQUIREMENTS
     # UI declaration/Actions
     module_ui_base
     module_ui_flaticon
-    uiMedDataQt
     media
 
     # Reader

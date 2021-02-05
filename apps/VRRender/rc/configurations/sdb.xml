@@ -66,12 +66,12 @@
             <inout key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
-        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="seriesViewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+        <service uid="seriesViewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

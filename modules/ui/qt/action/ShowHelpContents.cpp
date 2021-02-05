@@ -75,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, sight::modules::ui::qt::action::ShowHelpContents,
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::ShowHelpContents,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------

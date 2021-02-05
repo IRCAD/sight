@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <services/IAppConfigManager.hpp>
 #include <services/IController.hpp>
 
 #include <map>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 
 /**
@@ -39,7 +39,7 @@ namespace uiMedDataQt
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::uiMedDataQt::SSeriesViewer">
+    <service type="::modules::ui::qt::SSeriesViewer">
         <in key="series" uid="..." autoConnect="yes" />
         <parentView>preview</parentView>
         <configs>
@@ -66,17 +66,17 @@ namespace uiMedDataQt
  *     - \b by: specific value to replace for the parameter
  * - \b extract: extracts the object from the path and replaces pattern with its fwID
  */
-class UIMEDDATAQT_CLASS_API SSeriesViewer : public services::IController
+class MODULE_UI_QT_CLASS_API SSeriesViewer : public services::IController
 {
 
 public:
     fwCoreServiceMacro(SSeriesViewer, services::IController)
 
     /// Constructor
-    UIMEDDATAQT_API SSeriesViewer();
+    MODULE_UI_QT_API SSeriesViewer();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SSeriesViewer() noexcept;
+    MODULE_UI_QT_API virtual ~SSeriesViewer() noexcept;
 
 protected:
 
@@ -106,7 +106,7 @@ protected:
      * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
 
     virtual void info( std::ostream& _sstream ) override;
 
@@ -138,4 +138,4 @@ private:
     /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
 };
-} // namespace uiMedDataQt
+} // namespace sight::modules::ui::qt

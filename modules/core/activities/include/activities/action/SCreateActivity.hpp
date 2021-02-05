@@ -41,7 +41,7 @@ namespace action
  * This action works on a data::Vector. It proposes all the available activity according to the given configuration.
  * And then, it sends a signal with the activity identifier.
  *
- * It should work with the ::uiMedDataQt::editor::SActivityWizard that creates or updates the activitySeries.
+ * It should work with the modules::ui::qt::editor::SActivityWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it

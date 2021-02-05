@@ -72,13 +72,13 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selector" type="::uiMedDataQt::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="::uiMedDataQt::SSeriesViewer" autoConnect="yes">
+        <service uid="viewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

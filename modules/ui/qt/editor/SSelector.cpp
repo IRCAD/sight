@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "uiMedDataQt/editor/SSelector.hpp"
+#include "modules/ui/qt/editor/SSelector.hpp"
 
-#include "uiMedDataQt/widget/Selector.hpp"
+#include "modules/ui/qt/widget/Selector.hpp"
 
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
@@ -45,7 +45,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 
 namespace editor
@@ -53,7 +53,8 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::uiMedDataQt::editor::SSelector, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SSelector,
+                         ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -235,7 +236,7 @@ void SSelector::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
 
-    m_selectorWidget = new ::uiMedDataQt::widget::Selector();
+    m_selectorWidget = new modules::ui::qt::widget::Selector();
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
     m_selectorWidget->setAllowedRemove(m_allowedRemove);
@@ -330,7 +331,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
     const auto selectionVector = this->getLockedInOut< data::Vector >(s_SELECTION_INOUT);
 
-    if(m_selectorWidget->getItemType(_index) == ::uiMedDataQt::widget::SelectorModel::SERIES)
+    if(m_selectorWidget->getItemType(_index) == modules::ui::qt::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
         data::Object::sptr obj    = selectionVector->front();
@@ -388,4 +389,4 @@ void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 //------------------------------------------------------------------------------
 
 } // namespace editor.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

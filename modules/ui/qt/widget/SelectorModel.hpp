@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "uiMedDataQt/config.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <data/Series.hpp>
 #include <data/Study.hpp>
@@ -35,7 +35,7 @@
 #include <filesystem>
 #include <map>
 
-namespace uiMedDataQt
+namespace sight::modules::ui::qt
 {
 namespace widget
 {
@@ -43,7 +43,7 @@ namespace widget
 /**
  * @brief This class represents the Selector Model.
  */
-class UIMEDDATAQT_CLASS_API SelectorModel : public QStandardItemModel
+class MODULE_UI_QT_CLASS_API SelectorModel : public QStandardItemModel
 {
 
 Q_OBJECT
@@ -93,25 +93,25 @@ public:
     typedef std::map<std::string, std::string> SeriesIconType;
 
     /// Initializes the model.
-    UIMEDDATAQT_API SelectorModel(QWidget* _parent = nullptr);
+    MODULE_UI_QT_API SelectorModel(QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    UIMEDDATAQT_API ~SelectorModel();
+    MODULE_UI_QT_API ~SelectorModel();
 
     /**
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
      * this study.
      */
-    UIMEDDATAQT_API void addSeries(data::Series::sptr _series);
+    MODULE_UI_QT_API void addSeries(data::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UIMEDDATAQT_API void removeSeries(data::Series::sptr _series);
+    MODULE_UI_QT_API void removeSeries(data::Series::sptr _series);
 
     /// Clears all items in the model.
-    UIMEDDATAQT_API void clear();
+    MODULE_UI_QT_API void clear();
 
     /// Returns item flags with non editable flag
     Qt::ItemFlags flags(const QModelIndex& _index) const
@@ -120,29 +120,29 @@ public:
     }
 
     /// Returns the type of the item (SERIES or STUDY) associated to the ITEM_TYPE role.
-    UIMEDDATAQT_API ItemType getItemType(const QModelIndex& _index);
+    MODULE_UI_QT_API ItemType getItemType(const QModelIndex& _index);
 
     /**
      * @brief Returns the index in the same row as the given index and at the specified column.
      * @param _index index used to get the associated row.
      * @param _column the column of the index to return.
      */
-    UIMEDDATAQT_API QModelIndex getIndex(const QModelIndex& _index, int _column);
+    MODULE_UI_QT_API QModelIndex getIndex(const QModelIndex& _index, int _column);
 
     /// Removes the rows given by the indexes.
-    UIMEDDATAQT_API void removeRows(const QModelIndexList _indexes);
+    MODULE_UI_QT_API void removeRows(const QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
-    UIMEDDATAQT_API QStandardItem* findSeriesItem(data::Series::sptr _series);
+    MODULE_UI_QT_API QStandardItem* findSeriesItem(data::Series::sptr _series);
 
     /// Returns the item representing the study.
-    UIMEDDATAQT_API QStandardItem* findStudyItem(data::Study::sptr _study);
+    MODULE_UI_QT_API QStandardItem* findStudyItem(data::Study::sptr _study);
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _seriesIcons map\<series classname, icon path\>
      */
-    UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
+    MODULE_UI_QT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
 
     /// Sets if the selector must be in insert mode.
     void setInsertMode(bool _insert);
@@ -274,4 +274,4 @@ inline void SelectorModel::setRemoveSerieIcon(const std::filesystem::path& _path
 //-----------------------------------------------------------------------------
 
 } // namespace widget.
-} // namespace uiMedDataQt.
+} // namespace sight::modules::ui::qt.

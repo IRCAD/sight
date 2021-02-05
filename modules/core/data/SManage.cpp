@@ -431,4 +431,4 @@ void SManage::internalAdd(bool _copy)
 
 //-----------------------------------------------------------------------------
 
-} // ctrlSelection
+} // sight::modules::data

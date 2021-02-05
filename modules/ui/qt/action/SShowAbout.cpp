@@ -46,7 +46,7 @@ namespace sight::modules::ui::qt
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, sight::modules::ui::qt::action::SShowAbout,
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::SShowAbout,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
