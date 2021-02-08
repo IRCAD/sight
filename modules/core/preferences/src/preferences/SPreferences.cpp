@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -46,7 +46,7 @@
 namespace preferences
 {
 
-fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::fwData::Composite )
 
 //-----------------------------------------------------------------------------
 
@@ -87,8 +87,7 @@ void SPreferences::load()
         const std::filesystem::path folderPath = m_prefFile.parent_path();
         const std::filesystem::path filename   = m_prefFile.filename();
 
-        ::fwData::Object::sptr data = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
-        SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", data);
+        auto data = this->getLockedInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
 
         // Read atom
         ::fwZip::IReadArchive::sptr readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
@@ -112,13 +111,16 @@ void SPreferences::load()
 
 void SPreferences::save()
 {
+
     const std::filesystem::path folderPath = m_prefFile.parent_path();
     const std::filesystem::path filename   = m_prefFile.filename();
 
-    ::fwData::Object::sptr obj = this->getInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY);
-    SLM_ASSERT("The inout key '" + ::fwPreferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
+    ::fwData::Object::sptr obj;
+    {
+        obj = this->getLockedInOut< ::fwData::Object >(::fwPreferences::s_PREFERENCES_KEY).get_shared();
+    }
 
-    // Mutex data lock
+    // Lock recursively all objects referenced in the root object
     ::fwDataCamp::visitor::RecursiveLock recursiveLock(obj);
 
     // Convert data to atom
