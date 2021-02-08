@@ -5,12 +5,12 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::fwMedData::ImageSeries" : "1",
-            "::fwMedData::ImageSeries" : "2"
+            "::sight::data::ImageSeries" : "1",
+            "::sight::data::ImageSeries" : "2"
         },
         {
-            "::fwMedData::ModelSeries" : "1",
-            "::fwMedData::ModelSeries" : "2"
+            "::sight::data::ModelSeries" : "1",
+            "::sight::data::ModelSeries" : "2"
         }
     ]
 }

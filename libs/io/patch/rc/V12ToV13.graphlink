@@ -5,36 +5,36 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::fwMedData::Series" : "1",
-            "::fwMedData::Series" : "2"
+            "::sight::data::Series" : "1",
+            "::sight::data::Series" : "2"
         },
         {
-            "::fwMedData::ImageSeries" : "2",
-            "::fwMedData::ImageSeries" : "3"
+            "::sight::data::ImageSeries" : "2",
+            "::sight::data::ImageSeries" : "3"
         },
         {
-            "::fwMedData::ModelSeries" : "2",
-            "::fwMedData::ModelSeries" : "3"
+            "::sight::data::ModelSeries" : "2",
+            "::sight::data::ModelSeries" : "3"
         },
         {
-            "::fwMedData::ActivitySeries" : "1",
-            "::fwMedData::ActivitySeries" : "2"
+            "::sight::data::ActivitySeries" : "1",
+            "::sight::data::ActivitySeries" : "2"
         },
         {
-            "::fwMedData::AttachmentSeries" : "1",
-            "::fwMedData::AttachmentSeries" : "2"
+            "::sight::data::AttachmentSeries" : "1",
+            "::sight::data::AttachmentSeries" : "2"
         },
         {
-            "::fwMedData::DicomSeries" : "1",
-            "::fwMedData::DicomSeries" : "2"
+            "::sight::data::DicomSeries" : "1",
+            "::sight::data::DicomSeries" : "2"
         },
         {
-            "::fwMedData::NavigationSeries" : "1",
-            "::fwMedData::NavigationSeries" : "2"
+            "::sight::data::NavigationSeries" : "1",
+            "::sight::data::NavigationSeries" : "2"
         },
         {
-            "::fwMedData::Study" : "1",
-            "::fwMedData::Study" : "2"
+            "::sight::data::Study" : "1",
+            "::sight::data::Study" : "2"
         }
     ]
 }

@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::arData::Camera" : "2",
-            "::arData::Camera" : "1"
+            "::sight::data::Camera" : "2",
+            "::sight::data::Camera" : "1"
         }
     ]
 }

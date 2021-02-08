@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::fwData::Mesh" : "1",
-            "::fwData::Mesh" : "2"
+            "::sight::data::Mesh" : "1",
+            "::sight::data::Mesh" : "2"
         }
     ]
 }

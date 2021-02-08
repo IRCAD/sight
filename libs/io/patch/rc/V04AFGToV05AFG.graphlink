@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::fwData::Reconstruction" : "2",
-            "::fwData::Reconstruction" : "3"
+            "::sight::data::Reconstruction" : "2",
+            "::sight::data::Reconstruction" : "3"
         }
     ]
 }

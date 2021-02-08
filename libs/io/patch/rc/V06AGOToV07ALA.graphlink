@@ -5,8 +5,8 @@
     "patcher" : "DefaultPatcher",
     "links" : [
         {
-            "::fwData::TransformationMatrix3D" : "1",
-            "::fwData::TransformationMatrix3D" : "2"
+            "::sight::data::TransformationMatrix3D" : "1",
+            "::sight::data::TransformationMatrix3D" : "2"
         }
     ]
 }
