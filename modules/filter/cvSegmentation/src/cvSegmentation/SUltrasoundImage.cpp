@@ -22,7 +22,7 @@
 
 #include "cvSegmentation/SUltrasoundImage.hpp"
 
-#include <cvIO/Image.hpp>
+#include <io/opencv/Image.hpp>
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -139,7 +139,7 @@ void SUltrasoundImage::updating()
         return;
     }
 
-    const ::cv::Mat src = ::cvIO::Image::moveToCv(inputImage);
+    const ::cv::Mat src = io::opencv::Image::moveToCv(inputImage);
 
     m_probeSettings.matrixWidth = 1024;
     m_probeSettings.matrixDepth = 1024;
@@ -188,7 +188,7 @@ void SUltrasoundImage::updating()
         outputImage->resize();
     }
 
-    ::cv::Mat remapResult = ::cvIO::Image::moveToCv(outputImage.get_shared());
+    ::cv::Mat remapResult = io::opencv::Image::moveToCv(outputImage.get_shared());
     ::cv::remap(srcGray, remapResult, m_extractionMap, ::cv::Mat(), ::cv::INTER_LINEAR);
 
     auto sig = outputImage->signal< data::Image::BufferModifiedSignalType >(data::Image::s_BUFFER_MODIFIED_SIG);

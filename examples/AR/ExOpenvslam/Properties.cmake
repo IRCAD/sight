@@ -23,13 +23,12 @@ set( REQUIREMENTS
     module_io_vtk
 
     # Grabber
-    videoQt
-    videoOpenCV
+    module_io_video
 
     # Services
-    videoTools
+    module_sync
     module_data
-    ioCalibration
+    module_io_vision
     openvslamTracker
 
     # Generic Scene

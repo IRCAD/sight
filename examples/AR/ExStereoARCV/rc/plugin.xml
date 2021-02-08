@@ -321,7 +321,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="::ioCalibration::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="::sight::modules::io::vision::SOpenCVReader" >
                 <inout key="data" uid="cameraSeries" />
             </service>
 
@@ -413,12 +413,12 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelLeftSrv" type="::sight::modules::ui::base::editor::STextStatus" >
+            <service uid="errorLabelLeftSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
                 <label>Reprojection Error Left (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
-            <service uid="errorLabelRightSrv" type="::sight::modules::ui::base::editor::STextStatus" >
+            <service uid="errorLabelRightSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
                 <label>Reprojection Error Right (RMSE)</label>
                 <color>#D25252</color>
             </service>
@@ -432,29 +432,29 @@
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelector1Srv" type="::videoQt::editor::SCamera" >
+            <service uid="videoSelector1Srv" type="::sight::modules::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera1" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="videoSelector2Srv" type="::videoQt::editor::SCamera" >
+            <service uid="videoSelector2Srv" type="::sight::modules::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera2" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabber1Srv" type="::videoQt::SFrameGrabber" >
+            <service uid="videoGrabber1Srv" type="::sight::modules::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera1" />
                 <inout key="frameTL" uid="frameTL1" />
             </service>
 
-            <service uid="videoGrabber2Srv" type="::videoQt::SFrameGrabber" >
+            <service uid="videoGrabber2Srv" type="::sight::modules::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera2" />
                 <inout key="frameTL" uid="frameTL2" />
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="arucoTracker1Srv" type="::trackerAruco::SArucoTracker" worker="tracking1" >
+            <service uid="arucoTracker1Srv" type="::sight::modules::navigation::optics::SArucoTracker" worker="tracking1" >
                 <in key="timeline" uid="frameTL1" autoConnect="yes" />
                 <in key="camera" uid="camera1" />
                 <inout group="tagTL" >
@@ -468,7 +468,7 @@
                 <debugMarkers>yes</debugMarkers>
             </service>
 
-            <service uid="arucoTracker2Srv" type="::trackerAruco::SArucoTracker" worker="tracking2" >
+            <service uid="arucoTracker2Srv" type="::sight::modules::navigation::optics::SArucoTracker" worker="tracking2" >
                 <in key="timeline" uid="frameTL2" autoConnect="yes" />
                 <in key="camera" uid="camera2" />
                 <inout group="tagTL" >
@@ -483,7 +483,7 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registrationSrv" type="::registrationCV::SPoseFrom2d" worker="registration" >
+            <service uid="registrationSrv" type="::sight::modules::geometry::vision::SPoseFrom2d" worker="registration" >
                 <in group="markerTL" autoConnect="yes" >
                     <key uid="tagTL1" />
                     <key uid="tagTL2" />
@@ -499,7 +499,7 @@
 
 
             <!-- This will compute the reprojection error Left -->
-            <service uid="leftReprojectionErrorSrv" type="::videoCalibration::SReprojectionError" worker="error1" >
+            <service uid="leftReprojectionErrorSrv" type="::sight::modules::geometry::vision::SReprojectionError" worker="error1" >
                 <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
                 <in key="camera" uid="camera1" />
                 <in key="markerTL" uid="tagTL1" />
@@ -507,7 +507,7 @@
                 <patternWidth>60</patternWidth>
             </service>
 
-            <service uid="rightReprojectionErrorSrv" type="::videoCalibration::SReprojectionError" worker="error2" >
+            <service uid="rightReprojectionErrorSrv" type="::sight::modules::geometry::vision::SReprojectionError" worker="error2" >
                 <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
                 <in key="extrinsic" uid="extrinsic" />
                 <in key="camera" uid="camera2" />
@@ -518,7 +518,7 @@
 
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameMatrixSynchronizerSrv" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameMatrixSynchronizerSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL1" />
                     <key uid="frameTL2" />

@@ -5,7 +5,7 @@ set( DEPENDENCIES
     services
     data
     colourImageMasking
-    cvIO
+    io_opencv
 )
 set( REQUIREMENTS  )
 

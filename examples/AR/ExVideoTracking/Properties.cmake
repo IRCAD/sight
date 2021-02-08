@@ -21,12 +21,11 @@ set( REQUIREMENTS
     module_ui_flaticon
 
     # Reader
-    videoOpenCV
-    videoQt
+    module_io_video
 
     # Services
-    videoTools
-    trackerAruco
+    module_sync
+    module_navigation_optics
 
     # Generic Scene
 )

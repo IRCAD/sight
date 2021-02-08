@@ -151,7 +151,7 @@
             <parameter replace="tagsToDetect" by="101" />
         </service>
 
-        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="synchronizer" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="firstFrameTL"/>
                 <key uid="secondFrameTL"/>
@@ -174,7 +174,7 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="firstVideoGrabber" type="::videoTools::SGrabberProxy">
+        <service uid="firstVideoGrabber" type="::sight::modules::io::video::SGrabberProxy">
             <in key="camera" uid="firstCamera" autoConnect="yes" />
             <inout key="frameTL" uid="firstFrameTL" />
             <config>
@@ -182,7 +182,7 @@
             </config>
         </service>
 
-        <service uid="secondVideoGrabber" type="::videoTools::SGrabberProxy">
+        <service uid="secondVideoGrabber" type="::sight::modules::io::video::SGrabberProxy">
             <in key="camera" uid="secondCamera" autoConnect="yes" />
             <inout key="frameTL" uid="secondFrameTL" />
             <config>

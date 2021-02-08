@@ -21,17 +21,16 @@ set( REQUIREMENTS
 
     # Reader
     module_io_vtk
-    ioCalibration
+    module_io_vision
 
     # Grabber
-    videoQt
-    videoOpenCV
+    module_io_video
 
     # Services
-    videoTools
+    module_sync
     module_data
     ctrlPicking
-    registrationCV
+    module_geometry_vision
 
     # Generic Scene
     )

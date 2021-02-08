@@ -27,8 +27,6 @@
 #include <core/Profiling.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <cvIO/FrameTL.hpp>
-
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
@@ -37,6 +35,8 @@
 #include <openvslamIO/Helper.hpp>
 
 #include <services/macros.hpp>
+
+#include <io/opencv/FrameTL.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -152,7 +152,7 @@ SOpenvslam::~SOpenvslam() noexcept
 
 void SOpenvslam::configuring()
 {
-    this->::services::ITracker::configuring();
+    this->services::ITracker::configuring();
     const ConfigType cfg = this->getConfigTree();
 
     m_downSampleWidth = cfg.get< size_t >(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
@@ -681,7 +681,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
         const std::uint8_t* frameData = &bufferFrame->getElement(0);
 
         // this is the main image
-        const ::cv::Mat imgLeft = ::cvIO::FrameTL::moveToCv(m_frameTL, frameData);
+        const ::cv::Mat imgLeft = io::opencv::FrameTL::moveToCv(m_frameTL, frameData);
 
         frameTLLock.unlock();
 
@@ -700,7 +700,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 
             const std::uint8_t* frameData2 = &bufferFrame2->getElement(0);
 
-            ::cv::Mat imgRight = ::cvIO::FrameTL::moveToCv(m_frameTL2, frameData2);
+            ::cv::Mat imgRight = io::opencv::FrameTL::moveToCv(m_frameTL2, frameData2);
 
             frameTL2Lock.unlock();
 

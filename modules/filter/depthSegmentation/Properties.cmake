@@ -4,6 +4,6 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     data
     services
-    cvIO
+    io_opencv
 )
 set( REQUIREMENTS  )

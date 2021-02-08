@@ -291,7 +291,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="::ioCalibration::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="::sight::modules::io::vision::SOpenCVReader" >
                 <inout key="data" uid="cameraSeries" />
             </service>
 
@@ -311,23 +311,23 @@
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="::videoOpenCV::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="::videoTools::SFrameUpdater" >
+            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameUpdater" >
                 <in key="frameTL" uid="frameTL" autoConnect="yes" />
                 <inout key="frame" uid="videoImage" />
             </service>
 
-            <service uid="solvePnPSrv" type="::registrationCV::SSolvePnP" >
+            <service uid="solvePnPSrv" type="::sight::modules::geometry::vision::SSolvePnP" >
                 <in key="pointList2d" uid="2dPixels" />
                 <in key="pointList3d" uid="3dPoints" />
                 <in key="calibration" uid="camera" />
@@ -335,7 +335,7 @@
                 <config inverse="true" />
             </service>
 
-            <service uid="imagePickerSrv" type="::videoTools::SImagePicker" >
+            <service uid="imagePickerSrv" type="::sight::modules::ui::base::SImagePicker" >
                 <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
                 <inout key="pixelPointList" uid="2dPixels" />

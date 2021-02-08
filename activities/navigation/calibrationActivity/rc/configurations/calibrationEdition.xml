@@ -1,0 +1,234 @@
+<extension implements="::sight::services::registry::AppConfig">
+    <id>calibrationEdition</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="SERIESDB" />
+        <param name="cameraSeries" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
+
+        <object uid="newCameraSeries" type="::sight::data::CameraSeries" src="deferred" />
+        <object uid="camera0" type="::sight::data::Camera" src="deferred" />
+        <object uid="camera1" type="::sight::data::Camera" src="deferred" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+            <gui>
+                <toolBar/>
+                <layout type="::sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBarView" start="yes" />
+                <view sid="camerasView" start="yes" />
+                <view sid="videoSliderSrv" start="yes" />
+                <view sid="cameraInfoView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Export camera series" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                    <separator/>
+                    <menuItem name="Export xml/yaml" icon="module_ui_flaticon-0.1/icons/BlueFile.svg" />
+                    <separator/>
+                    <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                    <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="exportAct" start="no" />
+                <menuItem sid="writeCalibrationAct" start="yes" />
+                <menuItem sid="startVideoAct" start="yes" />
+                <menuItem sid="stopVideoAct" start="yes" />
+                <menuItem sid="pauseVideoAct" start="yes" />
+                <menuItem sid="loopVideoAct" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
+            <gui>
+                <layout type="::sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="camera0View" />
+                <view wid="camera1View" />
+            </registry>
+        </service>
+
+        <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
+            <gui>
+                <layout type="::sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view caption="camera 1" />
+                    <view caption="camera 2" />
+                    <view caption="camera series" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="cameraInfo1Srv" start="no" />
+                <view sid="cameraInfo2Srv" start="no" />
+                <view sid="cameraSeriesInfoSrv" start="no" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::action::SSlotCaller">
+            <slots>
+                <slot>CalibrationXmlWriter/update</slot>
+            </slots>
+        </service>
+
+        <service uid="exportAct" type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="series" uid="newCameraSeries" />
+        </service>
+
+        <service uid="CalibrationXmlWriter" type="::sight::modules::io::vision::SOpenCVWriter">
+            <in key="data" uid="newCameraSeries"/>
+        </service>
+
+        <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+            <slots>
+                <slot>videoGrabber1Srv/startCamera</slot>
+                <slot>videoGrabber2Srv/startCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+            <slots>
+                <slot>videoGrabber1Srv/stopCamera</slot>
+                <slot>videoGrabber2Srv/stopCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+            <slots>
+                <slot>videoGrabber1Srv/pauseCamera</slot>
+                <slot>videoGrabber2Srv/pauseCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+            <slots>
+                <slot>videoGrabber1Srv/loopVideoAct</slot>
+                <slot>videoGrabber2Srv/loopVideoAct</slot>
+            </slots>
+        </service>
+
+        <!-- ************************ Configuration launchers ********************************* -->
+
+        <service uid="camera0LauncherCfg" type="::sight::services::SConfigController">
+            <appConfig id="videoEdition" />
+            <inout key="camera" uid="camera0" />
+            <parameter replace="WID_PARENT" uid="camera0View" />
+            <parameter replace="videoGrabber" uid="videoGrabber1Srv" />
+            <parameter replace="grabberProxyGuiTitle" by="Please select the first video grabber" />
+            <parameter replace="cameraModifiedChannel" uid="cameraModified" />
+            <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
+            <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
+            <parameter replace="videoDurationModifiedChannel" uid="videoDurationModified" />
+        </service>
+
+        <service uid="camera1LauncherCfg" type="::sight::services::SConfigController">
+            <appConfig id="videoEdition" />
+            <inout key="camera" uid="camera1" />
+            <parameter replace="WID_PARENT" uid="camera1View" />
+            <parameter replace="videoGrabber" uid="videoGrabber2Srv" />
+            <parameter replace="grabberProxyGuiTitle" by="Please select the second video grabber" />
+            <parameter replace="cameraModifiedChannel" uid="cameraModified" />
+            <parameter replace="videoPositionChangedChannel" uid="videoPositionChanged" />
+            <parameter replace="videoPositionModifiedChannel" uid="videoPositionModified" />
+            <parameter replace="videoDurationModifiedChannel" uid="videoDurationModified" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="videoSliderSrv" type="::sight::modules::ui::qt::video::SSlider" />
+
+        <service uid="copyCameraSeriesSrv" type="::sight::modules::data::SCopy">
+            <in key="source" uid="${cameraSeries}" />
+            <out key="target" uid="newCameraSeries" />
+        </service>
+
+        <service uid="extractCamerasSrv" type="::sight::modules::data::SExtractObj">
+            <inout key="source" uid="newCameraSeries">
+                <extract from="@cameras.0" />
+                <extract from="@cameras.1" />
+            </inout>
+            <out group="target">
+                <key uid="camera0" />
+                <key uid="camera1" />
+            </out>
+        </service>
+
+        <service uid="cameraSeriesInfoSrv" type="::sight::modules::ui::qt::calibration::SCameraSeriesEditor">
+            <in key="cameraSeries" uid="${cameraSeries}" autoConnect="yes" />
+            <in key="notUsed" uid="camera1" />
+            <!-- Not used, it allows to start this service only if we have a stereo calibration -->
+        </service>
+
+        <service uid="cameraInfo1Srv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+            <in key="camera" uid="camera0" />
+        </service>
+
+        <service uid="cameraInfo2Srv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+            <in key="camera" uid="camera1" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="cameraModified">
+            <signal>camera0/idModified</signal>
+            <signal>camera1/idModified</signal>
+        </connect>
+
+        <connect channel="videoPositionChanged">
+            <signal>videoSliderSrv/positionChanged</signal>
+        </connect>
+
+        <connect channel="videoPositionModified">
+            <slot>videoSliderSrv/setPositionSlider</slot>
+        </connect>
+
+        <connect channel="videoDurationModified">
+            <slot>videoSliderSrv/setDurationSlider</slot>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="copyCameraSeriesSrv" />
+        <start uid="extractCamerasSrv" />
+        <start uid="cameraSeriesInfoSrv" />
+        <start uid="CalibrationXmlWriter" />
+        <start uid="exportAct" />
+        <start uid="cameraInfo1Srv" />
+        <start uid="cameraInfo2Srv" />
+        <start uid="camera0LauncherCfg" />
+        <start uid="camera1LauncherCfg" />
+
+        <update uid="copyCameraSeriesSrv" />
+        <update uid="extractCamerasSrv" />
+
+    </config>
+</extension>

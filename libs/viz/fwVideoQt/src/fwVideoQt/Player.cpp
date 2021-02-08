@@ -22,8 +22,9 @@
 
 #include "fwVideoQt/Player.hpp"
 
-#include "fwVideoQt/helper/formats.hpp"
 #include "fwVideoQt/Surface.hpp"
+
+#include "modules/ui/qt/video/formats.hpp"
 
 #include <core/exceptionmacros.hpp>
 #include <core/spyLog.hpp>

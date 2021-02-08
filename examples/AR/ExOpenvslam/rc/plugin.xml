@@ -362,7 +362,7 @@
             <!-- ************************************* Services ************************************ -->
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="::ioCalibration::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="::sight::modules::io::vision::SOpenCVReader" >
                 <inout key="data" uid="cameraSeries" />
             </service>
 
@@ -376,7 +376,7 @@
                 </out>
             </service>
 
-            <service uid="videoSliderSrv" type="::videoQt::editor::SSlider" />
+            <service uid="videoSliderSrv" type="::sight::modules::ui::qt::video::SSlider" />
 
             <service uid="openvslamInitSrvStatus" type="::sight::modules::ui::base::editor::SStatus" >
                 <form>circle</form>
@@ -439,12 +439,12 @@
                 <config sendAtStart="false" />
             </service>
 
-            <service uid="videoGrabberSrv" type="::videoOpenCV::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="Timeline" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" >
+            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" >
                 <in group="frameTL" >
                     <key uid="Timeline" />
                 </in>
@@ -460,7 +460,7 @@
                 <framerate>60</framerate>
             </service>
 
-            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>

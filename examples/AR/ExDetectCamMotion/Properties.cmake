@@ -16,17 +16,16 @@ set( REQUIREMENTS
     module_services             # fwService
 
     # UI declaration/Actions
-    module_ui_base
     module_ui_flaticon
 
     # Grabber
-    videoQt
+    module_io_video
 
     # Services
-    videoTools
+    module_sync
 
     # Generic Scene
-    )
+)
 
 moduleParam(module_ui_qt
     PARAM_LIST

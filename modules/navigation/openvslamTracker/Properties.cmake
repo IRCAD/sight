@@ -7,7 +7,7 @@ set( DEPENDENCIES
         data
         services
         ui_base
-        cvIO
+        io_opencv
         openvslamIO
 )
 set( REQUIREMENTS )

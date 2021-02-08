@@ -6,7 +6,7 @@ set( DEPENDENCIES
     geometry_data
     services
     colourImageMasking
-    cvIO
+    io_opencv
     core
 )
 set( REQUIREMENTS  )

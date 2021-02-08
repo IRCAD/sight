@@ -115,7 +115,7 @@
 
         <!-- *************************** End layouts declaration ****************************** -->
         <!-- *************************** Begin services declaration ***************** -->
-        <service uid="tracker" type="::trackerAruco::SArucoTracker" worker="tracking">
+        <service uid="tracker" type="::sight::modules::navigation::optics::SArucoTracker" worker="tracking">
             <in key="timeline" uid="${frameTL}" autoConnect="yes" />
             <in key="camera" uid="${camera}" />
             <inout group="tagTL">
@@ -127,7 +127,7 @@
             <debugMarkers>yes</debugMarkers>
         </service>
 
-        <service uid="homography" type="::registrationCV::SPoseFrom2d" worker="registration">
+        <service uid="homography" type="::sight::modules::geometry::vision::SPoseFrom2d" worker="registration">
             <in group="markerTL" autoConnect="yes">
                 <key uid="tagTL" />
             </in>

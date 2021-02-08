@@ -65,4 +65,4 @@ public:
 
 }
 
-} // namespace cvIO
+} // namespace sight::io::opencv

@@ -11,10 +11,10 @@ set( REQUIREMENTS
     module_ui_qt
     module_geometry_base
     media
-    registrationCV
-    trackerAruco
-    videoQt
-    videoTools
+    module_geometry_vision
+    module_navigation_optics
+    module_io_video
+    module_sync
     visuVTKAdaptor
     visuVTKARAdaptor
     visuVTKQt

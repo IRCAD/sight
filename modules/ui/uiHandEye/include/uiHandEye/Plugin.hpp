@@ -57,4 +57,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace trackingCalibration
+} // namespace sight::modules::navigation::calibration

@@ -30,7 +30,8 @@ namespace sight::modules::ui::qt::image
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::modules::ui::qt::image::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+    "::sight::modules::ui::qt::image::Plugin");
 
 //-----------------------------------------------------------------------------
 

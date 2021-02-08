@@ -150,4 +150,4 @@ private:
     mutable core::mt::Mutex m_mutex;
 };
 
-} // namespace videoOpenCV
+} // namespace sight::modules::io::video

@@ -25,19 +25,16 @@ set( REQUIREMENTS
     module_io_atoms
 
     # Grabber
-    videoQt
+    module_io_video
 
     # Services
-    ioCalibration
+    module_io_vision
     module_data
-    videoTools
-    trackerAruco
-    registrationCV
-    videoCalibration
-    module_geometry_base
     module_sync
-
-    # Generic Scene
+    module_navigation_optics
+    module_geometry_vision
+    module_geometry_vision
+    module_geometry_base
 )
 
 moduleParam(module_ui_qt

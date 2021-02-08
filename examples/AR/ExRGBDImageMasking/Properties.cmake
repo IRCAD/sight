@@ -24,11 +24,11 @@ set( REQUIREMENTS
     module_io_vtk
 
     # Grabber
-    videoQt
+    module_io_video
     videoRealSense
 
     # Services
-    videoTools
+    module_sync
     module_data
     module_geometry_base
     depthSegmentation

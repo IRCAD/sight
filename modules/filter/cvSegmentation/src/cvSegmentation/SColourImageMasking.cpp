@@ -25,14 +25,14 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <cvIO/FrameTL.hpp>
-#include <cvIO/Image.hpp>
-
 #include <data/FrameTL.hpp>
 
 #include <services/macros.hpp>
 
 #include <boost/tokenizer.hpp>
+
+#include <io/opencv/FrameTL.hpp>
+#include <io/opencv/Image.hpp>
 
 namespace cvSegmentation
 {
@@ -211,20 +211,20 @@ void SColourImageMasking::updating()
         m_lastVideoTimestamp = videoTimestamp;
 
         // convert the ::fw::Data::Image mask to an OpenCV image
-        ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask.get_shared());
+        ::cv::Mat maskCV = io::opencv::Image::copyToCv(mask.get_shared());
 
         ::cv::cvtColor(maskCV, maskCV, cv::COLOR_BGR2GRAY);
 
         maskCV = (maskCV > 0);
 
         //convert the data::FrameTL videoTL to an OpenCV image
-        const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+        const ::cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
         // Create image mask to put inside the timeline
         SPTR(data::FrameTL::BufferType) maskBuffer = videoMaskTL->createBuffer(currentTimestamp);
         std::uint8_t* frameBuffOutMask = maskBuffer->addElement(0);
 
-        ::cv::Mat videoMaskCV = ::cvIO::FrameTL::moveToCv(videoMaskTL.get_shared(), frameBuffOutMask);
+        ::cv::Mat videoMaskCV = io::opencv::FrameTL::moveToCv(videoMaskTL.get_shared(), frameBuffOutMask);
 
         // Get the foreground mask
         ::cv::Mat foregroundMask = m_masker->makeMask(videoCV, m_maskDownsize, maskCV);
@@ -258,10 +258,10 @@ void SColourImageMasking::setBackground()
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert the data::FrameTL videoTL to an OpenCV image
-    const ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+    const ::cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // convert the data::Image mask to an OpenCV image
-    ::cv::Mat maskCV = ::cvIO::Image::copyToCv(mask.get_shared());
+    ::cv::Mat maskCV = io::opencv::Image::copyToCv(mask.get_shared());
 
     // Convert color mask to grayscale value
     ::cv::cvtColor(maskCV, maskCV, cv::COLOR_RGB2GRAY);
@@ -308,7 +308,7 @@ void SColourImageMasking::setForeground()
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
     //convert mask to an OpenCV image:
-    ::cv::Mat videoCV = ::cvIO::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
+    ::cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // Convert RGB to HSV
     ::cv::Mat videoBGR, videoHSV;

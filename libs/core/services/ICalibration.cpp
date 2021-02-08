@@ -39,4 +39,4 @@ ICalibration::~ICalibration() noexcept
 
 // ----------------------------------------------------------------------------
 
-} // namespace videoCalibration
+} // namespace sight::modules::geometry::vision

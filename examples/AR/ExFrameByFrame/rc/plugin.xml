@@ -106,12 +106,12 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="videoGrabberSrv" type="::videoOpenCV::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
                 <oneShot>true</oneShot>
@@ -119,7 +119,7 @@
                 <createTimestamp>true</createTimestamp>
             </service>
 
-            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL" />
                 </in>

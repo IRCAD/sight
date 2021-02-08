@@ -57,7 +57,7 @@ namespace sight::modules::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="matrixToolsSynchronizer" type="::modules::sync::SMatrixTLSynchronizer">
+     <service uid="matrixToolsSynchronizer" type="::sight::modules::sync::SMatrixTLSynchronizer">
          <in key="matrixTL" uid="matrixToolsTL" autoConnect="yes" />
          <inout group="matrices">
              <key uid="markerEndoMX" />

@@ -330,8 +330,8 @@ private:
     /**
      * @brief selectDevice is a private function called on start of the service, it will detect if realsense cameras
      * are plugged in, and show a dialog to user if several realsense cameras are detected.
-     * @note This function may erase previous choice made in videoQt::SCamera.
-     * @todo This function should be merged in videoQt::SCamera, or in a more generic "camera selector".
+     * @note This function may erase previous choice made in modules::io::qt::SCamera.
+     * @todo This function should be merged in modules::io::qt::SCamera, or in a more generic "camera selector".
      * @return a string containing the serial number of selected camera.
      */
     std::string selectDevice();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018 IRCAD France
+ * Copyright (C) 2021 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include <calibration3d/helper.hpp>
-
 #include <boost/program_options.hpp>
+
+#include <geometry/vision/helper.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
@@ -83,7 +83,7 @@ int main(int argc, char** argv)
         ::cv::Mat boardImg;
 
         ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
-            ::calibration3d::helper::generateArucoDictionary(squareX, squareY, markerBits);
+            geometry::vision::helper::generateArucoDictionary(squareX, squareY, markerBits);
 
         ::cv::Ptr< ::cv::aruco::CharucoBoard > board =
             ::cv::aruco::CharucoBoard::create(static_cast<int>(squareX), static_cast<int>(squareY),

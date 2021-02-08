@@ -25,12 +25,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <cvIO/Image.hpp>
-
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
 #include <services/macros.hpp>
+
+#include <io/opencv/Image.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -104,8 +104,8 @@ void SDepthImageMasking::updating()
             data::mt::ObjectReadLock lockVideoImage(videoImage);
             data::mt::ObjectReadLock lockDepthImage(depthImage);
 
-            const ::cv::Mat cvVideoImage = ::cvIO::Image::moveToCv(videoImage);
-            const ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
+            const ::cv::Mat cvVideoImage = io::opencv::Image::moveToCv(videoImage);
+            const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage);
 
             ::cv::Mat cvMaskedDepth;
             cvDepthImage.copyTo(cvMaskedDepth, m_cvMaskImage);
@@ -123,7 +123,7 @@ void SDepthImageMasking::updating()
 
             data::mt::ObjectWriteLock lockForegroundImage(foregroundImage);
 
-            ::cvIO::Image::copyFromCv(foregroundImage, cvMaskedVideo);
+            io::opencv::Image::copyFromCv(foregroundImage, cvMaskedVideo);
 
             const auto sig = foregroundImage->signal< data::Image::BufferModifiedSignalType >(
                 data::Image::s_BUFFER_MODIFIED_SIG);
@@ -146,8 +146,8 @@ void SDepthImageMasking::setBackground()
         data::mt::ObjectReadLock lockMaskImage(maskImage);
         data::mt::ObjectReadLock lockDepthImage(depthImage);
 
-        const ::cv::Mat cvDepthImage = ::cvIO::Image::moveToCv(depthImage);
-        m_cvMaskImage = ::cvIO::Image::moveToCv(maskImage);
+        const ::cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage);
+        m_cvMaskImage = io::opencv::Image::moveToCv(maskImage);
         if(m_cvMaskImage.channels() == 4)
         {
             ::cv::cvtColor(m_cvMaskImage, m_cvMaskImage, cv::COLOR_BGRA2GRAY);

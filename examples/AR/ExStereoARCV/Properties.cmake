@@ -20,17 +20,17 @@ set( REQUIREMENTS
     module_ui_flaticon
 
     # Reader
-    ioCalibration
+    module_io_vision
 
     # Grabber
-    videoQt
+    module_io_video
 
     # Services
-    videoTools
-    videoCalibration
+    module_sync
+    module_geometry_vision
     module_geometry_base
-    registrationCV
-    trackerAruco
+    module_geometry_vision
+    module_navigation_optics
     ioTimeline
     module_data
 

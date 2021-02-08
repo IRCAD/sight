@@ -324,7 +324,7 @@
             </service>
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="::ioCalibration::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="::sight::modules::io::vision::SOpenCVReader" >
                 <inout key="data" uid="cameraSeries" />
             </service>
 
@@ -401,26 +401,26 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelSrv" type="::sight::modules::ui::base::editor::STextStatus" >
+            <service uid="errorLabelSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
                 <label>Reprojection error (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="::videoQt::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
             <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
-            <service uid="frameUpdaterSrv" type="::videoTools::SFrameMatrixSynchronizer" >
+            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" >
                 <in group="frameTL" >
                     <key uid="frameTL" autoConnect="yes" />
                 </in>
@@ -432,7 +432,7 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="trackerSrv" type="::trackerAruco::SArucoTracker" worker="tracking" >
+            <service uid="trackerSrv" type="::sight::modules::navigation::optics::SArucoTracker" worker="tracking" >
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="sourceFrame" autoConnect="yes" />
                 <inout group="markerMap" >
@@ -446,7 +446,7 @@
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registrationSrv" type="::registrationCV::SPoseFrom2d" worker="tracking" >
+            <service uid="registrationSrv" type="::sight::modules::geometry::vision::SPoseFrom2d" worker="tracking" >
                 <in group="markerMap" autoConnect="yes" >
                     <key uid="markerMap" />
                 </in>
@@ -460,7 +460,7 @@
             </service>
 
             <!-- Computes the reprojection error -->
-            <service uid="errorSrv" type="::videoCalibration::SReprojectionError" worker="error" >
+            <service uid="errorSrv" type="::sight::modules::geometry::vision::SReprojectionError" worker="error" >
                 <in group="matrix" autoConnect="yes" >
                     <key uid="markerToCamera" id="104" />
                 </in>
@@ -478,13 +478,13 @@
                 <inout key="output" uid="cameraToMarker" />
             </service>
 
-            <service uid="undistorterSrv" type="::videoCalibration::SDistortion" >
+            <service uid="undistorterSrv" type="::sight::modules::geometry::vision::SDistortion" >
                 <in key="camera" uid="camera" autoConnect="yes" />
                 <inout key="map" uid="undistortMap" />
                 <mode>undistort</mode>
             </service>
 
-            <service uid="distorterSrv" type="::videoCalibration::SDistortion" >
+            <service uid="distorterSrv" type="::sight::modules::geometry::vision::SDistortion" >
                 <in key="camera" uid="camera" autoConnect="yes" />
                 <inout key="map" uid="distortMap" />
                 <mode>distort</mode>

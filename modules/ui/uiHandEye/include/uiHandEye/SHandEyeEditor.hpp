@@ -42,7 +42,7 @@ namespace uiHandEye
  * @brief   SHandEyeEditor service is used to handle the calibration points acquisition.
  * This service takes two matrixTL as inputs, and fills the two vector of matrix when the 'addSlot' is called.
  *
- * @see ::trackingCalibration::SHandEyeCalibration
+ * @see modules::navigation::calibration::SHandEyeCalibration
  *
  * @deprecated This service is not supported anymore, it will be removed in sight 21.0.
  *

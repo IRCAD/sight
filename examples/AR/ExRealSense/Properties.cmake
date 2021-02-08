@@ -21,11 +21,11 @@ set( REQUIREMENTS
     module_ui_flaticon
 
     # Grabber
-    videoQt
+    module_io_video
     videoRealSense
 
     # Services
-    videoTools
+    module_sync
     module_data
 
     # Generic Scene

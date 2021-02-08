@@ -29,7 +29,7 @@
 namespace sight::modules::ui::qt::viz
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::modules::ui::qt::viz::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::ui::qt::viz::Plugin");
 
 Plugin::~Plugin() noexcept
 {

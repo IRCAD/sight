@@ -22,7 +22,7 @@ set( REQUIREMENTS
 
     # Reader
     module_io_atoms
-    ioCalibration
+    module_io_vision
     ioActivity
     videoRealSense
 
