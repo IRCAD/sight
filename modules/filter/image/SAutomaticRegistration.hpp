@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "opItkRegistration/config.hpp"
-
-#include <itkRegistrationOp/AutomaticRegistration.hpp>
-#include <itkRegistrationOp/Metric.hpp>
+#include "modules/filter/image/config.hpp"
 
 #include <services/IOperator.hpp>
 
-namespace opItkRegistration
+#include <filter/image/AutomaticRegistration.hpp>
+#include <filter/image/Metric.hpp>
+
+namespace sight::modules::filter::image
 {
 
 /**
@@ -74,31 +74,31 @@ namespace opItkRegistration
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public services::IOperator
 {
 public:
 
     fwCoreServiceMacro(SAutomaticRegistration, services::IOperator)
 
     /// Constructor, does nothing.
-    OPITKREGISTRATION_API SAutomaticRegistration();
+    MODULE_FILTER_IMAGE_API SAutomaticRegistration();
 
     /// Destructor, does nothing.
-    OPITKREGISTRATION_API ~SAutomaticRegistration();
+    MODULE_FILTER_IMAGE_API ~SAutomaticRegistration();
 
 protected:
 
     /// Configure registration parameters.
-    OPITKREGISTRATION_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API virtual void configuring() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API virtual void starting() override;
 
     /// Do the registration.
-    OPITKREGISTRATION_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API virtual void updating() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API virtual void stopping() override;
 
     /**
      * @brief Auto connections
@@ -106,7 +106,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -136,13 +136,13 @@ private:
     bool m_log = { false };
 
     /// Metric used by the optimizer.
-    ::itkRegistrationOp::MetricType m_metric;
+    sight::filter::image::MetricType m_metric;
 
     /// Shrink factors per level and smoothing sigmas per level.
-    ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType m_multiResolutionParameters;
+    sight::filter::image::AutomaticRegistration::MultiResolutionParametersType m_multiResolutionParameters;
 
     /// Percentage of samples used for registration.
-    ::itkRegistrationOp::AutomaticRegistration::RealType m_samplingPercentage;
+    sight::filter::image::AutomaticRegistration::RealType m_samplingPercentage;
 };
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

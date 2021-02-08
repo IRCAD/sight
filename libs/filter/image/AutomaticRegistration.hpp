@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "itkRegistrationOp/config.hpp"
-#include "itkRegistrationOp/Metric.hpp"
+#include "filter/image/config.hpp"
+#include "filter/image/Metric.hpp"
 
 #include <data/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
@@ -35,13 +35,13 @@
 
 #include <functional>
 
-namespace itkRegistrationOp
+namespace sight::filter::image
 {
 
 /**
  * @brief Static class for automatic image registration. Uses the newer ITKv4 registration framework.
  */
-class ITKREGISTRATIONOP_CLASS_API AutomaticRegistration
+class FILTER_IMAGE_CLASS_API AutomaticRegistration
 {
 public:
     /// Numeric type used for internal computations.
@@ -67,41 +67,41 @@ public:
      * @param[in] _minStep minimum step for used by optimizer for each iteration.
      * @param[in] _maxIterations the maximum number of iterations
      */
-    ITKREGISTRATIONOP_API void registerImage(const data::Image::csptr& _target,
-                                             const data::Image::csptr& _reference,
-                                             const data::TransformationMatrix3D::sptr& _trf,
-                                             MetricType _metric,
-                                             const MultiResolutionParametersType& _multiResolutionParameters,
-                                             RealType _samplingPercentage    = 1.0,
-                                             double _minStep                 = 0.0001,
-                                             unsigned long _maxIterations    = 200,
-                                             IterationCallbackType _callback = nullptr);
+    FILTER_IMAGE_API void registerImage(const data::Image::csptr& _target,
+                                        const data::Image::csptr& _reference,
+                                        const data::TransformationMatrix3D::sptr& _trf,
+                                        MetricType _metric,
+                                        const MultiResolutionParametersType& _multiResolutionParameters,
+                                        RealType _samplingPercentage    = 1.0,
+                                        double _minStep                 = 0.0001,
+                                        unsigned long _maxIterations    = 200,
+                                        IterationCallbackType _callback = nullptr);
 
-    ITKREGISTRATIONOP_API void stopRegistration();
+    FILTER_IMAGE_API void stopRegistration();
 
     /// Current metric evaluated by the optimizer.
-    ITKREGISTRATIONOP_API RealType getCurrentMetricValue() const;
+    FILTER_IMAGE_API RealType getCurrentMetricValue() const;
 
     /// Current set of parameters used to evaluate the metric in the optimizer.
-    ITKREGISTRATIONOP_API const OptimizerType::ParametersType& getCurrentParameters() const;
+    FILTER_IMAGE_API const OptimizerType::ParametersType& getCurrentParameters() const;
 
     /// Gradient descent relaxation factor.
-    ITKREGISTRATIONOP_API RealType getRelaxationFactor() const;
+    FILTER_IMAGE_API RealType getRelaxationFactor() const;
 
     /// Gradient descent learning rate.
-    ITKREGISTRATIONOP_API RealType getLearningRate() const;
+    FILTER_IMAGE_API RealType getLearningRate() const;
 
     /// Gradient magnitude tolerance.
-    ITKREGISTRATIONOP_API RealType getGradientMagnitudeTolerance() const;
+    FILTER_IMAGE_API RealType getGradientMagnitudeTolerance() const;
 
     /// Current optimizer iteration.
-    ITKREGISTRATIONOP_API ::itk::SizeValueType getCurrentIteration() const;
+    FILTER_IMAGE_API ::itk::SizeValueType getCurrentIteration() const;
 
     /// Current multi-resolution level.
-    ITKREGISTRATIONOP_API ::itk::SizeValueType getCurrentLevel() const;
+    FILTER_IMAGE_API ::itk::SizeValueType getCurrentLevel() const;
 
     /// Current registration result.
-    ITKREGISTRATIONOP_API void getCurrentMatrix(const data::TransformationMatrix3D::sptr& _trf) const;
+    FILTER_IMAGE_API void getCurrentMatrix(const data::TransformationMatrix3D::sptr& _trf) const;
 
 private:
     typedef typename ::itk::Euler3DTransform< RealType > TransformType;

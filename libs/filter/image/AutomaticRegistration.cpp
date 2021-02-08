@@ -20,9 +20,9 @@
  *
  ***********************************************************************/
 
-#include "itkRegistrationOp/AutomaticRegistration.hpp"
+#include "AutomaticRegistration.hpp"
 
-#include "itkRegistrationOp/ItkImageCaster.hpp"
+#include "filter/image/ItkImageCaster.hpp"
 
 #include <io/itk/helper/Transform.hpp>
 #include <io/itk/itk.hpp>
@@ -39,7 +39,7 @@
 
 #include <numeric>
 
-namespace itkRegistrationOp
+namespace sight::filter::image
 {
 
 typedef typename ::itk::Image< float, 3 > RegisteredImageType;
@@ -333,7 +333,7 @@ itk::SizeValueType AutomaticRegistration::getCurrentIteration() const
 
 //------------------------------------------------------------------------------
 
-itk::SizeValueType itkRegistrationOp::AutomaticRegistration::getCurrentLevel() const
+itk::SizeValueType filter::image::AutomaticRegistration::getCurrentLevel() const
 {
     SLM_ASSERT("No registration process running.", m_registrator);
     return m_registrator->GetCurrentLevel();

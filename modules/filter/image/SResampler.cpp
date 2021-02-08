@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "opItkRegistration/SResampler.hpp"
+#include "SResampler.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -28,14 +28,15 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <itkRegistrationOp/Resampler.hpp>
-
 #include <services/macros.hpp>
 
-namespace opItkRegistration
+#include <filter/image/Resampler.hpp>
+
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SResampler, ::sight::data::Image)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SResampler,
+                         ::sight::data::Image)
 
 static const services::IService::KeyType s_IMAGE_IN = "imageIn";
 static const services::IService::KeyType s_IMAGE_INOUT = "imageOut";
@@ -94,7 +95,7 @@ void SResampler::updating()
     SLM_ASSERT("No 'imageOut' found !", outImg);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::Resampler::resample(inImg, outImg, transform, target);
+    sight::filter::image::Resampler::resample(inImg, outImg, transform, target);
 
     m_sigComputed->asyncEmit();
 
@@ -129,4 +130,4 @@ services::IService::KeyConnectionsMap SResampler::getAutoConnections() const
     return connections;
 }
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

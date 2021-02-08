@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace opItkRegistration contains services for ITK image registration.
+ * @brief       The namespace sight::modules::filter::image contains services for ITK image registration.
  */
 #pragma once
 
-namespace opItkRegistration
+namespace sight::modules::filter::image
 {
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

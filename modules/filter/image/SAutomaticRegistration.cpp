@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "opItkRegistration/SAutomaticRegistration.hpp"
+#include "SAutomaticRegistration.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -28,9 +28,9 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <itkRegistrationOp/AutomaticRegistration.hpp>
-
 #include <services/macros.hpp>
+
+#include <filter/image/AutomaticRegistration.hpp>
 
 #include <ui/base/dialog/ProgressDialog.hpp>
 
@@ -38,10 +38,10 @@
 #include <fstream>
 #include <iomanip>
 
-namespace opItkRegistration
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SAutomaticRegistration,
+fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SAutomaticRegistration,
                          ::sight::data::Image)
 
 static const services::IService::KeyType s_TARGET_IN = "target";
@@ -124,6 +124,8 @@ void SAutomaticRegistration::starting()
 
 void SAutomaticRegistration::updating()
 {
+    using sight::filter::image::AutomaticRegistration;
+
     data::Image::csptr target    = this->getInput< data::Image >(s_TARGET_IN);
     data::Image::csptr reference = this->getInput< data::Image >(s_REFERENCE_IN);
 
@@ -140,10 +142,10 @@ void SAutomaticRegistration::updating()
     SLM_ASSERT("No 'transform' found !", transform);
 
     // Create a copy of m_multiResolutionParameters without empty values
-    ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType
+    AutomaticRegistration::MultiResolutionParametersType
         multiResolutionParameters(m_multiResolutionParameters.size());
 
-    typedef ::itkRegistrationOp::AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
+    typedef AutomaticRegistration::MultiResolutionParametersType::value_type ParamPairType;
 
     auto lastElt = std::remove_copy_if(m_multiResolutionParameters.begin(),
                                        m_multiResolutionParameters.end(),
@@ -152,7 +154,7 @@ void SAutomaticRegistration::updating()
 
     multiResolutionParameters.erase(lastElt, multiResolutionParameters.end());
 
-    ::itkRegistrationOp::AutomaticRegistration registrator;
+    AutomaticRegistration registrator;
 
     sight::ui::base::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
 
@@ -194,7 +196,7 @@ void SAutomaticRegistration::updating()
     std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
     size_t i = 0;
 
-    ::itkRegistrationOp::AutomaticRegistration::IterationCallbackType iterationCallback =
+    AutomaticRegistration::IterationCallbackType iterationCallback =
         [&]()
         {
             const ::itk::SizeValueType currentIteration = registrator.getCurrentIteration();
@@ -363,15 +365,15 @@ void SAutomaticRegistration::setMetric(const std::string& metricName)
 {
     if(metricName == "MeanSquares")
     {
-        m_metric = ::itkRegistrationOp::MEAN_SQUARES;
+        m_metric = sight::filter::image::MEAN_SQUARES;
     }
     else if(metricName == "NormalizedCorrelation")
     {
-        m_metric = ::itkRegistrationOp::NORMALIZED_CORRELATION;
+        m_metric = sight::filter::image::NORMALIZED_CORRELATION;
     }
     else if(metricName == "MutualInformation")
     {
-        m_metric = ::itkRegistrationOp::MUTUAL_INFORMATION;
+        m_metric = sight::filter::image::MUTUAL_INFORMATION;
     }
     else
     {
@@ -381,4 +383,4 @@ void SAutomaticRegistration::setMetric(const std::string& metricName)
 
 //------------------------------------------------------------------------------
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

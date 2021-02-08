@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "opItkRegistration/SMIPMatchingRegistration.hpp"
+#include "SMIPMatchingRegistration.hpp"
 
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
@@ -31,21 +31,21 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <itkRegistrationOp/MIPMatchingRegistration.hpp>
-#include <itkRegistrationOp/Resampler.hpp>
-
 #include <services/macros.hpp>
+
+#include <filter/image/MIPMatchingRegistration.hpp>
+#include <filter/image/Resampler.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <functional>
 #include <numeric>
 
-namespace opItkRegistration
+namespace sight::modules::filter::image
 {
 
 fwServicesRegisterMacro( ::sight::services::IRegisterer,
-                         ::opItkRegistration::SMIPMatchingRegistration)
+                         modules::filter::image::SMIPMatchingRegistration)
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
     services::IRegisterer()
@@ -87,7 +87,7 @@ void SMIPMatchingRegistration::updating()
     SLM_ASSERT("Missing required input 'moving'", moving);
     SLM_ASSERT("Missing required inout 'transform'", transform);
 
-    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    sight::filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = transform;
@@ -97,7 +97,7 @@ void SMIPMatchingRegistration::updating()
         data::mt::ObjectReadLock fixedLock(fixed);
         data::mt::ObjectWriteLock transformLock(transform);
         core::tools::Type type = moving->getType();
-        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, ::itkRegistrationOp::RegistrationDispatch >
+        core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch >
         ::invoke( type, params );
     }
 
@@ -113,4 +113,4 @@ void SMIPMatchingRegistration::computeRegistration(core::HiResClock::HiResClockT
     this->updating();
 }
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

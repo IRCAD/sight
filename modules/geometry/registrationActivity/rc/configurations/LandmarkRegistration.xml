@@ -159,7 +159,7 @@
             <inout key="output" uid="${transformUid}" />
         </service>
 
-        <service uid="resampler" type="::opItkRegistration::SResampler">
+        <service uid="resampler" type="::sight::modules::filter::image::SResampler">
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
             <in key="target" uid="${targetImageUid}" />

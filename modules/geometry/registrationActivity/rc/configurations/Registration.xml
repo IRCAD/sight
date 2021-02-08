@@ -390,7 +390,7 @@
             </config>
         </service>
 
-        <service uid="automaticRegistration" type="::opItkRegistration::SAutomaticRegistration" worker="REGISTRATION_WORKER">
+        <service uid="automaticRegistration" type="::sight::modules::filter::image::SAutomaticRegistration" worker="REGISTRATION_WORKER">
             <in key="target" uid="${targetImageUid}" />
             <in key="reference" uid="${referenceImageUid}" />
             <inout key="transform" uid="${transformUid}" />
@@ -401,18 +401,18 @@
             <log>true</log>
         </service>
 
-        <service uid="fastRegistration" type="::opItkRegistration::SMIPMatchingRegistration" worker="fastRegistrationWorker">
+        <service uid="fastRegistration" type="::sight::modules::filter::image::SMIPMatchingRegistration" worker="fastRegistrationWorker">
             <in key="moving" uid="${referenceImageUid}"/>
             <in key="fixed" uid="${targetImageUid}"/>
             <inout key="transform" uid="${transformUid}"/>
         </service>
 
-        <service uid="computeCenterTarget" type="::opItkRegistration::SImageCenter" >
+        <service uid="computeCenterTarget" type="::sight::modules::filter::image::SImageCenter" >
             <in key="image" uid="${targetImageUid}" />
             <inout key="transform" uid="centerTransformTarget" />
         </service>
 
-        <service uid="computeCenterReference" type="::opItkRegistration::SImageCenter" >
+        <service uid="computeCenterReference" type="::sight::modules::filter::image::SImageCenter" >
             <in key="image" uid="${referenceImageUid}" />
             <inout key="transform" uid="centerTransformReference" />
         </service>

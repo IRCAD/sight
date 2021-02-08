@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "opItkRegistration/config.hpp"
+#include "modules/filter/image/config.hpp"
 
 #include <services/IRegisterer.hpp>
 
-namespace opItkRegistration
+namespace sight::modules::filter::image
 {
 /**
  * @brief This service uses a fast registration algorithm to quickly register two images together if the transform
@@ -40,7 +40,7 @@ namespace opItkRegistration
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::opItkRegistration::SFastRegistration">
+   <service uid="..." type="::modules::filter::image::SFastRegistration">
        <in key="source" uid="..." />
        <in key="target" uid="..." />
        <in key="transform" uid="..." />
@@ -58,7 +58,7 @@ namespace opItkRegistration
  * - \b transform [data::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
-class OPITKREGISTRATION_CLASS_API SMIPMatchingRegistration : public services::IRegisterer
+class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public services::IRegisterer
 {
 public:
     fwCoreServiceMacro(SMIPMatchingRegistration, services::IRegisterer)
@@ -66,11 +66,11 @@ public:
     /**
      * @brief Constructor
      */
-    OPITKREGISTRATION_API SMIPMatchingRegistration() noexcept;
+    MODULE_FILTER_IMAGE_API SMIPMatchingRegistration() noexcept;
     /**
      * @brief Destructor
      */
-    OPITKREGISTRATION_API virtual ~SMIPMatchingRegistration() noexcept;
+    MODULE_FILTER_IMAGE_API virtual ~SMIPMatchingRegistration() noexcept;
 
 protected:
     /**
@@ -78,35 +78,35 @@ protected:
      *
      * @throw core::tools::Failed
      */
-    OPITKREGISTRATION_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API virtual void starting() override;
 
     /**
      * @brief Stops the service.
      *
      * @throw core::tools::Failed
      */
-    OPITKREGISTRATION_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API virtual void stopping() override;
 
     /**
      * @brief Configures the service.
      *
      * @throw core::tools::Failed
      */
-    OPITKREGISTRATION_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API virtual void configuring() override;
 
     /**
      * @brief Compute the registration.
      *
      * @throw core::tools::Failed
      */
-    OPITKREGISTRATION_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API virtual void updating() override;
 
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    OPITKREGISTRATION_API virtual void computeRegistration (core::HiResClock::HiResClockType timestamp) override;
+    MODULE_FILTER_IMAGE_API virtual void computeRegistration (core::HiResClock::HiResClockType timestamp) override;
 
 private:
 };
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

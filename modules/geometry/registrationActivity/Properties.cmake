@@ -20,7 +20,7 @@ set( REQUIREMENTS
     module_geometry_base
     visuVTKQt
     qtSceneConfig
-    opItkRegistration
+    module_filter_image
     opVTKSlicer
 )
 

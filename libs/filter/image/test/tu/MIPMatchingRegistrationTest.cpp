@@ -24,10 +24,6 @@
 
 #include "helper.hpp"
 
-#include <itkRegistrationOp/Metric.hpp>
-#include <itkRegistrationOp/MIPMatchingRegistration.hpp>
-#include <itkRegistrationOp/Resampler.hpp>
-
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
@@ -42,15 +38,19 @@
 
 #include <utestData/generator/Image.hpp>
 
+#include <filter/image/Metric.hpp>
+#include <filter/image/MIPMatchingRegistration.hpp>
+#include <filter/image/Resampler.hpp>
+
 #include <io/itk/itk.hpp>
 
 #include <itkImage.h>
 #include <itkRegionOfInterestImageFilter.h>
 #include <itkResampleImageFilter.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::itkRegistrationOp::ut::MIPMatchingRegistrationTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(filter::image::ut::MIPMatchingRegistrationTest);
 
-namespace itkRegistrationOp
+namespace sight::filter::image
 {
 namespace ut
 {
@@ -77,7 +77,7 @@ void MIPMatchingRegistrationTest::identityTest()
     data::Image::csptr fixed               = data::Object::copy(moving);
     data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
 
-    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = data::TransformationMatrix3D::New();
@@ -105,7 +105,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     itkReg::Resampler::resample(moving, fixed, transform);
 
     std::array<double, 3> expected {{ 4., 12., 7. }};
-    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = data::TransformationMatrix3D::New();
@@ -167,7 +167,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     auto resampled         = resample->GetOutput();
     auto resampledF4sFixed = io::itk::dataImageFactory<ImageType>(resampled, true);
 
-    ::itkRegistrationOp::RegistrationDispatch::Parameters params;
+    filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;
     params.moving    = moving;
     params.transform = data::TransformationMatrix3D::New();

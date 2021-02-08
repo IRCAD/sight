@@ -22,17 +22,17 @@
 
 #include "ResamplerTest.hpp"
 
-#include <itkRegistrationOp/Resampler.hpp>
-
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <utestData/generator/Image.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(::itkRegistrationOp::ut::ResamplerTest);
+#include <filter/image/Resampler.hpp>
 
-namespace itkRegistrationOp
+CPPUNIT_TEST_SUITE_REGISTRATION(filter::image::ut::ResamplerTest);
+
+namespace sight::filter::image
 {
 namespace ut
 {
@@ -72,7 +72,7 @@ void ResamplerTest::identityTest()
     // Identity.
     data::TransformationMatrix3D::sptr idMat = data::TransformationMatrix3D::New();
 
-    ::itkRegistrationOp::Resampler::resample(
+    filter::image::Resampler::resample(
         data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(idMat), imageIn);
 
     CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
@@ -135,7 +135,7 @@ void ResamplerTest::translateTest()
     data::TransformationMatrix3D::sptr transMat = data::TransformationMatrix3D::New();
     transMat->setCoefficient(0, 3, 5);
 
-    ::itkRegistrationOp::Resampler::resample(
+    filter::image::Resampler::resample(
         data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(transMat));
 
     const auto dumpLock = imageOut->lock();
@@ -204,7 +204,7 @@ void ResamplerTest::rotateTest()
     // 32 mm translation along the X axis.
     rotMat->setCoefficient(0, 3, SIZE[0] / 2.);
 
-    ::itkRegistrationOp::Resampler::resample(
+    filter::image::Resampler::resample(
         data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(rotMat));
 
     const auto outDumpLock = imageOut->lock();

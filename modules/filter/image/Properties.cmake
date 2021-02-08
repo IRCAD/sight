@@ -6,6 +6,7 @@ set( DEPENDENCIES
     data
     services
     filter_image
+    ui_base
     ui_history
 )
 set( REQUIREMENTS )

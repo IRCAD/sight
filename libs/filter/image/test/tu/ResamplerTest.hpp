@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,27 +22,30 @@
 
 #pragma once
 
-#include "opItkRegistration/config.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <core/runtime/Plugin.hpp>
-
-namespace opItkRegistration
+namespace sight::filter::image
+{
+namespace ut
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-struct OPITKREGISTRATION_CLASS_API Plugin : public core::runtime::Plugin
+class ResamplerTest : public CPPUNIT_NS::TestFixture
 {
-    /// Destructor. Do nothing.
-    OPITKREGISTRATION_API ~Plugin() noexcept;
+CPPUNIT_TEST_SUITE( ResamplerTest );
+CPPUNIT_TEST( identityTest );
+CPPUNIT_TEST( translateTest );
+//CPPUNIT_TEST( rotateTest );//fail
+CPPUNIT_TEST_SUITE_END();
 
-    /// Overrides start method. Object declarations.
-    OPITKREGISTRATION_API void start();
+public:
+    void setUp();
+    void tearDown();
 
-    /// Overrides stop method. Do nothing
-    OPITKREGISTRATION_API void stop() noexcept;
+    void identityTest();
+    void translateTest();
+    void rotateTest();
 
 };
 
-} // namespace opItkRegistration
+} //namespace ut
+} //namespace sight::filter::image

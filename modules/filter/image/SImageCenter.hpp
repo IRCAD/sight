@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "opItkRegistration/config.hpp"
+#include "modules/filter/image/config.hpp"
 
 #include <services/IOperator.hpp>
 
-namespace opItkRegistration
+namespace sight::modules::filter::image
 {
 
 /**
@@ -37,7 +37,7 @@ namespace opItkRegistration
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::opItkRegistration::SImageCenter">
+   <service type="::modules::filter::image::SImageCenter">
        <in key="image" uid="..." />
        <inout key="transform" uid="..." />
    </service>
@@ -51,31 +51,31 @@ namespace opItkRegistration
  * from world origin(0,0,0) to the image center (in mm).
  *
  */
-class OPITKREGISTRATION_CLASS_API SImageCenter : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public services::IOperator
 {
 public:
 
     fwCoreServiceMacro(SImageCenter, services::IOperator)
 
     /// Constructor, does nothing.
-    OPITKREGISTRATION_API SImageCenter();
+    MODULE_FILTER_IMAGE_API SImageCenter();
 
     /// Destructor, does nothing.
-    OPITKREGISTRATION_API ~SImageCenter();
+    MODULE_FILTER_IMAGE_API ~SImageCenter();
 
 protected:
 
     /// Configure registration parameters.
-    OPITKREGISTRATION_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API virtual void configuring() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API virtual void starting() override;
 
     /// Do the registration.
-    OPITKREGISTRATION_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API virtual void updating() override;
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API virtual void stopping() override;
 
     /**
      * @brief Auto connections
@@ -83,8 +83,8 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 };
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image

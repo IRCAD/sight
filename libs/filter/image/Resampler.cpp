@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "itkRegistrationOp/Resampler.hpp"
+#include "Resampler.hpp"
 
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
@@ -35,7 +35,7 @@
 #include <itkMinimumMaximumImageCalculator.h>
 #include <itkResampleImageFilter.h>
 
-namespace itkRegistrationOp
+namespace sight::filter::image
 {
 
 struct Resampling
@@ -223,4 +223,4 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
 
 //-----------------------------------------------------------------------------
 
-}// namespace itkRegistrationOp
+}// namespace sight::filter::image

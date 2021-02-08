@@ -22,14 +22,15 @@
 
 #pragma once
 
-#include "itkRegistrationOp/config.hpp"
-#include "itkRegistrationOp/ItkImageCaster.hpp"
-#include "itkRegistrationOp/Metric.hpp"
-#include "itkRegistrationOp/Resampler.hpp"
+#include "filter/image/config.hpp"
+#include "filter/image/ItkImageCaster.hpp"
+#include "filter/image/Metric.hpp"
+#include "filter/image/Resampler.hpp"
 
 #include <data/Image.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
+
+#include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -43,7 +44,7 @@
 
 #include <numeric>
 
-namespace itkRegistrationOp
+namespace sight::filter::image
 {
 
 template <class PIX>
@@ -65,8 +66,8 @@ struct RegistrationDispatch {
     template<typename PIXELTYPE>
     void operator()(Parameters& params)
     {
-        ::itkRegistrationOp::MIPMatchingRegistration<PIXELTYPE>::registerImage(params.moving, params.fixed,
-                                                                               params.transform);
+        filter::image::MIPMatchingRegistration<PIXELTYPE>::registerImage(params.moving, params.fixed,
+                                                                         params.transform);
     }
 };
 
@@ -141,13 +142,13 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
     if(fixedVoxelVolume < movingVoxelVolume)
     {
         auto inverseTransform = data::TransformationMatrix3D::New();
-        data::tools::TransformationMatrix3D::invert(_transform, inverseTransform);
+        geometry::data::invert(_transform, inverseTransform);
 
-        fixed = ::itkRegistrationOp::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
+        fixed = filter::image::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
     }
     else
     {
-        moving = ::itkRegistrationOp::Resampler::resample(_moving, _transform, _fixed->getSpacing2());
+        moving = filter::image::Resampler::resample(_moving, _transform, _fixed->getSpacing2());
     }
 
     const Image3DPtrType itkMoving = castTo<PIX>(moving);
@@ -169,7 +170,7 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
         translation->setCoefficient(i, 3, res[i]);
     }
 
-    data::tools::TransformationMatrix3D::multiply(translation, _transform, _transform);
+    geometry::data::multiply(translation, _transform, _transform);
 }
 
 //------------------------------------------------------------------------------

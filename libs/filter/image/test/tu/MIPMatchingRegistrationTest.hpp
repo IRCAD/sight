@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -24,17 +24,18 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace itkRegistrationOp
+namespace sight::filter::image
 {
 namespace ut
 {
 
-class ResamplerTest : public CPPUNIT_NS::TestFixture
+class MIPMatchingRegistrationTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ResamplerTest );
+
+CPPUNIT_TEST_SUITE( MIPMatchingRegistrationTest );
 CPPUNIT_TEST( identityTest );
-CPPUNIT_TEST( translateTest );
-//CPPUNIT_TEST( rotateTest );//fail
+CPPUNIT_TEST( translateTransformTest );
+CPPUNIT_TEST( translateTransformWithScalesTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,10 +43,9 @@ public:
     void tearDown();
 
     void identityTest();
-    void translateTest();
-    void rotateTest();
-
+    void translateTransformTest();
+    void translateTransformWithScalesTest();
 };
 
 } //namespace ut
-} //namespace itkRegistrationOp
+} //namespace sight::filter::image

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "opItkRegistration/SImageCenter.hpp"
+#include "SImageCenter.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -31,16 +31,16 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <itkRegistrationOp/AutomaticRegistration.hpp>
-
 #include <services/macros.hpp>
+
+#include <filter/image/AutomaticRegistration.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-namespace opItkRegistration
+namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::opItkRegistration::SImageCenter)
+fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SImageCenter)
 
 static const services::IService::KeyType s_IMAGE_IN = "image";
 static const services::IService::KeyType s_TRANSFORM_INOUT = "transform";
@@ -151,4 +151,4 @@ services::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace opItkRegistration
+} // namespace sight::modules::filter::image
