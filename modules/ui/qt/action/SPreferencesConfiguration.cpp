@@ -200,7 +200,6 @@ void SPreferencesConfiguration::starting()
     {
         for(PreferenceElt& pref : m_preferences)
         {
-            pref.m_dataPreference = data::String::New(pref.m_defaultValue);
             data::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
             if ( iterPref != prefs->end() )
             {
@@ -208,6 +207,7 @@ void SPreferencesConfiguration::starting()
             }
             else
             {
+                pref.m_dataPreference          = data::String::New(pref.m_defaultValue);
                 (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
             }
         }
@@ -367,6 +367,7 @@ void SPreferencesConfiguration::updating()
             }
         }
         m_sigParametersModified->asyncEmit();
+        sight::ui::base::preferences::savePreferences();
     }
 }
 

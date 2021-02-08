@@ -226,35 +226,35 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
         prevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
     }
 
+    if(!m_hasNormal && !_pointsOnly)
+    {
+        // Verify if mesh contains Tetra, Edge or Point
+        // If not, generate normals
+        auto cellItr        = _mesh->begin< data::iterator::ConstCellIterator >();
+        const auto cellEnd  = _mesh->end< data::iterator::ConstCellIterator >();
+        bool computeNormals = true;
+
+        for(; cellItr != cellEnd; ++cellItr)
+        {
+            auto cellType = *cellItr->type;
+            if(cellType == data::Mesh::CellType::EDGE || cellType == data::Mesh::CellType::TETRA
+               || cellType == data::Mesh::CellType::POINT)
+            {
+                computeNormals = false;
+                break;
+            }
+        }
+
+        if(computeNormals)
+        {
+            geometry::data::Mesh::generatePointNormals(_mesh);
+            m_hasNormal = true;
+        }
+    }
+
     if(prevNumVertices < numVertices)
     {
         FW_PROFILE("REALLOC MESH");
-
-        if(!m_hasNormal && !_pointsOnly)
-        {
-            // Verify if mesh contains Tetra, Edge or Point
-            // If not, generate normals
-            auto cellItr        = _mesh->begin< data::iterator::ConstCellIterator >();
-            const auto cellEnd  = _mesh->end< data::iterator::ConstCellIterator >();
-            bool computeNormals = true;
-
-            for(; cellItr != cellEnd; ++cellItr)
-            {
-                auto cellType = *cellItr->type;
-                if(cellType == data::Mesh::CellType::EDGE || cellType == data::Mesh::CellType::TETRA
-                   || cellType == data::Mesh::CellType::POINT)
-                {
-                    computeNormals = false;
-                    break;
-                }
-            }
-
-            if(computeNormals)
-            {
-                geometry::data::Mesh::generatePointNormals(_mesh);
-                m_hasNormal = true;
-            }
-        }
 
         // We need to reallocate
         m_ogreMesh->sharedVertexData->vertexCount = numVertices;

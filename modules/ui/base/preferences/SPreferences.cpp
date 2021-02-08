@@ -29,14 +29,13 @@
 #include <data/Composite.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
 
-// #include <io/atoms/Reader.hpp>
-// #include <io/atoms/types.hpp>
-// #include <io/atoms/Writer.hpp>
-
-// #include <io/zip/ReadDirArchive.hpp>
-// #include <io/zip/WriteDirArchive.hpp>
-
 #include <services/macros.hpp>
+
+#include <io/atoms/Reader.hpp>
+#include <io/atoms/types.hpp>
+#include <io/atoms/Writer.hpp>
+#include <io/zip/ReadDirArchive.hpp>
+#include <io/zip/WriteDirArchive.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
@@ -88,25 +87,24 @@ void SPreferences::load()
         const std::filesystem::path folderPath = m_prefFile.parent_path();
         const std::filesystem::path filename   = m_prefFile.filename();
 
-        data::Object::sptr data = this->getInOut< data::Object >(sight::ui::base::preferences::s_PREFERENCES_KEY);
-        SLM_ASSERT("The inout key '" + sight::ui::base::preferences::s_PREFERENCES_KEY + "' is not correctly set.",
-                   data);
+        auto data = this->getLockedInOut< data::Object >(sight::ui::base::preferences::s_PREFERENCES_KEY);
 
         // Read atom
-        // io::zip::IReadArchive::sptr readArchive = io::zip::ReadDirArchive::New(folderPath.string());
-        // io::atoms::Reader reader;
-        // try
-        // {
-        //     atoms::Object::sptr atom = atoms::Object::dynamicCast( reader.read( readArchive, filename ) );
+        io::zip::IReadArchive::sptr readArchive = io::zip::ReadDirArchive::New(folderPath.string());
 
-        //     data::Object::sptr newData = atoms::conversion::convert(atom,
-        //                                                             atoms::conversion::AtomVisitor::ChangePolicy());
-        //     data->shallowCopy(newData);
-        // }
-        // catch(...)
-        // {
-        //     SLM_ERROR("Failed to load preference file '"+m_prefFile.string()+"'.");
-        // }
+        io::atoms::Reader reader;
+        try
+        {
+            auto atom = atoms::Object::dynamicCast( reader.read( readArchive, filename ) );
+
+            data::Object::sptr newData = atoms::conversion::convert(atom,
+                                                                    atoms::conversion::AtomVisitor::ChangePolicy());
+            data->shallowCopy(newData);
+        }
+        catch(...)
+        {
+            SLM_ERROR("Failed to load preference file '"+m_prefFile.string()+"'.");
+        }
     }
 }
 
@@ -117,29 +115,31 @@ void SPreferences::save()
     const std::filesystem::path folderPath = m_prefFile.parent_path();
     const std::filesystem::path filename   = m_prefFile.filename();
 
-    data::Object::sptr obj = this->getInOut< data::Object >(sight::ui::base::preferences::s_PREFERENCES_KEY);
-    SLM_ASSERT("The inout key '" + sight::ui::base::preferences::s_PREFERENCES_KEY + "' is not correctly set.", obj);
+    data::Object::sptr obj;
+    {
+        obj = this->getLockedInOut< data::Object >(sight::ui::base::preferences::s_PREFERENCES_KEY).get_shared();
+    }
 
-    // Mutex data lock
-    // data::reflection::visitor::RecursiveLock recursiveLock(obj);
+    // Lock recursively all objects referenced in the root object
+    data::reflection::visitor::RecursiveLock recursiveLock(obj);
 
-    // // Convert data to atom
-    // atoms::Object::sptr atom = atoms::conversion::convert(obj);
-    // // Write atom
-    // io::zip::IWriteArchive::sptr writeArchive = io::zip::WriteDirArchive::New(folderPath.string());
-    // io::atoms::FormatType format       = io::atoms::JSON;
+    // Convert data to atom
+    atoms::Object::sptr atom = atoms::conversion::convert(obj);
+    // Write atom
+    io::zip::IWriteArchive::sptr writeArchive = io::zip::WriteDirArchive::New(folderPath.string());
+    io::atoms::FormatType format              = io::atoms::JSON;
 
-    // namespace fs = std::filesystem;
-    // if( fs::exists(m_prefFile) && fs::is_regular_file(m_prefFile) &&
-    //     (fs::status(m_prefFile).permissions() & fs::perms::owner_write) == fs::perms::none)
-    // {
-    //     SLM_ERROR("SPreference need write access to the file '"+m_prefFile.string()+"'."
-    //               "Please, change file permission.");
-    // }
-    // else
-    // {
-    //     io::atoms::Writer(atom).write( writeArchive, filename, format );
-    // }
+    namespace fs = std::filesystem;
+    if(fs::exists(m_prefFile) && fs::is_regular_file(m_prefFile) &&
+       (fs::status(m_prefFile).permissions() & fs::perms::owner_write) == fs::perms::none)
+    {
+        SLM_ERROR("SPreference need write access to the file '"+m_prefFile.string()+"'."
+                  "Please, change file permission.");
+    }
+    else
+    {
+        io::atoms::Writer(atom).write(writeArchive, filename, format);
+    }
 }
 
 //-----------------------------------------------------------------------------
