@@ -9,6 +9,7 @@ set( DEPENDENCIES
     services
     activities
     io_base
+    io_atoms
     ui_base
 )
 set( REQUIREMENTS
