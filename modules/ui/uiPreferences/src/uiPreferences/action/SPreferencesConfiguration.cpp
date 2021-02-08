@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -196,12 +196,13 @@ void SPreferencesConfiguration::starting()
     this->actionServiceStarting();
 
     // Check preferences
+
+    // Get Preference Data through SPreferences::getInOut
     ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
     if(prefs)
     {
         for(PreferenceElt& pref : m_preferences)
         {
-            pref.m_dataPreference                      = ::fwData::String::New(pref.m_defaultValue);
             ::fwData::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
             if ( iterPref != prefs->end() )
             {
@@ -209,6 +210,7 @@ void SPreferencesConfiguration::starting()
             }
             else
             {
+                pref.m_dataPreference          = ::fwData::String::New(pref.m_defaultValue);
                 (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
             }
         }
@@ -331,6 +333,7 @@ void SPreferencesConfiguration::updating()
                 pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+
             }
             else if(pref.m_type == PreferenceType::CHECKBOX)
             {
@@ -368,6 +371,8 @@ void SPreferencesConfiguration::updating()
             }
         }
         m_sigParametersModified->asyncEmit();
+
+        ::fwPreferences::savePreferences();
     }
 }
 
