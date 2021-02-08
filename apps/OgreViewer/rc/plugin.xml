@@ -7,7 +7,7 @@
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="scene2D" />
-    <requirement id="patchMedicalData" />
+    <requirement id="module_io_atoms" />
     <requirement id="ioPacs" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

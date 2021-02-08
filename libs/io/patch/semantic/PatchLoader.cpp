@@ -29,16 +29,18 @@
 namespace sight::io::patch::semantic
 {
 
-std::string PatchLoader::s_currentVersion = "V15";
+std::string PatchLoader::s_currentVersion = "V17AR";
 
 //------------------------------------------------------------------------------
 
 void PatchLoader::loadPatches()
 {
     SPTR(io::atoms::patch::VersionsManager) versionManager = io::atoms::patch::VersionsManager::getDefault();
-    auto path = core::runtime::getLibraryResourceFilePath("fwMDSemanticPatch-" IO_PATCH_VER "/");
+    auto path = core::runtime::getLibraryResourceFilePath("io_patch-" IO_PATCH_VER "/");
     versionManager->buildVersionTable(path.string());
     versionManager->buildLinkTable(path.string());
+
+    io::patch::semantic::PatchLoader::setCurrentVersion(s_currentVersion);
 }
 
 //------------------------------------------------------------------------------

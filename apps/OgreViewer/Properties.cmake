@@ -9,7 +9,7 @@ set( REQUIREMENTS
     module_ui_base             # Start the module, load file location or window module_ui_base
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_ui_qt                   # Start the module, allow dark theme
-    patchMedicalData        # Patch old atoms data
+        # Patch old atoms data
 
     module_viz_ogreQt              # Enable Ogre to render things in Qt window.
 

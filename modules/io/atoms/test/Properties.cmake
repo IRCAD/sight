@@ -8,6 +8,7 @@ set( DEPENDENCIES
     data
     services
     io_base
+    io_patch
 )
 set( REQUIREMENTS
     data

@@ -37,7 +37,7 @@ set( REQUIREMENTS
 
     media
 
-    patchMedicalData
+    atoms
     arPatchMedicalData
 
 

@@ -8,7 +8,7 @@ set( REQUIREMENTS
 
     module_ui_base             # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, allow dark theme
-    patchMedicalData        # Patch old atoms data
+        # Patch old atoms data
     arPatchMedicalData      # Patch old atoms data
 
     # Objects declaration

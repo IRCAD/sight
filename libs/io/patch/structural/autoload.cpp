@@ -25,6 +25,12 @@
 #include "io/patch/structural/data/ActivitySeries/V2ToV1.hpp"
 #include "io/patch/structural/data/AttachmentSeries/V1ToV2.hpp"
 #include "io/patch/structural/data/AttachmentSeries/V2ToV1.hpp"
+#include "io/patch/structural/data/Camera/V1ToV2.hpp"
+#include "io/patch/structural/data/Camera/V2ToV1.hpp"
+#include "io/patch/structural/data/Camera/V2ToV3.hpp"
+#include "io/patch/structural/data/Camera/V3ToV2.hpp"
+#include "io/patch/structural/data/CameraSeries/V2ToV3.hpp"
+#include "io/patch/structural/data/CameraSeries/V3ToV2.hpp"
 #include "io/patch/structural/data/DicomSeries/V1ToV2.hpp"
 #include "io/patch/structural/data/DicomSeries/V2ToV1.hpp"
 #include "io/patch/structural/data/Image/V1ToV2.hpp"
@@ -104,6 +110,13 @@ struct runner
         structuralPatches->registerPatch(patch::structural::data::NavigationSeries::V2ToV1::New());
         structuralPatches->registerPatch(patch::structural::data::Study::V1ToV2::New());
         structuralPatches->registerPatch(patch::structural::data::Study::V2ToV1::New());
+
+        structuralPatches->registerPatch(patch::structural::data::Camera::V1ToV2::New());
+        structuralPatches->registerPatch(patch::structural::data::Camera::V2ToV1::New());
+        structuralPatches->registerPatch(patch::structural::data::Camera::V2ToV3::New());
+        structuralPatches->registerPatch(patch::structural::data::Camera::V3ToV2::New());
+        structuralPatches->registerPatch(patch::structural::data::CameraSeries::V2ToV3::New());
+        structuralPatches->registerPatch(patch::structural::data::CameraSeries::V3ToV2::New());
     }
 
     static runner r;

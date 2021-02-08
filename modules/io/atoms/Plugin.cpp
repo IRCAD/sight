@@ -24,6 +24,8 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
+#include <io/patch/semantic/PatchLoader.hpp>
+
 namespace sight::modules::io::atoms
 {
 
@@ -37,6 +39,8 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
+    // Force link with patch and compute version/link tables for patch data.
+    sight::io::patch::semantic::PatchLoader::loadPatches();
 }
 
 //------------------------------------------------------------------------------

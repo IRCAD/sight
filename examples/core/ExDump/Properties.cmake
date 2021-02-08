@@ -29,7 +29,7 @@ set( REQUIREMENTS
     2DVisualizationActivity
     3DVisualizationActivity
     ioActivity
-    patchMedicalData
+    atoms
     module_debug
     monitorQt
 )
