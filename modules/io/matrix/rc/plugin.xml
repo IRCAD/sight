@@ -1,0 +1,18 @@
+<plugin id="::sight::modules::io::matrix" class="::sight::modules::io::matrix::Plugin"  version="@PROJECT_VERSION@" >
+    <library name="module_io_matrix" />
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::io::base::services::IReader</type>
+        <service>::sight::modules::io::matrix::TransformationMatrix3DReaderService</service>
+        <object>::sight::data::TransformationMatrix3D</object>
+        <desc>TransformationMatrix3D Reader</desc>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::io::base::services::IWriter</type>
+        <service>::sight::modules::io::matrix::TransformationMatrix3DWriterService</service>
+        <object>::sight::data::TransformationMatrix3D</object>
+        <desc>TransformationMatrix3D Writer</desc>
+    </extension>
+
+</plugin>

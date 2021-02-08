@@ -22,7 +22,7 @@ set( REQUIREMENTS
     ioITK
     module_io_vtk
     ioGdcm
-    module_io_file
+    module_io_matrix
 
     # Services
     memory
@@ -30,7 +30,6 @@ set( REQUIREMENTS
     3DVisualizationActivity
     ioActivity
     patchMedicalData
-    filterUnknownSeries
     monitor
     monitorQt
 )

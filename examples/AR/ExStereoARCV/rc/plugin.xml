@@ -340,7 +340,7 @@
             </service>
 
             <!-- save poses matrices in a file -->
-            <service uid="matricesWriterSrv" type="::ioTimeline::SMatrixWriter" >
+            <service uid="matricesWriterSrv" type="::sight::modules::io::matrix::SMatrixWriter" >
                 <in key="data" uid="matrixTL" autoConnect="no" />
             </service>
 

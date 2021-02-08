@@ -31,7 +31,7 @@ set( REQUIREMENTS
     module_geometry_base
     module_geometry_vision
     module_navigation_optics
-    ioTimeline
+    module_io_matrix
     module_data
 
     # Generic Scene

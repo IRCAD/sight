@@ -20,22 +20,15 @@
  *
  ***********************************************************************/
 
+/**
+ * @brief       The namespace sight::modules::io::matrix contains reader and writer services for basic data::Object
+ * which
+ * doesn't need
+ * external library.
+ */
 #pragma once
 
-#include "io/atoms/filter/registry/detail.hpp"
-
-#include <boost/preprocessor/cat.hpp>
-
-namespace sight::io::atoms::filter
+namespace sight::modules::io::matrix
 {
 
-namespace registry
-{
-
-#define  fwAtomsFilterRegisterMacro( classname, objectKey )                           \
-    static sight::io::atoms::filter::IFilter::Registrar< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
-
-} // namespace registry
-
-} // namespace sight::io::atoms::filter
+}

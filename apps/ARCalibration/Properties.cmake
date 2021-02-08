@@ -28,7 +28,6 @@ set( REQUIREMENTS
 
     # Services
     module_ui_base
-    filterUnknownSeries
     activities
     calibrationActivity
     trackedCameraRegistrationActivity

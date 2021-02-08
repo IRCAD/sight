@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,22 +20,29 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "modules/io/matrix/Plugin.hpp"
 
-#include "io/atoms/filter/registry/detail.hpp"
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <boost/preprocessor/cat.hpp>
-
-namespace sight::io::atoms::filter
+namespace sight::modules::io::matrix
 {
 
-namespace registry
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::io::matrix::Plugin");
+
+Plugin::~Plugin() noexcept
 {
+}
 
-#define  fwAtomsFilterRegisterMacro( classname, objectKey )                           \
-    static sight::io::atoms::filter::IFilter::Registrar< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
+//------------------------------------------------------------------------------
 
-} // namespace registry
+void Plugin::start()
+{
+}
 
-} // namespace sight::io::atoms::filter
+//------------------------------------------------------------------------------
+
+void Plugin::stop() noexcept
+{
+}
+
+} // namespace sight::modules::io::matrix

@@ -23,7 +23,7 @@ set( REQUIREMENTS
     module_ui_qt
 
     # Reader
-    module_io_file
+    module_io_matrix
     module_io_vision
     module_io_video
 

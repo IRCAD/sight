@@ -353,7 +353,7 @@
             <inout key="data" uid="exportExtrinsicMat" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::file::TransformationMatrix3DWriterService" />
+            <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DWriterService" />
         </service>
 
         <service uid="calibrationInfoEditorSrv" type="::sight::modules::ui::qt::calibration::SCalibrationInfoEditor" >

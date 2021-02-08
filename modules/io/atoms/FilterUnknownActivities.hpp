@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,20 +22,32 @@
 
 #pragma once
 
-#include "io/atoms/filter/registry/detail.hpp"
+#include "modules/io/atoms/config.hpp"
 
-#include <boost/preprocessor/cat.hpp>
+#include <core/macros.hpp>
 
-namespace sight::io::atoms::filter
+#include <io/atoms/filter/IFilter.hpp>
+
+namespace sight::atoms
+{
+class Object;
+}
+
+namespace sight::modules::io::atoms
 {
 
-namespace registry
+class MODULE_IO_ATOMS_CLASS_API FilterUnknownActivities : public sight::io::atoms::filter::IFilter
 {
 
-#define  fwAtomsFilterRegisterMacro( classname, objectKey )                           \
-    static sight::io::atoms::filter::IFilter::Registrar< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
+public:
+    /// Constructor.
+    FilterUnknownActivities(sight::io::atoms::filter::IFilter::Key key);
 
-} // namespace registry
+    /// Destructor.
+    ~FilterUnknownActivities();
 
-} // namespace sight::io::atoms::filter
+    /// Apply filter onto given atom object.
+    MODULE_IO_ATOMS_API virtual void apply(const SPTR(sight::atoms::Object)& atom);
+};
+
+} // namespace sight::modules::io::atoms

@@ -339,7 +339,7 @@
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::modules::io::file::TransformationMatrix3DReaderService" />
+                <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DReaderService" />
             </service>
 
             <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->

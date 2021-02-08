@@ -19,7 +19,7 @@ set( REQUIREMENTS
     ioITK
     module_io_vtk
     ioGdcm
-    module_io_file
+    module_io_matrix
 
 
     2DVisualizationActivity
@@ -40,7 +40,6 @@ set( REQUIREMENTS
     patchMedicalData
     arPatchMedicalData
 
-    filterUnknownSeries
 
     module_ui_base
 )

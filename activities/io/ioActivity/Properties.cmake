@@ -1,15 +1,13 @@
-set( NAME activitiesConfig )
+set( NAME ioActivity )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-        data
         activities
         module_data
         module_ui_base
-        module_ui_qt
-        module_io_atoms
-        ioActivity
+    module_ui_qt
         media
-        module_ui_flaticon
+        data
+        module_io_atoms
     )

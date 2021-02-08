@@ -17,7 +17,7 @@ set( REQUIREMENTS
     module_ui_base
 
     # Reader
-    module_io_file
+    module_io_matrix
     module_io_vtk
 
     # Services

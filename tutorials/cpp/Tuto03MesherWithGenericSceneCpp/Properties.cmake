@@ -11,7 +11,7 @@ set( REQUIREMENTS
     data
     module_ui_base
     module_ui_qt
-    module_io_file
+    module_io_matrix
     module_io_vtk
     module_services
     module_filter_mesh

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,20 +22,33 @@
 
 #pragma once
 
-#include "io/atoms/filter/registry/detail.hpp"
+#include <core/runtime/Plugin.hpp>
 
-#include <boost/preprocessor/cat.hpp>
-
-namespace sight::io::atoms::filter
+namespace sight::modules::io::matrix
 {
 
-namespace registry
+struct Plugin : public core::runtime::Plugin
 {
+    /**
+     * @brief   Destructor
+     */
+    ~Plugin() noexcept;
 
-#define  fwAtomsFilterRegisterMacro( classname, objectKey )                           \
-    static sight::io::atoms::filter::IFilter::Registrar< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
+    /**
+     * @brief Start method.
+     *
+     * @exception core::runtime::RuntimeException.
+     * This method is used by runtime in order to initialize the module.
+     */
+    void start();
 
-} // namespace registry
+    /**
+     * @brief Stop method.
+     *
+     * This method is used by runtime in order to close the module.
+     */
+    void stop() noexcept;
 
-} // namespace sight::io::atoms::filter
+};
+
+} // namespace sight::modules::io::matrix

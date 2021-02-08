@@ -6,7 +6,7 @@
     <requirement id="memory" />
     <requirement id="module_ui_base" />
     <requirement id="activities" />
-    <requirement id="filterUnknownSeries" />
+    <requirement id="module_io_atoms" />
     <requirement id="module_ui_qt" />
 
     <xi:include href="configurations/ARCalibrationActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

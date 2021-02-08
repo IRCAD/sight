@@ -1,6 +1,6 @@
 <plugin id="activitiesConfig" version="@PROJECT_VERSION@">
 
-    <requirement id="filterUnknownSeries" />
+    <requirement id="module_io_atoms" />
     <requirement id="activities" />
     <requirement id="ioActivity" />
 
