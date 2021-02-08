@@ -5,7 +5,7 @@
     <requirement id="validators" />
     <requirement id="module_ui_base" />
     <requirement id="module_viz_ogre" />
-    <requirement id="activities" />
+    <requirement id="module_activities" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

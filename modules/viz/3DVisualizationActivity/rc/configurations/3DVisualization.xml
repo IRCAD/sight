@@ -166,7 +166,7 @@
             <inout key="target" uid="${landmarks}"/>
         </service>
 
-        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
+        <service uid="LockImageSrv" type="::sight::modules::memory::LockDumpSrv" >
             <inout key="target" uid="optionalInputImage" />
         </service>
 

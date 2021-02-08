@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     module_ui_base
     module_ui_qt
-    ctrlMemory
+    module_memory
     module_data
     visuVTKAdaptor
     scene2D

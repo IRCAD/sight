@@ -28,12 +28,12 @@ set( REQUIREMENTS
 
     # Services
     module_ui_base
-    activities
+    module_activities
     calibrationActivity
     trackedCameraRegistrationActivity
     toolCalibrationActivity
     module_data
-    memory
+    module_memory
     )
 
 moduleParam(module_ui_qt

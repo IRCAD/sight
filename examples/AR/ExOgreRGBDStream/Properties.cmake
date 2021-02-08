@@ -22,8 +22,7 @@ set( REQUIREMENTS
     module_ui_flaticon
 
     # Grabber
-    module_io_video
-    videoOpenni
+    module_io_video    
 
     # Services
     module_sync

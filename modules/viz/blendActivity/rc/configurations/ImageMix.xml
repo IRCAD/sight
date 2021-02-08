@@ -102,7 +102,7 @@
 
         <service uid="snapshot" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="bgLockDump" type="::ctrlMemory::LockDumpSrv">
+        <service uid="bgLockDump" type="::sight::modules::memory::LockDumpSrv">
             <inout key="target" uid="${backgroundImageUid}" />
         </service>
 
@@ -119,7 +119,7 @@
             <inout key="tf" uid="${tfBackgroundImage}" />
         </service>
 
-        <service uid="frontLockDump" type="::ctrlMemory::LockDumpSrv">
+        <service uid="frontLockDump" type="::sight::modules::memory::LockDumpSrv">
             <inout key="target" uid="${frontImageUid}" />
         </service>
 

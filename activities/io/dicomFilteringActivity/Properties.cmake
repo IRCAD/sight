@@ -5,8 +5,8 @@ set( TYPE MODULE )
 set( DEPENDENCIES )
 set( REQUIREMENTS
     2DVisualizationActivity
-    activities
-    ctrlMemory
+    module_activities
+    module_memory
     module_data
     data
     dicomAppConfig

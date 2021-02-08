@@ -1,35 +1,10 @@
-<plugin id="activities" class="::activities::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="module_activities" class="::activities::Plugin"  version="@PROJECT_VERSION@" >
 
     <library name="activities" />
 
     <requirement id="module_services"/>
 
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::ui::base::IActionSrv</type>
-        <service>::activities::action::SActivityLauncher</service>
-        <object>::sight::data::Vector</object>
-    </extension>
-
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::ui::base::IActionSrv</type>
-        <service>::activities::action::SCreateActivity</service>
-        <object>::sight::data::Vector</object>
-    </extension>
-
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::services::IController</type>
-        <service>::activities::SSeriesSignal</service>
-        <object>::sight::data::SeriesDB</object>
-    </extension>
-
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::services::IController</type>
-        <service>::activities::SActivitySequencer</service>
-    </extension>
-
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::activities::registry::Activities" schema="activities-0.1/activities.xsd"/>
-
-
 
 </plugin>

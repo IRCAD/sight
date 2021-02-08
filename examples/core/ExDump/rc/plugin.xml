@@ -4,7 +4,7 @@
     <requirement id="patchMedicalData" />
     <requirement id="module_io_atoms" />
     <requirement id="module_ui_base" />
-    <requirement id="memory" />
+    <requirement id="module_memory" />
     <requirement id="module_ui_qt" />
 
     <!-- This example allows to test the different dump policy. -->
@@ -146,15 +146,15 @@
                 <start uid="SDBWriterSrv" />
             </service>
 
-            <service uid="metricsAct" type="::monitor::action::fwMetrics" />
+            <service uid="metricsAct" type="::sight::modules::debug::action::fwMetrics" />
 
-            <service uid="memInfoAct" type="::monitor::action::MemoryInfo" />
+            <service uid="memInfoAct" type="::sight::modules::debug::action::MemoryInfo" />
 
-            <service uid="incMemConsumAct" type="::monitor::action::MemoryConsumption" >
+            <service uid="incMemConsumAct" type="::sight::modules::debug::action::MemoryConsumption" >
                 <config mode="increase" value="256" />
             </service>
 
-            <service uid="decMemConsumAct" type="::monitor::action::MemoryConsumption" >
+            <service uid="decMemConsumAct" type="::sight::modules::debug::action::MemoryConsumption" >
                 <config mode="decrease" />
             </service>
 
@@ -162,7 +162,7 @@
 
             <service uid="componentsTreeAct" type="::monitorQt::action::ComponentsTree" />
 
-            <service uid="dumpAllAct" type="::monitor::action::SDumpAll" />
+            <service uid="dumpAllAct" type="::sight::modules::debug::action::SDumpAll" />
 
             <!-- ******************************* Services ***************************************** -->
 

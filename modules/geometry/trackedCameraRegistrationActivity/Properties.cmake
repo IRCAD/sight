@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
-    activities
+    module_activities
     data
     module_data
     module_ui_base

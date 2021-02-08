@@ -1,6 +1,6 @@
 <plugin id="DicomWebWriterActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="activities" />
+    <requirement id="module_activities" />
     <requirement id="module_ui_qt" />
     <requirement id="visuVTKQt" />
     <requirement id="ioPacs" />

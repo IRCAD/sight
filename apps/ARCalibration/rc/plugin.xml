@@ -3,9 +3,9 @@
     <requirement id="module_services" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
-    <requirement id="memory" />
+    <requirement id="module_memory" />
     <requirement id="module_ui_base" />
-    <requirement id="activities" />
+    <requirement id="module_activities" />
     <requirement id="module_io_atoms" />
     <requirement id="module_ui_qt" />
 

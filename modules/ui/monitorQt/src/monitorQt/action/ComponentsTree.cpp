@@ -37,7 +37,8 @@ namespace monitorQt
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::monitorQt::action::ComponentsTree, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::debugQt::action::ComponentsTree,
+                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     data
     module_services
-    activities
+    module_activities
     visuVTK
     ctrlPicking
     module_io_matrix

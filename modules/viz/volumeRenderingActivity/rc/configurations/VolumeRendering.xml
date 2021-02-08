@@ -144,7 +144,7 @@
         <!-- *************************** End generic scene *************************** -->
 
         <!-- Services working on input image -->
-        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
+        <service uid="LockImageSrv" type="::sight::modules::memory::LockDumpSrv">
             <inout key="target" uid="${image}" />
         </service>
 

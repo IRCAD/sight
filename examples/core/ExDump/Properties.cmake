@@ -25,22 +25,22 @@ set( REQUIREMENTS
     module_io_matrix
 
     # Services
-    memory
+    module_memory
     2DVisualizationActivity
     3DVisualizationActivity
     ioActivity
     patchMedicalData
-    monitor
+    module_debug
     monitorQt
 )
 
 moduleParam(
-        memory
+        module_memory
     PARAM_LIST
         loading_mode
     PARAM_VALUES
         lazy
-) # Set the reading mode to "lazy", so the buffers will only be read in memory when they are used.
+) # Set the reading mode to "lazy", so the buffers will only be read in module_memory when they are used.
 
 moduleParam(module_ui_qt
     PARAM_LIST

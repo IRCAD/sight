@@ -4,7 +4,7 @@
     <requirement id="module_ui_qt" />
     <requirement id="visuVTKQt" />
     <requirement id="scene2D" />
-    <requirement id="activities" />
+    <requirement id="module_activities" />
 
     <xi:include href="configurations/BlendEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/SliceBlendView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

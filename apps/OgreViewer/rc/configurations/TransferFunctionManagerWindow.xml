@@ -236,7 +236,7 @@
             exportIcon="module_ui_flaticon-0.1/icons/BlueSave.svg"/>
         </service>
 
-        <service uid="tfMergerSvr" type="::ctrlTF::SMergeTF" autoConnect="yes" >
+        <service uid="tfMergerSvr" type="::sight::modules::data::SMergeTF" autoConnect="yes" >
             <in key="tfPool" uid="${currentTFPool}" />
             <inout key="tf" uid="${mergedTF}" />
         </service>

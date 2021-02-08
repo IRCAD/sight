@@ -11,7 +11,7 @@ set( REQUIREMENTS
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_viz_ogreQt              # Enable Ogre to render things in Qt window.
     validators
-    activities
+    module_activities
 
     # Objects declaration
     module_services             # fwService
@@ -29,7 +29,6 @@ set( REQUIREMENTS
 
     # Services
     module_geometry_vision
-    videoOpenni
     module_sync
     module_geometry_vision
     module_data

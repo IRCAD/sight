@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_viz_ogreQt              # Enable Ogre to render things in Qt window
 
     # Extensions
-    activities
+    module_activities
 
     # Objects declaration
     data

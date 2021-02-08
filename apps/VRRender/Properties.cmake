@@ -10,9 +10,9 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
 
-    activities
+    module_activities
     module_appXml
-    memory
+    module_memory
     fwlauncher
 
     module_io_atoms

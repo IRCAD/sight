@@ -59,7 +59,7 @@
             <push srcKey="OptionalInputImageKey" />
         </service>
 
-        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
+        <service uid="LockImageSrv" type="::sight::modules::memory::LockDumpSrv">
             <inout key="target" uid="optionalInputImage" />
         </service>
 

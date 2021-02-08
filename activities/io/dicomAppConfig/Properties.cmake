@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES )
 set( REQUIREMENTS
-    ctrlMemory
+    module_memory
     module_data
     data
     module_ui_base

@@ -30,7 +30,7 @@ set( REQUIREMENTS
     # Services
     scene2D
     module_data
-    ctrlTF
+    module_core_data
     module_filter_image
     ioPacs
 

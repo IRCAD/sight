@@ -28,9 +28,6 @@
 
 #include <services/macros.hpp>
 
-#include <Eigen/Core>
-
-#include <geometry/data/TransformationMatrix3D.hpp>
 #include <geometry/vision/helper.hpp>
 
 namespace sight::modules::navigation::calibration

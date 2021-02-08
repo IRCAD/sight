@@ -4,7 +4,7 @@
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="module_io_atoms" />
-    <requirement id="activities" />
+    <requirement id="module_activities" />
     <requirement id="module_ui_base" />
 
     <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
