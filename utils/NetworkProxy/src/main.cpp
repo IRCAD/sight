@@ -28,10 +28,10 @@
 #include <core/thread/Worker.hpp>
 #include <core/util/FactoryRegistry.hpp>
 
-#include <igtlNetwork/Server.hpp>
-
 #include <boost/date_time.hpp>
 #include <boost/type.hpp>
+
+#include <io/igtl/Server.hpp>
 
 #include <fstream>
 #include <functional>
@@ -63,7 +63,7 @@
  */
 struct configuration
 {
-    igtlNetwork::Server::sptr server;
+    io::igtl::Server::sptr server;
     std::string deviceIn;
     std::string deviceOut;
     std::string deviceType;
@@ -131,7 +131,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
     {
         //check if port num for this config isn't used
         std::map< std::string, configuration >::iterator it;
-        igtlNetwork::Server::sptr server  = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
+        io::igtl::Server::sptr server     = io::igtl::Server::sptr(new io::igtl::Server());
         core::thread::Worker::sptr worker = core::thread::Worker::New();
         bool serverAlreadyStarted         = false;
 
@@ -160,7 +160,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
         {
             config.server->start(config.port);
 
-            std::function<void() > task = std::bind(&::igtlNetwork::Server::runServer, config.server);
+            std::function<void() > task = std::bind(&::io::igtl::Server::runServer, config.server);
             config.worker->post(task);
         }
 
@@ -193,12 +193,12 @@ int main (int argc, char** argv)
     //Initialization of parameters
     std::map< std::string, configuration > associationDeviceServer = initialize(configFile);
 
-    ::igtlNetwork::Server::sptr receiveServer = ::igtlNetwork::Server::sptr(new ::igtlNetwork::Server());
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
+    io::igtl::Server::sptr receiveServer = io::igtl::Server::sptr(new io::igtl::Server());
+    core::thread::Worker::sptr worker    = core::thread::Worker::New();
     try
     {
         receiveServer->start(port);
-        std::function<void() > task = std::bind(&::igtlNetwork::Server::runServer, receiveServer);
+        std::function<void() > task = std::bind(&::io::igtl::Server::runServer, receiveServer);
         worker->post(task);
 
     }
@@ -231,7 +231,7 @@ int main (int argc, char** argv)
                 std::string deviceName = headerMsg->GetDeviceName();
                 std::string deviceType = headerMsg->GetDeviceType();
 
-                ::igtlNetwork::Server::sptr sendingServer;
+                io::igtl::Server::sptr sendingServer;
 
                 if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
                 {

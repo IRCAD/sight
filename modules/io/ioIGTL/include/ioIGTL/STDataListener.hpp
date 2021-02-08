@@ -27,7 +27,7 @@
 
 #include <data/Object.hpp>
 
-#include <igtlNetwork/Client.hpp>
+#include <io/igtl/Client.hpp>
 
 #include <cstdint>
 #include <future>
@@ -109,7 +109,7 @@ private:
     std::future<void> m_clientFuture;
 
     /// client socket
-    ::igtlNetwork::Client m_client;
+    io::igtl::Client m_client;
 
     /// hostname config key
     std::string m_hostnameConfig;

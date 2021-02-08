@@ -42,7 +42,7 @@ const services::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 SServerListener::SServerListener()
 {
-    m_server = std::make_shared< ::igtlNetwork::Server>();
+    m_server = std::make_shared< io::igtl::Server>();
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void SServerListener::starting()
         const std::uint16_t port = modules::ui::base::preferences::getValue<std::uint16_t>(m_portConfig);
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
+        m_serverFuture = std::async(std::launch::async, std::bind(&::io::igtl::Server::runServer, m_server) );
         m_sigConnected->asyncEmit();
         m_receiveFuture = std::async(std::launch::async, std::bind(&SServerListener::receiveObject, this) );
     }

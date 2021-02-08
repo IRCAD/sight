@@ -25,7 +25,7 @@
 #include "ioIGTL/config.hpp"
 #include "ioIGTL/INetworkSender.hpp"
 
-#include <igtlNetwork/Client.hpp>
+#include <io/igtl/Client.hpp>
 
 namespace ioIGTL
 {
@@ -91,7 +91,7 @@ private:
     void sendObject(const data::Object::csptr& obj, const size_t index) override;
 
     /// client socket
-    ::igtlNetwork::Client m_client;
+    io::igtl::Client m_client;
 
     /// hostname config key
     std::string m_hostnameConfig;

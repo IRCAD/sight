@@ -8,6 +8,6 @@ set( DEPENDENCIES
     services
     ui_base
     io_base
-    igtlNetwork
+    io_igtl
 )
 set( REQUIREMENTS)

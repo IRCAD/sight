@@ -27,8 +27,8 @@
 
 #include <data/Object.hpp>
 
-#include <igtlNetwork/Client.hpp>
-#include <igtlNetwork/Server.hpp>
+#include <io/igtl/Client.hpp>
+#include <io/igtl/Server.hpp>
 
 #include <cstdint>
 #include <future>
@@ -92,7 +92,7 @@ private:
     void sendObject(const data::Object::csptr& obj, const size_t index) override;
 
     /// Server instance
-    ::igtlNetwork::Server::sptr m_server;
+    io::igtl::Server::sptr m_server;
 
     /// Future used to wait for the server
     std::future<void> m_serverFuture;

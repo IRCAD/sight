@@ -27,7 +27,7 @@
 
 #include <data/Object.hpp>
 
-#include <igtlNetwork/Client.hpp>
+#include <io/igtl/Client.hpp>
 
 #include <future>
 #include <string>
@@ -98,7 +98,7 @@ private:
     void manageTimeline(data::Object::sptr obj, size_t index);
 
     /// client socket
-    ::igtlNetwork::Client m_client;
+    io::igtl::Client m_client;
 
     /// Future used to wait for the client
     std::future<void> m_clientFuture;
