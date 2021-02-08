@@ -31,7 +31,7 @@ set( REQUIREMENTS
     module_sync
     module_data
     module_geometry_base
-    colourSegmentation
+    module_filter_vision
 
     # Configuration
     dataManagerConfig

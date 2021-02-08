@@ -390,7 +390,7 @@
             </service>
 
             <!-- To extract the foreground image to display on top of meshes -->
-            <service uid="maskerSrv" type="::depthSegmentation::SDepthImageMasking" worker="masker" >
+            <service uid="maskerSrv" type="::sight::modules::filter::vision::SDepthImageMasking" worker="masker" >
                 <in key="maskImage" uid="offscreenImage" />
                 <in key="videoImage" uid="videoImage" />
                 <in key="depthImage" uid="depthImage" autoConnect="yes" />

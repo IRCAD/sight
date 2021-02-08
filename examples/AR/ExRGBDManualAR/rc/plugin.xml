@@ -427,7 +427,7 @@
             </service>
 
             <!-- Split background and foreground image -->
-            <service uid="extractForegroundSrv" type="::colourSegmentation::SColourImageMasking" worker="videoExtraction" >
+            <service uid="extractForegroundSrv" type="::sight::modules::filter::vision::SColourImageMasking" worker="videoExtraction" >
                 <in key="videoTL" uid="frameTL" autoConnect="yes" />
                 <in key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
