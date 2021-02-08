@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "opVTKSlicer/config.hpp"
+#include "modules/filter/image/config.hpp"
 
 #include <data/tools/helper/MedicalImage.hpp>
 
@@ -34,7 +34,7 @@
 #include <vtkMatrix4x4.h>
 #include <vtkSmartPointer.h>
 
-namespace opVTKSlicer
+namespace sight::modules::filter::image
 {
 
 /**
@@ -47,7 +47,7 @@ namespace opVTKSlicer
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
+   <service type="::modules::filter::image::SPlaneSlicer" autoConnect="yes">
        <in key="image" uid="..." />
        <in key="imageExtent" uid="..." />
        <in key="axes" uid="..." />
@@ -69,7 +69,7 @@ namespace opVTKSlicer
  *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
-class OPVTKSLICER_CLASS_API SPlaneSlicer : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public services::IOperator
 {
 
 public:
@@ -77,17 +77,17 @@ public:
     fwCoreServiceMacro(SPlaneSlicer, services::IOperator)
 
     /// Constructor.
-    OPVTKSLICER_API SPlaneSlicer() noexcept;
+    MODULE_FILTER_IMAGE_API SPlaneSlicer() noexcept;
 
     /// Destructor.
-    OPVTKSLICER_API virtual ~SPlaneSlicer() noexcept;
+    MODULE_FILTER_IMAGE_API virtual ~SPlaneSlicer() noexcept;
 
 protected:
 
-    OPVTKSLICER_API virtual void configuring() override;
-    OPVTKSLICER_API virtual void starting() override;
-    OPVTKSLICER_API virtual void updating() override;
-    OPVTKSLICER_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API virtual void stopping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
@@ -99,7 +99,7 @@ protected:
      * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect axes::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    OPVTKSLICER_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
@@ -125,4 +125,4 @@ private:
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 };
 
-} //namespace opVTKSlicer
+} //namespace sight::modules::filter::image

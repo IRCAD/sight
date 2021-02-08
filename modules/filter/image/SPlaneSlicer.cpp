@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "opVTKSlicer/SPlaneSlicer.hpp"
+#include "SPlaneSlicer.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
@@ -40,9 +40,9 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::opVTKSlicer::SPlaneSlicer )
+fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SPlaneSlicer )
 
-namespace opVTKSlicer
+namespace sight::modules::filter::image
 {
 
 static const services::IService::KeyType s_IMAGE_IN  = "image";
@@ -314,4 +314,4 @@ void SPlaneSlicer::updateDefaultValue()
 
 //------------------------------------------------------------------------------
 
-} //namespace opVTKSlicer
+} //namespace sight::modules::filter::image

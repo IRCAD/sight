@@ -21,6 +21,5 @@ set( REQUIREMENTS
     visuVTKQt
     qtSceneConfig
     module_filter_image
-    opVTKSlicer
 )
 

@@ -95,7 +95,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="targetPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
+        <service uid="targetPlaneSlice" type="::sight::modules::filter::image::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${targetImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
             <in key="axes" uid="identity" />
@@ -103,7 +103,7 @@
             <config orientation="${orientation}" />
         </service>
 
-        <service uid="transformedPlaneSlice" type="::opVTKSlicer::SPlaneSlicer" autoConnect="yes">
+        <service uid="transformedPlaneSlice" type="::sight::modules::filter::image::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${referenceImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
             <in key="axes" uid="${transformUid}" />

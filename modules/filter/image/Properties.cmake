@@ -6,6 +6,7 @@ set( DEPENDENCIES
     data
     services
     filter_image
+    io_vtk          # Necessary only for SPlaneSlicer
     ui_base
     ui_history
 )
