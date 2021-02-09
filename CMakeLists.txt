@@ -111,7 +111,7 @@ if(NOT VCPKG_TARGET_TRIPLET)
     
     list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
     if(UNIX)
-      list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
     endif()
 
     # Parsing of 'fw-*.cmake' scripts. This should go away at some point if we use CMake properly
@@ -122,16 +122,72 @@ if(NOT VCPKG_TARGET_TRIPLET)
     endforeach()
 
     set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+    mark_as_advanced(EXTERNAL_LIBRARIES)
+
+    # Use directly EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
+    if(NOT EXTERNAL_LIBRARIES)
+        # Set sight deps root directory (where the sight deps packages will be installed ) 
+        set(SIGHT_DEPS_ROOT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.sight-deps" CACHE PATH "Sight deps root directory")
+        mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
+
+        # Packages name and version
+        set(SIGHT_DEPS_PACKAGE "sight-deps-${CMAKE_BUILD_TYPE}-19.0.0-16-g5b9e69b-${CMAKE_HOST_SYSTEM_NAME}")
+        set(SIGHT_DEPS_PACKAGE_ARCHIVE "${SIGHT_DEPS_PACKAGE}-dev.tar.zst")
+        set(SIGHT_DEPS_PACKAGE_URL "https://conan.ircad.fr/artifactory/data/sight-deps/${SIGHT_DEPS_PACKAGE_ARCHIVE}")
+
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            set(SIGHT_DEPS_PACKAGE_HASH "6357c36c5e35327a2610bf3a02119a3b1bfa365e2a78ca705118e9b7e99bcd1b")
+        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+            set(SIGHT_DEPS_PACKAGE_HASH "e5b90189665145cb82d1a4404f6b09b7f8e19cfa241040f90710fcbd7534aac7")
+        elseif("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+            set(SIGHT_DEPS_PACKAGE_HASH "bb1464671ed43672f2698696b6fd80645442f2af69455638b54b02f6f351c5dd")
+        else()
+            # Falback for other build type
+            set(SIGHT_DEPS_PACKAGE_HASH "bb1464671ed43672f2698696b6fd80645442f2af69455638b54b02f6f351c5dd")
+        endif()
+
+        # Download and install package, if needed
+        get_filename_component(SIGHT_DEPS_PACKAGE_DIRECTORY "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE}" REALPATH)
+            
+        if(NOT EXISTS ${SIGHT_DEPS_PACKAGE_DIRECTORY})
+            # Download the sight deps archive
+            file(
+                DOWNLOAD "${SIGHT_DEPS_PACKAGE_URL}" "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}"
+                SHOW_PROGRESS
+                EXPECTED_HASH SHA256=${SIGHT_DEPS_PACKAGE_HASH}
+            )
+
+            # Extract it
+            file(
+            ARCHIVE_EXTRACT 
+            INPUT "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}"
+            DESTINATION "${SIGHT_DEPS_ROOT_DIRECTORY}"
+            VERBOSE
+            )
+
+            file(REMOVE "${SIGHT_DEPS_ROOT_DIRECTORY}/${SIGHT_DEPS_PACKAGE_ARCHIVE}")
+        endif()
+
+        # Use ${SIGHT_DEPS_PACKAGE_DIRECTORY} as external libraries
+        set(EXTERNAL_LIBRARIES ${SIGHT_DEPS_PACKAGE_DIRECTORY})
+        message("Using ${EXTERNAL_LIBRARIES} for Sight external libraries")
+
+        unset(SIGHT_DEPS_PACKAGE_DIRECTORY)
+        unset(SIGHT_DEPS_PACKAGE_HASH)
+        unset(SIGHT_DEPS_PACKAGE_URL)
+        unset(SIGHT_DEPS_PACKAGE_ARCHIVE)
+        unset(SIGHT_DEPS_PACKAGE)
+    endif()
 
     if(EXTERNAL_LIBRARIES)
-      get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
-      set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
-      unset(ABSOLUTE_EXTERNAL_LIBRARIES)
+        get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
+        set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
+        unset(ABSOLUTE_EXTERNAL_LIBRARIES)
 
-      list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
-      list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES}/lib/cmake/)
-      list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
-  endif()
+        list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
+        list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES}/lib/cmake/)
+        list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+    endif()
 endif()
 
 ########################################################################################################################
