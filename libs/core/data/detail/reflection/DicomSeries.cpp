@@ -33,7 +33,7 @@ fwCampImplementDataMacro((sight)(data)(DicomSeries))
 {
     builder
     .tag("object_version", "2")
-    .tag("lib_name", "fwMedData")
+    .tag("lib_name", "::sight::data")
     .base< ::sight::data::Series>()
     .property("number_of_instances", &::sight::data::DicomSeries::m_numberOfInstances)
     .property("dicom_container", &::sight::data::DicomSeries::m_dicomContainer)

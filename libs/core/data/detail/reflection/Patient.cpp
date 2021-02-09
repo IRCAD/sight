@@ -32,7 +32,7 @@ fwCampImplementDataMacro((sight)(data)(Patient))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwMedData")
+    .tag("lib_name", "::sight::data")
     .base< ::sight::data::Object>()
     .property("name", &::sight::data::Patient::m_name)
     .property("patient_id", &::sight::data::Patient::m_patientId)

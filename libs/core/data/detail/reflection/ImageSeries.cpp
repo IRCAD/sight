@@ -35,7 +35,7 @@ fwCampImplementDataMacro((sight)(data)(ImageSeries))
 {
     builder
     .tag("object_version", "3")
-    .tag("lib_name", "fwMedData")
+    .tag("lib_name", "::sight::data")
     .base< ::sight::data::Series>()
     .property("image", &::sight::data::ImageSeries::m_image)
     .property("dicom_reference", &::sight::data::ImageSeries::m_dicomReference)

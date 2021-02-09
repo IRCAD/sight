@@ -30,7 +30,7 @@ fwCampImplementDataMacro((sight)(data)(location)(SingleFile))
 {
     builder.base< sight::data::Object>()
     .tag("object_version", "1")
-    .tag("lib_name", "data")
+    .tag("lib_name", "::sight::data")
     .property("path", &sight::data::location::SingleFile::m_path)
     ;
 }

@@ -32,7 +32,7 @@ fwCampImplementDataMacro((sight)(data)(location)(Folder))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "data")
+    .tag("lib_name", "::sight::data")
     .base< sight::data::Object>()
     .property("folder", &sight::data::location::Folder::m_folder)
     .property("recursive", &sight::data::location::Folder::m_isRecursive)
