@@ -25,7 +25,7 @@ set( REQUIREMENTS
     module_io_matrix
 
     # Services
-    ioIGTL
+    module_io_igtl
 
     # Generic Scene
     )

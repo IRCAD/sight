@@ -17,7 +17,7 @@ set( REQUIREMENTS
         module_services
         module_navigation_calibration
         module_geometry_vision
-        ioIGTL
+        module_io_igtl
         module_io_matrix
         module_sync
         )

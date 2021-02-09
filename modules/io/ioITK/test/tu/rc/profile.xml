@@ -1,9 +1,0 @@
-<profile name="ioITKTest" version="0.1">
-
-    <activate id="module_services" version="0.1" />
-    <activate id="module_ui_base" version="0.1" />
-    <activate id="ioITK" version="0.1" />
-
-    <start id="ioITK" />
-
-</profile>

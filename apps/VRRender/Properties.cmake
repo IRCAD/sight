@@ -16,7 +16,7 @@ set( REQUIREMENTS
     fwlauncher
 
     module_io_atoms
-    ioITK
+    module_io_itk
     module_io_vtk
     ioGdcm
     module_io_matrix

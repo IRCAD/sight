@@ -106,7 +106,7 @@
             <inout key="pointList" uid="pointlist" />
         </service>
 
-        <service uid="trackerTLMatrixListener" type="::ioIGTL::STDataListener">
+        <service uid="trackerTLMatrixListener" type="::sight::modules::io::igtl::STDataListener">
             <inout key="timeline" uid="matrixTL" />
             <server>%TRACKER_HOSTNAME%:%TRACKER_PORT%</server>
             <deviceName>%TRACKER_NAME%</deviceName>
