@@ -110,12 +110,12 @@
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="queryEditor" type="::ioDicomWeb::SQueryEditor">
+        <service uid="queryEditor" type="::sight::modules::io::dicomweb::SQueryEditor">
             <inout key="seriesDB" uid="previewSeriesDB" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
-        <service uid="pullSeriesController" type="::ioDicomWeb::SSeriesPuller" >
+        <service uid="pullSeriesController" type="::sight::modules::io::dicomweb::SSeriesPuller" >
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
             <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomWebReaderConfig" />

@@ -12,7 +12,7 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     ioGdcm
-    ioDicomWeb
+    module_io_dicomweb
     ioPacs
     media
     module_services

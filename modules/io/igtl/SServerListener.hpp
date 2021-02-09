@@ -42,7 +42,7 @@ namespace sight::modules::io::igtl
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::modules::io::igtl::SServerListener" autoConnect="yes" >
+ * <service uid="..." type="::sight::modules::io::igtl::SServerListener" autoConnect="yes" >
  *      <port>...</port>
  *      <inout group="objects">
  *           <key uid="..." deviceName="device01" />

@@ -57,7 +57,7 @@ namespace sight::modules::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::modules::io::matrix::SMatricesReader">
+   <service type="::sight::modules::io::matrix::SMatricesReader">
        <inout key="matrixTL" uid="..." />
        <oneShot>false</oneShot>
        <fps>30</fps>

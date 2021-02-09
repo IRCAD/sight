@@ -13,10 +13,10 @@ set( REQUIREMENTS
     module_ui_qt
     ioGdcm
     ioDicom
-    ioDicomWeb
+    module_io_dicomweb
     media
     module_services
     visuVTK
     visuVTKAdaptor
     visuVTKQt
-    )
+)

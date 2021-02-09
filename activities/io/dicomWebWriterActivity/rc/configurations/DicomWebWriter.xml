@@ -65,7 +65,7 @@
             </slots>
         </service>
 
-        <service uid="pushSeriesController" type="::ioDicomWeb::SSeriesPusher">
+        <service uid="pushSeriesController" type="::sight::modules::io::dicomweb::SSeriesPusher">
             <in key="selectedSeries" uid="selections" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>

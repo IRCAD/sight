@@ -64,7 +64,7 @@
             <inout key="image" uid="image" />
         </service>
 
-        <service uid="sliderIndexDicomPullerEditor" type="::ioDicomWeb::SSliceIndexDicomPullerEditor">
+        <service uid="sliderIndexDicomPullerEditor" type="::sight::modules::io::dicomweb::SSliceIndexDicomPullerEditor">
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>

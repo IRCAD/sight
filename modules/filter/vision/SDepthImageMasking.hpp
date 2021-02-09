@@ -44,7 +44,7 @@ namespace sight::modules::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::modules::filter::vision::SDepthImageMasking" worker="...">
+    <service uid="..." type="::sight::modules::filter::vision::SDepthImageMasking" worker="...">
         <in key="maskImage" uid="..." />
         <in key="videoImage" uid="..." />
         <in key="depthImage" uid="..." autoConnect="yes" />

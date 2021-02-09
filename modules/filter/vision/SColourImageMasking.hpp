@@ -50,7 +50,7 @@ namespace sight::modules::filter::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="..." type="::modules::filter::vision::SColourImageMasking" >
+        <service uid="..." type="::sight::modules::filter::vision::SColourImageMasking" >
             <in key="videoTL" uid="..." autoConnect="yes" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />

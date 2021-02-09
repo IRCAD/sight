@@ -50,7 +50,7 @@ namespace sight::modules::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="computePointCloud" type="::modules::filter::vision::SPointCloudFromDepthMap">
+        <service uid="computePointCloud" type="::sight::modules::filter::vision::SPointCloudFromDepthMap">
             <in  key="depthMap" uid="..." />
             <in  key="rgbMap" uid="..." />
             <in  key="calibration" uid="..." />
