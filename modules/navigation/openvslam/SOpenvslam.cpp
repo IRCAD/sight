@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "openvslamTracker/SOpenvslam.hpp"
+#include "SOpenvslam.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -32,14 +32,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <openvslamIO/Helper.hpp>
-
 #include <services/macros.hpp>
-
-#include <io/opencv/FrameTL.hpp>
-
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
@@ -49,13 +42,20 @@
 #include <openvslam/publish/map_publisher.h>
 #include <openvslam/system.h>
 
+#include <io/opencv/FrameTL.hpp>
+
+#include <modules/navigation/openvslam/detail/Helper.hpp>
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace openvslamTracker
+namespace sight::modules::navigation::openvslam
 {
 
-fwServicesRegisterMacro( services::ITracker, ::openvslamTracker::SOpenvslam)
+fwServicesRegisterMacro( services::ITracker, ::sight::modules::navigation::openvslam::SOpenvslam)
 
 static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
@@ -250,8 +250,9 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     if(m_slamSystem == nullptr)
     {
         const data::mt::ObjectReadLock cameraLock(m_camera);
-        const auto config = ::openvslamIO::Helper::createMonocularConfig(m_camera, m_orbParameters,
-                                                                         m_initializerParameters);
+        const auto config = modules::navigation::openvslam::detail::Helper::createMonocularConfig(m_camera,
+                                                                                                  m_orbParameters,
+                                                                                                  m_initializerParameters);
 
         m_slamSystem = std::unique_ptr< ::openvslam::system >(new ::openvslam::system(config, m_vocabularyPath));
 
@@ -827,8 +828,8 @@ void SOpenvslam::updatePointCloud()
     // or if tracker is paused.
     if (m_pointCloud && !m_isPaused)
     {
-        std::vector< ::openvslamdata::landmark* > landmarks;
-        std::set< ::openvslamdata::landmark* > local_landmarks;
+        std::vector< ::openvslam::data::landmark* > landmarks;
+        std::set< ::openvslam::data::landmark* > local_landmarks;
 
         const auto nblandmarks = m_ovsMapPublisher->get_landmarks(landmarks, local_landmarks);
 
@@ -856,7 +857,7 @@ void SOpenvslam::updatePointCloud()
                     continue;
                 }
 
-                const openvslam::Vec3_t pos_w = lm->get_pos_in_world();
+                const ::openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
                 m_pointCloud->pushPoint(static_cast<float>(pos_w(0)) * m_scale,
                                         static_cast<float>(pos_w(1)) * m_scale,
@@ -874,7 +875,7 @@ void SOpenvslam::updatePointCloud()
                     continue;
                 }
 
-                const openvslam::Vec3_t pos_w = lm->get_pos_in_world();
+                const ::openvslam::Vec3_t pos_w = lm->get_pos_in_world();
 
                 m_pointCloud->pushPoint(static_cast<float>(pos_w(0)) * m_scale,
                                         static_cast<float>(pos_w(1)) * m_scale,
@@ -896,4 +897,4 @@ void SOpenvslam::updatePointCloud()
 
 //------------------------------------------------------------------------------
 
-} // namespace openvslamTracker
+} // namespace sight::modules::navigation::openvslam

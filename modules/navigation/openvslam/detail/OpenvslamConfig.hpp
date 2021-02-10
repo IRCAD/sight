@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "openvslamIO/config.hpp"
+#include "modules/navigation/openvslam/config.hpp"
 
-namespace openvslamIO
+namespace sight::modules::navigation::openvslam::detail
 {
 
 /**
  * @brief Handles Openvslam orb parameters.
  */
-struct OPENVSLAMIO_CLASS_API OrbParams
+struct MODULE_NAVIGATION_OPENVSLAM_CLASS_API OrbParams
 {
     /// Maximum number of key points.
     unsigned int maxNumKeyPts = 2000;
@@ -48,7 +48,7 @@ struct OPENVSLAMIO_CLASS_API OrbParams
 /**
  * @brief Handles Openvslam Initializer parameters (only used for monocular).
  */
-struct OPENVSLAMIO_CLASS_API InitParams
+struct MODULE_NAVIGATION_OPENVSLAM_CLASS_API InitParams
 {
     /// Number of Ransac Iterations.
     unsigned int numRansacIterations = 100;
@@ -67,7 +67,7 @@ struct OPENVSLAMIO_CLASS_API InitParams
 /**
  * @brief Handles Openvslam tracking parameters.
  */
-struct OPENVSLAMIO_CLASS_API TrackingParams
+struct MODULE_NAVIGATION_OPENVSLAM_CLASS_API TrackingParams
 {
     /// Depth threshold
     double trueDepthThr = 40.0;
@@ -75,4 +75,4 @@ struct OPENVSLAMIO_CLASS_API TrackingParams
     double depthmapFactor = 1.0;
 };
 
-} //namespace openvslamIO
+} //namespace sight::modules::navigation::openvslam::detail

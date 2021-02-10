@@ -29,7 +29,7 @@ set( REQUIREMENTS
     module_sync
     module_data
     module_io_vision
-    openvslamTracker
+    module_navigation_openvslam
 
     # Generic Scene
 )

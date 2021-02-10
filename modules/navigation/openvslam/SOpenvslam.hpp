@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "openvslamTracker/config.hpp"
+#include "modules/navigation/openvslam/config.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
@@ -38,9 +38,9 @@
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 
-#include <openvslamIO/OpenvslamConfig.hpp>
-
 #include <services/ITracker.hpp>
+
+#include <modules/navigation/openvslam/detail/OpenvslamConfig.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -57,7 +57,7 @@ class frame_publisher;
 }
 
 /// The module openvslamTracker contains SOpenvslam service to manage instance of OpenVSLAM.
-namespace openvslamTracker
+namespace sight::modules::navigation::openvslam
 {
 
 /**
@@ -105,7 +105,7 @@ namespace openvslamTracker
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::openvslamTracker::SOpenvslam" worker="trackerWorker" >
+        <service type="::modules::navigation::openvslam::SOpenvslam" worker="trackerWorker" >
             <in key="camera" uid="..." />
             <in key="timeline" uid="..." autoConnect="yes" />
             <in key="timeline2" uid="..." />
@@ -135,7 +135,7 @@ namespace openvslamTracker
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class OPENVSLAMTRACKER_CLASS_API SOpenvslam : public services::ITracker
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public services::ITracker
 {
 
 public:
@@ -143,10 +143,10 @@ public:
     fwCoreServiceMacro(SOpenvslam, services::ITracker)
 
     /// Constructor. Initializes signals and slots.
-    OPENVSLAMTRACKER_API SOpenvslam() noexcept;
+    MODULE_NAVIGATION_OPENVSLAM_API SOpenvslam() noexcept;
 
     /// Destructor. Stops the service if started.
-    OPENVSLAMTRACKER_API virtual ~SOpenvslam() noexcept override final;
+    MODULE_NAVIGATION_OPENVSLAM_API virtual ~SOpenvslam() noexcept override final;
 
     /**
      * @name Tracking Mode : Openvslam can be used with 3 mode.
@@ -154,7 +154,7 @@ public:
      * - \b STEREO: Use a sterovision system.(NOT IMPLEMENTED)
      * - \b DEPTH : Use a RGB-D sensor. (NOT IMPLEMENTED)
      */
-    enum class OPENVSLAMTRACKER_API TrackingMode
+    enum class MODULE_NAVIGATION_OPENVSLAM_API TrackingMode
     {
         MONO = 0,
         STEREO,
@@ -164,16 +164,16 @@ public:
 protected:
 
     /// Configures the service by parsing XML.
-    OPENVSLAMTRACKER_API virtual void configuring() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API virtual void configuring() override final;
 
     /// Retrieves input data.
-    OPENVSLAMTRACKER_API virtual void starting() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API virtual void starting() override final;
 
     /// Shutdown the openvslam system & reset output.
-    OPENVSLAMTRACKER_API virtual void stopping() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API virtual void stopping() override final;
 
     /// Does nothing.
-    OPENVSLAMTRACKER_API virtual void updating() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API virtual void updating() override final;
 
 private:
 
@@ -294,10 +294,10 @@ private:
     data::Mesh::sptr m_pointCloud;
 
     /// ORB Parameters structure
-    ::openvslamIO::OrbParams m_orbParameters;
+    modules::navigation::openvslam::detail::OrbParams m_orbParameters;
 
     /// Openvslam initializer parameters (only used in monocular mode).
-    ::openvslamIO::InitParams m_initializerParameters;
+    modules::navigation::openvslam::detail::InitParams m_initializerParameters;
 
     /// Tracking mode : MONO, STEREO, DEPTH.
     TrackingMode m_trackingMode {TrackingMode::MONO};
@@ -312,7 +312,7 @@ private:
     bool m_localization {false};
 
     /// Unique pointer to SLAM system.
-    std::unique_ptr< openvslam::system > m_slamSystem {nullptr};
+    std::unique_ptr< ::openvslam::system > m_slamSystem {nullptr};
 
     /// Pointer to a publisher class to get current frame.
     std::shared_ptr< ::openvslam::publish::frame_publisher> m_ovsFramePublisher {nullptr};

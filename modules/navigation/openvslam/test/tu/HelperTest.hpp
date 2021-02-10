@@ -28,7 +28,7 @@
 
 #include <openvslam/camera/perspective.h>
 
-namespace openvslamIO
+namespace sight::modules::navigation::openvslam::detail
 {
 
 namespace ut

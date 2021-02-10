@@ -1,5 +1,5 @@
 
-set( NAME openvslamTracker )
+set( NAME module_navigation_openvslam )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
@@ -8,7 +8,6 @@ set( DEPENDENCIES
         services
         ui_base
         io_opencv
-        openvslamIO
 )
 set( REQUIREMENTS )
 set( DISABLE_PCH TRUE)

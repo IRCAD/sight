@@ -1,8 +1,8 @@
-set( NAME openvslamIOTest )
+set( NAME module_navigation_openvslamTest )
 set( VERSION )
 set( TYPE TEST )
 set( DEPENDENCIES
     utestData
-    openvslamIO
+    module_navigation_openvslam
 )
 set( REQUIREMENTS )

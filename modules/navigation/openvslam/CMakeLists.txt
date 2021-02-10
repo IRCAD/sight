@@ -2,8 +2,8 @@
 if(UNIX)
     fwLoadProperties()
 
-    find_package(OpenCV QUIET REQUIRED COMPONENTS core imgproc imgcodecs OPTIONAL_COMPONENTS cudawarping cudaimgproc)
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_core opencv_imgproc opencv_imgcodecs)
+    find_package(OpenCV QUIET REQUIRED COMPONENTS core highgui imgproc imgcodecs OPTIONAL_COMPONENTS cudawarping cudaimgproc)
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
     
     find_package(Boost QUIET REQUIRED COMPONENTS serialization)
     target_link_libraries(${FWPROJECT_NAME} PRIVATE Boost::serialization)

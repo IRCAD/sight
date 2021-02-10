@@ -20,16 +20,16 @@
  *
  ***********************************************************************/
 
-#include "openvslamIO/Helper.hpp"
+#include "Helper.hpp"
 
 #include <fstream>
 
-namespace openvslamIO
+namespace sight::modules::navigation::openvslam::detail
 {
 
 //-----------------------------------------------------------------------------
 
-openvslam::camera::perspective Helper::fromSight(const data::Camera::csptr _sightCam)
+::openvslam::camera::perspective Helper::fromSight(const data::Camera::csptr _sightCam)
 {
     const auto name = _sightCam->getCameraID();
     const auto dist = _sightCam->getDistortionCoefficient();
@@ -54,7 +54,7 @@ openvslam::camera::perspective Helper::fromSight(const data::Camera::csptr _sigh
 
 //-----------------------------------------------------------------------------
 
-data::Camera::sptr Helper::toSight(const openvslam::camera::perspective _oVSlamCam)
+data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSlamCam)
 {
     data::Camera::sptr cam = data::Camera::New();
 
@@ -84,9 +84,9 @@ data::Camera::sptr Helper::toSight(const openvslam::camera::perspective _oVSlamC
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<openvslam::config> Helper::createMonocularConfig(const data::Camera::csptr _sightCam,
-                                                                 const OrbParams& _orbParams,
-                                                                 const InitParams& _initParams)
+std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(const data::Camera::csptr _sightCam,
+                                                                   const OrbParams& _orbParams,
+                                                                   const InitParams& _initParams)
 {
     //Create a YAML node for other parameters.
     ::YAML::Node node;
@@ -135,7 +135,7 @@ std::shared_ptr<openvslam::config> Helper::createMonocularConfig(const data::Cam
 
 //-----------------------------------------------------------------------------
 
-void Helper::writeOpenvslamConfig(const std::shared_ptr<openvslam::config> config, const std::string& _filepath)
+void Helper::writeOpenvslamConfig(const std::shared_ptr<::openvslam::config> config, const std::string& _filepath)
 {
     writeOpenvslamConfig(config->yaml_node_, _filepath);
 }
@@ -150,7 +150,7 @@ void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _f
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<openvslam::config> Helper::readOpenvslamConfig(const std::string& _filepath)
+std::shared_ptr<::openvslam::config> Helper::readOpenvslamConfig(const std::string& _filepath)
 {
     std::shared_ptr< ::openvslam::config > conf;
     try
@@ -170,4 +170,4 @@ std::shared_ptr<openvslam::config> Helper::readOpenvslamConfig(const std::string
 
 //-----------------------------------------------------------------------------
 
-} //namespace openvslamIO
+} //namespace sight::modules::navigation::openvslam::detail

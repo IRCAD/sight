@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,35 +20,32 @@
  *
  ***********************************************************************/
 
-#include "openvslamTracker/Plugin.hpp"
+#pragma once
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include "modules/navigation/openvslam/config.hpp"
 
-#include <services/macros.hpp>
+#include <core/runtime/Plugin.hpp>
 
-namespace openvslamTracker
+namespace sight::modules::navigation::openvslam
+{
+/**
+ * @brief   This class is started when the modules are loaded.
+ */
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API Plugin : public core::runtime::Plugin
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::openvslamTracker::Plugin");
+public:
 
-//-----------------------------------------------------------------------------
+    /**
+     * @brief destructor
+     */
+    MODULE_NAVIGATION_OPENVSLAM_API ~Plugin() noexcept final;
 
-Plugin::~Plugin() noexcept
-{
-}
+    // Overrides
+    MODULE_NAVIGATION_OPENVSLAM_API void start() noexcept final;
 
-//-----------------------------------------------------------------------------
+    // Overrides
+    MODULE_NAVIGATION_OPENVSLAM_API void stop() noexcept final;
+};
 
-void Plugin::start() noexcept
-{
-}
-
-//---------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-}  //namespace openvslamTracker
+} // namespace orbSlamTracker

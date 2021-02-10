@@ -465,7 +465,7 @@
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="openvslamSrv" type="::openvslamTracker::SOpenvslam" worker="openvslamWorker" >
+            <service uid="openvslamSrv" type="::sight::modules::navigation::openvslam::SOpenvslam" worker="openvslamWorker" >
                 <in key="camera" uid="camera" />
                 <in key="timeline" uid="Timeline" autoConnect="yes" />
                 <inout key="cameraMatrixTL" uid="CamMatrixTimeline" />
