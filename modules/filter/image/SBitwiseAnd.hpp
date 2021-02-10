@@ -41,11 +41,11 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection Input Input
- * - \b image [data::Image]: input image
- * - \b mask [data::Image]: mask
+ * - \b image [sight::data::Image]: input image
+ * - \b mask [sight::data::Image]: mask
  *
  * @subsection Output Output
- * - \b outputImage [data::Image]: result of operation 'AND' between input image and mask
+ * - \b outputImage [sight::data::Image]: result of operation 'AND' between input image and mask
  */
 class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::services::IOperator
 {

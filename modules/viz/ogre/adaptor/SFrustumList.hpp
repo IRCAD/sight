@@ -56,8 +56,8 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [data::Camera]: data::Camera that handles calibration parameters
- * - \b transform [data::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
+ * - \b camera [sight::data::Camera]: data::Camera that handles calibration parameters
+ * - \b transform [sight::data::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the frustum's layer

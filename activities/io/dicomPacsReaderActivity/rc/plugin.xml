@@ -3,7 +3,6 @@
     <requirement id="module_activities" />
     <requirement id="module_ui_qt" />
     <requirement id="visuVTKQt" />
-    <requirement id="ioPacs" />
 
     <xi:include href="configurations/DicomPacsReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PacsConfigurationManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

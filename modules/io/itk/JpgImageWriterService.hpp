@@ -49,7 +49,7 @@ namespace sight::modules::io::itk
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::Image]: image to save.
+ * - \b data [sight::data::Image]: image to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.

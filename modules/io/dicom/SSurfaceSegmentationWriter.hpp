@@ -48,13 +48,13 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::modules::io::dicom::SSurfaceSegmentationWriter" >
+       <service uid="..." type="::sight::modules::io::dicom::SSurfaceSegmentationWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b data [data::ModelSeries]: ModelSeries to save in Dicom.
+ * - \b data [sight::data::ModelSeries]: ModelSeries to save in Dicom.
  */
 class MODULE_IO_DICOM_CLASS_API SSurfaceSegmentationWriter : public sight::io::base::services::IWriter
 {

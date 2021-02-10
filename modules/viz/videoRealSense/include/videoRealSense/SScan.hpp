@@ -114,12 +114,12 @@ namespace videoRealSense
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b depthTL [data::FrameTL]: Frame timeline of the depth video.
- * - \b frameTL [data::FrameTL]: Frame timeline of the color video.
- * - \b cameraSeries [data::CameraSeries]: Camera series that will contain device camera information.
+ * - \b depthTL [sight::data::FrameTL]: Frame timeline of the depth video.
+ * - \b frameTL [sight::data::FrameTL]: Frame timeline of the color video.
+ * - \b cameraSeries [sight::data::CameraSeries]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
- *- \b pointcloud [data::Mesh]: pointcloud computed from depth map. (optional)
+ *- \b pointcloud [sight::data::Mesh]: pointcloud computed from depth map. (optional)
  * -\b distance [data::Float]: distance (in mm) at center pixel. (optional)
  *
  * @subsection Configuration Configuration

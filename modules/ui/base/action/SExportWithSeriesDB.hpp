@@ -66,7 +66,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b series [data::Series]: series to export using a SeriesDB writer
+ * - \b series [sight::data::Series]: series to export using a SeriesDB writer
  *
  * @subsection Configuration Configuration
  * With :

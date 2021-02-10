@@ -70,8 +70,8 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input
- * - \b pointList [data::PointList] (optional): point list to display.
- * - \b mesh [data::Mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
+ * - \b pointList [sight::data::PointList] (optional): point list to display.
+ * - \b mesh [sight::data::Mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
  *      ignored and only raw vertices will be displayed. or add some fields.
  *
  * @subsection Configuration Configuration:

@@ -65,7 +65,7 @@ namespace uiMedDataQml
  * @section Objects Required objects
  *
  * @subsection In-Out In-Out
- * - \b modelSeries [data::ModelSeries]: model series containing the organs to list
+ * - \b modelSeries [sight::data::ModelSeries]: model series containing the organs to list
  */
 class UIMEDDATAQML_CLASS_API SModelSeriesList : public ::fwQml::IQmlEditor
 {

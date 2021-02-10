@@ -47,10 +47,10 @@ namespace sight::modules::filter::vision
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSeries [data::CameraSeries]: camera series containing the scale of the depth map.
- * - \b originDepth [data::Image]: original depth map.
+ * - \b cameraSeries [sight::data::CameraSeries]: camera series containing the scale of the depth map.
+ * - \b originDepth [sight::data::Image]: original depth map.
  * @subsection In-Out In-Out
- * - \b scaledDepth [data::Image]: scaled depth map.
+ * - \b scaledDepth [sight::data::Image]: scaled depth map.
  */
 class MODULE_FILTER_VISION_CLASS_API STransformDepthMap2mm : public services::IOperator
 {

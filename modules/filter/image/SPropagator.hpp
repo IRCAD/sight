@@ -69,10 +69,10 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection Input Input
- * - \b imageIn [data::Image]: The background image, whose values we read from during propagation.
+ * - \b imageIn [sight::data::Image]: The background image, whose values we read from during propagation.
  *
  * @subsection In-Out In-Out
- * - \b imageOut [data::Image]: The output image, in which we will draw.
+ * - \b imageOut [sight::data::Image]: The output image, in which we will draw.
  *
  * @subsection Configuration Configuration
  * - \b value (optional) : The initial value used for drawing. 1 by default.

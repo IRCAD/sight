@@ -12,7 +12,7 @@
 
         <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
         <object uid="previewSeriesDB" type="::sight::data::SeriesDB" />
-        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
+        <object uid="pacsConfiguration" type="::sight::io::dimse::data::PacsConfiguration" />
         <object uid="previewSelections" type="::sight::data::Vector" />
 
         <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
@@ -124,10 +124,10 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="progressBarController" type="::ioPacs::SProgressBarController"  worker="progress" />
+        <service uid="progressBarController" type="::sight::modules::io::dimse::SProgressBarController"  worker="progress" />
 
         <!-- PACS CONFIGURATION -->
-        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer">
+        <service uid="pacsConfigurationInitializer" type="::sight::modules::io::dimse::SPacsConfigurationInitializer">
             <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
             <config
                 localApplicationTitle="${APP_NAME}"
@@ -147,12 +147,12 @@
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="queryEditor" type="::ioPacs::SQueryEditor">
+        <service uid="queryEditor" type="::sight::modules::io::dimse::SQueryEditor">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="pullSeriesController" type="::ioPacs::SSeriesPuller">
+        <service uid="pullSeriesController" type="::sight::modules::io::dimse::SSeriesPuller">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />

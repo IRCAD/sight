@@ -96,7 +96,7 @@ namespace action
     </service>
         @endcode
  * @subsection Input Input
- * - \b series [data::Vector]: vector containg series inherited from data::Series
+ * - \b series [sight::data::Vector]: vector containg series inherited from data::Series
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the

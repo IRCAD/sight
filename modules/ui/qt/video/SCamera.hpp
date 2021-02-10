@@ -80,8 +80,8 @@ namespace video
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b camera [data::Camera]: camera data.
- * - \b cameraSeries [data::CameraSeries]: camera series thus containing several camera.
+ * - \b camera [sight::data::Camera]: camera data.
+ * - \b cameraSeries [sight::data::CameraSeries]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
  * - \b videoSupport (optional, default="no"): if we can open a video file in addition with cameras.

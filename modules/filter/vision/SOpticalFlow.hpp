@@ -52,7 +52,7 @@ namespace sight::modules::filter::vision
      </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [data::FrameTL]: timeline on which optical flow will be computed.
+ * - \b timeline [sight::data::FrameTL]: timeline on which optical flow will be computed.
  * @subsection Configuration Configuration:
  * - \b latency (optionnal): There is no need to process every frames coming in.
  * Use `latency` to wait between two consecutive frame. Ex: if set to 333 (in ms), it will compute ~1/10 frames at 30fps

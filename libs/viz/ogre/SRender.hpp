@@ -87,7 +87,7 @@ class Layer;
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b offScreen [data::Image] (optional, unused by default): If used, render the scene in an image
+ * - \b offScreen [sight::data::Image] (optional, unused by default): If used, render the scene in an image
  *      and not in a window.
  *
  * @subsection Configuration Configuration

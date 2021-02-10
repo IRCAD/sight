@@ -10,10 +10,11 @@ set( REQUIREMENTS
     module_data
     data
     dicomPacsReaderActivity
+    io_dimse
     module_ui_base
     module_ui_qt
     module_io_dicom
-    ioPacs
+    module_io_dimse
     media
     module_services
     visuVTK

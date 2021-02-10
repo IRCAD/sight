@@ -69,8 +69,8 @@ namespace sight::modules::ui::qt::calibration
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b cameraSeries [data::CameraSeries] : stores camera calibrations.
- * - \b activitySeries [data::ActivitySeries]: stores the information used to generate the calibration.
+ * - \b cameraSeries [sight::data::CameraSeries] : stores camera calibrations.
+ * - \b activitySeries [sight::data::ActivitySeries]: stores the information used to generate the calibration.
  *        It allows to re-open the activity with this information.
  *
  * @subsection Configuration Configuration:

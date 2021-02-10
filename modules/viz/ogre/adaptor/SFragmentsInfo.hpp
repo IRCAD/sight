@@ -45,9 +45,9 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection InOut InOut:
- * - \b image [data::Image] (optional): image containing the snapshot of the layer color buffer.
- * - \b depth [data::Image] (optional): image containing the snapshot of the layer depth buffer.
- * - \b primitiveID [data::Image] (optional): image containing the primitive ID of the layer.
+ * - \b image [sight::data::Image] (optional): image containing the snapshot of the layer color buffer.
+ * - \b depth [sight::data::Image] (optional): image containing the snapshot of the layer depth buffer.
+ * - \b primitiveID [sight::data::Image] (optional): image containing the primitive ID of the layer.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory): defines the mesh's layer.

@@ -59,9 +59,9 @@ namespace sight::modules::io::dicomweb
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selectedSeries [data::Vector]: List of DICOM series to pull from the PACS..
+ * - \b selectedSeries [sight::data::Vector]: List of DICOM series to pull from the PACS..
  * @subsection In-Out In-Out:
- * - \b seriesDB [data::SeriesDB]: SeriesDB where to put the retrieved dicom series.
+ * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).

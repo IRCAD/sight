@@ -48,14 +48,14 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::io::dicom::SDicomSeriesAnonymizer">
+        <service type="::sight::modules::io::dicom::SDicomSeriesAnonymizer">
             <inout key="seriesDB" uid="..." />
             <inout key="selectedSeries" uid="..." />
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [data::SeriesDB]: SeriesDB where the dicom series comes from.
- * - \b selectedSeries [data::Vector]: List of DICOM series to be anonymized.
+ * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where the dicom series comes from.
+ * - \b selectedSeries [sight::data::Vector]: List of DICOM series to be anonymized.
  */
 class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public services::IController
 {

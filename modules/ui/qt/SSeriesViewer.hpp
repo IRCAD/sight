@@ -55,7 +55,7 @@ namespace sight::modules::ui::qt
    </service>
    @endcode
  * @subsection Input Input
- * - \b series [data::Vector]: vector containing the series to preview.
+ * - \b series [sight::data::Vector]: vector containing the series to preview.
  * @subsection Configuration Configuration
  * - \b parentView: wid of the view where the config will install its windows.
  * - \b config: gives the available association between data type and associated config.

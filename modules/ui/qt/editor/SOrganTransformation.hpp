@@ -56,8 +56,8 @@ namespace editor
    </service>
    @endcode
  * @subsection InOut InOut
- * - \b modelSeries [data::ModelSeries]: modelSeries to modify.
- * - \b composite [data::Composite]: composite.
+ * - \b modelSeries [sight::data::ModelSeries]: modelSeries to modify.
+ * - \b composite [sight::data::Composite]: composite.
  */
 class MODULE_UI_QT_CLASS_API SOrganTransformation : public QObject,
                                                     public sight::ui::base::editor::IEditor

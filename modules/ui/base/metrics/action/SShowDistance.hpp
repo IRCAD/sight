@@ -47,7 +47,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [data::Image]: image containing the distances.
+ * - \b image [sight::data::Image]: image containing the distances.
  */
 class MODULE_UI_BASE_CLASS_API SShowDistance final : public ::sight::ui::base::IActionSrv
 {

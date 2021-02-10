@@ -48,7 +48,7 @@ namespace sight::modules::io::itk
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::ImageSeries]: image series to save.
+ * - \b data [sight::data::ImageSeries]: image series to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.

@@ -51,10 +51,10 @@ namespace sight::modules::filter::vision
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSeries [data::CameraSeries]: camera series containing the scale of the depth map.
- * - \b originDepthTL [data::FrameTL]: timeline containing the original depth maps.
+ * - \b cameraSeries [sight::data::CameraSeries]: camera series containing the scale of the depth map.
+ * - \b originDepthTL [sight::data::FrameTL]: timeline containing the original depth maps.
  * @subsection In-Out In-Out
- * - \b scaledDepthTL [data::FrameTL]: timeline containing the scaled depth maps.
+ * - \b scaledDepthTL [sight::data::FrameTL]: timeline containing the scaled depth maps.
  */
 class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public services::IOperator
 {

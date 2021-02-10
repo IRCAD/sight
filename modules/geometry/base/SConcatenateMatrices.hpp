@@ -52,11 +52,11 @@ namespace sight::modules::geometry::base
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [data::TransformationMatrix3D]: List of matrix keys to concatenate. For each input matrix, it is
+ * - \b matrix [sight::data::TransformationMatrix3D]: List of matrix keys to concatenate. For each input matrix, it is
  * possible to invert it before multiplying with it by specifying \b inverse="true".
  * The autoConnect is connected to the update slot, thus is will trigger a new concatenation.
  * @subsection In-Out In-Out:
- * - \b output [data::TransformationMatrix3D]: Output matrix.
+ * - \b output [sight::data::TransformationMatrix3D]: Output matrix.
  */
 
 class MODULE_GEOMETRY_BASE_CLASS_API SConcatenateMatrices : public services::IController

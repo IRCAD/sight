@@ -45,11 +45,11 @@ namespace sight::modules::geometry::base
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [data::TransformationMatrix3D]: matrix to decompose.
+ * - \b matrix [sight::data::TransformationMatrix3D]: matrix to decompose.
  * @subsection In-Out In-Out:
- * - \b translation [data::TransformationMatrix3D] (optional): translation matrix.
- * - \b rotation [data::TransformationMatrix3D] (optional): rotation matrix.
- * - \b scale [data::TransformationMatrix3D] (optional): scaling matrix.
+ * - \b translation [sight::data::TransformationMatrix3D] (optional): translation matrix.
+ * - \b rotation [sight::data::TransformationMatrix3D] (optional): rotation matrix.
+ * - \b scale [sight::data::TransformationMatrix3D] (optional): scaling matrix.
  *
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public services::IOperator

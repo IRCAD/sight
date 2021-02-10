@@ -55,7 +55,7 @@ namespace editor
     </service>
     @endcode
  * @subsection In-Out In-Out
- * - \b string [data::String]: string containing the code
+ * - \b string [sight::data::String]: string containing the code
  * @subsection Configuration Configuration
  * - \b language name: can be "Python" or "Cpp"
  */

@@ -82,10 +82,10 @@ namespace sight::modules::geometry::vision::charuco
        </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [data::FrameTL]: timelines containing the images to detect the charucoBoard.
+ * - \b timeline [sight::data::FrameTL]: timelines containing the images to detect the charucoBoard.
  * @subsection In-Out In-Out:
- * - \b calInfo [data::CalibrationInfo]: calibration object where to store the detected images.
- * - \b detection [data::PointList] (optional): detected chessboard points in image coordinates.
+ * - \b calInfo [sight::data::CalibrationInfo]: calibration object where to store the detected images.
+ * - \b detection [sight::data::PointList] (optional): detected chessboard points in image coordinates.
  * @subsection Configuration Configuration:
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm, the size of aruco Markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).

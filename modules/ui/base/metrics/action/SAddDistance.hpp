@@ -44,7 +44,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [data::Image]: Image containing the distance field.
+ * - \b image [sight::data::Image]: Image containing the distance field.
  */
 class MODULE_UI_BASE_CLASS_API SAddDistance final : public ::sight::ui::base::IActionSrv
 {

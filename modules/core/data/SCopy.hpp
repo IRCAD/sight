@@ -70,14 +70,14 @@ namespace sight::modules::data
    @endcode
  *
  * @subsection Input Input
- * - \b source [data::Object]: define the source object to copy.
+ * - \b source [sight::data::Object]: define the source object to copy.
  *    - \b extract (optional): define the camp path used to retrieve the object to copy.
  *
  * @subsection In-Out In-Out
- * - \b target [data::Object]: define the target object to update, can't be used with Output.
+ * - \b target [sight::data::Object]: define the target object to update, can't be used with Output.
  *
  * @subsection Output Output
- * - \b target [data::Object]: define the target object to create, can't be used with In-Out.
+ * - \b target [sight::data::Object]: define the target object to create, can't be used with In-Out.
  *
  * @subsection Configuration Configuration
  * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when

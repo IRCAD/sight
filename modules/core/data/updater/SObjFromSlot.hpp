@@ -46,7 +46,7 @@ namespace updater
      </service>
      @endcode
  * @subsection Output Output
- * - \b object [data::Object]: Object used to register/unregister the object given by the slots.
+ * - \b object [sight::data::Object]: Object used to register/unregister the object given by the slots.
  */
 class MODULE_DATA_CLASS_API SObjFromSlot : public modules::data::IUpdaterSrv
 {

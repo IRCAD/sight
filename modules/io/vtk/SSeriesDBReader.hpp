@@ -66,7 +66,7 @@ namespace sight::modules::io::vtk
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [data::SeriesDB]: seriesDB to load.
+ * - \b data [sight::data::SeriesDB]: seriesDB to load.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

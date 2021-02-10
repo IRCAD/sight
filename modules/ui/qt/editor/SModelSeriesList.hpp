@@ -81,7 +81,7 @@ class ValueView;
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b modelSeries [data::ModelSeries]: model series containing the organs to list
+ * - \b modelSeries [sight::data::ModelSeries]: model series containing the organs to list
  *
  * @subsection Configuration Configuration
  * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox

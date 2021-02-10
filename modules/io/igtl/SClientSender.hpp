@@ -44,7 +44,7 @@ namespace sight::modules::io::igtl
  * </service>
  * @endcode
  * @subsection Input Input:
- * - \b objects [data::Object]: specified objects to send to the connected server.
+ * - \b objects [sight::data::Object]: specified objects to send to the connected server.
  * They must have an attribute 'deviceName' to known the device-name used for this specific data.
  * @subsection Configuration Configuration:
  * - \b deviceName : filter by device Name in Message

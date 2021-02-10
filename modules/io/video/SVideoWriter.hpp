@@ -48,7 +48,7 @@ namespace sight::modules::io::video
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::FrameTL]: timeline containing the frame to save.
+ * - \b data [sight::data::FrameTL]: timeline containing the frame to save.
  */
 class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::base::services::IWriter
 {

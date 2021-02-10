@@ -81,7 +81,7 @@ namespace uiImageQml
  * @section Objects Required objects
  *
  * @subsection In-Out In-Out
- * - \b image [data::Image]: image on which the slice index will be changed
+ * - \b image [sight::data::Image]: image on which the slice index will be changed
  */
 class UIIMAGEQML_CLASS_QT_API SSliceIndexPositionEditor : public ::fwQml::IQmlEditor,
                                                           public data::tools::helper::MedicalImage

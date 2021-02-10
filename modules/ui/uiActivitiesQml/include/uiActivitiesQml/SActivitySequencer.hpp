@@ -84,7 +84,7 @@ namespace uiActivitiesQml
    @endcode
  *
  *  @subsubsection In-Out In-Out
- * - \b seriesDB [data::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b seriesDB [sight::data::SeriesDB]: used to store the ActivitySeries of the managed activities
  */
 class UIACTIVITIESQML_CLASS_API SActivitySequencer : public ::fwQml::IQmlEditor,
                                                      public activities::IActivitySequencer

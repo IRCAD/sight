@@ -57,8 +57,8 @@ namespace action
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b series [data::Series]: Source series to export.
- * - \b seriesDB [data::SeriesDB]: Target series database where the series should be exported.
+ * - \b series [sight::data::Series]: Source series to export.
+ * - \b seriesDB [sight::data::SeriesDB]: Target series database where the series should be exported.
  */
 class MODULE_UI_QT_CLASS_API SExportSeries : public ::sight::ui::base::IActionSrv
 {

@@ -53,7 +53,7 @@ namespace sight::modules::io::igtl
  * @subsection Configuration Configuration:
  * - \b port : defines the port where the objects will be sent
  * @subsection Input Input:
- * - \b objects [data::Object]: specified objects to send.
+ * - \b objects [sight::data::Object]: specified objects to send.
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 

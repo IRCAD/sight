@@ -69,7 +69,7 @@ namespace sight::modules::data
            </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b camera [data::Camera]: Camera to update according to device information.
+ * - \b camera [sight::data::Camera]: Camera to update according to device information.
  * @subsection Configuration Configuration
  * - One of devices or configId tag is needed:
  *  - \b devices: configuration of devices

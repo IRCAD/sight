@@ -82,12 +82,12 @@ namespace editor
     </service>
    @endcode
  * @subsection In In
- * - \b requirementOverrides [data::Composite] (optional): provide some data that will be passed as activity
+ * - \b requirementOverrides [sight::data::Composite] (optional): provide some data that will be passed as activity
  *   requirements. Can be used to supply required data that cannot be created by the activity, or to override
  *   data that would normally be passed from an activity to the next.
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [data::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b seriesDB [sight::data::SeriesDB]: used to store the ActivitySeries of the managed activities
  *
  * @subsection Configuration Configuration
  * - \b activity :

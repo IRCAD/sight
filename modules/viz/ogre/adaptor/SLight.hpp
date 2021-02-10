@@ -59,8 +59,8 @@ namespace sight::modules::viz::ogre::adaptor
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b diffuseColor [data::Color]: diffuse color of the light.
- * - \b specularColor [data::Color]: specular color of the light.
+ * - \b diffuseColor [sight::data::Color]: diffuse color of the light.
+ * - \b specularColor [sight::data::Color]: specular color of the light.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the light's layer.

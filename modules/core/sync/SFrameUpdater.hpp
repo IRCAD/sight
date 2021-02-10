@@ -53,9 +53,9 @@ namespace sight::modules::sync
        </service>
    @endcode
  * @subsection Input Input:
- * - \b key1 [data::FrameTL]: timeline from which we synchronize images.
+ * - \b key1 [sight::data::FrameTL]: timeline from which we synchronize images.
  * @subsection In-Out In-Out:
- * - \b key2 [data::Image]: frame where to extract a buffer of a timeline.
+ * - \b key2 [sight::data::Image]: frame where to extract a buffer of a timeline.
  */
 class MODULE_SYNC_CLASS_API SFrameUpdater : public services::IController
 {

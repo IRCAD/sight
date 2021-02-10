@@ -55,7 +55,7 @@ namespace sight::modules::io::matrix
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::MatrixTL]: timeline containing the matrices to save.
+ * - \b data [sight::data::MatrixTL]: timeline containing the matrices to save.
  *
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter

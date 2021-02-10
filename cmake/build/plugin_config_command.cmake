@@ -103,17 +103,18 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                         string(STRIP ${CMAKE_MATCH_1} OBJECT_KEY)
                         string(STRIP ${CMAKE_MATCH_2} OBJECT_IMPL)
 
-                        list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">sight::${OBJECT_IMPL}</object>")
-                        list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, sight::${OBJECT_IMPL} )\n")
+                        list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">${OBJECT_IMPL}</object>")
+                        list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, ${OBJECT_IMPL} )\n")
 
                         set(OBJECT_INCLUDE_REGEX "(::([a-zA-Z0-9_]*))*")
                         # check if the object implementation matches the regex.
                         if("${OBJECT_IMPL}" MATCHES ${OBJECT_INCLUDE_REGEX})
                             # Split the object implementation with "::" to get a list of namespace.
-                            string(REPLACE "::" ";" OBJECT_SUB_IMPL ${OBJECT_IMPL})
+                            string(REPLACE "sight::" "" OBJECT_SUB_IMPL ${OBJECT_IMPL})
+                            string(REPLACE "::" ";" OBJECT_SUB_IMPL ${OBJECT_SUB_IMPL})
 
                             # Create the include directive.
-                            set(INCLUDE_DIRECTIVE "#include <core/")
+                            set(INCLUDE_DIRECTIVE "#include <")
                             foreach(SUB_IMPL ${OBJECT_SUB_IMPL})
                                 string(APPEND INCLUDE_DIRECTIVE ${SUB_IMPL}/)
                             endforeach()

@@ -56,7 +56,7 @@ namespace adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b tf [data::TransferFunction]: the current TransferFunction.
+ * - \b tf [sight::data::TransferFunction]: the current TransferFunction.
  * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update the adaptor.
  *
  * @subsection Configuration Configuration:

@@ -47,12 +47,12 @@ namespace sight::modules::geometry::vision
        </service>
    @endcode
  * @subsection Input Input:
- * - \b calibrationInfo1 [data::CalibrationInfo]: Data of the first camera used to compute the calibration.
- * - \b calibrationInfo2 [data::CalibrationInfo]: Data of the second camera used to compute the calibration.
+ * - \b calibrationInfo1 [sight::data::CalibrationInfo]: Data of the first camera used to compute the calibration.
+ * - \b calibrationInfo2 [sight::data::CalibrationInfo]: Data of the second camera used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [data::CameraSeries]: Output calibration.
+ * - \b camera [sight::data::CameraSeries]: Output calibration.
  *  * @subsection Output Output:
- * - \b matrix [data::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
+ * - \b matrix [sight::data::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
  * @subsection Configuration Configuration:
  * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).

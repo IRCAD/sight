@@ -53,7 +53,7 @@ namespace uiVisuOgre
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [data::Object]: .
+ * - \b reconstruction [sight::data::Object]: .
  */
 
 /**

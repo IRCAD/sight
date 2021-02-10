@@ -54,13 +54,13 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::io::dicom::SDicomSeriesDBReader">
+        <service type="::sight::modules::io::dicom::SDicomSeriesDBReader">
             <inout key="data" uid="..." />
             <dicomdirSupport>user_selection</dicomdirSupport>
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b data [data::SeriesDB]: Destination container for DicomSeries
+ * - \b data [sight::data::SeriesDB]: Destination container for DicomSeries
  * @subsection Configuration Configuration:
  * - \b dicomdirSupport (optional) : DicomDir support mode.
  * dicomdirSupport available mode:

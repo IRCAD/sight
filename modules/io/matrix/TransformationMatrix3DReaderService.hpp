@@ -44,7 +44,7 @@ namespace sight::modules::io::matrix
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [data::TransformationMatrix3D]: matrix to read.
+ * - \b data [sight::data::TransformationMatrix3D]: matrix to read.
  */
 class MODULE_IO_MATRIX_CLASS_API TransformationMatrix3DReaderService : public sight::io::base::services::IReader
 {

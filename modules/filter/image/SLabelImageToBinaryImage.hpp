@@ -54,10 +54,10 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection Input Input
- * - \b labelImage [data::Image]: Image from which we extract the mask.
+ * - \b labelImage [sight::data::Image]: Image from which we extract the mask.
  *
  * @subsection InOut InOut
- * - \b binaryMask [data::Image]: The binary mask, extracted from the set of labels or all non zero values.
+ * - \b binaryMask [sight::data::Image]: The binary mask, extracted from the set of labels or all non zero values.
  *
  * @subsection Configuration Configuration
  * If you decide to set your own parameters:

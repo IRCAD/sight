@@ -61,10 +61,10 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [data::Image](mandatory): image viewed in negato mode, used for auto connections only.
+ * - \b image [sight::data::Image](mandatory): image viewed in negato mode, used for auto connections only.
  *      Modification signals can be used to reset the camera's position and orientation. Useless without
  *      autoConnect="yes".
- * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:

@@ -46,11 +46,11 @@ namespace sight::modules::filter::image
    </service>
    @endcode
  * @subsection Input Input
- * - \b imageIn [data::Image]: Image to resample.
- * - \b transform [data::TransformationMatrix3D]: Transform to apply.
- * - \b target [data::Image] (optional): target image defining the size, spacing and origin of the output.
+ * - \b imageIn [sight::data::Image]: Image to resample.
+ * - \b transform [sight::data::TransformationMatrix3D]: Transform to apply.
+ * - \b target [sight::data::Image] (optional): target image defining the size, spacing and origin of the output.
  * @subsection In-Out In-Out
- * - \b imageOut [data::Image]: New resampled image.
+ * - \b imageOut [sight::data::Image]: New resampled image.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SResampler : public services::IOperator
 {

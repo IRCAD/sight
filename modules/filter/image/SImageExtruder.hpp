@@ -57,11 +57,11 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection Input Input
- * - \b meshes [data::ModelSeries]: model series where all meshes used for extrusion are stored.
- * - \b image [data::Image]: image to extrude, must be in 3 dimensions.
+ * - \b meshes [sight::data::ModelSeries]: model series where all meshes used for extrusion are stored.
+ * - \b image [sight::data::Image]: image to extrude, must be in 3 dimensions.
  *
  * @subsection In-Out In-Out
- * - \b extrudedImage [data::Image]: extruded image.
+ * - \b extrudedImage [sight::data::Image]: extruded image.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public services::IOperator
 {

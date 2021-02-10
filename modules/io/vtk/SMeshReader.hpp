@@ -53,7 +53,7 @@ namespace sight::modules::io::vtk
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [data::Mesh]: mesh to read
+ * - \b data [sight::data::Mesh]: mesh to read
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

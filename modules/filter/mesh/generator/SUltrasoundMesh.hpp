@@ -62,7 +62,7 @@ namespace generator
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [data::Mesh] : the generate US plane.
+ * - \b mesh [sight::data::Mesh] : the generate US plane.
  *
  * @subsection Configuration Configuration:
  * - \b resolutionX (optional, default=25u) : resolution in X of the US plane.

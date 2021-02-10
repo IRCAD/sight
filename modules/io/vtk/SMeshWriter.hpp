@@ -61,7 +61,7 @@ namespace sight::modules::io::vtk
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::Mesh]: mesh to save.
+ * - \b data [sight::data::Mesh]: mesh to save.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

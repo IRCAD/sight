@@ -57,9 +57,9 @@ namespace sight::modules::ui::qt::calibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b frameTL [data::FrameTL]: frame timeline used to extract images.
+ * - \b frameTL [sight::data::FrameTL]: frame timeline used to extract images.
  * @subsection In-Out In-Out:
- * - \b key2 [data::Vector]: vector containing extracted images.
+ * - \b key2 [sight::data::Vector]: vector containing extracted images.
  */
 class MODULE_UI_QT_CLASS_API SImagesSelector : public QObject,
                                                public sight::ui::base::editor::IEditor

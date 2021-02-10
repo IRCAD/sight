@@ -64,7 +64,7 @@ namespace sight::modules::filter::vision
  *   map must have the same dimensions as the depth map.
  *
  * @subsection In-Out In-Out
- * - \b pointCloud [data::Mesh]: Computed point cloud.
+ * - \b pointCloud [sight::data::Mesh]: Computed point cloud.
  *
  * @subsection Configuration Configuration
  */

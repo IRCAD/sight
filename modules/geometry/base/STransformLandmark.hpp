@@ -53,10 +53,10 @@ namespace sight::modules::geometry::base
    @endcode
  *
  * @subsection Input Input:
- * - \b matrix [data::TransformationMatrix3D]: transform applied to the landmark
+ * - \b matrix [sight::data::TransformationMatrix3D]: transform applied to the landmark
  *
  * @subsection InOut InOut:
- * - \b landmark [data::Landmarks]: landmark to modify
+ * - \b landmark [sight::data::Landmarks]: landmark to modify
  *
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group

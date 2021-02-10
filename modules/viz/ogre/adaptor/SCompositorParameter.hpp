@@ -58,7 +58,7 @@ class CompositorListener;
    @endcode
  *
  * @subsection InOut InOut:
- * - \b parameter [data::Object]: parameter containing the data to upload.
+ * - \b parameter [sight::data::Object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the compositor's layer.

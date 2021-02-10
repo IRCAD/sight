@@ -49,10 +49,10 @@ namespace processing
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b histogram [data::Histogram]: histogram to compute.
+ * - \b histogram [sight::data::Histogram]: histogram to compute.
  *
  * @subsection In In
- * - \b image [data::Image]: image used to compute histogram.
+ * - \b image [sight::data::Image]: image used to compute histogram.
  *
  * @subsection Configuration Configuration:
  * - \b binsWidth (mandatory): desired bins width used to classified pixel.

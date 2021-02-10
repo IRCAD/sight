@@ -85,7 +85,7 @@ namespace uiReconstructionQml
  *
  * @section Objects Required objects
  * @subsection In-Out In-Out
- * - \b reconstruction [data::Reconstruction]: reconstruction that will be updated
+ * - \b reconstruction [sight::data::Reconstruction]: reconstruction that will be updated
  */
 class UIRECONSTRUCTIONQML_CLASS_API SRepresentationEditor : public ::fwQml::IQmlEditor
 {

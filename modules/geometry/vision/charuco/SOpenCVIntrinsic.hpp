@@ -50,10 +50,10 @@ namespace sight::modules::geometry::vision::charuco
        </service>
    @endcode
  * @subsection Input Input:
- * - \b calibrationInfo [data::CalibrationInfo]: Data used to compute the calibration.
+ * - \b calibrationInfo [sight::data::CalibrationInfo]: Data used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [data::Camera]: Output calibration.
- * - \b poseVector [data::Vector] (optional): Camera calibration pose vector
+ * - \b camera [sight::data::Camera]: Output calibration.
+ * - \b poseVector [sight::data::Vector] (optional): Camera calibration pose vector
  * @subsection Configuration Configuration:
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm, the size of aruco markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).

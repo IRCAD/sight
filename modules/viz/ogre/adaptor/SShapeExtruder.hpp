@@ -67,7 +67,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b extrudedMeshes [data::ModelSeries]: model series where all extruded meshes are stored.
+ * - \b extrudedMeshes [sight::data::ModelSeries]: model series where all extruded meshes are stored.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : defines the layer.

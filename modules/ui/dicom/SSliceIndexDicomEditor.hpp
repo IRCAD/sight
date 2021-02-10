@@ -72,7 +72,7 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::ui::dicom::SSliceIndexDicomEditor">
+        <service type="::sight::modules::ui::dicom::SSliceIndexDicomEditor">
            <in key="series" uid="..." />
            <out key="image" uid="..." />
            <config dicomReader="::modules::io::dicom::SSeriesDBReader" delay="500">
@@ -83,9 +83,9 @@ namespace sight::modules::ui::dicom
        </service>
    @endcode
  * @subsection Input Input:
- * - \b series [data::DicomSeries]: Dicom Series where to extract the images.
+ * - \b series [sight::data::DicomSeries]: Dicom Series where to extract the images.
  * @subsection Output Output:
- * - \b image [data::Image]: Downloaded image.
+ * - \b image [sight::data::Image]: Downloaded image.
  * @subsection Configuration Configuration:
  * - \b dicomReader Reader type to use.
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.

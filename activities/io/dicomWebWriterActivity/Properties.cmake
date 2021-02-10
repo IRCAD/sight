@@ -9,11 +9,12 @@ set( REQUIREMENTS
     module_memory
     module_data
     data
+    io_dimse
     module_ui_base
     module_ui_qt
     module_io_dicom
     module_io_dicomweb
-    ioPacs
+    module_io_dimse
     media
     module_services
     visuVTK

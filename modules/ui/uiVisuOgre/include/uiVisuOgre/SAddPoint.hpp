@@ -47,7 +47,7 @@ namespace uiVisuOgre
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b pointList [data::PointList]: target points list.
+ * - \b pointList [sight::data::PointList]: target points list.
  */
 class UIVISUOGRE_CLASS_API SAddPoint : public services::IController
 {

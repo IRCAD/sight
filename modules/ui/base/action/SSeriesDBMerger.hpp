@@ -75,7 +75,7 @@ namespace action
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [data::SeriesDB]: the SeriesDB to merge.
+ * - \b seriesDB [sight::data::SeriesDB]: the SeriesDB to merge.
  */
 class MODULE_UI_BASE_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IActionSrv
 {

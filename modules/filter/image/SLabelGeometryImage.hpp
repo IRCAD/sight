@@ -54,10 +54,11 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b image [data::Image]: labeled image to which the 'landmark' field will be added.
+ * - \b image [sight::data::Image]: labeled image to which the 'landmark' field will be added.
  *
  * @subsection Out Out
- * - \b pointList [data::PointList]: PointList containing centroid points position. Each Point contains a label in
+ * - \b pointList [sight::data::PointList]: PointList containing centroid points position. Each Point contains a label
+ * in
  * field. This pointList is optional.
  *
  * @subsection Configuration Configuration

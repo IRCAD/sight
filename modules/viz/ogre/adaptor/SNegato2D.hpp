@@ -60,8 +60,8 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b image [data::Image]: image to display.
- * - \b tf [data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
+ * - \b image [sight::data::Image]: image to display.
+ * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:

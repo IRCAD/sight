@@ -60,7 +60,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b image [data::Image]: image containing the distance field.
+ * - \b image [sight::data::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string) : defines distance's layer.

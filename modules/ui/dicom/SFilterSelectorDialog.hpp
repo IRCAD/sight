@@ -35,14 +35,14 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::modules::ui::dicom::SFilterSelectorDialog">
+   <service type="::sight::modules::ui::dicom::SFilterSelectorDialog">
        <inout key="filter" uid="..." />
        <selection mode="include" />
        <addSelection filter="::sight::filter::dicom::custom::NoFilter" />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b filter [data::String]: string that will contain the identifier of the choosen filter.
+ * - \b filter [sight::data::String]: string that will contain the identifier of the choosen filter.
  * @subsection Configuration Configuration
  * None of these parameters are mandatory.
  *  - \b selection

@@ -82,15 +82,15 @@ namespace sight::modules::geometry::vision
      </service>
    @endcode
  * @subsection Input Input
- * - \b markerTL [data::MarkerTL]: timeline for markers.
- * - \b markerMap [data::MarkerMap]: markers map list.
- * - \b camera [data::Camera]: calibrated cameras.
- * - \b extrinsic [data::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
+ * - \b markerTL [sight::data::MarkerTL]: timeline for markers.
+ * - \b markerMap [sight::data::MarkerMap]: markers map list.
+ * - \b camera [sight::data::Camera]: calibrated cameras.
+ * - \b extrinsic [sight::data::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
- * - \b matrixTL [data::MatrixTL]: timeline of 3D transformation matrices.
- * - \b matrix [data::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
+ * - \b matrixTL [sight::data::MatrixTL]: timeline of 3D transformation matrices.
+ * - \b matrix [sight::data::TransformationMatrix3D]: list of matrices related to the markers. The marker's id must be
  * specified using the \b id tag to be found in the marker map.
- * - \b pointList [data::PointList] (optional): list of points corresponding to the model.
+ * - \b pointList [sight::data::PointList] (optional): list of points corresponding to the model.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */

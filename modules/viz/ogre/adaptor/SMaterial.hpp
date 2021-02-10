@@ -70,7 +70,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b material [data::Material]: adapted material. The material may be modified to comply to the configuration
+ * - \b material [sight::data::Material]: adapted material. The material may be modified to comply to the configuration
  *      of the adaptor.
  *
  * @subsection Configuration Configuration:

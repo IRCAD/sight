@@ -54,9 +54,9 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b image [data::Image]: frame displayed.
- * - \b tf [data::TransferFunction] (optional): a transfer function that can be applied to the video.
- * - \b pointList [data::PointList] (optional): point list to display (coordinates must be in the image space).
+ * - \b image [sight::data::Image]: frame displayed.
+ * - \b tf [sight::data::TransferFunction] (optional): a transfer function that can be applied to the video.
+ * - \b pointList [sight::data::PointList] (optional): point list to display (coordinates must be in the image space).
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the video's layer

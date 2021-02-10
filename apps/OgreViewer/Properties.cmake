@@ -16,6 +16,7 @@ set( REQUIREMENTS
     # Objects declaration
     module_services
     data
+    io_dimse
 
     # UI declaration/Actions
     module_ui_base
@@ -32,7 +33,7 @@ set( REQUIREMENTS
     module_data
     module_core_data
     module_filter_image
-    ioPacs
+    module_io_dimse
 
     # Configuration launchers
     ogreConfig

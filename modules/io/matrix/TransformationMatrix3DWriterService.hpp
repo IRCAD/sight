@@ -43,7 +43,7 @@ namespace sight::modules::io::matrix
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::TransformationMatrix3D]: matrix to save.
+ * - \b data [sight::data::TransformationMatrix3D]: matrix to save.
  */
 class MODULE_IO_MATRIX_CLASS_API TransformationMatrix3DWriterService : public sight::io::base::services::IWriter
 {

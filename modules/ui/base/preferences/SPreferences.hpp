@@ -43,7 +43,7 @@ namespace sight::modules::ui::base::preferences
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b preferences [data::Object]: object containing the preferences to load/save.
+ * - \b preferences [sight::data::Object]: object containing the preferences to load/save.
  * @subsection Configuration Configuration
  * - \b filename : path to the preferences file
  */

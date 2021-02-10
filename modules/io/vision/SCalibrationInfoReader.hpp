@@ -46,7 +46,7 @@ namespace sight::modules::io::vision
    @endcode
  *
  * @subsection InOut InOut
- * - \b data [data::CalibrationInfo]: structure to which the loaded data is appended
+ * - \b data [sight::data::CalibrationInfo]: structure to which the loaded data is appended
  * @subsection Configuration Configuration:
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.

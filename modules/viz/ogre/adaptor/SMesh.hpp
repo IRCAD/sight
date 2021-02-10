@@ -83,7 +83,8 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add some
+ * - \b mesh [sight::data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
+ * some
  * fields.
  *
  * @subsection Configuration Configuration:

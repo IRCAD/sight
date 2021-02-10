@@ -59,7 +59,7 @@ namespace sight::modules::io::itk
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [data::SeriesDB]: store the loaded images.
+ * - \b data [sight::data::SeriesDB]: store the loaded images.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
  * define the path.

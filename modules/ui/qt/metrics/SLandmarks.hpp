@@ -72,11 +72,11 @@ namespace sight::modules::ui::qt::metrics
        @endcode
  *
  * @subsection In In
- * - \b matrix [data::TransformationMatrix3D] (optional): Matrix used to compute transformation from the picked
+ * - \b matrix [sight::data::TransformationMatrix3D] (optional): Matrix used to compute transformation from the picked
  * point to the landmarks
  *
  *  @subsection In-Out In-Out
- * - \b landmarks [data::Landmarks]: the landmarks structure on which this editor is working.
+ * - \b landmarks [sight::data::Landmarks]: the landmarks structure on which this editor is working.
  *
  * @subsection Configuration Configuration
  * - \b text (optional): text displayed at the top of this editor.

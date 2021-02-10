@@ -65,10 +65,10 @@ namespace sight::modules::filter::vision
    @endcode
  *
  * @subsection In In
- * - \b ultrasoundImage [data::Image](mandatory): image outputted by the ultrasound machine.
+ * - \b ultrasoundImage [sight::data::Image](mandatory): image outputted by the ultrasound machine.
  *
  * @subsection In-Out In-Out
- * - \b extractedUltrasoundBeam [data::Image](mandatory): ultrasound beam image extracted from the input.
+ * - \b extractedUltrasoundBeam [sight::data::Image](mandatory): ultrasound beam image extracted from the input.
  *
  * @subsection Configuration Configuration:
  * - \b thresholdMin (optional, default=4) : Minimum threshold used for ultrasound plane extraction.

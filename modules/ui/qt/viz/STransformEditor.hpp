@@ -49,7 +49,7 @@ namespace sight::modules::ui::qt::viz
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b matrix [data::TransformationMatrix3D]: matrix modified by the editor
+ * - \b matrix [sight::data::TransformationMatrix3D]: matrix modified by the editor
  *
  * @subsection Configuration Configuration
  * - \b enabled (optional): enable/disable rotation/translation edition.

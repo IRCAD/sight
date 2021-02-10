@@ -53,7 +53,7 @@ namespace sight::modules::io::dicomweb
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selectedSeries [data::Vector]: List of DICOM series to push to the PACS.
+ * - \b selectedSeries [sight::data::Vector]: List of DICOM series to push to the PACS.
  * @subsection Configuration Configuration:
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service are from the preference settings.

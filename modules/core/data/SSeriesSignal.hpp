@@ -66,7 +66,7 @@ namespace sight::modules::data
     </service>
         @endcode
  * @subsection Input Input
- * - \b seriesDB [data::SeriesDB]: seriesDB to listen to forward the added series signal.
+ * - \b seriesDB [sight::data::SeriesDB]: seriesDB to listen to forward the added series signal.
  *
  * @subsection Configuration Configuration
  * - \b filter (optional): it allows to filter the series that can be notified.

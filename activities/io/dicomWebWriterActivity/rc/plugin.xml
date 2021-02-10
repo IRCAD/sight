@@ -3,7 +3,7 @@
     <requirement id="module_activities" />
     <requirement id="module_ui_qt" />
     <requirement id="visuVTKQt" />
-    <requirement id="ioPacs" />
+    <requirement id="module_io_dimse" />
 
     <xi:include href="configurations/DicomWebWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

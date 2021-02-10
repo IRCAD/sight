@@ -40,15 +40,15 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::ui::dicom::SSeriesDBMerger">
+        <service type="::sight::modules::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selectedSeries [data::Vector]: Vector containing the selected series to merge.
+ * - \b selectedSeries [sight::data::Vector]: Vector containing the selected series to merge.
  * @subsection In-Out In-Out:
- * - \b seriesDB [data::SeriesDB]: SeriesDB where to put the series.
+ * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the series.
  */
 class MODULE_UI_DICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IActionSrv
 {

@@ -48,7 +48,7 @@ namespace visuQt3DAdaptor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b mesh [data::Material]: adapted material.
+ * - \b mesh [sight::data::Material]: adapted material.
  *
  * @subsection Configuration Configuration:
  * - \b materialName : used by other adaptors in the scene to retrieve the material handled by this adaptor.

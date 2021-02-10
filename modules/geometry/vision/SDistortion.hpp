@@ -66,11 +66,11 @@ namespace sight::modules::geometry::vision
     </service>
    @endcode
  * @subsection Input Input
- * - \b camera [data::Camera]: camera containing calibration information.
- * - \b input [data::Image]: input image to distort.
+ * - \b camera [sight::data::Camera]: camera containing calibration information.
+ * - \b input [sight::data::Image]: input image to distort.
  * @subsection In-Out In-Out
- * - \b output [data::Image]: output image.
- * - \b map [data::Image]: distortion map. Useful mainly if you want to perform the distortion directly with the
+ * - \b output [sight::data::Image]: output image.
+ * - \b map [sight::data::Image]: distortion map. Useful mainly if you want to perform the distortion directly with the
  * renderer.
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").

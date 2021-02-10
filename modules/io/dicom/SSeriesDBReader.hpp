@@ -57,7 +57,7 @@ namespace sight::modules::io::dicom
  * It is also possible to define a filter that must be applied prior to the reading process.
  *
  * @code{.xml}
-       <service uid="..." type="::modules::io::dicom::SSeriesDBReader" >
+       <service uid="..." type="::sight::modules::io::dicom::SSeriesDBReader" >
            <inout key="data" uid="..." />
            <config>
                <filterType>::filter::dicom::custom::NoFilter<filterType/>
@@ -74,7 +74,7 @@ namespace sight::modules::io::dicom
  * On the other hand, you can specify a service configuration using the filterConfig element:
  *
  * @code{.xml}
-       <service uid="..." type="::modules::io::dicom::SSeriesDBReader" >
+       <service uid="..." type="::sight::modules::io::dicom::SSeriesDBReader" >
            <inout key="data" uid="..." />
            <config>
                <filterConfig>MyFilterSelectorConfig<filterConfig/>
@@ -102,7 +102,7 @@ namespace sight::modules::io::dicom
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [data::SeriesDB]: object to read
+ * - \b data [sight::data::SeriesDB]: object to read
  * @subsection Configuration Configuration:
  * - \b filterType: Define a filter that must be applied prior to the reading process.
  * - \b enableBufferRotation (optional, default set to yes): Enable buffer rotation

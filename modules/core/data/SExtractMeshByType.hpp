@@ -56,10 +56,10 @@ namespace sight::modules::data
        @endcode
 
  * @subsection In-Out In-Out
- * - \b source [data::ModelSeries]: define the source models where meshes are extracted from.
+ * - \b source [sight::data::ModelSeries]: define the source models where meshes are extracted from.
  *
  * @subsection Output Output
- * - \b target [data::Mesh]: define the target meshes. The number of \b target keys must match
+ * - \b target [sight::data::Mesh]: define the target meshes. The number of \b target keys must match
  * the number of \b from tags.
  *
  * @subsection Configuration Configuration

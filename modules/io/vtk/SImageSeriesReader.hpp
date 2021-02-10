@@ -55,7 +55,7 @@ namespace sight::modules::io::vtk
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [data::ImageSeries]: ImageSeries containing read image
+ * - \b data [sight::data::ImageSeries]: ImageSeries containing read image
  *
  */
 class MODULE_IO_VTK_CLASS_API SImageSeriesReader : public sight::io::base::services::IReader

@@ -67,7 +67,7 @@ namespace sight::modules::io::atoms
    @endcode
  *
  * @subsection Input Input
- * - \b data [data::Object]: object to write.
+ * - \b data [sight::data::Object]: object to write.
  *
  * @subsection Configuration Configuration
  * - \b patcher defines the atom patcher to use to convert the atoms (see io::atoms::patch::PatchingManager)

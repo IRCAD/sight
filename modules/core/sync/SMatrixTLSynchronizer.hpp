@@ -70,9 +70,9 @@ namespace sight::modules::sync
      </service>
    @endcode
  * @subsection Input Input
- * - \b matrixTL [data::MatrixTL]: matrix timeline used to extract matrices.
+ * - \b matrixTL [sight::data::MatrixTL]: matrix timeline used to extract matrices.
  * @subsection In-Out In-Out
- * - \b matrices [data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
+ * - \b matrices [sight::data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */
 class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public services::ISynchronizer
 {

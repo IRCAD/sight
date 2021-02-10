@@ -52,7 +52,7 @@ namespace sight::modules::ui::qt::calibration
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b camera [data::Camera]: camera on which the intrinsic parameters will be modified.
+ * - \b camera [sight::data::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class MODULE_UI_QT_CLASS_API SIntrinsicEdition : public QObject,
                                                  public services::IService

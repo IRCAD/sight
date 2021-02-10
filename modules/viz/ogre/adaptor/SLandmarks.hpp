@@ -66,10 +66,10 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b landmarks [data::Landmarks]: landmarks to display.
+ * - \b landmarks [sight::data::Landmarks]: landmarks to display.
  *
  * @subsection Input Input:
- * - \b image [data::Image] (optional): if the image is used, each landmark will be displayed only if the
+ * - \b image [sight::data::Image] (optional): if the image is used, each landmark will be displayed only if the
  *      image slice is on it.
  *
  * @subsection Configuration Configuration:

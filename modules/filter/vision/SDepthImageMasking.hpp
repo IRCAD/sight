@@ -53,15 +53,17 @@ namespace sight::modules::filter::vision
    @endcode
  *
  * @subsection Input Input
- * - \b maskImage [data::Image] : Mask image to perform the difference inside. Background value should be set to 0.
+ * - \b maskImage [sight::data::Image] : Mask image to perform the difference inside. Background value should be set to
+ * 0.
  * this mask only.
- * - \b videoImage [data::Image] : RGB image on which the foreground part will be extract from the depth difference
+ * - \b videoImage [sight::data::Image] : RGB image on which the foreground part will be extract from the depth
+ * difference
  * image.
- * - \b depthImage [data::Image] : Depth image on which the difference will be performed with the learned depth
+ * - \b depthImage [sight::data::Image] : Depth image on which the difference will be performed with the learned depth
  * background image.
  *
  * @subsection In-Out In-Out
- * - \b foregroundImage [data::Image] : Image containing the foreground pixels and background pixels are
+ * - \b foregroundImage [sight::data::Image] : Image containing the foreground pixels and background pixels are
  * transparent.
  */
 class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public services::IOperator

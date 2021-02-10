@@ -68,7 +68,7 @@ namespace generator
  * mm by default).
  *
  * @subsection In-Out In-Out:
- * - \b mesh [data::Mesh]: generated mesh.
+ * - \b mesh [sight::data::Mesh]: generated mesh.
  */
 class MODULE_GEOMETRY_GENERATOR_CLASS_API SNeedle final : public services::IGenerator
 {

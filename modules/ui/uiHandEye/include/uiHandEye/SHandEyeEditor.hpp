@@ -62,15 +62,15 @@ namespace uiHandEye
    @endcode
 
  * @subsection InOut InOut
- * - \b matrixVector1 [data::Vector]: first vector filled with {Ai, Aj, ...} matrix
+ * - \b matrixVector1 [sight::data::Vector]: first vector filled with {Ai, Aj, ...} matrix
  *[data::TransformationMatrix3D] when 'addSlot' is called
- * - \b matrixVector2 [data::Vector]: second vector filled with {Bi, Bj, ...} matrix
+ * - \b matrixVector2 [sight::data::Vector]: second vector filled with {Bi, Bj, ...} matrix
  *[data::TransformationMatrix3D] when 'addSlot' is called
  *
  * @subsection Input Input
- * - \b matrixTL1 [data::FrameTL]: the first matrixTL filled with {Ai, Aj, ...} matrices
+ * - \b matrixTL1 [sight::data::FrameTL]: the first matrixTL filled with {Ai, Aj, ...} matrices
  *[data::TransformationMatrix3D]
- * - \b matrixTL2 [data::FrameTL]: the second matrixTL filled with {Bi, Bj, ...} matrices
+ * - \b matrixTL2 [sight::data::FrameTL]: the second matrixTL filled with {Bi, Bj, ...} matrices
  *[data::TransformationMatrix3D]
  */
 class UIHANDEYE_CLASS_API SHandEyeEditor : public QObject,

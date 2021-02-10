@@ -49,7 +49,7 @@ namespace sight::modules::ui::qt::calibration
  * - \b index (optional, default: 1): index of the camera in cameraSeries used to display extrinsic matrix
  *
  * @subsection Inputs Inputs
- * - \b cameraSeries [data::CameraSeries]: input cameraSeries.
+ * - \b cameraSeries [sight::data::CameraSeries]: input cameraSeries.
  *
  * @subsection Slots Slots
  * -\b updateInformations(): Updates the informations of the intrinsic calibration.

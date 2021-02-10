@@ -42,7 +42,7 @@ namespace Tuto04MeshGeneratorCpp
      </service>
    @endcode
  * @subsection InOut InOut
- * - \b mesh [data::Mesh]: mesh to modify.
+ * - \b mesh [sight::data::Mesh]: mesh to modify.
  *
  * @subsection Configuration Configuration
  * - \b functor (mandatory, string): the functor name used to generate mesh.

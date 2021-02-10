@@ -50,7 +50,7 @@ namespace uiVisuOgre
         </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [data::Reconstruction]: reconstruction whose paremeters should be edited.
+ * - \b reconstruction [sight::data::Reconstruction]: reconstruction whose paremeters should be edited.
  */
 class UIVISUOGRE_CLASS_API SShaderParameterEditor : public sight::ui::base::editor::IEditor
 {

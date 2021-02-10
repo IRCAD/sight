@@ -63,11 +63,12 @@ namespace sight::modules::filter::vision
    @endcode
  *
  * @subsection Input Input
- * - \b mask [data::Image] : mask image to perform image segmentation in
- * - \b videoTL [data::FrameTL] : Timeline to extract image from a video to perform the learning steps
+ * - \b mask [sight::data::Image] : mask image to perform image segmentation in
+ * - \b videoTL [sight::data::FrameTL] : Timeline to extract image from a video to perform the learning steps
  *
  * @subsection In-Out In-Out
- * - \b videoMaskTL [data::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of the
+ * - \b videoMaskTL [sight::data::FrameTL] : Timeline to put masks inside where the foreground is segmented (outside of
+ * the
  * mask = 0)
  *
  * @subsection Configuration Configuration

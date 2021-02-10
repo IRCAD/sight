@@ -53,10 +53,10 @@ namespace sight::modules::data
         </service>
        @endcode
  * @subsection In-Out In-Out
- * - \b source [data::Object]: define the source object where objects are extracted from.
+ * - \b source [sight::data::Object]: define the source object where objects are extracted from.
  *
  * @subsection Output Output
- * - \b target [data::Object]: define the target objects. The number of \b target keys must match
+ * - \b target [sight::data::Object]: define the target objects. The number of \b target keys must match
  * the number of \b from tags.
  *
  * @subsection Configuration Configuration

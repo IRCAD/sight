@@ -46,10 +46,10 @@ namespace sight::modules::geometry::vision
        </service>
    @endcode
  * @subsection Input Input:
- * - \b calibrationInfo [data::CalibrationInfo]: Data used to compute the calibration.
+ * - \b calibrationInfo [sight::data::CalibrationInfo]: Data used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [data::Camera]: Output calibration.
- * - \b poseVector [data::Vector] (optional): Camera calibration pose vector
+ * - \b camera [sight::data::Camera]: Output calibration.
+ * - \b poseVector [sight::data::Vector] (optional): Camera calibration pose vector
  * @subsection Configuration Configuration:
  * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
  */

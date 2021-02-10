@@ -49,7 +49,7 @@ namespace visuQt3DAdaptor
    @endcode
  *
  * @subsection Input Input
- * - \b mesh [data::Mesh]: adapted mesh.
+ * - \b mesh [sight::data::Mesh]: adapted mesh.
  *
  * @subsection Configuration Configuration:
  *  - \b autoresetcamera (optional, bool, default=false): reset the camera when this mesh is modified.

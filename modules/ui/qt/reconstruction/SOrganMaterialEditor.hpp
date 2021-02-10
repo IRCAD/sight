@@ -50,7 +50,7 @@ namespace sight::modules::ui::qt::reconstruction
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b reconstruction [data::Reconstruction]: reconstruction containing the material to update.
+ * - \b reconstruction [sight::data::Reconstruction]: reconstruction containing the material to update.
  */
 class MODULE_UI_QT_CLASS_API SOrganMaterialEditor : public QObject,
                                                     public sight::ui::base::editor::IEditor

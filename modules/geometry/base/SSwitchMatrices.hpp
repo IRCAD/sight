@@ -56,9 +56,9 @@ namespace sight::modules::geometry::base
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [data::TransformationMatrix3D]: List of two matrices keys to switch.
+ * - \b matrix [sight::data::TransformationMatrix3D]: List of two matrices keys to switch.
  * @subsection In-Out In-Out:
- * - \b output [data::TransformationMatrix3D]: Output matrix.
+ * - \b output [sight::data::TransformationMatrix3D]: Output matrix.
  *
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SSwitchMatrices : public services::IController

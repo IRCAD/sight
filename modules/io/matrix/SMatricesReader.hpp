@@ -68,7 +68,7 @@ namespace sight::modules::io::matrix
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b matrixTL [data::MatrixTL]: timeline in which matrices will be pushed.
+ * - \b matrixTL [sight::data::MatrixTL]: timeline in which matrices will be pushed.
  * @subsection Configuration Configuration
  * - \b oneShot (optionnal): if true reader will read csv line per line.
  * to read next/previous line you should call readNext/readPrevious. If false reader will read each line with

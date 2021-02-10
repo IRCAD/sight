@@ -63,15 +63,16 @@ namespace sight::modules::ui::qt::image
    @endcode
  *
  * @subsection Input Input
- * - \b currentTF [data::TransferFunction](optional) : current transfer function used to change editor selection. It
+ * - \b currentTF [sight::data::TransferFunction](optional) : current transfer function used to change editor selection.
+ * It
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
  *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
- * - \b tfPool [data::Composite]: composite containing the transfer function.
+ * - \b tfPool [sight::data::Composite]: composite containing the transfer function.
  * @subsection Output Output
- * - \b tf [data::TransferFunction]: selected transfer function.
+ * - \b tf [sight::data::TransferFunction]: selected transfer function.
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.

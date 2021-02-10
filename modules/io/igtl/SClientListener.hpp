@@ -49,7 +49,7 @@ namespace sight::modules::io::igtl
  * </service>
  * @endcode
  * @subsection In-Out In-Out:
- * - \b object [data::Object]:
+ * - \b object [sight::data::Object]:
  *   - if associated object is a timeline (data::MatrixT or data::FrameTL):
  *   received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data

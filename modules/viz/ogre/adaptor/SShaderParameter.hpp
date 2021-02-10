@@ -54,7 +54,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b parameter [data::Object]: parameter containing the data to upload.
+ * - \b parameter [sight::data::Object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
  * - \b materialName (mandatory, string): the name of the associated Ogre material

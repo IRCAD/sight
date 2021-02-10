@@ -115,18 +115,18 @@ namespace openvslamTracker
        </service>
    @endcode
  * @subsection Input Input:
- * - \b camera [data::Camera](mandatory): camera that will be tracked.
- * - \b timeline [data::FrameTL](mandatory): timeline of frames of the video on which openvslam will work.
- * - \b timeline2 [data::FrameTL](optional): Only needed if STEREO/DEPTH mode is enabled !
+ * - \b camera [sight::data::Camera](mandatory): camera that will be tracked.
+ * - \b timeline [sight::data::FrameTL](mandatory): timeline of frames of the video on which openvslam will work.
+ * - \b timeline2 [sight::data::FrameTL](optional): Only needed if STEREO/DEPTH mode is enabled !
  * if STEREO: frameTL2 will represent frame from the second camera.
  * if DEPTH: frameTL2 will represent frame from depth sensor.
  *
  * @subsection In-Out In-Out:
- * - \b cameraMatrixTL [data::MatrixTL](optional): timeLine of  matrix representing the movement of the 3D
+ * - \b cameraMatrixTL [sight::data::MatrixTL](optional): timeLine of  matrix representing the movement of the 3D
  * camera and thus of the real camera.
  *
  * @subsection Output Output:
- * - \b pointCloud [data::Mesh](optional): mesh containing the 3D points given by openvslam
+ * - \b pointCloud [sight::data::Mesh](optional): mesh containing the 3D points given by openvslam
  *
  * @subsection Configuration Configuration:
  * - \b mode (optional): set the tracking mode (MONO, STEREO, DEPTH), by default MONO will be used.

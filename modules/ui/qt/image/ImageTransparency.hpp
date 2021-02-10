@@ -51,7 +51,7 @@ namespace sight::modules::ui::qt::image
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [data::Image]: image to set the transparency.
+ * - \b image [sight::data::Image]: image to set the transparency.
  * @subsection Configuration Configuration
  * - \b shortcut : shortcut used to show/hide the image
  */

@@ -50,10 +50,10 @@ namespace ctrlPicking
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b pointList [data::PointList]: Target point list.
+ * - \b pointList [sight::data::PointList]: Target point list.
  *
  * @subsection Input Input:
- * - \b matrix [data::TransformationMatrix3D](optional): Transformation applied to picked positions.
+ * - \b matrix [sight::data::TransformationMatrix3D](optional): Transformation applied to picked positions.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, size_t, default=0): set the maximum number of points contained in the point list, if it's 0, the

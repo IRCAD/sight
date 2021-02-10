@@ -49,7 +49,7 @@ namespace sight::modules::io::itk
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [data::Image]: loaded image.
+ * - \b data [sight::data::Image]: loaded image.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

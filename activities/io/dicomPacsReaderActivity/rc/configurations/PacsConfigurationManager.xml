@@ -6,7 +6,7 @@
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
     </parameters>
     <config>
-        <object uid="${PACS_CONFIGURATION}" type="::fwPacsIO::data::PacsConfiguration" src="ref" />
+        <object uid="${PACS_CONFIGURATION}" type="::sight::io::dimse::data::PacsConfiguration" src="ref" />
 
         <!-- MAIN FRAME -->
         <service uid="pacsConfigurationManagerFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="pacsConfigurationEditor" type="::ioPacs::SPacsConfigurationEditor">
+        <service uid="pacsConfigurationEditor" type="::sight::modules::io::dimse::SPacsConfigurationEditor">
             <inout key="config" uid="${PACS_CONFIGURATION}" />
         </service>
 

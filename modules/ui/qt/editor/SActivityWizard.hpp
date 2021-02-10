@@ -86,7 +86,7 @@ namespace editor
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b seriesDB [data::SeriesDB]: seriesDB to store the create activity series
+ * - \b seriesDB [sight::data::SeriesDB]: seriesDB to store the create activity series
  * @subsection Configuration Configuration
  * - \b ioSelectorConfig : configuration for the SIOSelector service used to import data in this editor.
  * - \b sdbIoSelectorConfig(optional, default: ioSelectorConfig): configuration for the SIOSelector service used to

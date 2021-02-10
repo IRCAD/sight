@@ -53,7 +53,7 @@ namespace sight::modules::io::igtl
  * @subsection Configuration Configuration:
  * - \b port : defines the port where the objects will be listen
  * @subsection Input Input:
- * - \b objects [data::Object]: specified objects to listen.
+ * - \b objects [sight::data::Object]: specified objects to listen.
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 class MODULE_IO_IGTL_CLASS_API SServerListener : public modules::io::igtl::INetworkListener

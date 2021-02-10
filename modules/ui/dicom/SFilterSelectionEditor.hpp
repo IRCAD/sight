@@ -48,15 +48,15 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::ui::dicom::SFilterSelectionEditor">
+        <service type="::sight::modules::ui::dicom::SFilterSelectionEditor">
             <in key="selection" uid="..." />
             <inout key="target" uid="..." />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b selection [data::Vector]: selection.
+ * - \b selection [sight::data::Vector]: selection.
  * @subsection In-Out In-Out:
- * - \b target [data::SeriesDB]: seriesDB where to put the selection.
+ * - \b target [sight::data::SeriesDB]: seriesDB where to put the selection.
  */
 
 class MODULE_UI_DICOM_CLASS_API SFilterSelectionEditor : public QObject,

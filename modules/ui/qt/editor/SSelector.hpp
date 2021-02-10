@@ -61,8 +61,8 @@ namespace editor
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [data::SeriesDB]: seriesDB on which the editor operates.
- * - \b selection [data::Vector]: defines the id of the data::Vector where the selection will be put or get.
+ * - \b seriesDB [sight::data::SeriesDB]: seriesDB on which the editor operates.
+ * - \b selection [sight::data::Vector]: defines the id of the data::Vector where the selection will be put or get.
  *
  * @subsection Configuration Configuration
  * - \b selectionMode (optional, single/extended, default=extended): defines the selection mode for the series, where

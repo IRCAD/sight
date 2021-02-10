@@ -48,7 +48,7 @@ namespace Tuto05MultithreadConsoleCpp
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b array [data::Array]: array which values should be incremented.
+ * - \b array [sight::data::Array]: array which values should be incremented.
  */
 class TUTO05MULTITHREADCONSOLECPP_CLASS_API SIncrementArray final : public services::IController
 {

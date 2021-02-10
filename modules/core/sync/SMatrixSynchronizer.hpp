@@ -73,7 +73,7 @@ protected:
      * @endcode
      *
      * @subsection In-Out In-Out
-     * - \b TL [data::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
+     * - \b TL [sight::data::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
      *
      */
 

@@ -55,7 +55,7 @@ namespace sight::modules::io::video
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::FrameTL]: timeline containing the frame to save.
+ * - \b data [sight::data::FrameTL]: timeline containing the frame to save.
  *
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter

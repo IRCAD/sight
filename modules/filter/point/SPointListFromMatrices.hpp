@@ -51,10 +51,11 @@ namespace sight::modules::filter::point
    @endcode
  *
  * @subsection Input Input
- * - \b matrices [data::TransformationMatrix3D]: input matrices (only translation part will be extracted).
+ * - \b matrices [sight::data::TransformationMatrix3D]: input matrices (only translation part will be extracted).
  *
  * @subsection Inout Inout
- * - \b pointList [data::PointList]: output pointlist, each point represent translation part of corresponding matrix
+ * - \b pointList [sight::data::PointList]: output pointlist, each point represent translation part of corresponding
+ * matrix
  *
  * @subsection Configuration Configuration
  * - \b append (optional, default=false): does the service append points in the pointlist on update (true) or clear it

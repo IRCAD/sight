@@ -73,11 +73,11 @@ namespace sight::modules::geometry::base
    @endcode
  *
  * @subsection InOut InOut:
- * - \b matrices [data::TransformationMatrix3D]: input matrix
- * - \b selectedMatrix [data::TransformationMatrix3D]: selected matrix
+ * - \b matrices [sight::data::TransformationMatrix3D]: input matrix
+ * - \b selectedMatrix [sight::data::TransformationMatrix3D]: selected matrix
  *
  * @subsection Output Output:
- * - \b vector [data::Vector]: vector containing matrices
+ * - \b vector [sight::data::Vector]: vector containing matrices
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SMatrixList final : public services::IService
 {

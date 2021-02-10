@@ -57,7 +57,7 @@ namespace sight::modules::io::dicomweb
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [data::SeriesDB]: SeriesDB on which the queried data will be pushed.
+ * - \b seriesDB [sight::data::SeriesDB]: SeriesDB on which the queried data will be pushed.
  * @subsection Configuration Configuration:
  * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings

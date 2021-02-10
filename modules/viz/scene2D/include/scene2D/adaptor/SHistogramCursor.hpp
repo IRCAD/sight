@@ -49,8 +49,9 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b histogram [data::Histogram]: histogram to display.
- * - \b point [data::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * - \b histogram [sight::data::Histogram]: histogram to display.
+ * - \b point [sight::data::Point]: histogram point, used to show information at the current histogram index pointed by
+ * the
  * mouse.
  * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update adaptor.
  *

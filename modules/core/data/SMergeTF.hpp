@@ -49,10 +49,10 @@ namespace sight::modules::data
    @endcode
  *
  * @subsection Input Input
- * - \b tfPool [data::Composite]: composite where looking for TF.
+ * - \b tfPool [sight::data::Composite]: composite where looking for TF.
  *
  * @subsection In-Out In-Out
- * - \b tf [data::TransferFunction]: the merged TF.
+ * - \b tf [sight::data::TransferFunction]: the merged TF.
  */
 class MODULE_DATA_CLASS_API SMergeTF final : public services::IController
 {

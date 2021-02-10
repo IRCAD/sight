@@ -45,7 +45,7 @@ namespace sight::modules::io::vision
    @endcode
  *
  * @subsection Input Input
- * - \b data [data::CalibrationInfo]: images to write.
+ * - \b data [sight::data::CalibrationInfo]: images to write.
  * @subsection Configuration Configuration
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.

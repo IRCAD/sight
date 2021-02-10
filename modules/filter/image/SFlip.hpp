@@ -49,9 +49,9 @@ namespace sight::modules::filter::image
        </service>
    @endcode
  * @subsection Input Input
- * - \b source [data::Image]: Image to flip.
+ * - \b source [sight::data::Image]: Image to flip.
  * @subsection Output Output:
- * - \b target [data::Image]: New flipped image.
+ * - \b target [sight::data::Image]: New flipped image.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SFlip : public services::IOperator
 {

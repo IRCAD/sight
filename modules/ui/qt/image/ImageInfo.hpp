@@ -55,7 +55,7 @@ namespace sight::modules::ui::qt::image
     </service>
    @endcode
  * @subsection Input Input
- * - \b image [data::Image]: image used to retrieve the pixel value.
+ * - \b image [sight::data::Image]: image used to retrieve the pixel value.
  */
 class MODULE_UI_QT_CLASS_API ImageInfo : public QObject,
                                          public sight::ui::base::editor::IEditor

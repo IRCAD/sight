@@ -58,7 +58,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b reconstruction [data::Reconstruction]: reconstruction to display.
+ * - \b reconstruction [sight::data::Reconstruction]: reconstruction to display.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.

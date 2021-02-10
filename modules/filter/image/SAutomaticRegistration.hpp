@@ -53,11 +53,11 @@ namespace sight::modules::filter::image
    </service>
    @endcode
  * @subsection Input Input
- * - \b target [data::Image]: Fixed image.
- * - \b reference [data::Image]: Image that will be deformed to match the target.
+ * - \b target [sight::data::Image]: Fixed image.
+ * - \b reference [sight::data::Image]: Image that will be deformed to match the target.
  *
  * @subsection In-Out In-Out
- * - \b transform [data::TransformationMatrix3D]: The initial transform used during registration, will be updated
+ * - \b transform [sight::data::TransformationMatrix3D]: The initial transform used during registration, will be updated
  * with the new value after registration.
  *
  * @subsection Configuration Configuration

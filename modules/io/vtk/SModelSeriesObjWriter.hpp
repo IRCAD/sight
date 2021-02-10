@@ -62,7 +62,7 @@ namespace sight::modules::io::vtk
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [data::ModelSeries]: model to save.
+ * - \b data [sight::data::ModelSeries]: model to save.
  * @subsection Configuration Configuration
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.

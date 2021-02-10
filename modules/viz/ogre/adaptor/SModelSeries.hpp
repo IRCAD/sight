@@ -57,7 +57,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b model [data::ModelSeries]: adapted model series.
+ * - \b model [sight::data::ModelSeries]: adapted model series.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the modelSeries's layer

@@ -41,7 +41,7 @@ namespace sight::modules::data
        </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [data::Image]: image to be converted into a medical image.
+ * - \b image [sight::data::Image]: image to be converted into a medical image.
  */
 class MODULE_DATA_CLASS_API MedicalImageSrv : public services::IController
 {

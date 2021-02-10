@@ -42,7 +42,7 @@ namespace sight::modules::memory
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b target [data::Object]: object to dump lock.
+ * - \b target [sight::data::Object]: object to dump lock.
  */
 class MODULE_MEMORY_CLASS_API LockDumpSrv : public services::IController
 {

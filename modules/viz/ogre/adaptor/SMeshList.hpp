@@ -55,11 +55,12 @@ namespace sight::modules::viz::ogre
    @endcode
  *
  * @subsection Input Input
- * - \b texture [data::Image]: image displayed as a texture on the mesh
- * - \b transform [data::TransformationMatrix3D]: Sight transform matrix.
+ * - \b texture [sight::data::Image]: image displayed as a texture on the mesh
+ * - \b transform [sight::data::TransformationMatrix3D]: Sight transform matrix.
  *
  * @subsection In-Out In-Out
- * - \b mesh [data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add some
+ * - \b mesh [sight::data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
+ * some
  *      fields.
  *
  * @subsection Configuration Configuration:

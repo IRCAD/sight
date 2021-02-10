@@ -60,7 +60,7 @@ namespace ioQt
  *
  * @endcode
  * @subsection Input Input:
- * - \b image [data::Image] : Defines the UID of the data::Image to write.
+ * - \b image [sight::data::Image] : Defines the UID of the data::Image to write.
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 

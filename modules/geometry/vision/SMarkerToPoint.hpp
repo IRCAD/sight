@@ -54,9 +54,9 @@ namespace sight::modules::geometry::vision
      </service>
    @endcode
  * @subsection Input Input
- * - \b matrixTL [data::MatrixTL]: timeline for tool matrices.
+ * - \b matrixTL [sight::data::MatrixTL]: timeline for tool matrices.
  * @subsection In-Out In-Out
- * - \b pointList [data::Pointlist]: marker position.
+ * - \b pointList [sight::data::Pointlist]: marker position.
  */
 class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public services::IController
 {

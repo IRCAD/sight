@@ -48,7 +48,7 @@ namespace sight::modules::viz::sample
    </service>
  *
  * @subsection Input Input
- * - \b mesh [data::Mesh]: mesh to display.
+ * - \b mesh [sight::data::Mesh]: mesh to display.
  */
 class MODULE_VIZ_SAMPLE_CLASS_API SMesh : public sight::ui::base::IGuiContainerSrv
 {

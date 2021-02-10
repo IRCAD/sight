@@ -57,12 +57,12 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection Input Input
- * - \b image [data::Image]: Image from which the slice is extracted.
- * - \b imageExtent [data::Image]: Image used to pass the extent.
- * - \b axes [data::TransformationMatrix3D]: Matrix containing the axes defining the reslicing plane.
+ * - \b image [sight::data::Image]: Image from which the slice is extracted.
+ * - \b imageExtent [sight::data::Image]: Image used to pass the extent.
+ * - \b axes [sight::data::TransformationMatrix3D]: Matrix containing the axes defining the reslicing plane.
  *
  * @subsection In-Out In-Out
- * - \b slice [data::Image]: Extracted slice.
+ * - \b slice [sight::data::Image]: Extracted slice.
  *
  * @subsection Configuration Configuration
  * - \b config(mandatory) : operator configuration

@@ -50,8 +50,8 @@ namespace sight::modules::ui::base
    </service>
    @endcode
  * @section InOut InOut
- * - \b pointList [data::PointList] : Pointlist of clicked points, real coordinates given by picker.
- * - \b pixelPointList [data::PointList] : PointList of clicked points, transformed in pixel world.
+ * - \b pointList [sight::data::PointList] : Pointlist of clicked points, real coordinates given by picker.
+ * - \b pixelPointList [sight::data::PointList] : PointList of clicked points, transformed in pixel world.
  *
  * @section Configuration Configuration
  * - \b videoReference: specifies where is the reference system of picker interactor

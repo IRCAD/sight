@@ -49,11 +49,12 @@ namespace sight::modules::filter::image
    @endcode
  *
  * @subsection Input Input
- * - \b matrixList [data::Vector]: The list of matrices used to compute an optimal one.
- * - \b pointList [data::PointList]: A list of relevant points used to evaluate the distance to the optimal matrix.
+ * - \b matrixList [sight::data::Vector]: The list of matrices used to compute an optimal one.
+ * - \b pointList [sight::data::PointList]: A list of relevant points used to evaluate the distance to the optimal
+ * matrix.
  *
  * @subsection In-Out In-Out
- * - \b optimalMatrix [data::TransformationMatrix3D]: The optimal matrix.
+ * - \b optimalMatrix [sight::data::TransformationMatrix3D]: The optimal matrix.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public services::IOperator
 {

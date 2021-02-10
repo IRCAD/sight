@@ -8,7 +8,7 @@
     <requirement id="module_services" />
     <requirement id="scene2D" />
     <requirement id="module_io_atoms" />
-    <requirement id="ioPacs" />
+    <requirement id="module_io_dimse" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

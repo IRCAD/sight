@@ -53,7 +53,7 @@ namespace editor
  * - \b text (optional, by default "") : the text to show before size of the vector
  *
  * @subsection Inputs Inputs
- * - \b vector [data::Vector]: input vector.
+ * - \b vector [sight::data::Vector]: input vector.
  *
  * @subsection Slots Slots
  * -\b addObjects(data::Vector::ContainerType): increment displayed size of the vector.

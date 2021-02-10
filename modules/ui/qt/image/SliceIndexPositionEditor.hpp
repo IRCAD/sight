@@ -50,7 +50,7 @@ namespace sight::modules::ui::qt::image
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [data::Image]: image on which the slice index will be changed
+ * - \b image [sight::data::Image]: image on which the slice index will be changed
  *
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".

@@ -58,7 +58,7 @@ namespace sight::modules::io::vtk
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [data::ModelSeries]: model series that will contain the loaded meshes.
+ * - \b data [sight::data::ModelSeries]: model series that will contain the loaded meshes.
  * @subsection Configuration Configuration
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.

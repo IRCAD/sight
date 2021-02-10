@@ -90,14 +90,15 @@ namespace sight::modules::navigation::optics
         </service>
    @endcode
  * @subsection Input Input
- * - \b timeline [data::FrameTL]: camera used to display video. It is the main timeline used for the tracking.
- * - \b camera [data::Camera]: camera calibration.
+ * - \b timeline [sight::data::FrameTL]: camera used to display video. It is the main timeline used for the tracking.
+ * - \b camera [sight::data::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out
- * - \b frame [data::Image]: video frame.
- * - \b tagTL [data::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout keys
+ * - \b frame [sight::data::Image]: video frame.
+ * - \b tagTL [sight::data::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout
+ * keys
  * must match the number of \b markers entries in the config below.
- * - \b markerMap [data::MarkerMap]: markers maps list where to extract the tags. The number of keys must match
+ * - \b markerMap [sight::data::MarkerMap]: markers maps list where to extract the tags. The number of keys must match
  * the number of \b markers entries in the config below.
  *
  * @subsection Configuration Configuration

@@ -47,10 +47,10 @@ namespace basicRegistration
    </service>
    @endcode
  * @subsection In In
- * - \b image1 [data::Image]: first image.
- * - \b image2 [data::Image]: second image.
+ * - \b image1 [sight::data::Image]: first image.
+ * - \b image2 [sight::data::Image]: second image.
  * @subsection InOut InOut
- * - \b result [data::Image]: substract image.
+ * - \b result [sight::data::Image]: substract image.
  */
 
 class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,

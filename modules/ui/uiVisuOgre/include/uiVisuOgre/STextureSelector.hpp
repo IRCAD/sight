@@ -47,7 +47,7 @@ namespace uiVisuOgre
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [data::Reconstruction]: reconstruction where the texture should be applied.
+ * - \b reconstruction [sight::data::Reconstruction]: reconstruction where the texture should be applied.
  */
 class UIVISUOGRE_CLASS_API STextureSelector : public QObject,
                                               public sight::ui::base::editor::IEditor

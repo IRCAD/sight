@@ -65,10 +65,10 @@ namespace sight::modules::viz::ogre::adaptor
  * @endcode
  *
  * @subsection Input Input
- * - \b calibration [data::Camera]: camera containing calibration information.
+ * - \b calibration [sight::data::Camera]: camera containing calibration information.
  *
  * @subsection InOut InOut
- * - \b transform [data::TransformationMatrix3D]: transform matrix for the camera.
+ * - \b transform [sight::data::TransformationMatrix3D]: transform matrix for the camera.
  *
  * @subsection Configuration Configuration
  * - \b layer (mandatory, string): defines the camera's layer

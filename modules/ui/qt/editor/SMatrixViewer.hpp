@@ -51,7 +51,7 @@ namespace editor
    @endcode
 
  * @subsection Input Input
- * - \b matrix [data::TransformationMatrix3D]: matrix to display
+ * - \b matrix [sight::data::TransformationMatrix3D]: matrix to display
  *
  * @subsection Configuration Configuration
  * - \b title (optional): defines the displayed title on top of the matrix viewer (default: matrix).

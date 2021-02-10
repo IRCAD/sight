@@ -101,15 +101,16 @@ namespace sight::modules::sync
        </service>
    @endcode
  * @subsection Input Input
- * - \b frameTL [data::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
+ * - \b frameTL [sight::data::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
  * number of \b image keys.
  * - \b matrixTL [::extData::MatrixTL]: defines the matrixTL to synchronize. The number of \b matrixTL keys must match
  * the number of \b matricesX group.
  *
  * @subsection In-Out In-Out
- * - \b image [data::Image]: defines the images where to extract the image. The number of \b image keys must match
+ * - \b image [sight::data::Image]: defines the images where to extract the image. The number of \b image keys must
+ * match
  * the number of \b frameTL keys.
- * - \b matricesX [data::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
+ * - \b matricesX [sight::data::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
  * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration

@@ -64,14 +64,15 @@ namespace adaptor
  *
  * @subsection Input Input
  * - \b viewport [::fwRenderQtdata::Viewport]: object listened to update the adaptor.
- * - \b currentTF [data::TransferFunction](optional): current transfer function used to change editor selection. It
+ * - \b currentTF [sight::data::TransferFunction](optional): current transfer function used to change editor selection.
+ * It
  *      should be the same TF as the output.
  *
  * * @subsection In-Out In-Out
- * - \b tfPool [data::Composite]: composite containing all transfer function.
+ * - \b tfPool [sight::data::Composite]: composite containing all transfer function.
  *
  * * @subsection Output Output
- * - \b tf [data::TransferFunction]: selected transfer function.
+ * - \b tf [sight::data::TransferFunction]: selected transfer function.
  *
  * @subsection Configuration Configuration
  * - \b config (mandatory): contains the adaptor configuration.

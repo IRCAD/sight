@@ -46,9 +46,9 @@ namespace sight::modules::filter::mesh
     @endcode
  *
  * @subsection Input Input
- * - \b imageSeries [data::ImageSeries] : image used to generate the output mesh
+ * - \b imageSeries [sight::data::ImageSeries] : image used to generate the output mesh
  * @subsection Output Output
- * - \b modelSeries [data::ModelSeries]: mesh generated from ImageSeries
+ * - \b modelSeries [sight::data::ModelSeries]: mesh generated from ImageSeries
  * @subsection Configuration Configuration
  * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)

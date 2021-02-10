@@ -54,7 +54,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b image [data::Image]: the image to map as a texture.
+ * - \b image [sight::data::Image]: the image to map as a texture.
  *
  * @subsection Configuration Configuration:
  *  - \b layer (mandatory, string): defines the texture's layer

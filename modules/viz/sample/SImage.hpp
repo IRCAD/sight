@@ -39,7 +39,7 @@ namespace sight::modules::viz::sample
    </service>
  *
  * @subsection Input Input
- * - \b image [data::Image]: image to display.
+ * - \b image [sight::data::Image]: image to display.
  */
 class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::base::IGuiContainerSrv
 {

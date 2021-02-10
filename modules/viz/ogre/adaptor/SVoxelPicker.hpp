@@ -57,7 +57,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b image [data::Image]: image to pick.
+ * - \b image [sight::data::Image]: image to pick.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): layer on which the adaptor picks points.

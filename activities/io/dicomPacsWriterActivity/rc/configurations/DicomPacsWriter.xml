@@ -9,7 +9,7 @@
     <config>
         <object uid="seriesDB" type="::sight::data::SeriesDB" />
         <object uid="selections" type="::sight::data::Vector" />
-        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
+        <object uid="pacsConfiguration" type="::sight::io::dimse::data::PacsConfiguration" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -75,14 +75,14 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="progressBarController" type="::ioPacs::SProgressBarController"  />
+        <service uid="progressBarController" type="::sight::modules::io::dimse::SProgressBarController"  />
 
         <service uid="selector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer">
+        <service uid="pacsConfigurationInitializer" type="::sight::modules::io::dimse::SPacsConfigurationInitializer">
             <inout key="config" uid="pacsConfiguration" />
             <config
                 localApplicationTitle="${APP_NAME}"
@@ -110,7 +110,7 @@
             <inout key="selectedSeries" uid="selections" />
         </service>
 
-        <service uid="pushSeriesController" type="::ioPacs::SSeriesPusher">
+        <service uid="pushSeriesController" type="::sight::modules::io::dimse::SSeriesPusher">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="selections" />
         </service>

@@ -50,10 +50,11 @@ namespace adaptor
    @endcode
  *
  * @subsection In In
- * - \b histogram [data::Histogram]: histogram to display.
+ * - \b histogram [sight::data::Histogram]: histogram to display.
  *
  * @subsection In-Out In-Out
- * - \b point [data::Point]: histogram point, used to show information at the current histogram index pointed by the
+ * - \b point [sight::data::Point]: histogram point, used to show information at the current histogram index pointed by
+ * the
  * mouse.
  *
  * @subsection Configuration Configuration:

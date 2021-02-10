@@ -51,9 +51,9 @@ namespace basicRegistration
        </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b registeredPL [data::PointList]: List containing the points to register.
- * - \b referencePL [data::PointList]: List containing the reference points to match with the points to register.
- * - \b output [data::TransformationMatrix3D]: Transformation matrix between the source and target points.
+ * - \b registeredPL [sight::data::PointList]: List containing the points to register.
+ * - \b referencePL [sight::data::PointList]: List containing the reference points to match with the points to register.
+ * - \b output [sight::data::TransformationMatrix3D]: Transformation matrix between the source and target points.
  *
  * @subsection Configuration Configuration
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.

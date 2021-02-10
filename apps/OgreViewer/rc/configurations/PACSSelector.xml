@@ -16,7 +16,7 @@
         <object uid="${localSeriesDB}" type="::sight::data::SeriesDB" src="ref" />
         <object uid="${image}" type="::sight::data::Image" src="ref" />
 
-        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
+        <object uid="pacsConfiguration" type="::sight::io::dimse::data::PacsConfiguration" />
 
         <object uid="previewSelections" type="::sight::data::Vector" />
         <object uid="previewDicom" type="::sight::data::DicomSeries" />
@@ -401,7 +401,7 @@
             <inout key="image" uid="localImage" />
         </service>
 
-        <service uid="configurePACSInitializerSrv" type="::ioPacs::SPacsConfigurationInitializer" >
+        <service uid="configurePACSInitializerSrv" type="::sight::modules::io::dimse::SPacsConfigurationInitializer" >
             <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
             <config
                 localApplicationTitle="OgreViewer"
@@ -415,18 +415,18 @@
                 />
         </service>
 
-        <service uid="configurePACSEditorSrv" type="::ioPacs::SPacsConfigurationEditor" >
+        <service uid="configurePACSEditorSrv" type="::sight::modules::io::dimse::SPacsConfigurationEditor" >
             <inout key="config" uid="pacsConfiguration" />
             <config showDialog="false" />
         </service>
 
-        <service uid="queryEditorSrv" type="::ioPacs::SQueryEditor" >
+        <service uid="queryEditorSrv" type="::sight::modules::io::dimse::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <config icon="module_ui_flaticon-0.1/icons/BlueMagnifyingGlass.svg" advanced="false" />
         </service>
 
-        <service uid="advancedQueryEditorSrv" type="::ioPacs::SQueryEditor" >
+        <service uid="advancedQueryEditorSrv" type="::sight::modules::io::dimse::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <config icon="module_ui_flaticon-0.1/icons/BlueMagnifyingGlass.svg" />
@@ -449,14 +449,14 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="sliderIndexDicomPullerEditorSrv" type="::ioPacs::SSliceIndexDicomEditor" autoConnect="yes" >
+        <service uid="sliderIndexDicomPullerEditorSrv" type="::sight::modules::io::dimse::SSliceIndexDicomEditor" autoConnect="yes" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="series" uid="previewDicom" />
             <inout key="image" uid="previewImage" />
             <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" delay="500" />
         </service>
 
-        <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" autoConnect="yes">
+        <service uid="seriesPullerSrv" type="::sight::modules::io::dimse::SSeriesPuller" autoConnect="yes">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />

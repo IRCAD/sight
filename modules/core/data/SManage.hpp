@@ -90,12 +90,13 @@ namespace sight::modules::data
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b object [data::Object] (optional): object to add/swap/remove. Not needed when invoking clean slot and remove
+ * - \b object [sight::data::Object] (optional): object to add/swap/remove. Not needed when invoking clean slot and
+ * remove
  * slots with composites and fields, since the removal is based on the name.
- * - \b composite [data::Composite] (optional): Composite where to add/swap/remove object.
- * - \b vector [data::Vector] (optional): Vector where to add/remove object.
- * - \b seriesDB [data::SeriesDB] (optional): SeriesDB where to add/remove object.
- * - \b fieldHolder [data::Object] (optional): Object where to add/swap/remove object as a field.
+ * - \b composite [sight::data::Composite] (optional): Composite where to add/swap/remove object.
+ * - \b vector [sight::data::Vector] (optional): Vector where to add/remove object.
+ * - \b seriesDB [sight::data::SeriesDB] (optional): SeriesDB where to add/remove object.
+ * - \b fieldHolder [sight::data::Object] (optional): Object where to add/swap/remove object as a field.
  *
  * <b>Only one of the target (composite, vector or seriesDB) is allowed.</b>
  * For SeriesDB, the object must inherit of Series

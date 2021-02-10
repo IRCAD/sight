@@ -46,9 +46,9 @@ namespace sight::modules::ui::qt::calibration
      </service>
    @endcode
  * @subsection Input Input
- * - \b camera [data::Camera]: camera to edit.
+ * - \b camera [sight::data::Camera]: camera to edit.
  * @subsection In-Out In-Out
- * - \b matrix [data::TransformationMatrix3D]: output matrix holding the delta values.
+ * - \b matrix [sight::data::TransformationMatrix3D]: output matrix holding the delta values.
  *
  * This service takes a camera calibration and outputs a matrix holding the difference between
  * the input parameters and the camera parameters set by the user. Those differences are stored like this:

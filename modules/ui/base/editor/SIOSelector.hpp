@@ -71,9 +71,9 @@ namespace editor
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b data [data::Object]: the read or saved object.
+ * - \b data [sight::data::Object]: the read or saved object.
  * @subsection Output Output
- * - \b data [data::Object]: the loaded object (not used if an inout data is defined).
+ * - \b data [sight::data::Object]: the loaded object (not used if an inout data is defined).
  * @subsection Configuration Configuration
  * - \b type
  *      - \b mode (mandatory) : selector type must be "reader" (to open file) or "writer" (to write a new file).

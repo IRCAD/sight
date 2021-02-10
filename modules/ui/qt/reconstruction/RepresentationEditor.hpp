@@ -54,7 +54,7 @@ namespace sight::modules::ui::qt::reconstruction
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b reconstruction [data::Reconstruction]: reconstruction that will be updated
+ * - \b reconstruction [sight::data::Reconstruction]: reconstruction that will be updated
  */
 class MODULE_UI_QT_CLASS_API RepresentationEditor : public QObject,
                                                     public sight::ui::base::editor::IEditor

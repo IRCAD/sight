@@ -45,7 +45,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b transform [data::TransformationMatrix3D]: Sight transform matrix.
+ * - \b transform [sight::data::TransformationMatrix3D]: Sight transform matrix.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): Defines the transform's layer.

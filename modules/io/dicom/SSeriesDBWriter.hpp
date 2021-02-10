@@ -44,13 +44,13 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::modules::io::dicom::SSeriesDBWriter" >
+       <service uid="..." type="::sight::modules::io::dicom::SSeriesDBWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
  *
  * @subsection Input Input
- * - \b data [data::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
+ * - \b data [sight::data::Vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
  */
 class MODULE_IO_DICOM_CLASS_API SSeriesDBWriter : public sight::io::base::services::IWriter
 {

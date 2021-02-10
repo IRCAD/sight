@@ -39,7 +39,7 @@ namespace sight::modules::io::vision
        </service>
  * @endcode
  * @subsection In-Out In-Out
- * - \b data [data::CameraSeries]: object to read
+ * - \b data [sight::data::CameraSeries]: object to read
  */
 class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::base::services::IReader
 {

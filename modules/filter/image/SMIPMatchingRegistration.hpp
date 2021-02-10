@@ -49,13 +49,13 @@ namespace sight::modules::filter::image
  * @endcode
  *
  * @subsection Input Input
- * - \b source [data::Image]: Input image that will be aligned to the target.
- * - \b target [data::Image]: Input image to which the source will be aligned.
- * - \b flipTransform [data::TransformationMatrix3D]: temporary hack allowing to flip the image according to the
+ * - \b source [sight::data::Image]: Input image that will be aligned to the target.
+ * - \b target [sight::data::Image]: Input image to which the source will be aligned.
+ * - \b flipTransform [sight::data::TransformationMatrix3D]: temporary hack allowing to flip the image according to the
  *   flipping applied in the RegistrationActivity.
  *
  * @subsection In-Out In-Out
- * - \b transform [data::TransformationMatrix3D]: initial registration. The computed registration will be
+ * - \b transform [sight::data::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public services::IRegisterer

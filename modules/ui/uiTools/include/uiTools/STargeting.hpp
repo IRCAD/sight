@@ -51,11 +51,11 @@ namespace sight::modules::ui::base
    @endcode
  *
  * @subsection Input Input:
- * - \b landmark [data::Landmarks]: landmarks representing the needle tip and target
- * - \b matrix [data::TransformationMatrix3D]: Targeting matrix.
+ * - \b landmark [sight::data::Landmarks]: landmarks representing the needle tip and target
+ * - \b matrix [sight::data::TransformationMatrix3D]: Targeting matrix.
  *
  * @subsection InOut InOut:
- * - \b pointList [data::PointList]: computed pointlist
+ * - \b pointList [sight::data::PointList]: computed pointlist
  *
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group

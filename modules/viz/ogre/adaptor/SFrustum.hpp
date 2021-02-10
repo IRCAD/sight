@@ -54,7 +54,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection Input Input:
- * - \b camera [data::Camera]:  camera containing calibration information.
+ * - \b camera [sight::data::Camera]:  camera containing calibration information.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the frustum's layer

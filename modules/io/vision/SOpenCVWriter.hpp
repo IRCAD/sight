@@ -39,7 +39,7 @@ namespace sight::modules::io::vision
  * @endcode
  *
  * @subsection Input Input
- * - \b data [data::CameraSeries]: data to save.
+ * - \b data [sight::data::CameraSeries]: data to save.
  *
  * An Example of the xml structure:
  * @code{.xml}

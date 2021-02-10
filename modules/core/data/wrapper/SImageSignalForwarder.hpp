@@ -52,8 +52,8 @@ namespace wrapper
    </service>
    @endcode
  * @subsection Input Input
- * - \b target [data::Image]: image to forward signal.
- * - \b source [data::Image]: the source image signals are forwarded to the target image.
+ * - \b target [sight::data::Image]: image to forward signal.
+ * - \b source [sight::data::Image]: the source image signals are forwarded to the target image.
  * @subsection Configuration Configuration
  * - \b forward : key of the image signal to forward
  */

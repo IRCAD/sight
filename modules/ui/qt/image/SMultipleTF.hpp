@@ -57,16 +57,17 @@ namespace sight::modules::ui::qt::image
    @endcode
  *
  * @subsection Input Input
- * - \b currentTFPool [data::Composite](optional): current transfer function pool used to change editor selection.
+ * - \b currentTFPool [sight::data::Composite](optional): current transfer function pool used to change editor
+ * selection.
  *      It should be the same pool as the output.
  *      Don't forget to set 'optional="yes"' when you use this input, otherwise the service will not start if a
  *      pool is not previously defined.
  *
  * @subsection In-Out In-Out
- * - \b tfPools [data::Composite]: composite containing transfer function pool.
+ * - \b tfPools [sight::data::Composite]: composite containing transfer function pool.
  *
  * @subsection Output Output
- * - \b tfPool [data::Composite]: selected transfer function pool.
+ * - \b tfPool [sight::data::Composite]: selected transfer function pool.
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.

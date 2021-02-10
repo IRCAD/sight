@@ -41,11 +41,12 @@ namespace sight::modules::navigation::calibration
     </service>
    @endcode
  * @subsection Input Input
- * - \b matricesVector [data::Vector]: vector of matrices corresponding to points on a sphere
+ * - \b matricesVector [sight::data::Vector]: vector of matrices corresponding to points on a sphere
  *
  * @subsection Output Output
- * - \b matrixCalibration [data::TransformationMatrix3D]: tool calibration
- * - \b matrixCenter [data::TransformationMatrix3D] (optional): matrix representing the point around which the tool
+ * - \b matrixCalibration [sight::data::TransformationMatrix3D]: tool calibration
+ * - \b matrixCenter [sight::data::TransformationMatrix3D] (optional): matrix representing the point around which the
+ * tool
  * is moved
  *
  */

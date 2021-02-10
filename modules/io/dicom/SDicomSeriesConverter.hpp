@@ -54,9 +54,9 @@ namespace sight::modules::io::dicom
    </service>
    @endcode
  * @subsection Input Input:
- * - \b source [data::SeriesDB]: Source SeriesDB containing DicomSeries.
+ * - \b source [sight::data::SeriesDB]: Source SeriesDB containing DicomSeries.
  * @subsection In-Out In-Out:
- * - \b target [data::SeriesDB]: Destination SeriesDB.
+ * - \b target [sight::data::SeriesDB]: Destination SeriesDB.
  */
 class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base::IActionSrv
 {

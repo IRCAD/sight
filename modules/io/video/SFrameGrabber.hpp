@@ -85,9 +85,9 @@ namespace sight::modules::io::video
         </service>
    @endcode
  * @subsection Input Input
- * - \b camera [data::Camera]: camera used to display video.
+ * - \b camera [sight::data::Camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [data::FrameTL]: timeline where to extract the video frames.
+ * - \b frameTL [sight::data::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,

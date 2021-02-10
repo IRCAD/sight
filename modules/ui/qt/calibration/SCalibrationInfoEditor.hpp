@@ -52,8 +52,8 @@ namespace sight::modules::ui::qt::calibration
    </service>
    @endcode
  * @subsection Input Input
- * - \b calInfo1 [data::CalibrationInfo]: calibration information for first camera.
- * - \b calInfo2 [data::CalibrationInfo] (optional): calibration information for optional second camera.
+ * - \b calInfo1 [sight::data::CalibrationInfo]: calibration information for first camera.
+ * - \b calInfo2 [sight::data::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class MODULE_UI_QT_CLASS_API SCalibrationInfoEditor : public QObject,
                                                       public sight::ui::base::editor::IEditor

@@ -48,7 +48,7 @@ namespace sight::modules::ui::qt::calibration
    @endcode
  *
  * @subsection Inputs Inputs
- * - \b camera [data::Camera]: camera's information that will be displayed.
+ * - \b camera [sight::data::Camera]: camera's information that will be displayed.
  *
  * @subsection Slots Slots
  * - \b updateInformations(): Updates the informations of the intrinsic calibration.
