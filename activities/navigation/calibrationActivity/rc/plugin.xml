@@ -90,7 +90,7 @@
     <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
     <extension implements="::sight::services::registry::ServiceConfig">
         <id>InfraredRealsenseGrabberConfig</id>
-        <service>::videoRealSense::SScan</service>
+        <service>::sight::modules::io::realsense::SScan</service>
         <desc>Infrared grabber without IR emitter </desc>
         <config>
             <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />

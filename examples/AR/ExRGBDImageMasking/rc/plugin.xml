@@ -311,7 +311,7 @@
             </service>
 
             <!-- To get frames from the RealSense camera -->
-            <service uid="videoGrabberSrv" type="::videoRealSense::SScan" worker="grabber" >
+            <service uid="videoGrabberSrv" type="::sight::modules::io::realsense::SScan" worker="grabber" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />

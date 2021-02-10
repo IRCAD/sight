@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,31 +20,11 @@
  *
  ***********************************************************************/
 
-#include "videoRealSense/Plugin.hpp"
+/**
+ * @brief       The namespace sight::modules::io::pcl supplies services related on video unsing PCL.
+ */
+#pragma once
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-namespace videoRealSense
-{
-
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::videoRealSense::Plugin");
-
-//-----------------------------------------------------------------------------
-
-Plugin::~Plugin() noexcept
+namespace sight::modules::io::pcl
 {
 }
-
-//-----------------------------------------------------------------------------
-
-void Plugin::start()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
-}
-
-} // namespace videoRealSense

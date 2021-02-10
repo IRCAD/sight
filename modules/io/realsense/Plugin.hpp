@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,33 +22,28 @@
 
 #pragma once
 
-#include "videoPCL/config.hpp"
+#include "modules/io/realsense/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
-namespace videoPCL
+namespace sight::modules::io::realsense
 {
-struct Plugin : public core::runtime::Plugin
+/**
+ * @brief   This class is started when the modules are loaded.
+ */
+struct MODULE_IO_REALSENSE_CLASS_API Plugin : public core::runtime::Plugin
 {
     /**
-     * @brief Destructor
+     * @brief   destructor
      */
-    ~Plugin() noexcept;
+    MODULE_IO_REALSENSE_API ~Plugin() noexcept;
 
-    /**
-     * @brief Start method.
-     *
-     * @exception core::runtime::RuntimeException.
-     * This method is used by runtime in order to initialize the module.
-     */
-    void start();
+    // Overrides
+    MODULE_IO_REALSENSE_API void start();
 
-    /**
-     * @brief Stop method.
-     *
-     * This method is used by runtime in order to close the module.
-     */
-    void stop() noexcept;
+    // Overrides
+    MODULE_IO_REALSENSE_API void stop() noexcept;
+
 };
 
-} // namespace videoPCL
+} // namespace sight::modules::io::realsense

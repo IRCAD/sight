@@ -24,7 +24,7 @@ set( REQUIREMENTS
     module_io_atoms
     module_io_vision
     ioActivity
-    videoRealSense
+    module_io_realsense
 
     # Services
     module_ui_base

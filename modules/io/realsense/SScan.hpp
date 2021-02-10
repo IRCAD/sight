@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "videoRealSense/config.hpp"
+#include "modules/io/realsense/config.hpp"
 
 #include <data/FrameTL.hpp>
 #include <data/Mesh.hpp>
@@ -35,7 +35,7 @@
 
 namespace fs = std::filesystem;
 
-namespace videoRealSense
+namespace sight::modules::io::realsense
 {
 
 /**
@@ -103,7 +103,7 @@ namespace videoRealSense
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="videoGrabber" type ="::videoRealSense::SScan" autoConnect="no">
+   <service uid="videoGrabber" type ="::sight::modules::io::realsense::SScan" autoConnect="no">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
@@ -119,8 +119,8 @@ namespace videoRealSense
  * - \b cameraSeries [sight::data::CameraSeries]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
- *- \b pointcloud [sight::data::Mesh]: pointcloud computed from depth map. (optional)
- * -\b distance [data::Float]: distance (in mm) at center pixel. (optional)
+ * - \b pointcloud [sight::data::Mesh]: pointcloud computed from depth map. (optional)
+ * - \b distance [sight::data::Float]: distance (in mm) at center pixel. (optional)
  *
  * @subsection Configuration Configuration
  * - \b fps: desired framerate (value can be [6-15-25-30-60-90]), note that fps is correlated to resolution (default
@@ -176,11 +176,11 @@ namespace videoRealSense
  * - \b recordFile (optionnal): path & filename where recording will be saved.
  */
 
-class VIDEOREALSENSE_CLASS_API SScan : public services::IRGBDGrabber
+class MODULE_IO_REALSENSE_CLASS_API SScan : public services::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceMacro(SScan, services::IRGBDGrabber)
+    fwCoreServiceMacro(SScan, ::sight::services::IRGBDGrabber)
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal< void (double) > DistanceComputedSignalType;
@@ -192,24 +192,24 @@ public:
     typedef core::com::Signal< void (void) > FilePlayedSignalType;
 
     /// Constructor. Initializes signals/slots.
-    VIDEOREALSENSE_API SScan() noexcept;
+    MODULE_IO_REALSENSE_API SScan() noexcept;
 
     /// Destructor. Calls stopCamera()
-    VIDEOREALSENSE_API virtual ~SScan() noexcept override;
+    MODULE_IO_REALSENSE_API virtual ~SScan() noexcept override;
 
 protected:
 
     /// Starts the service, get the timelines and set the outputs.
-    VIDEOREALSENSE_API virtual void starting() override;
+    MODULE_IO_REALSENSE_API virtual void starting() override;
 
     /// Shutdowns the streams by calling stopCamera().
-    VIDEOREALSENSE_API virtual void stopping() override;
+    MODULE_IO_REALSENSE_API virtual void stopping() override;
 
     /// Restarts the service (stopCamera() & startCamera()).
-    VIDEOREALSENSE_API virtual void updating() override;
+    MODULE_IO_REALSENSE_API virtual void updating() override;
 
     /// Parses the configuration.
-    VIDEOREALSENSE_API virtual void configuring() override;
+    MODULE_IO_REALSENSE_API virtual void configuring() override;
 
 private:
 
@@ -349,7 +349,7 @@ private:
 
     /**
      * @brief loadPresets scans "presets" folder and generate the map
-     * @param[in] _path: preset path (videoRealSense/rc/presets)
+     * @param[in] _path: preset path (modules/io/realsense/rc/presets)
      */
     void loadPresets(const std::filesystem::path& _path);
 
@@ -472,4 +472,4 @@ private:
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
 };
-} //namespace videoRealSense
+} //namespace sight::modules::io::realsense

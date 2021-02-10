@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2021 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,11 +20,35 @@
  *
  ***********************************************************************/
 
-/**
- * @brief       The namespace videoPCL supplies services related on video unsing PCL.
- */
 #pragma once
 
-namespace videoPCL
+#include "modules/io/pcl/config.hpp"
+
+#include <core/runtime/Plugin.hpp>
+
+namespace sight::modules::io::pcl
 {
-}
+struct Plugin : public core::runtime::Plugin
+{
+    /**
+     * @brief Destructor
+     */
+    ~Plugin() noexcept;
+
+    /**
+     * @brief Start method.
+     *
+     * @exception core::runtime::RuntimeException.
+     * This method is used by runtime in order to initialize the module.
+     */
+    void start();
+
+    /**
+     * @brief Stop method.
+     *
+     * This method is used by runtime in order to close the module.
+     */
+    void stop() noexcept;
+};
+
+} // namespace sight::modules::io::pcl

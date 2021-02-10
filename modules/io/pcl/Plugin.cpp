@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,29 @@
  *
  ***********************************************************************/
 
-#pragma once
+#include "Plugin.hpp"
 
-#include "videoRealSense/config.hpp"
+#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <core/runtime/Plugin.hpp>
+#include <services/macros.hpp>
 
-namespace videoRealSense
+namespace sight::modules::io::pcl
 {
-/**
- * @brief   This class is started when the modules are loaded.
- */
-struct VIDEOREALSENSE_CLASS_API Plugin : public core::runtime::Plugin
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::pcl::Plugin");
+
+Plugin::~Plugin() noexcept
 {
-    /**
-     * @brief   destructor
-     */
-    VIDEOREALSENSE_API ~Plugin() noexcept;
+}
 
-    // Overrides
-    VIDEOREALSENSE_API void start();
+// ------------------------------------------------------------------------------
 
-    // Overrides
-    VIDEOREALSENSE_API void stop() noexcept;
+void Plugin::start()
+{
+}
 
-};
+// ------------------------------------------------------------------------------
 
-} // namespace videoRealSense
+void Plugin::stop() noexcept
+{
+}
+} // namespace sight::modules::io::pcl

@@ -22,7 +22,7 @@ set( REQUIREMENTS
 
     # Grabber
     module_io_video
-    videoRealSense
+    module_io_realsense
 
     # Services
     module_sync

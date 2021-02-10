@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "videoPCL/SFrameGrabber.hpp"
+#include "SFrameGrabber.hpp"
 
 #include <core/com/Signal.hxx>
 
@@ -39,14 +39,14 @@
 #include <filesystem>
 #include <regex>
 
-namespace videoPCL
+namespace sight::modules::io::pcl
 {
 
 static const services::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( services::IGrabber, ::videoPCL::SFrameGrabber, ::sight::data::FrameTL)
+fwServicesRegisterMacro( services::IGrabber, ::sight::modules::io::pcl::SFrameGrabber, ::sight::data::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ void SFrameGrabber::startCamera()
     if (camera->getCameraSource() == data::Camera::FILE)
     {
         std::filesystem::path file = camera->getVideoFile();
-        const std::filesystem::path videoDir(modules::ui::base::preferences::getVideoDir());
+        const std::filesystem::path videoDir(ui::base::preferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
@@ -346,4 +346,4 @@ void SFrameGrabber::setPosition(int64_t position)
 
 //------------------------------------------------------------------------------
 
-} // namespace videoPCL
+} // namespace sight::modules::io::pcl

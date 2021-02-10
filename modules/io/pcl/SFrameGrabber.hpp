@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "videoPCL/config.hpp"
+#include "modules/io/pcl/config.hpp"
 
 #include <core/mt/types.hpp>
 #include <core/thread/Timer.hpp>
@@ -37,7 +37,7 @@ namespace sight::data
 class Camera;
 }
 
-namespace videoPCL
+namespace sight::modules::io::pcl
 {
 
 /**
@@ -61,7 +61,7 @@ namespace videoPCL
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoPCL::SFrameGrabber">
+        <service type="::modules::io::pcl::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>
@@ -74,7 +74,7 @@ namespace videoPCL
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate (default: 30).
  */
-class VIDEOPCL_CLASS_API SFrameGrabber : public services::IGrabber
+class MODULE_IO_PCL_CLASS_API SFrameGrabber : public services::IGrabber
 {
 
 public:
@@ -82,24 +82,24 @@ public:
     fwCoreServiceMacro(SFrameGrabber, services::IGrabber)
 
     /// Constructor. Do nothing.
-    VIDEOPCL_API SFrameGrabber() noexcept;
+    MODULE_IO_PCL_API SFrameGrabber() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOPCL_API virtual ~SFrameGrabber() noexcept;
+    MODULE_IO_PCL_API virtual ~SFrameGrabber() noexcept;
 
 protected:
 
     /// Initialize the layout and the camera.
-    VIDEOPCL_API virtual void starting() override;
+    MODULE_IO_PCL_API virtual void starting() override;
 
     /// Destroy the layout.
-    VIDEOPCL_API virtual void stopping() override;
+    MODULE_IO_PCL_API virtual void stopping() override;
 
     /// Do nothing.
-    VIDEOPCL_API virtual void updating() override;
+    MODULE_IO_PCL_API virtual void updating() override;
 
     /// Do nothing.
-    VIDEOPCL_API virtual void configuring() override;
+    MODULE_IO_PCL_API virtual void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
     virtual void startCamera() override;

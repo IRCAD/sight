@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "videoRealSense/SScan.hpp"
+#include "SScan.hpp"
 
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
@@ -48,10 +48,9 @@
 #include <algorithm>
 #include <fstream>
 
-namespace fwClock = core::HiResClock;
-
-namespace videoRealSense
+namespace sight::modules::io::realsense
 {
+namespace fwClock = core::HiResClock;
 
 const services::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
 const services::IService::KeyType s_POINTCLOUD_OUTPUT   = "pointcloud";
@@ -1161,7 +1160,7 @@ void SScan::setMinMaxRange()
 void SScan::onCameraImage(const uint8_t* _buffer)
 {
     // Filling timeline's buffer
-    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMilliSec() );
+    const fwClock::HiResClockType timestamp( fwClock::getTimeInMilliSec() );
 
     SPTR(data::FrameTL::BufferType) colorBuffer = m_colorTimeline->createBuffer(timestamp);
 
@@ -1182,7 +1181,7 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
     // Filling the depth image buffer in the timeline
-    const ::fwClock::HiResClockType timestamp( ::fwClock::getTimeInMilliSec() );
+    const fwClock::HiResClockType timestamp( fwClock::getTimeInMilliSec() );
 
     SPTR(data::FrameTL::BufferType) depthTL = m_depthTimeline->createBuffer(timestamp);
 
@@ -1279,4 +1278,4 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
 //-----------------------------------------------------------------------------
 
-} // namespace videoRealSense
+} // namespace sight::modules::io::realsense
