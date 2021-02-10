@@ -26,10 +26,11 @@
 #include <core/tools/System.hpp>
 
 #include <data/reflection/visitor/CompareObjects.hpp>
-#include <data/tools/Mesh.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Mesh.hpp>
+
+#include <geometry/data/Mesh.hpp>
 
 #include <io/vtk/helper/Mesh.hpp>
 #include <io/vtk/MeshReader.hpp>
@@ -108,10 +109,10 @@ void MeshTest::testMeshToVtk()
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
@@ -156,10 +157,10 @@ void MeshTest::testMeshToGrid()
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
@@ -188,7 +189,7 @@ void MeshTest::testSyntheticMesh()
     {
         const data::Mesh::sptr mesh1 = data::Mesh::New();
         utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
-        data::tools::Mesh::shakePoint(mesh1);
+        geometry::data::Mesh::shakePoint(mesh1);
         mesh1->adjustAllocatedMemory();
 
         const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
@@ -203,11 +204,11 @@ void MeshTest::testSyntheticMesh()
     {
         const data::Mesh::sptr mesh1 = data::Mesh::New();
         utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
-        data::tools::Mesh::shakePoint(mesh1);
-        data::tools::Mesh::colorizeMeshPoints(mesh1);
-        data::tools::Mesh::colorizeMeshCells(mesh1);
-        data::tools::Mesh::generatePointNormals(mesh1);
-        data::tools::Mesh::generateCellNormals(mesh1);
+        geometry::data::Mesh::shakePoint(mesh1);
+        geometry::data::Mesh::colorizeMeshPoints(mesh1);
+        geometry::data::Mesh::colorizeMeshCells(mesh1);
+        geometry::data::Mesh::generatePointNormals(mesh1);
+        geometry::data::Mesh::generateCellNormals(mesh1);
         mesh1->adjustAllocatedMemory();
 
         const vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
@@ -227,11 +228,11 @@ void MeshTest::testExportImportSyntheticMesh()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleQuadMesh(mesh1);
-    data::tools::Mesh::shakePoint(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 
@@ -311,7 +312,7 @@ void MeshTest::testMeshUpdatePoints()
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
     // modify mesh vertex position
-    data::tools::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
 
     io::vtk::helper::Mesh::updatePolyDataPoints(poly_source, mesh1);
 
@@ -340,8 +341,8 @@ void MeshTest::testMeshUpdateColors()
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
 
     io::vtk::helper::Mesh::updatePolyDataPointColor(poly_source, mesh1);
     io::vtk::helper::Mesh::updatePolyDataCellColor(poly_source, mesh1);
@@ -371,10 +372,10 @@ void MeshTest::testMeshUpdateNormals()
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
-    data::tools::Mesh::shakePointNormals(mesh1);
-    data::tools::Mesh::shakeCellNormals(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePointNormals(mesh1);
+    geometry::data::Mesh::shakeCellNormals(mesh1);
 
     io::vtk::helper::Mesh::updatePolyDataPointNormals(poly_source, mesh1);
     io::vtk::helper::Mesh::updatePolyDataCellNormals(poly_source, mesh1);
@@ -409,7 +410,7 @@ void MeshTest::testGridUpdatePoints()
     CPPUNIT_ASSERT( vtkGrid );
 
     // modify mesh vertex position
-    data::tools::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
     io::vtk::helper::Mesh::updateGridPoints(vtkGrid, mesh1);
 
     const data::Mesh::sptr mesh2 = data::Mesh::New();
@@ -438,8 +439,8 @@ void MeshTest::testGridUpdateColors()
     io::vtk::helper::Mesh::toVTKGrid( mesh1, vtkGrid);
     CPPUNIT_ASSERT( vtkGrid );
 
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
 
     io::vtk::helper::Mesh::updateGridPointColor(vtkGrid, mesh1);
     io::vtk::helper::Mesh::updateGridCellColor(vtkGrid, mesh1);
@@ -469,8 +470,8 @@ void MeshTest::testGridUpdateNormals()
 
     io::vtk::helper::Mesh::fromVTKMesh(poly_source, mesh1);
 
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     CPPUNIT_ASSERT( mesh1->getNumberOfCells() );
     CPPUNIT_ASSERT( mesh1->getNumberOfPoints() );
@@ -601,11 +602,11 @@ void MeshTest::testWriteVtkFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh1);
-    data::tools::Mesh::shakePoint(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 
@@ -625,11 +626,11 @@ void MeshTest::testWriteVtpFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh1);
-    data::tools::Mesh::shakePoint(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 
@@ -649,11 +650,11 @@ void MeshTest::testWriteObjFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh1);
-    data::tools::Mesh::shakePoint(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 
@@ -673,11 +674,11 @@ void MeshTest::testWritePlyFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh1);
-    data::tools::Mesh::shakePoint(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 
@@ -697,11 +698,11 @@ void MeshTest::testWriteStlFile()
 {
     const data::Mesh::sptr mesh1 = data::Mesh::New();
     utestData::generator::Mesh::generateTriangleMesh(mesh1);
-    data::tools::Mesh::shakePoint(mesh1);
-    data::tools::Mesh::colorizeMeshPoints(mesh1);
-    data::tools::Mesh::colorizeMeshCells(mesh1);
-    data::tools::Mesh::generatePointNormals(mesh1);
-    data::tools::Mesh::generateCellNormals(mesh1);
+    geometry::data::Mesh::shakePoint(mesh1);
+    geometry::data::Mesh::colorizeMeshPoints(mesh1);
+    geometry::data::Mesh::colorizeMeshCells(mesh1);
+    geometry::data::Mesh::generatePointNormals(mesh1);
+    geometry::data::Mesh::generateCellNormals(mesh1);
 
     mesh1->adjustAllocatedMemory();
 

@@ -1,4 +1,4 @@
-set( NAME cvIOTest )
+set( NAME io_opencvTest )
 set( VERSION )
 set( TYPE TEST )
 set( DEPENDENCIES

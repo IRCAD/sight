@@ -30,7 +30,7 @@
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( viz::ogre::helper::ut::SceneTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::viz::ogre::helper::ut::SceneTest );
 
 namespace sight::viz::ogre
 {

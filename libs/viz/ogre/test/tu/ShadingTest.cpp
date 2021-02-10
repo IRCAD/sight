@@ -37,7 +37,7 @@
 #include <viz/ogre/Utils.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( viz::ogre::helper::ut::ShadingTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::viz::ogre::helper::ut::ShadingTest );
 
 namespace sight::viz::ogre
 {
