@@ -154,7 +154,7 @@ protected:
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    IOQT_API io::base::services::IOPathType getIOPathType() const override;
+    IOQT_API sight::io::base::services::IOPathType getIOPathType() const override;
 
 private:
 

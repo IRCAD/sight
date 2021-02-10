@@ -117,7 +117,7 @@
             </slots>
         </service>
 
-        <service uid="action_pushSeries" type="::ioDicom::SSeriesDBMerger">
+        <service uid="action_pushSeries" type="::sight::modules::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="localSelections" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>
@@ -156,7 +156,7 @@
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomPacsReaderConfig" />
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="DicomPacsReaderConfig" />
         </service>
 
         <service uid="pacsViewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">

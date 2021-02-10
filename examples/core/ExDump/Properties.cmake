@@ -21,7 +21,7 @@ set( REQUIREMENTS
     module_io_atoms
     module_io_itk
     module_io_vtk
-    ioGdcm
+    module_io_dicom
     module_io_matrix
 
     # Services

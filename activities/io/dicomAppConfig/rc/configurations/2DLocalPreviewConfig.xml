@@ -64,10 +64,10 @@
             <inout key="image" uid="image" />
         </service>
 
-        <service uid="sliderIndexDicomPullerEditor" type="::ioDicom::SSliceIndexDicomEditor">
+        <service uid="sliderIndexDicomPullerEditor" type="::sight::modules::ui::dicom::SSliceIndexDicomEditor">
             <in key="series" uid="${objectID}" />
             <out key="image" uid="image" />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
                 <dicomReaderConfig>
                     <config>
                         <showLogDialog>no</showLogDialog>

@@ -25,7 +25,7 @@ set( REQUIREMENTS
     # Reader
     module_io_vtk
     module_io_atoms
-    ioGdcm
+    module_io_dicom
 
     # Services
     scene2D

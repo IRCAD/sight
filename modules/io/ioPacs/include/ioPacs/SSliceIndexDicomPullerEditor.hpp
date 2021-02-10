@@ -81,7 +81,7 @@ namespace ioPacs
            <in key="pacsConfig" uid="..." />
            <inout key="series" uid="..." />
            <out key="image" uid="..." />
-           <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500">
+           <config dicomReader="::modules::io::dicom::SSeriesDBReader" delay="500">
                <dicomReaderConfig>
                    <!-- here goes the configuration for the dicom reader implementation -->
                </dicomReaderConfig>

@@ -4,6 +4,6 @@ set( TYPE EXECUTABLE )
 set( OPTIONS CONSOLE )
 set( DEPENDENCIES
     core
-    fwGdcmIO
+    io_dicom
     )
 set( REQUIREMENTS )

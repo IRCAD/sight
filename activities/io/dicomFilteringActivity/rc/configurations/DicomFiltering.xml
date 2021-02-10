@@ -136,7 +136,7 @@
             </configs>
         </service>
 
-        <service uid="filterSelectionEditor" type="::ioDicom::SFilterSelectionEditor">
+        <service uid="filterSelectionEditor" type="::sight::modules::ui::dicom::SFilterSelectionEditor">
             <in key="selection" uid="readingSelection" />
             <inout key="target" uid="filteredSeriesDB" />
         </service>
@@ -148,7 +148,7 @@
             <parameter replace="ICON_PATH" by="media-0.1/icons/Preview.svg" />
         </service>
 
-        <service uid="action_convertSeries" type="::ioGdcm::SDicomSeriesConverter">
+        <service uid="action_convertSeries" type="::sight::modules::io::dicom::SDicomSeriesConverter">
             <in key="source" uid="filteredSeriesDB" />
             <inout key="target" uid="loadedSeriesDB" />
         </service>
@@ -169,7 +169,7 @@
             </configs>
         </service>
 
-        <service uid="action_pushSeries" type="::ioDicom::SSeriesDBMerger">
+        <service uid="action_pushSeries" type="::sight::modules::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="loadedSelection" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>

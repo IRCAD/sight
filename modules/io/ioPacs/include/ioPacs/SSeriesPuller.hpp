@@ -53,7 +53,7 @@ namespace ioPacs
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
         <inout key="seriesDB" uid="..." />
-        <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
+        <config dicomReader="::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
     </service>
    @endcode
  *

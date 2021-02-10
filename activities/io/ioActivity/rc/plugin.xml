@@ -87,7 +87,7 @@
                 <inout key="data" uid="${model}" />
                 <type mode="writer" />
                 <selection mode="include" />
-                <addSelection service="::ioGdcm::SSurfaceSegmentationWriter" />
+                <addSelection service="::sight::modules::io::dicom::SSurfaceSegmentationWriter" />
             </service>
 
             <start uid="exportSelection" />

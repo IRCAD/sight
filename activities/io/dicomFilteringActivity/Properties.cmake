@@ -12,8 +12,8 @@ set( REQUIREMENTS
     dicomAppConfig
     module_ui_base
     module_ui_qt
-    ioDicom
-    ioGdcm
+    module_ui_dicom
+    module_io_dicom
     media
     module_services
     visuVTK

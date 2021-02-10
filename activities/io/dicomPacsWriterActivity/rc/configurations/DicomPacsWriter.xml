@@ -105,7 +105,7 @@
             </configs>
         </service>
 
-        <service uid="anonymizeController" type="::ioGdcm::SDicomSeriesAnonymizer">
+        <service uid="anonymizeController" type="::sight::modules::io::dicom::SDicomSeriesAnonymizer">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selectedSeries" uid="selections" />
         </service>

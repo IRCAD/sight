@@ -26,7 +26,7 @@ set( REQUIREMENTS
     # Reader
     ioActivity
     module_io_matrix
-    ioGdcm
+    module_io_dicom
     module_io_vtk
     module_io_atoms
 

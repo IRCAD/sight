@@ -68,7 +68,7 @@
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
-            <config dicomReader="::ioGdcm::SSeriesDBReader">
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader">
                 <dicomReaderConfig>
                     <config>
                         <showLogDialog>no</showLogDialog>

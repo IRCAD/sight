@@ -12,7 +12,7 @@ set( REQUIREMENTS
     dicomPacsReaderActivity
     module_ui_base
     module_ui_qt
-    ioGdcm
+    module_io_dicom
     ioPacs
     media
     module_services

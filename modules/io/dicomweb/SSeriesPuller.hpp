@@ -54,7 +54,7 @@ namespace sight::modules::io::dicomweb
         <service type="::sight::modules::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
+            <config dicomReader="::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
             <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
        </service>
    @endcode

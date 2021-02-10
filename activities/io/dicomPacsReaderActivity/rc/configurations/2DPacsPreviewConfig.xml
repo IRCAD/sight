@@ -70,7 +70,7 @@
             <in key="pacsConfig" uid="${PACS_CONFIGURATION}" />
             <inout key="series" uid="${objectID}" />
             <out key="image" uid="image" />
-            <config dicomReader="::ioGdcm::SSeriesDBReader">
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader">
                 <dicomReaderConfig>
                     <config>
                         <showLogDialog>no</showLogDialog>

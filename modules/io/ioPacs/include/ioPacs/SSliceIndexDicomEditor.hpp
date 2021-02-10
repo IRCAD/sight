@@ -54,7 +54,7 @@ namespace ioPacs
         <in key="pacsConfig" uid="..." />
         <inout key="series" uid="..." />
         <inout key="image" uid="..." />
-        <config delay="500" dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
+        <config delay="500" dicomReader="::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
     </service>
    @endcode
  *

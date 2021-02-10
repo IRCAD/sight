@@ -11,7 +11,7 @@ set( REQUIREMENTS
     data
     module_ui_base
     module_ui_qt
-    ioGdcm
+    module_io_dicom
     module_io_dicomweb
     ioPacs
     media

@@ -453,14 +453,14 @@
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="series" uid="previewDicom" />
             <inout key="image" uid="previewImage" />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500" />
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" delay="500" />
         </service>
 
         <service uid="seriesPullerSrv" type="::ioPacs::SSeriesPuller" autoConnect="yes">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" />
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" />
         </service>
 
         <service uid="localSelectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >

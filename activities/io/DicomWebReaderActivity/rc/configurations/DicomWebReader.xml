@@ -97,7 +97,7 @@
             </slots>
         </service>
 
-        <service uid="action_pushSeries" type="::ioDicom::SSeriesDBMerger">
+        <service uid="action_pushSeries" type="::sight::modules::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="localSelections" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>
@@ -118,7 +118,7 @@
         <service uid="pullSeriesController" type="::sight::modules::io::dicomweb::SSeriesPuller" >
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
-            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomWebReaderConfig" />
+            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="DicomWebReaderConfig" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
@@ -147,9 +147,9 @@
         </service>
 
 
-        <service uid="seriesDBReader" type="::ioGdcm::SSeriesDBReader" >
+        <service uid="seriesDBReader" type="::sight::modules::io::dicom::SSeriesDBReader" >
             <inout key="data" uid="localSeriesDB" />
-            <config filterType="::fwDicomIOFilter::sorter::ImagePositionPatientSorter" />
+            <config filterType="::sight::filter::dicom::sorter::ImagePositionPatientSorter" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->

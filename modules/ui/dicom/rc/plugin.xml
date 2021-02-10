@@ -1,0 +1,32 @@
+<plugin id="::sight::modules::ui::dicom" class="sight::modules::ui::dicom::Plugin"  version="@PROJECT_VERSION@" >
+    <library name="module_ui_dicom" />
+
+    
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::ui::base::editor::IEditor</type>
+        <service>::sight::modules::ui::dicom::SFilterSelectionEditor</service>
+        <object>::sight::data::Vector</object>
+        <desc>Filter Selection Editor</desc>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::ui::base::editor::IDialogEditor</type>
+        <service>::sight::modules::ui::dicom::SFilterSelectorDialog</service>
+        <object>::sight::data::String</object>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::ui::base::IActionSrv</type>
+        <service>::sight::modules::ui::dicom::SSeriesDBMerger</service>
+        <object>::sight::data::Vector</object>
+        <desc>Push Series to SeriesDB</desc>
+    </extension>
+
+    <extension implements="::sight::services::registry::ServiceFactory">
+        <type>::sight::ui::base::editor::IEditor</type>
+        <service>::sight::modules::ui::dicom::SSliceIndexDicomEditor</service>
+        <object>::sight::data::DicomSeries</object>
+        <desc>Slice Index Dicom Editor</desc>
+    </extension>
+
+</plugin>
