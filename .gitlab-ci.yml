@@ -9,19 +9,20 @@ stages:
   before_script:
     # Prepare sight source
     - sudo chown -R sight:sight .
-    # Merge the branch into dev.
+    # Merge the MR branch into dev.
+    # TODO: uncomment me to merge again MR branch into dev
     - >
-      if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-        git config user.name ${GITLAB_USER_ID}
-        git config user.email ${GITLAB_USER_EMAIL}
-        git fetch --all
-        git checkout dev
-        git reset --hard origin/dev
-        git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
-        export EXTRA_BRANCH="dev"
-      else
+      # if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+      #   git config user.name ${GITLAB_USER_ID}
+      #   git config user.email ${GITLAB_USER_EMAIL}
+      #   git fetch --all
+      #   git checkout dev
+      #   git reset --hard origin/dev
+      #   git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+      #   export EXTRA_BRANCH="dev"
+      # else
         export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
-      fi
+      # fi
     # Reset the modified time of all files to improve ccache performance
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
 
@@ -31,6 +32,7 @@ lint:sheldon:
   stage: lint
   script:
     # Download sheldon.
+    # TODO: use dev/master/tag branch
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b wip-massive-refactor
     # Stage all files from the merge to get them checked by sheldon.
     - git add * -f
