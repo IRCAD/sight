@@ -27,10 +27,9 @@
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupLazyStream.hpp"
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupReader.hpp"
 
+#include <data/dicom/Image.hpp>
+#include <data/dicom/Series.hpp>
 #include <data/ImageSeries.hpp>
-
-#include <fwDicomTools/Image.hpp>
-#include <fwDicomTools/Series.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -64,7 +63,7 @@ data::Series::sptr ImageStorageReader::read(const data::DicomSeries::csptr& seri
     std::string sopClassUID                                          = dcmFindNameOfUID(
         sopClassUIDContainer.begin()->c_str());
 
-    data::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(series);
+    data::ImageSeries::sptr imageSeries = data::dicom::Series::convertToImageSeries(series);
     DicomContainerType instances        = series->getDicomContainer();
 
     data::Image::sptr image = data::Image::New();
@@ -235,7 +234,7 @@ data::Series::sptr ImageStorageReader::read(const data::DicomSeries::csptr& seri
     }
 
     //Find image type
-    ::fwDicomTools::Image imageHelper(
+    data::dicom::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     core::tools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
 

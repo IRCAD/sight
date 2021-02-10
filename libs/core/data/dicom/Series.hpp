@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "fwDicomTools/config.hpp"
+#include "data/config.hpp"
 
 #include <core/macros.hpp>
 
@@ -37,27 +37,27 @@ class ImageSeries;
 class ModelSeries;
 }
 
-namespace fwDicomTools
+namespace sight::data::dicom
 {
 
 /**
  * @brief DICOM Series Helper
  */
-class FWDICOMTOOLS_CLASS_API Series
+class DATA_CLASS_API Series
 {
 public:
     /**
      * @brief Convert a DicomSeries to an ImageSeries
      * @param[in] series DicomSeries that must be converted
      */
-    FWDICOMTOOLS_API static SPTR(data::ImageSeries) convertToImageSeries(
+    DATA_API static SPTR(data::ImageSeries) convertToImageSeries(
         const CSPTR(data::DicomSeries)& series);
 
     /**
      * @brief Convert a DicomSeries to a ModelSeries
      * @param[in] series DicomSeries that must be converted
      */
-    FWDICOMTOOLS_API static SPTR(data::ModelSeries) convertToModelSeries(
+    DATA_API static SPTR(data::ModelSeries) convertToModelSeries(
         const CSPTR(data::DicomSeries)& series);
 
 };

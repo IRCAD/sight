@@ -22,19 +22,19 @@
 
 #pragma once
 
-#include "fwDicomTools/config.hpp"
+#include "data/config.hpp"
 
 #include <core/tools/Type.hpp>
 
 #include <stdint.h>
 
-namespace fwDicomTools
+namespace sight::data::dicom
 {
 
 /**
  * @brief DICOM Image Helper
  */
-class FWDICOMTOOLS_CLASS_API Image
+class DATA_CLASS_API Image
 {
 public:
 
@@ -48,7 +48,7 @@ public:
      * @param[in] rescaleSlope Rescale slope
      * @param[in] rescaleIntercept Rescale intercept
      */
-    FWDICOMTOOLS_API Image(
+    DATA_API Image(
         unsigned short samplesPerPixel,
         unsigned short bitsAllocated,
         unsigned short bitsStored,
@@ -58,18 +58,18 @@ public:
         double rescaleIntercept);
 
     /// Destructor
-    FWDICOMTOOLS_API virtual ~Image();
+    DATA_API virtual ~Image();
 
     /// Find Image Type
-    FWDICOMTOOLS_API core::tools::Type findImageTypeFromMinMaxValues() const;
+    DATA_API core::tools::Type findImageTypeFromMinMaxValues() const;
 
 protected:
 
     /// Return minimum possible value of the pixel
-    FWDICOMTOOLS_API int64_t getPixelMin() const;
+    DATA_API int64_t getPixelMin() const;
 
     /// Return maximum possible value of the pixel
-    FWDICOMTOOLS_API int64_t getPixelMax() const;
+    DATA_API int64_t getPixelMax() const;
 
     /// Samples per pixel
     unsigned short m_samplesPerPixel;

@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 
-#include "fwDicomTools/Image.hpp"
+#include "Image.hpp"
 
 #include <core/spyLog.hpp>
 
-namespace fwDicomTools
+namespace sight::data::dicom
 {
 
 Image::Image(

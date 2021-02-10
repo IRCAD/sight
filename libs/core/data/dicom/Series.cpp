@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "fwDicomTools/Series.hpp"
+#include "Series.hpp"
 
 #include <data/DicomSeries.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 
-namespace fwDicomTools
+namespace sight::data::dicom
 {
 
 // ----------------------------------------------------------------------------

@@ -6,7 +6,6 @@ set( DEPENDENCIES
     data
     io_base
     fwDicomIOFilter
-    fwDicomTools
     services
     io_zip
     )

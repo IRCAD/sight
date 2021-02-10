@@ -5,7 +5,6 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     io_base
     fwDicomIOFilter
-    fwDicomTools
     core
     geometry_data
     data

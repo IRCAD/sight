@@ -23,7 +23,7 @@
 /// fwDicomTools contains general tools to handle DICOM format
 #pragma once
 
-namespace fwDicomTools
+namespace sight::data::dicom
 {
 
-} //namespace fwDicomTools
+} //namespace sight::data::dicom

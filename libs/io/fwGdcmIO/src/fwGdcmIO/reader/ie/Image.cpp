@@ -26,10 +26,9 @@
 #include "fwGdcmIO/helper/DicomDataReader.hxx"
 #include "fwGdcmIO/helper/DicomDataTools.hpp"
 
+#include <data/dicom/Image.hpp>
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
-
-#include <fwDicomTools/Image.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -270,7 +269,7 @@ void Image::readImagePixelModule()
     const unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
 
     // Compute final image type
-    ::fwDicomTools::Image imageHelper(
+    data::dicom::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     core::tools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
     m_object->setType(imageType);

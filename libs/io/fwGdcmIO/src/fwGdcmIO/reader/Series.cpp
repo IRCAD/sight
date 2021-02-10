@@ -28,13 +28,12 @@
 #include "fwGdcmIO/reader/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/reader/iod/SurfaceSegmentationIOD.hpp"
 
+#include <data/dicom/Series.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
-
-#include <fwDicomTools/Series.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -86,7 +85,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != ::gdcm::MediaStorage::SpacialFiducialsStorage)
         {
             // Read the image
-            data::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(dicomSeries);
+            data::ImageSeries::sptr imageSeries = data::dicom::Series::convertToImageSeries(dicomSeries);
             imageSeries->setDicomReference(dicomSeries);
             data::Image::sptr image = data::Image::New();
             imageSeries->setImage(image);
@@ -115,7 +114,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) ==
                  ::gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
-            data::ModelSeries::sptr modelSeries = ::fwDicomTools::Series::convertToModelSeries(dicomSeries);
+            data::ModelSeries::sptr modelSeries = data::dicom::Series::convertToModelSeries(dicomSeries);
             modelSeries->setDicomReference(dicomSeries);
             // Create IOD Reader
             ::fwGdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance, m_logger,
