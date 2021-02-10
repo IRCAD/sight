@@ -27,11 +27,11 @@
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/tools/helper/MedicalImage.hpp>
-#include <data/tools/ImageDiff.hpp>
 
+#include <utestData/generator/Image.hpp>
+
+#include <filter/image/ImageDiff.hpp>
 #include <filter/image/LineDrawer.hpp>
-
-#include <fwTest/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::LineDrawerTest );
@@ -72,8 +72,8 @@ void LineDrawerTest::circleTest()
 
         data::Image::sptr image = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
@@ -107,8 +107,8 @@ void LineDrawerTest::circleTest()
 
         data::Image::sptr image = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
+                                                   data::Image::PixelFormat::GRAY_SCALE);
         const auto dumpLock = image->lock();
 
         SPTR(data::Image::BufferType) val =
@@ -244,8 +244,8 @@ void LineDrawerTest::ellipseTest()
 
         data::Image::sptr image = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
@@ -327,8 +327,8 @@ void LineDrawerTest::borderTest()
 
         data::Image::sptr image = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
@@ -394,10 +394,10 @@ void LineDrawerTest::roiTest()
         data::Image::sptr image    = data::Image::New();
         data::Image::sptr roiImage = data::Image::New();
 
-        ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                                  data::Image::PixelFormat::GRAY_SCALE);
-        ::fwTest::generator::Image::generateImage(roiImage, SIZE, SPACING, ORIGIN, TYPE,
-                                                  data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
+                                                   data::Image::PixelFormat::GRAY_SCALE);
+        utestData::generator::Image::generateImage(roiImage, SIZE, SPACING, ORIGIN, TYPE,
+                                                   data::Image::PixelFormat::GRAY_SCALE);
 
         const auto roiDumpLock = roiImage->lock();
 

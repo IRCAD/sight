@@ -323,7 +323,7 @@
             <out key="tf" uid="referenceTransferFunction" />
         </service>
 
-        <service uid="computeReferenceHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeReferenceHistogram" type="::sight::modules::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${referenceImageUid}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>

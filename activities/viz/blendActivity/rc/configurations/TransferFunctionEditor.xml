@@ -147,7 +147,7 @@
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeHistogram" type="::sight::modules::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>

@@ -30,7 +30,7 @@
 
 #include <QQmlEngine>
 
-fwServicesRegisterMacro( ::fwRenderQt3D::IAdaptor, ::visuQt3DAdaptor::SMaterial, ::sight::data::Material )
+fwServicesRegisterMacro( ::sight::viz::scene2d3D::IAdaptor, ::visuQt3DAdaptor::SMaterial, ::sight::data::Material )
 
 //-----------------------------------------------------------------------------
 

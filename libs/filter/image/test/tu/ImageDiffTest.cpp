@@ -26,10 +26,11 @@
 
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/Image.hpp>
-#include <data/tools/ImageDiff.hpp>
 
 #include <utestData/generator/Image.hpp>
+
+#include <filter/image/Image.hpp>
+#include <filter/image/ImageDiff.hpp>
 
 #include <algorithm>
 #include <array>
@@ -38,9 +39,9 @@
 #include <vector>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::tools::ut::ImageDiffTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::filter::image::ut::ImageDiffTest );
 
-namespace sight::data::tools
+namespace sight::filter::image
 {
 namespace ut
 {
@@ -246,4 +247,4 @@ void ImageDiffTest::undoRedoTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::data::tools
+} //namespace sight::filter::image

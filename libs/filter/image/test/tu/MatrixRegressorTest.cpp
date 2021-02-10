@@ -23,7 +23,7 @@
 #include "MatrixRegressorTest.hpp"
 
 #include <filter/image/MatrixRegressor.hpp>
-
+#include <geometry/data/TransformationMatrix3D.hpp>
 #include <glm/gtc/epsilon.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -98,8 +98,8 @@ void MatrixRegressorTest::avgTranslationTest()
     ::glm::dmat4 t1 = ::glm::translate(::glm::dmat4(1.), ::glm::dvec3(3, 3, 3));
     ::glm::dmat4 t2 = ::glm::translate(::glm::dmat4(1.), ::glm::dvec3(5, 5, 5));
 
-    data::tools::TransformationMatrix3D::setTF3DFromMatrix(trans1, t1);
-    data::tools::TransformationMatrix3D::setTF3DFromMatrix(trans2, t2);
+    geometry::data::setTF3DFromMatrix(trans1, t1);
+    geometry::data::setTF3DFromMatrix(trans2, t2);
 
     data::Vector::sptr matList = data::Vector::New();
 
@@ -124,7 +124,7 @@ void MatrixRegressorTest::avgTranslationTest()
     const ::glm::dmat4 transExpected               = ::glm::translate(::glm::dmat4(1.), ::glm::dvec3(4, 4, 4));
     data::TransformationMatrix3D::sptr expectedMat = data::TransformationMatrix3D::New();
 
-    data::tools::TransformationMatrix3D::setTF3DFromMatrix(expectedMat, transExpected);
+    geometry::data::setTF3DFromMatrix(expectedMat, transExpected);
 
     for(int i = 0; i < 16; ++i)
     {
@@ -145,7 +145,7 @@ void MatrixRegressorTest::avgRotationTest()
 
     ::glm::dmat4 r1 = ::glm::rotate(::glm::dmat4(1.), ::glm::pi<double>() / 2., ::glm::dvec3(0., 0., 1.));
 
-    data::tools::TransformationMatrix3D::setTF3DFromMatrix(rot, r1);
+    geometry::data::setTF3DFromMatrix(rot, r1);
 
     data::Vector::sptr matList = data::Vector::New();
 
@@ -167,7 +167,7 @@ void MatrixRegressorTest::avgRotationTest()
 
     data::TransformationMatrix3D::sptr res = regressor.minimize(id, 1., 1e-5, 1e-5);
 
-    ::glm::dmat4 glmRes = data::tools::TransformationMatrix3D::getMatrixFromTF3D(res);
+    ::glm::dmat4 glmRes = geometry::data::getMatrixFromTF3D(res);
 
     // Extract the rotation from the result.
     double scale = std::pow(::glm::determinant(glmRes), 1./3.);

@@ -105,7 +105,7 @@ namespace sight::modules::navigation::openvslam
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::modules::navigation::openvslam::SOpenvslam" worker="trackerWorker" >
+        <service type="::sight::modules::navigation::openvslam::SOpenvslam" worker="trackerWorker" >
             <in key="camera" uid="..." />
             <in key="timeline" uid="..." autoConnect="yes" />
             <in key="timeline2" uid="..." />

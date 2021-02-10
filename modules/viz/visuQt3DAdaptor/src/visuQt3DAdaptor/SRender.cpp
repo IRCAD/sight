@@ -25,4 +25,4 @@
 #include <services/macros.hpp>
 
 /// Register SRender service in Services registry.
-fwServicesRegisterMacro( ::sight::viz::base::IRender, ::fwRenderQt3D::SRender )
+fwServicesRegisterMacro( ::sight::viz::base::IRender, ::sight::viz::scene2d3D::SRender )

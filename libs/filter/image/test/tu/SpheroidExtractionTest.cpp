@@ -22,9 +22,9 @@
 
 #include "SpheroidExtractionTest.hpp"
 
-#include <filter/image/SpheroidExtraction.hpp>
+#include <utestData/generator/Image.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <filter/image/SpheroidExtraction.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -131,8 +131,8 @@ void SpheroidExtractionTest::extractionTest()
     const data::Image::Origin ORIGIN   = {{ 0., 0., 0. }};
     const core::tools::Type TYPE       = core::tools::Type::s_INT16;
 
-    ::fwTest::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
-                                              data::Image::PixelFormat::GRAY_SCALE);
+    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE,
+                                               data::Image::PixelFormat::GRAY_SCALE);
 
     makeNoise< std::int16_t >(image, 0, 128);
 

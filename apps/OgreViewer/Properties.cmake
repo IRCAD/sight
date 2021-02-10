@@ -16,11 +16,12 @@ set( REQUIREMENTS
     # Objects declaration
     module_services
     data
+    viz_scene2d
     io_dimse
 
     # UI declaration/Actions
     module_ui_base
-    uiVisuOgre
+    module_ui_viz
     module_ui_flaticon
 
     # Reader
@@ -29,16 +30,13 @@ set( REQUIREMENTS
     module_io_dicom
 
     # Services
-    scene2D
+    module_viz_scene2d
     module_data
-    module_core_data
     module_filter_image
     module_io_dimse
 
     # Configuration launchers
     ogreConfig
-
-    # Generic Scene
     )
 
 moduleParam(module_ui_qt

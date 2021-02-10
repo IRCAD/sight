@@ -15,7 +15,7 @@ set( REQUIREMENTS
     module_ui_qt
     module_data
     visuVTKAdaptor
-    scene2D
+    module_viz_scene2d
     media
     module_geometry_base
     visuVTKQt

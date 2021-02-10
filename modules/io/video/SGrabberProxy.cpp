@@ -206,7 +206,7 @@ void SGrabberProxy::startCamera()
 
             for(const auto& srvImpl : grabbersImpl)
             {
-                if(srvImpl != "::modules::io::video::SGrabberProxy")
+                if(srvImpl != "::sight::modules::io::video::SGrabberProxy")
                 {
                     SLM_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);

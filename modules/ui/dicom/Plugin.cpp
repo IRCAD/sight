@@ -31,7 +31,7 @@
 namespace sight::modules::ui::dicom
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("modules::ui::dicom::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::ui::dicom::Plugin");
 
 Plugin::Plugin()
 {

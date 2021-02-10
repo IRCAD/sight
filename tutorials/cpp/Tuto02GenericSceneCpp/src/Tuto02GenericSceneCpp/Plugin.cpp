@@ -407,7 +407,7 @@ void Plugin::initialize()
         services::IService::ConfigType config;
         config.put("type.<xmlattr>.mode", "writer");
         config.put("selection.<xmlattr>.mode", "exclude");
-        config.put("addSelection.<xmlattr>.service", "::modules::io::atoms::SWriter");
+        config.put("addSelection.<xmlattr>.service", "::sight::modules::io::atoms::SWriter");
         imageWriterSrv->configure(config);
     }
 

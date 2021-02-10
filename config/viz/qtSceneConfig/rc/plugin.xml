@@ -1,7 +1,7 @@
 <plugin id="qtSceneConfig" version="@PROJECT_VERSION@" >
 
     <requirement id="module_services" />
-    <requirement id="scene2D" />
+    <requirement id="module_viz_scene2d" />
 
     <xi:include href="configurations/TransferFunctionWidget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

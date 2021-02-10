@@ -76,7 +76,7 @@ void Distance::starting()
         this->getContainer() );
 
     namespace fs = std::filesystem;
-    fs::path pathImageDist = core::runtime::getModuleResourceFilePath("uiMeasurementQt", "distance.png");
+    fs::path pathImageDist = core::runtime::getModuleResourceFilePath("module_ui_qt", "distance.png");
     SLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));

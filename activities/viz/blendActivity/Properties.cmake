@@ -9,7 +9,7 @@ set( REQUIREMENTS
     module_memory
     module_data
     visuVTKAdaptor
-    scene2D
+    module_viz_scene2d
     data
     media
     qtSceneConfig

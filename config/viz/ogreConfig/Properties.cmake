@@ -7,10 +7,10 @@ set( REQUIREMENTS
     module_services
     data
     module_ui_base
-    scene2D
+    module_viz_scene2d
     module_ui_qt
     qtSceneConfig
-    uiVisuOgre
+    module_ui_viz
     module_data
 )
 

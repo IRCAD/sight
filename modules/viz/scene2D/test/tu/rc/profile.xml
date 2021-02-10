@@ -1,8 +1,0 @@
-<profile name="ProcessingTest" version="0.1">
-
-    <activate id="module_services" version="0.1" />
-    <activate id="scene2D" version="0.1" />
-
-    <start id="scene2D" />
-    
-</profile>

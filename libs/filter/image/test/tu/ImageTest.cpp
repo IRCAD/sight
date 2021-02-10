@@ -24,16 +24,16 @@
 
 #include <core/tools/Type.hpp>
 
-#include <data/tools/Image.hpp>
-
 #include <utestData/generator/Image.hpp>
+
+#include <filter/image/Image.hpp>
 
 #include <sstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( data::tools::ut::ImageTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::filter::image::ut::ImageTest );
 
-namespace sight::data::tools
+namespace sight::filter::image
 {
 namespace ut
 {
@@ -91,8 +91,8 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
     std::fill(end - part, end, 0);
 
     // apply roi and check
-    data::tools::Image::applyRoi(image, roi);
-    CPPUNIT_ASSERT_MESSAGE( message, data::tools::Image::isRoiApplyed(imageRef, roi, image));
+    filter::image::applyRoi(image, roi);
+    CPPUNIT_ASSERT_MESSAGE( message, filter::image::isRoiApplyed(imageRef, roi, image));
 }
 
 //------------------------------------------------------------------------------
@@ -221,4 +221,4 @@ void ImageTest::roiApplyTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::data::tools
+} //namespace sight::filter::image

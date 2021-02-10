@@ -27,8 +27,8 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="LightSelector" type="::uiVisuOgre::SLightSelector"  />
-        <service uid="LightEditor" type="::uiVisuOgre::SLightEditor" />
+        <service uid="LightSelector" type="::sight::modules::ui::viz::SLightSelector"  />
+        <service uid="LightEditor" type="::sight::modules::ui::viz::SLightEditor" />
 
         <!-- ************************************* Actions ************************************* -->
 

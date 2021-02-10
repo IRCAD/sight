@@ -69,7 +69,7 @@ namespace action
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::modules::io::atoms::SReader" />
+            <addSelection service="::sight::modules::io::atoms::SReader" />
         </config>
     </extension>
    @endcode

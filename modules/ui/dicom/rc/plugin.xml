@@ -1,4 +1,4 @@
-<plugin id="::sight::modules::ui::dicom" class="sight::modules::ui::dicom::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="::sight::modules::ui::dicom" class="::sight::modules::ui::dicom::Plugin"  version="@PROJECT_VERSION@" >
     <library name="module_ui_dicom" />
 
     

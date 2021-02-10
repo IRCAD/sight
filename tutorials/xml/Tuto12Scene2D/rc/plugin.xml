@@ -2,7 +2,7 @@
 
     <requirement id="module_services" />
     <requirement id="module_ui_qt" />
-    <requirement id="scene2D" />
+    <requirement id="module_viz_scene2d" />
 
     <extension implements="::sight::services::registry::AppConfig" >
         <id>Tuto12Scene2D_AppCfg</id>
@@ -53,7 +53,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericSceneSrv" type="::fwRenderQt::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::scene2d::SRender" >
                 <scene>
                     <viewport x="-100" y="-100" width="200" height="200" />
                     <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
@@ -66,23 +66,23 @@
                 </scene>
             </service>
 
-            <service uid="gridAdp" type="::scene2D::adaptor::SGrid2D" >
+            <service uid="gridAdp" type="::sight::modules::viz::scene2d::adaptor::SGrid2D" >
                 <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="#619647" zValue="2" xAxis="axe1" yAxis="axe1" />
             </service>
 
-            <service uid="square1Adp" type="::scene2D::adaptor::SSquare" >
+            <service uid="square1Adp" type="::sight::modules::viz::scene2d::adaptor::SSquare" >
                 <config x="0" y="0" size="15" color="#D25252" zValue="4" />
             </service>
 
-            <service uid="square2Adp" type="::scene2D::adaptor::SSquare" >
+            <service uid="square2Adp" type="::sight::modules::viz::scene2d::adaptor::SSquare" >
                 <config x="20" y="20" size="30" color="#6997BB" zValue="4" />
             </service>
 
-            <service uid="abscissaAdp" type="::scene2D::adaptor::SLine" >
+            <service uid="abscissaAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="-100" x2="100" y1="0" y2="0" color="#D25252" zValue="5" />
             </service>
 
-            <service uid="ordinateAdp" type="::scene2D::adaptor::SLine" >
+            <service uid="ordinateAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-100" y2="100" color="#D25252" zValue="6" />
             </service>
 

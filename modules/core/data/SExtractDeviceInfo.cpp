@@ -67,7 +67,7 @@ void SExtractDeviceInfo::configuring()
 
         deviceConfig = services::registry::ServiceConfig::getDefault()->getServiceConfig(
             configCfg->getValue(),
-            "::modules::data::SExtractDeviceInfo");
+            "::sight::modules::data::SExtractDeviceInfo");
     }
     else
     {

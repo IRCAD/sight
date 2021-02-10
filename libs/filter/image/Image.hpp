@@ -40,15 +40,15 @@ namespace sight::filter::image
  *
  * set input image voxel to zero where roi voxel value is zero
  */
-FILTER_IMAGE_API static void applyRoi( data::Image::sptr image, data::Image::sptr roi );
+FILTER_IMAGE_API void applyRoi( data::Image::sptr image, data::Image::sptr roi );
 
 /**
  * @brief Check if 'imgRoiApplyed' is the result of 'roi' applyed to 'image'
  *
  */
-FILTER_IMAGE_API static bool isRoiApplyed( data::Image::sptr image,
-                                           data::Image::sptr imgRoiApplyed,
-                                           data::Image::sptr roi );
+FILTER_IMAGE_API bool isRoiApplyed( data::Image::sptr image,
+                                    data::Image::sptr imgRoiApplyed,
+                                    data::Image::sptr roi );
 
 /**
  * @brief Merge mask in image imgDest: put value 'val' in imgDest when mask value != 0

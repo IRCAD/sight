@@ -14,6 +14,6 @@ set( REQUIREMENTS
         module_data
         visuVTKAdaptor
         visuVTKQt
-        scene2D
+        module_viz_scene2d
         media
         )

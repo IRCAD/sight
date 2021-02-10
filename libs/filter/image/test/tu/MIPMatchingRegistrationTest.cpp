@@ -28,7 +28,6 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/TransformationMatrix3D.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <glm/gtc/matrix_access.hpp>
@@ -48,14 +47,12 @@
 #include <itkRegionOfInterestImageFilter.h>
 #include <itkResampleImageFilter.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(filter::image::ut::MIPMatchingRegistrationTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MIPMatchingRegistrationTest);
 
 namespace sight::filter::image
 {
 namespace ut
 {
-
-namespace itkReg = ::itkRegistrationOp;
 
 //------------------------------------------------------------------------------
 
@@ -102,7 +99,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     transform->setCoefficient(0, 3, 4.);
     transform->setCoefficient(1, 3, 12.);
     transform->setCoefficient(2, 3, 7.);
-    itkReg::Resampler::resample(moving, fixed, transform);
+    sight::filter::image::Resampler::resample(moving, fixed, transform);
 
     std::array<double, 3> expected {{ 4., 12., 7. }};
     filter::image::RegistrationDispatch::Parameters params;
@@ -137,7 +134,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(0, 3, vTrans[0]);
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
-    itkReg::Resampler::resample(moving, fixed, transform);
+    sight::filter::image::Resampler::resample(moving, fixed, transform);
     auto fixedOrigin  = std::array<double, 3> {{ 20., 10., 35. }},
          movingOrigin = moving->getOrigin2();
     fixed->setOrigin2(fixedOrigin);

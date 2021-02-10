@@ -163,7 +163,7 @@ void STransferFunction::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = core::runtime::getModuleResourceFilePath("uiTF", "tf");
+        const auto pathRoot = core::runtime::getModuleResourceFilePath("module_ui_qt", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -467,7 +467,7 @@ void STransferFunction::importTF()
 {
     const data::TransferFunction::sptr tf          = data::TransferFunction::New();
     const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
-        "::modules::io::atoms::SReader");
+        "::sight::modules::io::atoms::SReader");
 
     reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
@@ -506,7 +506,7 @@ void STransferFunction::importTF()
 void STransferFunction::exportTF()
 {
     const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
-        "::modules::io::atoms::SWriter");
+        "::sight::modules::io::atoms::SWriter");
 
     writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
 
@@ -565,7 +565,7 @@ void STransferFunction::initTransferFunctions()
 
             const data::TransferFunction::sptr tf          = data::TransferFunction::New();
             const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
-                "::modules::io::atoms::SReader");
+                "::sight::modules::io::atoms::SReader");
             reader->registerInOut(tf, io::base::services::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(

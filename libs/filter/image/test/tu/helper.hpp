@@ -38,7 +38,7 @@ template <class P, size_t N>
  * @tparam P Pixel type
  * @tparam N Number of channels
  */
-data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
+sight::data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Vector<double, N>(1.))
 {
     using ImageType                      = ::itk::Image<P, N>;
     using EllipseType                    = ::itk::EllipseSpatialObject< N >;
@@ -85,8 +85,8 @@ data::Image::sptr createSphereImage(::itk::Vector<double, N> spacing = ::itk::Ve
 
     image->Graft(imageFilter->GetOutput());
 
-    data::Image::sptr outputImage = data::Image::New();
-    io::itk::itkImageToFwDataImage(image, outputImage);
+    auto outputImage = sight::data::Image::New();
+    sight::io::itk::itkImageToFwDataImage(image, outputImage);
 
     return outputImage;
 }

@@ -54,8 +54,8 @@ namespace editor
               <inout key="data" uid="${selection}" />
               <type mode="writer" />
               <selection mode="include" />
-              <addSelection service="::modules::io::atoms::SWriter" />
-              <config id="ioAtomsConfig" service="::modules::io::atoms::SWriter" />
+              <addSelection service="::sight::modules::io::atoms::SWriter" />
+              <config id="ioAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
           </service>
  * @endcode
  *
@@ -66,7 +66,7 @@ namespace editor
               <out key="data" uid="image" />
               <type mode="reader" class="data::Image" />
               <selection mode="include" />
-              <addSelection service="::modules::io::atoms::SReader" />
+              <addSelection service="::sight::modules::io::atoms::SReader" />
           </service>
  * @endcode
  *

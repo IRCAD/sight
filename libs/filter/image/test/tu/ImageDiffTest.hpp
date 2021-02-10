@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data::tools
+namespace sight::filter::image
 {
 namespace ut
 {
@@ -51,4 +51,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::data::tools
+} //namespace sight::filter::image

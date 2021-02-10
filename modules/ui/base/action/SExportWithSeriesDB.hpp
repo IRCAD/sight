@@ -80,7 +80,7 @@ namespace action
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::modules::io::atoms::SWriter" />
+            <addSelection service="::sight::modules::io::atoms::SWriter" />
         </config>
     </extension>
     @endcode

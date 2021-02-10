@@ -105,14 +105,14 @@ void SSeriesDBMerger::updating( )
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                              "::modules::ui::base::editor::SIOSelector");
+                                                                              "::sight::modules::ui::base::editor::SIOSelector");
     SLM_ASSERT("There is no service configuration "
                << m_ioSelectorSrvConfig
                << " for modules::ui::base::editor::SIOSelector", ioCfg);
 
     // Init and execute the service
     services::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = services::add("::modules::ui::base::editor::SIOSelector");
+    ioSelectorSrv = services::add("::sight::modules::ui::base::editor::SIOSelector");
     ioSelectorSrv->registerInOut(localSeriesDB, io::base::services::s_DATA_KEY);
     ioSelectorSrv->setWorker(m_associatedWorker);
 

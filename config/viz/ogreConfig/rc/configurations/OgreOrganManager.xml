@@ -57,13 +57,13 @@
         <service uid="representationEditorSrv" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="textureSelectorSrv" type="::uiVisuOgre::STextureSelector" >
+        <service uid="textureSelectorSrv" type="::sight::modules::ui::viz::STextureSelector" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="materialSelectorSrv" type="::uiVisuOgre::SMaterialSelector" >
+        <service uid="materialSelectorSrv" type="::sight::modules::ui::viz::SMaterialSelector" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="shaderParametersSrv" type="::uiVisuOgre::SShaderParameterEditor" >
+        <service uid="shaderParametersSrv" type="::sight::modules::ui::viz::SShaderParameterEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 

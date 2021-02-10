@@ -9,6 +9,7 @@ set( REQUIREMENTS
     module_services
     module_ui_base
     module_ui_qt
-    scene2D
+    module_viz_scene2d
     media
+    viz_scene2d
 )

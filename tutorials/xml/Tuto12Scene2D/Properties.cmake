@@ -15,7 +15,7 @@ set( REQUIREMENTS
     module_ui_base
 
     # Generic Scene
-    scene2D
+    module_viz_scene2d
 )
 
 moduleParam(module_ui_qt

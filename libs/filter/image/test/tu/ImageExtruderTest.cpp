@@ -24,7 +24,7 @@
 
 #include <filter/image/ImageExtruder.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(filter::image::ut::ImageExtruderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ImageExtruderTest);
 
 namespace sight::filter::image
 {

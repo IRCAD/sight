@@ -6,7 +6,7 @@
     <requirement id="module_viz_ogre" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
-    <requirement id="scene2D" />
+    <requirement id="module_viz_scene2d" />
     <requirement id="module_io_atoms" />
     <requirement id="module_io_dimse" />
 
@@ -493,7 +493,7 @@
             </service>
 
             <!-- Compute the image histogram -->
-            <service uid="computeHistogramSrv" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+            <service uid="computeHistogramSrv" type="::sight::modules::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
                 <in key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
@@ -516,15 +516,15 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="::sight::modules::ui::qt::metrics::editor::SLandmarks" autoConnect="yes" >
+            <service uid="landmarksParameterSrv" type="::sight::modules::ui::qt::metrics::SLandmarks" autoConnect="yes" >
                 <inout key="landmarks" uid="landmarks" />
                 <advanced>yes</advanced>
             </service>
 
             <!-- Light editor -->
-            <service uid="lightSelectorSrv" type="::uiVisuOgre::SLightSelector"  />
+            <service uid="lightSelectorSrv" type="::sight::modules::ui::viz::SLightSelector"  />
 
-            <service uid="lightEditorSrv" type="::uiVisuOgre::SLightEditor" />
+            <service uid="lightEditorSrv" type="::sight::modules::ui::viz::SLightEditor" />
 
             <!-- ******************************* Connections ***************************************** -->
 

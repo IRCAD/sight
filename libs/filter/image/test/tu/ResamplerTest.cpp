@@ -30,7 +30,7 @@
 
 #include <filter/image/Resampler.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(filter::image::ut::ResamplerTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ResamplerTest);
 
 namespace sight::filter::image
 {

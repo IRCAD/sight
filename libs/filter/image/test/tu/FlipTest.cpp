@@ -29,7 +29,7 @@
 
 #include <filter/image/Flipper.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(filter::image::ut::FlipTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::FlipTest);
 
 namespace sight::filter::image
 {

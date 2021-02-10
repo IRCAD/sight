@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_memory
     visuVTKAdaptor
     visuVTKVRAdaptor
-    scene2D
+    module_viz_scene2d
     media
     imageConfig
     dataManagerConfig

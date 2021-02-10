@@ -25,9 +25,9 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/tools/helper/Image.hpp>
 
-#include <filter/image/MinMaxPropagation.hpp>
+#include <utestData/generator/Image.hpp>
 
-#include <fwTest/generator/Image.hpp>
+#include <filter/image/MinMaxPropagation.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::filter::image::ut::MinMaxPropagationTest );
@@ -41,7 +41,7 @@ namespace ut
 
 static size_t computeOffset( const size_t x, const size_t y, const size_t z, data::Image::sptr image )
 {
-    const fwData::Image::Size size = image->getSize2();
+    const data::Image::Size size = image->getSize2();
     return z * size[0] * size[1] + y * size[0] + x;
 }
 
@@ -91,8 +91,8 @@ void MinMaxPropagationTest::minPropagTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     // Draw a cube at 10,10,10 with a 255 value
     drawCube( imageIn, 255 );
@@ -177,8 +177,8 @@ void MinMaxPropagationTest::maxPropagTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     // Draw a cube at 10,10,10 with a 2 value
     drawCube( imageIn, 2 );
@@ -244,8 +244,8 @@ void MinMaxPropagationTest::radiusTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
-    ::fwTest::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
+    utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
     MinMaxPropagation propagator(imageIn, imageOut, nullptr);
 

@@ -105,7 +105,7 @@ void SExportWithSeriesDB::updating( )
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                              "::modules::ui::base::editor::SIOSelector");
+                                                                              "::sight::modules::ui::base::editor::SIOSelector");
     SLM_ASSERT("There is no service configuration "
                << m_ioSelectorSrvConfig
                << " for modules::ui::base::editor::SIOSelector", ioCfg);

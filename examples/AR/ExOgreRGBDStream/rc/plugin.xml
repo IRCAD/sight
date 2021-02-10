@@ -1,6 +1,6 @@
 <plugin id="ExOgreRGBDStream" version="@PROJECT_VERSION@" >
 
-    <requirement id="scene2D" />
+    <requirement id="module_viz_scene2d" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="module_viz_ogre" />
@@ -18,7 +18,7 @@
             <object uid="RGBDCameraSeries" type="::sight::data::CameraSeries" />
             <object uid="imageDepth" type="::sight::data::Image" />
             <object uid="imageVideo" type="::sight::data::Image" />
-            <object uid="viewport" type="::fwRenderQt::data::Viewport" />
+            <object uid="viewport" type="::sight::viz::scene2d::data::Viewport" />
             <object uid="tfDepth" type="::sight::data::TransferFunction" >
                 <colors>
                     <step color="#000000ff" value="0" />
@@ -195,7 +195,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneTFSrv" type="::fwRenderQt::SRender" >
+            <service uid="genericSceneTFSrv" type="::sight::viz::scene2d::SRender" >
                 <scene>
                     <scene x="-20" y="-1.1" width="5020" height="1.2" antialiasing="true" background="#36393E" />
 
@@ -217,57 +217,57 @@
                 </scene>
             </service>
 
-            <service uid="TFGridAdp" type="::scene2D::adaptor::SGrid2D" >
+            <service uid="TFGridAdp" type="::sight::modules::viz::scene2d::adaptor::SGrid2D" >
                 <config xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
 
-            <service uid="TFAbscissaAdp" type="::scene2D::adaptor::SLine" >
+            <service uid="TFAbscissaAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="TFOrdinateAdp" type="::scene2D::adaptor::SLine" >
+            <service uid="TFOrdinateAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="TFMaxOpacityAdp" type="::scene2D::adaptor::SLine" >
+            <service uid="TFMaxOpacityAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="-20" x2="5020" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
             </service>
 
-            <service uid="TFTransferFunctionAdp" type="::scene2D::adaptor::STransferFunction" autoConnect="yes" >
+            <service uid="TFTransferFunctionAdp" type="::sight::modules::viz::scene2d::adaptor::STransferFunction" autoConnect="yes" >
                 <inout key="image" uid="imageDepth" />
                 <inout key="tf" uid="tfDepth" />
                 <inout key="viewport" uid="viewport" />
                 <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
-            <service uid="TFViewportRangeUpdaterAdp" type="::scene2D::adaptor::SViewportUpdater" autoConnect="yes" >
+            <service uid="TFViewportRangeUpdaterAdp" type="::sight::modules::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
             </service>
 
-            <service uid="TFScaleValuesLeftAdp" type="::scene2D::adaptor::SScaleValues" autoConnect="yes" >
+            <service uid="TFScaleValuesLeftAdp" type="::sight::modules::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFAxisLeftAdp" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+            <service uid="TFAxisLeftAdp" type="::sight::modules::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFScaleValuesBottomAdp" type="::scene2D::adaptor::SScaleValues" autoConnect="yes" >
+            <service uid="TFScaleValuesBottomAdp" type="::sight::modules::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFAxisBottomAdp" type="::scene2D::adaptor::SAxis" autoConnect="yes" >
+            <service uid="TFAxisBottomAdp" type="::sight::modules::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneViewportSelectorSrv" type="::fwRenderQt::SRender" >
+            <service uid="genericSceneViewportSelectorSrv" type="::sight::viz::scene2d::SRender" >
                 <scene>
                     <scene x="-20" y="-1.1" width="5020" height="1.2" background="#36393E" />
 
@@ -282,15 +282,15 @@
                 </scene>
             </service>
 
-            <service uid="shutterAbscissa" type="::scene2D::adaptor::SLine" >
+            <service uid="shutterAbscissa" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="shutterOrdinate" type="::scene2D::adaptor::SLine" >
+            <service uid="shutterOrdinate" type="::sight::modules::viz::scene2d::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="VSRangeSelectorAdp" type="::scene2D::adaptor::SViewportRangeSelector" autoConnect="yes" >
+            <service uid="VSRangeSelectorAdp" type="::sight::modules::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="yes" >
                 <inout key="viewport" uid="viewport" />
                 <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
             </service>

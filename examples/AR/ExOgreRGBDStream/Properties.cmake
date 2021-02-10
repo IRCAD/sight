@@ -11,7 +11,7 @@ set( REQUIREMENTS
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_ui_qt                   # Start the module, allow dark theme
     module_viz_ogreQt              # Enable Ogre to render things in Qt window
-    scene2D                 # Start the module, allow to use fwRenderQt
+    module_viz_scene2d                 # Start the module, allow to use viz_scene2d
 
     # Objects declaration
     data
@@ -27,7 +27,7 @@ set( REQUIREMENTS
     # Services
     module_sync
 
-    # Generic Scene
+    viz_scene2d
 )
 
 moduleParam(module_ui_qt

@@ -135,8 +135,8 @@ void WindowLevel::starting()
 
     m_toggleTFButton = new QToolButton();
     QIcon ico;
-    std::string squareIcon(core::runtime::getModuleResourceFilePath("uiImageQt", "square.png").string());
-    std::string rampIcon(core::runtime::getModuleResourceFilePath("uiImageQt", "ramp.png").string());
+    std::string squareIcon(core::runtime::getModuleResourceFilePath("module_ui_qt", "square.png").string());
+    std::string rampIcon(core::runtime::getModuleResourceFilePath("module_ui_qt", "ramp.png").string());
     ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
     ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
@@ -145,9 +145,9 @@ void WindowLevel::starting()
 
     m_toggleAutoButton = new QToolButton();
     QIcon icon;
-    std::string windo(core::runtime::getModuleResourceFilePath("uiImageQt", "windowing.svg").string());
+    std::string windo(core::runtime::getModuleResourceFilePath("module_ui_qt", "windowing.svg").string());
     icon.addFile(QString::fromStdString(windo), QSize(), QIcon::Normal, QIcon::On);
-    std::string nowindo(core::runtime::getModuleResourceFilePath("uiImageQt", "nowindowing.svg").string());
+    std::string nowindo(core::runtime::getModuleResourceFilePath("module_ui_qt", "nowindowing.svg").string());
     icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
     m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");
