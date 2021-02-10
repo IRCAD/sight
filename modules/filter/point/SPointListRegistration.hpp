@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "basicRegistration/config.hpp"
+#include "modules/filter/point/config.hpp"
 
 #include <core/com/Slot.hpp>
 
 #include <services/IRegisterer.hpp>
 
-namespace basicRegistration
+namespace sight::modules::filter::point
 {
 
 /**
@@ -43,7 +43,7 @@ namespace basicRegistration
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::basicRegistration::SPointListRegistration">
+       <service uid="..." type="::modules::filter::point::SPointListRegistration">
            <inout key="registeredPL" uid="..." />
            <inout key="referencePL" uid="..." />
            <inout key="output" uid="..." />
@@ -59,7 +59,7 @@ namespace basicRegistration
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
-class BASICREGISTRATION_CLASS_API SPointListRegistration : public services::IRegisterer
+class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public services::IRegisterer
 {
 
 public:
@@ -70,7 +70,7 @@ public:
      * @name Slots API
      * @{
      */
-    BASICREGISTRATION_API static const core::com::Slots::SlotKeyType s_CHANGE_MODE;
+    MODULE_FILTER_POINT_API static const core::com::Slots::SlotKeyType s_CHANGE_MODE;
     ///@}
 
     /**
@@ -81,14 +81,14 @@ public:
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;
     ///@}
 
-    BASICREGISTRATION_API SPointListRegistration();
+    MODULE_FILTER_POINT_API SPointListRegistration();
 
-    BASICREGISTRATION_API virtual ~SPointListRegistration();
+    MODULE_FILTER_POINT_API virtual ~SPointListRegistration();
 
 protected:
 
     /// Register a point list slot
-    BASICREGISTRATION_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
+    MODULE_FILTER_POINT_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
 
     /// Registration Mode (default: RIGID)
     typedef enum Mode
@@ -99,19 +99,19 @@ protected:
     }RegistrationModeType;
 
     /// Configures the service
-    BASICREGISTRATION_API virtual void configuring() override;
+    MODULE_FILTER_POINT_API virtual void configuring() override;
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void starting() override;
+    MODULE_FILTER_POINT_API virtual void starting() override;
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void stopping() override;
+    MODULE_FILTER_POINT_API virtual void stopping() override;
 
     /// Perform the registration
-    BASICREGISTRATION_API virtual void updating() override;
+    MODULE_FILTER_POINT_API virtual void updating() override;
 
     /// Do nothing
-    BASICREGISTRATION_API virtual void swapping() override;
+    MODULE_FILTER_POINT_API virtual void swapping() override;
 
 private:
 
@@ -131,4 +131,4 @@ private:
     RegistrationModeType m_registrationMode;
 };
 
-} // namespace basicRegistration
+} // namespace sight::modules::filter::point

@@ -23,7 +23,7 @@ set( REQUIREMENTS
     module_io_matrix
 
     # Config
-    basicRegistration
+    module_filter_point
 
     # Services
     module_data

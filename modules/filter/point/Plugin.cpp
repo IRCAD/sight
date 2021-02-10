@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/filter/point/Plugin.hpp"
+#include "Plugin.hpp"
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
@@ -29,7 +29,7 @@ namespace sight::modules::filter::point
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
     "::sight::modules::filter::point::Plugin");
 
 //-----------------------------------------------------------------------------

@@ -22,16 +22,11 @@
 
 #pragma once
 
-#include "basicRegistration/config.hpp"
+#include "modules/filter/image/config.hpp"
 
-#include <QObject>
-#include <QPointer>
+#include <services/IOperator.hpp>
 
-#include <ui/base/editor/IEditor.hpp>
-
-class QPushButton;
-
-namespace basicRegistration
+namespace sight::modules::filter::image
 {
 
 /**
@@ -40,7 +35,7 @@ namespace basicRegistration
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::basicRegistration::SImagesSubstract">
+   <service type="::sight::modules::filter::image::SImagesSubstract">
        <in key="image1" uid="..." />
        <in key="image2" uid="..." />
        <inout key="result" uid="..." />
@@ -53,42 +48,30 @@ namespace basicRegistration
  * - \b result [sight::data::Image]: substract image.
  */
 
-class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,
-                                                     public sight::ui::base::editor::IEditor
+class MODULE_FILTER_IMAGE_CLASS_API SImagesSubstract final : public services::IOperator
 {
-Q_OBJECT
-
 public:
 
-    fwCoreServiceMacro(SImagesSubstract, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SImagesSubstract, ::sight::services::IOperator)
 
-    BASICREGISTRATION_API SImagesSubstract() noexcept;
-
-    BASICREGISTRATION_API virtual ~SImagesSubstract() noexcept;
+    MODULE_FILTER_IMAGE_API SImagesSubstract() noexcept          = default;
+    MODULE_FILTER_IMAGE_API virtual ~SImagesSubstract() noexcept = default;
 
 protected:
 
-    BASICREGISTRATION_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API virtual void configuring() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API virtual void starting() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API virtual void stopping() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API virtual void updating() override;
 
     /// Overrides
-    BASICREGISTRATION_API virtual void swapping() override;
-
-private Q_SLOTS:
-
-    /// Compute the subtraction between two images.
-    void OnCompute();
-
-private:
-    QPointer< QPushButton > mpComputeButton;
+    MODULE_FILTER_IMAGE_API virtual void swapping() override;
 };
 
-} // namespace basicRegistration
+} // namespace sight::modules::filter::image

@@ -20,9 +20,6 @@
  *
  ***********************************************************************/
 
-#include <QVBoxLayout>
-#include <QPushButton>
-
 #include <io/itk/itk.hpp>
 
 #include <core/com/Signal.hxx>
@@ -34,63 +31,36 @@
 
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 
 // Services tools
 #include <services/macros.hpp>
 
-#include "basicRegistration/SImagesSubstract.hpp"
+#include "SImagesSubstract.hpp"
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::basicRegistration::SImagesSubstract )
+fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SImagesSubstract )
 
-namespace basicRegistration
+namespace sight::modules::filter::image
 {
-
-SImagesSubstract::SImagesSubstract() noexcept :
-    sight::ui::base::editor::IEditor(),
-    mpComputeButton(0)
-{
-
-}
-
-SImagesSubstract::~SImagesSubstract() noexcept
-{
-}
 
 //------------------------------------------------------------------------------
 
 void SImagesSubstract::configuring()
 {
-    this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SImagesSubstract::starting()
 {
-    this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
-
-    QVBoxLayout* layout = new QVBoxLayout(container);
-    mpComputeButton = new QPushButton(tr("Compute"), container );
-    QObject::connect(mpComputeButton, SIGNAL(clicked()), this, SLOT(OnCompute()));
-
-    layout->addWidget(mpComputeButton, 0);
-    container->setLayout( layout );
 }
 
 //------------------------------------------------------------------------------
 
 void SImagesSubstract::stopping()
 {
-    this->destroy();
-
 }
 
 //------------------------------------------------------------------------------
@@ -157,15 +127,10 @@ void SImagesSubstract::updating()
 
 void SImagesSubstract::swapping()
 {
-    // Classic default approach to update service when oject change
+    // Classic default approach to update service when object changes
     this->updating();
 }
 
-//------------------------------------------------------------------------------
-
-void SImagesSubstract::OnCompute()
-{
-    this->updating();
-}
 // -----------------------------------------------------------------------------
-} // namespace basicRegistration
+
+} // namespace sight::modules::filter::image

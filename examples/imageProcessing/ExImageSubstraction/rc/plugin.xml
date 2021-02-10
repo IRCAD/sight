@@ -36,7 +36,7 @@
     |======================================================================|
     | |
     | |
-    | substractionContainerView |
+    | substractionView |
     | |
     ========================================================================
 
@@ -109,12 +109,14 @@
                         <menuItem name="Load image 2" icon="ExImageSubstraction-0.1/icons/icon-load2.png" />
                         <separator/>
                         <menuItem name="Save image" icon="ExImageSubstraction-0.1/icons/save.png" />
+                        <menuItem name="Substract image" icon="media-0.1/icons/Minus.svg" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="openImage1Act" start="yes" />
                     <menuItem sid="openImage2Act" start="yes" />
                     <menuItem sid="saveImageAct" start="yes" />
+                    <menuItem sid="computeImageAct" start="yes" />
                 </registry>
             </service>
 
@@ -196,20 +198,6 @@
             <service uid="substractionView" type="::sight::modules::ui::base::view::SDefaultView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
-                        <orientation value="horizontal" />
-                        <view proportion="1" />
-                        <view proportion="0" backgroundColor="#36393E" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="substractionContainerView" start="yes" />
-                    <view sid="imageSubstractSrv" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="substractionContainerView" type="::sight::modules::ui::base::view::SDefaultView" >
-                <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -250,6 +238,13 @@
             <!-- Action to save an image in the Tab 3 -->
             <service uid="saveImageAct" type="::sight::modules::ui::base::action::SStarter" >
                 <start uid="imageWriterSrv" />
+            </service>
+
+            <!-- Action to save an image in the Tab 3 -->
+            <service uid="computeImageAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+                <slots>
+                    <slot>imageSubstractSrv/update</slot>
+                </slots>
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -386,7 +381,7 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="imageSubstractSrv" type="::basicRegistration::SImagesSubstract" >
+            <service uid="imageSubstractSrv" type="::sight::modules::filter::image::SImagesSubstract" >
                 <in key="image1" uid="image1" />
                 <in key="image2" uid="image2" />
                 <inout key="result" uid="imageResult" />
@@ -451,6 +446,7 @@
             <start uid="imageWriter1Srv" />
             <start uid="imageWriter2Srv" />
             <start uid="imageWriter3Srv" />
+            <start uid="imageSubstractSrv" />
             <start uid="N1TrackballInteractorAdp" />
             <start uid="N1SnapshotAdp" />
             <start uid="N1NegatoAdp" />

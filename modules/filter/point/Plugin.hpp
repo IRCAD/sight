@@ -22,27 +22,27 @@
 
 #pragma once
 
+#include "modules/filter/point/config.hpp"
+
 #include <core/runtime/Plugin.hpp>
 
 namespace sight::modules::filter::point
 {
 
 /**
- * @brief   Implements a plugin for the opVTKMesh module.
+ * @brief   This class is started when the module is loaded.
  */
-struct Plugin : public core::runtime::Plugin
+struct MODULE_FILTER_POINT_CLASS_API Plugin : public core::runtime::Plugin
 {
 
-    /**
-     * @brief   destructor
-     */
-    ~Plugin() noexcept;
+    /// Destructor
+    MODULE_FILTER_POINT_API ~Plugin() noexcept;
 
-    // Overrides
-    void start();
+    /// Overrides
+    MODULE_FILTER_POINT_API void start();
 
-    // Overrides
-    void stop() noexcept;
+    /// Overrides
+    MODULE_FILTER_POINT_API void stop() noexcept;
 
 };
 

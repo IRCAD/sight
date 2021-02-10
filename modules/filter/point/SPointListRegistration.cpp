@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "basicRegistration/SPointListRegistration.hpp"
+#include "SPointListRegistration.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -41,9 +41,9 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-fwServicesRegisterMacro( ::sight::services::IRegisterer, ::basicRegistration::SPointListRegistration )
+fwServicesRegisterMacro( ::sight::services::IRegisterer, ::sight::modules::filter::point::SPointListRegistration )
 
-namespace basicRegistration
+namespace sight::modules::filter::point
 {
 
 const core::com::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
@@ -293,4 +293,4 @@ void SPointListRegistration::changeMode(std::string _value)
 
 //----------------------------------------------------------------------------
 
-} // namespace basicRegistration
+} // namespace sight::modules::filter::point

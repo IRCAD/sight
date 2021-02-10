@@ -153,7 +153,7 @@
             <config label="true" />
         </service>
 
-        <service uid="landmarkRegistration" type="::basicRegistration::SPointListRegistration">
+        <service uid="landmarkRegistration" type="::sight::modules::filter::point::SPointListRegistration">
             <inout key="registeredPL" uid="targetPL" />
             <inout key="referencePL" uid="referencePL" />
             <inout key="output" uid="${transformUid}" />

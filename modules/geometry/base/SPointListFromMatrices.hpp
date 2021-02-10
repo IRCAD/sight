@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/filter/point/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <core/com/Signal.hpp>
 
@@ -30,7 +30,7 @@
 
 #include <services/IOperator.hpp>
 
-namespace sight::modules::filter::point
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -39,7 +39,7 @@ namespace sight::modules::filter::point
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::filter::point::SPointListFromMatrices">
+        <service type="::sight::modules::geometry::base::SPointListFromMatrices">
             <in group="matrices">
                 <key uid="matrix1" />
                 <key uid="matrix2" />
@@ -61,32 +61,32 @@ namespace sight::modules::filter::point
  * - \b append (optional, default=false): does the service append points in the pointlist on update (true) or clear it
  * (false)?
  */
-class MODULE_FILTER_POINT_CLASS_API SPointListFromMatrices : public services::IOperator
+class MODULE_GEOMETRY_BASE_CLASS_API SPointListFromMatrices final : public sight::services::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPointListFromMatrices, services::IOperator)
+    fwCoreServiceMacro(SPointListFromMatrices, sight::services::IOperator)
 
     /// Initializes a member variable
-    MODULE_FILTER_POINT_API SPointListFromMatrices();
+    MODULE_GEOMETRY_BASE_API SPointListFromMatrices();
 
     /// Destroys the service
-    MODULE_FILTER_POINT_API virtual ~SPointListFromMatrices();
+    MODULE_GEOMETRY_BASE_API ~SPointListFromMatrices() override;
 
 protected:
 
     /// Sets the append mode on or off.
-    MODULE_FILTER_POINT_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_POINT_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Fills the PointList.
-    MODULE_FILTER_POINT_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_POINT_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
 private:
 
@@ -94,4 +94,4 @@ private:
     bool m_append;
 };
 
-} // namespace sight::modules::filter::point.
+} // namespace sight::modules::geometry::base.

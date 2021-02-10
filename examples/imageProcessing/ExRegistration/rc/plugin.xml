@@ -297,7 +297,7 @@ Detail of the ToolBar
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Service which compute the registration -->
-            <service uid="PLRegistrationSrv" type="::basicRegistration::SPointListRegistration" >
+            <service uid="PLRegistrationSrv" type="::sight::modules::filter::point::SPointListRegistration" >
                 <inout key="registeredPL" uid="pointList2" />
                 <inout key="referencePL" uid="pointList1" />
                 <inout key="output" uid="registrationMatrix" />

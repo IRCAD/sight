@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,11 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::filter::point contains services for working with point list or point clouds.
- */
+ * @brief The namespace sight::modules::filter::point contains services to perfom a basic registration between images
+ *and meshes.
+ **/
+
 namespace sight::modules::filter::point
 {
-} // namespace sight::modules::filter::point.
+
+} // namespace sight::modules::filter::point

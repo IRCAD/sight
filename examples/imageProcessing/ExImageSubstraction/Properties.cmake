@@ -6,9 +6,8 @@ set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_ui_base             # Start the module, load file location or window module_ui_base
-    module_viz_ogre                # Start the module, allow to use viz_ogre
     module_ui_qt                   # Start the module, allow dark theme
+    module_viz_ogre                # Start the module, allow to use viz_ogre
     module_viz_ogreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
@@ -23,12 +22,10 @@ set( REQUIREMENTS
     module_io_vtk
     module_io_matrix
 
-    # Config
-    basicRegistration
+    module_filter_image
 
     # Services
     module_data
-
     # Generic Scene
 )
 

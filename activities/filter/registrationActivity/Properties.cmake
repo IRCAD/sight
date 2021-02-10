@@ -10,7 +10,7 @@ set( REQUIREMENTS
     visuVTK
     ctrlPicking
     module_io_matrix
-    basicRegistration
+    module_filter_point
     module_ui_base
     module_ui_qt
     module_data
