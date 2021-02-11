@@ -29,7 +29,7 @@ set( REQUIREMENTS
     # Services
     module_sync
     module_data
-    ctrlPicking
+    module_geometry_base
     module_geometry_vision
 
     # Generic Scene

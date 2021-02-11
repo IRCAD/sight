@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "ctrlPicking/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
 #include <services/IController.hpp>
 
-namespace ctrlPicking
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -42,7 +42,7 @@ namespace ctrlPicking
 
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="..." type="::ctrlPicking::SManagePointList">
+        <service uid="..." type="::sight::modules::geometry::base::SManagePointList">
             <inout key="pointList" uid="..." />
             <in key="matrix" uid="..." />
             <config max="0" removable="true" label="false" tolerance="10.0" />
@@ -62,19 +62,19 @@ namespace ctrlPicking
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
-class CTRLPICKING_CLASS_API SManagePointList : public services::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public services::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SManagePointList, services::IController)
+    fwCoreServiceMacro(SManagePointList, ::sight::services::IController)
 
     /// Initialize slots.
-    CTRLPICKING_API SManagePointList() noexcept;
+    MODULE_GEOMETRY_BASE_API SManagePointList() noexcept;
 
     /// Destroys the service.
-    CTRLPICKING_API virtual ~SManagePointList() noexcept final;
+    MODULE_GEOMETRY_BASE_API virtual ~SManagePointList() noexcept final;
 
 private:
 

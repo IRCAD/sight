@@ -342,7 +342,7 @@
                 <config videoReference="center" />
             </service>
 
-            <service uid="pointListVRManagerSrv" type="::ctrlPicking::SManagePointList" >
+            <service uid="pointListVRManagerSrv" type="::sight::modules::geometry::base::SManagePointList" >
                 <inout key="pointList" uid="3dPoints" />
                 <config label="true" tolerance="0.1" />
             </service>

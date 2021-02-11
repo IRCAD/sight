@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
+ * Copyright (C) 2021 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief The namespace ctrlHistory contains services handling command histories.
+ * @brief The namespace sight::modules::ui::history contains services handling command histories.
  */
 #pragma once
 
-namespace ctrlHistory
+namespace sight::modules::ui::history
 {
 
-} // namespace ctrlHistory
+} // namespace sight::modules::ui::history

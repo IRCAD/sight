@@ -143,12 +143,12 @@
         </service>
 
         <!-- Landmark handling services -->
-        <service uid="referenceLandmarkManager" type="::ctrlPicking::SManagePointList">
+        <service uid="referenceLandmarkManager" type="::sight::modules::geometry::base::SManagePointList">
             <inout key="pointList" uid="referencePL" />
             <config label="true" />
         </service>
 
-        <service uid="targetLandmarkManager" type="::ctrlPicking::SManagePointList">
+        <service uid="targetLandmarkManager" type="::sight::modules::geometry::base::SManagePointList">
             <inout key="pointList" uid="targetPL" />
             <config label="true" />
         </service>

@@ -27,7 +27,7 @@ set( REQUIREMENTS
 
     # Services
     module_data
-    ctrlPicking
+    module_geometry_base
 
     # Generic Scene
 )

@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2020-2021 IRCAD France
- * Copyright (C) 2019 IHU Strasbourg
+ * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,20 +20,17 @@
  *
  ***********************************************************************/
 
-#include "ctrlPicking/Plugin.hpp"
+#include "Plugin.hpp"
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace ctrlPicking
+namespace sight::modules::ui::history
 {
 
-//------------------------------------------------------------------------------
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
+    "::sight::modules::ui::history::Plugin");
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ctrlPicking::Plugin");
-
-//------------------------------------------------------------------------------
-
-Plugin::~Plugin()
+Plugin::~Plugin() noexcept
 {
 }
 
@@ -49,6 +46,4 @@ void Plugin::stop() noexcept
 {
 }
 
-//------------------------------------------------------------------------------
-
-} // namespace ctrlPicking
+} // namespace sight::modules::ui::history

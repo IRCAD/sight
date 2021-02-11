@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ctrlPicking/SManagePointList.hpp"
+#include "SManagePointList.hpp"
 
 #include <core/com/Connection.hpp>
 #include <core/com/Signal.hxx>
@@ -31,7 +31,6 @@
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/helper/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -39,9 +38,10 @@
 
 #include <services/macros.hpp>
 
+#include <geometry/data/PointList.hpp>
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-namespace ctrlPicking
+namespace sight::modules::geometry::base
 {
 
 static const core::com::Slots::SlotKeyType s_PICK_SLOT         = "pick";
@@ -119,8 +119,7 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
         {
             const double* const pickedCoord = _info.m_worldPos;
             const ::glm::dvec4 pickedPoint  = ::glm::dvec4 {pickedCoord[0], pickedCoord[1], pickedCoord[2], 1.0};
-            const ::glm::dmat4x4 mat        = geometry::data::getMatrixFromTF3D(
-                matrix.get_shared());
+            const ::glm::dmat4x4 mat        = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());
 
             const ::glm::dvec4 modifiedPickedPoint = mat*pickedPoint;
             point->setCoord({modifiedPickedPoint[0], modifiedPickedPoint[1], modifiedPickedPoint[2]});
@@ -175,10 +174,9 @@ void SManagePointList::removePoint(const data::Point::csptr _point) const
 {
     if(m_removable)
     {
-        const auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
-
+        const auto pointList             = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
         const data::Point::sptr pointRes =
-            data::tools::helper::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
+            sight::geometry::data::PointList::removeClosestPoint(pointList.get_shared(), _point, m_tolerance);
 
         if(pointRes != nullptr)
         {
@@ -209,4 +207,4 @@ void SManagePointList::clearPoints() const
     }
 }
 
-} // namespace ctrlPicking
+} // namespace sight::modules::geometry::base

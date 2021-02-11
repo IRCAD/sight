@@ -330,12 +330,12 @@ Detail of the ToolBar
             </service>
 
             <!-- Services to add a point in the pointlist when the user clicks in the scene -->
-            <service uid="addLAndmarksInPL1Srv" type="::ctrlPicking::SManagePointList" >
+            <service uid="addLAndmarksInPL1Srv" type="::sight::modules::geometry::base::SManagePointList" >
                 <inout key="pointList" uid="pointList1" />
                 <config label="true" />
             </service>
 
-            <service uid="addLAndmarksInPL2Srv" type="::ctrlPicking::SManagePointList" >
+            <service uid="addLAndmarksInPL2Srv" type="::sight::modules::geometry::base::SManagePointList" >
                 <inout key="pointList" uid="pointList2" />
             </service>
 

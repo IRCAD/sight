@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ctrlHistory/config.hpp"
+#include "modules/ui/history/config.hpp"
 
 #include <core/base.hpp>
 
@@ -32,7 +32,7 @@
 #include <ui/history/ICommand.hpp>
 #include <ui/history/UndoRedoManager.hpp>
 
-namespace ctrlHistory
+namespace sight::modules::ui::history
 {
 
 /**
@@ -52,7 +52,7 @@ namespace ctrlHistory
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::ctrlHistory::SControlHistory" >
+        <service uid="..." type="::sight::modules::ui::history::SControlHistory" >
             <maxCommands>10</maxCommands>
             <maxMemory>100000000</maxMemory>
         </service>
@@ -63,38 +63,38 @@ namespace ctrlHistory
  * - \b maxMemory (optional) : The maximum amount of memory (in bytes) used available to store commands.
  * Unlimited by default.
  */
-class CTRLHISTORY_CLASS_API SCommandHistory : public services::IService
+class MODULE_UI_HISTORY_CLASS_API SCommandHistory : public services::IService
 {
 public:
 
     fwCoreServiceMacro(SCommandHistory, services::IService)
 
     /// Constructor.
-    CTRLHISTORY_API SCommandHistory();
+    MODULE_UI_HISTORY_API SCommandHistory();
 
     /// Destructor.
-    CTRLHISTORY_API virtual ~SCommandHistory();
+    MODULE_UI_HISTORY_API virtual ~SCommandHistory();
 
 protected:
 
     /// Set memory and command boundaries.
-    CTRLHISTORY_API virtual void configuring() override;
+    MODULE_UI_HISTORY_API virtual void configuring() override;
 
     /// Notify if undo or redo are possible.
-    CTRLHISTORY_API virtual void starting() override;
+    MODULE_UI_HISTORY_API virtual void starting() override;
 
     /// Notify if undo or redo are possible.
-    CTRLHISTORY_API virtual void updating() override;
+    MODULE_UI_HISTORY_API virtual void updating() override;
 
     /// Clears the history.
-    CTRLHISTORY_API virtual void stopping() override;
+    MODULE_UI_HISTORY_API virtual void stopping() override;
 
 private:
 
     typedef core::com::Signal<void (bool)> CanDoSignalType;
 
     /// SLOT: add a command to the history.
-    void enqueue(ui::history::ICommand::sptr command);
+    void enqueue(sight::ui::history::ICommand::sptr command);
 
     /// SLOT: undo the last command.
     void undo();
@@ -112,7 +112,7 @@ private:
 
     CanDoSignalType::sptr m_canRedoSig;
 
-    ui::history::UndoRedoManager m_undoRedoManager;
+    sight::ui::history::UndoRedoManager m_undoRedoManager;
 };
 
-} // namespace ctrlHistory
+} // namespace sight::modules::ui::history

@@ -8,7 +8,6 @@ set( REQUIREMENTS
     module_services
     module_activities
     visuVTK
-    ctrlPicking
     module_io_matrix
     module_filter_point
     module_ui_base

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ctrlHistory/SCommandHistory.hpp"
+#include "SCommandHistory.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -36,10 +36,11 @@
 
 #include <numeric>
 
-namespace ctrlHistory
+namespace sight::modules::ui::history
 {
 
-fwServicesRegisterMacro( ::sight::services::IService, ::ctrlHistory::SCommandHistory, ::sight::data::Object)
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::ui::history::SCommandHistory,
+                         ::sight::data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
@@ -112,7 +113,7 @@ void SCommandHistory::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::enqueue(ui::history::ICommand::sptr command)
+void SCommandHistory::enqueue(sight::ui::history::ICommand::sptr command)
 {
     m_undoRedoManager.enqueue(command);
     this->emitModifSig();
@@ -152,4 +153,4 @@ void SCommandHistory::emitModifSig() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace ctrlHistory
+} // namespace sight::modules::ui::history

@@ -22,27 +22,27 @@
 
 #pragma once
 
-#include "ctrlHistory/config.hpp"
+#include "modules/ui/history/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
-namespace ctrlHistory
+namespace sight::modules::ui::history
 {
 
 /**
  * @brief This class starts when the module is loaded.
  */
-struct CTRLHISTORY_CLASS_API Plugin : public core::runtime::Plugin
+struct MODULE_UI_HISTORY_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    CTRLHISTORY_API ~Plugin() noexcept;
+    MODULE_UI_HISTORY_API ~Plugin() noexcept;
 
     /// Overrides start method. Does nothing.
-    CTRLHISTORY_API void start();
+    MODULE_UI_HISTORY_API void start();
 
     /// Overrides stop method. Does nothing.
-    CTRLHISTORY_API void stop() noexcept;
+    MODULE_UI_HISTORY_API void stop() noexcept;
 
 };
 
-} // namespace ctrlHistory
+} // namespace sight::modules::ui::history
