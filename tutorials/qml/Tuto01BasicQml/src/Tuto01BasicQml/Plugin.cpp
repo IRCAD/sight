@@ -25,9 +25,9 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwQml/QmlEngine.hpp>
+#include <ui/qml/QmlEngine.hpp>
 
-namespace Tuto01BasicQml
+namespace sight::Tuto01BasicQml
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
@@ -56,7 +56,7 @@ void Plugin::start()
 void Plugin::initialize()
 {
     // get the qml engine
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     // get the path of the qml ui file
     auto path = core::runtime::getModuleResourceFilePath("Tuto01BasicQml", "ui.qml");
@@ -80,4 +80,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto01BasicQml
+} // namespace sight::Tuto01BasicQml

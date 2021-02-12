@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,8 @@
 
 #pragma once
 
-#include "Tuto01BasicQml/config.hpp"
-
-#include <core/runtime/Plugin.hpp>
-
-namespace sight::Tuto01BasicQml
+/// fwQml library contains helpers to manage qml components
+namespace sight::ui::qml
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-class TUTO01BASICQML_CLASS_API Plugin : public core::runtime::Plugin
-{
-public:
-    /// Constructor.
-    TUTO01BASICQML_API Plugin() noexcept;
-
-    /// Destructor. Do nothing.
-    TUTO01BASICQML_API ~Plugin() noexcept;
-
-    /// Overrides start method. .
-    TUTO01BASICQML_API void start();
-
-    /// Overrides stop method. Do nothing
-    TUTO01BASICQML_API void stop() noexcept;
-
-    TUTO01BASICQML_API void initialize();
-
-    TUTO01BASICQML_API void uninitialize() noexcept;
-};
-
-} // namespace sight::Tuto01BasicQml
+}

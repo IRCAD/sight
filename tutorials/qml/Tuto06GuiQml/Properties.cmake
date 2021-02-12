@@ -5,7 +5,7 @@ set( START ON)
 set( DEPENDENCIES
     data
     services
-    fwQml
+    ui_qml
 )
 set( REQUIREMENTS # The modules used by this application
     data

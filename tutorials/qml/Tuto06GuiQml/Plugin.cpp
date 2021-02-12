@@ -20,21 +20,17 @@
  *
  ***********************************************************************/
 
-#include "Tuto05EditorQml/Plugin.hpp"
-
-#include "Tuto05EditorQml/AppManager.hpp"
-#include "Tuto05EditorQml/SStringEditor.hpp"
+#include "Plugin.hpp"
 
 #include <core/runtime/operations.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <ui/qml/QmlEngine.hpp>
 
-namespace Tuto05EditorQml
+namespace sight::Tuto06GuiQml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::Tuto05EditorQml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::Tuto06GuiQml::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -52,18 +48,19 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    qmlRegisterType<AppManager>("Tuto05EditorQml", 1, 0, "AppManager");
-    qmlRegisterType<SStringEditor>("Tuto05EditorQml", 1, 0, "SStringEditor");
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::initialize()
 {
+    // get the qml engine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
-    auto path = core::runtime::getModuleResourceFilePath("Tuto05EditorQml", "ui.qml");
+    // get the path of the qml ui file
+    auto path = core::runtime::getModuleResourceFilePath("Tuto06GuiQml", "app.qml");
 
+    // load the qml ui
     engine->loadMainComponent(path);
 }
 
@@ -82,4 +79,4 @@ void Plugin::uninitialize() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto05EditorQml
+} // namespace sight::Tuto06GuiQml

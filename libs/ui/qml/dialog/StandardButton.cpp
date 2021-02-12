@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,66 +20,43 @@
  *
  ***********************************************************************/
 
-#include "Tuto05EditorQml/Plugin.hpp"
+#include "ui/qml/dialog/StandardButton.hpp"
 
-#include "Tuto05EditorQml/AppManager.hpp"
-#include "Tuto05EditorQml/SStringEditor.hpp"
-
-#include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <ui/qml/QmlEngine.hpp>
-
-namespace Tuto05EditorQml
+namespace sight::ui::qml
 {
-
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::Tuto05EditorQml::Plugin");
+namespace dialog
+{
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
+StandardButton::StandardButton()
 {
+    m_button = ButtonList::NoButton;
 }
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::start()
-{
-    qmlRegisterType<AppManager>("Tuto05EditorQml", 1, 0, "AppManager");
-    qmlRegisterType<SStringEditor>("Tuto05EditorQml", 1, 0, "SStringEditor");
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
-    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
-
-    auto path = core::runtime::getModuleResourceFilePath("Tuto05EditorQml", "ui.qml");
-
-    engine->loadMainComponent(path);
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
+StandardButton::~StandardButton()
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace Tuto05EditorQml
+void StandardButton::setButton(ButtonList button)
+{
+    m_button = button;
+    Q_EMIT buttonChanged();
+}
+
+//------------------------------------------------------------------------------
+
+const StandardButton::ButtonList& StandardButton::getButton()
+{
+    return m_button;
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace dialog
+} // namespace sight::ui::qml

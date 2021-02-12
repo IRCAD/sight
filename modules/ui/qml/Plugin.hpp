@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,43 @@
 
 #pragma once
 
-#include "Tuto01BasicQml/config.hpp"
+#include "modules/ui/qml/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::Tuto01BasicQml
+namespace thread
+{
+class Worker;
+} //namespace thread
+
+namespace sight::modules::ui::qml
 {
 
 /**
- * @brief   This class is started when the module is loaded.
+ * @brief   This class is called when the guiQt module is loaded.
  */
-class TUTO01BASICQML_CLASS_API Plugin : public core::runtime::Plugin
+class MODULE_UI_QML_CLASS_API Plugin : public core::runtime::Plugin
 {
+
 public:
-    /// Constructor.
-    TUTO01BASICQML_API Plugin() noexcept;
 
-    /// Destructor. Do nothing.
-    TUTO01BASICQML_API ~Plugin() noexcept;
+    /**
+     * @brief   destructor
+     */
+    MODULE_UI_QML_API ~Plugin() noexcept;
 
-    /// Overrides start method. .
-    TUTO01BASICQML_API void start();
+    // Overrides
+    MODULE_UI_QML_API void start();
 
-    /// Overrides stop method. Do nothing
-    TUTO01BASICQML_API void stop() noexcept;
+    // Overrides
+    MODULE_UI_QML_API void stop() noexcept;
 
-    TUTO01BASICQML_API void initialize();
+    MODULE_UI_QML_API int run() noexcept;
 
-    TUTO01BASICQML_API void uninitialize() noexcept;
+private:
+
+    SPTR(core::thread::Worker) m_workerQt;
+
 };
 
-} // namespace sight::Tuto01BasicQml
+} // namespace sight::modules::ui::qt

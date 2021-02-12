@@ -51,22 +51,37 @@ macro(groupMaker FWPROJECT_NAME)
     endforeach()
 endmacro()
 
-macro(configure_header_file FWPROJECT_NAME FILENAME ROOT)
+macro(configure_header_file FWPROJECT_NAME FILENAME)
 
-    get_filename_component(PROJECT_PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
-    get_filename_component(PROJECT_PARENT_DIR ${PROJECT_PARENT_DIR} NAME)
-    string(REGEX REPLACE "module_(.*)" "\\1" PROJECT_NAME_WITHOUT_MODULE "${FWPROJECT_NAME}")
-    string(REGEX REPLACE ".*_(.*)" "\\1" PROJECT_NAME_WITHOUT_PARENT "${PROJECT_NAME_WITHOUT_MODULE}")
+    # Paths for config files are:
+    # activities -> activities/theme/project/
+    # apps -> project
+    # examples -> project
+    # libs -> theme/project/ except for theme=core project
+    # modules -> modules/theme/project/  except for theme=core modules/project
+    # tutorials -> project
+    file(RELATIVE_PATH CURRENT_SOURCE_DIR_REL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+    string(REPLACE "/" ";" CURRENT_SOURCE_DIRS ${CURRENT_SOURCE_DIR_REL})
 
-    if(${PROJECT_PARENT_DIR} STREQUAL "core")
-        set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${ROOT}/${PROJECT_NAME_WITHOUT_MODULE}/${FILENAME}")
+    list(GET CURRENT_SOURCE_DIRS 0 ROOT)
+    list(GET CURRENT_SOURCE_DIRS 1 THEME)
+    list(GET CURRENT_SOURCE_DIRS 2 PROJECT)
+    string(REPLACE "core" "." THEME ${THEME})
+    
+    if("${ROOT}" STREQUAL "libs")
+        set(HEADER_FILE_DESTINATION_REL "${THEME}/${PROJECT}")
     else()
-        set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${ROOT}/${PROJECT_PARENT_DIR}/${PROJECT_NAME_WITHOUT_PARENT}/${FILENAME}")
+        if("${ROOT}" STREQUAL "modules" OR "${ROOT}" STREQUAL "activities" )
+            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${THEME}/${PROJECT}")
+        else()
+            set(HEADER_FILE_DESTINATION_REL "${PROJECT}")
+        endif()
     endif()
 
+    set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${HEADER_FILE_DESTINATION_REL}")
     configure_file(
         "${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in"
-        ${HEADER_FILE_DESTINATION}
+        ${HEADER_FILE_DESTINATION}/${FILENAME}
         IMMEDIATE @ONLY)
 
     if(BUILD_SDK)
@@ -508,7 +523,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
 
     # create the config.hpp for the current library
-    configure_header_file(${FWPROJECT_NAME} "config.hpp" ".")
+    configure_header_file(${FWPROJECT_NAME} "config.hpp")
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
 
@@ -673,7 +688,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         endif()
 
         # create the config.hpp for the current module
-        configure_header_file(${FWPROJECT_NAME} "config.hpp" "modules")
+        configure_header_file(${FWPROJECT_NAME} "config.hpp")
 
         # ???
         target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})

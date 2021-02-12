@@ -4,12 +4,12 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
-    fwQml
+    ui_qml
     services
     fwRenderQt3D
 )
 set( REQUIREMENTS
-    guiQml
+    module_ui_qml
     data
     module_io_vtk
     module_ui_base

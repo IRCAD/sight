@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2021 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "Tuto05EditorQml/config.hpp"
 
-#include <fwQml/IQmlEditor.hpp>
-
 #include <QObject>
+
+#include <ui/qml/IQmlEditor.hpp>
 
 namespace Tuto05EditorQml
 {
@@ -34,13 +34,13 @@ namespace Tuto05EditorQml
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO05EDITORQML_CLASS_API SStringEditor : public ::fwQml::IQmlEditor
+class TUTO05EDITORQML_CLASS_API SStringEditor : public sight::ui::qml::IQmlEditor
 {
 
 Q_OBJECT;
 public:
 
-    fwCoreServiceMacro(SStringEditor, ::fwQml::IQmlEditor)
+    fwCoreServiceMacro(SStringEditor, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor.
     TUTO05EDITORQML_API SStringEditor() noexcept;

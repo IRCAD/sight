@@ -5,12 +5,12 @@ set( START ON) # This module will be automatically started
 set( DEPENDENCIES
     data
     services
-    fwQml
+    ui_qml
 )
 set( REQUIREMENTS
     data
     module_services
-    guiQml
+    module_ui_qml
     fwlauncher
 )
 set( PLUGINS

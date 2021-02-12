@@ -22,34 +22,34 @@
 
 #pragma once
 
-#include "Tuto01BasicQml/config.hpp"
+#include "Tuto06GuiQml/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::Tuto01BasicQml
+namespace sight::Tuto06GuiQml
 {
 
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO01BASICQML_CLASS_API Plugin : public core::runtime::Plugin
+class TUTO06GUIQML_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Constructor.
-    TUTO01BASICQML_API Plugin() noexcept;
+    TUTO06GUIQML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO01BASICQML_API ~Plugin() noexcept;
+    TUTO06GUIQML_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    TUTO01BASICQML_API void start();
+    TUTO06GUIQML_API void start();
 
     /// Overrides stop method. Do nothing
-    TUTO01BASICQML_API void stop() noexcept;
+    TUTO06GUIQML_API void stop() noexcept;
 
-    TUTO01BASICQML_API void initialize();
+    TUTO06GUIQML_API void initialize();
 
-    TUTO01BASICQML_API void uninitialize() noexcept;
+    TUTO06GUIQML_API void uninitialize() noexcept;
 };
 
-} // namespace sight::Tuto01BasicQml
+} // namespace sight::Tuto06GuiQml

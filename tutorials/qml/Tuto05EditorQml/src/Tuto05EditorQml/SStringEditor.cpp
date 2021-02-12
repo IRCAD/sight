@@ -55,14 +55,14 @@ void SStringEditor::configuring()
 
 void SStringEditor::starting()
 {
-    this->::fwQml::IQmlEditor::starting();
+    this->::ui::qml::IQmlEditor::starting();
 }
 
 //------------------------------------------------------------------------------
 
 void SStringEditor::stopping()
 {
-    this->::fwQml::IQmlEditor::stopping();
+    this->::ui::qml::IQmlEditor::stopping();
 }
 //------------------------------------------------------------------------------
 

@@ -27,11 +27,11 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwQml/QmlEngine.hpp>
-
 #include <services/AppManager.hpp>
 
 #include <QQuickItem>
+
+#include <ui/qml/QmlEngine.hpp>
 
 namespace Tuto07SceneQt3DQml
 {
@@ -73,7 +73,7 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    SPTR(::fwQml::QmlEngine) engine = ::fwQml::QmlEngine::getDefault();
+    SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
     auto path = core::runtime::getBundleResourceFilePath("Tuto07SceneQt3DQml", "ui.qml");
 

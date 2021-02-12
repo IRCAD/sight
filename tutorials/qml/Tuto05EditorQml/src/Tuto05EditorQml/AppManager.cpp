@@ -22,9 +22,9 @@
 
 #include "Tuto05EditorQml/AppManager.hpp"
 
-#include <fwQml/IQmlEditor.hpp>
-
 #include <QVariant>
+
+#include <ui/qml/IQmlEditor.hpp>
 
 namespace Tuto05EditorQml
 {
@@ -68,7 +68,7 @@ void AppManager::uninitialize()
 void AppManager::onServiceCreated(const QVariant& obj)
 {
     // check that the service is a IQmlEditor
-    ::fwQml::IQmlEditor::sptr srv(obj.value< ::fwQml::IQmlEditor* >());
+    ui::qml::IQmlEditor::sptr srv(obj.value< ui::qml::IQmlEditor* >());
     if (srv)
     {
         // check if it is the SOrganMaterialEditor
