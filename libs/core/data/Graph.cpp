@@ -352,7 +352,6 @@ void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     this->fieldDeepCopy( _source, cache );
 
     std::map< data::Node::sptr, data::Node::sptr > correspondenceBetweenNodes;
-    typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
 
     m_nodes.clear();
     for(const data::Node::sptr& node : other->m_nodes)
@@ -365,7 +364,7 @@ void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     }
 
     m_connections.clear();
-    for(const ConnectionContainerElt& connection : other->m_connections)
+    for(const auto& connection : other->m_connections)
     {
         // Edge deep copy .
         data::Edge::sptr newEdge  = data::Object::copy(connection.first, cache);
