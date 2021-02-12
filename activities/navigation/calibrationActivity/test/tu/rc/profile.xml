@@ -11,8 +11,8 @@
 
     <activate id="media" version="0.1" />
 
-    <activate id="module_activities" version="0.1" />
-    <activate id="validators" version="0.1" />
+    <activate id="module_activity" version="0.1" />
+    <activate id="::sight::modules::activity::validator" version="0.1" />
     <activate id="calibrationActivity" version="0.1" />
 
     <start id="calibrationActivity" />

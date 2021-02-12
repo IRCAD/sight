@@ -8,6 +8,6 @@ set( DEPENDENCIES
     data
 )
 set( REQUIREMENTS
-    module_activities
+    module_activity
     calibrationActivity
 )

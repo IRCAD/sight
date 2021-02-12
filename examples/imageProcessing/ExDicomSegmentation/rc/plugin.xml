@@ -1,6 +1,6 @@
 <plugin id="ExDicomSegmentation" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="module_viz_ogre" />

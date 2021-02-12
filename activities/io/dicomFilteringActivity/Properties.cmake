@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES )
 set( REQUIREMENTS
     2DVisualizationActivity
-    module_activities
+    module_activity
     module_memory
     module_data
     data

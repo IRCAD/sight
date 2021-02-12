@@ -2,7 +2,7 @@
 
     <requirement id="module_services" />
     <requirement id="visuVTKQt" />
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
     <requirement id="module_services" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

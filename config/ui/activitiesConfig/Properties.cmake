@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
         data
-        module_activities
+        module_activity
         module_data
         module_ui_base
         module_ui_qt

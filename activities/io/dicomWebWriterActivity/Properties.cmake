@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES)
 set( REQUIREMENTS
-    module_activities
+    module_activity
     dicomAppConfig
     module_memory
     module_data

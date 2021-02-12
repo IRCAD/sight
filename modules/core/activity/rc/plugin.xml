@@ -1,0 +1,10 @@
+<plugin id="module_activity" class="::sight::modules::activity::Plugin"  version="@PROJECT_VERSION@" >
+
+    <library name="module_activity" />
+
+    <requirement id="module_services"/>
+
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="::sight::modules::activity::registry::Activities" schema="activities-0.1/activities.xsd"/>
+
+</plugin>

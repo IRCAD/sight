@@ -28,7 +28,7 @@ set( REQUIREMENTS
 
     # Services
     module_ui_base
-    module_activities
+    module_activity
     calibrationActivity
     trackedCameraRegistrationActivity
     toolCalibrationActivity

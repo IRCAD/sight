@@ -2,10 +2,9 @@
 
     <library name="calibrationActivity" />
     <requirement id="module_services" />
-    <requirement id="validators" />
     <requirement id="module_ui_base" />
     <requirement id="module_viz_ogre" />
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

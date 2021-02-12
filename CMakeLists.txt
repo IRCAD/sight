@@ -361,6 +361,9 @@ if(PROJECTS_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         set(${PROJECT}_INSTALL 1)
 
+        if(NOT ${PROJECT}_DIR)
+            message(FATAL_ERROR "Can not find any project for '${PROJECT}' set in PROJECTS_TO_BUILD variable")
+        endif()
         # Configure cpack to package the project sources.
         findProjectSubdirectory("${${PROJECT}_DIR}" "${REPOSITORIES_DIRECTORIES}" SOURCE_INSTALL_DIR)
         # Add the project to CPack's list of source directories.

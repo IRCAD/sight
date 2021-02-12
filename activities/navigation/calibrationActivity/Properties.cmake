@@ -10,8 +10,8 @@ set( REQUIREMENTS
     module_ui_base             # Start the module, load file location or window module_ui_base
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_viz_ogreQt              # Enable Ogre to render things in Qt window.
-    validators
-    module_activities
+    module_activity
+    module_activity
 
     # Objects declaration
     module_services             # fwService

@@ -3,7 +3,7 @@
     <requirement id="module_ui_qt" />
     <requirement id="module_services" />
     <requirement id="module_ui_base" />
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

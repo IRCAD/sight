@@ -157,9 +157,9 @@
                 <config mode="decrease" />
             </service>
 
-            <service uid="classFactoryRegistryInfoAct" type="::monitorQt::action::ClassFactoryRegistryInfo" />
+            <service uid="classFactoryRegistryInfoAct" type="::sight::modules::ui::debug::action::ClassFactoryRegistryInfo" />
 
-            <service uid="componentsTreeAct" type="::monitorQt::action::ComponentsTree" />
+            <service uid="componentsTreeAct" type="::sight::modules::ui::debug::action::ComponentsTree" />
 
             <service uid="dumpAllAct" type="::sight::modules::debug::action::SDumpAll" />
 
@@ -175,7 +175,7 @@
             </service>
 
             <!-- This editor allows to change the dump policy, and displays the managed buffer. -->
-            <service uid="dumpEditorSrv" type="::monitorQt::DumpEditor" />
+            <service uid="dumpEditorSrv" type="::sight::modules::ui::debug::DumpEditor" />
 
             <!-- Service to display the preview when an image or an mesh is selected -->
             <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes" >

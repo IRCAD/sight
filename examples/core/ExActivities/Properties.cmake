@@ -10,7 +10,7 @@ set( REQUIREMENTS
     module_ui_qt                   # Start the module, allow dark theme
 
     # Extensions
-    module_activities
+    module_activity
 
     # Objects declaration
     data

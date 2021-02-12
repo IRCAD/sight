@@ -31,7 +31,7 @@ set( REQUIREMENTS
     ioActivity
     atoms
     module_debug
-    monitorQt
+    module_ui_debug
 )
 
 moduleParam(

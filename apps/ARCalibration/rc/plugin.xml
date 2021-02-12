@@ -4,7 +4,7 @@
     <requirement id="arPatchMedicalData" />
     <requirement id="module_memory" />
     <requirement id="module_ui_base" />
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
     <requirement id="module_io_atoms" />
     <requirement id="module_ui_qt" />
 

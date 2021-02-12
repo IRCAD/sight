@@ -1,7 +1,7 @@
 <plugin id="ioActivity" version="@PROJECT_VERSION@">
 
     <requirement id="module_io_atoms" />
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
 
     <!-- Activity used to export an image series. -->
     <extension implements="::activities::registry::Activities">

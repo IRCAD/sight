@@ -1,7 +1,7 @@
 <plugin id="activitiesConfig" version="@PROJECT_VERSION@">
 
     <requirement id="module_io_atoms" />
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
     <requirement id="ioActivity" />
 
     <xi:include href="configurations/ActivityLauncher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

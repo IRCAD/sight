@@ -10,7 +10,7 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
 
-    module_activities
+    module_activity
     module_appXml
     module_memory
     fwlauncher

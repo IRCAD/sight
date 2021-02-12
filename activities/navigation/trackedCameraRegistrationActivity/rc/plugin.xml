@@ -1,6 +1,6 @@
 <plugin id="trackedCameraRegistrationActivity" version="@PROJECT_VERSION@">
 
-    <requirement id="module_activities" />
+    <requirement id="module_activity" />
     <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/trackedCameraRegistration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
