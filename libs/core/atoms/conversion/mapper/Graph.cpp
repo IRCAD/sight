@@ -41,7 +41,7 @@ namespace mapper
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( atoms::conversion::mapper::Graph, data::Graph);
+fwAtomConversionRegisterMacro( atoms::conversion::mapper::Graph, ::sight::data::Graph);
 
 //-----------------------------------------------------------------------------
 

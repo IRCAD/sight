@@ -40,7 +40,7 @@ namespace mapper
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( atoms::conversion::mapper::Mesh, data::Mesh);
+fwAtomConversionRegisterMacro( atoms::conversion::mapper::Mesh, ::sight::data::Mesh);
 
 //-----------------------------------------------------------------------------
 

@@ -22,7 +22,7 @@
 
 #include "ImageDiffCommandTest.hpp"
 
-#include <utestData/generator/Image.hpp>
+#include <utestData//generator/Image.hpp>
 
 #include <ui/history/ImageDiffCommand.hpp>
 
@@ -62,7 +62,7 @@ void ImageDiffCommandTest::undoredoTest()
 
     const auto dumpLock = image->lock();
 
-    data::tools::ImageDiff diff(image->getType().sizeOf());
+    filter::image::ImageDiff diff(image->getType().sizeOf());
 
     std::uint8_t NEWVALUE = 1;
 
@@ -131,7 +131,7 @@ void ImageDiffCommandTest::getSizeTest()
 
     const auto dumpLock = image->lock();
 
-    data::tools::ImageDiff diff(image->getType().sizeOf()*64);
+    filter::image::ImageDiff diff(image->getType().sizeOf()*64);
 
     std::uint8_t NEWVALUE = 1;
 

@@ -63,7 +63,7 @@
 
 #include <functional>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( atoms::conversion::ut::ConversionTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::atoms::conversion::ut::ConversionTest );
 
 namespace sight::atoms::conversion
 {
@@ -715,7 +715,7 @@ void ConversionTest::nullPtrManagmentTest()
 
 //-----------------------------------------------------------------------------
 
-fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
+fwCampAutoDeclareDataMacro((sight)(atoms)(conversion)(ut)(ClassNotManaged));
 
 namespace sight::atoms::conversion
 {
@@ -729,7 +729,7 @@ public:
 
     fwCoreClassMacro(ClassNotManaged, data::Object, data::factory::New< ClassNotManaged >)
 
-    fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
+    fwCampMakeFriendDataMacro((sight)(atoms)(conversion)(ut)(ClassNotManaged))
 
     ClassNotManaged(data::Object::Key)
     {
@@ -749,13 +749,13 @@ public:
 }     // namespace ut
 }  // namespace sight::atoms::conversion
 
-fwCampImplementDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
+fwCampImplementDataMacro((sight)(atoms)(conversion)(ut)(ClassNotManaged))
 {
     builder
     .tag("object_version", "1")
-    .tag("lib_name", "fwAtomConversion")
+    .tag("lib_name", "sight::atoms")
     .base< sight::data::Object>()
-    .property("values", &atoms::conversion::ut::ClassNotManaged::m_values);
+    .property("values", &sight::atoms::conversion::ut::ClassNotManaged::m_values);
 }
 
 namespace sight::atoms::conversion
@@ -769,7 +769,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
 {
     // Test ConversionNotManaged throwing during data to atom conversion
     {
-        localDeclarefwAtomConversionutClassNotManaged();
+        localDeclaresightatomsconversionutClassNotManaged();
 
         ClassNotManaged::sptr classNotManaged = ClassNotManaged::New();
 

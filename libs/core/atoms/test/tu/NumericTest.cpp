@@ -30,7 +30,7 @@
 
 #include <limits>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( atoms::ut::NumericTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::atoms::ut::NumericTest );
 
 namespace sight::atoms
 {

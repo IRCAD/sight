@@ -20,13 +20,13 @@
  *
  ***********************************************************************/
 
-#include "BooleanTest.hpp"
+#include "StringTest.hpp"
 
-#include <atoms/Boolean.hpp>
+#include <atoms/String.hpp>
 
 #include <limits>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( atoms::ut::BooleanTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::atoms::ut::StringTest );
 
 namespace sight::atoms
 {
@@ -35,33 +35,30 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-void BooleanTest::setUp()
+void StringTest::setUp()
 {
     // Set up context before running a test.
 }
 
 //-----------------------------------------------------------------------------
 
-void BooleanTest::tearDown()
+void StringTest::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void BooleanTest::conversion()
+void StringTest::conversion()
 {
-    const bool VALUES[] = {true, false};
+    const std::string VALUES[] = {"", "azerty"};
+    atoms::String::sptr metaString;
 
-    atoms::Boolean::sptr meta;
-
-    for ( bool BOOL : VALUES )
+    for ( std::string str: VALUES )
     {
-        std::string res = BOOL ? "true" : "false";
+        metaString = atoms::String::New(str);
 
-        meta = atoms::Boolean::New(BOOL);
-
-        CPPUNIT_ASSERT_EQUAL(res, meta->getString());
+        CPPUNIT_ASSERT_EQUAL(str, metaString->getString());
     }
 }
 

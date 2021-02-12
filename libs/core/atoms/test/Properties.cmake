@@ -1,5 +1,5 @@
 
-set( NAME fwAtomsTest )
+set( NAME atomsTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES core atoms utestData)

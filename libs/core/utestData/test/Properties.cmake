@@ -1,5 +1,5 @@
 
-set( NAME fwTestTest )
+set( NAME utestDataTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES core utestData data)
