@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include "modules/ui/base/config.hpp"
+#include "modules/geometry/base/config.hpp"
 
 #include <glm/vec3.hpp>
 
 #include <services/IService.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::modules::geometry::base
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::ui::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::ui::base::STargeting">
+        <service type="::sight::modules::geometry::base::STargeting">
             <in key="landmark" uid="..." />
             <in key="matrix" uid="..." />
             <inout key="pointList" uid="..." />
@@ -61,7 +61,7 @@ namespace sight::modules::ui::base
  * - \b label (optional): (std::string) name of the landmark group
  * - \b width (optional): (int) width of the background image in pixels. The image should have the same width and height
  */
-class UITOOLS_CLASS_API STargeting final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API STargeting final : public services::IService
 {
 
 public:
@@ -70,24 +70,24 @@ public:
     fwCoreServiceMacro(STargeting, services::IService)
 
     /// Initializes member variables and slots.
-    UITOOLS_API STargeting() noexcept;
+    MODULE_GEOMETRY_BASE_API STargeting() noexcept;
 
     /// Destroys the service.
-    UITOOLS_API ~STargeting() noexcept override;
+    MODULE_GEOMETRY_BASE_API ~STargeting() noexcept override;
 
 protected:
 
     /// Does nothing.
-    UITOOLS_API void starting() override;
+    MODULE_GEOMETRY_BASE_API void starting() override;
 
     /// Does nothing.
-    UITOOLS_API void stopping() override;
+    MODULE_GEOMETRY_BASE_API void stopping() override;
 
     /// Updates the position of the landmark on the crosshair.
-    UITOOLS_API void updating() override;
+    MODULE_GEOMETRY_BASE_API void updating() override;
 
     /// Configures the service parameters.
-    UITOOLS_API void configuring() override;
+    MODULE_GEOMETRY_BASE_API void configuring() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -95,7 +95,7 @@ protected:
      *
      * Connect data::Object::s_MODIFIED_SIG of s_MATRIX_INPUT to s_UPDATE_SLOT
      */
-    UITOOLS_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
     /// SLOT: updates selected landmark point position on the crosshair.
@@ -123,4 +123,4 @@ private:
     int m_width{400};
 
 };
-} // namespace sight::modules::ui::base
+} // namespace sight::modules::geometry::base

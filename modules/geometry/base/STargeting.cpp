@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/base/STargeting.hpp"
+#include "modules/geometry/base/STargeting.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -39,7 +39,7 @@
 #include <glm/gtx/intersect.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-namespace sight::modules::ui::base
+namespace sight::modules::geometry::base
 {
 
 // -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::ui::base::STargeting )
+fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::STargeting )
 
 // -----------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ void STargeting::updating()
         this->getLockedInput< data::TransformationMatrix3D >( s_MATRIX_INPUT );
     SLM_ASSERT("Input \"matrix\" is missing.", matrix);
 
-    const ::glm::dmat4x4 mat = geometry::data::getMatrixFromTF3D(matrix.get_shared());
+    const ::glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());
 
     const ::glm::dvec4 origin(0.0, 0.0, 0.0, 1.0);
 
@@ -269,4 +269,4 @@ void STargeting::removePoint()
 
 // -----------------------------------------------------------------------------
 
-}// namespace sight::modules::ui::base
+}// namespace sight::modules::geometry::base
