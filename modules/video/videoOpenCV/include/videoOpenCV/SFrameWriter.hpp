@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -40,10 +40,11 @@ namespace videoOpenCV
  * @todo Only image of type 'uint8' (RGB and RGBA) and grayscale image of type 'uint8' and 'uint16' are managed.
  *
  * @section Slots Slots
- * - \b saveFrame(timestamp) : add the current frame in the video
- * - \b startRecord() : start recording
- * - \b stopRecord() : stop recording
- * - \b setFormatParameter(value, key) : change format
+ * - \b saveFrame(timestamp): adds the current frame in the video
+ * - \b startRecord(): starts recording
+ * - \b stopRecord(): stops recording
+ * - \b record(state): starts/stops the recording, according to the state in parameter
+ * - \b setFormatParameter(value, key): changes format
  *
  * @section XML XML Configuration
  *
@@ -106,19 +107,22 @@ protected:
 
 private:
 
-    /// SLOT: add the current frame in the video
+    /// SLOT: Adds the current frame in the video
     void saveFrame(::fwCore::HiResClock::HiResClockType timestamp);
 
-    /// write frame on the disk
+    /// Writes frame on the disk
     void write(::fwCore::HiResClock::HiResClockType timestamp);
 
-    /// SLOT: Start recording
+    /// SLOT: Starts recording
     void startRecord();
 
-    /// SLOT: Strop recording
+    /// SLOT: Stops recording
     void stopRecord();
 
-    ///Slot called when a format is changed
+    /// SLOT: Starts/stops recording, according to the parameter value
+    void record(bool);
+
+    /// Slot called when a format is changed
     void setFormatParameter(std::string val, std::string key);
 
     int m_imageType; ///< opencv image type ( CV_8UC3, CV_8UC4, ...)
