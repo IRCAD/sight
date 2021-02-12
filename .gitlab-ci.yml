@@ -11,7 +11,8 @@ stages:
     - sudo chown -R sight:sight .
     # Merge the MR branch into dev.
     # TODO: uncomment me to merge again MR branch into dev
-    - >
+    - export EXTRA_BRANCH="dev"
+    # - >
       # if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
       #   git config user.name ${GITLAB_USER_ID}
       #   git config user.email ${GITLAB_USER_EMAIL}
@@ -21,7 +22,7 @@ stages:
       #   git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
       #   export EXTRA_BRANCH="dev"
       # else
-        export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
+      #   export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
       # fi
     # Reset the modified time of all files to improve ccache performance
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -67,7 +68,7 @@ lint:sheldon:
       cmake $CI_PROJECT_DIR
       -G Ninja
       -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
-      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+      -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
       -DBUILD_TESTS=ON
       -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
       -DENABLE_PCH=OFF
@@ -117,7 +118,7 @@ build:linux-debug-clang:
   variables:
     BUILD_TYPE: "Debug"
     BUILD_DOCUMENTATION: "OFF"
-    CC: "/usr/lib/ccache/clang++-11"
+    CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
 build:linux-release-clang:
