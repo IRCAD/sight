@@ -35,7 +35,7 @@ namespace sight::viz::ogre::overlay
 /**
  * @brief Listens to render events triggered for a given viewport and activates the overlays enabled for that viewport.
  */
-class ViewportListener : public ::Ogre::RenderTargetListener
+class ViewportListener final : public ::Ogre::RenderTargetListener
 {
 public:
 
@@ -46,7 +46,7 @@ public:
     VIZ_OGRE_API ViewportListener(ViewportOverlaysMapType& _vpLayerMap);
 
     /// Destructor.
-    VIZ_OGRE_API virtual ~ViewportListener() final;
+    VIZ_OGRE_API ~ViewportListener() final;
 
 private:
 

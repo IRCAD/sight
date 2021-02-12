@@ -27,12 +27,12 @@
 
 #include <core/base.hpp>
 
+#include <viz/ogre/IWindowInteractor.hpp>
+
 #include <QObject>
 #include <QPointer>
 
 #include <ui/base/container/fwContainer.hpp>
-
-#include <viz/ogre/IWindowInteractor.hpp>
 
 namespace sight::ui::qt
 {
@@ -46,8 +46,8 @@ namespace sight::modules::viz::ogreQt
 {
 
 /// Defines a class to manage a render window.
-class MODULE_VIZ_OGREQT_CLASS_API WindowInteractor : public QObject,
-                                                     public sight::viz::ogre::IWindowInteractor
+class MODULE_VIZ_OGREQT_CLASS_API WindowInteractor final : public QObject,
+                                                           public sight::viz::ogre::IWindowInteractor
 {
 
 Q_OBJECT

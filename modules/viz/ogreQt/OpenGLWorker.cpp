@@ -38,7 +38,7 @@ namespace sight::modules::viz::ogreQt
 
 // Wraps around a function to set the OpenGL context before calling it.
 // Can be scheduled to be executed by a thread pool.
-struct OpenGLRunner : public QRunnable
+struct OpenGLRunner final : public QRunnable
 {
     // Constructor.
     OpenGLRunner(OpenGLWorker* _worker, sight::viz::ogre::IGraphicsWorker::TaskType _task) :
@@ -50,14 +50,14 @@ struct OpenGLRunner : public QRunnable
 //------------------------------------------------------------------------------
 
     // Destructor.
-    virtual ~OpenGLRunner() final
+    ~OpenGLRunner() final
     {
     }
 
 //------------------------------------------------------------------------------
 
     // Pulls the GL context if it is not owned by the thread and runs the task.
-    virtual void run() final
+    void run() final
     {
         QOpenGLContext* workerContext = m_worker->m_glContext.get();
         if (workerContext->thread() == nullptr)

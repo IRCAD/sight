@@ -33,13 +33,13 @@
 
 #include <services/macros.hpp>
 
-#include <OgreEntity.h>
-#include <OgreNode.h>
-#include <OgreSceneNode.h>
-
 #include <viz/ogre/helper/ManualObject.hpp>
 #include <viz/ogre/ogre.hpp>
 #include <viz/ogre/picker/IPicker.hpp>
+
+#include <OgreEntity.h>
+#include <OgreNode.h>
+#include <OgreSceneNode.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -296,7 +296,7 @@ void SImageMultiDistances::addDistances()
         data::tools::fieldHelper::Image::m_imageDistancesId);
     if(distanceField)
     {
-        for(const data::Object::sptr object : *distanceField)
+        for(const auto& object : *distanceField)
         {
             const data::PointList::sptr pointList = data::PointList::dynamicCast(object);
             SLM_ASSERT("The distance should be a point list", pointList);
@@ -339,7 +339,7 @@ void SImageMultiDistances::removeDistances()
     std::vector< core::tools::fwID::IDType > foundId;
     if(distanceField)
     {
-        for(const data::Object::csptr& object : *distanceField)
+        for(const auto& object : *distanceField)
         {
             foundId.push_back(object->getID());
         }

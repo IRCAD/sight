@@ -24,12 +24,12 @@
 
 #include "modules/viz/ogreQt/config.hpp"
 
+#include <viz/ogre/IGraphicsWorker.hpp>
+
 #include <QOpenGLContext>
 #include <QPointer>
 #include <QSurface>
 #include <QThreadPool>
-
-#include <viz/ogre/IGraphicsWorker.hpp>
 
 namespace sight::modules::viz::ogreQt
 {
@@ -51,7 +51,7 @@ public:
     OpenGLWorker(QSurface* _surface);
 
     /// Clears all waiting tasks and waits for the one being executed.
-    virtual ~OpenGLWorker();
+    ~OpenGLWorker() final;
 
     /// Schedules a new task for the thread pool.
     virtual void pushTask(sight::viz::ogre::IGraphicsWorker::TaskType _task);
