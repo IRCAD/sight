@@ -27,6 +27,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <fwData/Landmarks.hpp>
+
 #include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
@@ -257,7 +259,7 @@ private:
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
      */
-    void insertPoint(std::string _groupName, size_t _index);
+    void insertPoint(std::string _groupName, size_t _index, const ::fwData::Landmarks::csptr& _data = nullptr);
 
     /**
      * @brief SLOT: hightlights the selected landmark.
@@ -315,7 +317,7 @@ private:
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
      */
-    void hideLandmark(std::shared_ptr< Landmark > _landmark);
+    void hideLandmark(std::shared_ptr< Landmark > _landmark, const ::fwData::Landmarks::csptr& _data = nullptr);
 
     /// Contains the root scene node.
     ::Ogre::SceneNode* m_transNode { nullptr };

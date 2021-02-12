@@ -26,8 +26,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Landmarks.hpp>
-
 #include <fwRenderOgre/helper/Font.hpp>
 #include <fwRenderOgre/helper/ManualObject.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
@@ -232,7 +230,7 @@ void SLandmarks::updating()
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
         for(size_t index = 0; index < group.m_points.size(); ++index)
         {
-            this->insertPoint(groupName, index);
+            this->insertPoint(groupName, index, landmarks.get_shared());
         }
     }
 }
@@ -436,14 +434,22 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertPoint(std::string _groupName, size_t _index)
+void SLandmarks::insertPoint(std::string _groupName, size_t _index, const ::fwData::Landmarks::csptr& _data)
 {
     // Make the context as current since we create data here.
     this->getRenderService()->makeCurrent();
 
     {
         // Get landmarks.
-        const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+        ::fwData::Landmarks::csptr landmarks;
+        if (_data == nullptr)
+        {
+            landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT).get_shared();
+        }
+        else
+        {
+            landmarks = _data;
+        }
 
         // Retrieve group.
         const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -507,7 +513,7 @@ void SLandmarks::insertPoint(std::string _groupName, size_t _index)
     }
 
     // Hide landmarks if an image is given to the service.
-    this->hideLandmark(m_manualObjects.back());
+    this->hideLandmark(m_manualObjects.back(), _data);
 
     // Request the rendering.
     this->requestRender();
@@ -676,7 +682,7 @@ void SLandmarks::hideLandmarks()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
+void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark, const ::fwData::Landmarks::csptr& _data)
 {
     // Get image.
     const auto image = this->getWeakInput< ::fwData::Image >(s_IMAGE_INPUT);
@@ -684,7 +690,15 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     const auto imageLock = image.lock();
 
     // Get landmarks.
-    const auto landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT);
+    ::fwData::Landmarks::csptr landmarks;
+    if (_data == nullptr)
+    {
+        landmarks = this->getLockedInOut< ::fwData::Landmarks >(s_LANDMARKS_INPUT).get_shared();
+    }
+    else
+    {
+        landmarks = _data;
+    }
 
     // Retrieve group.
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
