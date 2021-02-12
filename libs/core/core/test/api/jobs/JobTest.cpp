@@ -250,7 +250,7 @@ void JobTest::GenericCallbackTest()
                                                          runningJob.cancelRequestedCallback());
                         },
                                  worker);
-            job.setTotalWorkUnits( loops );
+            job.setTotalWorkUnits( std::uint64_t(loops) );
             job.run();
             CPPUNIT_ASSERT_EQUAL( core::jobs::IJob::RUNNING, job.getState() );
             std::this_thread::sleep_for( std::chrono::milliseconds(30) );
@@ -417,7 +417,7 @@ void JobTest::AggregationTest()
                     algoMockGenericCallback(loops, runningJob.progressCallback(), runningJob.cancelRequestedCallback());
                 };
         auto job4 = core::jobs::Job::New( "GenericCallbackJob4", func, worker );
-        job4->setTotalWorkUnits(loops);
+        job4->setTotalWorkUnits(std::uint64_t(loops));
 
         auto jobs1 = core::jobs::Aggregator::New( "Aggregator1" );
         auto jobs2 = core::jobs::Aggregator::New( "Aggregator2" );
@@ -708,7 +708,7 @@ void JobTest::ObserverTest()
                         },
                                  worker
                                  );
-            job.setTotalWorkUnits(loops);
+            job.setTotalWorkUnits(std::uint64_t(loops));
             job.run();
             std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel().wait();
@@ -732,7 +732,7 @@ void JobTest::ObserverTest()
                         },
                                  worker
                                  );
-            job.setTotalWorkUnits(loops);
+            job.setTotalWorkUnits(std::uint64_t(loops));
             job.run();
             std::this_thread::sleep_for( std::chrono::milliseconds(30) );
             job.cancel().wait();

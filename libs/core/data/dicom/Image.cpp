@@ -71,11 +71,12 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
         }
         else
         {
-            const double min = m_rescaleSlope * (double)this->getPixelMin() + m_rescaleIntercept;
-            const double max = m_rescaleSlope * (double)this->getPixelMax() + m_rescaleIntercept;
+            const int64_t min =
+                static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMin()) + m_rescaleIntercept);
+            const int64_t max =
+                static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMax()) + m_rescaleIntercept);
 
             SLM_ASSERT("Min must be lower than max.", min <= max );
-            SLM_ASSERT("Min and max values must be of type int64_t.", min == (int64_t)min && max == (int64_t)max );
 
             // Unsigned values
             if(min >= 0)
@@ -94,7 +95,7 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
                 }
                 else
                 {
-                    SLM_ASSERT("Unable to determine the pixel format.", 0 );
+                    SLM_ASSERT("Unable to determine the pixel format.", 0);
                 }
             }
             // Signed values

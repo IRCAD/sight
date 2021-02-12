@@ -26,6 +26,7 @@
 
 #include "geometry/data/TransformationMatrix3D.hpp"
 
+#include <core/com/Signal.hxx>
 #include <core/tools/NumericRoundCast.hxx>
 
 #include <glm/mat4x4.hpp>

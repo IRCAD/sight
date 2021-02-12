@@ -327,7 +327,7 @@ data::Mesh::PointColorsMultiArrayType Mesh::getPointColors() const
     data::Array::sptr pointColors = m_mesh->getPointColorsArray();
     return data::Mesh::PointColorsMultiArrayType(
         static_cast< data::Mesh::PointColorsMultiArrayType::element*>(m_helperPointColors->getBuffer()),
-        ::boost::extents[m_mesh->getNumberOfPoints()][pointColors->getNumberOfComponents()]
+        ::boost::extents[m_mesh->getNumberOfPoints()][static_cast<long>(pointColors->getNumberOfComponents())]
         );
 }
 
@@ -338,7 +338,7 @@ data::Mesh::CellColorsMultiArrayType Mesh::getCellColors() const
     data::Array::sptr cellColors = m_mesh->getCellColorsArray();
     return data::Mesh::CellColorsMultiArrayType(
         static_cast< data::Mesh::CellColorsMultiArrayType::element*>(m_helperCellColors->getBuffer()),
-        ::boost::extents[m_mesh->getNumberOfCells()][cellColors->getNumberOfComponents()]
+        ::boost::extents[m_mesh->getNumberOfCells()][static_cast<long>(cellColors->getNumberOfComponents())]
         );
 }
 
@@ -349,7 +349,7 @@ data::Mesh::PointNormalsMultiArrayType Mesh::getPointNormals() const
     data::Array::sptr pointNormals = m_mesh->getPointNormalsArray();
     return data::Mesh::PointNormalsMultiArrayType(
         static_cast< data::Mesh::PointNormalsMultiArrayType::element*>(m_helperPointNormals->getBuffer()),
-        ::boost::extents[m_mesh->getNumberOfPoints()][pointNormals->getNumberOfComponents()]
+        ::boost::extents[m_mesh->getNumberOfPoints()][static_cast<long>(pointNormals->getNumberOfComponents())]
         );
 }
 
@@ -360,7 +360,7 @@ data::Mesh::CellNormalsMultiArrayType Mesh::getCellNormals() const
     data::Array::sptr cellNormals = m_mesh->getCellNormalsArray();
     return data::Mesh::CellNormalsMultiArrayType(
         static_cast< data::Mesh::CellNormalsMultiArrayType::element*>(m_helperCellNormals->getBuffer()),
-        ::boost::extents[m_mesh->getNumberOfCells()][cellNormals->getNumberOfComponents()]
+        ::boost::extents[m_mesh->getNumberOfCells()][static_cast<long>(cellNormals->getNumberOfComponents())]
         );
 }
 
@@ -371,7 +371,7 @@ data::Mesh::PointTexCoordsMultiArrayType Mesh::getPointTexCoords() const
     data::Array::sptr pointTexCoords = m_mesh->getPointTexCoordsArray();
     return data::Mesh::PointTexCoordsMultiArrayType(
         static_cast< data::Mesh::PointTexCoordsMultiArrayType::element*>(m_helperPointTexCoords->getBuffer()),
-        ::boost::extents[m_mesh->getNumberOfPoints()][pointTexCoords->getNumberOfComponents()]
+        ::boost::extents[m_mesh->getNumberOfPoints()][static_cast<long>(pointTexCoords->getNumberOfComponents())]
         );
 }
 
@@ -382,7 +382,7 @@ data::Mesh::CellTexCoordsMultiArrayType Mesh::getCellTexCoords() const
     data::Array::sptr cellTexCoords = m_mesh->getCellTexCoordsArray();
     return data::Mesh::CellTexCoordsMultiArrayType(
         static_cast< data::Mesh::CellTexCoordsMultiArrayType::element*>(m_helperCellTexCoords->getBuffer()),
-        ::boost::extents[m_mesh->getNumberOfCells()][cellTexCoords->getNumberOfComponents()]
+        ::boost::extents[m_mesh->getNumberOfCells()][static_cast<long>(cellTexCoords->getNumberOfComponents())]
         );
 }
 
