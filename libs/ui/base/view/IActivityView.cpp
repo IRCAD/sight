@@ -24,8 +24,8 @@
 
 #include "ui/base/dialog/MessageDialog.hpp"
 
-#include <activities/IActivityValidator.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IActivityValidator.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
@@ -38,7 +38,7 @@
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::ui::base
 {
@@ -91,7 +91,7 @@ bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) 
     bool isValid;
     std::string message;
 
-    std::tie(isValid, message) = this->activities::IActivityLauncher::validateActivity(activitySeries);
+    std::tie(isValid, message) = this->activity::IActivityLauncher::validateActivity(activitySeries);
 
     if (!isValid)
     {
@@ -107,7 +107,7 @@ bool IActivityView::validateActivity(data::ActivitySeries::sptr activitySeries) 
 
 data::ActivitySeries::sptr IActivityView::createMainActivity() const
 {
-    data::ActivitySeries::sptr actSeries = this->activities::IActivityLauncher::createMainActivity();
+    data::ActivitySeries::sptr actSeries = this->activity::IActivityLauncher::createMainActivity();
 
     if (nullptr == actSeries)
     {

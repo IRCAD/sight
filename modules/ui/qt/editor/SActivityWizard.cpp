@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/editor/SActivityWizard.hpp"
 
-#include <activities/IValidator.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -42,7 +42,7 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -68,7 +68,7 @@ const core::com::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_CREATED_SIG 
 const core::com::Signals::SignalKeyType SActivityWizard::s_ACTIVITY_UPDATED_SIG    = "activityUpdated";
 const core::com::Signals::SignalKeyType SActivityWizard::s_CANCELED_SIG            = "canceled";
 
-static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
@@ -239,8 +239,8 @@ void SActivityWizard::updating()
 void SActivityWizard::createActivity(std::string activityID)
 {
     m_mode = Mode::CREATE;
-    activities::registry::ActivityInfo info;
-    info = activities::registry::Activities::getDefault()->getInfo(activityID);
+    activity::registry::ActivityInfo info;
+    info = activity::registry::Activity::getDefault()->getInfo(activityID);
 
     // load activity module
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
@@ -309,8 +309,8 @@ void SActivityWizard::createActivity(std::string activityID)
 
 void SActivityWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
 {
-    activities::registry::ActivityInfo info;
-    info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    activity::registry::ActivityInfo info;
+    info = activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId,
@@ -387,8 +387,8 @@ void SActivityWizard::onReset()
 {
     if (m_actSeries)
     {
-        activities::registry::ActivityInfo info;
-        info = activities::registry::Activities::getDefault()->getInfo(m_actSeries->getActivityConfigId());
+        activity::registry::ActivityInfo info;
+        info = activity::registry::Activity::getDefault()->getInfo(m_actSeries->getActivityConfigId());
         m_activityDataView->fillInformation(info);
 
         if (m_activityDataView->count() > 1)
@@ -475,8 +475,8 @@ void SActivityWizard::onBuildActivity()
                 if (m_mode == Mode::CREATE)
                 {
                     // Add the new activity series in seriesDB
-                    activities::registry::ActivityInfo info;
-                    info = activities::registry::Activities::getDefault()->getInfo(
+                    activity::registry::ActivityInfo info;
+                    info = activity::registry::Activity::getDefault()->getInfo(
                         m_actSeries->getActivityConfigId());
 
                     std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(

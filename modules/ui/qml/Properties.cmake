@@ -7,7 +7,7 @@ set( DEPENDENCIES
     core
     ui_qml
     module_ui_qt
-    services
+    service
 )
 set( REQUIREMENTS
     module_ui_base

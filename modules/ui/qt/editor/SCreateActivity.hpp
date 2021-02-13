@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/registry/Activities.hpp>
-#include <activities/registry/ActivityMsg.hpp>
+#include <activity/registry/Activity.hpp>
+#include <activity/registry/ActivityMsg.hpp>
 
 #include <QButtonGroup>
 #include <QObject>
@@ -124,7 +124,7 @@ private:
      */
     void launchActivity(data::ActivitySeries::sptr activitySeries);
 
-    typedef activities::registry::Activities::ActivitiesType ActivityInfoContainer;
+    typedef activity::registry::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

@@ -28,8 +28,8 @@
 namespace sight::modules::data
 {
 
-static const services::IService::KeyType s_TF_POOL_INPUT = "tfPool";
-static const services::IService::KeyType s_TF_INOUT      = "tf";
+static const service::IService::KeyType s_TF_POOL_INPUT = "tfPool";
+static const service::IService::KeyType s_TF_INOUT      = "tf";
 
 static const core::com::Slots::SlotKeyType s_MERGE_SLOT = "merge";
 
@@ -61,7 +61,7 @@ void SMergeTF::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMergeTF::getAutoConnections() const
+service::IService::KeyConnectionsMap SMergeTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TF_POOL_INPUT, sight::data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

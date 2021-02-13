@@ -104,7 +104,7 @@ public:
 
 protected:
 
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.

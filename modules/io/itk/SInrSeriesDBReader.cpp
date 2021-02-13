@@ -37,11 +37,11 @@
 #include <data/Study.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/itk/ImageReader.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -52,7 +52,7 @@
 namespace sight::modules::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::itk::SInrSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::itk::SInrSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
@@ -69,16 +69,16 @@ SInrSeriesDBReader::~SInrSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SInrSeriesDBReader::getIOPathType() const
+sight::io::base::service::IOPathType SInrSeriesDBReader::getIOPathType() const
 {
-    return sight::io::base::services::FILES;
+    return sight::io::base::service::FILES;
 }
 
 //------------------------------------------------------------------------------
 
 void SInrSeriesDBReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void SInrSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", seriesDB);
+        data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 

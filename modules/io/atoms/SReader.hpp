@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/jobs/IJob.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <map>
 #include <set>
@@ -98,9 +98,9 @@ namespace sight::modules::io::atoms
  *      The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
  *      shown.
  *
- * @see sight::io::base::services::IReader
+ * @see sight::io::base::service::IReader
  */
-class MODULE_IO_ATOMS_CLASS_API SReader : public sight::io::base::services::IReader
+class MODULE_IO_ATOMS_CLASS_API SReader : public sight::io::base::service::IReader
 {
 
 public:
@@ -108,7 +108,7 @@ public:
     /// Signal type for job creation.
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
 
-    fwCoreServiceMacro(SReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SReader, sight::io::base::service::IReader)
 
     /// Does nothing
     SReader();
@@ -151,7 +151,7 @@ protected:
     MODULE_IO_ATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_ATOMS_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_ATOMS_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 

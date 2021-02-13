@@ -27,8 +27,8 @@
 #include "viz/ogre/Layer.hpp"
 #include "viz/ogre/Utils.hpp"
 
-#include <services/helper/Config.hpp>
-#include <services/macros.hpp>
+#include <service/helper/Config.hpp>
+#include <service/macros.hpp>
 
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMovableObject.h>

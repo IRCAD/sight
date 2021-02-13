@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "services/IHasServices.hpp"
+#include "service/IHasServices.hpp"
 
 #include "viz/ogre/config.hpp"
 
@@ -46,7 +46,7 @@ namespace compositor
  * @brief   Manage the compositors in a layer view.
  */
 class VIZ_OGRE_CLASS_API ChainManager : ::boost::noncopyable,
-                                        public services::IHasServices
+                                        public service::IHasServices
 {
 public:
     typedef std::unique_ptr < ChainManager > uptr;

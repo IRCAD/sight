@@ -8,7 +8,7 @@ set( DEPENDENCIES
     module_ui_qt
     io_dimse
     data
-    services
+    service
     io_base
     )
 set( REQUIREMENTS )

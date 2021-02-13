@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
     module_activity
     visuVTK
     module_io_matrix

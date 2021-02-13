@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -64,11 +64,11 @@ namespace sight::modules::io::itk
  * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_ITK_CLASS_API SInrSeriesDBReader : public sight::io::base::services::IReader
+class MODULE_IO_ITK_CLASS_API SInrSeriesDBReader : public sight::io::base::service::IReader
 {
 
 public:
-    fwCoreServiceMacro(SInrSeriesDBReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SInrSeriesDBReader, sight::io::base::service::IReader)
 
     MODULE_IO_ITK_API SInrSeriesDBReader() noexcept;
 
@@ -109,7 +109,7 @@ protected:
     MODULE_IO_ITK_API virtual void openLocationDialog() override;
 
     /// Returns managed file type, here FILES
-    MODULE_IO_ITK_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 

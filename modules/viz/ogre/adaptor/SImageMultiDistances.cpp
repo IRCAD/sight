@@ -31,7 +31,7 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/helper/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/ManualObject.hpp>
 #include <viz/ogre/ogre.hpp>
@@ -44,7 +44,7 @@
 namespace sight::modules::viz::ogre::adaptor
 {
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
 static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
@@ -235,7 +235,7 @@ void SImageMultiDistances::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);

@@ -25,7 +25,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/data/Viewport.hpp>
@@ -38,7 +38,7 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_VIEWPORT_INOUT = "viewport";
+static const service::IService::KeyType s_VIEWPORT_INOUT = "viewport";
 
 static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
@@ -85,7 +85,7 @@ void SViewportRangeSelector::configuring()
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
+service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

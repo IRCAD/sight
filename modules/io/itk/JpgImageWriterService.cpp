@@ -27,9 +27,9 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/itk/JpgImageWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -40,7 +40,7 @@
 namespace sight::modules::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::itk::JpgImageWriterService,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::itk::JpgImageWriterService,
                          ::sight::data::Image )
 
 //------------------------------------------------------------------------------
@@ -57,16 +57,16 @@ JpgImageWriterService::~JpgImageWriterService() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType JpgImageWriterService::getIOPathType() const
+sight::io::base::service::IOPathType JpgImageWriterService::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void JpgImageWriterService::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void JpgImageWriterService::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::Image::csptr image = this->getInput< data::Image >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::csptr image = this->getInput< data::Image >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

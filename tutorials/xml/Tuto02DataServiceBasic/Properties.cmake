@@ -9,7 +9,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    module_services
+    module_service
 
     # UI declaration/Actions
     module_ui_base
@@ -18,7 +18,7 @@ set( REQUIREMENTS
     module_io_vtk           # Contains the reader and writer for VTK files (image and mesh).
 
     # Services
-    module_viz_sample       # Loads basic rendering services for images and meshes.
+    module_viz_sample       # Loads basic rendering service for images and meshes.
 )
 
 moduleParam(

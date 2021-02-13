@@ -32,9 +32,9 @@
 #include <data/Float.hpp>
 #include <data/Image.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>

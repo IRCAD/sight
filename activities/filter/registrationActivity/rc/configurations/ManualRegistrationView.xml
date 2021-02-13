@@ -1,4 +1,4 @@
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>ManualRegistrationView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -60,7 +60,7 @@
             </registry>
         </service>
 
-        <service uid="mainBlendView" type="::sight::services::SConfigController" >
+        <service uid="mainBlendView" type="::sight::service::SConfigController" >
             <appConfig id="SliceBlendView" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
@@ -74,7 +74,7 @@
             <parameter replace="orientation" by="axial" />
         </service>
 
-        <service uid="blendView2" type="::sight::services::SConfigController" >
+        <service uid="blendView2" type="::sight::service::SConfigController" >
             <appConfig id="SliceBlendView" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
@@ -88,7 +88,7 @@
             <parameter replace="orientation" by="sagittal" />
         </service>
 
-        <service uid="blendView3" type="::sight::services::SConfigController" >
+        <service uid="blendView3" type="::sight::service::SConfigController" >
             <appConfig id="SliceBlendView" />
             <inout key="targetImageUid" uid="${targetImageUid}" />
             <inout key="referenceImageUid" uid="${referenceImageUid}" />
@@ -102,7 +102,7 @@
             <parameter replace="orientation" by="frontal" />
         </service>
 
-        <service uid="blendEditor" type="::sight::services::SConfigController" >
+        <service uid="blendEditor" type="::sight::service::SConfigController" >
             <appConfig id="BlendEditor" />
             <parameter replace="WID_PARENT" by="blendEditor" />
             <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>

@@ -31,7 +31,7 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/http/exceptions/Base.hpp>
 #include <io/http/helper/Series.hpp>
@@ -45,7 +45,7 @@ namespace sight::modules::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-static const services::IService::KeyType s_SERIES_IN = "selectedSeries";
+static const service::IService::KeyType s_SERIES_IN = "selectedSeries";
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ SSeriesPusher::~SSeriesPusher() noexcept
 
 void SSeriesPusher::configuring()
 {
-    services::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {

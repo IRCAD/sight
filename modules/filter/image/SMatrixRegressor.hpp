@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #include <filter/image/MatrixRegressor.hpp>
 
@@ -56,12 +56,12 @@ namespace sight::modules::filter::image
  * @subsection In-Out In-Out
  * - \b optimalMatrix [sight::data::TransformationMatrix3D]: The optimal matrix.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public service::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMatrixRegressor, services::IOperator)
+    fwCoreServiceMacro(SMatrixRegressor, service::IOperator)
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SMatrixRegressor();

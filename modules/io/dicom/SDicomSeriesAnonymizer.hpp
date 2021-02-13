@@ -24,7 +24,7 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::core::jobs
 {
@@ -57,13 +57,13 @@ namespace sight::modules::io::dicom
  * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where the dicom series comes from.
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to be anonymized.
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public services::IController
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public service::IController
 {
 
 public:
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesAnonymizer,  services::IController)
+    fwCoreServiceMacro(SDicomSeriesAnonymizer,  service::IController)
 
     /// Constructor
     MODULE_IO_DICOM_API SDicomSeriesAnonymizer() noexcept;

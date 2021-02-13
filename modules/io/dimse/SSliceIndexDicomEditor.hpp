@@ -30,9 +30,9 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/IHasServices.hpp>
+#include <service/IHasServices.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -73,7 +73,7 @@ namespace sight::modules::io::dimse
 class MODULE_IO_DIMSE_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
     public sight::ui::base::editor::IEditor,
-    public services::IHasServices
+    public service::IHasServices
 {
 
 Q_OBJECT;
@@ -103,7 +103,7 @@ protected:
      *
      * Connect data::DicomSeries::s_MODIFIED_SIG of s_DICOMSERIES_INOUT to s_UPDATE_SLOT
      */
-    MODULE_IO_DIMSE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_DIMSE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates slider informations and retrieve the image.
     MODULE_IO_DIMSE_API void updating() override;
@@ -160,7 +160,7 @@ private:
     std::string m_readerConfig { "" };
 
     /// Contains the DICOM reader.
-    sight::io::base::services::IReader::sptr m_dicomReader;
+    sight::io::base::service::IReader::sptr m_dicomReader;
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB;

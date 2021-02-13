@@ -8,7 +8,7 @@ set( DEPENDENCIES
         io_base
         geometry_data
         module_ui_qt
-        services
+        service
         viz_ogre
         ui_base
 )

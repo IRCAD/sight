@@ -1,13 +1,13 @@
 <plugin id="ExDump" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_io_atoms" />
     <requirement id="module_ui_base" />
     <requirement id="module_memory" />
     <requirement id="module_ui_qt" />
 
     <!-- This example allows to test the different dump policy. -->
-    <extension implements="::sight::services::registry::AppConfig" >
+    <extension implements="::sight::service::registry::AppConfig" >
         <id>ExDump_AppCfg</id>
         <config>
 

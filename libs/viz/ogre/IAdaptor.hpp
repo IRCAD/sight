@@ -27,8 +27,8 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <services/IHasServices.hpp>
-#include <services/IService.hpp>
+#include <service/IHasServices.hpp>
+#include <service/IService.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 
@@ -58,8 +58,8 @@ namespace sight::viz::ogre
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VIZ_OGRE_CLASS_API IAdaptor :
-    public services::IService,
-    public services::IHasServices
+    public service::IService,
+    public service::IHasServices
 {
 
 friend class SRender;
@@ -67,7 +67,7 @@ friend class SRender;
 public:
 
     /// Generates default methods.
-    fwCoreClassMacro(IAdaptor, services::IService)
+    fwCoreClassMacro(IAdaptor, service::IService)
 
     /// Sets the layer ID.
     VIZ_OGRE_API void setLayerID(const std::string& _id);

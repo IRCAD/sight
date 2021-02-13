@@ -95,7 +95,7 @@ private:
     {
         std::string uuid;
         sight::ui::qt::container::QtContainer::sptr editorPanel;
-        services::IService::wptr service;
+        service::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };
 

@@ -22,7 +22,7 @@
 
 #include "modules/ui/base/aspect/SDefaultMenu.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 fwServicesRegisterMacro( ::sight::ui::base::IMenuSrv, ::sight::modules::ui::base::aspect::SDefaultMenu )
 

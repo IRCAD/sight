@@ -26,7 +26,7 @@
 
 #include <core/com/Slots.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <ui/base/IActionSrv.hpp>
 

@@ -22,8 +22,8 @@
 
 #include "TagIdValidatorTest.hpp"
 
-#include <activities/IObjectValidator.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IObjectValidator.hpp>
+#include <activity/IValidator.hpp>
 
 #include <data/Composite.hpp>
 #include <data/Integer.hpp>
@@ -59,15 +59,15 @@ void TagIdValidatorTest::tearDown()
 
 void TagIdValidatorTest::testValidatorString()
 {
-    activities::IValidator::sptr validator =
-        activities::validator::factory::New("::calibrationActivity::validator::TagId");
+    activity::IValidator::sptr validator =
+        activity::validator::factory::New("::calibrationActivity::validator::TagId");
     CPPUNIT_ASSERT(validator);
 
-    activities::IObjectValidator::sptr objValidator =
-        activities::IObjectValidator::dynamicCast(validator);
+    activity::IObjectValidator::sptr objValidator =
+        activity::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    activities::IValidator::ValidationType validation;
+    activity::IValidator::ValidationType validation;
 
     {
         data::String::csptr str = data::String::New();
@@ -105,15 +105,15 @@ void TagIdValidatorTest::testValidatorString()
 
 void TagIdValidatorTest::testValidatorVector()
 {
-    activities::IValidator::sptr validator =
-        activities::validator::factory::New("::calibrationActivity::validator::TagId");
+    activity::IValidator::sptr validator =
+        activity::validator::factory::New("::calibrationActivity::validator::TagId");
     CPPUNIT_ASSERT(validator);
 
-    activities::IObjectValidator::sptr objValidator =
-        activities::IObjectValidator::dynamicCast(validator);
+    activity::IObjectValidator::sptr objValidator =
+        activity::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    activities::IValidator::ValidationType validation;
+    activity::IValidator::ValidationType validation;
 
     {
         data::Vector::sptr vector = data::Vector::New();
@@ -160,15 +160,15 @@ void TagIdValidatorTest::testValidatorVector()
 
 void TagIdValidatorTest::testValidatorComposite()
 {
-    activities::IValidator::sptr validator =
-        activities::validator::factory::New("::calibrationActivity::validator::TagId");
+    activity::IValidator::sptr validator =
+        activity::validator::factory::New("::calibrationActivity::validator::TagId");
     CPPUNIT_ASSERT(validator);
 
-    activities::IObjectValidator::sptr objValidator =
-        activities::IObjectValidator::dynamicCast(validator);
+    activity::IObjectValidator::sptr objValidator =
+        activity::IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    activities::IValidator::ValidationType validation;
+    activity::IValidator::ValidationType validation;
 
     {
         data::Composite::sptr composite = data::Composite::New();

@@ -24,7 +24,7 @@
 
 #include "modules/geometry/generator/config.hpp"
 
-#include <services/IGenerator.hpp>
+#include <service/IGenerator.hpp>
 
 #include <vtkAlgorithmOutput.h>
 #include <vtkPolyData.h>
@@ -70,13 +70,13 @@ namespace generator
  * @subsection In-Out In-Out:
  * - \b mesh [sight::data::Mesh]: generated mesh.
  */
-class MODULE_GEOMETRY_GENERATOR_CLASS_API SNeedle final : public services::IGenerator
+class MODULE_GEOMETRY_GENERATOR_CLASS_API SNeedle final : public service::IGenerator
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SNeedle, services::IGenerator)
+    fwCoreServiceMacro(SNeedle, service::IGenerator)
 
     /// Initializes slots.
     MODULE_GEOMETRY_GENERATOR_API SNeedle() noexcept;

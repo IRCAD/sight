@@ -22,7 +22,7 @@
 
 #include "modules/ui/base/action/SQuit.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/Application.hpp>
 #include <ui/base/Cursor.hpp>

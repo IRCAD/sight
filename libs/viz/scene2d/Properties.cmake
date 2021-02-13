@@ -8,6 +8,6 @@ set( DEPENDENCIES
     ui_base
     module_ui_qt
     viz_base
-    services
+    service
 )
 set( REQUIREMENTS  )

@@ -30,9 +30,9 @@
 
 #include <data/Material.hpp>
 
-#include <OGRE/OgreMovableObject.h>
-
 #include <viz/ogre/ILight.hpp>
+
+#include <OGRE/OgreMovableObject.h>
 
 namespace Ogre
 {
@@ -201,7 +201,7 @@ protected:
      * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the light position and orientation.
     MODULE_VIZ_OGRE_API void updating() override;

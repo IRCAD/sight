@@ -34,13 +34,13 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/vtk/BitmapImageReader.hpp>
 #include <io/vtk/ImageReader.hpp>
 #include <io/vtk/MetaImageReader.hpp>
@@ -61,16 +61,16 @@ namespace sight::modules::io::vtk
 //------------------------------------------------------------------------------
 
 // Register a new reader of data::Image
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::vtk::SImageReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SImageReader,
                          ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SImageReader::getIOPathType() const
+sight::io::base::service::IOPathType SImageReader::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ void SImageReader::stopping()
 
 void SImageReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ void SImageReader::updating()
 {
     if( this->hasLocationDefined() )
     {
-        data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.

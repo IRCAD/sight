@@ -37,7 +37,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
@@ -52,8 +52,8 @@ namespace sight::modules::viz::scene2d
 {
 namespace adaptor
 {
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
-static const services::IService::KeyType s_TF_INOUT    = "tf";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_TF_INOUT    = "tf";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
@@ -574,7 +574,7 @@ void SNegato::changeImageMinMaxFromCoord( sight::viz::scene2d::data::Coord&,
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SNegato::getAutoConnections() const
+service::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::geometry::vision
 {
@@ -74,10 +74,10 @@ namespace sight::modules::geometry::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the scaling factor to be applied to the input image.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SChessBoardDetector : public services::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SChessBoardDetector : public service::IController
 {
 public:
-    fwCoreServiceMacro(SChessBoardDetector, sight::services::IController)
+    fwCoreServiceMacro(SChessBoardDetector, sight::service::IController)
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
     typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;

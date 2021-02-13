@@ -22,7 +22,7 @@
 
 #include "modules/ui/base/aspect/SDefaultMenuBar.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 fwServicesRegisterMacro( ::sight::ui::base::IMenuBarSrv, ::sight::modules::ui::base::aspect::SDefaultMenuBar )
 

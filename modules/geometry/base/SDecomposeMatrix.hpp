@@ -24,7 +24,7 @@
 
 #include "modules/geometry/base/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -52,12 +52,12 @@ namespace sight::modules::geometry::base
  * - \b scale [sight::data::TransformationMatrix3D] (optional): scaling matrix.
  *
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public services::IOperator
+class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public service::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SDecomposeMatrix, ::sight::services::IOperator)
+    fwCoreServiceMacro(SDecomposeMatrix, ::sight::service::IOperator)
 
     /**
      * @brief Constructor.

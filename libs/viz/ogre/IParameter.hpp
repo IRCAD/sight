@@ -97,7 +97,7 @@ protected:
     VIZ_OGRE_API void setMaterial(const ::Ogre::MaterialPtr& material);
 
     /// Connect the input parameter modified signal to this service update slot.
-    VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

@@ -24,7 +24,7 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/dicom/sorter/TagValueConfigurableSorter.hpp>
 

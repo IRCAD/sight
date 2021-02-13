@@ -26,8 +26,8 @@
 
 #include <core/base.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/IActionSrv.hpp>
 

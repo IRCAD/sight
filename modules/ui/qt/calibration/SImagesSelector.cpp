@@ -32,7 +32,7 @@
 #include <data/tools/helper/Vector.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -50,7 +50,7 @@ const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 
-const services::IService::KeyType s_SELECTION_INOUT = "selection";
+const service::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 SImagesSelector::SImagesSelector() noexcept :

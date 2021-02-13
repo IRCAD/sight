@@ -25,11 +25,11 @@
 #include <core/base.hpp>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/GuiRegistry.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::qt::SNotifier )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::SNotifier )
 
 namespace sight::modules::ui::qt
 {

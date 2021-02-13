@@ -5,7 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES
     core
     data
-    services
+    service
 )
 set( REQUIREMENTS  )
 set( USE_PCH_FROM_TARGET pchData )

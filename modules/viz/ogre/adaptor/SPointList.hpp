@@ -29,12 +29,12 @@
 #include <data/Material.hpp>
 #include <data/PointList.hpp>
 
-#include <OGRE/OgreEntity.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/ITransformable.hpp>
 #include <viz/ogre/Mesh.hpp>
 #include <viz/ogre/Text.hpp>
+
+#include <OGRE/OgreEntity.h>
 
 namespace sight::data
 {
@@ -128,7 +128,7 @@ protected:
      * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
      * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the generated mesh.
     MODULE_VIZ_OGRE_API void updating() override;

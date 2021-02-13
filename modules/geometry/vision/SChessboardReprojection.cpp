@@ -33,7 +33,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -47,20 +47,20 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::vision::SChessboardReprojection)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::vision::SChessboardReprojection)
 
 namespace sight::modules::geometry::vision
 {
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
-static const services::IService::KeyType s_TRANSFORM_INPUT           = "transform";
-static const services::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
-static const services::IService::KeyType s_CAMERA_INPUT              = "camera";
+static const service::IService::KeyType s_TRANSFORM_INPUT           = "transform";
+static const service::IService::KeyType s_DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
+static const service::IService::KeyType s_CAMERA_INPUT              = "camera";
 
-static const services::IService::KeyType s_VIDEO_IMAGE_INOUT = "videoImage";
+static const service::IService::KeyType s_VIDEO_IMAGE_INOUT = "videoImage";
 
-static const services::IService::KeyType s_CHESSBOARD_MODEL_OUTPUT = "chessboardModel";
+static const service::IService::KeyType s_CHESSBOARD_MODEL_OUTPUT = "chessboardModel";
 
 static const core::com::Slots::SlotKeyType s_TOGGLE_DISTORTION_SLOT      = "toggleDistortion";
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
@@ -314,7 +314,7 @@ void SChessboardReprojection::updateChessboardSize()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
+service::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

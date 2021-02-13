@@ -13,7 +13,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    module_services
+    module_service
 
     # Reader
     module_io_matrix

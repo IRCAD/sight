@@ -28,7 +28,7 @@
 
 #include <data/tools/PickingInfo.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #include <filter/image/ImageDiff.hpp>
 #include <filter/image/LineDrawer.hpp>
@@ -81,11 +81,11 @@ namespace sight::modules::filter::image
  * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max' and 'minmax'. 'min' by default.
  * - \b orientation (optional) : The initial slice orientation. 'axial' by default.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SPropagator, ::sight::services::IOperator)
+    fwCoreServiceMacro(SPropagator, ::sight::service::IOperator)
 
     /// Initializes slots signals and member variables.
     MODULE_FILTER_IMAGE_API SPropagator();

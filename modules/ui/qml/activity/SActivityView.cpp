@@ -22,7 +22,7 @@
 
 #include "SActivityView.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -30,7 +30,7 @@
 
 #include <data/Composite.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -106,8 +106,8 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
     if (isValid)
     {
-        sight::activities::registry::ActivityInfo info;
-        info = sight::activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        sight::activity::registry::ActivityInfo info;
+        info = sight::activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "

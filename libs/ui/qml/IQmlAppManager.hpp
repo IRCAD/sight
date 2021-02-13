@@ -24,8 +24,8 @@
 
 #include "ui/qml/config.hpp"
 
-#include <services/AppManager.hpp>
-#include <services/IService.hpp>
+#include <service/AppManager.hpp>
+#include <service/IService.hpp>
 
 #include <QObject>
 #include <QVariant>
@@ -63,7 +63,7 @@ namespace sight::ui::qml
  * do it in the order you want).
  */
 class UI_QML_CLASS_QT_API IQmlAppManager : public QObject,
-                                           public services::AppManager
+                                           public service::AppManager
 {
 Q_OBJECT
 public:
@@ -90,7 +90,7 @@ public Q_SLOTS:
      * The service can be retrived like:
      * @code{.cpp}
         ui::qml::IQmlEditor::sptr srv(obj.value< ui::qml::IQmlEditor* >());
-        if (srv && srv->isA("::modules::ui::qml::activities::SActivityView"))
+        if (srv && srv->isA("::modules::ui::qml::activity::SActivityView"))
         {
             // register input/inout
             srv->registerInOut(data, "myData", true);
@@ -101,7 +101,7 @@ public Q_SLOTS:
             srv->configure(config);
 
             // add proxy connections
-            services::helper::ProxyConnections connection(this->getInputID("myChannel"));
+            service::helper::ProxyConnections connection(this->getInputID("myChannel"));
             connection.addSlotConnection(srv->getID(), "mySlot");
             this->addProxyConnection(connection);
 

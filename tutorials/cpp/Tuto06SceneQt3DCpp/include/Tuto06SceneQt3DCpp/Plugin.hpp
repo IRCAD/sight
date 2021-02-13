@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <services/AppManager.hpp>
+#include <service/AppManager.hpp>
 
 namespace Tuto06SceneQt3DCpp
 {
@@ -58,7 +58,7 @@ private:
     void uninitialize() noexcept override;
 
     /// Contains the AppManager used to instantiate services.
-    std::unique_ptr< services::AppManager > m_appManager;
+    std::unique_ptr< service::AppManager > m_appManager;
 
 };
 

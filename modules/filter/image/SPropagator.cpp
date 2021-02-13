@@ -32,7 +32,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/tools/helper/MedicalImage.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/image/ImageDiff.hpp>
 
@@ -41,7 +41,7 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SPropagator,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SPropagator,
                         ::sight::data::Image)
 
 static const core::com::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
@@ -50,8 +50,8 @@ static const core::com::Slots::SlotKeyType s_DRAW_SLOT            = "draw";
 static const core::com::Slots::SlotKeyType s_SET_ORIENTATION_SLOT = "setOrientation";
 static const core::com::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawing";
 
-static const services::IService::KeyType s_IMAGE_IN    = "imageIn";
-static const services::IService::KeyType s_IMAGE_INOUT = "imageOut";
+static const service::IService::KeyType s_IMAGE_IN    = "imageIn";
+static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";
 
 //-----------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ SPropagator::~SPropagator()
 
 void SPropagator::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_value     = config.get< int >("value", 1);
     m_overwrite = config.get< bool >("overwrite", true);
@@ -361,9 +361,9 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
+service::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING);

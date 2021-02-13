@@ -27,7 +27,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/bspline.hpp>
 #include <viz/scene2d/data/InitQtPen.hpp>
@@ -46,8 +46,8 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_POINT_INOUT     = "point";
-static const services::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+static const service::IService::KeyType s_POINT_INOUT     = "point";
+static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 const float SCurvedHistogram::SCALE            = 1.1f; // vertical scaling factor applied at each mouse scroll
 const float SCurvedHistogram::NB_POINTS_BEZIER = 100.0f;
@@ -538,7 +538,7 @@ void SCurvedHistogram::processInteraction( sight::viz::scene2d::data::Event& _ev
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() const
+service::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( "histogram", data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

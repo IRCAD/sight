@@ -1,6 +1,6 @@
 <plugin id="ogreConfig" version="@PROJECT_VERSION@">
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_ui_qt" />
     <requirement id="module_viz_scene2d" />
 

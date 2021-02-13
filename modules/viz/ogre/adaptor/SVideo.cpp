@@ -26,7 +26,10 @@
 
 #include <data/TransferFunction.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/ogre.hpp>
+#include <viz/ogre/Utils.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
@@ -41,18 +44,15 @@
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
 
-#include <viz/ogre/ogre.hpp>
-#include <viz/ogre/Utils.hpp>
-
 namespace sight::modules::viz::ogre::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
 static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT = "updatePL";
 
-static const services::IService::KeyType s_IMAGE_INPUT = "image";
-static const services::IService::KeyType s_TF_INPUT    = "tf";
-static const services::IService::KeyType s_PL_INPUT    = "pointList";
+static const service::IService::KeyType s_IMAGE_INPUT = "image";
+static const service::IService::KeyType s_TF_INPUT    = "tf";
+static const service::IService::KeyType s_PL_INPUT    = "pointList";
 
 static const std::string s_VISIBLE_CONFIG           = "visible";
 static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
@@ -127,7 +127,7 @@ void SVideo::starting()
 
         m_pointListAdaptor->registerInput(m_pointList, s_PL_INPUT, true);
 
-        services::IService::ConfigType config;
+        service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", this->getLayerID());
         config.add("config.<xmlattr>.autoresetcamera", "no");
         if(!m_materialTemplateName.empty())
@@ -184,9 +184,9 @@ void SVideo::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SVideo::getAutoConnections() const
+service::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

@@ -24,7 +24,7 @@
 
 #include "modules/io/vtk/config.hpp"  // Declaration of class and function export
 
-#include <io/base/services/IReader.hpp> // Definition of abstract reader class
+#include <io/base/service/IReader.hpp> // Definition of abstract reader class
 
 #include <filesystem> // Used to save the file system path of loaded image
 
@@ -66,7 +66,7 @@ namespace sight::modules::io::vtk
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SImageReader : public sight::io::base::services::IReader
+class MODULE_IO_VTK_CLASS_API SImageReader : public sight::io::base::service::IReader
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SImageReader, sight::io::base::service::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -111,7 +111,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /// Method called when the service is started, does nothing.
     MODULE_IO_VTK_API virtual void starting() override;

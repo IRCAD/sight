@@ -27,7 +27,7 @@
 #include <data/Camera.hpp>
 #include <data/Image.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #ifdef OPENCV_CUDA_SUPPORT
 #include <opencv2/cudawarping.hpp>
@@ -75,11 +75,11 @@ namespace sight::modules::geometry::vision
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public services::IOperator
+class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SDistortion, sight::services::IOperator)
+    fwCoreServiceMacro(SDistortion, sight::service::IOperator)
 
     /**
      * @name Slots API
@@ -99,7 +99,7 @@ public:
      * @brief Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
      * and data::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    MODULE_GEOMETRY_VISION_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

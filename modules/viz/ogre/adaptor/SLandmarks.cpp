@@ -28,7 +28,7 @@
 
 #include <data/Landmarks.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/Font.hpp>
 #include <viz/ogre/helper/ManualObject.hpp>
@@ -192,9 +192,9 @@ void SLandmarks::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
 
     connections.push(s_TRANSFORM_CONFIG, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

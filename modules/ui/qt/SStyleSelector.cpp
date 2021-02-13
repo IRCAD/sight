@@ -26,7 +26,7 @@
 #include <core/macros.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QApplication>
 #include <QFile>
@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <filesystem>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::qt::SStyleSelector )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::SStyleSelector )
 
 namespace sight::modules::ui::qt
 {

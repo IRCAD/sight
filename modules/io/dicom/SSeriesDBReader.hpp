@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -89,7 +89,7 @@ namespace sight::modules::io::dicom
    @endcode
  *
  * @code{.xml}
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>MyFilterSelectorConfig</id>
         <service>::modules::ui::dicom::SFilterSelectorDialog</service>
         <desc>"Open" action's filter selector config</desc>
@@ -114,11 +114,11 @@ namespace sight::modules::io::dicom
  *    - user_selection (let the user decide whether using the DicomDir or not)
  * - \b SOPClassSelection:  List of SOP Class selection managed by the reader
  */
-class MODULE_IO_DICOM_CLASS_API SSeriesDBReader : public sight::io::base::services::IReader
+class MODULE_IO_DICOM_CLASS_API SSeriesDBReader : public sight::io::base::service::IReader
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SSeriesDBReader, sight::io::base::service::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
@@ -174,7 +174,7 @@ protected:
     MODULE_IO_DICOM_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FOLDER
-    MODULE_IO_DICOM_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 

@@ -29,8 +29,6 @@
 
 #include <data/tools/helper/TransferFunction.hpp>
 
-#include <OGRE/OgreTexture.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/IGraphicsWorker.hpp>
 #include <viz/ogre/interactor/ClippingBoxInteractor.hpp>
@@ -38,6 +36,8 @@
 #include <viz/ogre/vr/IllumAmbientOcclusionSAT.hpp>
 #include <viz/ogre/vr/PreIntegrationTable.hpp>
 #include <viz/ogre/vr/RayTracingVolumeRenderer.hpp>
+
+#include <OGRE/OgreTexture.h>
 
 #include <array>
 #include <vector>
@@ -152,7 +152,7 @@ protected:
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_BUFFER_IMAGE_SLOT
      * Connect data::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to s_UPDATE_CLIPPING_BOX_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_VIZ_OGRE_API void updating() override;

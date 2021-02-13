@@ -26,9 +26,9 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/http/ClientQt.hpp>
 
 #include <filesystem>
@@ -68,11 +68,11 @@ namespace sight::modules::io::dicomweb
  * @note : hostname and port of this service are from the preference settings.
  */
 
-class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public services::IController
+class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPuller, ::sight::services::IController )
+    fwCoreServiceMacro(SSeriesPuller, ::sight::service::IController )
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;
@@ -124,7 +124,7 @@ private:
     sight::io::http::ClientQt m_clientQt;
 
     /// Reader
-    sight::io::base::services::IReader::sptr m_dicomReader;
+    sight::io::base::service::IReader::sptr m_dicomReader;
 
     /// Reader Config
     std::string m_dicomReaderSrvConfig;

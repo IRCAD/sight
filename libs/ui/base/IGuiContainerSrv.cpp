@@ -36,8 +36,8 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -130,7 +130,7 @@ void IGuiContainerSrv::create()
     ui::base::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask< void >([this, &parent]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >([this, &parent]
         {
             SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
 
@@ -149,7 +149,7 @@ void IGuiContainerSrv::create()
             {
                 if (m_hasToolBar)
                 {
-                    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+                    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
                     {
                         m_toolBarBuilder->createToolBar(parent);
                     }).wait();
@@ -157,7 +157,7 @@ void IGuiContainerSrv::create()
                     m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
-                services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+                service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
                 {
                     m_viewLayoutManager->createLayout(container);
                 }).wait();
@@ -167,7 +167,7 @@ void IGuiContainerSrv::create()
                 for (const auto& slideBuilder : m_slideViewBuilders)
                 {
                     SLM_ASSERT("Slide builder is not instantiated", slideBuilder);
-                    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+                    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
                     {
                         slideBuilder->createContainer(container);
                     }).wait();
@@ -192,7 +192,7 @@ void IGuiContainerSrv::destroy()
             m_viewRegistrar->unmanageToolBar();
             SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-            services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+            service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
                 {
                     m_toolBarBuilder->destroyToolBar();
                 }).wait();
@@ -201,7 +201,7 @@ void IGuiContainerSrv::destroy()
         m_viewRegistrar->unmanage();
         SLM_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
 
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
             {
                 m_viewLayoutManager->destroyLayout();
             }).wait();
@@ -210,7 +210,7 @@ void IGuiContainerSrv::destroy()
     for (const auto& slideBuilder : m_slideViewBuilders)
     {
         SLM_ASSERT("Slide builder is not instantiated", slideBuilder);
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
             {
                 slideBuilder->destroyContainer();
             }).wait();
@@ -283,7 +283,7 @@ ui::base::container::fwContainer::sptr IGuiContainerSrv::getContainer()
 
 void IGuiContainerSrv::setParent(std::string wid)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >([this, &wid]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >([this, &wid]
         {
             m_viewRegistrar->setParent(wid);
             ui::base::container::fwContainer::sptr parent = m_viewRegistrar->getParent();

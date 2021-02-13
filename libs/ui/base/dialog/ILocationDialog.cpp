@@ -25,8 +25,8 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/IService.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/IService.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 

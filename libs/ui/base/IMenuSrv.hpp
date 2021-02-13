@@ -26,7 +26,7 @@
 #include "ui/base/layoutManager/IMenuLayoutManager.hpp"
 #include "ui/base/registrar/MenuRegistrar.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {
@@ -34,12 +34,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the menu.
  */
-class UI_BASE_CLASS_API IMenuSrv : public services::IService
+class UI_BASE_CLASS_API IMenuSrv : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IMenuSrv, services::IService)
+    fwCoreServiceMacro(IMenuSrv, service::IService)
 
     /// Method called when an action service is stopping
     UI_BASE_API void actionServiceStopping(std::string actionSrvSID);

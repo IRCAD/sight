@@ -32,7 +32,7 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -41,7 +41,7 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-fwServicesRegisterMacro( ::sight::services::IRegisterer, ::sight::modules::filter::point::SPointListRegistration )
+fwServicesRegisterMacro( ::sight::service::IRegisterer, ::sight::modules::filter::point::SPointListRegistration )
 
 namespace sight::modules::filter::point
 {

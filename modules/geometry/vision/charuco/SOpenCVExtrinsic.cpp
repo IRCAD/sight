@@ -37,8 +37,8 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 

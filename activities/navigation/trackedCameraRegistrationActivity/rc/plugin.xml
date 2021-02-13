@@ -6,7 +6,7 @@
     <xi:include href="configurations/trackedCameraRegistration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/rgbCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>TrackedCameraRegistration</id>
         <title>Tracked camera registration</title>
         <desc>Activity to compute the registration matrix between a camera and an aruco marker</desc>
@@ -22,7 +22,7 @@
                 <desc>Optional mesh of a marker for augmented reality</desc>
             </requirement>
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="TrackedCameraRegistration">
             <parameters>
                 <parameter replace="firstCameraSeries" by="@values.firstCameraSeries" />

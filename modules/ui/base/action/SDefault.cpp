@@ -22,7 +22,7 @@
 
 #include "modules/ui/base/action/SDefault.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::ui::base
 {

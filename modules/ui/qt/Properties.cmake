@@ -4,12 +4,12 @@ set( VERSION 0.1 )
 set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
-    activities
+    activity
     core
     data
     geometry_data
     io_base
-    services
+    service
     ui_qt
 )
 set( REQUIREMENTS

@@ -26,8 +26,8 @@
 
 #include <data/Composite.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <viz/ogre/SRender.hpp>
 
@@ -176,8 +176,8 @@ void SCompositorSelector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    services::registry::ObjectService::ServiceVectorType renderers =
-        services::OSR::getServices("::sight::viz::ogre::SRender");
+    service::registry::ObjectService::ServiceVectorType renderers =
+        service::OSR::getServices("::sight::viz::ogre::SRender");
 
     for(auto srv : renderers)
     {

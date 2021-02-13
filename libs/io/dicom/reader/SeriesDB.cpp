@@ -34,7 +34,7 @@
 
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
@@ -273,7 +273,7 @@ void SeriesDB::readDicom()
 //------------------------------------------------------------------------------
 
 void SeriesDB::readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
-                                     const services::IService::sptr& notifier)
+                                     const service::IService::sptr& notifier)
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -333,7 +333,7 @@ bool SeriesDB::isDicomDirAvailable()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::convertDicomSeries(const services::IService::sptr& notifier)
+void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
 {
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
 

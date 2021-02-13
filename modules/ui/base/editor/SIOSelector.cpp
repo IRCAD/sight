@@ -31,13 +31,13 @@
 #include <data/Composite.hpp>
 #include <data/tools/helper/Composite.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ServiceConfig.hpp>
-#include <services/registry/ServiceFactory.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ServiceConfig.hpp>
+#include <service/registry/ServiceFactory.hpp>
 
-#include <io/base/services/IReader.hpp>
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IReader.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -130,15 +130,15 @@ void SIOSelector::configuring()
 
     if (m_mode == WRITER_MODE)
     {
-        this->registerObject(io::base::services::s_DATA_KEY, AccessType::INOUT);
+        this->registerObject(io::base::service::s_DATA_KEY, AccessType::INOUT);
     }
     else if (m_dataClassname.empty())
     {
-        this->registerObject(io::base::services::s_DATA_KEY, AccessType::INOUT);
+        this->registerObject(io::base::service::s_DATA_KEY, AccessType::INOUT);
     }
     else
     {
-        this->registerObject(io::base::services::s_DATA_KEY, AccessType::OUTPUT, false, true);
+        this->registerObject(io::base::service::s_DATA_KEY, AccessType::OUTPUT, false, true);
     }
 }
 
@@ -159,16 +159,16 @@ void SIOSelector::stopping()
 void SIOSelector::updating()
 {
     bool createOutput      = false;
-    data::Object::sptr obj = this->getInOut< data::Object>(io::base::services::s_DATA_KEY);
+    data::Object::sptr obj = this->getInOut< data::Object>(io::base::service::s_DATA_KEY);
 
-    // Retrieve implementation of type io::base::services::IReader for this object
+    // Retrieve implementation of type io::base::service::IReader for this object
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
         std::string classname = m_dataClassname;
 
         SLM_ASSERT(
-            "An inout key '" + io::base::services::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
+            "An inout key '" + io::base::service::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
             obj || !classname.empty());
 
         if (obj)
@@ -179,16 +179,16 @@ void SIOSelector::updating()
         }
         createOutput          = (!obj && !m_dataClassname.empty());
         availableExtensionsId =
-            services::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                classname, "::sight::io::base::services::IReader");
+            service::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+                classname, "::sight::io::base::service::IReader");
     }
     else // m_mode == WRITER_MODE
     {
-        SLM_ASSERT("The inout key '" + io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
+        SLM_ASSERT("The inout key '" + io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
 
         availableExtensionsId =
-            services::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
-                obj->getClassname(), "::sight::io::base::services::IWriter");
+            service::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+                obj->getClassname(), "::sight::io::base::service::IWriter");
     }
 
     // Filter available extensions and replace id by service description
@@ -209,12 +209,12 @@ void SIOSelector::updating()
         {
             // Add this service
             std::string infoUser =
-                services::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+                service::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
 
             std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
             if ( iter != m_serviceToConfig.end() )
             {
-                infoUser = services::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
+                infoUser = service::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
             }
 
             if (infoUser != "")
@@ -288,10 +288,10 @@ void SIOSelector::updating()
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
-                srvCfg              = services::registry::ServiceConfig::getDefault()->getServiceConfig(
+                srvCfg              = service::registry::ServiceConfig::getDefault()->getServiceConfig(
                     m_serviceToConfig[extensionId], extensionId );
                 SLM_ASSERT(
-                    "No service configuration of type services::registry::ServiceConfig was found",
+                    "No service configuration of type service::registry::ServiceConfig was found",
                     srvCfg );
             }
 
@@ -304,8 +304,8 @@ void SIOSelector::updating()
                     SLM_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 
-                io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >( extensionId );
-                reader->registerInOut(obj, io::base::services::s_DATA_KEY);
+                io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >( extensionId );
+                reader->registerInOut(obj, io::base::service::s_DATA_KEY);
                 reader->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -331,11 +331,11 @@ void SIOSelector::updating()
                     cursor.setDefaultCursor();
 
                     reader->stop();
-                    services::OSR::unregisterService(reader);
+                    service::OSR::unregisterService(reader);
 
                     if (createOutput && !reader->hasFailed())
                     {
-                        this->setOutput(io::base::services::s_DATA_KEY, obj);
+                        this->setOutput(io::base::service::s_DATA_KEY, obj);
                     }
                 }
                 catch (std::exception& e)
@@ -356,15 +356,15 @@ void SIOSelector::updating()
             else
             {
                 // When all writers make use of getObject(), we can use the following code instead:
-                //      io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+                //      io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
                 // extensionId );
-                //      writer->registerInput(this->getObject(), io::base::services::s_DATA_KEY);
+                //      writer->registerInput(this->getObject(), io::base::service::s_DATA_KEY);
 
-                auto factory                             = services::registry::ServiceFactory::getDefault();
-                io::base::services::IWriter::sptr writer =
-                    io::base::services::IWriter::dynamicCast(factory->create( "::sight::io::base::services::IWriter",
-                                                                              extensionId));
-                writer->registerInput(obj, io::base::services::s_DATA_KEY);
+                auto factory                            = service::registry::ServiceFactory::getDefault();
+                io::base::service::IWriter::sptr writer =
+                    io::base::service::IWriter::dynamicCast(factory->create( "::sight::io::base::service::IWriter",
+                                                                             extensionId));
+                writer->registerInput(obj, io::base::service::s_DATA_KEY);
 
                 writer->setWorker(m_associatedWorker);
 
@@ -391,7 +391,7 @@ void SIOSelector::updating()
                     cursor.setDefaultCursor();
 
                     writer->stop();
-                    services::OSR::unregisterService(writer);
+                    service::OSR::unregisterService(writer);
                 }
                 catch (std::exception& e)
                 {

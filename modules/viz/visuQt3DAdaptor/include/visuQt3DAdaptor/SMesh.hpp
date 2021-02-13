@@ -87,7 +87,7 @@ protected:
      * Connect data::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
      * Connect data::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
-    VISUQT3DADAPTOR_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    VISUQT3DADAPTOR_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the mesh.
     VISUQT3DADAPTOR_API void updating() override;

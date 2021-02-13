@@ -28,7 +28,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -39,9 +39,9 @@ namespace sight::modules::ui::base
 namespace action
 {
 
-static const services::IService::KeyType s_SLOT_KEY        = "slot";
-static const services::IService::KeyType s_SLOTS_KEY       = "slots";
-static const services::IService::KeyType s_SYNCED_CALL_KEY = "sync";
+static const service::IService::KeyType s_SLOT_KEY        = "slot";
+static const service::IService::KeyType s_SLOTS_KEY       = "slots";
+static const service::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
 fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SSlotCaller )
 

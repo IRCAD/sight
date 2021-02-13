@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/PulseProgressDialog.hpp"
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -37,8 +37,8 @@ PulseProgressDialog::PulseProgressDialog(
     ui::base::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
 
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function<void()>(
-                                                                              [&]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function<void()>(
+                                                                             [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IPulseProgressDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::IPulseProgressDialog::dynamicCast(guiObj);
@@ -82,7 +82,7 @@ void PulseProgressDialog::show()
 {
     if (m_implementation)
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
             std::bind(&IPulseProgressDialog::show, m_implementation)).wait();
     }
     else

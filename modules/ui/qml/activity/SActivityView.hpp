@@ -24,7 +24,7 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <activities/IActivityLauncher.hpp>
+#include <activity/IActivityLauncher.hpp>
 
 #include <data/ActivitySeries.hpp>
 
@@ -77,7 +77,7 @@ namespace sight::modules::ui::qml::activity
  *
  * @subsection Cpp C++ Configuration
  * @code{.cpp}
-    services::IService::ConfigType parameterViewConfig;
+    service::IService::ConfigType parameterViewConfig;
     parameterViewConfig.add("<xmlattr>.replace", "nameToReplace");
     parameterViewConfig.add("<xmlattr>.by", this->getInputID("value"));
     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
@@ -101,7 +101,7 @@ namespace sight::modules::ui::qml::activity
  * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  */
 class MODULE_UI_QML_CLASS_API SActivityView : public sight::ui::qml::IQmlEditor,
-                                              public sight::activities::IActivityLauncher
+                                              public sight::activity::IActivityLauncher
 {
 
 Q_OBJECT

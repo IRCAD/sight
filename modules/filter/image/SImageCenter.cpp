@@ -31,7 +31,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
 
@@ -40,10 +40,10 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SImageCenter)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SImageCenter)
 
-static const services::IService::KeyType s_IMAGE_IN = "image";
-static const services::IService::KeyType s_TRANSFORM_INOUT = "transform";
+static const service::IService::KeyType s_IMAGE_IN = "image";
+static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -141,9 +141,9 @@ void SImageCenter::stopping()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
+service::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;

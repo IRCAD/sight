@@ -29,7 +29,7 @@
 
 #include <data/String.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <QVBoxLayout>
 
@@ -103,7 +103,7 @@ private:
     {
         std::string uuid;
         sight::ui::qt::container::QtContainer::sptr editorPanel;
-        services::IService::wptr service;
+        service::IService::wptr service;
         core::com::helper::SigSlotConnection connections;
     };
 

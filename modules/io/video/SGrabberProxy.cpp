@@ -29,9 +29,9 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
-#include <services/registry/ServiceConfig.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
@@ -54,7 +54,7 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
-fwServicesRegisterMacro( services::IGrabber, ::sight::modules::io::video::SGrabberProxy, ::sight::data::FrameTL)
+fwServicesRegisterMacro( service::IGrabber, ::sight::modules::io::video::SGrabberProxy, ::sight::data::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -166,15 +166,15 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            const auto srvFactory       = services::registry::ServiceFactory::getDefault();
-            const auto srvConfigFactory = services::registry::ServiceConfig::getDefault();
+            const auto srvFactory       = service::registry::ServiceFactory::getDefault();
+            const auto srvConfigFactory = service::registry::ServiceConfig::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
             auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
-                                                                                 "::services::IRGBDGrabber");
+                                                                                 "::service::IRGBDGrabber");
 
             auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
-                                                                                    "::services::IGrabber");
+                                                                                    "::service::IGrabber");
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
 
@@ -223,7 +223,7 @@ void SGrabberProxy::startCamera()
                     auto inoutsCfg = config.equal_range("inout");
                     for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
                     {
-                        services::IService::ConfigType parameterCfg;
+                        service::IService::ConfigType parameterCfg;
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
@@ -299,7 +299,7 @@ void SGrabberProxy::startCamera()
                 std::map<std::string, std::pair<std::string, std::string> > descToExtension;
                 std::vector<std::string> descriptions;
 
-                const auto& srvConfigRegistry = services::registry::ServiceConfig::getDefault();
+                const auto& srvConfigRegistry = service::registry::ServiceConfig::getDefault();
                 for(const auto& extension : availableExtensionsSelector)
                 {
                     // We need to test first if extension have specific configurations to include/exclude.
@@ -308,7 +308,7 @@ void SGrabberProxy::startCamera()
 
                     if (!m_exclude) // Include mode
                     {
-                        // Available services/configs are the ones the proxy's configuration.
+                        // Available service/configs are the ones the proxy's configuration.
                         if(configsIt != m_serviceToConfig.end())
                         {
                             selectableConfigs = configsIt->second;
@@ -388,7 +388,7 @@ void SGrabberProxy::startCamera()
             size_t srvCount = 0;
             for(auto& srv : m_services)
             {
-                srv = this->registerService< services::IGrabber>(m_grabberImpl);
+                srv = this->registerService< service::IGrabber>(m_grabberImpl);
 
                 auto cameraInput = this->getInput< data::Object >(s_CAMERA_INPUT);
                 auto camera      = data::Camera::dynamicConstCast(cameraInput);
@@ -439,7 +439,7 @@ void SGrabberProxy::startCamera()
 
                 if(!m_grabberConfig.empty())
                 {
-                    const auto& srvConfigRegistry = services::registry::ServiceConfig::getDefault();
+                    const auto& srvConfigRegistry = service::registry::ServiceConfig::getDefault();
 
                     core::runtime::ConfigurationElement::csptr srvCfg =
                         srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
@@ -450,15 +450,15 @@ void SGrabberProxy::startCamera()
                 srv->setWorker(m_associatedWorker);
                 srv->start();
 
-                m_connections.connect(srv, services::IGrabber::s_POSITION_MODIFIED_SIG,
+                m_connections.connect(srv, service::IGrabber::s_POSITION_MODIFIED_SIG,
                                       this->getSptr(), s_MODIFY_POSITION);
-                m_connections.connect(srv, services::IGrabber::s_DURATION_MODIFIED_SIG,
+                m_connections.connect(srv, service::IGrabber::s_DURATION_MODIFIED_SIG,
                                       this->getSptr(), s_MODIFY_DURATION);
-                m_connections.connect(srv, services::IGrabber::s_CAMERA_STARTED_SIG,
+                m_connections.connect(srv, service::IGrabber::s_CAMERA_STARTED_SIG,
                                       this->getSptr(), s_FWD_START_CAMERA_SLOT);
-                m_connections.connect(srv, services::IGrabber::s_CAMERA_STOPPED_SIG,
+                m_connections.connect(srv, service::IGrabber::s_CAMERA_STOPPED_SIG,
                                       this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
-                m_connections.connect(srv, services::IGrabber::s_FRAME_PRESENTED_SIG,
+                m_connections.connect(srv, service::IGrabber::s_FRAME_PRESENTED_SIG,
                                       this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
 
                 ++srvCount;

@@ -30,7 +30,7 @@
 #include <data/Integer.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <services/registry/ServiceConfig.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
@@ -47,10 +47,10 @@ static const std::string s_DELAY_CONFIG        = "delay";
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
 
-static const services::IService::KeyType s_DICOMSERIES_INOUT = "series";
-static const services::IService::KeyType s_IMAGE_INOUT       = "image";
+static const service::IService::KeyType s_DICOMSERIES_INOUT = "series";
+static const service::IService::KeyType s_IMAGE_INOUT       = "image";
 
-static const services::IService::KeyType s_PACS_INPUT = "pacsConfig";
+static const service::IService::KeyType s_PACS_INPUT = "pacsConfig";
 
 //------------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ void SSliceIndexDicomEditor::starting()
     // Create the DICOM reader.
     m_seriesDB = data::SeriesDB::New();
 
-    m_dicomReader = this->registerService< sight::io::base::services::IReader >(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService< sight::io::base::service::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
@@ -98,10 +98,10 @@ void SSliceIndexDicomEditor::starting()
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
-            services::registry::ServiceConfig::getDefault()->getServiceConfig(
-                m_readerConfig, "::io::base::services::IReader");
+            service::registry::ServiceConfig::getDefault()->getServiceConfig(
+                m_readerConfig, "::io::base::service::IReader");
 
-        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::services::IReader",
+        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
                    readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
@@ -146,9 +146,9 @@ void SSliceIndexDicomEditor::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
@@ -255,8 +255,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SLM_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
-            services::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
+            service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to connect to PACS");
     }
 
@@ -296,8 +296,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
-                services::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
+                service::IService::s_FAILURE_NOTIFIED_SIG);
             notif->asyncEmit("No instance found");
         }
 
@@ -305,8 +305,8 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SLM_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
-            services::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
+            service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to execute query");
     }
 
@@ -331,8 +331,8 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        const auto notif = this->signal< services::IService::InfoNotifiedSignalType >(
-            services::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
+            service::IService::s_INFO_NOTIFIED_SIG);
         notif->asyncEmit("Unable to read the modality '" + modality + "'");
         return;
     }
@@ -390,8 +390,8 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     else
     {
         SLM_ERROR("Unable to read the image");
-        const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
-            services::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
+            service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to read the image");
     }
 }

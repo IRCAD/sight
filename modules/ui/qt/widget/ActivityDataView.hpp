@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
@@ -110,7 +110,7 @@ public:
      *
      * @param _info the struct containing the activity configuration.
      */
-    MODULE_UI_QT_API void fillInformation(const activities::registry::ActivityInfo& _info);
+    MODULE_UI_QT_API void fillInformation(const activity::registry::ActivityInfo& _info);
 
     /**
      * @brief Creates all tabs from an activity series.
@@ -219,7 +219,7 @@ private:
     void addObjectItem(size_t index, const data::Object::csptr& _obj);
 
     /// Sets the activity information
-    activities::registry::ActivityInfo m_activityInfo;
+    activity::registry::ActivityInfo m_activityInfo;
 
     /// Defines the IO selector config.
     std::string m_ioSelectorSrvConfig;

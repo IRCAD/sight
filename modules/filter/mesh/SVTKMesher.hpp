@@ -24,7 +24,7 @@
 
 #include "modules/filter/mesh/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #include <string>
 
@@ -53,12 +53,12 @@ namespace sight::modules::filter::mesh
  * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
  */
-class MODULE_FILTER_MESH_CLASS_API SVTKMesher : public services::IOperator
+class MODULE_FILTER_MESH_CLASS_API SVTKMesher : public service::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SVTKMesher, sight::services::IOperator)
+    fwCoreServiceMacro(SVTKMesher, sight::service::IOperator)
 
     MODULE_FILTER_MESH_API SVTKMesher() noexcept;
 

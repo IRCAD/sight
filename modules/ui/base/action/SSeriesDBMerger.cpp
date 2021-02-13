@@ -30,11 +30,11 @@
 #include <data/Series.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ServiceConfig.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
-#include <io/base/services/ioTypes.hpp>
+#include <io/base/service/ioTypes.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -49,7 +49,7 @@ fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::ba
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
-static const services::IService::KeyType s_SERIES_INOUT = "seriesDB";
+static const service::IService::KeyType s_SERIES_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
@@ -104,16 +104,16 @@ void SSeriesDBMerger::updating( )
 
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                              "::sight::modules::ui::base::editor::SIOSelector");
+    ioCfg = service::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
+                                                                             "::sight::modules::ui::base::editor::SIOSelector");
     SLM_ASSERT("There is no service configuration "
                << m_ioSelectorSrvConfig
                << " for modules::ui::base::editor::SIOSelector", ioCfg);
 
     // Init and execute the service
-    services::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = services::add("::sight::modules::ui::base::editor::SIOSelector");
-    ioSelectorSrv->registerInOut(localSeriesDB, io::base::services::s_DATA_KEY);
+    service::IService::sptr ioSelectorSrv;
+    ioSelectorSrv = service::add("::sight::modules::ui::base::editor::SIOSelector");
+    ioSelectorSrv->registerInOut(localSeriesDB, io::base::service::s_DATA_KEY);
     ioSelectorSrv->setWorker(m_associatedWorker);
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
@@ -127,7 +127,7 @@ void SSeriesDBMerger::updating( )
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
-    services::OSR::unregisterService( ioSelectorSrv );
+    service::OSR::unregisterService( ioSelectorSrv );
 
     data::tools::helper::SeriesDB sDBhelper(seriesDB);
     sDBhelper.merge(localSeriesDB);

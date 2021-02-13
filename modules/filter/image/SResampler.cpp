@@ -28,21 +28,21 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/image/Resampler.hpp>
 
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SResampler,
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SResampler,
                          ::sight::data::Image)
 
-static const services::IService::KeyType s_IMAGE_IN = "imageIn";
-static const services::IService::KeyType s_IMAGE_INOUT = "imageOut";
+static const service::IService::KeyType s_IMAGE_IN = "imageIn";
+static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";
 
-static const services::IService::KeyType s_TARGET_IN    = "target";
-static const services::IService::KeyType s_TRANSFORM_IN = "transform";
+static const service::IService::KeyType s_TARGET_IN    = "target";
+static const service::IService::KeyType s_TRANSFORM_IN = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -119,9 +119,9 @@ void SResampler::stopping()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SResampler::getAutoConnections() const
+service::IService::KeyConnectionsMap SResampler::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_TRANSFORM_IN, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -36,7 +36,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/MeshWriter.hpp>
 #include <io/vtk/ObjMeshWriter.hpp>
@@ -55,7 +55,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::vtk::SModelSeriesWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SModelSeriesWriter,
                          ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -69,9 +69,9 @@ SModelSeriesWriter::SModelSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SModelSeriesWriter::getIOPathType() const
+sight::io::base::service::IOPathType SModelSeriesWriter::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -170,8 +170,8 @@ void SModelSeriesWriter::stopping()
 
 void SModelSeriesWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
-    services::IService::ConfigType config = this->getConfigTree();
+    sight::io::base::service::IWriter::configuring();
+    service::IService::ConfigType config = this->getConfigTree();
 
     auto ext = config.get<std::string>("extension", "");
 
@@ -255,7 +255,7 @@ void SModelSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         const auto modelSeriesLockedPtr =
-            this->getLockedInput< const data::ModelSeries >(sight::io::base::services::s_DATA_KEY);
+            this->getLockedInput< const data::ModelSeries >(sight::io::base::service::s_DATA_KEY);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

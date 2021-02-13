@@ -25,7 +25,7 @@
 #include <data/Histogram.hpp>
 #include <data/Point.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -38,9 +38,9 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_POINT_INPUT     = "point";
-static const services::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
-static const services::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
+static const service::IService::KeyType s_POINT_INPUT     = "point";
+static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+static const service::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 
 static const std::string s_COLOR_CONFIG     = "color";
 static const std::string s_FONT_SIZE_CONFIG = "fontSize";
@@ -106,7 +106,7 @@ void SHistogramValue::starting()
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SHistogramValue::getAutoConnections() const
+service::IService::KeyConnectionsMap SHistogramValue::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

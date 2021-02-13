@@ -2,28 +2,28 @@
 
     <library name="Tuto05MultithreadConsoleCpp" />
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="console" />
 
-    <extension implements="::sight::services::registry::ServiceFactory" >
-        <type>::sight::services::IController</type>
+    <extension implements="::sight::service::registry::ServiceFactory" >
+        <type>::sight::service::IController</type>
         <service>::Tuto05MultithreadConsoleCpp::SReadArray</service>
         <object>::sight::data::Array</object>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceFactory" >
-        <type>::sight::services::IController</type>
+    <extension implements="::sight::service::registry::ServiceFactory" >
+        <type>::sight::service::IController</type>
         <service>::Tuto05MultithreadConsoleCpp::SShowArray</service>
         <object>::sight::data::Array</object>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceFactory" >
-        <type>::sight::services::IController</type>
+    <extension implements="::sight::service::registry::ServiceFactory" >
+        <type>::sight::service::IController</type>
         <service>::Tuto05MultithreadConsoleCpp::SIncrementArray</service>
         <object>::sight::data::Array</object>
     </extension>
 
-    <extension implements="::sight::services::registry::AppConfig" >
+    <extension implements="::sight::service::registry::AppConfig" >
         <id>Tuto05MultithreadConsoleCpp_AppCfg</id>
         <parameters>
         </parameters>

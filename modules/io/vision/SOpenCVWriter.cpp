@@ -27,7 +27,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -55,7 +55,7 @@ SOpenCVWriter::~SOpenCVWriter()
 
 void SOpenCVWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void SOpenCVWriter::stopping()
 void SOpenCVWriter::updating()
 {
 
-    data::CameraSeries::csptr camSeries = this->getInput< data::CameraSeries >(sight::io::base::services::s_DATA_KEY);
+    data::CameraSeries::csptr camSeries = this->getInput< data::CameraSeries >(sight::io::base::service::s_DATA_KEY);
 
     if(!camSeries)
     {
@@ -227,9 +227,9 @@ void SOpenCVWriter::swapping()
 
 // ----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SOpenCVWriter::getIOPathType() const
+sight::io::base::service::IOPathType SOpenCVWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 // ----------------------------------------------------------------------------

@@ -32,9 +32,9 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <QColor>
 #include <QColorDialog>
@@ -54,11 +54,11 @@ namespace sight::modules::ui::qt::reconstruction
 fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor,
                          ::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor, data::Reconstruction )
 
-static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 SOrganMaterialEditor::SOrganMaterialEditor() noexcept
 {
-    this->registerObject(s_RECONSTRUCTION_INOUT, services::IService::AccessType::INOUT, true);
+    this->registerObject(s_RECONSTRUCTION_INOUT, service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ SOrganMaterialEditor::~SOrganMaterialEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

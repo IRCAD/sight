@@ -29,9 +29,9 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/dicom/helper/Fiducial.hpp>
 #include <io/dicom/writer/Series.hpp>
 #include <io/dicom/writer/SurfaceSegmentation.hpp>
@@ -47,7 +47,7 @@
 namespace sight::modules::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::dicom::SSurfaceSegmentationWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::dicom::SSurfaceSegmentationWriter,
                          ::sight::data::ModelSeries )
 
 //------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ void SSurfaceSegmentationWriter::stopping()
 
 void SSurfaceSegmentationWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SSurfaceSegmentationWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(sight::io::base::services::s_DATA_KEY);
+        data::ModelSeries::csptr model = this->getInput< data::ModelSeries >(sight::io::base::service::s_DATA_KEY);
 
         if(!model->getDicomReference())
         {
@@ -204,9 +204,9 @@ void SSurfaceSegmentationWriter::saveSurfaceSegmentation( const std::filesystem:
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
+sight::io::base::service::IOPathType SSurfaceSegmentationWriter::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 } // namespace sight::modules::io::dicom

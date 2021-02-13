@@ -122,7 +122,7 @@ protected:
      * Connect data::Reconstruction::s_MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to s_CHANGE_MESH_SLOT
      * Connect data::Reconstruction::s_VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to s_VISIBILITY_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Stops and unregisters created services.
     MODULE_VIZ_OGRE_API void stopping() override;

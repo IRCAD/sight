@@ -31,7 +31,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <services/registry/ServiceConfig.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
 #ifdef ANDROID
 #include <sys/system_properties.h>
@@ -40,7 +40,7 @@
 namespace sight::modules::data
 {
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::data::SExtractDeviceInfo,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::data::SExtractDeviceInfo,
                          ::sight::data::Object)
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void SExtractDeviceInfo::configuring()
     if(configCfg)
     {
 
-        deviceConfig = services::registry::ServiceConfig::getDefault()->getServiceConfig(
+        deviceConfig = service::registry::ServiceConfig::getDefault()->getServiceConfig(
             configCfg->getValue(),
             "::sight::modules::data::SExtractDeviceInfo");
     }

@@ -1,4 +1,4 @@
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>TrackedCameraRegistration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -119,7 +119,7 @@
 
         <!-- *************************** Begin services declaration ***************** -->
 
-        <service uid="loadFirstCameraView" type="::sight::services::SConfigController">
+        <service uid="loadFirstCameraView" type="::sight::service::SConfigController">
             <appConfig id="rgbCameraView" />
             <parameter replace="WID_PARENT" uid="firstVideoView" />
 
@@ -135,7 +135,7 @@
             <parameter replace="tagsToDetect" by="101,128" />
         </service>
 
-        <service uid="loadSecondCameraView" type="::sight::services::SConfigController">
+        <service uid="loadSecondCameraView" type="::sight::service::SConfigController">
             <appConfig id="rgbCameraView" />
             <parameter replace="WID_PARENT" uid="secondVideoView" />
 

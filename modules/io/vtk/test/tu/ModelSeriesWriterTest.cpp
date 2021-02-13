@@ -31,9 +31,9 @@
 #include <data/Reconstruction.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
 #include <utestData/helper/compare.hpp>
@@ -77,11 +77,11 @@ void runModelSeriesSrv(
     const SPTR(core::runtime::EConfigurationElement)& cfg,
     const SPTR(data::Object)& obj)
 {
-    services::IService::sptr srv = services::add(impl);
+    service::IService::sptr srv = service::add(impl);
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
 
-    if (srv->isA("::sight::io::base::services::IReader"))
+    if (srv->isA("::sight::io::base::service::IReader"))
     {
         srv->registerInOut(obj, "data");
     }
@@ -95,7 +95,7 @@ void runModelSeriesSrv(
     CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
     CPPUNIT_ASSERT_NO_THROW( srv->update().wait() );
     CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
-    services::OSR::unregisterService( srv );
+    service::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------

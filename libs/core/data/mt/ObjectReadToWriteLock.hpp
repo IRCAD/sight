@@ -34,7 +34,7 @@ namespace mt
 
 /**
  * @brief  A helper to lock object on upgradable mode.
- * @deprecated use locked_ptr instead, or rely on services::IService::getLockedXXX() to directly receive a
+ * @deprecated use locked_ptr instead, or rely on service::IService::getLockedXXX() to directly receive a
  * locked_ptr
  */
 class DATA_CLASS_API ObjectReadToWriteLock
@@ -44,7 +44,7 @@ public:
 
     /**
      * @brief Constructor : owns an upgradable lock on object mutex.
-     * @deprecated use locked_ptr instead, or rely on services::IService::getLockedXXX() to directly receive a
+     * @deprecated use locked_ptr instead, or rely on service::IService::getLockedXXX() to directly receive a
      * locked_ptr
      * If adopt_lock==false : the mutex is not locked (call lock() to lock mutex)
      */

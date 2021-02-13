@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <ui/base/dialog/NotificationDialog.hpp>
 
@@ -72,11 +72,11 @@ namespace sight::modules::ui::qt
  * - \b parent (optional): UID of the gui Container where the notifications will be displayed (default the whole app),
  * NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
  */
-class MODULE_UI_QT_CLASS_API SNotifier final : public services::IController
+class MODULE_UI_QT_CLASS_API SNotifier final : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SNotifier, services::IController)
+    fwCoreServiceMacro(SNotifier, service::IController)
 
     /// Constructor, initializes position map & slots.
     MODULE_UI_QT_API SNotifier() noexcept;
@@ -86,7 +86,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from services::IService )
+    /** @name Service methods ( override from service::IService )
      * @{
      */
 

@@ -33,14 +33,14 @@
 #include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/Compare.hpp>
 
 #include <algorithm>
 #include <functional>
 
-fwServicesRegisterMacro(::sight::services::ISynchronizer, ::sight::modules::sync::SFrameMatrixSynchronizer)
+fwServicesRegisterMacro(::sight::service::ISynchronizer, ::sight::modules::sync::SFrameMatrixSynchronizer)
 
 namespace sight::modules::sync
 {
@@ -52,10 +52,10 @@ const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
-const services::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
-const services::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-const services::IService::KeyType s_IMAGE_INOUT    = "image";
-const services::IService::KeyType s_MATRICES_INOUT = "matrices";
+const service::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
+const service::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
+const service::IService::KeyType s_IMAGE_INOUT    = "image";
+const service::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // Private slot
 const core::com::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
@@ -91,7 +91,7 @@ SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
+service::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );

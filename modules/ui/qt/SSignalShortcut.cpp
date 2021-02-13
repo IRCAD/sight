@@ -25,8 +25,8 @@
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <QKeySequence>
 #include <QWidget>
@@ -43,7 +43,7 @@ namespace sight::modules::ui::qt
 
 static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
-fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::ui::qt::SSignalShortcut )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::ui::qt::SSignalShortcut )
 
 //-----------------------------------------------------------------------------
 
@@ -89,8 +89,8 @@ void SSignalShortcut::starting()
 
         if(sidExists)
         {
-            services::IService::sptr service = services::get( m_sid );
-            auto containerSrv                = sight::ui::base::IGuiContainerSrv::dynamicCast(service);
+            service::IService::sptr service = service::get( m_sid );
+            auto containerSrv               = sight::ui::base::IGuiContainerSrv::dynamicCast(service);
             fwc = containerSrv->getContainer();
         }
         else

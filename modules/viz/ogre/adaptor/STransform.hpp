@@ -24,11 +24,11 @@
 
 #include "modules/viz/ogre/config.hpp"
 
-#include <OGRE/OgreSceneNode.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/ITransformable.hpp>
 #include <viz/ogre/SRender.hpp>
+
+#include <OGRE/OgreSceneNode.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -82,7 +82,7 @@ protected:
      *
      * Connect data::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates m_transformNode from the data::TransformationMatrix3D.
     MODULE_VIZ_OGRE_API void updating() override;

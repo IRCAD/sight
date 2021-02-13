@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/registry/Activities.hpp>
-#include <activities/registry/ActivityMsg.hpp>
+#include <activity/registry/Activity.hpp>
+#include <activity/registry/ActivityMsg.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -35,7 +35,7 @@
 
 #include <data/ActivitySeries.hpp>
 
-#include <services/IAppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -75,7 +75,7 @@ namespace editor
  *   series.
  * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b createTab( activities::registry::ActivityMsg ): this slot allows to create a tab with the given activity
+ * - \b createTab( activity::registry::ActivityMsg ): this slot allows to create a tab with the given activity
  *   information.
  *
  * @section XML XML Configuration
@@ -163,7 +163,7 @@ private:
     struct SDynamicViewInfo
     {
         ::sight::ui::qt::container::QtContainer::sptr container;
-        services::IAppConfigManager::sptr helper;
+        service::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;
         bool closable;
@@ -189,7 +189,7 @@ private:
     virtual void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// launch a new tab according to the receiving msg
-    void createTab(activities::registry::ActivityMsg info);
+    void createTab(activity::registry::ActivityMsg info);
 
     /// Create the main activitySeries and launch the activity
     virtual void buildMainActivity();

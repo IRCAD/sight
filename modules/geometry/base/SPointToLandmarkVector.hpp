@@ -26,7 +26,7 @@
 
 #include <data/Landmarks.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -71,13 +71,13 @@ namespace sight::modules::geometry::base
  * - \b sameAxialSliceLabel: (optional) (std::string, default="Same axial slice") label to prefix the message sent in
  * the sameSlice signal.
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkVector final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkVector final : public service::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro(SPointToLandmarkVector, services::IService)
+    fwCoreServiceMacro(SPointToLandmarkVector, service::IService)
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API SPointToLandmarkVector() noexcept;

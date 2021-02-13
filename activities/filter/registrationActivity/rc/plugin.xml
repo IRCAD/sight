@@ -1,6 +1,6 @@
 <plugin id="registrationActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_ui_qt" />
     <requirement id="visuVTKQt" />
     <requirement id="module_viz_scene2d" />
@@ -12,7 +12,7 @@
     <xi:include href="configurations/ManualRegistrationView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/Registration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>registrationActivity</id>
         <title>Registration</title>
         <desc>Activity to register two images.</desc>
@@ -28,7 +28,7 @@
                 <desc>The mapping that will convert one point from the Reference object space to the Target object space.</desc>
             </requirement>
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="Register">
             <parameters>
                 <parameter replace="referenceImageUid" by="@values.referenceSeries.image" />

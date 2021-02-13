@@ -24,7 +24,7 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

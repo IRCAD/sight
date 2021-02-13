@@ -45,7 +45,7 @@ namespace writer
  * @brief   Base class for all object writers.
  *
  * This class defines the API to use basic object writers. This writer is not
- * a service. Their equivalent exist as services see io::base::services::IWriter. To write an
+ * a service. Their equivalent exist as services see io::base::service::IWriter. To write an
  * object with this class, use setLocation and setOject method before execute
  * the method write.
  *

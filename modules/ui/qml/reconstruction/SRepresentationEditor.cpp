@@ -31,7 +31,7 @@
 namespace sight::modules::ui::qml::reconstruction
 {
 
-static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
@@ -198,7 +198,7 @@ void SRepresentationEditor::notifyMaterial()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

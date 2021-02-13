@@ -1,7 +1,7 @@
 <!--
 Example:
 
-<service uid="..." type="::sight::services::SConfigController">
+<service uid="..." type="::sight::service::SConfigController">
     <appConfig id="TransferFunctionWidget" />
     <inout key="image" uid="..."/>
     <inout key="histogram" uid="..."/>
@@ -9,7 +9,7 @@ Example:
     <parameter replace="WID_PARENT" by="..."/>
 </service>
 -->
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>TransferFunctionWidget</id>
     <parameters>
         <param name="WID_PARENT" />

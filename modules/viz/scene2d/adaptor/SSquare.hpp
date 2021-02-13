@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/Coord.hpp>
 #include <viz/scene2d/IAdaptor.hpp>

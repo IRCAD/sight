@@ -39,7 +39,7 @@
 namespace sight::modules::ui::history
 {
 
-fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::ui::history::SCommandHistory,
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::ui::history::SCommandHistory,
                          ::sight::data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
@@ -73,7 +73,7 @@ SCommandHistory::~SCommandHistory()
 
 void SCommandHistory::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     auto maxCommands = config.get_optional< size_t >("maxCommands");
     auto maxMemory   = config.get_optional< size_t >("maxMemory");

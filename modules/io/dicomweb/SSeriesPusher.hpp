@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/memory/BufferObject.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <io/http/ClientQt.hpp>
 
@@ -58,11 +58,11 @@ namespace sight::modules::io::dicomweb
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service are from the preference settings.
  */
-class MODULE_IO_DICOMWEB_CLASS_API SSeriesPusher : public services::IController
+class MODULE_IO_DICOMWEB_CLASS_API SSeriesPusher : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher, ::sight::services::IController )
+    fwCoreServiceMacro(SSeriesPusher, ::sight::service::IController )
 
     typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 

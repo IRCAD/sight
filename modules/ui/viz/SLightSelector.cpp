@@ -31,8 +31,8 @@
 #include <data/Composite.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <viz/ogre/SRender.hpp>
 
@@ -297,8 +297,8 @@ void SLightSelector::refreshLayers()
 {
     m_layersBox->clear();
 
-    services::registry::ObjectService::ServiceVectorType renderers =
-        services::OSR::getServices("::sight::viz::ogre::SRender");
+    service::registry::ObjectService::ServiceVectorType renderers =
+        service::OSR::getServices("::sight::viz::ogre::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(auto srv : renderers)
@@ -359,7 +359,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setType(::Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
-        services::IService::ConfigType config;
+        service::IService::ConfigType config;
         config.add("config.<xmlattr>.name", this->getID() + "_light");
         config.add("config.<xmlattr>.layer", currentLayer->getLayerID());
         lightAdaptor->setConfiguration(config);
@@ -371,8 +371,8 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();
 
-        services::registry::ObjectService::ServiceVectorType materialServices =
-            services::OSR::getServices("::modules::viz::ogre::adaptor::SMaterial");
+        service::registry::ObjectService::ServiceVectorType materialServices =
+            service::OSR::getServices("::modules::viz::ogre::adaptor::SMaterial");
 
         for(auto srv : materialServices)
         {

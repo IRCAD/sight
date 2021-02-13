@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <ui/base/IGuiContainerSrv.hpp>
 

@@ -1,6 +1,6 @@
 <plugin id="Tuto01BasicQml" class="::Tuto01BasicQml::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
     <library name="Tuto01BasicQml" />
 

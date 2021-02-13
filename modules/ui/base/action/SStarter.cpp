@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <boost/range/adaptor/reversed.hpp>
 
@@ -61,14 +61,14 @@ void SStarter::starting()
 
 void SStarter::stopping()
 {
-    std::vector< services::IService::SharedFutureType > futures;
+    std::vector< service::IService::SharedFutureType > futures;
 
     for( VectPairIDActionType::value_type serviceUid : ::boost::adaptors::reverse(m_uuidServices) )
     {
         bool srv_exists = core::tools::fwID::exist(serviceUid.first );
         if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
         {
-            services::IService::sptr service = services::get( serviceUid.first );
+            service::IService::sptr service = service::get( serviceUid.first );
             if (service->isStarted())
             {
                 futures.push_back(service->stop());
@@ -126,7 +126,7 @@ void SStarter::updating()
         {
             ::sight::ui::base::LockAction lock(this->getSptr());
 
-            services::IService::sptr service = services::get( uid );
+            service::IService::sptr service = service::get( uid );
             SLM_ASSERT("service not found", service);
             switch ( action )
             {

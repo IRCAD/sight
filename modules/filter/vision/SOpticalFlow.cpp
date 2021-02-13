@@ -35,7 +35,7 @@
 namespace sight::modules::filter::vision
 {
 
-const services::IService::KeyType s_FRAME_TIMELINE_INPUT = "timeline";
+const service::IService::KeyType s_FRAME_TIMELINE_INPUT = "timeline";
 
 static const core::com::Signals::SignalKeyType s_CAMERA_MOVED_SIG    = "cameraMoved";
 static const core::com::Signals::SignalKeyType s_CAMERA_REMAINED_SIG = "cameraRemained";
@@ -232,7 +232,7 @@ void SOpticalFlow::stopping()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SOpticalFlow::getAutoConnections() const
+service::IService::KeyConnectionsMap SOpticalFlow::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

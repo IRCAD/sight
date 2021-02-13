@@ -25,10 +25,10 @@
 #include "modules/viz/ogre/adaptor/SFrustum.hpp"
 #include "modules/viz/ogre/config.hpp"
 
-#include <boost/circular_buffer.hpp>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/ITransformable.hpp>
+
+#include <boost/circular_buffer.hpp>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -97,7 +97,7 @@ protected:
      *
      * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
     MODULE_VIZ_OGRE_API void updating() override;

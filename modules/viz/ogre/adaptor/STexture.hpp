@@ -111,7 +111,7 @@ protected:
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the attached texture.
     MODULE_VIZ_OGRE_API void updating() override;

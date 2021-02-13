@@ -84,7 +84,7 @@ protected:
      *
      * Connect SHistogram::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_VIZ_SCENE2D_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Ratio used for vertical scaling (default value: 1.1)
     static const float SCALE;

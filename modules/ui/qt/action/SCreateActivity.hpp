@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/registry/Activities.hpp>
-#include <activities/registry/ActivityMsg.hpp>
+#include <activity/registry/Activity.hpp>
+#include <activity/registry/ActivityMsg.hpp>
 
 #include <data/Vector.hpp>
 
@@ -124,10 +124,10 @@ private:
      */
     void launchActivity(data::ActivitySeries::sptr activitySeries);
 
-    typedef activities::registry::Activities::ActivitiesType ActivityInfoContainer;
+    typedef activity::registry::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    activities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
+    activity::registry::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

@@ -36,7 +36,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Object.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QByteArray>
 #include <QCamera>
@@ -64,8 +64,8 @@ static const core::com::Slots::SlotKeyType s_CONFIGURE_DEVICE_SLOT = "configureD
 static const core::com::Slots::SlotKeyType s_CONFIGURE_FILE_SLOT   = "configureFile";
 static const core::com::Slots::SlotKeyType s_CONFIGURE_STREAM_SLOT = "configureStream";
 
-static const services::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
-static const services::IService::KeyType s_CAMERA_INOUT        = "camera";
+static const service::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
+static const service::IService::KeyType s_CAMERA_INOUT        = "camera";
 
 static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
@@ -97,7 +97,7 @@ SCamera::~SCamera() noexcept
 
 void SCamera::configuring()
 {
-    const services::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfigTree();
 
     m_bVideoSupport    = (config.get<std::string>(s_VIDEO_SUPPORT_CONFIG, "no") == "yes");
     m_numCreateCameras = config.get<size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);

@@ -22,8 +22,8 @@
 
 #include "modules/ui/qt/action/SCreateActivity.hpp"
 
-#include <activities/IBuilder.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IBuilder.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -36,7 +36,7 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -51,7 +51,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
-Q_DECLARE_METATYPE(sight::activities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activity::registry::ActivityInfo)
 
 namespace sight::modules::ui::qt
 {
@@ -96,13 +96,13 @@ void SCreateActivity::stopping()
 void SCreateActivity::configuring()
 {
     this->sight::ui::base::IActionSrv::initialize();
-    typedef services::IService::ConfigType ConfigType;
+    typedef service::IService::ConfigType ConfigType;
 
-    const services::IService::ConfigType srvconfig = this->getConfigTree();
+    const service::IService::ConfigType srvconfig = this->getConfigTree();
 
     if(srvconfig.count("filter") == 1 )
     {
-        const services::IService::ConfigType& configFilter = srvconfig.get_child("filter");
+        const service::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -120,7 +120,7 @@ void SCreateActivity::configuring()
 
 //------------------------------------------------------------------------------
 
-activities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
+activity::registry::ActivityInfo SCreateActivity::show( const ActivityInfoContainer& infos )
 {
     QWidget* parent = qApp->activeWindow();
 
@@ -129,7 +129,7 @@ activities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoCont
     dialog->resize(600, 400);
 
     QStandardItemModel* const model = new QStandardItemModel(dialog);
-    for( const activities::registry::ActivityInfo& info :  infos)
+    for( const activity::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -174,13 +174,13 @@ activities::registry::ActivityInfo SCreateActivity::show( const ActivityInfoCont
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
-    activities::registry::ActivityInfo info;
+    activity::registry::ActivityInfo info;
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
         QStandardItem* item      = model->itemFromIndex( currentIndex );
         QVariant var             = item->data();
-        info = var.value< activities::registry::ActivityInfo >();
+        info = var.value< activity::registry::ActivityInfo >();
     }
 
     return info;
@@ -222,12 +222,12 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 
 void SCreateActivity::updating()
 {
-    ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos();
+    ActivityInfoContainer infos = activity::registry::Activity::getDefault()->getInfos();
     infos = this->getEnabledActivities(infos);
 
     if ( !infos.empty())
     {
-        activities::registry::ActivityInfo info;
+        activity::registry::ActivityInfo info;
         if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
         {
             info = infos[0];

@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 namespace sight::modules::io::vision
 {
@@ -41,10 +41,10 @@ namespace sight::modules::io::vision
  * @subsection In-Out In-Out
  * - \b data [sight::data::CameraSeries]: object to read
  */
-class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::base::services::IReader
+class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::base::service::IReader
 {
 public:
-    fwCoreServiceMacro(SOpenCVReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SOpenCVReader, sight::io::base::service::IReader)
 
     ///Constructor
     MODULE_IO_VISION_API SOpenCVReader();
@@ -88,7 +88,7 @@ protected:
     MODULE_IO_VISION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_VISION_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 };
 

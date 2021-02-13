@@ -27,7 +27,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {
@@ -37,12 +37,12 @@ namespace editor
 /**
  * @brief Defines the service interface managing the editor service which create their own container.
  */
-class UI_BASE_CLASS_API IDialogEditor : public services::IService
+class UI_BASE_CLASS_API IDialogEditor : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IDialogEditor, services::IService)
+    fwCoreServiceMacro(IDialogEditor, service::IService)
 
 protected:
 

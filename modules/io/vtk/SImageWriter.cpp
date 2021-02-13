@@ -31,12 +31,12 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/vtk/BitmapImageWriter.hpp>
 #include <io/vtk/ImageWriter.hpp>
 #include <io/vtk/MetaImageWriter.hpp>
@@ -50,7 +50,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::vtk::SImageWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SImageWriter,
                          ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -64,9 +64,9 @@ SImageWriter::SImageWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SImageWriter::getIOPathType() const
+sight::io::base::service::IOPathType SImageWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ void SImageWriter::stopping()
 
 void SImageWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -267,8 +267,8 @@ void SImageWriter::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        data::Image::csptr pImage = this->getInput< data::Image >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", pImage);
+        data::Image::csptr pImage = this->getInput< data::Image >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", pImage);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

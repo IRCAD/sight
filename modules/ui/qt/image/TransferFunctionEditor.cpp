@@ -30,12 +30,12 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
-#include <io/base/services/ioTypes.hpp>
-#include <io/base/services/IReader.hpp>
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/ioTypes.hpp>
+#include <io/base/service/IReader.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -54,9 +54,9 @@
 namespace sight::modules::ui::qt::image
 {
 
-static const services::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
-static const services::IService::KeyType s_TF_OUTPUT        = "tf";
-static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const service::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+static const service::IService::KeyType s_TF_OUTPUT        = "tf";
+static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
@@ -408,17 +408,17 @@ void TransferFunctionEditor::importTF()
 
     data::tools::helper::Composite compositeHelper(poolTF);
 
-    data::TransferFunction::sptr tf          = data::TransferFunction::New();
-    io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+    data::TransferFunction::sptr tf         = data::TransferFunction::New();
+    io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
         "::sight::modules::io::atoms::SReader");
 
-    reader->registerInOut(tf, io::base::services::s_DATA_KEY);
+    reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
     reader->start();
     reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
-    services::OSR::unregisterService(reader);
+    service::OSR::unregisterService(reader);
 
     if (!tf->getName().empty())
     {
@@ -439,16 +439,16 @@ void TransferFunctionEditor::importTF()
 
 void TransferFunctionEditor::exportTF()
 {
-    io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+    io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
         "::sight::modules::io::atoms::SWriter");
 
-    writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
+    writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
     writer->start();
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    services::OSR::unregisterService(writer);
+    service::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------
@@ -488,10 +488,10 @@ void TransferFunctionEditor::initTransferFunctions()
             }
         }
 
-        data::TransferFunction::sptr tf          = data::TransferFunction::New();
-        io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+        data::TransferFunction::sptr tf         = data::TransferFunction::New();
+        io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
             "::sight::modules::io::atoms::SReader");
-        reader->registerInOut(tf, io::base::services::s_DATA_KEY);
+        reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");
         core::runtime::EConfigurationElement::sptr fileCfg = core::runtime::EConfigurationElement::New("file");
@@ -518,7 +518,7 @@ void TransferFunctionEditor::initTransferFunctions()
             }
             tf->initTF();
         }
-        services::OSR::unregisterService(reader);
+        service::OSR::unregisterService(reader);
     }
     compositeHelper.notify();
 
@@ -609,7 +609,7 @@ void TransferFunctionEditor::updateTransferFunction()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap TransferFunctionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);

@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -90,10 +90,10 @@ namespace sight::modules::geometry::vision::charuco
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm, the size of aruco Markers in mm and the size of aruco markers in term of bits (4,5,6 or 7).
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SCharucoBoardDetector : public services::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SCharucoBoardDetector : public service::IController
 {
 public:
-    fwCoreServiceMacro(SCharucoBoardDetector, sight::services::IController)
+    fwCoreServiceMacro(SCharucoBoardDetector, sight::service::IController)
 
     /**
      * @name Signals API

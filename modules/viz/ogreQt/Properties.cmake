@@ -12,7 +12,7 @@ set( DEPENDENCIES
 )
 set( REQUIREMENTS
     module_viz_ogre
-    module_services
+    module_service
 )
 set( WARNINGS_AS_ERRORS ON )
 

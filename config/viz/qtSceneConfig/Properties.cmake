@@ -6,7 +6,7 @@ set( DEPENDENCIES  )
 
 set( REQUIREMENTS
     data
-    module_services
+    module_service
     module_ui_base
     module_ui_qt
     module_viz_scene2d

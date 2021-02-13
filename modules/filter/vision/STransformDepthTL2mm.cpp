@@ -28,18 +28,18 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::filter::vision
 {
 
 static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
 
-static const services::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries";
-static const services::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
-static const services::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
+static const service::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries";
+static const service::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
+static const service::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::vision::STransformDepthTL2mm)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::STransformDepthTL2mm)
 
 //------------------------------------------------------------------------------
 
@@ -136,7 +136,7 @@ void STransformDepthTL2mm::updating()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
+service::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -95,7 +95,7 @@ protected:
      * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      * Connect data::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Deletes the frustum.
     MODULE_VIZ_OGRE_API void stopping() override;

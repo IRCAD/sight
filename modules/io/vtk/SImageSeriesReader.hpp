@@ -24,7 +24,7 @@
 
 #include "modules/io/vtk/config.hpp"
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -58,7 +58,7 @@ namespace sight::modules::io::vtk
  * - \b data [sight::data::ImageSeries]: ImageSeries containing read image
  *
  */
-class MODULE_IO_VTK_CLASS_API SImageSeriesReader : public sight::io::base::services::IReader
+class MODULE_IO_VTK_CLASS_API SImageSeriesReader : public sight::io::base::service::IReader
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SImageSeriesReader, sight::io::base::service::IReader)
 
     /**
      * @brief Configure the image path.
@@ -90,7 +90,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

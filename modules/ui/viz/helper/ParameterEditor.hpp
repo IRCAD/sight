@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <viz/ogre/IParameter.hpp>
 
@@ -45,9 +45,9 @@ public:
      * @param[in] _paramSrv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    MODULE_UI_VIZ_API static services::IService::ConfigType
+    MODULE_UI_VIZ_API static service::IService::ConfigType
     createConfig(const sight::viz::ogre::IParameter::csptr& _adaptor,
-                 const services::IService::csptr& _paramSrv,
+                 const service::IService::csptr& _paramSrv,
                  core::com::helper::SigSlotConnection& _connections);
 };
 

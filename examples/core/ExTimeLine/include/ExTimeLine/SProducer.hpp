@@ -26,7 +26,7 @@
 
 #include <core/thread/Timer.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace ExTimeLine
 {
@@ -51,11 +51,11 @@ namespace ExTimeLine
  * - \b period : time between two messages, in milliseconds.
  * - \b timelineSize (optional): maximum number of messages inside the timeline.
  */
-class EXTIMELINE_CLASS_API SProducer : public services::IService
+class EXTIMELINE_CLASS_API SProducer : public service::IService
 {
 public:
 
-    fwCoreServiceMacro(SProducer, services::IService)
+    fwCoreServiceMacro(SProducer, service::IService)
 
     EXTIMELINE_API SProducer() noexcept;
     EXTIMELINE_API virtual ~SProducer() noexcept;

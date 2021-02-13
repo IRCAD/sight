@@ -26,8 +26,8 @@
 
 #include <data/registry/detail.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ServiceFactory.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ServiceFactory.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -67,7 +67,7 @@ void fwMetrics::updating()
     stream << std::endl;
 
     stream << "IService: ";
-    stream << services::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
+    stream << service::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
 
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("FactoryRegistry Information");

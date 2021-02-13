@@ -34,7 +34,7 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/tools/helper/Field.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
@@ -59,8 +59,8 @@ namespace editor
 
 fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SOrganTransformation )
 
-static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-static const services::IService::KeyType s_COMPOSITE_INOUT = "composite";
+static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+static const service::IService::KeyType s_COMPOSITE_INOUT = "composite";
 
 static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
@@ -393,7 +393,7 @@ void SOrganTransformation::addMeshTransform()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
+service::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);

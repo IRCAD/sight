@@ -73,7 +73,7 @@ namespace action
  *  - \b IOSelectorSrvConfig : the id of a configuration for SIOSelector
  *  for example
  *  @code{.xml}
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>seriesDBExporterConfig</id>
         <service>::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelector config to export SeriesDB</desc>

@@ -30,9 +30,9 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/itk/ImageReader.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -43,7 +43,7 @@
 namespace sight::modules::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::itk::InrImageReaderService,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::itk::InrImageReaderService,
                          ::sight::data::Image )
 
 //------------------------------------------------------------------------------
@@ -60,16 +60,16 @@ InrImageReaderService::~InrImageReaderService() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType InrImageReaderService::getIOPathType() const
+sight::io::base::service::IOPathType InrImageReaderService::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 //
 //------------------------------------------------------------------------------
 
 void InrImageReaderService::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -156,8 +156,8 @@ void InrImageReaderService::updating()
 
     if( this->hasLocationDefined() )
     {
-        data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+        data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
         {
@@ -181,8 +181,8 @@ void InrImageReaderService::updating()
 
 void InrImageReaderService::notificationOfDBUpdate()
 {
-    data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::services::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", image);
+    data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
+    SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
     auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

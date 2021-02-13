@@ -28,15 +28,15 @@
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::geometry::base::SPointListFromMatrices)
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::geometry::base::SPointListFromMatrices)
 
 namespace sight::modules::geometry::base
 {
 
-const services::IService::KeyType s_MATRICES_INPUT  = "matrices";
-const services::IService::KeyType s_POINTLIST_INOUT = "pointList";
+const service::IService::KeyType s_MATRICES_INPUT  = "matrices";
+const service::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //-----------------------------------------------------------------------------
 

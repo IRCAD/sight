@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/math/constants/constants.hpp>
 
@@ -56,9 +56,9 @@ static const std::string s_WIDTH_CONFIG        = "width";
 static const std::string s_ANGLE_CONFIG        = "angle";
 static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
-static const services::IService::KeyType s_MESH_INOUT = "mesh";
+static const service::IService::KeyType s_MESH_INOUT = "mesh";
 
-fwServicesRegisterMacro(::sight::services::IGenerator, ::sight::modules::filter::mesh::generator::SUltrasoundMesh)
+fwServicesRegisterMacro(::sight::service::IGenerator, ::sight::modules::filter::mesh::generator::SUltrasoundMesh)
 
 // -----------------------------------------------------------------------------
 

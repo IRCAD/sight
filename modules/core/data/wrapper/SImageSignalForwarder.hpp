@@ -28,7 +28,7 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::data
 {

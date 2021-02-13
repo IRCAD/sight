@@ -4,7 +4,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    services
+    service
     geometry_data
 )
 set( REQUIREMENTS  )

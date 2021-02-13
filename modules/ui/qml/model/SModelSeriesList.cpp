@@ -35,7 +35,7 @@ namespace sight::modules::ui::qml::model
 const core::com::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 const core::com::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 
-const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
 SModelSeriesList::SModelSeriesList() noexcept :
     m_listModel(nullptr)
@@ -166,7 +166,7 @@ void SModelSeriesList::onCheckAllBoxes( bool checked )
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

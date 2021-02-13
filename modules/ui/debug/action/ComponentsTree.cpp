@@ -27,7 +27,7 @@
 #include <core/runtime/Module.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QApplication>
 #include <QVBoxLayout>

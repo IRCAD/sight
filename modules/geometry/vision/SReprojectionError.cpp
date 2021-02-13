@@ -33,7 +33,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -43,7 +43,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::vision::SReprojectionError)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::vision::SReprojectionError)
 
 namespace sight::modules::geometry::vision
 {
@@ -55,14 +55,14 @@ const core::com::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SL
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
-const services::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
-const services::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
-const services::IService::KeyType s_CAMERA_INPUT    = "camera";
-const services::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
-const services::IService::KeyType s_MATRIXTL_INPUT  = "matrixTL";
-const services::IService::KeyType s_MATRIX_INPUT    = "matrix";
-const services::IService::KeyType s_FRAMETL_INOUT   = "frameTL";
-const services::IService::KeyType s_FRAME_INOUT     = "frame";
+const service::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
+const service::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
+const service::IService::KeyType s_CAMERA_INPUT    = "camera";
+const service::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
+const service::IService::KeyType s_MATRIXTL_INPUT  = "matrixTL";
+const service::IService::KeyType s_MATRIX_INPUT    = "matrix";
+const service::IService::KeyType s_FRAMETL_INOUT   = "frameTL";
+const service::IService::KeyType s_FRAME_INOUT     = "frame";
 
 //-----------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ SReprojectionError::~SReprojectionError()
 
 void SReprojectionError::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
@@ -372,7 +372,7 @@ void SReprojectionError::updating()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
+service::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

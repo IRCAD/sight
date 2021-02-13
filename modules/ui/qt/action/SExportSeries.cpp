@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/action/SExportSeries.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
@@ -35,7 +35,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 
@@ -70,7 +70,7 @@ SExportSeries::~SExportSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
+service::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
@@ -121,11 +121,11 @@ void SExportSeries::updating()
     data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
-        activities::registry::Activities::sptr registry = activities::registry::Activities::getDefault();
-        std::string id                                  = activitySeries->getActivityConfigId();
+        activity::registry::Activity::sptr registry = activity::registry::Activity::getDefault();
+        std::string id                              = activitySeries->getActivityConfigId();
         SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
-        activities::registry::ActivityInfo activityInfo;
+        activity::registry::ActivityInfo activityInfo;
         activityInfo = registry->getInfo(id);
 
         description = activitySeries->getDescription();

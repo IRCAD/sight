@@ -4,7 +4,7 @@
     <requirement id="module_activity" />
 
     <!-- Activity used to export an image series. -->
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>ImageSeriesExport</id>
         <title>ImageSeries Export</title>
         <desc>Activity to export the selected ImageSeries.</desc>
@@ -12,7 +12,7 @@
         <requirements>
             <requirement name="series" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
             <parameters>
                 <parameter replace="selection" by="@values.series" />
@@ -21,7 +21,7 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>ModelSeriesExport</id>
         <title>ModelSeries Export</title>
         <desc>Activity to export the selected ModelSeries.</desc>
@@ -29,7 +29,7 @@
         <requirements>
             <requirement name="series" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
             <parameters>
                 <parameter replace="selection" by="@values.series" />
@@ -38,7 +38,7 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>DicomSegmentationSurfaceExport</id>
         <title>Dicom Segmentation Surface Export</title>
         <desc>Activity to export a ModelSeries as a Dicom Segmentation Surface file.</desc>
@@ -46,7 +46,7 @@
         <requirements>
             <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExportDicomSelection">
             <parameters>
                 <parameter replace="model" by="@values.modelSeries" />
@@ -55,7 +55,7 @@
     </extension>
 
     <!-- App config used to export the selected series. -->
-    <extension implements="::sight::services::registry::AppConfig">
+    <extension implements="::sight::service::registry::AppConfig">
         <id>ExportSelection</id>
         <parameters>
             <param name="selection" />
@@ -75,7 +75,7 @@
     </extension>
 
     <!-- App config used to export a Model to a Dicom Segmentation Surface. -->
-    <extension implements="::sight::services::registry::AppConfig">
+    <extension implements="::sight::service::registry::AppConfig">
         <id>ExportDicomSelection</id>
         <parameters>
             <param name="model" />
@@ -96,7 +96,7 @@
     </extension>
 
     <!-- Service config used to read SeriesDB without using ioAtoms. -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>SDBReaderIOSelectorConfig</id>
         <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
@@ -109,7 +109,7 @@
     </extension>
 
     <!-- Service config used to read seriesDB using ioAtoms. -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>SDBAtomsReaderIOSelectorConfig</id>
         <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB reader.</desc>
@@ -122,7 +122,7 @@
     </extension>
 
     <!-- Service config used to write a seriesDB using ioAtoms. -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>SDBAtomsWriterIOSelectorConfig</id>
         <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Atoms seriesDB writer.</desc>
@@ -135,7 +135,7 @@
     </extension>
 
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>FullSDBReaderIOSelectorConfig</id>
         <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
@@ -148,7 +148,7 @@
     </extension>
 
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>
@@ -157,7 +157,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>ActivityMDAtomsConfig</id>
         <desc>Reader/Writer for atoms representing an activity project</desc>
         <config>
@@ -171,7 +171,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>ActivityReaderConfig</id>
         <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Activity reader</desc>
@@ -183,7 +183,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>ActivityWriterConfig</id>
         <service>::sight::modules::ui::base::editor::SIOSelector</service>
         <desc>Activity writer</desc>
@@ -196,7 +196,7 @@
     </extension>
 
     <!-- Service config used for ioAtoms reader and writer to read landmarks -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>LandmarksAtomsConfig</id>
         <desc>Json/Xml Reader/Writer (Sight)</desc>
         <config>

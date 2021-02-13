@@ -34,19 +34,19 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/lexical_cast.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::viz::scene2d::processing::SComputeHistogram)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::viz::scene2d::processing::SComputeHistogram)
 
 namespace sight::modules::viz::scene2d
 {
 namespace processing
 {
 
-static const services::IService::KeyType s_IMAGE_INPUT     = "image";
-static const services::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+static const service::IService::KeyType s_IMAGE_INPUT     = "image";
+static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 SComputeHistogram::SComputeHistogram() noexcept :
     m_binsWidth(1.0f)
@@ -124,7 +124,7 @@ void SComputeHistogram::stopping()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() const
+service::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

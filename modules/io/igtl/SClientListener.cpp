@@ -30,7 +30,7 @@
 #include <data/Object.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -43,7 +43,7 @@ fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkListener, ::sight::m
 namespace sight::modules::io::igtl
 {
 
-const services::IService::KeyType s_OBJECTS_GROUP = "objects";
+const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ SClientListener::~SClientListener()
 
 void SClientListener::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     const ConfigType configInOut = config.get_child("inout");
 
@@ -72,8 +72,8 @@ void SClientListener::configuring()
     const auto keyCfg = configInOut.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const services::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName               = attr.get("deviceName", "Sight");
+        const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName              = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
         m_client.addAuthorizedDevice(deviceName);
     }

@@ -25,7 +25,7 @@
 #include <data/PointList.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <modules/ui/viz/config.hpp>
 
@@ -49,11 +49,11 @@ namespace sight::modules::ui::viz
  * @subsection In-Out In-Out:
  * - \b pointList [sight::data::PointList]: target points list.
  */
-class MODULE_UI_VIZ_CLASS_API SAddPoint : public services::IController
+class MODULE_UI_VIZ_CLASS_API SAddPoint : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SAddPoint, services::IController)
+    fwCoreServiceMacro(SAddPoint, service::IController)
 
     /**
      * @name Slots API

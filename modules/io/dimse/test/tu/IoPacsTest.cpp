@@ -24,11 +24,11 @@
 
 #include <core/runtime/EConfigurationElement.hpp>
 
-#include <services/AppConfigManager.hpp>
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/AppConfig.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/AppConfigManager.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/AppConfig.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 
@@ -63,7 +63,7 @@ void IoPacsTest::pacsConfigurationInitializer()
         sight::io::dimse::data::PacsConfiguration::New();
 
     // Create service
-    services::IService::sptr srv = services::add( "::sight::modules::io::dimse::SPacsConfigurationInitializer" );
+    service::IService::sptr srv = service::add( "::sight::modules::io::dimse::SPacsConfigurationInitializer" );
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
@@ -85,7 +85,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     srv->start();
     srv->update();
     srv->stop();
-    services::OSR::unregisterService( srv );
+    service::OSR::unregisterService( srv );
 
     unsigned short pacsApplicationPort = 11112u;
     unsigned short moveApplicationPort = 11110u;

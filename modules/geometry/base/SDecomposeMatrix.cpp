@@ -36,10 +36,10 @@
 namespace sight::modules::geometry::base
 {
 
-const services::IService::KeyType s_SOURCE_INPUT      = "source";
-const services::IService::KeyType s_TRANSLATION_INOUT = "translation";
-const services::IService::KeyType s_ROTATION_INOUT    = "rotation";
-const services::IService::KeyType s_SCALE_INOUT       = "scale";
+const service::IService::KeyType s_SOURCE_INPUT      = "source";
+const service::IService::KeyType s_TRANSLATION_INOUT = "translation";
+const service::IService::KeyType s_ROTATION_INOUT    = "rotation";
+const service::IService::KeyType s_SCALE_INOUT       = "scale";
 
 // ----------------------------------------------------------------------------
 
@@ -67,9 +67,9 @@ void SDecomposeMatrix::stopping()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() const
+service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_SOURCE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

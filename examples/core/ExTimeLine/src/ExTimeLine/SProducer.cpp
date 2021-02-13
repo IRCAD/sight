@@ -27,11 +27,11 @@
 #include <core/com/Signal.hxx>
 #include <core/thread/Timer.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro( ::sight::services::IService, ::ExTimeLine::SProducer )
+fwServicesRegisterMacro( ::sight::service::IService, ::ExTimeLine::SProducer )
 
 namespace ExTimeLine
 {
@@ -56,7 +56,7 @@ SProducer::~SProducer() noexcept
 
 void SProducer::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_message      = config.get<std::string>("message");
     m_senderId     = config.get<unsigned int>("id");

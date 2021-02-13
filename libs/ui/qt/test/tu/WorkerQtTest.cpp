@@ -26,7 +26,7 @@
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <cppunit/Exception.h>
 
@@ -123,7 +123,7 @@ void WorkerQtTest::tearDown()
 {
     // Clean up after the test run.
     m_worker.reset();
-    services::registry::ActiveWorkers::getDefault()->clearRegistry();
+    service::registry::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 

@@ -4,7 +4,7 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     data
-    services
+    service
 )
 set( REQUIREMENTS
     module_data
@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_ui_qt
     module_io_matrix
     module_io_vtk
-    module_services
+    module_service
     module_filter_mesh
     visuVTKAdaptor
     visuVTKQt

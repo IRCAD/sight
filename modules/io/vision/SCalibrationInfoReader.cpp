@@ -29,7 +29,7 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -63,9 +63,9 @@ SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SCalibrationInfoReader::getIOPathType() const
+sight::io::base::service::IOPathType SCalibrationInfoReader::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +105,7 @@ void SCalibrationInfoReader::openLocationDialog()
 
 void SCalibrationInfoReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 
     const ConfigType config      = this->getConfigTree();
     const ConfigType boardConfig = config.get_child("board");
@@ -131,7 +131,7 @@ void SCalibrationInfoReader::updating()
     if( this->hasLocationDefined() )
     {
         data::CalibrationInfo::sptr calibInfo =
-            this->getInOut< data::CalibrationInfo >(sight::io::base::services::s_DATA_KEY);
+            this->getInOut< data::CalibrationInfo >(sight::io::base::service::s_DATA_KEY);
         SLM_ASSERT("Missing calibration info.", calibInfo);
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);

@@ -16,7 +16,7 @@ set( REQUIREMENTS
     module_io_dicom
     module_io_dimse
     media
-    module_services
+    module_service
     visuVTK
     visuVTKAdaptor
     visuVTKQt

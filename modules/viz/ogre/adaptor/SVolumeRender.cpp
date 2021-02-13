@@ -30,7 +30,11 @@
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/helper/Scene.hpp>
+#include <viz/ogre/helper/Shading.hpp>
+#include <viz/ogre/ogre.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
@@ -39,10 +43,6 @@
 #include <OGRE/OgreTextureManager.h>
 
 #include <ui/base/dialog/MessageDialog.hpp>
-
-#include <viz/ogre/helper/Scene.hpp>
-#include <viz/ogre/helper/Shading.hpp>
-#include <viz/ogre/ogre.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -60,9 +60,9 @@ static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setInt
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
 
-static const services::IService::KeyType s_IMAGE_INOUT           = "image";
-static const services::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
-static const services::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
+static const service::IService::KeyType s_IMAGE_INOUT           = "image";
+static const service::IService::KeyType s_VOLUME_TF_INOUT       = "tf";
+static const service::IService::KeyType s_CLIPPING_MATRIX_INOUT = "clippingMatrix";
 
 static const std::string s_AUTORESET_CAMERA_CONFIG      = "autoresetcamera";
 static const std::string s_PREINTEGRATION_CONFIG        = "preintegration";
@@ -106,9 +106,9 @@ SVolumeRender::~SVolumeRender() noexcept
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
+service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
 
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );

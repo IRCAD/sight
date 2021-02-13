@@ -30,8 +30,8 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QString>
@@ -100,7 +100,7 @@ void SShowVectorSize::configuring()
 {
     this->initialize();
 
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
     m_textToShow = QString::fromStdString(config.get< std::string >("text", ""));
 
 }
@@ -144,7 +144,7 @@ void SShowVectorSize::removeObjects(data::Vector::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
+service::IService::KeyConnectionsMap SShowVectorSize::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push("vector", data::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );

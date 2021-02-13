@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {
@@ -118,12 +118,12 @@ class ISlideViewBuilder;
  *
  *
  */
-class UI_BASE_CLASS_API IGuiContainerSrv : public services::IService
+class UI_BASE_CLASS_API IGuiContainerSrv : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IGuiContainerSrv, services::IService)
+    fwCoreServiceMacro(IGuiContainerSrv, service::IService)
 
     UI_BASE_API SPTR(ui::base::container::fwContainer) getContainer();
 

@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <QShortcut>
 
@@ -48,12 +48,12 @@ namespace sight::modules::ui::qt
  * - \b activated(): This signal is emitted when the shortcut is received.
  */
 class MODULE_UI_QT_CLASS_API SSignalShortcut : public QObject,
-                                               public services::IService
+                                               public service::IService
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SSignalShortcut, services::IService)
+    fwCoreServiceMacro(SSignalShortcut, service::IService)
 
     /// Signal emitted when the shortcut is received.
     typedef core::com::Signal< void () > ActivatedShortcutSignalType;
@@ -66,7 +66,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from services::IService )
+    /** @name Service methods ( override from service::IService )
      * @{
      */
 

@@ -32,8 +32,8 @@
 #include <core/tools/fwID.hpp>
 #include <core/tools/Stringizer.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <QComboBox>
 #include <QFuture>
@@ -507,8 +507,8 @@ void DumpEditor::starting()
     if (buffManager)
     {
         m_updateSlot = core::com::newSlot( &DumpEditor::onUpdate, this );
-        services::registry::ActiveWorkers::sptr workers = services::registry::ActiveWorkers::getDefault();
-        m_updateSlot->setWorker( workers->getWorker( services::registry::ActiveWorkers::s_DEFAULT_WORKER ));
+        service::registry::ActiveWorkers::sptr workers = service::registry::ActiveWorkers::getDefault();
+        m_updateSlot->setWorker( workers->getWorker( service::registry::ActiveWorkers::s_DEFAULT_WORKER ));
         m_connection = buffManager->getUpdatedSignal()->connect( m_updateSlot );
     }
 

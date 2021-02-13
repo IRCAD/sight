@@ -31,7 +31,7 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/vtk.hpp>
 
@@ -40,15 +40,15 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SPlaneSlicer )
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SPlaneSlicer )
 
 namespace sight::modules::filter::image
 {
 
-static const services::IService::KeyType s_IMAGE_IN  = "image";
-static const services::IService::KeyType s_EXTENT_IN = "imageExtent";
-static const services::IService::KeyType s_AXES_IN   = "axes";
-static const services::IService::KeyType s_SLICE_OUT = "slice";
+static const service::IService::KeyType s_IMAGE_IN  = "image";
+static const service::IService::KeyType s_EXTENT_IN = "imageExtent";
+static const service::IService::KeyType s_AXES_IN   = "axes";
+static const service::IService::KeyType s_SLICE_OUT = "slice";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
 static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
@@ -151,7 +151,7 @@ void SPlaneSlicer::configuring()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
+service::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

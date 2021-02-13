@@ -82,13 +82,13 @@ protected:
 private:
 
     /// Contains the render service.
-    services::IService::sptr m_renderSrv { nullptr };
+    service::IService::sptr m_renderSrv { nullptr };
 
     /// Contains the trackball interactor adaptor.
-    services::IService::sptr m_interactorSrv { nullptr };
+    service::IService::sptr m_interactorSrv { nullptr };
 
     /// Contains the negato adaptor.
-    services::IService::sptr m_negatoSrv { nullptr };
+    service::IService::sptr m_negatoSrv { nullptr };
 
     /// Defines whether or not to autoConnect to the image, needed for the purpose of tutorials.
     bool m_imageAutoConnect { false };

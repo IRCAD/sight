@@ -26,14 +26,14 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/IPolicy.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <vector>
 
 namespace sight::modules::memory
 {
 
-fwServicesRegisterMacro( ::sight::services::IController, sight::modules::memory::SDumpPolicy, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::service::IController, sight::modules::memory::SDumpPolicy, ::sight::data::Object )
 
 SDumpPolicy::SDumpPolicy()
 {

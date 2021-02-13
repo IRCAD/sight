@@ -69,9 +69,9 @@ void SImageExtruder::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
+service::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MESHES_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTIONS_SLOT);
     connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);

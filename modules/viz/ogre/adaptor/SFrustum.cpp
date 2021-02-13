@@ -30,15 +30,15 @@
 #include <data/Camera.hpp>
 #include <data/Material.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/helper/Camera.hpp>
+#include <viz/ogre/helper/Scene.hpp>
 
 #include <OgreCamera.h>
 #include <OgreEntity.h>
 #include <OgreMaterial.h>
 #include <OgreMeshManager.h>
-
-#include <viz/ogre/helper/Camera.hpp>
-#include <viz/ogre/helper/Scene.hpp>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -132,9 +132,9 @@ void SFrustum::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
+service::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT );
 

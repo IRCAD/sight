@@ -31,7 +31,7 @@
 
 #include <glm/mat4x4.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::filter::vision
 {
@@ -68,10 +68,10 @@ namespace sight::modules::filter::vision
  *
  * @subsection Configuration Configuration
  */
-class MODULE_FILTER_VISION_CLASS_API SPointCloudFromDepthMap : public services::IOperator
+class MODULE_FILTER_VISION_CLASS_API SPointCloudFromDepthMap : public service::IOperator
 {
 public:
-    fwCoreServiceMacro(SPointCloudFromDepthMap, services::IOperator)
+    fwCoreServiceMacro(SPointCloudFromDepthMap, service::IOperator)
 
     /**
      * @brief SPointCloudFromDepthMap constructor.

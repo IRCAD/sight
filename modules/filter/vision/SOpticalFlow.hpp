@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -62,10 +62,10 @@ namespace sight::modules::filter::vision
  * to keep a good balance between computation time and feature tracking quality (default 3,6),
  *  usually you don't need to change the value.
  */
-class MODULE_FILTER_VISION_CLASS_API SOpticalFlow : public services::IController
+class MODULE_FILTER_VISION_CLASS_API SOpticalFlow : public service::IController
 {
 public:
-    fwCoreServiceMacro(SOpticalFlow, sight::services::IController)
+    fwCoreServiceMacro(SOpticalFlow, sight::service::IController)
 
     typedef core::com::Signal<void ()> MotionSignalType;
     typedef core::com::Signal<void ()> NoMotionSignalType;
@@ -77,7 +77,7 @@ public:
     MODULE_FILTER_VISION_CLASS_API ~SOpticalFlow() noexcept override;
 
     /// Connects ::arData:FrameTL::s_OBJECT_PUSHED_SIG to s_UPDATE_SLOT
-    MODULE_FILTER_VISION_CLASS_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_VISION_CLASS_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

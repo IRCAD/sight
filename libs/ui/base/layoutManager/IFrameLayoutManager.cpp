@@ -28,8 +28,8 @@
 #include <data/Integer.hpp>
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <boost/lexical_cast.hpp>
 

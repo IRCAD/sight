@@ -25,8 +25,8 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <services/op/Add.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
 
 namespace Tuto01DataServiceBasicCpp
 {
@@ -53,9 +53,9 @@ void Plugin::initialize()
     m_image = data::Image::New();
 
     // UI declaration
-    m_frameSrv = services::add("::sight::modules::ui::base::frame::SDefaultFrame");
+    m_frameSrv = service::add("::sight::modules::ui::base::frame::SDefaultFrame");
     {
-        services::IService::ConfigType config;
+        service::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto01DataServiceBasicCpp");
         config.put("gui.frame.icon", "Tuto01DataServiceBasicCpp-0.2/tuto.ico");
         config.put("gui.frame.minSize.<xmlattr>.width", "800");
@@ -66,16 +66,16 @@ void Plugin::initialize()
     }
 
     // Services
-    m_readerSrv = services::add("::modules::io::vtk::SImageReader");
+    m_readerSrv = service::add("::modules::io::vtk::SImageReader");
     {
         m_readerSrv->registerInOut(m_image, "data");
-        services::IService::ConfigType config;
+        service::IService::ConfigType config;
         config.put("file", "../../data/patient1.vtk");
         m_readerSrv->setConfiguration(config);
         m_readerSrv->configure();
     }
 
-    m_renderSrv = services::add("::modules::viz::sample::SImage");
+    m_renderSrv = service::add("::modules::viz::sample::SImage");
     {
         m_renderSrv->registerInput(m_image, "image");
         m_renderSrv->setID("imageRendereSrv");
@@ -108,9 +108,9 @@ void Plugin::uninitialize()
     m_frameSrv->stop();
 
     // unregister the services
-    services::OSR::unregisterService( m_readerSrv );
-    services::OSR::unregisterService( m_frameSrv );
-    services::OSR::unregisterService( m_renderSrv );
+    service::OSR::unregisterService( m_readerSrv );
+    service::OSR::unregisterService( m_frameSrv );
+    service::OSR::unregisterService( m_renderSrv );
     m_image.reset();
 }
 

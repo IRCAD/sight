@@ -31,7 +31,7 @@
 #include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -61,7 +61,7 @@ void SCameraSeriesEditor::configuring()
 {
     sight::ui::base::IGuiContainerSrv::initialize();
 
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
     m_camIndex = config.get<size_t>("index", 1);
 }
 
@@ -156,9 +156,9 @@ void SCameraSeriesEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SCameraSeriesEditor::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push( "cameraSeries", data::CameraSeries::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );
     connections.push( "cameraSeries", data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT  );
     connections.push( "cameraSeries", data::CameraSeries::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT  );

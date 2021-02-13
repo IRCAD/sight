@@ -30,10 +30,10 @@
 #include <data/ImageSeries.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ActiveWorkers.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ActiveWorkers.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -60,11 +60,11 @@ void runImageSrv(
     const SPTR(data::Object)& image)
 {
 
-    services::IService::sptr srv = services::add( srvname );
+    service::IService::sptr srv = service::add( srvname );
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-    if (srv->isA("::sight::io::base::services::IReader"))
+    if (srv->isA("::sight::io::base::service::IReader"))
     {
         srv->registerInOut(image, "data");
     }
@@ -78,7 +78,7 @@ void runImageSrv(
     CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
     CPPUNIT_ASSERT_NO_THROW( srv->update().wait() );
     CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
-    services::OSR::unregisterService( srv );
+    service::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void ImageReaderWriterTest::setUp()
 {
     // Set up context before running a test.
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    services::registry::ActiveWorkers::setDefaultWorker(worker);
+    service::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ void ImageReaderWriterTest::setUp()
 void ImageReaderWriterTest::tearDown()
 {
     // Clean up after the test run.
-    services::registry::ActiveWorkers::getDefault()->clearRegistry();
+    service::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -286,7 +286,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
     {
         const std::string srvname("::sight::modules::io::vtk::SImageReader");
 
-        services::IService::sptr srv = services::add( srvname );
+        service::IService::sptr srv = service::add( srvname );
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
@@ -297,7 +297,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
         CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
         CPPUNIT_ASSERT_THROW( srv->update().get(), core::tools::Failed);
         CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
-        services::OSR::unregisterService( srv );
+        service::OSR::unregisterService( srv );
     }
     std::filesystem::remove(file);
 
@@ -588,7 +588,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
     {
         const std::string srvname("::sight::modules::io::vtk::SImageWriter");
 
-        services::IService::sptr srv = services::add( srvname );
+        service::IService::sptr srv = service::add( srvname );
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
@@ -598,7 +598,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
         CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
         CPPUNIT_ASSERT_THROW( srv->update().get(), core::tools::Failed);
         CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
-        services::OSR::unregisterService( srv );
+        service::OSR::unregisterService( srv );
     }
 }
 

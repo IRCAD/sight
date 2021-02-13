@@ -27,15 +27,15 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <services/helper/Config.hpp>
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/helper/Config.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
+
+#include <viz/base/IRender.hpp>
 
 #include <QColor>
 #include <QPointer>
-
-#include <viz/base/IRender.hpp>
 
 namespace Qt3DExtras
 {

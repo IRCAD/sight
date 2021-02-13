@@ -1,7 +1,7 @@
 <!--
 Example:
 
-<service uid="..." type="::sight::services::SConfigController">
+<service uid="..." type="::sight::service::SConfigController">
     <appConfig id="TransferFunctionWithNegatoEditor" />
     <inout key="image" uid="..." />
     <inout key="histogram" uid="..." />
@@ -10,7 +10,7 @@ Example:
     <parameter replace="WID_PARENT" by="..." />
 </service>
 -->
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -76,7 +76,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="cfgNegato" type="::sight::services::SConfigController">
+        <service uid="cfgNegato" type="::sight::service::SConfigController">
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -84,7 +84,7 @@ Example:
             <parameter replace="WID_PARENT" by="negatoView" />
         </service>
 
-        <service uid="tfWidget" type="::sight::services::SConfigController">
+        <service uid="tfWidget" type="::sight::service::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${image}"/>
             <inout key="histogram" uid="${histogram}"/>

@@ -38,7 +38,7 @@
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 
-#include <services/ITracker.hpp>
+#include <service/ITracker.hpp>
 
 #include <modules/navigation/openvslam/detail/OpenvslamConfig.hpp>
 
@@ -135,12 +135,12 @@ namespace sight::modules::navigation::openvslam
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public services::ITracker
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public service::ITracker
 {
 
 public:
 
-    fwCoreServiceMacro(SOpenvslam, services::ITracker)
+    fwCoreServiceMacro(SOpenvslam, service::ITracker)
 
     /// Constructor. Initializes signals and slots.
     MODULE_NAVIGATION_OPENVSLAM_API SOpenvslam() noexcept;

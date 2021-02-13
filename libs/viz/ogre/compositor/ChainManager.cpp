@@ -29,16 +29,16 @@
 #include "viz/ogre/Layer.hpp"
 #include "viz/ogre/SRender.hpp"
 
-#include <services/op/Add.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
+
+#include <viz/ogre/ogre.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorManager.h>
-
-#include <viz/ogre/ogre.hpp>
 
 #include <regex>
 
@@ -253,7 +253,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                             auto shaderParamService = viz::ogre::IAdaptor::dynamicCast(srv);
                             shaderParamService->setRenderService(_renderService);
 
-                            services::IService::ConfigType config;
+                            service::IService::ConfigType config;
                             config.add("config.<xmlattr>.layer", _layerId);
                             config.add("config.<xmlattr>.compositorName", _compositorName);
                             config.add("config.<xmlattr>.parameter", constantName);

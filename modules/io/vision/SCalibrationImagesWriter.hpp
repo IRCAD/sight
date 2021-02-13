@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <string>
 
@@ -50,11 +50,11 @@ namespace sight::modules::io::vision
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.
  */
-class MODULE_IO_VISION_CLASS_API SCalibrationImagesWriter : public sight::io::base::services::IWriter
+class MODULE_IO_VISION_CLASS_API SCalibrationImagesWriter : public sight::io::base::service::IWriter
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationImagesWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SCalibrationImagesWriter, sight::io::base::service::IWriter)
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationImagesWriter() noexcept;
@@ -75,7 +75,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /// Configures the output file format.
     MODULE_IO_VISION_API virtual void configuring() override;

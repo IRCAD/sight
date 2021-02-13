@@ -24,7 +24,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -41,7 +41,7 @@ namespace sight::modules::ui::qt
 namespace editor
 {
 
-static const services::IService::KeyType s_MATRIX_INPUT = "matrix";
+static const service::IService::KeyType s_MATRIX_INPUT = "matrix";
 
 fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SMatrixViewer)
 
@@ -142,7 +142,7 @@ void SMatrixViewer::clearLabels()
 
 // ------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
+service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_MATRIX_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);

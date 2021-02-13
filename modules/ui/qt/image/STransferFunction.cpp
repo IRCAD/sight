@@ -33,12 +33,12 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
-#include <io/base/services/ioTypes.hpp>
-#include <io/base/services/IReader.hpp>
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/ioTypes.hpp>
+#include <io/base/service/IReader.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -68,10 +68,10 @@ static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
-static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
-static const services::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
+static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const service::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
 
-static const services::IService::KeyType s_TF_OUTPUT = "tf";
+static const service::IService::KeyType s_TF_OUTPUT = "tf";
 
 static const std::string s_CONTEXT_TF = "TF";
 static const std::string s_VERSION_TF = "V1";
@@ -237,7 +237,7 @@ void STransferFunction::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_TF_POOL_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
@@ -465,13 +465,13 @@ void STransferFunction::renameTF()
 
 void STransferFunction::importTF()
 {
-    const data::TransferFunction::sptr tf          = data::TransferFunction::New();
-    const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+    const data::TransferFunction::sptr tf         = data::TransferFunction::New();
+    const io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
         "::sight::modules::io::atoms::SReader");
 
-    reader->registerInOut(tf, io::base::services::s_DATA_KEY);
+    reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
-    services::IService::ConfigType config;
+    service::IService::ConfigType config;
     config.add("archive.<xmlattr>.backend", "json");
     config.add("archive.extension", ".tf");
 
@@ -480,7 +480,7 @@ void STransferFunction::importTF()
     reader->openLocationDialog();
     reader->update().wait();
     reader->stop().wait();
-    services::OSR::unregisterService(reader);
+    service::OSR::unregisterService(reader);
 
     if(!tf->getName().empty())
     {
@@ -505,12 +505,12 @@ void STransferFunction::importTF()
 
 void STransferFunction::exportTF()
 {
-    const io::base::services::IWriter::sptr writer = services::add< io::base::services::IWriter >(
+    const io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
         "::sight::modules::io::atoms::SWriter");
 
-    writer->registerInput(m_selectedTF, io::base::services::s_DATA_KEY);
+    writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
-    services::IService::ConfigType config;
+    service::IService::ConfigType config;
     config.add("patcher.<xmlattr>.context", s_CONTEXT_TF);
     config.add("patcher.<xmlattr>.version", s_VERSION_TF);
     config.add("archive.<xmlattr>.backend", "json");
@@ -523,7 +523,7 @@ void STransferFunction::exportTF()
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    services::OSR::unregisterService(writer);
+    service::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------
@@ -563,10 +563,10 @@ void STransferFunction::initTransferFunctions()
                 }
             }
 
-            const data::TransferFunction::sptr tf          = data::TransferFunction::New();
-            const io::base::services::IReader::sptr reader = services::add< io::base::services::IReader >(
+            const data::TransferFunction::sptr tf         = data::TransferFunction::New();
+            const io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
                 "::sight::modules::io::atoms::SReader");
-            reader->registerInOut(tf, io::base::services::s_DATA_KEY);
+            reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
                 "service");
@@ -596,7 +596,7 @@ void STransferFunction::initTransferFunctions()
                 }
                 tf->initTF();
             }
-            services::OSR::unregisterService(reader);
+            service::OSR::unregisterService(reader);
         }
 
         compositeHelper.notify();

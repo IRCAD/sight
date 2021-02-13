@@ -26,7 +26,7 @@
 
 #include <core/com/Slot.hpp>
 
-#include <services/IRegisterer.hpp>
+#include <service/IRegisterer.hpp>
 
 namespace sight::modules::filter::point
 {
@@ -59,12 +59,12 @@ namespace sight::modules::filter::point
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
-class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public services::IRegisterer
+class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public service::IRegisterer
 {
 
 public:
 
-    fwCoreServiceMacro(SPointListRegistration, services::IRegisterer)
+    fwCoreServiceMacro(SPointListRegistration, service::IRegisterer)
 
     /**
      * @name Slots API

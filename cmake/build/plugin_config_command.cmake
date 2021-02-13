@@ -43,12 +43,12 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
 
         if(CMAKE_MATCH_3)
             string(STRIP ${CMAKE_MATCH_3} SRV_OBJECT)
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::services::registry::ServiceFactory\">"
+            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::registry::ServiceFactory\">"
                                        "         <type>${SRV_TYPE}</type>"
                                        "         <service>${SRV_IMPL}</service>"
                                        "         <object>${SRV_OBJECT}</object>")
         else()
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::services::registry::ServiceFactory\">"
+            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::registry::ServiceFactory\">"
                                        "         <type>${SRV_TYPE}</type>"
                                        "         <service>${SRV_IMPL}</service>")
         endif()
@@ -91,7 +91,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                 string(STRIP ${CMAKE_MATCH_2} SRV_IMPL)
                 file(STRINGS ${HPP_FILE} HPP_FILE_LINES_CONTENT)
 
-                list(APPEND EXTENSION_LIST "    <extension implements=\"::sight::services::registry::ServiceFactory\">"
+                list(APPEND EXTENSION_LIST "    <extension implements=\"::sight::service::registry::ServiceFactory\">"
                                            "         <type>${SRV_TYPE}</type>"
                                            "         <service>${SRV_IMPL}</service>")
                 list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${SRV_TYPE}, ${SRV_IMPL} )\n")
@@ -175,7 +175,7 @@ configure_file( "${CMAKE_SCRIPTS_DIR}/plugin.xml.in"
                 "${PLUGIN_OUTPUT_PATH}/plugin.xml")
 
 if(REGISTER_SERVICES)
-    list(APPEND INCLUDE_SERVICES "#include <services/macros.hpp>")
+    list(APPEND INCLUDE_SERVICES "#include <service/macros.hpp>")
 
     string(REPLACE ";" "" REGISTER_SERVICES "${REGISTER_SERVICES}")
 endif()
@@ -183,4 +183,4 @@ endif()
 string(REPLACE ";" "\n" INCLUDE_SERVICES "${INCLUDE_SERVICES}")
 
 configure_file( "${CMAKE_SCRIPTS_DIR}/registerServices.cpp.in"
-                "${REGISTERSERVICES_OUTPUT_PATH}/registerServices.cpp")
+                "${REGISTERSERVICE_OUTPUT_PATH}/registerServices.cpp")

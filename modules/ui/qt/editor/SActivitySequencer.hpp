@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/IActivitySequencer.hpp>
+#include <activity/IActivitySequencer.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -106,7 +106,7 @@ namespace editor
  */
 class MODULE_UI_QT_CLASS_API SActivitySequencer : public QObject,
                                                   public sight::ui::base::editor::IEditor,
-                                                  public activities::IActivitySequencer
+                                                  public activity::IActivitySequencer
 {
 Q_OBJECT
 

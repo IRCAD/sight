@@ -22,15 +22,15 @@
 
 #include "modules/viz/ogre/adaptor/SRenderStats.hpp"
 
-#include <services/macros.hpp>
-
-#include <OGRE/OgreRenderTarget.h>
-#include <OGRE/OgreRenderTargetListener.h>
-#include <OGRE/Overlay/OgreOverlayContainer.h>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/Font.hpp>
 #include <viz/ogre/IWindowInteractor.hpp>
 #include <viz/ogre/SRender.hpp>
+
+#include <OGRE/OgreRenderTarget.h>
+#include <OGRE/OgreRenderTargetListener.h>
+#include <OGRE/Overlay/OgreOverlayContainer.h>
 
 #include <sstream>
 

@@ -31,8 +31,8 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 

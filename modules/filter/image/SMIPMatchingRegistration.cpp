@@ -31,7 +31,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
@@ -44,11 +44,11 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IRegisterer,
+fwServicesRegisterMacro( ::sight::service::IRegisterer,
                          modules::filter::image::SMIPMatchingRegistration)
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
-    services::IRegisterer()
+    service::IRegisterer()
 {
 }
 

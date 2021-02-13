@@ -35,7 +35,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/tools/helper/Image.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -44,7 +44,7 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SLabelGeometryImage,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SLabelGeometryImage,
                         ::sight::data::Image)
 
 const core::com::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";

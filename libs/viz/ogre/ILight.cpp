@@ -22,7 +22,7 @@
 
 #include "viz/ogre/ILight.hpp"
 
-#include <services/registry/ObjectService.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <string>
 
@@ -61,7 +61,7 @@ void ILight::destroyLightAdaptor(ILight::sptr _lightAdaptor)
     if(_lightAdaptor)
     {
         _lightAdaptor->stop();
-        services::OSR::unregisterService(_lightAdaptor);
+        service::OSR::unregisterService(_lightAdaptor);
     }
 }
 

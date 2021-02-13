@@ -61,4 +61,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::services
+} // namespace sight::modules::service

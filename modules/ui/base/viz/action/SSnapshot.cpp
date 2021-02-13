@@ -30,7 +30,7 @@
 
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 

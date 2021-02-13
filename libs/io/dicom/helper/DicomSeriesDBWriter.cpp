@@ -33,7 +33,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <io/zip/WriteDirArchive.hpp>
 #include <io/zip/WriteZipArchive.hpp>
@@ -168,7 +168,7 @@ void DicomSeriesDBWriter::write()
                         }
                     }
                 },
-                                 services::registry::ActiveWorkers::getDefaultWorker());
+                                 service::registry::ActiveWorkers::getDefaultWorker());
 
         m_aggregator->addCancelHook([&](core::jobs::IJob& subJob)
                 {

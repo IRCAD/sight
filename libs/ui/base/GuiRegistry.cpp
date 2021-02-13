@@ -27,8 +27,8 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 namespace sight::ui::base
 {
@@ -67,7 +67,7 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
     SLM_INFO_IF("The service '"+sid +"' does not exist.", !service_exists );
     if(service_exists)
     {
-        services::IService::sptr service = services::get( sid );
+        service::IService::sptr service = service::get( sid );
         SLM_ASSERT("The service '"+sid+"' must be stopped before unregistering the container.", service->isStopped());
     }
 
@@ -155,7 +155,7 @@ void GuiRegistry::unregisterSIDMenuBar(std::string sid)
     SLM_INFO_IF("The menubar '" + sid + "' does not exist.", !service_exists );
     if(service_exists)
     {
-        services::IService::sptr service = services::get( sid );
+        service::IService::sptr service = service::get( sid );
         SLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
                    service->isStopped());
     }
@@ -194,7 +194,7 @@ void GuiRegistry::unregisterSIDToolBar(std::string sid)
     SLM_INFO_IF("The toolBar '" + sid + "' does not exist.", !service_exists );
     if(service_exists)
     {
-        services::IService::sptr service = services::get( sid );
+        service::IService::sptr service = service::get( sid );
         SLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menuBar.",
                    service->isStopped());
     }
@@ -233,7 +233,7 @@ void GuiRegistry::unregisterSIDMenu(std::string sid)
     SLM_INFO_IF("The menu "<<sid <<" does not exist.", !service_exists );
     if(service_exists)
     {
-        services::IService::sptr service = services::get( sid );
+        service::IService::sptr service = service::get( sid );
         SLM_ASSERT("The service '" + sid + "' must be stopped before unregistering the menu.", service->isStopped());
     }
 
@@ -283,7 +283,7 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
         SLM_INFO_IF("The service '" + actionSid + "' does not exist.", !service_exists );
         if(service_exists)
         {
-            services::IService::sptr service = services::get( actionSid );
+            service::IService::sptr service = service::get( actionSid );
             SLM_ASSERT("The service '" + actionSid + "' must be stopped before unregistering the action.",
                        service->isStopped());
         }
@@ -315,7 +315,7 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
                         !service_exists );
             if(service_exists)
             {
-                services::IService::sptr service       = services::get( parentSid );
+                service::IService::sptr service        = service::get( parentSid );
                 ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
                 ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
                 if (menuSrv)
@@ -352,7 +352,7 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
                         !service_exists );
             if(service_exists)
             {
-                services::IService::sptr service       = services::get( parentSid );
+                service::IService::sptr service        = service::get( parentSid );
                 ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
                 ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
                 if (menuSrv)
@@ -390,7 +390,7 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
                         !service_exists );
             if(service_exists)
             {
-                services::IService::sptr service       = services::get( parentSid );
+                service::IService::sptr service        = service::get( parentSid );
                 ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
                 ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
                 if (menuSrv)
@@ -428,7 +428,7 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
                         !service_exists );
             if(service_exists)
             {
-                services::IService::sptr service       = services::get( parentSid );
+                service::IService::sptr service        = service::get( parentSid );
                 ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
                 ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
                 if (menuSrv)
@@ -465,7 +465,7 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
                         !service_exists );
             if(service_exists)
             {
-                services::IService::sptr service       = services::get( parentSid );
+                service::IService::sptr service        = service::get( parentSid );
                 ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
                 ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
                 if (menuSrv)

@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 

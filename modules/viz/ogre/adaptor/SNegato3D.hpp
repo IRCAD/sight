@@ -30,13 +30,13 @@
 #include <data/Float.hpp>
 #include <data/tools/helper/TransferFunction.hpp>
 
-#include <OGRE/OgreManualObject.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/interactor/IInteractor.hpp>
 #include <viz/ogre/ITransformable.hpp>
 #include <viz/ogre/Plane.hpp>
 #include <viz/ogre/TransferFunction.hpp>
+
+#include <OGRE/OgreManualObject.h>
 
 #include <optional>
 
@@ -124,7 +124,7 @@ protected:
      * Connect data::Image::s_MODIFIED_SIG of s_VISIBILITY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      * Connect data::Image::s_MODIFIED_SIG of s_TRANSPARENCY_MODIFIED_SIG to s_UPDATE_VISIBILITY_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Requests rendering of the scene.
     MODULE_VIZ_OGRE_API void updating() override;

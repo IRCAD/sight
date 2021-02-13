@@ -28,7 +28,7 @@
 
 #include <data/Object.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QString>

@@ -36,7 +36,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/PointList.hpp>
 #include <geometry/data/TransformationMatrix3D.hpp>

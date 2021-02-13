@@ -32,7 +32,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/ModelSeriesObjWriter.hpp>
 
@@ -47,7 +47,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::vtk::SModelSeriesObjWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SModelSeriesObjWriter,
                          ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -61,9 +61,9 @@ SModelSeriesObjWriter::SModelSeriesObjWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SModelSeriesObjWriter::getIOPathType() const
+sight::io::base::service::IOPathType SModelSeriesObjWriter::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ void SModelSeriesObjWriter::stopping()
 
 void SModelSeriesObjWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -153,8 +153,8 @@ void SModelSeriesObjWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         data::ModelSeries::csptr modelSeries =
-            this->getInput< data::ModelSeries >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", modelSeries);
+            this->getInput< data::ModelSeries >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         auto writer = sight::io::vtk::ModelSeriesObjWriter::New();
         writer->setObject(modelSeries);

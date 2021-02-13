@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -67,7 +67,7 @@ namespace sight::modules::io::vtk
  * - \b folder (optional): path of the folder, if it is not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class MODULE_IO_VTK_CLASS_API SModelSeriesObjWriter : public sight::io::base::services::IWriter
+class MODULE_IO_VTK_CLASS_API SModelSeriesObjWriter : public sight::io::base::service::IWriter
 {
 
 public:
@@ -83,7 +83,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesObjWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SModelSeriesObjWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief Configure the mesh path.
@@ -103,7 +103,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

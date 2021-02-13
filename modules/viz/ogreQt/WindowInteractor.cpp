@@ -27,6 +27,9 @@
 
 #include <core/com/Slots.hxx>
 
+#include <viz/ogre/registry/macros.hpp>
+#include <viz/ogre/SRender.hpp>
+
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QRect>
@@ -35,9 +38,6 @@
 #include <QWidget>
 
 #include <ui/qt/container/QtContainer.hpp>
-
-#include <viz/ogre/registry/macros.hpp>
-#include <viz/ogre/SRender.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ void WindowInteractor::createContainer( sight::ui::base::container::fwContainer:
 void WindowInteractor::connectToContainer()
 {
     // Connect widget window render to render service start adaptors
-    services::IService::sptr renderService            = m_renderService.lock();
+    service::IService::sptr renderService             = m_renderService.lock();
     sight::viz::ogre::SRender::sptr ogreRenderService = sight::viz::ogre::SRender::dynamicCast( renderService );
 
     if( !ogreRenderService )
@@ -195,7 +195,7 @@ float WindowInteractor::getLogicalDotsPerInch() const
 
 void WindowInteractor::onInteracted(sight::viz::ogre::IWindowInteractor::InteractionInfo _info)
 {
-    services::IService::sptr renderService            = m_renderService.lock();
+    service::IService::sptr renderService             = m_renderService.lock();
     sight::viz::ogre::SRender::sptr ogreRenderService = sight::viz::ogre::SRender::dynamicCast( renderService );
 
     for(auto layerMap : ogreRenderService->getLayers())
@@ -211,7 +211,7 @@ void WindowInteractor::onInteracted(sight::viz::ogre::IWindowInteractor::Interac
 
 void WindowInteractor::onCameraClippingComputation()
 {
-    services::IService::sptr renderService            = m_renderService.lock();
+    service::IService::sptr renderService             = m_renderService.lock();
     sight::viz::ogre::SRender::sptr ogreRenderService = sight::viz::ogre::SRender::dynamicCast( renderService );
 
     ogreRenderService->slot(sight::viz::ogre::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
@@ -266,7 +266,7 @@ void WindowInteractor::disableFullscreen()
 
     if(container->layout()->isEmpty())
     {
-        services::IService::sptr renderService            = m_renderService.lock();
+        service::IService::sptr renderService             = m_renderService.lock();
         sight::viz::ogre::SRender::sptr ogreRenderService = sight::viz::ogre::SRender::dynamicCast( renderService );
 
         auto toggleSlot = ogreRenderService->slot(sight::viz::ogre::SRender::s_DISABLE_FULLSCREEN);

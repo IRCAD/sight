@@ -25,7 +25,7 @@
 #include "modules/ui/qt/config.hpp"
 #include "modules/ui/qt/widget/ActivityDataView.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>

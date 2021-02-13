@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <QPdfWriter>
 #include <QtWidgets>
@@ -64,7 +64,7 @@ namespace sight::modules::io::document
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 
-class MODULE_IO_DOCUMENT_CLASS_API SPdfWriter : public sight::io::base::services::IWriter
+class MODULE_IO_DOCUMENT_CLASS_API SPdfWriter : public sight::io::base::service::IWriter
 {
 
 public:
@@ -76,7 +76,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceMacro(SPdfWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SPdfWriter, sight::io::base::service::IWriter)
     /**
      * @brief Constructor : does nothing
      */
@@ -89,7 +89,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from services::IService )
+    /** @name Service methods ( override from service::IService )
      * @{
      */
 
@@ -109,7 +109,7 @@ protected:
     MODULE_IO_DOCUMENT_API virtual void stopping() override;
 
     /**
-     * @brief Configure service. This method is called by configure() from base service ( services::IService )
+     * @brief Configure service. This method is called by configure() from base service ( service::IService )
      *
      * Gets the images or containers from their IDs.
      *
@@ -154,7 +154,7 @@ protected:
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DOCUMENT_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_DOCUMENT_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 

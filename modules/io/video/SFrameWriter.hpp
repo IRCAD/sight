@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 namespace sight::modules::io::video
 {
@@ -61,12 +61,12 @@ namespace sight::modules::io::video
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
-class MODULE_IO_VIDEO_CLASS_API SFrameWriter : public sight::io::base::services::IWriter
+class MODULE_IO_VIDEO_CLASS_API SFrameWriter : public sight::io::base::service::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SFrameWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SFrameWriter, sight::io::base::service::IWriter)
 
     /// Constructor.
     MODULE_IO_VIDEO_API SFrameWriter() noexcept;
@@ -75,7 +75,7 @@ public:
     MODULE_IO_VIDEO_API virtual ~SFrameWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_VIDEO_API virtual services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_VIDEO_API virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Display a location dialog allowing to select the video file to save
@@ -87,8 +87,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_VIDEO_API virtual void openLocationDialog() override;
 
-    /// Return file type (io::base::services::FOLDER)
-    MODULE_IO_VIDEO_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::service::FOLDER)
+    MODULE_IO_VIDEO_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
 protected:
 

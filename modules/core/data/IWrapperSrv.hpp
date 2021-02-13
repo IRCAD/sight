@@ -24,7 +24,7 @@
 
 #include "modules/data/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::data
 {
@@ -33,12 +33,12 @@ namespace sight::modules::data
  * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
  */
 
-class MODULE_DATA_CLASS_API IWrapperSrv : public services::IService
+class MODULE_DATA_CLASS_API IWrapperSrv : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IWrapperSrv, services::IService)
+    fwCoreServiceMacro(IWrapperSrv, service::IService)
 
     ///@brief IWrapperSrv constructor. Do nothing.
     MODULE_DATA_API IWrapperSrv();

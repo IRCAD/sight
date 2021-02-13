@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/SViewportInteractor.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 

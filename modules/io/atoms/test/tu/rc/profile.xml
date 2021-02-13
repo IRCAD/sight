@@ -1,6 +1,6 @@
 <profile name="IoAtomsTest" version="0.1">
 
-    <activate id="module_services" version="0.1" />
+    <activate id="module_service" version="0.1" />
 
     <activate id="module_ui_base" version="0.1" />
 

@@ -17,6 +17,6 @@ set( REQUIREMENTS
     media
     imageConfig
     dataManagerConfig
-    module_services
+    module_service
 )
 

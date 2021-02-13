@@ -103,16 +103,16 @@ private:
     void updateCamTransform();
 
     /// Contains the render service.
-    services::IService::sptr m_renderSrv;
+    service::IService::sptr m_renderSrv;
 
     /// Contains the trackball interactor adaptor.
-    services::IService::sptr m_interactorSrv;
+    service::IService::sptr m_interactorSrv;
 
     /// Contains the mesh adaptor.
-    services::IService::sptr m_meshSrv;
+    service::IService::sptr m_meshSrv;
 
     /// Contains the camera adaptor.
-    services::IService::sptr m_cameraSrv;
+    service::IService::sptr m_cameraSrv;
 
     /// Contains the transformation adaptor.
     data::TransformationMatrix3D::sptr m_cameraTransform;

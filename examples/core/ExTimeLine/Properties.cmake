@@ -3,13 +3,13 @@ set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES
     data
-    services
+    service
     core
     exTimeLineData
 )
 set( REQUIREMENTS
     module_appXml
-    module_services
+    module_service
     fwlauncher
     console
     exTimeLineData

@@ -4,12 +4,12 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    services
+    service
     geometry_data
     io_opencv
 
 )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
 )

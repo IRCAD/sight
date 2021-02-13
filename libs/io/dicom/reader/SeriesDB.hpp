@@ -32,7 +32,7 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <io/base/reader/GenericObjectReader.hpp>
 
@@ -82,8 +82,8 @@ public:
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
     IO_DICOM_API void readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
-                                            const services::IService::sptr& notifier
-                                                = services::IService::sptr());
+                                            const service::IService::sptr& notifier
+                                                = service::IService::sptr());
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -164,7 +164,7 @@ private:
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(const services::IService::sptr& notifier = services::IService::sptr());
+    void convertDicomSeries(const service::IService::sptr& notifier = service::IService::sptr());
 
     /**
      * @brief Function used to sort DicomSeries

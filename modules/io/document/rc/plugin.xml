@@ -1,10 +1,10 @@
 <plugin id="::sight::modules::io::document" class="::sight::modules::io::document::Plugin" version="@PROJECT_VERSION@" >
     <library name="module_io_document" />
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::io::base::services::IWriter</type>
+    <extension implements="::sight::service::registry::ServiceFactory">
+        <type>::sight::io::base::service::IWriter</type>
         <service>::sight::modules::io::document::SPdfWriter</service>
         <object>::sight::data::Object</object>
     </extension>

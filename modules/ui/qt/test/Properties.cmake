@@ -6,10 +6,10 @@ set( DEPENDENCIES
     utestData
     core
     data
-    services
+    service
 )
 set( REQUIREMENTS
-    module_services
+    module_service
     module_ui_base
     module_ui_qt
 )

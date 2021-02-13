@@ -28,7 +28,7 @@
 
 #include <data/Image.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace Tuto01DataServiceBasicCpp
 {
@@ -58,15 +58,15 @@ private:
 
     data::Image::sptr m_image;
 
-    services::IService::sptr m_frameSrv;
+    service::IService::sptr m_frameSrv;
 
-    services::IService::sptr m_renderSrv;
+    service::IService::sptr m_renderSrv;
 
-    services::IService::sptr m_interactorSrv;
+    service::IService::sptr m_interactorSrv;
 
-    services::IService::sptr m_negatoSrv;
+    service::IService::sptr m_negatoSrv;
 
-    services::IService::sptr m_readerSrv;
+    service::IService::sptr m_readerSrv;
 
 };
 

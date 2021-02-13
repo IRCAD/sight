@@ -28,7 +28,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/opencv/Image.hpp>
 
@@ -40,12 +40,12 @@ namespace sight::modules::filter::vision
 static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
 static const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
 
-static const services::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
-static const services::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
-static const services::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
-static const services::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
+static const service::IService::KeyType s_MASK_IMAGE_KEY       = "maskImage";
+static const service::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
+static const service::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
+static const service::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::vision::SDepthImageMasking)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SDepthImageMasking)
 
 // ------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ void SDepthImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
+service::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

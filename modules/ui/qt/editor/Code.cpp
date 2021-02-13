@@ -28,7 +28,7 @@
 
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 
@@ -50,7 +50,7 @@ fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::u
 const std::string Code::s_PYTHON = "Python";
 const std::string Code::s_CPP = "Cpp";
 
-static const services::IService::KeyType s_STRING_INOUT = "string";
+static const service::IService::KeyType s_STRING_INOUT = "string";
 
 //------------------------------------------------------------------------------
 
@@ -175,7 +175,7 @@ void Code::onModifyValue()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap Code::getAutoConnections() const
+service::IService::KeyConnectionsMap Code::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_STRING_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

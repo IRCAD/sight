@@ -41,9 +41,9 @@
 #include <data/String.hpp>
 #include <data/tools/helper/Field.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <boost/format.hpp>
 
@@ -150,7 +150,7 @@ static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
 static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
 
-static const services::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
+static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
 //------------------------------------------------------------------------------
 
@@ -161,7 +161,7 @@ SModelSeriesList::SModelSeriesList() noexcept
 
     newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
 
-    this->registerObject("modelSeries", services::IService::AccessType::INOUT, true);
+    this->registerObject("modelSeries", service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ void SModelSeriesList::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

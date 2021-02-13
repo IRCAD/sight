@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #include <filter/vision/Masker.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::modules::filter::vision
  * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
  * image using an Expectation Maximization algorithm.
  *
- * @see services::IOperator
+ * @see service::IOperator
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to set the background image to learn the background model color
@@ -82,12 +82,12 @@ namespace sight::modules::filter::vision
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public services::IOperator
+class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SColourImageMasking, sight::services::IOperator)
+    fwCoreServiceMacro(SColourImageMasking, sight::service::IOperator)
 
     /// Initializes the slots and member variables.
     MODULE_FILTER_VISION_API SColourImageMasking() noexcept;
@@ -96,7 +96,7 @@ public:
     MODULE_FILTER_VISION_API ~SColourImageMasking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

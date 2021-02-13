@@ -1,6 +1,6 @@
 <plugin id="blendActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_ui_qt" />
     <requirement id="module_viz_scene2d" />
 
@@ -8,7 +8,7 @@
     <xi:include href="configurations/ImageMix.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>Blend</id>
         <title>Blend</title>
         <desc>Activity to superimpose two images.</desc>
@@ -16,12 +16,12 @@
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>
-                <validator>::activities::validator::ImageProperties</validator>
+                <validator>::activity::validator::ImageProperties</validator>
                 <key>FrontImage</key>
                 <key>BackImage</key>
             </requirement>
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="Blend">
             <parameters>
                 <parameter replace="frontImageUid"      by="@values.imageSeries.values.FrontImage.image" />

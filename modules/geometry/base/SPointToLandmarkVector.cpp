@@ -30,7 +30,7 @@
 
 #include <glm/glm.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
@@ -39,17 +39,17 @@ namespace sight::modules::geometry::base
 
 // -----------------------------------------------------------------------------
 
-const services::IService::KeyType s_LANDMARK_INPUT                    = "landmark";
-const services::IService::KeyType s_TRANSFORM_INOUT                   = "transform";
-const services::IService::KeyType s_TRANSLATION_INOUT                 = "translationMatrix";
-const services::IService::KeyType s_COMPUTED_LANDMARK_INOUT           = "computedLandmark";
+const service::IService::KeyType s_LANDMARK_INPUT                     = "landmark";
+const service::IService::KeyType s_TRANSFORM_INOUT                    = "transform";
+const service::IService::KeyType s_TRANSLATION_INOUT                  = "translationMatrix";
+const service::IService::KeyType s_COMPUTED_LANDMARK_INOUT            = "computedLandmark";
 static const core::com::Signals::SignalKeyType LENGTH_CHANGED_SIG     = "lengthChanged";
 static const core::com::Signals::SignalKeyType LENGTH_STR_CHANGED_SIG = "lengthChangedStr";
 static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSlice";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::SPointToLandmarkVector )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::SPointToLandmarkVector )
 
 // -----------------------------------------------------------------------------
 
@@ -168,10 +168,10 @@ void SPointToLandmarkVector::updating()
 
 // -----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
+service::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
 
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
     return connections;
 }

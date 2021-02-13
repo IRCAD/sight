@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <filesystem>
 
@@ -66,7 +66,7 @@ namespace sight::modules::io::vtk
  * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SMeshWriter : public sight::io::base::services::IWriter
+class MODULE_IO_VTK_CLASS_API SMeshWriter : public sight::io::base::service::IWriter
 {
 
 public:
@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SMeshWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SMeshWriter, sight::io::base::service::IWriter)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -103,7 +103,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

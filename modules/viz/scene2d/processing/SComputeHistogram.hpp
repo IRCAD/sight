@@ -27,7 +27,7 @@
 #include <data/Histogram.hpp>
 #include <data/Image.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::viz::scene2d
 {
@@ -58,12 +58,12 @@ namespace processing
  * @subsection Configuration Configuration:
  * - \b binsWidth (mandatory): desired bins width used to classified pixel.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SComputeHistogram : public services::IController
+class MODULE_VIZ_SCENE2D_CLASS_API SComputeHistogram : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SComputeHistogram, services::IController)
+    fwCoreServiceMacro(SComputeHistogram, service::IController)
 
     /// Constructor. Does nothing.
     MODULE_VIZ_SCENE2D_API SComputeHistogram() noexcept;

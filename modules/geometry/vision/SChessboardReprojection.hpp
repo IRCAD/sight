@@ -26,7 +26,7 @@
 
 #include <data/MarkerMap.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -80,10 +80,10 @@ namespace sight::modules::geometry::vision
  * - \b distortReprojection (optional, default="true"): whether the 'videoImage' is undistorted, in which case the
  *                                                      reprojected points should not be distorted.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection : public services::IService
+class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection : public service::IService
 {
 public:
-    fwCoreServiceMacro(SChessboardReprojection, services::IService)
+    fwCoreServiceMacro(SChessboardReprojection, service::IService)
 
     ///Constructor
     MODULE_GEOMETRY_VISION_API SChessboardReprojection();
@@ -107,7 +107,7 @@ protected:
     MODULE_GEOMETRY_VISION_API virtual void stopping() final;
 
     /// Connects camera, transform and detected points modification to the update slot.
-    virtual services::IService::KeyConnectionsMap getAutoConnections() const final;
+    virtual service::IService::KeyConnectionsMap getAutoConnections() const final;
 
 private:
 

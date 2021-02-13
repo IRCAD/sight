@@ -26,8 +26,8 @@
 
 #include <core/base.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <ui/history/ICommand.hpp>
 #include <ui/history/UndoRedoManager.hpp>
@@ -63,11 +63,11 @@ namespace sight::modules::ui::history
  * - \b maxMemory (optional) : The maximum amount of memory (in bytes) used available to store commands.
  * Unlimited by default.
  */
-class MODULE_UI_HISTORY_CLASS_API SCommandHistory : public services::IService
+class MODULE_UI_HISTORY_CLASS_API SCommandHistory : public service::IService
 {
 public:
 
-    fwCoreServiceMacro(SCommandHistory, services::IService)
+    fwCoreServiceMacro(SCommandHistory, service::IService)
 
     /// Constructor.
     MODULE_UI_HISTORY_API SCommandHistory();

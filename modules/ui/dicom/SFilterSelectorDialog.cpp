@@ -31,7 +31,7 @@
 #include <data/String.hpp>
 #include <data/tools/helper/Composite.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/dicom/IFilter.hpp>
 
@@ -50,7 +50,7 @@ namespace sight::modules::ui::dicom
 fwServicesRegisterMacro( ::sight::ui::base::editor::IDialogEditor, ::sight::modules::ui::dicom::SFilterSelectorDialog,
                          ::sight::data::String )
 
-static const services::IService::KeyType s_FILTER_INOUT = "filter";
+static const service::IService::KeyType s_FILTER_INOUT = "filter";
 
 //------------------------------------------------------------------------------
 

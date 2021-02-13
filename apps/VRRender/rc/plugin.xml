@@ -1,6 +1,6 @@
 <plugin id="VRRender" version="@PROJECT_VERSION@">
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="arPatchMedicalData" />
     <requirement id="module_io_atoms" />
     <requirement id="module_activity" />
@@ -9,7 +9,7 @@
     <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::services::registry::AppConfigParameters">
+    <extension implements="::sight::service::registry::AppConfigParameters">
         <id>VRRenderAppBase</id>
         <parameters>
             <param name="appName" value="VRRender 0.9.7" />
@@ -18,7 +18,7 @@
         </parameters>
     </extension>
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>SDBVRRender</id>
         <title>SDB</title>
         <desc>Series Selector</desc>

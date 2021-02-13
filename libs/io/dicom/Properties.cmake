@@ -8,7 +8,7 @@ set( DEPENDENCIES
     core
     geometry_data
     data
-    services
+    service
     io_zip
     )
 set( REQUIREMENTS )

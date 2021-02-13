@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -68,14 +68,14 @@ namespace sight::modules::io::dicom
  *    - never (never use the DicomDir)
  *    - user_selection (let the user decide whether using the DicomDir or not)
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesDBReader : public sight::io::base::services::IReader
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesDBReader : public sight::io::base::service::IReader
 {
 
 public:
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesDBReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SDicomSeriesDBReader, sight::io::base::service::IReader)
 
     /**
      * @brief   constructor
@@ -127,7 +127,7 @@ protected:
     MODULE_IO_DICOM_API virtual void openLocationDialog() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 

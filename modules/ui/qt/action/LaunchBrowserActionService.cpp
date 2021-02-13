@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QCoreApplication>
 #include <QDesktopServices>

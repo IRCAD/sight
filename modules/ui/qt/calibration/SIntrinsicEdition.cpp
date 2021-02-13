@@ -30,12 +30,12 @@
 
 #include <data/Camera.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::ui::qt::calibration
 {
 
-static const services::IService::KeyType s_CAMERA_INOUT = "camera";
+static const service::IService::KeyType s_CAMERA_INOUT = "camera";
 
 // -------------------------------------------------------------------------
 

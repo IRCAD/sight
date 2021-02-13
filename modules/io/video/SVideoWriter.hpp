@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -50,12 +50,12 @@ namespace sight::modules::io::video
  * @subsection Input Input
  * - \b data [sight::data::FrameTL]: timeline containing the frame to save.
  */
-class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::base::services::IWriter
+class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::base::service::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SVideoWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SVideoWriter, sight::io::base::service::IWriter)
 
     /// Constructor.
     MODULE_IO_VIDEO_API SVideoWriter() noexcept;
@@ -64,7 +64,7 @@ public:
     MODULE_IO_VIDEO_API virtual ~SVideoWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_VIDEO_API virtual services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_VIDEO_API virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Display a location dialog allowing to select the video file to save
@@ -76,8 +76,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_VIDEO_API virtual void openLocationDialog() override;
 
-    /// Return file type (io::base::services::FILE)
-    MODULE_IO_VIDEO_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::service::FILE)
+    MODULE_IO_VIDEO_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
 protected:
 

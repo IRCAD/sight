@@ -32,7 +32,7 @@
 
 #include <glm/glm.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/vision/Projection.hpp>
 
@@ -41,14 +41,14 @@
 namespace sight::modules::filter::vision
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::vision::SPointCloudFromDepthMap)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SPointCloudFromDepthMap)
 
 const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 
 //------------------------------------------------------------------------------
 
 SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept :
-    services::IOperator()
+    service::IOperator()
 {
     newSlot(s_SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
 }

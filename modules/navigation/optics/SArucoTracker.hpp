@@ -28,8 +28,8 @@
 #include <core/com/Slots.hpp>
 #include <core/HiResClock.hpp>
 
-#include <services/ITracker.hpp>
-#include <services/macros.hpp>
+#include <service/ITracker.hpp>
+#include <service/macros.hpp>
 
 #include <opencv2/aruco.hpp>
 
@@ -39,7 +39,7 @@ namespace sight::modules::navigation::optics
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
- * @see services::ITracker
+ * @see service::ITracker
  *
  * @section Signals Signals
  * - \b detectionDone(core::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
@@ -109,11 +109,11 @@ namespace sight::modules::navigation::optics
  *  - \b cornerRefinement: if yes corner refinement by subpixel will be activited
  *  not.
  */
-class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public services::ITracker
+class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public service::ITracker
 {
 public:
 
-    fwCoreServiceMacro(SArucoTracker, services::ITracker)
+    fwCoreServiceMacro(SArucoTracker, service::ITracker)
 
     typedef core::com::Signal< void (core::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
     typedef core::com::Signal< void (bool) > MarkerDetectedSignalType;
@@ -153,7 +153,7 @@ protected:
     /// Depending on the configuration this connects:
     /// - the input timeline to the tracking() slot
     /// - the input frame modifications to the update() slot
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.

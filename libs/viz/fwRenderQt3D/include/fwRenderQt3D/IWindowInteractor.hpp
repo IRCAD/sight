@@ -28,7 +28,7 @@
 
 #include <core/base.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <ui/base/container/fwContainer.hpp>
 
@@ -88,13 +88,13 @@ public:
     FWRENDERQT3D_API virtual void set3DView(Qt3DExtras::Qt3DWindow* _3dView) = 0;
 
     /// Set the render service using the IRenderWindowInteractor
-    virtual void setRenderService(services::IService::sptr srv)
+    virtual void setRenderService(service::IService::sptr srv)
     {
         m_renderService = srv;
     }
 
 protected:
-    services::IService::wptr m_renderService;
+    service::IService::wptr m_renderService;
 };
 
 } // namespace fwRenderQt3D

@@ -27,7 +27,7 @@
  * @brief The namespace sight::modules::activity contains helpers and services allowing to launch activities.
  *
  * This module allows to register the activities available for an application. It is required for application using
- * Activities.
+ * Activity.
  **/
 namespace sight::modules::activity
 {

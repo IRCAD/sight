@@ -32,14 +32,14 @@
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 
-#include <OGRE/OgreGpuProgramParams.h>
-#include <OGRE/OgreMaterial.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/Material.hpp>
 #include <viz/ogre/Mesh.hpp>
 #include <viz/ogre/ogre.hpp>
 #include <viz/ogre/R2VBRenderable.hpp>
+
+#include <OGRE/OgreGpuProgramParams.h>
+#include <OGRE/OgreMaterial.h>
 
 #include <regex>
 
@@ -165,7 +165,7 @@ protected:
      * Connect data::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
      * Connect data::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates fixed function pipeline parameters.
     MODULE_VIZ_OGRE_API void updating() override;

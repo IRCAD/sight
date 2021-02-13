@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/MultiSelectorDialog.hpp"
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -32,8 +32,8 @@ namespace dialog
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
-                                                                                [this]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
+                                                                               [this]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
@@ -44,7 +44,7 @@ MultiSelectorDialog::MultiSelectorDialog()
 
 void MultiSelectorDialog::setTitle(std::string title)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setTitle(title);
@@ -57,7 +57,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     typedef IMultiSelectorDialog::Selections R;
     std::function< R() > func = std::bind( &IMultiSelectorDialog::show, m_implementation);
-    std::shared_future< R > f = services::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
+    std::shared_future< R > f = service::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
 
     f.wait();
     return f.get();
@@ -67,7 +67,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
 void MultiSelectorDialog::setSelections(Selections _selections)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setSelections( _selections );
@@ -78,7 +78,7 @@ void MultiSelectorDialog::setSelections(Selections _selections)
 
 void MultiSelectorDialog::setMessage(const std::string& msg)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setMessage( msg );

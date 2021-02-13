@@ -40,7 +40,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/MeshReader.hpp>
 #include <io/vtk/ObjMeshReader.hpp>
@@ -59,7 +59,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::vtk::SModelSeriesReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SModelSeriesReader,
                          ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -73,9 +73,9 @@ SModelSeriesReader::SModelSeriesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SModelSeriesReader::getIOPathType() const
+sight::io::base::service::IOPathType SModelSeriesReader::getIOPathType() const
 {
-    return sight::io::base::services::FILES;
+    return sight::io::base::service::FILES;
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ void SModelSeriesReader::stopping()
 
 void SModelSeriesReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void SModelSeriesReader::updating()
     {
         // Retrieve dataStruct associated with this service
         const auto modelSeriesLockedPtr = this->getLockedInOut< data::ModelSeries >(
-            sight::io::base::services::s_DATA_KEY);
+            sight::io::base::service::s_DATA_KEY);
         const auto modelSeries = modelSeriesLockedPtr.get_shared();
 
         sight::ui::base::Cursor cursor;

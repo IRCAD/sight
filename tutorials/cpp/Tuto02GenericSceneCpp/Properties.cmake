@@ -4,7 +4,7 @@ set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
     data
-    services
+    service
 )
 set( REQUIREMENTS
     module_ui_base             # Start the module, load file location or window module_ui_base
@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_viz_ogreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
-    module_services             # fwService
+    module_service             # fwService
 
     # UI declaration/Actions
     module_ui_base

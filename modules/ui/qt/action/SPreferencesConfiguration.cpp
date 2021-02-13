@@ -29,8 +29,8 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <boost/tokenizer.hpp>
 

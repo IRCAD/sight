@@ -29,13 +29,13 @@
 namespace Tuto05EditorQml
 {
 
-static const services::IService::KeyType s_STRING_INOUT = "string";
+static const service::IService::KeyType s_STRING_INOUT = "string";
 
 //------------------------------------------------------------------------------
 
 SStringEditor::SStringEditor() noexcept
 {
-    this->registerObject(s_STRING_INOUT,  services::IService::AccessType::INOUT, true);
+    this->registerObject(s_STRING_INOUT,  service::IService::AccessType::INOUT, true);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void SStringEditor::updateString(const QString& str)
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SStringEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SStringEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

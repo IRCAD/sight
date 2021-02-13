@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>

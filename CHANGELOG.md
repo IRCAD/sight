@@ -3567,7 +3567,7 @@ The new Samples `Tuto08GenericSceneCpp` and `Tuto09MesherWithGenericSceneCpp` ar
 
 All the services are managed in C++ in the application `Plugin` class. The services' configurations are written with `::boost::property::tree`.
 
-To achieve this, a new helper : ``::fwServices::AppManager``was added. It simplifies the management of objects/services/connections in an application.
+To achieve this, a new helper : ``::fwServices::AppManager``was added. It simplifies the management of objects/service/connections in an application.
 
 ### CMake
 

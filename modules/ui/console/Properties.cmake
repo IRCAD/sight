@@ -5,6 +5,6 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     ui_base
-    services
+    service
 )
 set( REQUIREMENTS  )

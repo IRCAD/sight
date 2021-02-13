@@ -14,7 +14,7 @@ set( REQUIREMENTS
         visuVTKQt
         visuVTKARAdaptor
         data
-        module_services
+        module_service
         module_navigation_calibration
         module_geometry_vision
         module_io_igtl

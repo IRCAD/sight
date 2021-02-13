@@ -28,8 +28,8 @@
 
 #include <data/Camera.hpp>
 
-#include <services/IController.hpp>
-#include <services/macros.hpp>
+#include <service/IController.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::data
 {
@@ -75,11 +75,11 @@ namespace sight::modules::data
  *  - \b devices: configuration of devices
  *  - \b configId: id of a ServiceConfig containing devices configuration.
  */
-class MODULE_DATA_CLASS_API SExtractDeviceInfo : public services::IController
+class MODULE_DATA_CLASS_API SExtractDeviceInfo : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SExtractDeviceInfo, services::IController)
+    fwCoreServiceMacro(SExtractDeviceInfo, service::IController)
 
     /// Constructor
     MODULE_DATA_API SExtractDeviceInfo();

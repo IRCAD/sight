@@ -36,7 +36,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 
@@ -63,7 +63,7 @@ namespace sight::modules::io::atoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::atoms::SWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::atoms::SWriter,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -100,7 +100,7 @@ void SWriter::stopping()
 
 void SWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 
     m_customExts.clear();
     m_allowedExtLabels.clear();
@@ -322,8 +322,8 @@ void SWriter::updating()
         return;
     }
 
-    data::Object::csptr obj = this->getInput< data::Object >(sight::io::base::services::s_DATA_KEY);
-    SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", obj);
+    data::Object::csptr obj = this->getInput< data::Object >(sight::io::base::service::s_DATA_KEY);
+    SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
 
     sight::ui::base::Cursor cursor;
     cursor.setCursor(ui::base::ICursor::BUSY);
@@ -543,9 +543,9 @@ void SWriter::updating()
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SWriter::getIOPathType() const
+sight::io::base::service::IOPathType SWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //-----------------------------------------------------------------------------

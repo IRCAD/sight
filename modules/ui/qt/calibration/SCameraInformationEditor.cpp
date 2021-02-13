@@ -26,7 +26,7 @@
 
 #include <data/Camera.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -247,7 +247,7 @@ void SCameraInformationEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
 {
 
     KeyConnectionsMap connections;

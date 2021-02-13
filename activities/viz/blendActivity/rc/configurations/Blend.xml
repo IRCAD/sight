@@ -1,4 +1,4 @@
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>Blend</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -38,7 +38,7 @@
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
 
-        <service uid="blendViewCtrl" type="::sight::services::SConfigController">
+        <service uid="blendViewCtrl" type="::sight::service::SConfigController">
             <state active="true" />
             <inout key="backgroundImageUid" uid="${backgroundImageUid}" />
             <inout key="frontImageUid" uid="${frontImageUid}" />
@@ -48,14 +48,14 @@
             <parameter replace="tfFrontImage" by="tfFrontImage" />
         </service>
 
-        <service uid="bgTFViewCtrl" type="::sight::services::SConfigController">
+        <service uid="bgTFViewCtrl" type="::sight::service::SConfigController">
             <inout key="image" uid="${backgroundImageUid}" />
             <appConfig id="TransferFunctionEditor" />
             <parameter replace="WID_PARENT" by="bgImageView" />
             <parameter replace="transferFunction" by="tfBackgroundImage" />
         </service>
 
-        <service uid="frontTFViewCtrl" type="::sight::services::SConfigController">
+        <service uid="frontTFViewCtrl" type="::sight::service::SConfigController">
             <inout key="image" uid="${frontImageUid}" />
             <appConfig id="TransferFunctionEditor" />
             <parameter replace="WID_PARENT" by="frontImageView" />

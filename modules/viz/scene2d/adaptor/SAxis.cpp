@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/SAxis.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SAxis::SAxis() noexcept :
     m_interval(1.f),
@@ -274,7 +274,7 @@ void SAxis::processInteraction( sight::viz::scene2d::data::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SAxis::getAutoConnections() const
+service::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

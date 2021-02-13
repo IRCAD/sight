@@ -37,7 +37,7 @@ namespace sight::modules::ui::base::metrics
 namespace action
 {
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 

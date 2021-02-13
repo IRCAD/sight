@@ -14,7 +14,7 @@ set( REQUIREMENTS
     module_viz_ogreQt              # Enable Ogre to render things in Qt window.
 
     # Objects declaration
-    module_services
+    module_service
     data
     viz_scene2d
     io_dimse

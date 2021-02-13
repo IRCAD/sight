@@ -24,7 +24,7 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace ExTimeLine
 {
@@ -33,13 +33,13 @@ namespace ExTimeLine
  * @brief This service is just a hack to block the main thread. Services on the other threads can run.
  * Without that, the application exits immediately since we have no GUI.
  */
-class EXTIMELINE_CLASS_API SMain final : public services::IService
+class EXTIMELINE_CLASS_API SMain final : public service::IService
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMain, services::IService)
+    fwCoreServiceMacro(SMain, service::IService)
 
     /// Creates the service.
     EXTIMELINE_API SMain() noexcept;

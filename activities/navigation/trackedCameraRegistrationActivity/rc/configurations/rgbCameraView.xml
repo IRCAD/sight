@@ -1,4 +1,4 @@
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>rgbCameraView</id>
     <parameters>
         <param name="WID_PARENT" />

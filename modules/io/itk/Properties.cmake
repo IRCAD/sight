@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     ui_base
     io_itk
-    services
+    service
     io_base
 )
 set( REQUIREMENTS  )

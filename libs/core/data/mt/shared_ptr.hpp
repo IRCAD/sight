@@ -24,7 +24,7 @@
 
 #include <memory>
 
-namespace sight::services
+namespace sight::service
 {
 namespace registry
 {
@@ -33,7 +33,7 @@ class ObjectService;
 class IService;
 }
 
-namespace sight::activities
+namespace sight::activity
 {
 class IActivityLauncher;
 }
@@ -115,8 +115,8 @@ public:
 protected:
 
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    friend class services::IService;
-    friend class services::registry::ObjectService;
+    friend class service::IService;
+    friend class service::registry::ObjectService;
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()

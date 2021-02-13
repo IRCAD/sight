@@ -32,7 +32,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
@@ -55,7 +55,7 @@
 namespace sight::modules::navigation::openvslam
 {
 
-fwServicesRegisterMacro( services::ITracker, ::sight::modules::navigation::openvslam::SOpenvslam)
+fwServicesRegisterMacro( service::ITracker, ::sight::modules::navigation::openvslam::SOpenvslam)
 
 static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
@@ -85,13 +85,13 @@ static const core::com::Signals::SignalKeyType s_VOCFILE_LOADED_SIG          = "
 
 static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
 
-static const services::IService::KeyType s_VIDEOPOINTS_INPUT     = "videoPoint";
-static const services::IService::KeyType s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
-static const services::IService::KeyType s_TIMELINE2_INPUT       = "timeline2";
-static const services::IService::KeyType s_CAMERA_INPUT          = "camera";
-static const services::IService::KeyType s_SCALE_INPUT           = "scale";
+static const service::IService::KeyType s_VIDEOPOINTS_INPUT     = "videoPoint";
+static const service::IService::KeyType s_CAMERA_MATRIXTL_INOUT = "cameraMatrixTL";
+static const service::IService::KeyType s_TIMELINE2_INPUT       = "timeline2";
+static const service::IService::KeyType s_CAMERA_INPUT          = "camera";
+static const service::IService::KeyType s_SCALE_INPUT           = "scale";
 
-static const services::IService::KeyType s_POINTCLOUD_OUTPUT = "pointCloud";
+static const service::IService::KeyType s_POINTCLOUD_OUTPUT = "pointCloud";
 
 static const std::string s_DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string s_MODE_CONFIG       = "mode";
@@ -152,7 +152,7 @@ SOpenvslam::~SOpenvslam() noexcept
 
 void SOpenvslam::configuring()
 {
-    this->services::ITracker::configuring();
+    this->service::ITracker::configuring();
     const ConfigType cfg = this->getConfigTree();
 
     m_downSampleWidth = cfg.get< size_t >(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);

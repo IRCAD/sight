@@ -7,10 +7,10 @@ set( DEPENDENCIES
     data
     io_base
     ui_base
-    services
+    service
     io_vtk
 )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
 )

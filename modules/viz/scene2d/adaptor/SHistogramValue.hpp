@@ -94,7 +94,7 @@ private:
      * Connect data::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
      * modules::viz::scene2d::adaptor::SHistogramValue::s_UPDATE_SLOT.
      */
-    virtual services::IService::KeyConnectionsMap getAutoConnections() const override;
+    virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Draws the text at the clicked position.
     virtual void updating() override;

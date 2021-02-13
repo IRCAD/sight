@@ -9,11 +9,11 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    services
+    service
     io_zip
     io_base
 )
 set( REQUIREMENTS
-    module_services
+    module_service
 )
 

@@ -29,7 +29,7 @@
 #include <data/Object.hpp>
 #include <data/Series.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/dicom/writer/Series.hpp>
 
 #include <filesystem>
@@ -56,11 +56,11 @@ namespace sight::modules::io::dicom
  * @subsection Input Input
  * - \b data [sight::data::ModelSeries]: ModelSeries to save in Dicom.
  */
-class MODULE_IO_DICOM_CLASS_API SSurfaceSegmentationWriter : public sight::io::base::services::IWriter
+class MODULE_IO_DICOM_CLASS_API SSurfaceSegmentationWriter : public sight::io::base::service::IWriter
 {
 
 public:
-    fwCoreServiceMacro(SSurfaceSegmentationWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SSurfaceSegmentationWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief Constructor
@@ -97,7 +97,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
 

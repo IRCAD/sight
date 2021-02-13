@@ -27,11 +27,11 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::base::SSwitchMatrices,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::base::SSwitchMatrices,
                          ::sight::data::TransformationMatrix3D)
 
 namespace sight::modules::geometry::base
@@ -40,8 +40,8 @@ namespace sight::modules::geometry::base
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchToMatrix";
 
-const services::IService::KeyType s_MATRIX_OUTPUT = "output";
-const services::IService::KeyType s_MATRIX_INPUT  = "matrix";
+const service::IService::KeyType s_MATRIX_OUTPUT = "output";
+const service::IService::KeyType s_MATRIX_INPUT  = "matrix";
 
 // ----------------------------------------------------------------------------
 
@@ -73,9 +73,9 @@ void SSwitchMatrices::stopping()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
+service::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

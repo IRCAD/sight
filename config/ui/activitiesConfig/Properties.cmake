@@ -1,4 +1,4 @@
-set( NAME activitiesConfig )
+set( NAME activityConfig )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES  )

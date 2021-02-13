@@ -6,12 +6,12 @@ set( DEPENDENCIES
     core
     utestData
     data
-    services
+    service
     io_base
 )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
     module_ui_base
     module_io_itk
 )

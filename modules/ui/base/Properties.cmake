@@ -6,12 +6,12 @@ set( DEPENDENCIES
     atoms
     core
     data
-    services
-    activities
+    service
+    activity
     io_base
     io_atoms
     ui_base
 )
 set( REQUIREMENTS
-    module_services
+    module_service
 )

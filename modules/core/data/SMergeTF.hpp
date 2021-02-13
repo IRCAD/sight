@@ -28,7 +28,7 @@
 #include <data/Point.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::data
 {
@@ -54,12 +54,12 @@ namespace sight::modules::data
  * @subsection In-Out In-Out
  * - \b tf [sight::data::TransferFunction]: the merged TF.
  */
-class MODULE_DATA_CLASS_API SMergeTF final : public services::IController
+class MODULE_DATA_CLASS_API SMergeTF final : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SMergeTF, ::sight::services::IController)
+    fwCoreServiceMacro(SMergeTF, ::sight::service::IController)
 
     /// Creates the service.
     MODULE_DATA_API SMergeTF() noexcept;

@@ -26,7 +26,7 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -38,7 +38,7 @@ fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkSender, ::sight::mod
 namespace sight::modules::io::igtl
 {
 
-const services::IService::KeyType s_OBJECTS_GROUP = "objects";
+const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ SServerSender::~SServerSender()
 
 void SServerSender::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_portConfig = config.get("port", "4242");
 
@@ -69,8 +69,8 @@ void SServerSender::configuring()
     const auto keyCfg = configIn.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const services::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName               = attr.get("deviceName", "Sight");
+        const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName              = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
     }
 }

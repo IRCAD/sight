@@ -27,7 +27,7 @@
 
 #include <data/Composite.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::modules::ui::qml::activity
 
 fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::modules::ui::qml::activity::SActivitySequencer )
 
-const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
@@ -199,7 +199,7 @@ void SActivitySequencer::previous()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+service::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );

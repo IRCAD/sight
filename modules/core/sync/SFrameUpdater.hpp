@@ -30,7 +30,7 @@
 #include <data/Image.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::sync
 {
@@ -57,11 +57,11 @@ namespace sight::modules::sync
  * @subsection In-Out In-Out:
  * - \b key2 [sight::data::Image]: frame where to extract a buffer of a timeline.
  */
-class MODULE_SYNC_CLASS_API SFrameUpdater : public services::IController
+class MODULE_SYNC_CLASS_API SFrameUpdater : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SFrameUpdater, services::IController)
+    fwCoreServiceMacro(SFrameUpdater, service::IController)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_FRAME_SLOT;
 
@@ -112,7 +112,7 @@ private:
      * Connect data::TimeLine::s_OBJECT_PUSHED_SIG to s_UPDATE_FRAME_SLOT
      * Connect data::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
      */
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Frame timeline
     data::FrameTL::csptr m_frameTL;

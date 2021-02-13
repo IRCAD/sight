@@ -1,4 +1,4 @@
-<extension implements="::sight::services::registry::AppConfig">
+<extension implements="::sight::service::registry::AppConfig">
     <id>displayImageConfig</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />

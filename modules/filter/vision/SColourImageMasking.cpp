@@ -27,7 +27,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -37,7 +37,7 @@
 namespace sight::modules::filter::vision
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::vision::SColourImageMasking)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SColourImageMasking)
 
 const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
 const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
@@ -47,9 +47,9 @@ const core::com::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackg
 const core::com::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
 const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
-const services::IService::KeyType s_MASK_KEY          = "mask";
-const services::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
-const services::IService::KeyType s_VIDEO_MASK_TL_KEY = "videoMaskTL";
+const service::IService::KeyType s_MASK_KEY          = "mask";
+const service::IService::KeyType s_VIDEO_TL_KEY      = "videoTL";
+const service::IService::KeyType s_VIDEO_MASK_TL_KEY = "videoMaskTL";
 
 // ------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ SColourImageMasking::~SColourImageMasking() noexcept
 
 void SColourImageMasking::configuring()
 {
-    const services::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const service::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
     m_noise                = config.get<double>("noise", 0.0);
@@ -100,9 +100,9 @@ void SColourImageMasking::configuring()
     m_lowerColor = ::cv::Scalar(0, 0, 0);
     m_upperColor = ::cv::Scalar(255, 255, 255);
 
-    const services::IService::ConfigType hsvConfig = this->getConfigTree().get_child("HSV");
-    std::string s_lowerValue                       = hsvConfig.get<std::string>("lower", "");
-    std::string s_upperValue                       = hsvConfig.get<std::string>("upper", "");
+    const service::IService::ConfigType hsvConfig = this->getConfigTree().get_child("HSV");
+    std::string s_lowerValue                      = hsvConfig.get<std::string>("lower", "");
+    std::string s_upperValue                      = hsvConfig.get<std::string>("upper", "");
 
     const ::boost::char_separator<char> sep {",", ";"};
 
@@ -148,7 +148,7 @@ void SColourImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SColourImageMasking::getAutoConnections() const
+service::IService::KeyConnectionsMap SColourImageMasking::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

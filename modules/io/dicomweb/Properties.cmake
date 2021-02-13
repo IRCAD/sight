@@ -9,10 +9,10 @@ set( DEPENDENCIES
     module_ui_qt
     io_http
     data
-    services
+    service
     io_base
     )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
 )

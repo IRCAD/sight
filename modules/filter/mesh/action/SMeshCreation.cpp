@@ -30,7 +30,7 @@
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/helper/Mesh.hpp>
 #include <io/vtk/vtk.hpp>

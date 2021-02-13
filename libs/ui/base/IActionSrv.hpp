@@ -28,7 +28,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {
@@ -36,12 +36,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the menu items.
  */
-class UI_BASE_CLASS_API IActionSrv : public ::sight::services::IService
+class UI_BASE_CLASS_API IActionSrv : public ::sight::service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IActionSrv, services::IService)
+    fwCoreServiceMacro(IActionSrv, service::IService)
     fwCoreAllowSharedFromThis();
 
     /**

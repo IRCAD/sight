@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     utestData
     data
-    activities
+    activity
 )
 set( REQUIREMENTS
 )

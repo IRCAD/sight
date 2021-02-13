@@ -26,11 +26,11 @@
 
 #include <data/String.hpp>
 
-#include <services/AppConfigManager.hpp>
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/AppConfig.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/AppConfigManager.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/AppConfig.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <QApplication>
 #include <QMainWindow>
@@ -63,13 +63,13 @@ void GuiQtTest::testDefaultFrame()
 {
     data::String::sptr object = data::String::New();
 
-    services::IService::ConfigType frameConfig;
+    service::IService::ConfigType frameConfig;
 
     frameConfig.put("gui.frame.name", "guiQtUnitTest");
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
-    services::IService::sptr srv = services::add( "::sight::modules::ui::base::frame::SDefaultFrame" );
+    service::IService::sptr srv = service::add( "::sight::modules::ui::base::frame::SDefaultFrame" );
     CPPUNIT_ASSERT(srv);
 
     srv->setConfiguration( frameConfig );
@@ -84,7 +84,7 @@ void GuiQtTest::testDefaultFrame()
     CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
 
     srv->stop();
-    services::OSR::unregisterService( srv );
+    service::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------

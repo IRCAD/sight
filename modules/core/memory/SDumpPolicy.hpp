@@ -27,17 +27,17 @@
 #include <core/memory/IPolicy.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::memory
 {
 
-class MODULE_MEMORY_CLASS_API SDumpPolicy : public services::IController
+class MODULE_MEMORY_CLASS_API SDumpPolicy : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SDumpPolicy, ::sight::services::IController)
+    fwCoreServiceMacro(SDumpPolicy, ::sight::service::IController)
 
     MODULE_MEMORY_API SDumpPolicy();
 

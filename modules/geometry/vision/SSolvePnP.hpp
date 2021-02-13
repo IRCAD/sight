@@ -24,7 +24,7 @@
 
 #include "modules/geometry/vision/config.hpp"
 
-#include <services/IRegisterer.hpp>
+#include <service/IRegisterer.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -61,11 +61,11 @@ namespace sight::modules::geometry::vision
  * - \b inverse (optionnal): reverse output matrix. If 'inverse' is "true" then the camera pose is computed,
  *      object pose is computed otherwise.(default: "false").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public services::IRegisterer
+class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public service::IRegisterer
 {
 public:
 
-    fwCoreServiceMacro(SSolvePnP, sight::services::IRegisterer)
+    fwCoreServiceMacro(SSolvePnP, sight::service::IRegisterer)
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SSolvePnP() noexcept;

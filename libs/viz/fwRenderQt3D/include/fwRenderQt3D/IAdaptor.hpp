@@ -25,7 +25,7 @@
 #include "fwRenderQt3D/config.hpp"
 #include "fwRenderQt3D/SRender.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace fwRenderQt3D
 {
@@ -37,12 +37,12 @@ namespace fwRenderQt3D
  * - \b updateVisibility(bool): shows or hides the mesh.
  * - \b toggleVisibility(): Toggle whether the adaptor is shown or not.
  */
-class FWRENDERQT3D_CLASS_API IAdaptor : public services::IService
+class FWRENDERQT3D_CLASS_API IAdaptor : public service::IService
 {
 
 public:
 
-    fwCoreClassMacro(IAdaptor, services::IService)
+    fwCoreClassMacro(IAdaptor, service::IService)
 
     /// Gets the render service using this adaptor.
     FWRENDERQT3D_API SRender::sptr getRenderService() const;

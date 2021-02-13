@@ -8,7 +8,7 @@ set( REQUIREMENTS
         2DVisualizationActivity
         qtSceneConfig
         data
-        module_services
+        module_service
         module_ui_base
         module_ui_qt
         module_data

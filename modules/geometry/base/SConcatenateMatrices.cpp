@@ -29,18 +29,18 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::base::SConcatenateMatrices,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::base::SConcatenateMatrices,
                          ::sight::data::TransformationMatrix3D)
 
 namespace sight::modules::geometry::base
 {
 
-static const services::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
-static const services::IService::KeyType s_OUTPUT             = "output";
+static const service::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
+static const service::IService::KeyType s_OUTPUT             = "output";
 
 // ----------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ void SConcatenateMatrices::updating()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
+service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

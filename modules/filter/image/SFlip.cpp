@@ -33,8 +33,8 @@
 namespace sight::modules::filter::image
 {
 
-static const services::IService::KeyType s_IMAGE_IN  = "source";
-static const services::IService::KeyType s_IMAGE_OUT = "target";
+static const service::IService::KeyType s_IMAGE_IN  = "source";
+static const service::IService::KeyType s_IMAGE_OUT = "target";
 
 const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISX_SLOT = "flipAxisX";
 const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXISY_SLOT = "flipAxisY";
@@ -129,9 +129,9 @@ void SFlip::flipAxisZ()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SFlip::getAutoConnections() const
+service::IService::KeyConnectionsMap SFlip::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 

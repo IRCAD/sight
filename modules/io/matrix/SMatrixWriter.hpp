@@ -26,7 +26,7 @@
 
 #include <data/MatrixTL.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <fstream>
 
@@ -60,12 +60,12 @@ namespace sight::modules::io::matrix
  * @subsection Configuration Configuration
  * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  */
-class MODULE_IO_MATRIX_CLASS_API SMatrixWriter : public sight::io::base::services::IWriter
+class MODULE_IO_MATRIX_CLASS_API SMatrixWriter : public sight::io::base::service::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SMatrixWriter, sight::io::base::service::IWriter)
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatrixWriter() noexcept;
@@ -74,7 +74,7 @@ public:
     MODULE_IO_MATRIX_API virtual ~SMatrixWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_MATRIX_API virtual services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_MATRIX_API virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Display a location dialog allowing to select the video file to save
@@ -86,8 +86,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_MATRIX_API virtual void openLocationDialog() override;
 
-    /// Return file type (io::base::services::FOLDER)
-    MODULE_IO_MATRIX_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::service::FOLDER)
+    MODULE_IO_MATRIX_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
 protected:
 

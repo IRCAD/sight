@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -48,11 +48,11 @@ namespace sight::modules::filter::image
  * - \b result [sight::data::Image]: substract image.
  */
 
-class MODULE_FILTER_IMAGE_CLASS_API SImagesSubstract final : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SImagesSubstract final : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SImagesSubstract, ::sight::services::IOperator)
+    fwCoreServiceMacro(SImagesSubstract, ::sight::service::IOperator)
 
     MODULE_FILTER_IMAGE_API SImagesSubstract() noexcept          = default;
     MODULE_FILTER_IMAGE_API virtual ~SImagesSubstract() noexcept = default;

@@ -22,7 +22,7 @@
 
 #include "ClientQtTest.hpp"
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -117,7 +117,7 @@ void ClientQtTest::tearDown()
     m_worker->getFuture().wait();
     m_worker.reset();
 
-    services::registry::ActiveWorkers::getDefault()->clearRegistry();
+    service::registry::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 

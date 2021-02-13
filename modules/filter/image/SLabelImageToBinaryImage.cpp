@@ -28,7 +28,7 @@
 #include <data/Integer.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -42,10 +42,10 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SLabelImageToBinaryImage)
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SLabelImageToBinaryImage)
 
-static const services::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
-static const services::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
+static const service::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
+static const service::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
 
 typedef std::function< std::uint8_t(const std::uint8_t&) > FunctionType;
 
@@ -188,7 +188,7 @@ void SLabelImageToBinaryImage::stopping()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
+service::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -32,7 +32,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::data
 {
@@ -73,12 +73,12 @@ namespace sight::modules::data
  *    - \b mode: 'include' or 'exclude'. Defines if the series is notified (include) or not (exclude).
  *    - \b id: id of the activity
  */
-class MODULE_DATA_CLASS_API SSeriesSignal : public services::IController
+class MODULE_DATA_CLASS_API SSeriesSignal : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SSeriesSignal, services::IController)
+    fwCoreServiceMacro(SSeriesSignal, service::IController)
 
     /// Constructor. Do nothing.
     MODULE_DATA_API SSeriesSignal() noexcept;

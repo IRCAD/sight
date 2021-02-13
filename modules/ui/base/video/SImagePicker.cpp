@@ -27,21 +27,21 @@
 
 #include <data/Camera.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::base::SImagePicker,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::base::SImagePicker,
                          ::sight::data::PointList)
 
 //-----------------------------------------------------------------------------
 
 const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
-const services::IService::KeyType s_POINTLIST_INOUT       = "pointList";
-const services::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";
-const services::IService::KeyType s_CAMERA_INOUT          = "camera";
+const service::IService::KeyType s_POINTLIST_INOUT       = "pointList";
+const service::IService::KeyType s_PIXEL_POINTLIST_INOUT = "pixelPointList";
+const service::IService::KeyType s_CAMERA_INOUT          = "camera";
 
 SImagePicker::SImagePicker() noexcept
 {

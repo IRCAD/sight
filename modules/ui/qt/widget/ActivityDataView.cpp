@@ -22,9 +22,9 @@
 
 #include "modules/ui/qt/widget/ActivityDataView.hpp"
 
-#include <activities/IActivityValidator.hpp>
-#include <activities/IObjectValidator.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IActivityValidator.hpp>
+#include <activity/IObjectValidator.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/runtime/Convert.hpp>
 
@@ -43,12 +43,12 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <services/IService.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ObjectService.hpp>
-#include <services/registry/ServiceConfig.hpp>
+#include <service/IService.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
-#include <io/base/services/ioTypes.hpp>
+#include <io/base/service/ioTypes.hpp>
 
 #include <QApplication>
 #include <QDropEvent>
@@ -105,9 +105,9 @@ bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
     {
         QDropEvent* dropEvent = static_cast<QDropEvent*>(_event);
 
-        size_t index                                          = static_cast<size_t>(this->currentIndex());
-        activities::registry::ActivityRequirement requirement = m_activityInfo.requirements[index];
-        QPointer<QTreeWidget> tree                            = m_treeWidgets[index];
+        size_t index                                        = static_cast<size_t>(this->currentIndex());
+        activity::registry::ActivityRequirement requirement = m_activityInfo.requirements[index];
+        QPointer<QTreeWidget> tree                          = m_treeWidgets[index];
 
         // get dropped item from event mimedata
         const QMimeData* qMimeData = dropEvent->mimeData();
@@ -185,9 +185,9 @@ bool ActivityDataView::eventFilter(QObject* _obj, QEvent* _event)
 
 //-----------------------------------------------------------------------------
 
-void ActivityDataView::fillInformation(const activities::registry::ActivityInfo& _info)
+void ActivityDataView::fillInformation(const activity::registry::ActivityInfo& _info)
 {
-    namespace ActReg = activities::registry;
+    namespace ActReg = activity::registry;
 
     m_activityInfo = _info;
     this->clear();
@@ -350,10 +350,10 @@ void ActivityDataView::fillInformation(const activities::registry::ActivityInfo&
 
 void ActivityDataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries)
 {
-    namespace ActReg = activities::registry;
-    activities::registry::ActivityInfo info;
+    namespace ActReg = activity::registry;
+    activity::registry::ActivityInfo info;
     info =
-        activities::registry::Activities::getDefault()->getInfo(_activitySeries->getActivityConfigId());
+        activity::registry::Activity::getDefault()->getInfo(_activitySeries->getActivityConfigId());
     m_activityInfo = info;
 
     data::Composite::sptr activitySeriesData = _activitySeries->getData();
@@ -362,7 +362,7 @@ void ActivityDataView::fillInformation(const data::ActivitySeries::sptr& _activi
 
     for (size_t i = 0; i < m_activityInfo.requirements.size(); ++i)
     {
-        activities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
+        activity::registry::ActivityRequirement req = m_activityInfo.requirements[i];
 
         data::Object::sptr obj = activitySeriesData->at< data::Object >(req.name);
         if (obj)
@@ -417,8 +417,8 @@ data::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _erro
 {
     data::Object::sptr object;
 
-    activities::registry::ActivityRequirement req = m_activityInfo.requirements[_index];
-    QPointer<QTreeWidget> tree                    = m_treeWidgets[_index];
+    activity::registry::ActivityRequirement req = m_activityInfo.requirements[_index];
+    QPointer<QTreeWidget> tree                  = m_treeWidgets[_index];
 
     bool ok = true;
     if ((req.minOccurs == 1 && req.maxOccurs == 1) ||
@@ -542,11 +542,11 @@ data::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _erro
     if (object && !req.validator.empty())
     {
         /// Process object validator
-        activities::IValidator::sptr validator           = activities::validator::factory::New(req.validator);
-        activities::IObjectValidator::sptr dataValidator = activities::IObjectValidator::dynamicCast(validator);
+        activity::IValidator::sptr validator           = activity::validator::factory::New(req.validator);
+        activity::IObjectValidator::sptr dataValidator = activity::IObjectValidator::dynamicCast(validator);
         SLM_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
 
-        activities::IValidator::ValidationType validation = dataValidator->validate(object);
+        activity::IValidator::ValidationType validation = dataValidator->validate(object);
         if(!validation.first)
         {
             _errorMsg += "\n" + validation.second;
@@ -561,7 +561,7 @@ data::Object::sptr ActivityDataView::checkData(size_t _index, std::string& _erro
 
 bool ActivityDataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, std::string& errorMsg)
 {
-    namespace ActReg = activities::registry;
+    namespace ActReg = activity::registry;
 
     data::Composite::sptr composite = actSeries->getData();
 
@@ -571,7 +571,7 @@ bool ActivityDataView::checkAndComputeData(const data::ActivitySeries::sptr& act
     // Check if all required data are present
     for (size_t i = 0; i < m_activityInfo.requirements.size(); ++i)
     {
-        activities::registry::ActivityRequirement req = m_activityInfo.requirements[i];
+        activity::registry::ActivityRequirement req = m_activityInfo.requirements[i];
         std::string msg;
         data::Object::sptr obj = this->checkData(i, msg);
         if (obj)
@@ -588,13 +588,13 @@ bool ActivityDataView::checkAndComputeData(const data::ActivitySeries::sptr& act
     for (std::string validatotImpl : m_activityInfo.validatorsImpl)
     {
         /// Process activity validator
-        activities::IValidator::sptr validator = activities::validator::factory::New(validatotImpl);
+        activity::IValidator::sptr validator = activity::validator::factory::New(validatotImpl);
 
-        activities::IActivityValidator::sptr activityValidator =
-            activities::IActivityValidator::dynamicCast(validator);
+        activity::IActivityValidator::sptr activityValidator =
+            activity::IActivityValidator::dynamicCast(validator);
         SLM_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
 
-        activities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+        activity::IValidator::ValidationType validation = activityValidator->validate(actSeries);
         if(!validation.first)
         {
             ok        = false;
@@ -642,7 +642,7 @@ void ActivityDataView::createNewObject()
 {
     size_t index = static_cast<size_t>(this->currentIndex());
 
-    activities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
+    activity::registry::ActivityRequirement req = m_activityInfo.requirements[index];
 
     std::string type = req.type;
 
@@ -669,7 +669,7 @@ void ActivityDataView::importObject()
 {
     const size_t index = static_cast<size_t>(this->currentIndex());
 
-    activities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
+    activity::registry::ActivityRequirement req = m_activityInfo.requirements[index];
 
     const std::string type = req.type;
 
@@ -700,7 +700,7 @@ void ActivityDataView::importObjectFromSDB()
 {
     const size_t index = static_cast<size_t>(this->currentIndex());
 
-    activities::registry::ActivityRequirement req = m_activityInfo.requirements[index];
+    activity::registry::ActivityRequirement req = m_activityInfo.requirements[index];
 
     const std::string type = req.type;
 
@@ -758,12 +758,12 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
                                                 const std::string& _ioSelectorSrvConfig)
 {
     data::Object::sptr obj;
-    services::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = services::add("::modules::ui::base::editor::SIOSelector");
+    service::IService::sptr ioSelectorSrv;
+    ioSelectorSrv = service::add("::modules::ui::base::editor::SIOSelector");
 
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = services::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
-                                                                              "::modules::ui::base::editor::SIOSelector");
+    ioCfg = service::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
+                                                                             "::modules::ui::base::editor::SIOSelector");
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
@@ -773,12 +773,12 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
     {
         ioSelectorSrv->setConfiguration(srvConfig);
         ioSelectorSrv->configure();
-        ioSelectorSrv->setObjectId(io::base::services::s_DATA_KEY, "objRead");
+        ioSelectorSrv->setObjectId(io::base::service::s_DATA_KEY, "objRead");
         ioSelectorSrv->start();
         ioSelectorSrv->update();
-        obj = ioSelectorSrv->getOutput< data::Object >(io::base::services::s_DATA_KEY);
+        obj = ioSelectorSrv->getOutput< data::Object >(io::base::service::s_DATA_KEY);
         ioSelectorSrv->stop();
-        services::OSR::unregisterService( ioSelectorSrv );
+        service::OSR::unregisterService( ioSelectorSrv );
     }
     catch(std::exception& e)
     {
@@ -791,7 +791,7 @@ data::Object::sptr ActivityDataView::readObject(const std::string& _classname,
         {
             ioSelectorSrv->stop();
         }
-        services::OSR::unregisterService( ioSelectorSrv );
+        service::OSR::unregisterService( ioSelectorSrv );
     }
     return obj;
 }

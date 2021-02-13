@@ -24,7 +24,7 @@
 
 #include "modules/geometry/vision/config.hpp"
 
-#include <services/ICalibration.hpp>
+#include <service/ICalibration.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -68,10 +68,10 @@ namespace sight::modules::geometry::vision::charuco
  * - \b board : preferences keys to retrieve the number of squares of the board in width and height, the size of each
  * square in mm (others charuco preferences are not used here).
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVExtrinsic : public services::ICalibration
+class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVExtrinsic : public service::ICalibration
 {
 public:
-    fwCoreServiceMacro(SOpenCVExtrinsic, sight::services::ICalibration)
+    fwCoreServiceMacro(SOpenCVExtrinsic, sight::service::ICalibration)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;

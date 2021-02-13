@@ -40,7 +40,7 @@ namespace core::thread
 class Timer;
 }
 
-namespace io::base::services
+namespace io::base::service
 {
 class IReader;
 }
@@ -131,7 +131,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    WPTR(sight::io::base::services::IReader) m_dicomReader;
+    WPTR(sight::io::base::service::IReader) m_dicomReader;
 
     /// Image Key
     std::string m_imageKey;

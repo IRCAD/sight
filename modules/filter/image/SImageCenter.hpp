@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -52,11 +52,11 @@ namespace sight::modules::filter::image
  * from world origin(0,0,0) to the image center (in mm).
  *
  */
-class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SImageCenter, services::IOperator)
+    fwCoreServiceMacro(SImageCenter, service::IOperator)
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SImageCenter();

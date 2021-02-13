@@ -25,8 +25,8 @@
 #include "viz/scene2d/registry/Adaptor.hpp"
 #include "viz/scene2d/Scene2DGraphicsView.hpp"
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <QGraphicsItemGroup>
 

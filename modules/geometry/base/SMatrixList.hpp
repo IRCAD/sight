@@ -27,7 +27,7 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -79,13 +79,13 @@ namespace sight::modules::geometry::base
  * @subsection Output Output:
  * - \b vector [sight::data::Vector]: vector containing matrices
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SMatrixList final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API SMatrixList final : public service::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast,...
-    fwCoreServiceMacro(SMatrixList, services::IService)
+    fwCoreServiceMacro(SMatrixList, service::IService)
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API SMatrixList() noexcept;

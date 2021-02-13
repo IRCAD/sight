@@ -29,17 +29,17 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/AppConfig.hpp>
+#include <service/macros.hpp>
+#include <service/registry/AppConfig.hpp>
 
 namespace sight::modules::ui::qt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::qt::SSeriesViewer, ::sight::data::Vector)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::SSeriesViewer, ::sight::data::Vector)
 
-static const services::IService::KeyType s_SERIES_INPUT = "series";
+static const service::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -105,7 +105,7 @@ void SSeriesViewer::updating()
 
             std::map< std::string, std::string > replaceMap;
             // Generate generic UID
-            std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier( this->getID() );
+            std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier( this->getID() );
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
@@ -125,7 +125,7 @@ void SSeriesViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = services::IAppConfigManager::New();
+            m_configTemplateManager = service::IAppConfigManager::New();
             m_configTemplateManager->setConfig( configId, replaceMap );
 
             // Launch config
@@ -189,7 +189,7 @@ void SSeriesViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
+service::IService::KeyConnectionsMap SSeriesViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -26,16 +26,16 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 namespace sight::modules::navigation::calibration
 {
 
-static const services::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
-static const services::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
-static const services::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesVector";
+static const service::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
+static const service::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
+static const service::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesVector";
 
 // -----------------------------------------------------------------------------
 

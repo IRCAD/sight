@@ -31,9 +31,9 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -47,7 +47,7 @@
 namespace sight::modules::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::dicom::SDicomSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::dicom::SDicomSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -72,7 +72,7 @@ SDicomSeriesDBReader::~SDicomSeriesDBReader() noexcept
 
 void SDicomSeriesDBReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 
     // Show log dialog
     core::runtime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
@@ -267,7 +267,7 @@ void SDicomSeriesDBReader::updating()
         {
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
-                this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
+                this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
@@ -297,9 +297,9 @@ void SDicomSeriesDBReader::updating()
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SDicomSeriesDBReader::getIOPathType() const
+sight::io::base::service::IOPathType SDicomSeriesDBReader::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------

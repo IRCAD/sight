@@ -30,7 +30,7 @@
 
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
 

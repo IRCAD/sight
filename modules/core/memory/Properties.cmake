@@ -8,7 +8,7 @@ set( DEPENDENCIES
     data 
     
     
-    services 
+    service 
     
 )
 set( REQUIREMENTS  )

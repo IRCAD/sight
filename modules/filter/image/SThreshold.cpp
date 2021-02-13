@@ -31,7 +31,7 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -70,14 +70,14 @@ void SThreshold::stopping()
 
 void SThreshold::configuring()
 {
-    const services::IService::ConfigType& srvConfig = this->getConfigTree();
+    const service::IService::ConfigType& srvConfig = this->getConfigTree();
 
     SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
 
-    const services::IService::ConfigType& config = srvConfig.get_child("config");
+    const service::IService::ConfigType& config = srvConfig.get_child("config");
 
     SLM_ASSERT("You must have one <threshold/> element.", config.count("threshold") == 1);
-    const services::IService::ConfigType& thresholdCfg = config.get_child("threshold");
+    const service::IService::ConfigType& thresholdCfg = config.get_child("threshold");
     m_threshold = thresholdCfg.get_value<double>();
 }
 

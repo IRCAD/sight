@@ -30,7 +30,7 @@
 #include <core/thread/Timer.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <services/IGrabber.hpp>
+#include <service/IGrabber.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -102,12 +102,12 @@ namespace sight::modules::io::video
  * It will have not effects if reading a video or if a timestamp can be deduced from images filenames
  * (ex. img_642752427.jpg).
  */
-class MODULE_IO_VIDEO_CLASS_API SFrameGrabber : public services::IGrabber
+class MODULE_IO_VIDEO_CLASS_API SFrameGrabber : public service::IGrabber
 {
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, sight::services::IGrabber)
+    fwCoreServiceMacro(SFrameGrabber, sight::service::IGrabber)
 
     /// Constructor. Do nothing.
     MODULE_IO_VIDEO_API SFrameGrabber() noexcept;

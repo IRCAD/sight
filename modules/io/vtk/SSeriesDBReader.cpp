@@ -33,7 +33,7 @@
 #include <data/SeriesDB.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/SeriesDBReader.hpp>
 
@@ -47,7 +47,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::vtk::SSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -61,9 +61,9 @@ SSeriesDBReader::SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
+sight::io::base::service::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return sight::io::base::services::FILES;
+    return sight::io::base::service::FILES;
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ void SSeriesDBReader::stopping()
 
 void SSeriesDBReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ void SSeriesDBReader::updating()
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        auto lockedSeriesDB = this->getLockedInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
+        auto lockedSeriesDB = this->getLockedInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 

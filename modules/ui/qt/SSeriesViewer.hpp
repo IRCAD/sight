@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <services/IAppConfigManager.hpp>
-#include <services/IController.hpp>
+#include <service/IAppConfigManager.hpp>
+#include <service/IController.hpp>
 
 #include <map>
 
@@ -66,11 +66,11 @@ namespace sight::modules::ui::qt
  *     - \b by: specific value to replace for the parameter
  * - \b extract: extracts the object from the path and replaces pattern with its fwID
  */
-class MODULE_UI_QT_CLASS_API SSeriesViewer : public services::IController
+class MODULE_UI_QT_CLASS_API SSeriesViewer : public service::IController
 {
 
 public:
-    fwCoreServiceMacro(SSeriesViewer, services::IController)
+    fwCoreServiceMacro(SSeriesViewer, service::IController)
 
     /// Constructor
     MODULE_UI_QT_API SSeriesViewer();
@@ -130,7 +130,7 @@ private:
     typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
 
     /// Config manager
-    services::IAppConfigManager::sptr m_configTemplateManager;
+    service::IAppConfigManager::sptr m_configTemplateManager;
 
     /// Stores the wid of the view where the config will install its windows.
     std::string m_parentView;

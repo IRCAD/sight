@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ServiceFactory.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ServiceFactory.hpp>
 
 #include <QHBoxLayout>
 
@@ -56,7 +56,7 @@ void ClassFactoryRegistryInfo::updating( )
     m_tree->clearSelection();
     m_tree->clear();
 
-    typedef services::registry::ServiceFactory ServiceRegistry;
+    typedef service::registry::ServiceFactory ServiceRegistry;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
     for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )

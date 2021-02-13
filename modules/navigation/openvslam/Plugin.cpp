@@ -24,12 +24,13 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::navigation::openvslam
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::navigation::openvslam::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
+    "::sight::modules::navigation::openvslam::Plugin");
 
 //-----------------------------------------------------------------------------
 

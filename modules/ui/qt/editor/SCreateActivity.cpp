@@ -22,8 +22,8 @@
 
 #include "modules/ui/qt/editor/SCreateActivity.hpp"
 
-#include <activities/IBuilder.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IBuilder.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -37,7 +37,7 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -53,7 +53,7 @@
 #include <ui/base/dialog/SelectorDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-Q_DECLARE_METATYPE(sight::activities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activity::registry::ActivityInfo)
 
 namespace sight::modules::ui::qt
 {
@@ -89,7 +89,7 @@ void SCreateActivity::configuring()
 
     if(cfg.count("filter") == 1 )
     {
-        const services::IService::ConfigType& configFilter = cfg.get_child("filter");
+        const service::IService::ConfigType& configFilter = cfg.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -113,7 +113,7 @@ void SCreateActivity::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QGroupBox* groupBox = new QGroupBox(tr("Activities") );
+    QGroupBox* groupBox = new QGroupBox(tr("Activity") );
 
     QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setWidget(groupBox);
@@ -124,11 +124,11 @@ void SCreateActivity::starting()
 
     m_buttonGroup = new QButtonGroup(groupBox);
 
-    ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos();
+    ActivityInfoContainer infos = activity::registry::Activity::getDefault()->getInfos();
     m_activitiesInfo = this->getEnabledActivities(infos);
 
     // Add the load button
-    activities::registry::ActivityInfo infoLoad;
+    activity::registry::ActivityInfo infoLoad;
     infoLoad.title       = "Load activity";
     infoLoad.icon        = core::runtime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
@@ -165,7 +165,7 @@ void SCreateActivity::starting()
     int i = 1;
     int j = 0;
 
-    for(const activities::registry::ActivityInfo& info :  m_activitiesInfo)
+    for(const activity::registry::ActivityInfo& info :  m_activitiesInfo)
     {
         QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));
@@ -272,4 +272,4 @@ SCreateActivity::ActivityInfoContainer SCreateActivity::getEnabledActivities(con
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace activities
+} // namespace activity

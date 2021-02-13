@@ -26,7 +26,7 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <string>
 

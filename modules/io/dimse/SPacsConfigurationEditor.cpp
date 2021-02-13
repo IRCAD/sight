@@ -27,7 +27,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/dimse/exceptions/Base.hpp>
 
@@ -44,9 +44,9 @@ namespace sight::modules::io::dimse
 
 static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
 
-static const services::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
+static const service::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
-static const services::IService::KeyType s_CONFIG_INOUT = "config";
+static const service::IService::KeyType s_CONFIG_INOUT = "config";
 
 //------------------------------------------------------------------------------
 
@@ -256,15 +256,15 @@ void SPacsConfigurationEditor::pingPACS()
 
             if(success)
             {
-                const auto notif = this->signal< services::IService::SuccessNotifiedSignalType >(
-                    services::IService::s_SUCCESS_NOTIFIED_SIG);
+                const auto notif = this->signal< service::IService::SuccessNotifiedSignalType >(
+                    service::IService::s_SUCCESS_NOTIFIED_SIG);
                 notif->asyncEmit("Ping succeeded!");
                 SLM_INFO("Ping succeeded")
             }
             else
             {
-                const auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
-                    services::IService::s_FAILURE_NOTIFIED_SIG);
+                const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
+                    service::IService::s_FAILURE_NOTIFIED_SIG);
                 notif->asyncEmit("Ping failed!");
                 SLM_INFO("Ping failed")
             }

@@ -26,7 +26,7 @@
 
 #include <data/Object.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::data
 {
@@ -104,12 +104,12 @@ namespace sight::modules::data
  * - \b compositeKey (optional, only if target object in a Composite) : key of the object in the composite
  * - \b field (optional, only if target object in a data::Object) : name of the field
  */
-class MODULE_DATA_CLASS_API SManage : public services::IController
+class MODULE_DATA_CLASS_API SManage : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SManage, ::sight::services::IController)
+    fwCoreServiceMacro(SManage, ::sight::service::IController)
 
     /// Constructor.  Do nothing.
     MODULE_DATA_API SManage() noexcept;

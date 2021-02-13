@@ -1,14 +1,14 @@
 <plugin id="ExActivities" version="@PROJECT_VERSION@" >
 
     <requirement id="module_ui_qt" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_ui_base" />
     <requirement id="module_activity" />
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities" >
+    <extension implements="::activity::registry::Activity" >
         <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
@@ -25,7 +25,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities" >
+    <extension implements="::activity::registry::Activity" >
         <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
@@ -47,7 +47,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities" >
+    <extension implements="::activity::registry::Activity" >
         <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>
@@ -69,7 +69,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig" >
+    <extension implements="::sight::service::registry::ServiceConfig" >
         <id>ExActivities_Sequencer_SrvCfg</id>
         <service>::sight::modules::ui::qt::editor::SActivitySequencer</service>
         <desc>Configuration for sequencer</desc>
@@ -86,7 +86,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig" >
+    <extension implements="::sight::service::registry::ServiceConfig" >
         <id>ExActivities_Wizard_SrvCfg</id>
         <service>::sight::modules::ui::qt::editor::SActivityWizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
@@ -100,10 +100,10 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::AppConfigParameters" >
+    <extension implements="::sight::service::registry::AppConfigParameters" >
         <id>ExActivities_AppCfgParam</id>
         <parameters>
-            <param name="APP_NAME" value="Ex Activities @PROJECT_VERSION@" />
+            <param name="APP_NAME" value="Ex Activity @PROJECT_VERSION@" />
             <param name="ICON_PATH" value="ExActivities-@PROJECT_VERSION@/app.ico" />
             <param name="SEQUENCER_CONFIG" value="ExActivities_Sequencer_SrvCfg" />
             <param name="WIZARD_CONFIG" value="ExActivities_Wizard_SrvCfg" />

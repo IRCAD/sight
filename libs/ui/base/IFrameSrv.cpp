@@ -32,8 +32,8 @@
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -140,7 +140,7 @@ void IFrameSrv::create()
     SLM_ASSERT("["+this->getID()+"' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
                "'configuring()' method.", m_frameLayoutManager);
 
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_frameLayoutManager->createFrame();
         })).wait();
@@ -177,7 +177,7 @@ void IFrameSrv::create()
 
     if (m_hasMenuBar)
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_menuBarBuilder->createMenuBar(frame);
             })).wait();
@@ -187,7 +187,7 @@ void IFrameSrv::create()
 
     if (m_hasToolBar)
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_toolBarBuilder->createToolBar(frame);
             })).wait();
@@ -207,7 +207,7 @@ void IFrameSrv::destroy()
         m_viewRegistrar->unmanageToolBar();
         SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_toolBarBuilder->destroyToolBar();
             })).wait();
@@ -218,7 +218,7 @@ void IFrameSrv::destroy()
         m_viewRegistrar->unmanageMenuBar();
         SLM_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_menuBarBuilder->destroyMenuBar();
             })).wait();
@@ -227,7 +227,7 @@ void IFrameSrv::destroy()
     m_viewRegistrar->unmanage();
     SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_frameLayoutManager->destroyFrame();
         })).wait();

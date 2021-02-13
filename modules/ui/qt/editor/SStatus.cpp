@@ -28,8 +28,8 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -170,7 +170,7 @@ void SStatus::configuring()
 
             const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
-            BOOST_FOREACH(const services::IService::ConfigType::value_type& v, labelStatusConfig)
+            BOOST_FOREACH(const service::IService::ConfigType::value_type& v, labelStatusConfig)
             {
                 const std::string label  = v.second.get<std::string>("");
                 QPointer < QLabel > qLab = new QLabel();

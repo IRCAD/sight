@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 #include <geometry/data/VectorFunctions.hpp>
@@ -76,13 +76,13 @@ namespace sight::modules::filter::vision
  * - \b debug (optional, default=no) : Debug mode.
  * - \b convex (optional, default=yes) : Convex shape of extracted image.
  */
-class MODULE_FILTER_VISION_CLASS_API SUltrasoundImage final : public services::IOperator
+class MODULE_FILTER_VISION_CLASS_API SUltrasoundImage final : public service::IOperator
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SUltrasoundImage, services::IOperator)
+    fwCoreServiceMacro(SUltrasoundImage, service::IOperator)
 
     typedef core::com::Signal< void (int, std::string) > IntegerChangedSignalType;
 
@@ -113,7 +113,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      */
-    services::IService::KeyConnectionsMap getAutoConnections() const final;
+    service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Does nothing.
     void starting() final;

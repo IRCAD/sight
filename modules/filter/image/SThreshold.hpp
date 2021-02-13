@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -57,12 +57,12 @@ namespace sight::modules::filter::image
  * (Pixels with value lower than this value will be set to 0,
  * otherwise it will be set to the maximum value of the pixel type of the image.).
  */
-class MODULE_FILTER_IMAGE_CLASS_API SThreshold : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SThreshold : public service::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SThreshold, ::sight::services::IOperator)
+    fwCoreServiceMacro(SThreshold, ::sight::service::IOperator)
 
     MODULE_FILTER_IMAGE_API SThreshold() noexcept;
 

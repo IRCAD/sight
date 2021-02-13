@@ -5,7 +5,7 @@ set( TYPE LIBRARY )
 set( DEPENDENCIES   
     core
     data
-    services
+    service
     io_zip
     atoms
     io_atoms

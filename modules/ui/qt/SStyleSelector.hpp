@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <QString>
 
@@ -67,11 +67,11 @@ namespace sight::modules::ui::qt
         <service uid="..." type="::sight::modules::ui::qt::SStyleSelector" />
    @endcode
  */
-class MODULE_UI_QT_CLASS_API SStyleSelector : public services::IController
+class MODULE_UI_QT_CLASS_API SStyleSelector : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SStyleSelector, sight::services::IController)
+    fwCoreServiceMacro(SStyleSelector, sight::service::IController)
 
     /// Constructor, initializes slots.
     MODULE_UI_QT_API SStyleSelector() noexcept;
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from services::IService )
+    /** @name Service methods ( override from service::IService )
      * @{
      */
 

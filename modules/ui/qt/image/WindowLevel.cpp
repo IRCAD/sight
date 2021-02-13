@@ -37,7 +37,7 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -63,8 +63,8 @@ namespace sight::modules::ui::qt::image
 fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::image::WindowLevel,
                          ::sight::data::Image)
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
-static const services::IService::KeyType s_TF_INOUT = "tf";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_TF_INOUT = "tf";
 
 static const std::string s_AUTO_WINDOWING_CONFIG   = "autoWindowing";
 static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
@@ -516,7 +516,7 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
+service::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );

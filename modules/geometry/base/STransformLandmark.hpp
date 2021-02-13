@@ -26,7 +26,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -61,13 +61,13 @@ namespace sight::modules::geometry::base
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group
  */
-class MODULE_GEOMETRY_BASE_CLASS_API STransformLandmark final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API STransformLandmark final : public service::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro( STransformLandmark, services::IService)
+    fwCoreServiceMacro( STransformLandmark, service::IService)
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API STransformLandmark() noexcept;

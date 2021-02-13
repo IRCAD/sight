@@ -27,8 +27,8 @@
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -84,7 +84,7 @@ void IMenuBarSrv::create()
     ui::base::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
 
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
         {
             m_layoutManager->createLayout(menuBar);
         }) ).wait();
@@ -98,7 +98,7 @@ void IMenuBarSrv::destroy()
 {
     m_registrar->unmanage();
 
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
         })).wait();
@@ -112,15 +112,15 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 m_layoutManager->menuIsVisible(menu, false);
             }) ).wait();
     }
     else
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >(
-                                                                                  [&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >(
+                                                                                 [&]
             {
                 m_layoutManager->menuIsEnabled(menu, false);
             })).wait();
@@ -135,14 +135,14 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuIsVisible(menu, true);
             })).wait();
     }
     else
     {
-        services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuIsEnabled(menu, true);
             }) ).wait();

@@ -13,6 +13,6 @@ set( REQUIREMENTS
     data
     media
     qtSceneConfig
-    module_services
+    module_service
  )
 

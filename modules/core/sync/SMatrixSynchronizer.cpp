@@ -37,9 +37,9 @@
 #include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-fwServicesRegisterMacro(::sight::services::ISynchronizer, sight::modules::sync::SMatrixSynchronizer,
+fwServicesRegisterMacro(::sight::service::ISynchronizer, sight::modules::sync::SMatrixSynchronizer,
                         ::sight::data::TransformationMatrix3D)
 
 // ----------------------------------------------------------------------------

@@ -33,9 +33,9 @@
 #include <data/DicomSeries.hpp>
 #include <data/location/Folder.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/dicom/helper/DicomSeriesWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -46,7 +46,7 @@
 namespace sight::modules::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::dicom::SDicomSeriesWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::dicom::SDicomSeriesWriter,
                          ::sight::data::DicomSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -113,7 +113,7 @@ void SDicomSeriesWriter::stopping()
 
 void SDicomSeriesWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void SDicomSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         data::DicomSeries::csptr series =
-            this->getInput< data::DicomSeries >(sight::io::base::services::s_DATA_KEY);
+            this->getInput< data::DicomSeries >(sight::io::base::service::s_DATA_KEY);
         const std::filesystem::path& folder = this->getFolder();
         if(!std::filesystem::is_empty(folder))
         {
@@ -208,9 +208,9 @@ void SDicomSeriesWriter::saveDicomSeries( const std::filesystem::path folder,
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SDicomSeriesWriter::getIOPathType() const
+sight::io::base::service::IOPathType SDicomSeriesWriter::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------

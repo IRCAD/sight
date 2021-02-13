@@ -6,7 +6,7 @@
 
     <xi:include href="configurations/ActivityLauncher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>defaultWizardConfig</id>
         <service>::sight::modules::ui::qt::editor::SActivityWizard</service>
         <desc>Default configuration for activity wizard</desc>

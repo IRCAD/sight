@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -63,11 +63,11 @@ namespace sight::modules::io::vtk
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SModelSeriesReader : public sight::io::base::services::IReader
+class MODULE_IO_VTK_CLASS_API SModelSeriesReader : public sight::io::base::service::IReader
 {
 
 public:
-    fwCoreServiceMacro(SModelSeriesReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SModelSeriesReader, sight::io::base::service::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 
@@ -98,7 +98,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

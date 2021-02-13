@@ -7,11 +7,11 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    services
+    service
 )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
 )
 
 if(NOT ${ENABLE_QML_APPLICATION})

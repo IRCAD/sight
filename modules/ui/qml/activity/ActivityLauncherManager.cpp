@@ -26,16 +26,16 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <services/op/Add.hpp>
-#include <services/registry/Proxy.hpp>
-#include <services/registry/ServiceConfig.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/Proxy.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
 #include <ui/qml/IQmlEditor.hpp>
 
 namespace sight::modules::ui::qml::activity
 {
 
-static const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 static const std::string s_ACTIVITY_CREATED_CHANNEL = "activityCreatedChannel";
 static const std::string s_GO_TO_CHANNEL            = "GoToChannel";
@@ -67,7 +67,7 @@ void ActivityLauncherManager::initialize()
 
     auto addActivityViewParam = [&](const std::string& replace)
                                 {
-                                    services::IService::ConfigType parameterViewConfig;
+                                    service::IService::ConfigType parameterViewConfig;
                                     parameterViewConfig.add("<xmlattr>.replace", replace);
                                     parameterViewConfig.add("<xmlattr>.by", this->getInputID(replace));
                                     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
@@ -97,7 +97,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
         {
             srv->configure(m_activityViewConfig);
             // connect to launch the activity when it is created/updated.
-            services::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
+            service::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
             activityCreatedCnt.addSlotConnection(srv->getID(), "launchActivity");
 
             this->addProxyConnection(activityCreatedCnt);
@@ -111,16 +111,16 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
             m_activitySequencer->registerInOut(m_seriesDB, "seriesDB", true);
 
             // connect to launch the activity when it is created/updated.
-            services::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
+            service::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
             activityCreatedCnt.addSignalConnection(m_activitySequencer->getID(), "activityCreated");
 
             // When the activity is launched, the sequencer sends the information to enable "previous" and "next"
             // actions
-            services::helper::ProxyConnections validationCnt(this->getInputID(s_VALIDATION_CHANNEL));
+            service::helper::ProxyConnections validationCnt(this->getInputID(s_VALIDATION_CHANNEL));
             validationCnt.addSlotConnection(m_activitySequencer->getID(), "checkNext");
 
             // The activity sequencer should receive the call from the "goTo" action.
-            services::helper::ProxyConnections activityGoToCnt(this->getInputID(s_GO_TO_CHANNEL));
+            service::helper::ProxyConnections activityGoToCnt(this->getInputID(s_GO_TO_CHANNEL));
             activityGoToCnt.addSlotConnection(m_activitySequencer->getID(), "goTo");
 
             this->addProxyConnection(activityCreatedCnt);
@@ -136,9 +136,9 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 void ActivityLauncherManager::open()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto reader          = services::add("::modules::ui::base::editor::SIOSelector");
+    auto reader          = service::add("::modules::ui::base::editor::SIOSelector");
     reader->registerInOut(seriesDB, "data");
-    const auto srvCfgFactory = services::registry::ServiceConfig::getDefault();
+    const auto srvCfgFactory = service::registry::ServiceConfig::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityReaderConfig",
                                                                 "::modules::ui::base::editor::SIOSelector");
     reader->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
@@ -147,7 +147,7 @@ void ActivityLauncherManager::open()
     reader->start();
     reader->update();
     reader->stop();
-    services::OSR::unregisterService(reader);
+    service::OSR::unregisterService(reader);
 
     auto sig = seriesDB->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
@@ -158,9 +158,9 @@ void ActivityLauncherManager::open()
 void ActivityLauncherManager::save()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto writer          = services::add("::modules::ui::base::editor::SIOSelector");
+    auto writer          = service::add("::modules::ui::base::editor::SIOSelector");
     writer->registerInOut(seriesDB, "data");
-    const auto srvCfgFactory = services::registry::ServiceConfig::getDefault();
+    const auto srvCfgFactory = service::registry::ServiceConfig::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityWriterConfig",
                                                                 "::modules::ui::base::editor::SIOSelector");
     writer->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
@@ -168,7 +168,7 @@ void ActivityLauncherManager::save()
     writer->start();
     writer->update();
     writer->stop();
-    services::OSR::unregisterService(writer);
+    service::OSR::unregisterService(writer);
 }
 
 //------------------------------------------------------------------------------

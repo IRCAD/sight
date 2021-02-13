@@ -27,7 +27,7 @@
 #include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/dicom/composite/IComposite.hpp>
 #include <filter/dicom/exceptions/FilterFailure.hpp>

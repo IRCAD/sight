@@ -24,7 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QIcon>
 #include <QLabel>

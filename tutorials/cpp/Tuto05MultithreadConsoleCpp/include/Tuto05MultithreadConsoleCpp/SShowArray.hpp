@@ -24,7 +24,7 @@
 
 #include "Tuto05MultithreadConsoleCpp/config.hpp"
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace Tuto05MultithreadConsoleCpp
 {
@@ -43,13 +43,13 @@ namespace Tuto05MultithreadConsoleCpp
  * @subsection Input Input:
  * - \b array [sight::data::Array]: array which values should be incremented.
  */
-class TUTO05MULTITHREADCONSOLECPP_CLASS_API SShowArray final : public services::IController
+class TUTO05MULTITHREADCONSOLECPP_CLASS_API SShowArray final : public service::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShowArray, services::IController)
+    fwCoreServiceMacro(SShowArray, service::IController)
 
     /// Creates the service.
     TUTO05MULTITHREADCONSOLECPP_API SShowArray() noexcept;

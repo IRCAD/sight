@@ -26,7 +26,7 @@
 
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -40,7 +40,7 @@ namespace sight::modules::ui::qt
 namespace editor
 {
 
-static const services::IService::KeyType s_STRING_INPUT = "string";
+static const service::IService::KeyType s_STRING_INPUT = "string";
 
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
@@ -125,9 +125,9 @@ void STextStatus::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+service::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;

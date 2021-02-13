@@ -30,7 +30,7 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -42,7 +42,7 @@
 namespace sight::modules::io::video
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::video::SVideoWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::video::SVideoWriter,
                          ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
@@ -69,16 +69,16 @@ SVideoWriter::~SVideoWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SVideoWriter::getIOPathType() const
+sight::io::base::service::IOPathType SVideoWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SVideoWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        auto frameTL = this->getLockedInput< data::FrameTL >(sight::io::base::services::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< data::FrameTL >(sight::io::base::service::s_DATA_KEY);
         if(m_writer && m_writer->isOpened())
         {
             // Get the buffer of the copied timeline
@@ -278,7 +278,7 @@ void SVideoWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        auto frameTL = this->getLockedInput< data::FrameTL >(sight::io::base::services::s_DATA_KEY);
+        auto frameTL = this->getLockedInput< data::FrameTL >(sight::io::base::service::s_DATA_KEY);
 
         if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -318,10 +318,10 @@ void SVideoWriter::stopRecord()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
+service::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
-    connections.push(sight::io::base::services::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    service::IService::KeyConnectionsMap connections;
+    connections.push(sight::io::base::service::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
     return connections;
 }
 

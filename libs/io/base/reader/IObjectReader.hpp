@@ -46,7 +46,7 @@ namespace reader
  * @brief   Base class for all object readers.
  *
  * This class defines the API to use basic object readers. This reader is not
- * service. Their equivalent exist as services see io::base::services::IReader. To read an
+ * service. Their equivalent exist as services see io::base::service::IReader. To read an
  * object with this class, use setLocation and setOject method before execute
  * the method read. Reading modify the object given in parameter with the
  * method setOject.

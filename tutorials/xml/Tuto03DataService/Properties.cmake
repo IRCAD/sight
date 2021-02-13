@@ -10,7 +10,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    module_services             # fwService
+    module_service             # fwService
 
     # UI declaration/Actions
     module_ui_base
@@ -19,7 +19,7 @@ set( REQUIREMENTS
     module_io_vtk
 
     # Services
-                    # Contains services to show dialogs for reader/writer selection
+                    # Contains service to show dialogs for reader/writer selection
     module_viz_sample
 )
 

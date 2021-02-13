@@ -31,7 +31,7 @@
 #include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
 
@@ -43,7 +43,7 @@
 namespace sight::modules::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::io::dicom::SDicomSeriesAnonymizer)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dicom::SDicomSeriesAnonymizer)
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

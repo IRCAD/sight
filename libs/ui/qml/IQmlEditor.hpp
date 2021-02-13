@@ -24,7 +24,7 @@
 
 #include "ui/qml/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <QObject>
 
@@ -40,13 +40,13 @@ namespace sight::ui::qml
    @endcode
  */
 class UI_QML_CLASS_QT_API IQmlEditor : public QObject,
-                                       public services::IService
+                                       public service::IService
 {
 
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(IQmlEditor, services::IService)
+    fwCoreServiceMacro(IQmlEditor, service::IService)
 
     /// Constructor. Do nothing.
     UI_QML_QT_API IQmlEditor() noexcept;

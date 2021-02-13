@@ -7,7 +7,7 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    services
+    service
     io_opencv
 )
-set( REQUIREMENTS data module_services )
+set( REQUIREMENTS data module_service )

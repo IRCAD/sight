@@ -33,9 +33,9 @@
 #include <data/tools/helper/Field.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/op/Get.hpp>
 
 #include <viz/ogre/helper/Shading.hpp>
 #include <viz/ogre/IAdaptor.hpp>
@@ -186,9 +186,9 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
@@ -268,7 +268,7 @@ void SMaterial::createShaderParameterAdaptors()
             // Naming convention for shader parameters
             srv->setRenderService(this->getRenderService());
 
-            services::IService::ConfigType config;
+            service::IService::ConfigType config;
             config.add("config.<xmlattr>.layer", m_layerID);
             config.add("config.<xmlattr>.parameter", constantName);
             config.add("config.<xmlattr>.shaderType", shaderTypeStr);

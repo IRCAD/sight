@@ -26,7 +26,7 @@
 
 #include <data/Composite.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <tuple>
 
@@ -37,12 +37,12 @@ namespace sight::modules::data
  * @brief   An updater is use to register/unregister object in the OSR when it receives specific signals (declared in
  * configuration).
  */
-class MODULE_DATA_CLASS_API IUpdaterSrv : public services::IService
+class MODULE_DATA_CLASS_API IUpdaterSrv : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IUpdaterSrv, services::IService)
+    fwCoreServiceMacro(IUpdaterSrv, service::IService)
 
     ///@brief IUpdaterSrv constructor. Do nothing.
     MODULE_DATA_API IUpdaterSrv();

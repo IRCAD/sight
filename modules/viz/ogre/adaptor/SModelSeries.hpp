@@ -106,7 +106,7 @@ protected:
      * Connect data::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      * Connect data::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Redraws all (stops then restarts sub services).
     MODULE_VIZ_OGRE_API void updating() override;

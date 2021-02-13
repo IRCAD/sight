@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QApplication>
 #include <QFile>
@@ -166,22 +166,22 @@ void SDisplayTestNotifications::updating( )
 
         if(m_type == ::dial::NotificationDialog::Type::SUCCESS)
         {
-            auto notif = this->signal< services::IService::SuccessNotifiedSignalType >(
-                services::IService::s_SUCCESS_NOTIFIED_SIG);
+            auto notif = this->signal< service::IService::SuccessNotifiedSignalType >(
+                service::IService::s_SUCCESS_NOTIFIED_SIG);
 
             notif->asyncEmit("Notification Test !");
         }
         else if(m_type == ::dial::NotificationDialog::Type::FAILURE)
         {
-            auto notif = this->signal< services::IService::FailureNotifiedSignalType >(
-                services::IService::s_FAILURE_NOTIFIED_SIG);
+            auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
+                service::IService::s_FAILURE_NOTIFIED_SIG);
 
             notif->asyncEmit("Notification Test !");
         }
         else
         {
-            auto notif = this->signal< services::IService::InfoNotifiedSignalType >(
-                services::IService::s_INFO_NOTIFIED_SIG);
+            auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
+                service::IService::s_INFO_NOTIFIED_SIG);
 
             notif->asyncEmit("Notification Test !");
         }

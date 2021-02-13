@@ -1,6 +1,6 @@
 <plugin id="ARCalibration" version="@PROJECT_VERSION@">
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="arPatchMedicalData" />
     <requirement id="module_memory" />
     <requirement id="module_ui_base" />
@@ -12,7 +12,7 @@
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>ARCalibrationActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for ARCalibration</desc>
@@ -23,7 +23,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::services::registry::AppConfigParameters">
+    <extension implements="::sight::service::registry::AppConfigParameters">
         <id>ARCalibration_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="ARCalibration @PROJECT_VERSION@" />

@@ -2,11 +2,11 @@
 
 <plugin id="Tuto16SceneQt3D" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_ui_qt" />
     <requirement id="visuQt3DQt" />
 
-    <extension implements="::sight::services::registry::ServiceConfig" >
+    <extension implements="::sight::service::registry::ServiceConfig" >
         <id>Tuto16SceneQt3D_jsonReader_SrvCfg</id>
         <desc>JSON</desc>
         <config>
@@ -15,7 +15,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig" >
+    <extension implements="::sight::service::registry::ServiceConfig" >
         <id>Tuto16SceneQt3D_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -23,7 +23,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::services::registry::AppConfig" >
+    <extension implements="::sight::service::registry::AppConfig" >
         <id>Tuto16SceneQt3D_AppCfg</id>
         <config>
 

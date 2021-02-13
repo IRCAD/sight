@@ -26,7 +26,7 @@
 #include "ui/base/layoutManager/IToolBarLayoutManager.hpp"
 #include "ui/base/registrar/ToolBarRegistrar.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {
@@ -34,12 +34,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the toolBar.
  */
-class UI_BASE_CLASS_API IToolBarSrv : public services::IService
+class UI_BASE_CLASS_API IToolBarSrv : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IToolBarSrv, services::IService)
+    fwCoreServiceMacro(IToolBarSrv, service::IService)
 
     /// Method called when an action service is stopping
     UI_BASE_API void actionServiceStopping(std::string actionSrvSID);

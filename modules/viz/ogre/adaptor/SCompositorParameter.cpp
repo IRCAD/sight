@@ -24,7 +24,9 @@
 
 #include "modules/viz/ogre/adaptor/SMaterial.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/compositor/ChainManager.hpp>
 
 #include <OgreCompositor.h>
 #include <OgreCompositorChain.h>
@@ -34,8 +36,6 @@
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
-
-#include <viz/ogre/compositor/ChainManager.hpp>
 
 #include <algorithm>
 

@@ -27,7 +27,7 @@
 #include <core/com/Slots.hxx>
 #include <core/thread/Worker.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/ProgressDialog.hpp>
 

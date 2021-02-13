@@ -31,7 +31,7 @@
 #include <data/timeline/Buffer.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <functional>
 #include <sstream>
@@ -40,14 +40,14 @@ namespace sight::modules::sync
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(::sight::services::ISynchronizer, modules::sync::SMatrixTLSynchronizer,
+fwServicesRegisterMacro(::sight::service::ISynchronizer, modules::sync::SMatrixTLSynchronizer,
                         ::sight::data::MatrixTL)
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
-static const services::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-static const services::IService::KeyType s_MATRICES_INOUT = "matrices";
+static const service::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
+static const service::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ void SMatrixTLSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
+service::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );

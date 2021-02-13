@@ -42,11 +42,11 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
+#include <service/registry/ObjectService.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/http/exceptions/Base.hpp>
 
 #include <QApplication>
@@ -161,14 +161,14 @@ void SSliceIndexDicomPullerEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    services::registry::ServiceFactory::sptr srvFactory = services::registry::ServiceFactory::getDefault();
+    service::registry::ServiceFactory::sptr srvFactory = service::registry::ServiceFactory::getDefault();
 
-    sight::io::base::services::IReader::sptr dicomReader;
-    dicomReader = sight::io::base::services::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    sight::io::base::service::IReader::sptr dicomReader;
+    dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
                "::sight::modules::io::dicomweb::SSliceIndexDicomPullerEditor.", dicomReader);
-    services::OSR::registerService(m_tempSeriesDB, sight::io::base::services::s_DATA_KEY,
-                                   services::IService::AccessType::INOUT, dicomReader);
+    service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
+                                  service::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
     {
         dicomReader->setConfiguration(m_readerConfig);
@@ -214,7 +214,7 @@ void SSliceIndexDicomPullerEditor::stopping()
     if(!m_dicomReader.expired())
     {
         m_dicomReader.lock()->stop();
-        services::OSR::unregisterService(m_dicomReader.lock());
+        service::OSR::unregisterService(m_dicomReader.lock());
     }
 
     this->destroy();
@@ -354,7 +354,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
 void SSliceIndexDicomPullerEditor::pullInstance()
 {
-    services::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {

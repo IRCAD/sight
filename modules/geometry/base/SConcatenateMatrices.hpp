@@ -29,7 +29,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -59,12 +59,12 @@ namespace sight::modules::geometry::base
  * - \b output [sight::data::TransformationMatrix3D]: Output matrix.
  */
 
-class MODULE_GEOMETRY_BASE_CLASS_API SConcatenateMatrices : public services::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SConcatenateMatrices : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SConcatenateMatrices, sight::services::IController)
+    fwCoreServiceMacro(SConcatenateMatrices, sight::service::IController)
 
     /**
      * @brief Constructor.

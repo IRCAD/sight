@@ -27,7 +27,7 @@
 #include "viz/scene2d/data/Event.hpp"
 #include "viz/scene2d/SRender.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::viz::scene2d
 {
@@ -35,7 +35,7 @@ namespace sight::viz::scene2d
 /**
  * @brief Root class for all scene2d adaptors.
  */
-class VIZ_SCENE2D_CLASS_API IAdaptor : public services::IService
+class VIZ_SCENE2D_CLASS_API IAdaptor : public service::IService
 {
 
 public:
@@ -52,7 +52,7 @@ public:
     /// <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceMacro(IAdaptor, services::IService)
+    fwCoreServiceMacro(IAdaptor, service::IService)
 
     /// Set the zValue.
     VIZ_SCENE2D_API void setZValue(float _zValue);

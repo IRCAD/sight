@@ -75,7 +75,7 @@ public:
     MODULE_VIZ_SCENE2D_API SHistogramCursor() noexcept;
     MODULE_VIZ_SCENE2D_API virtual ~SHistogramCursor() noexcept;
 
-    MODULE_VIZ_SCENE2D_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     MODULE_VIZ_SCENE2D_API void configuring() override;

@@ -28,8 +28,8 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/SRender.hpp>
@@ -152,10 +152,10 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
 
         ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = services::add( "::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
+        auto editorService = service::add( "::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
         m_editorInfo.service = editorService;
 
-        services::IService::ConfigType editorConfig;
+        service::IService::ConfigType editorConfig;
 
         // Get all ShaderParameter subservices from the corresponding Material adaptor
         for (const auto& wAdaptor : adaptors)
@@ -188,7 +188,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
 
 void SCompositorParameterEditor::clear()
 {
-    services::IService::sptr objService = m_editorInfo.service.lock();
+    service::IService::sptr objService = m_editorInfo.service.lock();
 
     if(objService)
     {
@@ -196,7 +196,7 @@ void SCompositorParameterEditor::clear()
 
         ::sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        services::OSR::unregisterService(objService);
+        service::OSR::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();

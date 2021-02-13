@@ -29,8 +29,8 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <services/AppManager.hpp>
-#include <services/IService.hpp>
+#include <service/AppManager.hpp>
+#include <service/IService.hpp>
 
 #include <QObject>
 #include <QVariant>
@@ -87,12 +87,12 @@ public Q_SLOTS:
 
 private:
 
-    services::IService::sptr m_activitySequencer;
+    service::IService::sptr m_activitySequencer;
 
     data::SeriesDB::sptr m_seriesDB;
 
-    services::IService::ConfigType m_activityViewConfig;
-    services::IService::ConfigType m_sequencerConfig;
+    service::IService::ConfigType m_activityViewConfig;
+    service::IService::ConfigType m_sequencerConfig;
 };
 
 } //namespace sight::modules::ui::qml::activity

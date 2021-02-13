@@ -28,8 +28,8 @@
 
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ServiceConfig.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
@@ -51,10 +51,10 @@ static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries"
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
 
-static const services::IService::KeyType s_PACS_INPUT     = "pacsConfig";
-static const services::IService::KeyType s_SELECTED_INPUT = "selectedSeries";
+static const service::IService::KeyType s_PACS_INPUT     = "pacsConfig";
+static const service::IService::KeyType s_SELECTED_INPUT = "selectedSeries";
 
-static const services::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
+static const service::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
 
 SSeriesPuller::SSeriesPuller() noexcept
 {
@@ -97,17 +97,17 @@ void SSeriesPuller::starting()
     // Create the DICOM reader.
     m_seriesDB = data::SeriesDB::New();
 
-    m_dicomReader = this->registerService< sight::io::base::services::IReader >(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService< sight::io::base::service::IReader >(m_dicomReaderImplementation);
     SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
-            services::registry::ServiceConfig::getDefault()->getServiceConfig(
-                m_readerConfig, "::io::base::services::IReader");
+            service::registry::ServiceConfig::getDefault()->getServiceConfig(
+                m_readerConfig, "::io::base::service::IReader");
 
-        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::services::IReader",
+        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
                    readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
@@ -126,8 +126,8 @@ void SSeriesPuller::updating()
 
     if(selectedSeries->empty())
     {
-        const auto notif = this->signal< services::IService::InfoNotifiedSignalType >(
-            services::IService::s_INFO_NOTIFIED_SIG);
+        const auto notif = this->signal< service::IService::InfoNotifiedSignalType >(
+            service::IService::s_INFO_NOTIFIED_SIG);
         notif->asyncEmit("No series selected");
     }
     else
@@ -190,8 +190,8 @@ void SSeriesPuller::pullSeries()
     // Pull series.
     if(!pullSeriesVector.empty())
     {
-        const auto infoNotif = this->signal< services::IService::InfoNotifiedSignalType >(
-            services::IService::s_INFO_NOTIFIED_SIG);
+        const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
+            service::IService::s_INFO_NOTIFIED_SIG);
         infoNotif->asyncEmit("Downloading series...");
 
         // Notify Progress Dialog.
@@ -216,8 +216,8 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SLM_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-            const auto failureNotif = this->signal< services::IService::FailureNotifiedSignalType >(
-                services::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto failureNotif = this->signal< service::IService::FailureNotifiedSignalType >(
+                service::IService::s_FAILURE_NOTIFIED_SIG);
             failureNotif->asyncEmit("Unable to connect to the PACS");
             return;
         }
@@ -259,8 +259,8 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SLM_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-            const auto failureNotif = this->signal< services::IService::FailureNotifiedSignalType >(
-                services::IService::s_FAILURE_NOTIFIED_SIG);
+            const auto failureNotif = this->signal< service::IService::FailureNotifiedSignalType >(
+                service::IService::s_FAILURE_NOTIFIED_SIG);
             failureNotif->asyncEmit("Unable to execute query");
 
             success = false;
@@ -278,8 +278,8 @@ void SSeriesPuller::pullSeries()
     }
     else
     {
-        const auto infoNotif = this->signal< services::IService::InfoNotifiedSignalType >(
-            services::IService::s_INFO_NOTIFIED_SIG);
+        const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
+            service::IService::s_INFO_NOTIFIED_SIG);
         infoNotif->asyncEmit("Series already downloaded");
 
         return;
@@ -288,16 +288,16 @@ void SSeriesPuller::pullSeries()
     // Read series if there is no error.
     if(success)
     {
-        const auto sucessNotif = this->signal< services::IService::SuccessNotifiedSignalType >(
-            services::IService::s_SUCCESS_NOTIFIED_SIG);
+        const auto sucessNotif = this->signal< service::IService::SuccessNotifiedSignalType >(
+            service::IService::s_SUCCESS_NOTIFIED_SIG);
         sucessNotif->asyncEmit("Series downloaded");
 
         this->readLocalSeries(selectedSeriesVector);
     }
     else
     {
-        const auto failNotif = this->signal< services::IService::FailureNotifiedSignalType >(
-            services::IService::s_FAILURE_NOTIFIED_SIG);
+        const auto failNotif = this->signal< service::IService::FailureNotifiedSignalType >(
+            service::IService::s_FAILURE_NOTIFIED_SIG);
         failNotif->asyncEmit("Series download failed");
     }
 
@@ -318,12 +318,12 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
     // Create temporary series helper.
     data::tools::helper::SeriesDB readerSeriesHelper(m_seriesDB);
 
-    const auto infoNotif = this->signal< services::IService::InfoNotifiedSignalType >(
-        services::IService::s_INFO_NOTIFIED_SIG);
-    const auto failNotif = this->signal< services::IService::FailureNotifiedSignalType >(
-        services::IService::s_FAILURE_NOTIFIED_SIG);
-    const auto sucessNotif = this->signal< services::IService::SuccessNotifiedSignalType >(
-        services::IService::s_SUCCESS_NOTIFIED_SIG);
+    const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
+        service::IService::s_INFO_NOTIFIED_SIG);
+    const auto failNotif = this->signal< service::IService::FailureNotifiedSignalType >(
+        service::IService::s_FAILURE_NOTIFIED_SIG);
+    const auto sucessNotif = this->signal< service::IService::SuccessNotifiedSignalType >(
+        service::IService::s_SUCCESS_NOTIFIED_SIG);
 
     for(const data::Series::sptr& series: _selectedSeries)
     {
@@ -386,8 +386,8 @@ void SSeriesPuller::removeSeries( data::SeriesDB::ContainerType _removedSeries)
             {
                 m_localSeries.erase(it);
 
-                const auto infoNotif = this->signal< services::IService::InfoNotifiedSignalType >(
-                    services::IService::s_INFO_NOTIFIED_SIG);
+                const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
+                    service::IService::s_INFO_NOTIFIED_SIG);
                 infoNotif->asyncEmit("Local series deleted");
             }
         }
@@ -419,7 +419,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
+service::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);

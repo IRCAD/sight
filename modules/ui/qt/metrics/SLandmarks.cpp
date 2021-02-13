@@ -37,7 +37,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
@@ -56,8 +56,8 @@ namespace sight::modules::ui::qt::metrics
 
 //------------------------------------------------------------------------------
 
-static const services::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
-static const services::IService::KeyType s_MATRIX_IN       = "matrix";
+static const service::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
+static const service::IService::KeyType s_MATRIX_IN       = "matrix";
 
 static const char* s_GROUP_PROPERTY_NAME = "group";
 static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
@@ -112,7 +112,7 @@ void SLandmarks::configuring()
 {
     this->sight::ui::base::IGuiContainerSrv::initialize();
 
-    const services::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfigTree();
 
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     SLM_FATAL_IF(
@@ -210,7 +210,7 @@ void SLandmarks::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

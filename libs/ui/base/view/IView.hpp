@@ -25,7 +25,7 @@
 #include "ui/base/config.hpp"
 #include "ui/base/IGuiContainerSrv.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {

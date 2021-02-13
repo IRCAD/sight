@@ -28,7 +28,7 @@
 #include <data/Color.hpp>
 #include <data/Mesh.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/Mesh.hpp>
 
@@ -51,7 +51,7 @@ namespace sight::modules::geometry
 namespace generator
 {
 
-fwServicesRegisterMacro( ::sight::services::IGenerator, ::sight::modules::geometry::SNeedle, ::sight::data::Mesh)
+fwServicesRegisterMacro( ::sight::service::IGenerator, ::sight::modules::geometry::SNeedle, ::sight::data::Mesh)
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
 

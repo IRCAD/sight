@@ -6,9 +6,9 @@ set( DEPENDENCIES
     data
     ui_base
     module_ui_qt
-    services
+    service
     io_base
 )
 set( REQUIREMENTS
-    module_services
+    module_service
 )

@@ -33,17 +33,17 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
-
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTextureManager.h>
-#include <OGRE/OgreVector.h>
+#include <service/macros.hpp>
 
 #include <viz/ogre/compositor/Core.hpp>
 #include <viz/ogre/ogre.hpp>
 #include <viz/ogre/picker/IPicker.hpp>
 #include <viz/ogre/Utils.hpp>
+
+#include <OGRE/OgreCamera.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreVector.h>
 
 #include <algorithm>
 
@@ -223,9 +223,9 @@ void SNegato3D::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
+service::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );

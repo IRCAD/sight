@@ -28,7 +28,7 @@
 #include <core/com/Slots.hpp>
 #include <core/jobs/IJob.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <ui/base/editor/IDialogEditor.hpp>
 #include <ui/base/IActionSrv.hpp>

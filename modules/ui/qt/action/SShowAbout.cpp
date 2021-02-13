@@ -36,7 +36,7 @@
 
 #include <filesystem>
 #include <core/base.hpp>
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 #include <core/runtime/operations.hpp>
 
 #include "modules/ui/qt/action/SShowAbout.hpp"

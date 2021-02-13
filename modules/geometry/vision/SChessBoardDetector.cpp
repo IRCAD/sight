@@ -30,8 +30,8 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -53,9 +53,9 @@ static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "upda
 static const core::com::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
 static const core::com::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "chessboardFound";
 
-static const services::IService::KeyType s_IMAGE_INPUT     = "image";
-static const services::IService::KeyType s_CALINFO_INOUT   = "calInfo";
-static const services::IService::KeyType s_DETECTION_INOUT = "detection";
+static const service::IService::KeyType s_IMAGE_INPUT     = "image";
+static const service::IService::KeyType s_CALINFO_INOUT   = "calInfo";
+static const service::IService::KeyType s_DETECTION_INOUT = "detection";
 
 // ----------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ void SChessBoardDetector::stopping()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() const
+service::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);

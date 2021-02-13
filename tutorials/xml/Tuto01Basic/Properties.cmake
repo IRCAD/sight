@@ -7,7 +7,7 @@ set( REQUIREMENTS           # The modules used by this application
     module_appXml                  # XML configurations
     module_ui_qt            # Start the module, load module_ui_qt implementation of module_ui_base
 
-    module_services
+    module_service
 
     # UI declaration/Actions
     module_ui_base

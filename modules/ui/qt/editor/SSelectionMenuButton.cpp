@@ -36,7 +36,7 @@
 
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QAction>
 #include <QMenu>

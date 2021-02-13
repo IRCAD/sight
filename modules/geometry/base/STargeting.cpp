@@ -31,7 +31,7 @@
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -44,16 +44,16 @@ namespace sight::modules::geometry::base
 
 // -----------------------------------------------------------------------------
 
-const services::IService::KeyType s_LANDMARK_INPUT        = "landmark";
-const services::IService::KeyType s_MATRIX_INPUT          = "matrix";
-const services::IService::KeyType s_POINTLIST_INOUT       = "pointList";
+const service::IService::KeyType s_LANDMARK_INPUT         = "landmark";
+const service::IService::KeyType s_MATRIX_INPUT           = "matrix";
+const service::IService::KeyType s_POINTLIST_INOUT        = "pointList";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";
 const core::com::Slots::SlotKeyType s_UPDATE_POINT_SLOT   = "updatePoint";
 const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::STargeting )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::STargeting )
 
 // -----------------------------------------------------------------------------
 
@@ -214,10 +214,10 @@ void STargeting::updating()
 
 // -----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STargeting::getAutoConnections() const
+service::IService::KeyConnectionsMap STargeting::getAutoConnections() const
 {
 
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

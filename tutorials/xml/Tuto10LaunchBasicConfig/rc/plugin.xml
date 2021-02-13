@@ -2,12 +2,12 @@
 
     <requirement id="module_ui_base" />
     <requirement id="module_ui_qt" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::services::registry::AppConfig" >
+    <extension implements="::sight::service::registry::AppConfig" >
         <id>Tuto10LaunchBasicConfig_AppCfg</id>
         <config>
 

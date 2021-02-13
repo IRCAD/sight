@@ -24,7 +24,7 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <filesystem>
 #include <string>
@@ -59,13 +59,13 @@ namespace sight::modules::io::dicom
  * @subsection Input Input
  * - \b data [sight::data::DicomSeries]: data to save in Dicom.
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesWriter : public sight::io::base::services::IWriter
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesWriter : public sight::io::base::service::IWriter
 {
 
 public:
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SDicomSeriesWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief   constructor
@@ -102,7 +102,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 private:
     /// Save the selected Dicom series

@@ -27,8 +27,8 @@
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <viz/ogre/Material.hpp>
 
@@ -93,9 +93,9 @@ void SReconstruction::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap modules::viz::ogre::adaptor::SReconstruction::getAutoConnections() const
+service::IService::KeyConnectionsMap modules::viz::ogre::adaptor::SReconstruction::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
     connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT );
     return connections;
@@ -112,7 +112,7 @@ void SReconstruction::updating()
         modules::viz::ogre::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = services::OSR::getRegistered("mesh", services::IService::AccessType::INOUT, meshAdaptor);
+        auto mesh = service::OSR::getRegistered("mesh", service::IService::AccessType::INOUT, meshAdaptor);
         if(mesh != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction

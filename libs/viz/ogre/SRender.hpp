@@ -37,13 +37,13 @@
 
 #include <data/Composite.hpp>
 
-#include <services/helper/Config.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/helper/Config.hpp>
+#include <service/registry/ObjectService.hpp>
+
+#include <viz/base/IRender.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/Overlay/OgreOverlay.h>
-
-#include <viz/base/IRender.hpp>
 
 #include <map>
 #include <tuple>
@@ -257,7 +257,7 @@ private:
     void configureLayer(const ConfigType& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
-    static Layer::ViewportConfigType configureLayerViewport(const services::IService::ConfigType& _cfg);
+    static Layer::ViewportConfigType configureLayerViewport(const service::IService::ConfigType& _cfg);
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
@@ -312,7 +312,7 @@ private:
 template<class T>
 std::vector<SPTR(T)> SRender::getAdaptors() const
 {
-    auto servicesVector = services::OSR::getServices("::sight::viz::ogre::IAdaptor");
+    auto servicesVector = service::OSR::getServices("::sight::viz::ogre::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
     for(auto& sceneAdaptor : servicesVector)

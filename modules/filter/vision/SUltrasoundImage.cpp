@@ -31,7 +31,7 @@
 
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/vector_angle.hpp>
@@ -45,9 +45,9 @@ static const std::string s_US_DEPTH            = "us.depth";
 static const std::string s_DEBUG_US_EXTRACTION = "debugUSExtraction";
 static const std::string s_ECHO_SHAPE          = "shape";
 
-const services::IService::KeyType s_ULTRASOUND_IMAGE_INPUT = "ultrasoundImage";
+const service::IService::KeyType s_ULTRASOUND_IMAGE_INPUT = "ultrasoundImage";
 
-const services::IService::KeyType s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT = "extractedUltrasoundBeam";
+const service::IService::KeyType s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT = "extractedUltrasoundBeam";
 
 const core::com::Slots::SlotKeyType s_UPDATE_INT_EXTRACTION_PARAMETERS_SLOT    = "updateIntExtractionParameter";
 const core::com::Slots::SlotKeyType s_UPDATE_DOUBLE_EXTRACTION_PARAMETERS_SLOT = "updateDoubleExtractionParameter";
@@ -62,7 +62,7 @@ static const std::string s_US_DEPTH_CONFIG      = "USDepth";
 static const std::string s_DEBUG_CONFIG         = "debug";
 static const std::string s_CONVEX_SHAPE         = "convex";
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::vision::SUltrasoundImage )
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SUltrasoundImage )
 
 // -----------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ void SUltrasoundImage::configuring()
 
 // -----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SUltrasoundImage::getAutoConnections() const
+service::IService::KeyConnectionsMap SUltrasoundImage::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_ULTRASOUND_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);

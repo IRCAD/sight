@@ -32,7 +32,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/MeshReader.hpp>
 #include <io/vtk/ObjMeshReader.hpp>
@@ -49,16 +49,16 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::vtk::SMeshReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SMeshReader,
                          ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SMeshReader::getIOPathType() const
+sight::io::base::service::IOPathType SMeshReader::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void SMeshReader::stopping()
 
 void SMeshReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
 {
     bool ok = true;
     // Retrieve dataStruct associated with this service
-    const auto meshlockedPtr = this->getLockedInOut< data::Mesh >(sight::io::base::services::s_DATA_KEY);
+    const auto meshlockedPtr = this->getLockedInOut< data::Mesh >(sight::io::base::service::s_DATA_KEY);
 
     // Test extension to provide the reader
 
@@ -248,7 +248,7 @@ void SMeshReader::updating()
 
 void SMeshReader::notificationOfUpdate()
 {
-    const auto meshLockedPtr = this->getLockedInOut< data::Mesh >(sight::io::base::services::s_DATA_KEY);
+    const auto meshLockedPtr = this->getLockedInOut< data::Mesh >(sight::io::base::service::s_DATA_KEY);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = meshLockedPtr.get_shared()->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);

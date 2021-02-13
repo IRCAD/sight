@@ -28,7 +28,7 @@
 #include <core/thread/Timer.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <services/IGrabber.hpp>
+#include <service/IGrabber.hpp>
 
 #include <filesystem>
 
@@ -74,12 +74,12 @@ namespace sight::modules::io::pcl
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate (default: 30).
  */
-class MODULE_IO_PCL_CLASS_API SFrameGrabber : public services::IGrabber
+class MODULE_IO_PCL_CLASS_API SFrameGrabber : public service::IGrabber
 {
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, services::IGrabber)
+    fwCoreServiceMacro(SFrameGrabber, service::IGrabber)
 
     /// Constructor. Do nothing.
     MODULE_IO_PCL_API SFrameGrabber() noexcept;

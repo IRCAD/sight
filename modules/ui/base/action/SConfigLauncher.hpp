@@ -30,7 +30,7 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <services/helper/ConfigLauncher.hpp>
+#include <service/helper/ConfigLauncher.hpp>
 
 #include <ui/base/IActionSrv.hpp>
 
@@ -59,7 +59,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::services::SConfigController" >
+        <service type="::sight::service::SConfigController" >
             <appConfig id="IdOfConfig" />
             <inout key="object" uid="..." />
             <parameter replace="channel" by="changeValueChannel"  />
@@ -143,7 +143,7 @@ protected:
      * @}
      */
 
-    services::helper::ConfigLauncher::uptr m_configLauncher;
+    service::helper::ConfigLauncher::uptr m_configLauncher;
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 

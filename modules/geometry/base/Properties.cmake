@@ -4,9 +4,9 @@ set( TYPE MODULE )
 set( DEPENDENCIES 
     data
     core
-    services
+    service
     ui_base
     geometry_data
 )
-set( REQUIREMENTS data module_services)
+set( REQUIREMENTS data module_service)
 

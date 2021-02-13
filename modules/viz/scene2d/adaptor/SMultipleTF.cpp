@@ -28,7 +28,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/tools/helper/Composite.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -45,12 +45,12 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_VIEWPORT_INPUT   = "viewport";
-static const services::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
+static const service::IService::KeyType s_VIEWPORT_INPUT   = "viewport";
+static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
-static const services::IService::KeyType s_TF_POOL_INOUT = "tfPool";
+static const service::IService::KeyType s_TF_POOL_INOUT = "tfPool";
 
-static const services::IService::KeyType s_TF_OUTPUT = "tf";
+static const service::IService::KeyType s_TF_OUTPUT = "tf";
 
 static const std::string s_POLYGON_COLOR_CONFIG  = "lineColor";
 static const std::string s_POINT_COLOR_CONFIG    = "pointColor";
@@ -161,7 +161,7 @@ void SMultipleTF::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
+service::IService::KeyConnectionsMap SMultipleTF::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -27,10 +27,10 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
+#include <viz/ogre/helper/Camera.hpp>
+
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
-
-#include <viz/ogre/helper/Camera.hpp>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -39,8 +39,8 @@ static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCam
 static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
 static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
-static const services::IService::KeyType s_TF_INOUT    = "tf";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_TF_INOUT    = "tf";
 
 static const std::string s_PRIORITY_CONFIG              = "priority";
 static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
@@ -144,7 +144,7 @@ void SNegato2DCamera::stopping()
 
 // ----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
+service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);

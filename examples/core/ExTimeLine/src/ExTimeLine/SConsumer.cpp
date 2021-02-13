@@ -25,13 +25,13 @@
 #include <core/com/Slots.hxx>
 #include <core/thread/Timer.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <exTimeLineData/MessageTL.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro( ::sight::services::IService, ::ExTimeLine::SConsumer )
+fwServicesRegisterMacro( ::sight::service::IService, ::ExTimeLine::SConsumer )
 
 namespace ExTimeLine
 {
@@ -58,7 +58,7 @@ SConsumer::~SConsumer() noexcept
 
 void SConsumer::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_receiverId = config.get<unsigned int>("id");
     m_period     = config.get<unsigned int>("period", 0);

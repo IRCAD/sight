@@ -26,9 +26,9 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 namespace sight::ui::base
 {
@@ -61,7 +61,7 @@ void ActionCallbackBase::setSID(std::string sid)
 void ActionCallbackBase::execute()
 {
     SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
-    services::IService::sptr service = services::get( m_sid );
+    service::IService::sptr service = service::get( m_sid );
     SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     service->update();
 }
@@ -71,7 +71,7 @@ void ActionCallbackBase::execute()
 void ActionCallbackBase::check(bool checked)
 {
     SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
-    services::IService::sptr service = services::get( m_sid );
+    service::IService::sptr service = service::get( m_sid );
     SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ui::base::IActionSrv::sptr action = ui::base::IActionSrv::dynamicCast(service);
     SLM_ASSERT("Service "<<m_sid<<" is not an action.", action);

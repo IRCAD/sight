@@ -30,16 +30,16 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/op/Add.hpp>
-#include <services/registry/ActiveWorkers.hpp>
-#include <services/registry/ObjectService.hpp>
-#include <services/registry/ServiceFactory.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ActiveWorkers.hpp>
+#include <service/registry/ObjectService.hpp>
+#include <service/registry/ServiceFactory.hpp>
 
 #include <utest/Exception.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
 
-#include <io/base/services/ioTypes.hpp>
+#include <io/base/service/ioTypes.hpp>
 
 #include <filesystem>
 
@@ -57,7 +57,7 @@ void IoAtomsTest::setUp()
 {
     // Set up context before running a test.
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    services::registry::ActiveWorkers::setDefaultWorker(worker);
+    service::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void IoAtomsTest::setUp()
 void IoAtomsTest::tearDown()
 {
     // Clean up after the test run.
-    services::registry::ActiveWorkers::getDefault()->clearRegistry();
+    service::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -83,59 +83,59 @@ void compareLog(T& comparator)
 //------------------------------------------------------------------------------
 
 template <typename T>
-void write(const services::IService::ConfigType& srvCfg, const SPTR(T)& obj, const std::string& writer)
+void write(const service::IService::ConfigType& srvCfg, const SPTR(T)& obj, const std::string& writer)
 {
-    services::IService::sptr writerSrv = services::add( writer );
+    service::IService::sptr writerSrv = service::add( writer );
     CPPUNIT_ASSERT(writerSrv);
 
-    services::OSR::registerService( obj, sight::io::base::services::s_DATA_KEY,
-                                    services::IService::AccessType::INPUT,
-                                    writerSrv );
+    service::OSR::registerService( obj, sight::io::base::service::s_DATA_KEY,
+                                   service::IService::AccessType::INPUT,
+                                   writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start().wait();
     writerSrv->update().wait();
     writerSrv->stop().wait();
-    services::OSR::unregisterService( writerSrv );
+    service::OSR::unregisterService( writerSrv );
 }
 
 template <typename T>
-SPTR(T) read(const services::IService::ConfigType& srvCfg, const std::string& reader)
+SPTR(T) read(const service::IService::ConfigType& srvCfg, const std::string& reader)
 {
 
-    typename T::sptr readObj           = T::New();
-    services::IService::sptr readerSrv = services::add( reader );
+    typename T::sptr readObj          = T::New();
+    service::IService::sptr readerSrv = service::add( reader );
     CPPUNIT_ASSERT(readerSrv);
 
-    services::OSR::registerService( readObj, sight::io::base::services::s_DATA_KEY,
-                                    services::IService::AccessType::INOUT,
-                                    readerSrv );
+    service::OSR::registerService( readObj, sight::io::base::service::s_DATA_KEY,
+                                   service::IService::AccessType::INOUT,
+                                   readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start().wait();
     readerSrv->update().wait();
     readerSrv->stop().wait();
-    services::OSR::unregisterService( readerSrv );
+    service::OSR::unregisterService( readerSrv );
 
     return readObj;
 }
 
 template <typename T>
-SPTR(T) readOut(const services::IService::ConfigType& srvCfg, const std::string& reader)
+SPTR(T) readOut(const service::IService::ConfigType& srvCfg, const std::string& reader)
 {
-    services::IService::ConfigType config(srvCfg);
-    config.add("out.<xmlattr>.key", sight::io::base::services::s_DATA_KEY);
+    service::IService::ConfigType config(srvCfg);
+    config.add("out.<xmlattr>.key", sight::io::base::service::s_DATA_KEY);
 
-    services::IService::sptr readerSrv = services::add( reader );
+    service::IService::sptr readerSrv = service::add( reader );
     CPPUNIT_ASSERT(readerSrv);
 
     readerSrv->setConfiguration(config);
     readerSrv->configure();
     readerSrv->start().wait();
     readerSrv->update().wait();
-    typename T::sptr readObj = readerSrv->getOutput<T>(sight::io::base::services::s_DATA_KEY);
+    typename T::sptr readObj = readerSrv->getOutput<T>(sight::io::base::service::s_DATA_KEY);
     readerSrv->stop().wait();
-    services::OSR::unregisterService( readerSrv );
+    service::OSR::unregisterService( readerSrv );
 
     return readObj;
 }
@@ -143,7 +143,7 @@ SPTR(T) readOut(const services::IService::ConfigType& srvCfg, const std::string&
 //------------------------------------------------------------------------------
 
 template <typename T>
-void writeReadFile(const services::IService::ConfigType& srvCfg, const SPTR(T)& obj,
+void writeReadFile(const service::IService::ConfigType& srvCfg, const SPTR(T)& obj,
                    const std::string& writer, const std::string& reader)
 {
     write(srvCfg, obj, writer);
@@ -164,7 +164,7 @@ void writeReadFile(const services::IService::ConfigType& srvCfg, const SPTR(T)& 
 
 void atomTest(const std::filesystem::path& filePath)
 {
-    services::IService::ConfigType srvCfg;
+    service::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
 
     data::SeriesDB::sptr seriesDB   = utestData::generator::SeriesDB::createSeriesDB(2, 2, 2);
@@ -254,7 +254,7 @@ void atomTest(const std::filesystem::path& filePath)
 
 void atomTestSimpleData(const std::filesystem::path& filePath)
 {
-    services::IService::ConfigType srvCfg;
+    service::IService::ConfigType srvCfg;
     srvCfg.add("file", filePath.string());
 
     data::Array::sptr array = data::Array::New();

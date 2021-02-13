@@ -31,8 +31,8 @@
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -50,7 +50,7 @@ fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::u
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
-static const services::IService::KeyType s_IMAGE_INPUT = "image";
+static const service::IService::KeyType s_IMAGE_INPUT = "image";
 
 ImageInfo::ImageInfo() noexcept
 {
@@ -169,7 +169,7 @@ void ImageInfo::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
+service::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

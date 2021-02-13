@@ -71,11 +71,11 @@ std::pair<T, T> getRange(T _value)
 
 //-----------------------------------------------------------------------------
 
-services::IService::ConfigType ParameterEditor::createConfig(const sight::viz::ogre::IParameter::csptr& _adaptor,
-                                                             const services::IService::csptr& _paramSrv,
-                                                             core::com::helper::SigSlotConnection& _connections)
+service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::ogre::IParameter::csptr& _adaptor,
+                                                            const service::IService::csptr& _paramSrv,
+                                                            core::com::helper::SigSlotConnection& _connections)
 {
-    services::IService::ConfigType paramConfig;
+    service::IService::ConfigType paramConfig;
 
     /// Getting associated object infos
     const data::Object::csptr shaderObj =

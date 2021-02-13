@@ -27,8 +27,8 @@
 #include "ui/base/container/fwToolBar.hpp"
 #include "ui/base/GuiRegistry.hpp"
 
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <utility>
 
@@ -190,7 +190,7 @@ void ViewRegistrar::manage(std::vector< ui::base::container::fwContainer::sptr >
                        "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
                        "it at the end of the configuration",
                        core::tools::fwID::exist(sid.first ) );
-            services::IService::sptr service = services::get( sid.first );
+            service::IService::sptr service = service::get( sid.first );
             SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
                        , service->isStopped() );
             service->start();
@@ -216,7 +216,7 @@ void ViewRegistrar::manageMenuBar(ui::base::container::fwMenuBar::sptr menuBar )
     {
         SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
                    core::tools::fwID::exist(m_menuBarSid.first ) );
-        services::IService::sptr service = services::get( m_menuBarSid.first );
+        service::IService::sptr service = service::get( m_menuBarSid.first );
         service->start();
     }
 }
@@ -230,7 +230,7 @@ void ViewRegistrar::manageToolBar(ui::base::container::fwToolBar::sptr toolBar )
     {
         SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
                    core::tools::fwID::exist(m_toolBarSid.first ) );
-        services::IService::sptr service = services::get( m_toolBarSid.first );
+        service::IService::sptr service = service::get( m_toolBarSid.first );
         service->start();
     }
 }
@@ -246,7 +246,7 @@ void ViewRegistrar::unmanage()
             SLM_ASSERT("The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                        "It may have been destroyed by the configuration if it uses deferred objects.",
                        core::tools::fwID::exist(sid.first ) );
-            services::IService::sptr service = services::get( sid.first );
+            service::IService::sptr service = service::get( sid.first );
             service->stop().wait();
         }
         ui::base::GuiRegistry::unregisterSIDContainer(sid.first);
@@ -268,7 +268,7 @@ void ViewRegistrar::unmanageToolBar()
         {
             SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
                        core::tools::fwID::exist(m_toolBarSid.first ) );
-            services::IService::sptr service = services::get( m_toolBarSid.first );
+            service::IService::sptr service = service::get( m_toolBarSid.first );
             service->stop().wait();
         }
         ui::base::GuiRegistry::unregisterSIDToolBar(m_toolBarSid.first);
@@ -285,7 +285,7 @@ void ViewRegistrar::unmanageMenuBar()
         {
             SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
                        core::tools::fwID::exist(m_menuBarSid.first ) );
-            services::IService::sptr service = services::get( m_menuBarSid.first );
+            service::IService::sptr service = service::get( m_menuBarSid.first );
             service->stop().wait();
         }
         ui::base::GuiRegistry::unregisterSIDMenuBar(m_menuBarSid.first);

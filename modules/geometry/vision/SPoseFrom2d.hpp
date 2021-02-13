@@ -28,8 +28,8 @@
 
 #include <data/MarkerMap.hpp>
 
-#include <services/IRegisterer.hpp>
-#include <services/macros.hpp>
+#include <service/IRegisterer.hpp>
+#include <service/macros.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -94,10 +94,10 @@ namespace sight::modules::geometry::vision
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SPoseFrom2d : public services::IRegisterer
+class MODULE_GEOMETRY_VISION_CLASS_API SPoseFrom2d : public service::IRegisterer
 {
 public:
-    fwCoreServiceMacro(SPoseFrom2d, services::IRegisterer)
+    fwCoreServiceMacro(SPoseFrom2d, service::IRegisterer)
 
     typedef std::vector<std::string> VectKeyType;
 
@@ -112,7 +112,7 @@ public:
     MODULE_GEOMETRY_VISION_API virtual ~SPoseFrom2d() noexcept;
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**

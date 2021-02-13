@@ -8,11 +8,11 @@ set( DEPENDENCIES
     ui_dicom
     ui_base
     module_ui_qt
-    services
+    service
     io_base
     data
     )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
 )

@@ -10,7 +10,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    module_services             # fwService
+    module_service             # fwService
 
     # UI declaration/Actions
     module_ui_base
@@ -20,7 +20,7 @@ set( REQUIREMENTS
 
     # Services
     module_viz_sample   # contains a visualization service of mesh.
-    module_filter_mesh       # provides services to generate a mesh from an image.
+    module_filter_mesh       # provides service to generate a mesh from an image.
 )
 
 moduleParam(module_ui_qt

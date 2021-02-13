@@ -27,7 +27,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {

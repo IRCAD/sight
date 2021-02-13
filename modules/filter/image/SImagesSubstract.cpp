@@ -34,13 +34,13 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 
 // Services tools
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include "SImagesSubstract.hpp"
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SImagesSubstract )
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SImagesSubstract )
 
 namespace sight::modules::filter::image
 {

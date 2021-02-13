@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/qt/dialog/ProgressDialog.hpp>
 
@@ -35,7 +35,7 @@ static const core::com::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgre
 static const core::com::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
 static const core::com::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::io::dimse::SProgressBarController)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dimse::SProgressBarController)
 
 //------------------------------------------------------------------------------
 

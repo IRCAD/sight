@@ -1,11 +1,11 @@
 <plugin id="volumeRenderingActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_viz_scene2d" />
 
     <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
@@ -19,7 +19,7 @@
                 <key>optionalModelSeriesKey</key>
             </requirement>
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="VolumeRendering">
             <parameters>
                 <parameter replace="image" by="@values.imageSeries.image" />

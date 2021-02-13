@@ -5,10 +5,10 @@ set( TYPE MODULE )
 set( DEPENDENCIES
     core
     data
-    services
+    service
     ui_base
     io_base
     io_opencv
     geometry_vision
 )
-set( REQUIREMENTS data module_services )
+set( REQUIREMENTS data module_service )

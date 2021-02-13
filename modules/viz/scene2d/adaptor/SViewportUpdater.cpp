@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/SViewportUpdater.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -34,7 +34,7 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SViewportUpdater::SViewportUpdater() noexcept
 {
@@ -97,7 +97,7 @@ void SViewportUpdater::processInteraction( sight::viz::scene2d::data::Event& )
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
+service::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

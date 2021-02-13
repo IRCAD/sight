@@ -26,7 +26,7 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
                                 -DPROJECT_REQUIREMENTS="${PROJECT_REQUIREMENTS}"
                                 -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
                                 -DPLUGIN_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}"
-                                -DREGISTERSERVICES_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${PROJECT}"
+                                -DREGISTERSERVICE_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${PROJECT}"
                                 -P "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
     )
     list(APPEND PLUGIN_CONFIG_COMMAND_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/plugin_config.cmake"

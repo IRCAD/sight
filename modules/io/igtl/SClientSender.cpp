@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Failed.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -35,7 +35,7 @@ fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkSender, ::sight::mod
 namespace sight::modules::io::igtl
 {
 
-const services::IService::KeyType s_OBJECTS_GROUP = "objects";
+const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ SClientSender::~SClientSender()
 
 void SClientSender::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     const ConfigType configIn = config.get_child("in");
 
@@ -63,8 +63,8 @@ void SClientSender::configuring()
     const auto keyCfg = configIn.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
     {
-        const services::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string name                     = attr.get("deviceName", "Sight");
+        const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string name                    = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(name);
     }
 

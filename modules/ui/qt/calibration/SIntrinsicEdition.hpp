@@ -28,7 +28,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <QObject>
 
@@ -55,13 +55,13 @@ namespace sight::modules::ui::qt::calibration
  * - \b camera [sight::data::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class MODULE_UI_QT_CLASS_API SIntrinsicEdition : public QObject,
-                                                 public services::IService
+                                                 public service::IService
 {
 
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SIntrinsicEdition, sight::services::IService)
+    fwCoreServiceMacro(SIntrinsicEdition, sight::service::IService)
 
     /**
      * @brief Constructor.

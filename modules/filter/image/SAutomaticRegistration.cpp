@@ -28,7 +28,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
 
@@ -41,13 +41,13 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::image::SAutomaticRegistration,
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SAutomaticRegistration,
                          ::sight::data::Image)
 
-static const services::IService::KeyType s_TARGET_IN = "target";
-static const services::IService::KeyType s_REFERENCE_IN = "reference";
+static const service::IService::KeyType s_TARGET_IN = "target";
+static const service::IService::KeyType s_REFERENCE_IN = "reference";
 
-static const services::IService::KeyType s_TRANSFORM_INOUT = "transform";
+static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ SAutomaticRegistration::~SAutomaticRegistration()
 
 void SAutomaticRegistration::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_minStep = config.get< double >("minStep", -1.);
 
@@ -275,9 +275,9 @@ void SAutomaticRegistration::stopping()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
+service::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_TARGET_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

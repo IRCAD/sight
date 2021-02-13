@@ -32,16 +32,16 @@
 #include <data/tools/helper/Array.hpp>
 #include <data/tools/helper/ArrayGetter.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::filter::vision
 {
 
-static const services::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
-static const services::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
-static const services::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
+static const service::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
+static const service::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
+static const service::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
 
-fwServicesRegisterMacro( ::sight::services::IOperator, ::sight::modules::filter::vision::STransformDepthMap2mm)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::STransformDepthMap2mm)
 
 //------------------------------------------------------------------------------
 

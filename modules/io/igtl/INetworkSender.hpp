@@ -26,19 +26,19 @@
 
 #include <data/Object.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::io::igtl
 {
 
 /// Interface providing behavior of network senders, if you want create a new network sender you must be inherit.
-class MODULE_IO_IGTL_CLASS_API INetworkSender : public services::IController
+class MODULE_IO_IGTL_CLASS_API INetworkSender : public service::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(INetworkSender, services::IController)
+    fwCoreServiceMacro(INetworkSender, service::IController)
 
     /// Initializes signals.
     MODULE_IO_IGTL_API INetworkSender();

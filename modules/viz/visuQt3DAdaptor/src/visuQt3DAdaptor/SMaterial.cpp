@@ -24,9 +24,9 @@
 
 #include <data/Material.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/op/Get.hpp>
 
 #include <QQmlEngine>
 
@@ -85,9 +85,9 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push( s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }

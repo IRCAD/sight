@@ -29,8 +29,8 @@
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <viz/ogre/IAdaptor.hpp>
 
@@ -122,7 +122,7 @@ void SShaderParameterEditor::clear()
 {
     m_editorInfo.connections.disconnect();
 
-    services::IService::sptr objService = m_editorInfo.service.lock();
+    service::IService::sptr objService = m_editorInfo.service.lock();
 
     if(objService)
     {
@@ -130,7 +130,7 @@ void SShaderParameterEditor::clear()
 
         ::sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        services::OSR::unregisterService(objService);
+        service::OSR::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();
@@ -145,7 +145,7 @@ void SShaderParameterEditor::updateGuiInfo()
     /// Getting all Material adaptors
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
-    services::registry::ObjectService::ServiceVectorType srvVec = services::OSR::getServices(
+    service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
         "::modules::viz::ogre::adaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
@@ -209,10 +209,10 @@ void SShaderParameterEditor::updateGuiInfo()
 
     ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = services::add("::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
+    auto editorService = service::add("::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
-    services::IService::ConfigType editorConfig;
+    service::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
     for (auto wAdaptor : matService->getRegisteredServices())

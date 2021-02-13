@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/tools/Failed.hpp>
 
 #include <data/ActivitySeries.hpp>
 
-#include <services/IAppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <ui/base/view/IActivityView.hpp>
 
@@ -122,7 +122,7 @@ private:
     void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// Helper to launch activity configuration
-    services::IAppConfigManager::sptr m_configManager;
+    service::IAppConfigManager::sptr m_configManager;
 
     /// WID used to register the activity container
     std::string m_wid;

@@ -4,7 +4,7 @@ set( VERSION 0.9 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    module_services
+    module_service
     data
 
     module_ui_base

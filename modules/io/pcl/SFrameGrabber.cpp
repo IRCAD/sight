@@ -27,7 +27,7 @@
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -42,11 +42,11 @@
 namespace sight::modules::io::pcl
 {
 
-static const services::IService::KeyType s_FRAMETL = "frameTL";
+static const service::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( services::IGrabber, ::sight::modules::io::pcl::SFrameGrabber, ::sight::data::FrameTL)
+fwServicesRegisterMacro( service::IGrabber, ::sight::modules::io::pcl::SFrameGrabber, ::sight::data::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
 
@@ -177,8 +177,8 @@ void SFrameGrabber::stopCamera()
         data::FrameTL::sptr frameTL = this->getInOut< data::FrameTL >(s_FRAMETL);
         this->clearTimeline(frameTL);
 
-        auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
-            services::IGrabber::s_CAMERA_STOPPED_SIG);
+        auto sig = this->signal< service::IGrabber::CameraStoppedSignalType >(
+            service::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
 
         this->setStartState(false);

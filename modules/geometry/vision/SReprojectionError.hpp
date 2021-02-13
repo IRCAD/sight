@@ -26,7 +26,7 @@
 
 #include <data/MarkerMap.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -82,10 +82,10 @@ namespace sight::modules::geometry::vision
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SReprojectionError : public services::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SReprojectionError : public service::IController
 {
 public:
-    fwCoreServiceMacro(SReprojectionError, services::IController)
+    fwCoreServiceMacro(SReprojectionError, service::IController)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;
@@ -102,7 +102,7 @@ public:
     MODULE_GEOMETRY_VISION_API ~SReprojectionError();
 
     /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**

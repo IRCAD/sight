@@ -28,7 +28,7 @@
 namespace sight::modules::ui::qml::reconstruction
 {
 
-static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +122,7 @@ void SOrganMaterialEditor::materialNotification()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -30,8 +30,8 @@
 
 #include <data/Composite.hpp>
 
-#include <services/IController.hpp>
-#include <services/ISynchronizer.hpp>
+#include <service/IController.hpp>
+#include <service/ISynchronizer.hpp>
 
 namespace sight::data
 {
@@ -74,12 +74,12 @@ namespace sight::modules::sync
  * @subsection In-Out In-Out
  * - \b matrices [sight::data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */
-class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public services::ISynchronizer
+class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public service::ISynchronizer
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixTLSynchronizer, services::ISynchronizer)
+    fwCoreServiceMacro(SMatrixTLSynchronizer, service::ISynchronizer)
 
     typedef core::com::Signal< void (int) > MatrixSynchronizedSignalType;
     typedef core::com::Signal< void (int) > MatrixUnsynchronizedSignalType;
@@ -115,7 +115,7 @@ protected:
     /// Synchronize
     MODULE_SYNC_API void synchronize();
 
-    MODULE_SYNC_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_SYNC_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

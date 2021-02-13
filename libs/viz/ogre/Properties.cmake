@@ -7,7 +7,7 @@ set( DEPENDENCIES
     geometry_data
     ui_base
     viz_base
-    services
+    service
 )
 set( REQUIREMENTS  )
 set( WARNINGS_AS_ERRORS ON )

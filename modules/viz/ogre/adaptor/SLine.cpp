@@ -28,13 +28,13 @@
 
 #include <data/tools/Color.hpp>
 
-#include <services/macros.hpp>
-
-#include <OgreAxisAlignedBox.h>
-#include <OgreVector3.h>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/Scene.hpp>
 #include <viz/ogre/ogre.hpp>
+
+#include <OgreAxisAlignedBox.h>
+#include <OgreVector3.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {

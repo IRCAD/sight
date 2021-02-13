@@ -26,7 +26,7 @@
 
 #include <glm/vec3.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -61,13 +61,13 @@ namespace sight::modules::geometry::base
  * - \b label (optional): (std::string) name of the landmark group
  * - \b width (optional): (int) width of the background image in pixels. The image should have the same width and height
  */
-class MODULE_GEOMETRY_BASE_CLASS_API STargeting final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API STargeting final : public service::IService
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STargeting, services::IService)
+    fwCoreServiceMacro(STargeting, service::IService)
 
     /// Initializes member variables and slots.
     MODULE_GEOMETRY_BASE_API STargeting() noexcept;

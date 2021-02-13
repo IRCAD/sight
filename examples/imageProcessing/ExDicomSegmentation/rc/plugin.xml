@@ -2,7 +2,7 @@
 
     <requirement id="module_activity" />
     <requirement id="module_ui_qt" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_viz_ogre" />
     <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_base" />
@@ -11,7 +11,7 @@
     <xi:include href="Threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="VTKMesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities" >
+    <extension implements="::activity::registry::Activity" >
         <id>ExDicomSegmentation_VTKMesher_Activity</id>
         <title>VTK mesher</title>
         <desc>Mesher activity using VTK</desc>
@@ -19,7 +19,7 @@
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg" >
             <parameters>
                 <parameter replace="imageSeries" by="@values.imageSeries" />
@@ -28,7 +28,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities" >
+    <extension implements="::activity::registry::Activity" >
         <id>ExDicomSegmentation_Threshold_Activity</id>
         <title>Threshold</title>
         <desc>Simple threshold activity</desc>
@@ -36,7 +36,7 @@
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExDicomSegmentation_Threshold_AppCfg" >
             <parameters>
                 <parameter replace="imageSeries" by="@values.imageSeries" />
@@ -44,7 +44,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities" >
+    <extension implements="::activity::registry::Activity" >
         <id>ExDicomSegmentation_Base_Activity</id>
         <title>ExDicomSegmentation</title>
         <desc>ExDicomSegmentation main activity</desc>
@@ -55,7 +55,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::services::registry::AppConfig" >
+    <extension implements="::sight::service::registry::AppConfig" >
         <id>ExDicomSegmentation_AppCfg</id>
         <config>
 

@@ -22,9 +22,9 @@
 
 #include "modules/ui/qt/action/SActivityLauncher.hpp"
 
-#include <activities/IActivityValidator.hpp>
-#include <activities/IBuilder.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IActivityValidator.hpp>
+#include <activity/IBuilder.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -42,10 +42,10 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <services/IAppConfigManager.hpp>
-#include <services/macros.hpp>
-#include <services/registry/ActiveWorkers.hpp>
-#include <services/registry/AppConfig.hpp>
+#include <service/IAppConfigManager.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ActiveWorkers.hpp>
+#include <service/registry/AppConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -60,7 +60,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
-Q_DECLARE_METATYPE(sight::activities::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activity::registry::ActivityInfo)
 
 namespace sight::modules::ui::qt
 {
@@ -74,7 +74,7 @@ const core::com::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_
 const core::com::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
 const core::com::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
-static const services::IService::KeyType s_SERIES_INPUT = "series";
+static const service::IService::KeyType s_SERIES_INPUT = "series";
 
 //------------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ void SActivityLauncher::stopping()
 void SActivityLauncher::configuring()
 {
     this->sight::ui::base::IActionSrv::initialize();
-    typedef services::IService::ConfigType ConfigType;
+    typedef service::IService::ConfigType ConfigType;
 
     m_parameters.clear();
     if(this->getConfigTree().count("config") > 0)
@@ -122,8 +122,8 @@ void SActivityLauncher::configuring()
         SLM_ASSERT("There must be one (and only one) <config/> element.",
                    this->getConfigTree().count("config") == 1 );
 
-        const services::IService::ConfigType srvconfig = this->getConfigTree();
-        const services::IService::ConfigType& config   = srvconfig.get_child("config");
+        const service::IService::ConfigType srvconfig = this->getConfigTree();
+        const service::IService::ConfigType& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
         SLM_ASSERT("SActivityLauncher mode must be either 'immediate' or 'message'",
@@ -131,7 +131,7 @@ void SActivityLauncher::configuring()
 
         if(config.count("parameters") == 1 )
         {
-            const services::IService::ConfigType& configParameters = config.get_child("parameters");
+            const service::IService::ConfigType& configParameters = config.get_child("parameters");
             BOOST_FOREACH( const ConfigType::value_type& v,  configParameters.equal_range("parameter") )
             {
                 ParametersType::value_type parameter( v.second );
@@ -142,7 +142,7 @@ void SActivityLauncher::configuring()
 
         if(config.count("filter") == 1 )
         {
-            const services::IService::ConfigType& configFilter = config.get_child("filter");
+            const service::IService::ConfigType& configFilter = config.get_child("filter");
             SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
@@ -160,11 +160,11 @@ void SActivityLauncher::configuring()
         if(config.count("quickLaunch") == 1 )
         {
             m_quickLaunch.clear();
-            const services::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
+            const service::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
             BOOST_FOREACH( const ConfigType::value_type& v,  configQuickLaunch.equal_range("association") )
             {
-                const services::IService::ConfigType& association = v.second;
-                const services::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
+                const service::IService::ConfigType& association = v.second;
+                const service::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
 
                 SLM_FATAL_IF( "The attribute \"type\" is missing", xmlattr.count("type") != 1 );
                 SLM_FATAL_IF( "The attribute \"id\" is missing", xmlattr.count("id") != 1 );
@@ -181,7 +181,7 @@ void SActivityLauncher::configuring()
 
 //------------------------------------------------------------------------------
 
-activities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
+activity::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoContainer& infos )
 {
     QWidget* parent = qApp->activeWindow();
 
@@ -189,7 +189,7 @@ activities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoCo
     dialog->setWindowTitle(QString::fromStdString("Choose an activity"));
 
     QStandardItemModel* model = new QStandardItemModel(dialog);
-    for( const activities::registry::ActivityInfo& info :  infos)
+    for( const activity::registry::ActivityInfo& info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -234,13 +234,13 @@ activities::registry::ActivityInfo SActivityLauncher::show( const ActivityInfoCo
     QObject::connect(cancelButton, SIGNAL(clicked()), dialog, SLOT(reject()));
     QObject::connect(selectionList, SIGNAL(doubleClicked(const QModelIndex&)), dialog, SLOT(accept()));
 
-    activities::registry::ActivityInfo info;
+    activity::registry::ActivityInfo info;
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
         QStandardItem* item      = model->itemFromIndex( currentIndex );
         QVariant var             = item->data();
-        info = var.value< activities::registry::ActivityInfo >();
+        info = var.value< activity::registry::ActivityInfo >();
     }
 
     return info;
@@ -288,12 +288,12 @@ void SActivityLauncher::updating()
     const bool launchAS = this->launchAS(selection);
     if (!launchAS)
     {
-        ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos(selection);
+        ActivityInfoContainer infos = activity::registry::Activity::getDefault()->getInfos(selection);
         infos = this->getEnabledActivities(infos);
 
         if ( !infos.empty())
         {
-            activities::registry::ActivityInfo info;
+            activity::registry::ActivityInfo info;
             if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
             {
                 info = infos[0];
@@ -344,19 +344,19 @@ void SActivityLauncher::updateState()
             {
                 isExecutable = true;
             }
-            isExecutable &= activities::registry::Activities::getDefault()->hasInfo(
+            isExecutable &= activity::registry::Activity::getDefault()->hasInfo(
                 as->getActivityConfigId());
         }
         else
         {
-            isExecutable = activities::registry::Activities::getDefault()->hasInfo(
+            isExecutable = activity::registry::Activity::getDefault()->hasInfo(
                 as->getActivityConfigId());
         }
     }
     else
     {
-        activities::registry::ActivityInfo::DataCountType dataCount;
-        dataCount = activities::registry::Activities::getDefault()->getDataCount(selection);
+        activity::registry::ActivityInfo::DataCountType dataCount;
+        dataCount = activity::registry::Activity::getDefault()->getDataCount(selection);
         if(m_filterMode.empty() && dataCount.size() == 1)
         {
             data::Object::sptr obj = selection->front();
@@ -366,7 +366,7 @@ void SActivityLauncher::updateState()
             }
         }
 
-        ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos(selection);
+        ActivityInfoContainer infos = activity::registry::Activity::getDefault()->getInfos(selection);
         infos = this->getEnabledActivities(infos);
 
         isExecutable |= !infos.empty();
@@ -377,12 +377,12 @@ void SActivityLauncher::updateState()
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& info,
+void SActivityLauncher::buildActivity(const activity::registry::ActivityInfo& info,
                                       const data::Vector::csptr& selection)
 {
     data::Composite::sptr replaceMap = data::Composite::New();
-    activities::IBuilder::sptr builder;
-    builder = activities::builder::factory::New(info.builderImpl);
+    activity::IBuilder::sptr builder;
+    builder = activity::builder::factory::New(info.builderImpl);
     SLM_ASSERT(info.builderImpl << " instantiation failed", builder);
 
     data::ActivitySeries::sptr actSeries;
@@ -404,14 +404,14 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
         for (std::string validatorImpl : info.validatorsImpl)
         {
             /// Process activity validator
-            activities::IValidator::sptr validator = activities::validator::factory::New(validatorImpl);
+            activity::IValidator::sptr validator = activity::validator::factory::New(validatorImpl);
 
-            activities::IActivityValidator::sptr activityValidator =
-                activities::IActivityValidator::dynamicCast(validator);
+            activity::IActivityValidator::sptr activityValidator =
+                activity::IActivityValidator::dynamicCast(validator);
 
             if (activityValidator)
             {
-                activities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+                activity::IValidator::ValidationType validation = activityValidator->validate(actSeries);
                 if(!validation.first)
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
@@ -425,8 +425,8 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
         }
     }
 
-    ParametersType parameters             = this->translateParameters(m_parameters);
-    activities::registry::ActivityMsg msg = activities::registry::ActivityMsg(actSeries, info, parameters);
+    ParametersType parameters           = this->translateParameters(m_parameters);
+    activity::registry::ActivityMsg msg = activity::registry::ActivityMsg(actSeries, info, parameters);
 
     if( m_mode == "message" )
     {
@@ -436,12 +436,12 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
     {
         sight::ui::base::LockAction lock(this->getSptr());
 
-        const std::string viewConfigID                               = msg.getAppConfigID();
-        activities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
+        const std::string viewConfigID                             = msg.getAppConfigID();
+        activity::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
         replaceMap["GENERIC_UID"] =
-            services::registry::AppConfig::getUniqueIdentifier();
+            service::registry::AppConfig::getUniqueIdentifier();
 
-        services::IAppConfigManager::sptr helper = services::IAppConfigManager::New();
+        service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
         helper->setConfig( viewConfigID, replaceMap );
         helper->launch();
         helper->stopAndDestroy();
@@ -450,7 +450,7 @@ void SActivityLauncher::buildActivity(const activities::registry::ActivityInfo& 
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::sendConfig( const activities::registry::ActivityInfo& info )
+void SActivityLauncher::sendConfig( const activity::registry::ActivityInfo& info )
 {
     // Start module containing the activity if it is not started
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
@@ -465,15 +465,15 @@ void SActivityLauncher::sendConfig( const activities::registry::ActivityInfo& in
     data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
     SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
-    activities::IValidator::ValidationType validation;
+    activity::IValidator::ValidationType validation;
     validation.first = true;
 
     for(auto const& validatorImpl :  info.validatorsImpl)
     {
-        activities::IValidator::sptr validator = activities::validator::factory::New(validatorImpl);
+        activity::IValidator::sptr validator = activity::validator::factory::New(validatorImpl);
         SLM_ASSERT(validatorImpl << " instantiation failed", validator);
 
-        activities::IValidator::ValidationType valid = validator->validate(info, selection);
+        activity::IValidator::ValidationType valid = validator->validate(info, selection);
         validation.first &= valid.first;
         if(!valid.first)
         {
@@ -500,8 +500,8 @@ void SActivityLauncher::sendConfig( const activities::registry::ActivityInfo& in
 bool SActivityLauncher::launchAS(const data::Vector::csptr& selection)
 {
     bool launchAS = false;
-    activities::registry::ActivityInfo::DataCountType dataCount;
-    dataCount = activities::registry::Activities::getDefault()->getDataCount(selection);
+    activity::registry::ActivityInfo::DataCountType dataCount;
+    dataCount = activity::registry::Activity::getDefault()->getDataCount(selection);
     if(dataCount.size() == 1)
     {
         for(data::Object::sptr obj :  *selection)
@@ -535,14 +535,14 @@ void SActivityLauncher::launchSeries(data::Series::sptr series)
     {
         data::Vector::sptr selection = data::Vector::New();
         selection->getContainer().push_back(series);
-        ActivityInfoContainer infos = activities::registry::Activities::getDefault()->getInfos(selection);
+        ActivityInfoContainer infos = activity::registry::Activity::getDefault()->getInfos(selection);
 
         if( m_quickLaunch.find( series->getClassname() ) != m_quickLaunch.end() )
         {
             std::string activityId = m_quickLaunch[ series->getClassname() ];
             SLM_ASSERT("Activity information not found for" + activityId,
-                       activities::registry::Activities::getDefault()->hasInfo(activityId) );
-            this->sendConfig( activities::registry::Activities::getDefault()->getInfo(activityId) );
+                       activity::registry::Activity::getDefault()->hasInfo(activityId) );
+            this->sendConfig( activity::registry::Activity::getDefault()->getInfo(activityId) );
         }
         else if ( !infos.empty() )
         {
@@ -561,8 +561,8 @@ void SActivityLauncher::launchSeries(data::Series::sptr series)
 
 void SActivityLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
 {
-    activities::registry::ActivityInfo info;
-    info = activities::registry::Activities::getDefault()->getInfo(series->getActivityConfigId());
+    activity::registry::ActivityInfo info;
+    info = activity::registry::Activity::getDefault()->getInfo(series->getActivityConfigId());
 
     // Applies activity validator on activity series to check the data
     if (!info.validatorsImpl.empty())
@@ -570,14 +570,14 @@ void SActivityLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
         for (std::string validatorImpl : info.validatorsImpl)
         {
             /// Process activity validator
-            activities::IValidator::sptr validator = activities::validator::factory::New(validatorImpl);
+            activity::IValidator::sptr validator = activity::validator::factory::New(validatorImpl);
 
-            activities::IActivityValidator::sptr activityValidator =
-                activities::IActivityValidator::dynamicCast(validator);
+            activity::IActivityValidator::sptr activityValidator =
+                activity::IActivityValidator::dynamicCast(validator);
 
             if (activityValidator)
             {
-                activities::IValidator::ValidationType validation = activityValidator->validate(series);
+                activity::IValidator::ValidationType validation = activityValidator->validate(series);
                 if(!validation.first)
                 {
                     const std::string message = "The activity '" + info.title + "' can not be launched:\n" +
@@ -591,8 +591,8 @@ void SActivityLauncher::launchActivitySeries(data::ActivitySeries::sptr series)
         }
     }
 
-    ParametersType parameters             = this->translateParameters(m_parameters);
-    activities::registry::ActivityMsg msg = activities::registry::ActivityMsg(series, info, parameters);
+    ParametersType parameters           = this->translateParameters(m_parameters);
+    activity::registry::ActivityMsg msg = activity::registry::ActivityMsg(series, info, parameters);
 
     m_sigActivityLaunched->asyncEmit(msg);
 }
@@ -634,7 +634,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
+service::IService::KeyConnectionsMap SActivityLauncher::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

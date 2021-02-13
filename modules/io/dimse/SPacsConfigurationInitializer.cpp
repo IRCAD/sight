@@ -25,8 +25,8 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
@@ -54,9 +54,9 @@ struct SetFromConfig
     }
 };
 
-static const services::IService::KeyType s_CONFIG_INOUT = "config";
+static const service::IService::KeyType s_CONFIG_INOUT = "config";
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::io::dimse::SPacsConfigurationInitializer)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dimse::SPacsConfigurationInitializer)
 
 //------------------------------------------------------------------------------
 
@@ -148,9 +148,9 @@ void SPacsConfigurationInitializer::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
+service::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
 
     connections.push(s_CONFIG_INOUT, sight::io::dimse::data::PacsConfiguration::s_MODIFIED_SIG, s_UPDATE_SLOT);
 

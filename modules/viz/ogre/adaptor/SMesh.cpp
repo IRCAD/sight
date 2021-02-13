@@ -27,17 +27,17 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/op/Get.hpp>
-
-#include <geometry/data/Mesh.hpp>
-
-#include <OGRE/OgreAxisAlignedBox.h>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/op/Get.hpp>
 
 #include <viz/ogre/helper/Scene.hpp>
 #include <viz/ogre/R2VBRenderable.hpp>
 #include <viz/ogre/SRender.hpp>
+
+#include <geometry/data/Mesh.hpp>
+
+#include <OGRE/OgreAxisAlignedBox.h>
 
 #include <cstdint>
 
@@ -183,9 +183,9 @@ void SMesh::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MESH_INOUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
     connections.push(s_MESH_INOUT, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
     connections.push(s_MESH_INOUT, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);

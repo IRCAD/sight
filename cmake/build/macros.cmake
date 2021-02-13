@@ -54,7 +54,7 @@ endmacro()
 macro(configure_header_file FWPROJECT_NAME FILENAME)
 
     # Paths for config files are:
-    # activities -> activities/theme/project/
+    # activities -> activity/theme/project/
     # apps -> project
     # examples -> project
     # libs -> theme/project/ except for theme=core project

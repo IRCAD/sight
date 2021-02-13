@@ -31,8 +31,8 @@
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
@@ -48,7 +48,7 @@ namespace sight::modules::ui::qt::image
 fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::image::ImageTransparency,
                          ::sight::data::Image )
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 ImageTransparency::ImageTransparency() noexcept
 {
@@ -235,7 +235,7 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
+service::IService::KeyConnectionsMap ImageTransparency::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

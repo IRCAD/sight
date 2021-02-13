@@ -25,15 +25,15 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/helper/Technique.hpp>
+#include <viz/ogre/ogre.hpp>
 
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreMaterialManager.h>
-
-#include <viz/ogre/helper/Technique.hpp>
-#include <viz/ogre/ogre.hpp>
 
 #include <memory>
 
@@ -78,9 +78,9 @@ struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Lis
 
 };
 
-static const services::IService::KeyType s_IMAGE_INOUT        = "image";
-static const services::IService::KeyType s_DEPTH_INOUT        = "depth";
-static const services::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
+static const service::IService::KeyType s_IMAGE_INOUT        = "image";
+static const service::IService::KeyType s_DEPTH_INOUT        = "depth";
+static const service::IService::KeyType s_PRIMITIVE_ID_INOUT = "primitiveID";
 
 static std::unique_ptr< FragmentsInfoMaterialListener > s_MATERIAL_LISTENER = nullptr;
 

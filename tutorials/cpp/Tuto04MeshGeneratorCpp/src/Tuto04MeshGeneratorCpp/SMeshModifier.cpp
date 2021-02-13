@@ -27,7 +27,7 @@
 #include <data/Mesh.hpp>
 #include <data/tools/Mesh.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -36,7 +36,7 @@ namespace Tuto04MeshGeneratorCpp
 
 fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
 
-static const services::IService::KeyType s_MESH_INOUT = "mesh";
+static const service::IService::KeyType s_MESH_INOUT = "mesh";
 
 static const std::string s_FUNCTOR_CONFIG = "functor";
 

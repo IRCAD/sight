@@ -33,12 +33,12 @@
 #include <data/Composite.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
 
-#include <io/base/services/ioTypes.hpp>
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/ioTypes.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <QHBoxLayout>
 #include <QInputDialog>
@@ -71,15 +71,15 @@ SCameraConfigLauncher::~SCameraConfigLauncher() noexcept
 void SCameraConfigLauncher::configuring()
 {
     this->initialize();
-    services::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfigTree();
 
     SLM_ASSERT("There must be one (and only one) <config/> element.",
                configuration.count("config") == 1 );
-    const services::IService::ConfigType& srvconfig = configuration;
-    const services::IService::ConfigType& config    = srvconfig.get_child("config");
+    const service::IService::ConfigType& srvconfig = configuration;
+    const service::IService::ConfigType& config    = srvconfig.get_child("config");
 
-    const services::IService::ConfigType& intrinsic = config.get_child("intrinsic");
-    const services::IService::ConfigType& extrinsic = config.get_child("extrinsic");
+    const service::IService::ConfigType& intrinsic = config.get_child("intrinsic");
+    const service::IService::ConfigType& extrinsic = config.get_child("extrinsic");
 
     m_intrinsicLauncher.parseConfig(intrinsic, this->getSptr());
     m_extrinsicLauncher.parseConfig(extrinsic,  this->getSptr());
@@ -222,13 +222,13 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    auto sdb                               = data::SeriesDB::New();
-    services::IService::sptr readerService = services::add("::sight::modules::io::atoms::SReader");
-    readerService->registerInOut(sdb, io::base::services::s_DATA_KEY);
+    auto sdb                              = data::SeriesDB::New();
+    service::IService::sptr readerService = service::add("::sight::modules::io::atoms::SReader");
+    readerService->registerInOut(sdb, io::base::service::s_DATA_KEY);
 
     try
     {
-        io::base::services::IReader::sptr reader = io::base::services::IReader::dynamicCast(readerService);
+        io::base::service::IReader::sptr reader = io::base::service::IReader::dynamicCast(readerService);
         reader->start();
         reader->openLocationDialog();
         reader->update();
@@ -245,7 +245,7 @@ void SCameraConfigLauncher::onImportClicked()
 
         throw;
     }
-    services::OSR::unregisterService(readerService);
+    service::OSR::unregisterService(readerService);
 
     auto series       = sdb->getContainer();
     auto cameraSeries = std::vector< data::CameraSeries::sptr>();
@@ -375,7 +375,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 
 void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 {
-    services::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+    service::helper::ConfigLauncher::FieldAdaptorType replaceMap;
 
     data::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
@@ -426,7 +426,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
             calibInfo2 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
         }
 
-        services::registry::FieldAdaptorType replaceMap;
+        service::registry::FieldAdaptorType replaceMap;
 
         replaceMap["camera1"]          = camera1->getID();
         replaceMap["camera2"]          = camera2->getID();

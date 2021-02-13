@@ -37,8 +37,8 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <io/opencv/Matrix.hpp>
 
@@ -47,7 +47,7 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::services::ICalibration, ::sight::modules::geometry::vision::SOpenCVExtrinsic,
+fwServicesRegisterMacro(::sight::service::ICalibration, ::sight::modules::geometry::vision::SOpenCVExtrinsic,
                         ::sight::data::CameraSeries)
 
 namespace sight::modules::geometry::vision
@@ -56,10 +56,10 @@ namespace sight::modules::geometry::vision
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
 
-static const services::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
-static const services::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
-static const services::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
-static const services::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
+static const service::IService::KeyType s_CAMERASERIES_INOUT = "cameraSeries";
+static const service::IService::KeyType s_MATRIX_OUTPUT      = "matrix";
+static const service::IService::KeyType s_CALIBINFO1_INPUT   = "calibrationInfo1";
+static const service::IService::KeyType s_CALIBINFO2_INPUT   = "calibrationInfo2";
 
 // ----------------------------------------------------------------------------
 

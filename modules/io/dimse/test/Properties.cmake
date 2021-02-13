@@ -3,13 +3,13 @@ set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
     core
-    services
+    service
     io_dimse
     utestData
 )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
     module_ui_base
     module_io_dimse
 )

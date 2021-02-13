@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -52,11 +52,11 @@ namespace sight::modules::filter::image
  * @subsection In-Out In-Out
  * - \b imageOut [sight::data::Image]: New resampled image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SResampler : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SResampler : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SResampler, services::IOperator)
+    fwCoreServiceMacro(SResampler, service::IOperator)
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SResampler();

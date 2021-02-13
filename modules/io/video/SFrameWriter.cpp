@@ -32,7 +32,7 @@
 #include <data/Composite.hpp>
 #include <data/location/Folder.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -47,7 +47,7 @@
 namespace sight::modules::io::video
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::video::SFrameWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::video::SFrameWriter,
                          ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
@@ -78,18 +78,18 @@ SFrameWriter::~SFrameWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SFrameWriter::getIOPathType() const
+sight::io::base::service::IOPathType SFrameWriter::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SFrameWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_format = config.get<std::string>("format", ".tiff");
 
@@ -165,7 +165,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
-        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(sight::io::base::services::s_DATA_KEY);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(sight::io::base::service::s_DATA_KEY);
         // The following lock causes the service to drop frames if under heavy load. This prevents desynchronization
         // between frames and timestamps.
         // TODO: experiment with queuing frames and writing them from a worker thread.
@@ -223,7 +223,7 @@ void SFrameWriter::startRecord()
 
     if (this->hasLocationDefined())
     {
-        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(sight::io::base::services::s_DATA_KEY);
+        data::FrameTL::csptr frameTL = this->getInput< data::FrameTL >(sight::io::base::service::s_DATA_KEY);
 
         if (frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->getNumberOfComponents() == 3)
         {
@@ -293,10 +293,10 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
+service::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
-    connections.push(sight::io::base::services::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    service::IService::KeyConnectionsMap connections;
+    connections.push(sight::io::base::service::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

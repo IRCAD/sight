@@ -34,7 +34,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/tools/helper/Composite.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 
@@ -57,7 +57,7 @@
 namespace sight::modules::io::atoms
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::atoms::SReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::atoms::SReader,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -98,7 +98,7 @@ void SReader::stopping()
 {
     if (m_outputMode)
     {
-        this->setOutput(sight::io::base::services::s_DATA_KEY, nullptr);
+        this->setOutput(sight::io::base::service::s_DATA_KEY, nullptr);
     }
 }
 
@@ -106,7 +106,7 @@ void SReader::stopping()
 
 void SReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 
     m_customExts.clear();
     m_allowedExtLabels.clear();
@@ -194,7 +194,7 @@ void SReader::configuring()
     }
 
     const std::string output = config.get<std::string>("out.<xmlattr>.key", "");
-    if (output == sight::io::base::services::s_DATA_KEY )
+    if (output == sight::io::base::service::s_DATA_KEY )
     {
         m_outputMode = true;
     }
@@ -208,8 +208,8 @@ void SReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        data::Object::sptr data = this->getInOut< data::Object >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.",
+        data::Object::sptr data = this->getInOut< data::Object >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
                    m_outputMode || data);
 
         sight::ui::base::Cursor cursor;
@@ -377,7 +377,7 @@ void SReader::updating()
 
             if (m_outputMode)
             {
-                this->setOutput(sight::io::base::services::s_DATA_KEY, newData);
+                this->setOutput(sight::io::base::service::s_DATA_KEY, newData);
             }
             else
             {
@@ -385,7 +385,7 @@ void SReader::updating()
                 {
                     m_readFailed = true;
                 }
-                SLM_ASSERT("'" + sight::io::base::services::s_DATA_KEY + "' key is not defined", data);
+                SLM_ASSERT("'" + sight::io::base::service::s_DATA_KEY + "' key is not defined", data);
 
                 FW_RAISE_IF( "Unable to load '" << filePath
                                                 << "' : trying to load a '" << newData->getClassname()
@@ -432,17 +432,17 @@ void SReader::updating()
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SReader::getIOPathType() const
+sight::io::base::service::IOPathType SReader::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SReader::notificationOfUpdate()
 {
-    data::Object::sptr object = this->getInOut< data::Object >(sight::io::base::services::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", object);
+    data::Object::sptr object = this->getInOut< data::Object >(sight::io::base::service::s_DATA_KEY);
+    SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", object);
 
     auto sig = object->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

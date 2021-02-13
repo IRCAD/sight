@@ -4,7 +4,7 @@
     <requirement id="module_viz_ogre" />
     <requirement id="module_viz_ogreQt" />
     <requirement id="module_ui_qt" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
     <library name="Tuto02GenericSceneCpp" />
     

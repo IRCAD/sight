@@ -30,9 +30,9 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/AppConfig.hpp>
-#include <services/registry/Proxy.hpp>
+#include <service/macros.hpp>
+#include <service/registry/AppConfig.hpp>
+#include <service/registry/Proxy.hpp>
 
 #include <sstream>
 
@@ -41,7 +41,7 @@ namespace sight::modules::ui::qt::calibration
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo,
                          data::Object)
 
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
@@ -79,7 +79,7 @@ void SDisplayCalibrationInfo::stopping()
 {
     if (m_configMgr)
     {
-        services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
+        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         m_configMgr->stopAndDestroy();
         m_configMgr.reset();
@@ -123,7 +123,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         std::string strConfig = "displayImageConfig";
 
         // Prepare configuration
-        services::registry::FieldAdaptorType replaceMap;
+        service::registry::FieldAdaptorType replaceMap;
 
         data::Image::sptr img1 = calInfo1->getImage(idx);
         replaceMap["imageId1"] = img1->getID();
@@ -144,15 +144,15 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
         config =
-            services::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
+            service::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
-        m_configMgr = services::IAppConfigManager::New();
-        m_configMgr->services::IAppConfigManager::setConfig( config );
+        m_configMgr = service::IAppConfigManager::New();
+        m_configMgr->service::IAppConfigManager::setConfig( config );
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
-        services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
+        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
         proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
     }
 }

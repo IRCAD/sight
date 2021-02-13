@@ -32,9 +32,9 @@
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 
-#include <OGRE/OgreMovableObject.h>
-
 #include <viz/ogre/IAdaptor.hpp>
+
+#include <OGRE/OgreMovableObject.h>
 
 #include <string>
 #include <vector>
@@ -104,7 +104,7 @@ protected:
      * Connect data::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Sets the camera's transform.
     MODULE_VIZ_OGRE_API void updating() override;

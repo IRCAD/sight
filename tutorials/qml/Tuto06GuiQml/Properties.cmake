@@ -4,12 +4,12 @@ set( TYPE APP ) # Type APP represent "Application"
 set( START ON)
 set( DEPENDENCIES
     data
-    services
+    service
     ui_qml
 )
 set( REQUIREMENTS # The modules used by this application
     data
-    module_services
+    module_service
     module_ui_base
     module_ui_qt
     )

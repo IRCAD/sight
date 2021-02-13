@@ -46,7 +46,7 @@
 
 namespace sight::modules::navigation::optics
 {
-fwServicesRegisterMacro(::sight::services::ITracker, ::sight::modules::navigation::optics::SArucoTracker)
+fwServicesRegisterMacro(::sight::service::ITracker, ::sight::modules::navigation::optics::SArucoTracker)
 //-----------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
@@ -56,9 +56,9 @@ const core::com::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT =
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
 
-const services::IService::KeyType s_CAMERA_INPUT           = "camera";
-const services::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";
-const services::IService::KeyType s_MARKER_MAP_INOUT_GROUP = "markerMap";
+const service::IService::KeyType s_CAMERA_INPUT           = "camera";
+const service::IService::KeyType s_TAGTL_INOUT_GROUP      = "tagTL";
+const service::IService::KeyType s_MARKER_MAP_INOUT_GROUP = "markerMap";
 
 //-----------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ SArucoTracker::~SArucoTracker() noexcept
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
+service::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
@@ -118,7 +118,7 @@ services::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 
 void SArucoTracker::configuring()
 {
-    this->services::ITracker::configuring();
+    this->service::ITracker::configuring();
 
     const auto config = this->getConfigTree();
 

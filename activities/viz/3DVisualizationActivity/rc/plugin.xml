@@ -1,15 +1,15 @@
 <plugin id="3DVisualizationActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="visuVTKQt" />
     <requirement id="module_activity" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>3DVisualization</id>
         <title>3D visualization</title>
         <desc>Activity to display a 3D model, and optionally its associated image.</desc>
@@ -26,7 +26,7 @@
                 <desc>Landmarks to display.</desc>
             </requirement>
         </requirements>
-        <builder>::activities::builder::ActivitySeriesInitData</builder>
+        <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
         <appConfig id="3DVisualization">
             <parameters>
                 <parameter replace="imageComposite" by="@values.imageSeries" />

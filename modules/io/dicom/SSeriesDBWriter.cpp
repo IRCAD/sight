@@ -31,9 +31,9 @@
 #include <data/tools/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/dicom/helper/Fiducial.hpp>
 #include <io/dicom/writer/SeriesDB.hpp>
 
@@ -46,7 +46,7 @@
 namespace sight::modules::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::dicom::SSeriesDBWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::dicom::SSeriesDBWriter,
                          ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ void SSeriesDBWriter::stopping()
 
 void SSeriesDBWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SSeriesDBWriter::updating()
         }
 
         // Retrieve dataStruct associated with this service
-        data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::services::s_DATA_KEY);
+        data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::service::s_DATA_KEY);
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
@@ -202,9 +202,9 @@ void SSeriesDBWriter::saveSeriesDB( const std::filesystem::path folder, data::Se
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SSeriesDBWriter::getIOPathType() const
+sight::io::base::service::IOPathType SSeriesDBWriter::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ sight::io::base::services::IOPathType SSeriesDBWriter::getIOPathType() const
 bool SSeriesDBWriter::selectFiducialsExportMode()
 {
     // Retrieve dataStruct associated with this service
-    data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::services::s_DATA_KEY);
+    data::Vector::csptr vector = this->getInput< data::Vector >(sight::io::base::service::s_DATA_KEY);
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();

@@ -30,15 +30,15 @@
 #include <data/ImageSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/op/Add.hpp>
-#include <services/registry/ActiveWorkers.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ActiveWorkers.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
 #include <utestData/helper/compare.hpp>
 
-#include <io/base/services/ioTypes.hpp>
+#include <io/base/service/ioTypes.hpp>
 
 #include <filesystem>
 
@@ -58,7 +58,7 @@ void IoItkTest::setUp()
 {
     // Set up context before running a test.
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    services::registry::ActiveWorkers::setDefaultWorker(worker);
+    service::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void IoItkTest::setUp()
 void IoItkTest::tearDown()
 {
     // Clean up after the test run.
-    services::registry::ActiveWorkers::getDefault()->clearRegistry();
+    service::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -75,18 +75,18 @@ void executeService(
     const SPTR(data::Object)& obj,
     const std::string& srvImpl,
     const SPTR(core::runtime::EConfigurationElement)& cfg,
-    const services::IService::AccessType access = services::IService::AccessType::INOUT)
+    const service::IService::AccessType access = service::IService::AccessType::INOUT)
 {
-    services::IService::sptr srv = services::add(srvImpl);
+    service::IService::sptr srv = service::add(srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    services::OSR::registerService(obj, sight::io::base::services::s_DATA_KEY, access, srv );
+    service::OSR::registerService(obj, sight::io::base::service::s_DATA_KEY, access, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
-    services::OSR::unregisterService( srv );
+    service::OSR::unregisterService( srv );
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     executeService(imageSeries,
                    "::sight::modules::io::itk::SJpgImageSeriesWriter",
                    srvCfg,
-                   services::IService::AccessType::INPUT);
+                   service::IService::AccessType::INPUT);
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ void IoItkTest::testImageWriterJPG()
         image,
         "::sight::modules::io::itk::JpgImageWriterService",
         srvCfg,
-        services::IService::AccessType::INPUT);
+        service::IService::AccessType::INPUT);
 }
 
 //------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ void IoItkTest::testSaveLoadInr()
         image,
         "::sight::modules::io::itk::InrImageWriterService",
         srvCfg,
-        services::IService::AccessType::INPUT);
+        service::IService::AccessType::INPUT);
 
     // load Image
     data::Image::sptr image2 = data::Image::New();
@@ -184,7 +184,7 @@ void IoItkTest::testSaveLoadInr()
         image2,
         "::sight::modules::io::itk::InrImageReaderService",
         srvCfg,
-        services::IService::AccessType::INOUT);
+        service::IService::AccessType::INOUT);
 
     data::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
@@ -227,7 +227,7 @@ void IoItkTest::ImageSeriesInrTest()
         imageSeries,
         "::sight::modules::io::itk::SImageSeriesWriter",
         srvCfg,
-        services::IService::AccessType::INPUT);
+        service::IService::AccessType::INPUT);
 
     // load Image
     data::Image::sptr image2 = data::Image::New();
@@ -235,7 +235,7 @@ void IoItkTest::ImageSeriesInrTest()
         image2,
         "::sight::modules::io::itk::InrImageReaderService",
         srvCfg,
-        services::IService::AccessType::INOUT);
+        service::IService::AccessType::INOUT);
 
     data::Image::Spacing spacing = image2->getSpacing2();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
@@ -282,7 +282,7 @@ void IoItkTest::SeriesDBInrTest()
         sdb,
         "::sight::modules::io::itk::SInrSeriesDBReader",
         srvCfg,
-        services::IService::AccessType::INOUT);
+        service::IService::AccessType::INOUT);
 
     const data::Image::Spacing spacing = {0.781, 0.781, 1.6};
     const data::Image::Size size       = {512, 512, 134};

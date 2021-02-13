@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
@@ -39,7 +39,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    modules::activity::registry::Activities::getDefault()->parseBundleInformation();
+    modules::activity::registry::Activity::getDefault()->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
     // Clear all operator configurations
-    modules::activity::registry::Activities::getDefault()->clearRegistry();
+    modules::activity::registry::Activity::getDefault()->clearRegistry();
 }
 
 } // namespace sight::modules::activity

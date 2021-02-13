@@ -29,13 +29,13 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
-
-#include <OgreSceneNode.h>
-#include <OgreTextureManager.h>
+#include <service/macros.hpp>
 
 #include <viz/ogre/ogre.hpp>
 #include <viz/ogre/Utils.hpp>
+
+#include <OgreSceneNode.h>
+#include <OgreTextureManager.h>
 
 #include <algorithm>
 
@@ -47,8 +47,8 @@ const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
-static const services::IService::KeyType s_TF_INOUT    = "tf";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_TF_INOUT    = "tf";
 
 static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
 static const std::string s_FILTERING_CONFIG   = "filtering";
@@ -347,9 +347,9 @@ void SNegato2D::updateTF()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
+service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );

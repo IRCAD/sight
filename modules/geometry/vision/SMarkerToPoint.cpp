@@ -33,19 +33,19 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::geometry::vision
 {
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::geometry::vision::SMarkerToPoint,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::vision::SMarkerToPoint,
                          ::sight::data::PointList)
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
 
-const services::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
-const services::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
+const service::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
+const service::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
 
 // ----------------------------------------------------------------------------
 

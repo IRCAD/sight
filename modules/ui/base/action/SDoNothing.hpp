@@ -24,7 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <ui/base/IActionSrv.hpp>
 
@@ -56,7 +56,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from services::IService )
+    /** @name Service methods ( override from service::IService )
      * @{
      */
 

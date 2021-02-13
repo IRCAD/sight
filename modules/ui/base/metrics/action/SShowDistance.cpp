@@ -32,7 +32,7 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <exception>
 
@@ -43,7 +43,7 @@ namespace action
 
 static const core::com::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ void SShowDistance::stopping()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
+service::IService::KeyConnectionsMap SShowDistance::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );

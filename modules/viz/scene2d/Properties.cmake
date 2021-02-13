@@ -9,7 +9,7 @@ set( DEPENDENCIES
     module_ui_qt
     viz_base
     viz_scene2d
-    services
+    service
     ui_base
 )
 set( REQUIREMENTS )

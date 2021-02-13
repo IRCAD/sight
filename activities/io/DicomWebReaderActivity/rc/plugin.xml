@@ -7,19 +7,19 @@
     <xi:include href="configurations/DicomWebReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DDicomWebPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>DicomWebReaderActivity</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
         <icon>media-0.1/icons/Pull.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activities::builder::ActivitySeries</builder>
+        <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="DicomWebReaderActivity">
         </appConfig>
         </extension>
 
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>DicomWebReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>

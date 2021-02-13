@@ -33,7 +33,7 @@
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <regex>
 
@@ -58,8 +58,8 @@ static const core::com::Slots::SlotKeyType s_FORWARD_ADDED_FIELDS_SLOT          
 static const core::com::Slots::SlotKeyType s_FORWARD_CHANGED_FIELDS_SLOT        = "forwardChangedFields";
 static const core::com::Slots::SlotKeyType s_FORWARD_REMOVED_FIELDS_SLOT        = "forwardRemovedFields";
 
-static const services::IService::KeyType s_SOURCE_INPUT = "source";
-static const services::IService::KeyType s_TARGET_INPUT = "target";
+static const service::IService::KeyType s_SOURCE_INPUT = "source";
+static const service::IService::KeyType s_TARGET_INPUT = "target";
 
 SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_availableConnection;
 

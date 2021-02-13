@@ -27,7 +27,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/data/Viewport.hpp>
@@ -45,8 +45,8 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_TF_INOUT       = "tf";
-static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const service::IService::KeyType s_TF_INOUT       = "tf";
+static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 static const std::string s_POLYGON_COLOR_CONFIG = "lineColor";
 static const std::string s_POINT_COLOR_CONFIG   = "pointColor";
@@ -104,7 +104,7 @@ void STransferFunction::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);

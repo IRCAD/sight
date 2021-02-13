@@ -24,7 +24,7 @@
 
 #include "modules/filter/vision/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::filter::vision
 {
@@ -56,10 +56,10 @@ namespace sight::modules::filter::vision
  * @subsection In-Out In-Out
  * - \b scaledDepthTL [sight::data::FrameTL]: timeline containing the scaled depth maps.
  */
-class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public services::IOperator
+class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public service::IOperator
 {
 public:
-    fwCoreServiceMacro(STransformDepthTL2mm, services::IOperator)
+    fwCoreServiceMacro(STransformDepthTL2mm, service::IOperator)
 
     /**
      * @brief STransformDepthTL2mm constructor.
@@ -86,7 +86,7 @@ protected:
     MODULE_FILTER_VISION_API virtual void updating() override;
 
     /// Defines the auto-connection between the depth timeline and the 'compute' slot
-    MODULE_FILTER_VISION_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 private:
     /// Apply the scale on the depth map

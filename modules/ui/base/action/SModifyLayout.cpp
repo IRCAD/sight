@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Get.hpp>
+#include <service/macros.hpp>
+#include <service/op/Get.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/GuiRegistry.hpp>
@@ -81,7 +81,7 @@ void SModifyLayout::updating()
         std::string uid = elt.first;
         std::string wid = elt.second;
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        services::IService::sptr service = services::get( uid );
+        service::IService::sptr service = service::get( uid );
         SLM_ASSERT("service not found", service);
         ::sight::ui::base::IGuiContainerSrv::sptr container = ::sight::ui::base::IGuiContainerSrv::dynamicCast(service);
         SLM_ASSERT("::ui::base::IGuiContainerSrv dynamicCast failed", container);
@@ -95,7 +95,7 @@ void SModifyLayout::updating()
         std::string uid = elt.first;
         bool isEnable   = elt.second;
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        services::IService::sptr service = services::get( uid );
+        service::IService::sptr service = service::get( uid );
         SLM_ASSERT("service not found", service);
         if(service->isStarted())
         {
@@ -140,7 +140,7 @@ void SModifyLayout::updating()
         std::string uid = elt.first;
         ::boost::logic::tribool isVisible = elt.second;
         SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
-        services::IService::sptr service = services::get( uid );
+        service::IService::sptr service = service::get( uid );
 
         auto containerSrv = ::sight::ui::base::IGuiContainerSrv::dynamicCast(service);
         SLM_ASSERT("::ui::base::IGuiContainerSrv dynamicCast failed", containerSrv);

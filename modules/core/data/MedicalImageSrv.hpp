@@ -24,8 +24,8 @@
 
 #include "modules/data/config.hpp"
 
-#include <services/IController.hpp>
-#include <services/IService.hpp>
+#include <service/IController.hpp>
+#include <service/IService.hpp>
 
 namespace sight::modules::data
 {
@@ -43,12 +43,12 @@ namespace sight::modules::data
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image to be converted into a medical image.
  */
-class MODULE_DATA_CLASS_API MedicalImageSrv : public services::IController
+class MODULE_DATA_CLASS_API MedicalImageSrv : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(MedicalImageSrv, services::IController)
+    fwCoreServiceMacro(MedicalImageSrv, service::IController)
 
     MODULE_DATA_API MedicalImageSrv() noexcept;
 

@@ -27,7 +27,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -39,8 +39,8 @@
 namespace sight::modules::ui::qt::calibration
 {
 
-static const services::IService::KeyType s_CAMERA_INPUT = "camera";
-static const services::IService::KeyType s_MATRIX_INOUT = "matrix";
+static const service::IService::KeyType s_CAMERA_INPUT = "camera";
+static const service::IService::KeyType s_MATRIX_INOUT = "matrix";
 
 fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor,
                          ::sight::modules::ui::qt::calibration::SOpticalCenterEditor,
@@ -165,7 +165,7 @@ void SOpticalCenterEditor::updating()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

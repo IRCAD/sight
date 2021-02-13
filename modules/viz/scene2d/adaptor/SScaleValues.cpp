@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/SScaleValues.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -36,7 +36,7 @@ namespace sight::modules::viz::scene2d
 namespace adaptor
 {
 
-static const services::IService::KeyType s_VIEWPORT_INPUT = "viewport";
+static const service::IService::KeyType s_VIEWPORT_INPUT = "viewport";
 
 SScaleValues::SScaleValues() noexcept :
     m_min(0.f),
@@ -417,7 +417,7 @@ void SScaleValues::stopping()
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SScaleValues::getAutoConnections() const
+service::IService::KeyConnectionsMap SScaleValues::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT );

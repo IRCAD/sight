@@ -24,9 +24,9 @@
 
 #include <core/com/Slots.hxx>
 
-#include <services/helper/Config.hpp>
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/helper/Config.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <viz/ogre/registry/Adaptor.hpp>
 #include <viz/ogre/Utils.hpp>
@@ -63,7 +63,7 @@ IAdaptor::~IAdaptor() noexcept
 void IAdaptor::info(std::ostream& _sstream )
 {
     _sstream << "IAdaptor : ";
-    this->services::IService::info( _sstream );
+    this->service::IService::info( _sstream );
 }
 
 //------------------------------------------------------------------------------
@@ -81,14 +81,14 @@ void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = services::OSR::getServices("::sight::viz::ogre::SRender");
+        auto servicesVector = service::OSR::getServices("::sight::viz::ogre::SRender");
 
         auto& registry       = viz::ogre::registry::getAdaptorRegistry();
         auto renderServiceId = registry[this->getID()];
 
         auto result =
             std::find_if(servicesVector.begin(), servicesVector.end(),
-                         [renderServiceId](const services::IService::sptr& srv)
+                         [renderServiceId](const service::IService::sptr& srv)
             {
                 return srv->getID() == renderServiceId;
             });
@@ -149,8 +149,8 @@ void IAdaptor::requestRender()
 {
     /*
        auto renderService = this->getRenderService();
-       if ( (renderService->getStatus() == services::IService::STARTED ||
-          renderService->getStatus() == services::IService::SWAPPING) &&
+       if ( (renderService->getStatus() == service::IService::STARTED ||
+          renderService->getStatus() == service::IService::SWAPPING) &&
          renderService->getRenderMode() == viz::ogre::SRender::RenderMode::AUTO )
        {
         this->getRenderService()->requestRender();

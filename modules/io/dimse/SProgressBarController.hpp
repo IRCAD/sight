@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/mt/types.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <ui/base/dialog/ProgressDialog.hpp>
 
@@ -49,12 +49,12 @@ namespace sight::modules::io::dimse
     <service uid="progressBarController" type="::sight::modules::io::dimse::SProgressBarController" />
    @endcode
  */
-class MODULE_IO_DIMSE_CLASS_API SProgressBarController : public services::IController
+class MODULE_IO_DIMSE_CLASS_API SProgressBarController : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SProgressBarController,  services::IController)
+    fwCoreServiceMacro(SProgressBarController,  service::IController)
 
     /// Initializes slots.
     MODULE_IO_DIMSE_API SProgressBarController() noexcept;

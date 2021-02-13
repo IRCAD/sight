@@ -22,16 +22,16 @@
 
 #include "LockDumpSrv.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::memory
 {
 
-static const services::IService::KeyType s_TARGET_INOUT = "target";
+static const service::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::memory::LockDumpSrv, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::memory::LockDumpSrv, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 

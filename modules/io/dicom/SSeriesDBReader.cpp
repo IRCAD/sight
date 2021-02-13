@@ -34,11 +34,11 @@
 #include <data/String.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/registry/ServiceConfig.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ServiceConfig.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -51,7 +51,7 @@
 namespace sight::modules::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::dicom::SSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::dicom::SSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -74,9 +74,9 @@ SSeriesDBReader::~SSeriesDBReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SSeriesDBReader::getIOPathType() const
+sight::io::base::service::IOPathType SSeriesDBReader::getIOPathType() const
 {
-    return sight::io::base::services::FOLDER;
+    return sight::io::base::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ void SSeriesDBReader::openLocationDialog()
     {
         // Get the config
         core::runtime::ConfigurationElement::csptr filterSelectorConfig;
-        filterSelectorConfig = services::registry::ServiceConfig::getDefault()->getServiceConfig(
+        filterSelectorConfig = service::registry::ServiceConfig::getDefault()->getServiceConfig(
             m_filterConfig, "::modules::ui::dicom::SFilterSelectorDialog");
 
         SLM_ASSERT("Sorry, there is no service configuration "
@@ -124,16 +124,16 @@ void SSeriesDBReader::openLocationDialog()
                    << " for modules::ui::dicom::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
-        services::IService::sptr filterSelectorSrv;
+        service::IService::sptr filterSelectorSrv;
         data::String::sptr key = data::String::New();
-        filterSelectorSrv = services::add("::modules::ui::dicom::SFilterSelectorDialog");
+        filterSelectorSrv = service::add("::modules::ui::dicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();
         filterSelectorSrv->stop();
-        services::OSR::unregisterService( filterSelectorSrv );
+        service::OSR::unregisterService( filterSelectorSrv );
 
         m_filterType = key->getValue();
 
@@ -149,9 +149,9 @@ void SSeriesDBReader::openLocationDialog()
 
 void SSeriesDBReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 
-    const services::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfigTree();
 
     // Use filter selector
     m_filterConfig = config.get<std::string>("filterConfig", "");
@@ -189,8 +189,8 @@ void SSeriesDBReader::configuring()
         const auto sopClassRange           = sopClassSelectionConfig.equal_range("SOPClass");
         for(auto sopClassIter = sopClassRange.first; sopClassIter != sopClassRange.second; ++sopClassIter)
         {
-            const services::IService::ConfigType& sopClassConfig = sopClassIter->second;
-            const services::IService::ConfigType& sopClassAttr   = sopClassConfig.get_child("<xmlattr>");
+            const service::IService::ConfigType& sopClassConfig = sopClassIter->second;
+            const service::IService::ConfigType& sopClassAttr   = sopClassConfig.get_child("<xmlattr>");
 
             SLM_ASSERT("Missing attribute 'uid' in element '<SOPClass>'", sopClassAttr.count("uid") == 1);
             m_supportedSOPClassSelection.push_back(sopClassAttr.get<std::string>("uid"));
@@ -331,7 +331,7 @@ void SSeriesDBReader::updating()
         if( !localSeriesDB->empty() )
         {
             // Retrieve dataStruct associated with this service
-            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::services::s_DATA_KEY);
+            data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
 
             // Clear SeriesDB and add new series
             data::tools::helper::SeriesDB sDBhelper(seriesDB);

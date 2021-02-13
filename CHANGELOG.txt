@@ -298,7 +298,7 @@
 
  * Bundle:
   * Created a bundle 'activity'. It contains
-   * a service ::activities::SLauncherActivity to launch an activity. 
+   * a service ::activity::SLauncherActivity to launch an activity. 
   * Created a new bundle 'uiMedDataQt'. It contains
    * a service ::uiMedDataQt::SSelctor to show information about medical data.
    * a service ::uiMedDataQt::SExportSeries to export series to an ::fwMedData::ActivitySeries defined in the service configuration.
@@ -487,7 +487,7 @@
   * Fixed invalid free in fwRenderVTK/vtklogging.cpp
   * Code cleanning : Removed several warnings, unused file, missing export
   * Fixed small bug in AppConfigManager when starting and stopping ComChannels
-  * Fixed small bug in fwServices/ObjectMsg.cpp when subject has expired
+  * Fixed small bug in fwservice/ObjectMsg.cpp when subject has expired
   * Added dynamicConfigStartStop attribute configuration in guiQt/editor/DynamicView.cpp
 
  * 2D Scene

@@ -28,7 +28,7 @@
 
 #include <data/MatrixTL.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <array>
 
@@ -83,12 +83,12 @@ namespace sight::modules::io::matrix
  * - \b step (optionnal): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  */
 
-class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::services::IReader
+class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::service::IReader
 {
 
 public:
 
-    fwCoreServiceMacro(SMatricesReader, sight::io::base::services::IReader)
+    fwCoreServiceMacro(SMatricesReader, sight::io::base::service::IReader)
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatricesReader() noexcept;
@@ -106,8 +106,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_MATRIX_API virtual void openLocationDialog() override;
 
-    /// Return file type (io::base::services::FILE)
-    MODULE_IO_MATRIX_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    /// Return file type (io::base::service::FILE)
+    MODULE_IO_MATRIX_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.

@@ -51,4 +51,4 @@ struct MODULE_UTEST_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::services
+} // namespace sight::modules::service

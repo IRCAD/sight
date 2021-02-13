@@ -28,14 +28,14 @@
 
 #include <data/tools/Color.hpp>
 
-#include <services/macros.hpp>
-
-#include <OgreNode.h>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/Font.hpp>
 #include <viz/ogre/helper/ManualObject.hpp>
 #include <viz/ogre/helper/Scene.hpp>
 #include <viz/ogre/SRender.hpp>
+
+#include <OgreNode.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {

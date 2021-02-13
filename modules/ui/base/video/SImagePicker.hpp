@@ -32,7 +32,7 @@
 #include <data/PointList.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -79,11 +79,11 @@ namespace sight::modules::ui::base
  *   |            |
  *    ------------
  **/
-class MODULE_UI_BASE_CLASS_API SImagePicker : public services::IController
+class MODULE_UI_BASE_CLASS_API SImagePicker : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SImagePicker, services::IController)
+    fwCoreServiceMacro(SImagePicker, service::IController)
 
     /// Creates the video reference map..
     MODULE_UI_BASE_API SImagePicker() noexcept;

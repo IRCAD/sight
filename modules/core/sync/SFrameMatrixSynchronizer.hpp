@@ -30,8 +30,8 @@
 #include <core/HiResClock.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <services/IController.hpp>
-#include <services/ISynchronizer.hpp>
+#include <service/IController.hpp>
+#include <service/ISynchronizer.hpp>
 
 namespace sight::data
 {
@@ -120,11 +120,11 @@ namespace sight::modules::sync
  * - \b tolerance defines the maximum distance between two frames (default: 500).
  *  If a timeline exceeds this tolerance it will not be synchronized.
  */
-class MODULE_SYNC_CLASS_API SFrameMatrixSynchronizer : public services::ISynchronizer
+class MODULE_SYNC_CLASS_API SFrameMatrixSynchronizer : public service::ISynchronizer
 {
 public:
 
-    fwCoreServiceMacro(SFrameMatrixSynchronizer, services::IController)
+    fwCoreServiceMacro(SFrameMatrixSynchronizer, service::IController)
 
     /**
      * @name Signal API
@@ -170,7 +170,7 @@ public:
      *
      * Connect data::TimeLine::s_CLEARED_SIG to s_RESET_TIMELINE_SLOT
      */
-    MODULE_SYNC_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_SYNC_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:
     /**

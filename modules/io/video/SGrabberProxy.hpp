@@ -26,8 +26,8 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <services/IGrabber.hpp>
-#include <services/IHasServices.hpp>
+#include <service/IGrabber.hpp>
+#include <service/IHasServices.hpp>
 
 namespace sight::data
 {
@@ -96,12 +96,12 @@ namespace sight::modules::io::video
  *  - \b gui
  *      - \b title (optional) : title of the grabber selector window.
  */
-class MODULE_IO_VIDEO_CLASS_API SGrabberProxy :  public services::IGrabber,
-                                                 public services::IHasServices
+class MODULE_IO_VIDEO_CLASS_API SGrabberProxy :  public service::IGrabber,
+                                                 public service::IHasServices
 {
 public:
 
-    fwCoreServiceMacro(SGrabberProxy, services::IGrabber)
+    fwCoreServiceMacro(SGrabberProxy, service::IGrabber)
 
     /// Constructor. Initialize slots and signals
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;
@@ -209,7 +209,7 @@ private:
     std::string m_guiTitle { "Please select a video grabber implementation" };
 
     /// Actual grabber service.
-    std::vector< services::IGrabber::sptr > m_services;
+    std::vector< service::IGrabber::sptr > m_services;
 
     /// Connections with service signals.
     core::com::helper::SigSlotConnection m_connections;

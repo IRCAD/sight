@@ -1,6 +1,0 @@
-set( NAME servicesTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core utestData data services )
-set( REQUIREMENTS data module_services )
-set( WARNINGS_AS_ERRORS ON )

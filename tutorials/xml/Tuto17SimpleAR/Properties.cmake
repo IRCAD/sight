@@ -13,7 +13,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    module_services
+    module_service
 
     # UI declaration/Actions
     module_ui_base

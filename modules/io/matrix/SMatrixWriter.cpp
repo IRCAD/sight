@@ -30,7 +30,7 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -42,7 +42,7 @@
 namespace sight::modules::io::matrix
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::matrix::SMatrixWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::matrix::SMatrixWriter,
                          ::sight::data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
@@ -74,16 +74,16 @@ SMatrixWriter::~SMatrixWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SMatrixWriter::getIOPathType() const
+sight::io::base::service::IOPathType SMatrixWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatrixWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
 {
     if(m_isRecording)
     {
-        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(sight::io::base::services::s_DATA_KEY);
+        data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(sight::io::base::service::s_DATA_KEY);
 
         const unsigned int numberOfMat = matrixTL->getMaxElementNum();
 
@@ -233,10 +233,10 @@ void SMatrixWriter::stopRecord()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
+service::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
-    connections.push(sight::io::base::services::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    service::IService::KeyConnectionsMap connections;
+    connections.push(sight::io::base::service::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

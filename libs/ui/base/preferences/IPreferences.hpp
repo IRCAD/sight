@@ -24,7 +24,7 @@
 
 #include "ui/base/config.hpp"
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base::preferences
 {
@@ -33,11 +33,11 @@ namespace sight::ui::base::preferences
  * @brief Preferences service API.
  * This class represents the base interface for preferences services.
  */
-class UI_BASE_CLASS_API IPreferences : public services::IService
+class UI_BASE_CLASS_API IPreferences : public service::IService
 {
 
 public:
-    fwCoreServiceMacro(IPreferences, services::IService)
+    fwCoreServiceMacro(IPreferences, service::IService)
 
     /// Constructor
     IPreferences() noexcept

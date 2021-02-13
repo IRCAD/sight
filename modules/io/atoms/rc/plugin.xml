@@ -2,17 +2,17 @@
 
     <library name="module_io_atoms" />
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::io::base::services::IReader</type>
+    <extension implements="::sight::service::registry::ServiceFactory">
+        <type>::sight::io::base::service::IReader</type>
         <service>::sight::modules::io::atoms::SReader</service>
         <object>::sight::data::Object</object>
         <desc>Atoms reader</desc>
     </extension>
 
-    <extension implements="::sight::services::registry::ServiceFactory">
-        <type>::sight::io::base::services::IWriter</type>
+    <extension implements="::sight::service::registry::ServiceFactory">
+        <type>::sight::io::base::service::IWriter</type>
         <service>::sight::modules::io::atoms::SWriter</service>
         <object>::sight::data::Object</object>
         <desc>Atoms writer</desc>

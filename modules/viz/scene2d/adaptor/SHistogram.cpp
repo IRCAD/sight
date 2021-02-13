@@ -25,7 +25,7 @@
 #include <data/Histogram.hpp>
 #include <data/Point.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -40,8 +40,8 @@ namespace sight::modules::viz::scene2d
 
 namespace adaptor
 {
-static const services::IService::KeyType s_POINT_INOUT     = "point";
-static const services::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
+static const service::IService::KeyType s_POINT_INOUT     = "point";
+static const service::IService::KeyType s_HISTOGRAM_INPUT = "histogram";
 
 const float SHistogram::SCALE = 1.1f; // vertical scaling factor applied at each mouse scroll
 
@@ -221,7 +221,7 @@ void SHistogram::processInteraction( sight::viz::scene2d::data::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
+service::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_HISTOGRAM_INPUT, data::Histogram::s_MODIFIED_SIG, s_UPDATE_SLOT );

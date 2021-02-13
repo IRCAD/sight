@@ -32,7 +32,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/vtk/MeshWriter.hpp>
 #include <io/vtk/ObjMeshWriter.hpp>
@@ -48,7 +48,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::vtk::SMeshWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SMeshWriter,
                          ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -62,9 +62,9 @@ SMeshWriter::SMeshWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SMeshWriter::getIOPathType() const
+sight::io::base::service::IOPathType SMeshWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ void SMeshWriter::stopping()
 
 void SMeshWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ void SMeshWriter::updating()
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(sight::io::base::services::s_DATA_KEY);
+        const auto meshlockedPtr = this->getLockedInput< const data::Mesh >(sight::io::base::service::s_DATA_KEY);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

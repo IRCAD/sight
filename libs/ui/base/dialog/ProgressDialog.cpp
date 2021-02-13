@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/ProgressDialog.hpp"
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -34,7 +34,7 @@ namespace dialog
 
 ProgressDialog::ProgressDialog(const std::string& title, const std::string& message)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IProgressDialog::REGISTRY_KEY);
@@ -51,7 +51,7 @@ ProgressDialog::ProgressDialog(const std::string& title, const std::string& mess
 
 ProgressDialog::~ProgressDialog()
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( [&]
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( [&]
             {
                 m_implementation.reset();
             } ).wait();
@@ -61,7 +61,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::setTitle(const std::string& title)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -75,7 +75,7 @@ void ProgressDialog::setTitle(const std::string& title)
 
 void ProgressDialog::setMessage(const std::string& msg)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -89,7 +89,7 @@ void ProgressDialog::setMessage(const std::string& msg)
 
 void ProgressDialog::operator()(float percent, std::string msg)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -103,7 +103,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
 void ProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 if(m_implementation)
@@ -124,7 +124,7 @@ void ProgressDialog::cancelPressed()
 
 void ProgressDialog::hideCancelButton()
 {
-    services::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->hideCancelButton();

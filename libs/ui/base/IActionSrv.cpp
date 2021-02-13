@@ -30,7 +30,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::ui::base
 {

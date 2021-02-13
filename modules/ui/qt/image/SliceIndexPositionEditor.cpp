@@ -39,7 +39,7 @@
 #include <data/tools/fieldHelper/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -68,7 +68,7 @@ const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-static const services::IService::KeyType s_IMAGE_INOUT = "image";
+static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -306,7 +306,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

@@ -29,11 +29,11 @@
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 
-#include <OGRE/OgreEntity.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/ITransformable.hpp>
 #include <viz/ogre/Mesh.hpp>
+
+#include <OGRE/OgreEntity.h>
 
 namespace sight::data
 {
@@ -210,7 +210,7 @@ protected:
      * Connect data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
      * Connect data::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
     MODULE_VIZ_OGRE_API void stopping() override;

@@ -11,7 +11,7 @@ set( REQUIREMENTS
     module_ui_qt
     module_ui_dicom
     module_io_dicom
-    module_services
+    module_service
     visuVTK
     visuVTKAdaptor
     visuVTKQt

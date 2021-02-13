@@ -37,7 +37,7 @@
 #include <data/tools/helper/Vector.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::data
 {
@@ -50,11 +50,11 @@ const core::com::Slots::SlotKeyType SManage::s_REMOVE_SLOT            = "remove"
 const core::com::Slots::SlotKeyType SManage::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
 const core::com::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
 
-const services::IService::KeyType s_COMPOSITE_INOUT    = "composite";
-const services::IService::KeyType s_VECTOR_INOUT       = "vector";
-const services::IService::KeyType s_SERIESDB_INOUT     = "seriesDB";
-const services::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
-const services::IService::KeyType s_OBJECT_INOUT       = "object";
+const service::IService::KeyType s_COMPOSITE_INOUT    = "composite";
+const service::IService::KeyType s_VECTOR_INOUT       = "vector";
+const service::IService::KeyType s_SERIESDB_INOUT     = "seriesDB";
+const service::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
+const service::IService::KeyType s_OBJECT_INOUT       = "object";
 
 //-----------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ SManage::~SManage() noexcept
 
 void SManage::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_compositeKey = config.get("compositeKey", "");
     m_fieldName    = config.get("field", "");

@@ -3,7 +3,7 @@
     <requirement id="visuQt3DQt" />
     <requirement id="module_ui_base" />
     <requirement id="module_ui_qt" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
 
     <library name="Tuto06SceneQt3DCpp" />

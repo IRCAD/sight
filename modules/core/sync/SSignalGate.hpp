@@ -26,7 +26,7 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::sync
 {
@@ -50,11 +50,11 @@ namespace sight::modules::sync
  * @subsection Configuration Configuration
  *  - \b signal: list of signals to wait for
  */
-class MODULE_SYNC_CLASS_API SSignalGate : public services::IController
+class MODULE_SYNC_CLASS_API SSignalGate : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSignalGate, sight::services::IController)
+    fwCoreServiceMacro(SSignalGate, sight::service::IController)
 
     /**
      * @name Signals API

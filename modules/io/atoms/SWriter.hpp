@@ -28,7 +28,7 @@
 #include <core/jobs/IJob.hpp>
 
 #include <io/atoms/Writer.hpp>
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -84,14 +84,14 @@ namespace sight::modules::io::atoms
  *      The attribute label (mandatory) allows to display a label in front of extension when the file dialog is
  *      shown.
  *
- * @see sight::io::base::services::IReader
+ * @see sight::io::base::service::IReader
  */
-class MODULE_IO_ATOMS_CLASS_API SWriter : public sight::io::base::services::IWriter
+class MODULE_IO_ATOMS_CLASS_API SWriter : public sight::io::base::service::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(SWriter, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(SWriter, sight::io::base::service::IWriter)
 
     /// Signal type for job creation.
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
@@ -135,7 +135,7 @@ protected:
     MODULE_IO_ATOMS_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_ATOMS_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_ATOMS_API sight::io::base::service::IOPathType getIOPathType() const override;
 
     /// To activate atom patcher
     bool m_useAtomsPatcher;

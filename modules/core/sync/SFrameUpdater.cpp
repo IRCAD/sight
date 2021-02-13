@@ -31,9 +31,9 @@
 #include <data/Object.hpp>
 #include <data/timeline/Buffer.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::sync::SFrameUpdater,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::sync::SFrameUpdater,
                          ::sight::data::Composite )
 
 namespace sight::modules::sync
@@ -68,7 +68,7 @@ SFrameUpdater::~SFrameUpdater() noexcept
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
+service::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

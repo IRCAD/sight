@@ -24,7 +24,7 @@
 
 #include "modules/io/itk/config.hpp"
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 
 #include <filesystem>
 
@@ -53,11 +53,11 @@ namespace sight::modules::io::itk
  * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class MODULE_IO_ITK_CLASS_API InrImageWriterService : public sight::io::base::services::IWriter
+class MODULE_IO_ITK_CLASS_API InrImageWriterService : public sight::io::base::service::IWriter
 {
 
 public:
-    fwCoreServiceMacro(InrImageWriterService, sight::io::base::services::IWriter)
+    fwCoreServiceMacro(InrImageWriterService, sight::io::base::service::IWriter)
 
     MODULE_IO_ITK_API InrImageWriterService() noexcept;
 
@@ -93,7 +93,7 @@ protected:
     MODULE_IO_ITK_API virtual void openLocationDialog() override;
 
     /// Return managed file type, here FILE
-    MODULE_IO_ITK_API sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 };
 

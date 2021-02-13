@@ -36,7 +36,7 @@
 
 #include <data/tools/Color.hpp>
 
-#include <services/registry/ObjectService.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -1095,10 +1095,10 @@ void Layer::restartAdaptors()
     adaptors.erase(std::remove_if(adaptors.begin(), adaptors.end(), notInLayer), adaptors.end());
 
     // Search for all adaptors created as subservices by other adaptors.
-    std::vector< services::IService::wptr > subAdaptors;
+    std::vector< service::IService::wptr > subAdaptors;
     for(auto& adapt : adaptors)
     {
-        SPTR( services::IHasServices ) hasServices = std::dynamic_pointer_cast< services::IHasServices >(adapt);
+        SPTR( service::IHasServices ) hasServices = std::dynamic_pointer_cast< service::IHasServices >(adapt);
         if(hasServices != nullptr)
         {
             const auto& subServices = hasServices->getRegisteredServices();
@@ -1138,13 +1138,13 @@ viz::ogre::compositor::ChainManager::CompositorChainType Layer::getCompositorCha
 
 //-------------------------------------------------------------------------------------
 
-services::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
+service::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
 {
     if(m_compositorChainManager)
     {
         return m_compositorChainManager->getRegisteredServices();
     }
-    return services::IHasServices::ServiceVector();
+    return service::IHasServices::ServiceVector();
 }
 
 //-------------------------------------------------------------------------------------

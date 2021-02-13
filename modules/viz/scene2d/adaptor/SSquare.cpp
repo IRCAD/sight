@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QGraphicsItemGroup>
 

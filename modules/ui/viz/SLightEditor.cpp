@@ -28,7 +28,7 @@
 
 #include <data/Composite.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/Scene.hpp>
 

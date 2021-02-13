@@ -31,7 +31,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/tools/helper/ImageGetter.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -42,13 +42,13 @@
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SBitwiseAnd,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SBitwiseAnd,
                         ::sight::data::Image)
 
-static const services::IService::KeyType s_IMAGE_IN = "image";
-static const services::IService::KeyType s_MASK_IN = "mask";
+static const service::IService::KeyType s_IMAGE_IN = "image";
+static const service::IService::KeyType s_MASK_IN = "mask";
 
-static const services::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
+static const service::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
 
 struct AndImageFilterParameters
 {

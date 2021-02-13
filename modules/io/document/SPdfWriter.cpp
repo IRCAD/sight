@@ -30,7 +30,7 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QPainter>
 #include <QPixmap>
@@ -40,14 +40,14 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::document::SPdfWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::document::SPdfWriter,
                          ::sight::data::Object )
 
 namespace sight::modules::io::document
 {
 
-const services::IService::KeyType s_IMAGE_INPUT     = "image";
-const services::IService::KeyType s_CONTAINER_INPUT = "container";
+const service::IService::KeyType s_IMAGE_INPUT     = "image";
+const service::IService::KeyType s_CONTAINER_INPUT = "container";
 
 //-----------------------------------------------------------------------------
 
@@ -237,9 +237,9 @@ void SPdfWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SPdfWriter::getIOPathType() const
+sight::io::base::service::IOPathType SPdfWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------

@@ -40,7 +40,7 @@
 
 #include <io/opencv/Camera.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IRegisterer, ::sight::modules::geometry::vision::SPoseFrom2d)
+fwServicesRegisterMacro( ::sight::service::IRegisterer, ::sight::modules::geometry::vision::SPoseFrom2d)
 
 //-----------------------------------------------------------------------------
 
@@ -49,13 +49,13 @@ namespace sight::modules::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-const services::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
-const services::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
-const services::IService::KeyType s_CAMERA_INPUT    = "camera";
-const services::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
-const services::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
-const services::IService::KeyType s_MATRIX_INOUT    = "matrix";
-const services::IService::KeyType s_POINTLIST_INOUT = "pointList";
+const service::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
+const service::IService::KeyType s_MARKERMAP_INPUT = "markerMap";
+const service::IService::KeyType s_CAMERA_INPUT    = "camera";
+const service::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
+const service::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
+const service::IService::KeyType s_MATRIX_INOUT    = "matrix";
+const service::IService::KeyType s_POINTLIST_INOUT = "pointList";
 
 //-----------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ SPoseFrom2d::~SPoseFrom2d() noexcept
 
 void SPoseFrom2d::configuring()
 {
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
@@ -460,7 +460,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
+service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

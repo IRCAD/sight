@@ -24,7 +24,7 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <activities/IActivitySequencer.hpp>
+#include <activity/IActivitySequencer.hpp>
 
 #include <data/ActivitySeries.hpp>
 
@@ -87,7 +87,7 @@ namespace sight::modules::ui::qml::activity
  * - \b seriesDB [sight::data::SeriesDB]: used to store the ActivitySeries of the managed activities
  */
 class MODULE_UI_QML_CLASS_API SActivitySequencer : public sight::ui::qml::IQmlEditor,
-                                                   public sight::activities::IActivitySequencer
+                                                   public sight::activity::IActivitySequencer
 {
 
 Q_OBJECT

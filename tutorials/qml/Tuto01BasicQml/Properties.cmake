@@ -4,12 +4,12 @@ set( TYPE APP ) # Type APP represent "Application"
 set( START ON) # This module will be automatically started
 set( DEPENDENCIES
     data
-    services
+    service
     ui_qml
 )
 set( REQUIREMENTS
     data
-    module_services
+    module_service
     module_ui_qml
     fwlauncher
 )

@@ -34,7 +34,7 @@ fwCampImplementDataMacro((sight)(data)(ActivitySeries))
 {
     builder
     .tag("object_version", "2")
-    .tag("lib_name", "fwActivities")
+    .tag("lib_name", "::sight::data")
     .base< ::sight::data::Series>()
     .property("activity_config_id", &::sight::data::ActivitySeries::m_activityConfigId)
     .property("data", &::sight::data::ActivitySeries::m_data)

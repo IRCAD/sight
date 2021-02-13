@@ -110,7 +110,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    services::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.

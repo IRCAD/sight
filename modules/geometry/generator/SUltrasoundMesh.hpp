@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <services/IGenerator.hpp>
+#include <service/IGenerator.hpp>
 
 #include <boost/multi_array.hpp>
 
@@ -70,13 +70,13 @@ namespace generator
  * - \b angle (optional, default=60) : angle of the US beam.
  * - \b deltaDepth (optional, default=50) : delta depth of the US plane.
  */
-class MODULE_GEOMETRY_GENERATOR_CLASS_API SUltrasoundMesh final : public services::IGenerator
+class MODULE_GEOMETRY_GENERATOR_CLASS_API SUltrasoundMesh final : public service::IGenerator
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SUltrasoundMesh, services::IService)
+    fwCoreServiceMacro(SUltrasoundMesh, service::IService)
 
     /// Create slots.
     MODULE_GEOMETRY_GENERATOR_API SUltrasoundMesh() noexcept;

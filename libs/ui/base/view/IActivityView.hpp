@@ -25,8 +25,8 @@
 #include "ui/base/config.hpp"
 #include "ui/base/IGuiContainerSrv.hpp"
 
-#include <activities/IActivityLauncher.hpp>
-#include <activities/registry/Activities.hpp>
+#include <activity/IActivityLauncher.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/com/Slots.hpp>
 
@@ -68,7 +68,7 @@ namespace view
  *          composite contained in the ActivitySeries.
  */
 class UI_BASE_CLASS_API IActivityView : public ui::base::IGuiContainerSrv,
-                                        public activities::IActivityLauncher
+                                        public activity::IActivityLauncher
 {
 public:
 
@@ -79,8 +79,8 @@ public:
 
 protected:
 
-    typedef activities::registry::ActivityAppConfigParam ParameterType;
-    typedef activities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activity::registry::ActivityAppConfigParam ParameterType;
+    typedef activity::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map< std::string, std::string> ReplaceMapType;
 
     /// Constructor. Do nothing.

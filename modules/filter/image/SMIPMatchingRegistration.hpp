@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <services/IRegisterer.hpp>
+#include <service/IRegisterer.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -58,10 +58,10 @@ namespace sight::modules::filter::image
  * - \b transform [sight::data::TransformationMatrix3D]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public services::IRegisterer
+class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public service::IRegisterer
 {
 public:
-    fwCoreServiceMacro(SMIPMatchingRegistration, services::IRegisterer)
+    fwCoreServiceMacro(SMIPMatchingRegistration, service::IRegisterer)
 
     /**
      * @brief Constructor

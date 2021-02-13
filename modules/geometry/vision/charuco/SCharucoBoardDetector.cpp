@@ -30,8 +30,8 @@
 #include <data/Composite.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -58,9 +58,9 @@ const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_DE
 const core::com::Signals::SignalKeyType SCharucoBoardDetector::s_CHARUCOBOARD_NOT_DETECTED_SIG
     = "charucoBoardNotDetected";
 
-static const services::IService::KeyType s_TIMELINE_INPUT    = "timeline";
-static const services::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
-static const services::IService::KeyType s_DETECTION_INOUT   = "detection";
+static const service::IService::KeyType s_TIMELINE_INPUT    = "timeline";
+static const service::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
+static const service::IService::KeyType s_DETECTION_INOUT   = "detection";
 
 // ----------------------------------------------------------------------------
 

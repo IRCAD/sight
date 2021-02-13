@@ -14,7 +14,7 @@ set( REQUIREMENTS
 
     # Objects declaration
     data
-    module_services             # fwService
+    module_service             # fwService
 
     # UI declaration/Actions
     module_ui_base
@@ -28,7 +28,7 @@ set( REQUIREMENTS
     # Config
     2DVisualizationActivity
     volumeRenderingActivity
-    activitiesConfig
+    activityConfig
 
     # Services
 

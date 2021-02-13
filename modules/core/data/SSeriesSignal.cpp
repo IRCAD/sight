@@ -33,7 +33,7 @@
 #include <data/ActivitySeries.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -42,7 +42,7 @@ namespace sight::modules::data
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, sight::modules::data::SSeriesSignal, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::service::IController, sight::modules::data::SSeriesSignal, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -84,11 +84,11 @@ void SSeriesSignal::stopping()
 void SSeriesSignal::configuring()
 {
 
-    const services::IService::ConfigType srvconfig = this->getConfigTree();
+    const service::IService::ConfigType srvconfig = this->getConfigTree();
 
     if(srvconfig.count("filter") == 1 )
     {
-        const services::IService::ConfigType& configFilter = srvconfig.get_child("filter");
+        const service::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
@@ -139,7 +139,7 @@ void SSeriesSignal::updating()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
+service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INPUT, sight::data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);

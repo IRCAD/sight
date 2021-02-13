@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/InsertSeries.hpp"
 
-#include <activities/registry/Activities.hpp>
+#include <activity/registry/Activity.hpp>
 
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
@@ -456,11 +456,11 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         }
         else if (activitySeries)
         {
-            activities::registry::Activities::sptr registry = activities::registry::Activities::getDefault();
-            std::string id                                  = activitySeries->getActivityConfigId();
+            activity::registry::Activity::sptr registry = activity::registry::Activity::getDefault();
+            std::string id                              = activitySeries->getActivityConfigId();
             SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
-            activities::registry::ActivityInfo activityInfo;
+            activity::registry::ActivityInfo activityInfo;
             activityInfo = registry->getInfo(id);
             _item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
         }

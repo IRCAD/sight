@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 
 #include <string>
 
@@ -51,11 +51,11 @@ namespace sight::modules::io::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.
  */
-class MODULE_IO_VISION_CLASS_API SCalibrationInfoReader : public sight::io::base::services::IReader
+class MODULE_IO_VISION_CLASS_API SCalibrationInfoReader : public sight::io::base::service::IReader
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationInfoReader, sight::io::base::services::IReader )
+    fwCoreServiceMacro(SCalibrationInfoReader, sight::io::base::service::IReader )
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationInfoReader() noexcept;
@@ -76,7 +76,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API virtual sight::io::base::services::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
 
     /// Configures the output file format and the chessboard preference keys.
     MODULE_IO_VISION_API virtual void configuring() override;

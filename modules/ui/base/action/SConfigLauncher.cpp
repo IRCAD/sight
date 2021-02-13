@@ -25,8 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
-#include <services/registry/Proxy.hpp>
+#include <service/macros.hpp>
+#include <service/registry/Proxy.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -47,7 +47,7 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 SConfigLauncher::SConfigLauncher() noexcept
 {
-    m_configLauncher = std::make_unique< services::helper::ConfigLauncher>();
+    m_configLauncher = std::make_unique< service::helper::ConfigLauncher>();
 
     m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
 
@@ -96,9 +96,9 @@ void SConfigLauncher::setIsActive(bool isActive)
         // Check if the config is already running, this avoids to start a running config.
         if(!m_configLauncher->configIsRunning())
         {
-            services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
+            service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
             proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
-            services::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+            service::helper::ConfigLauncher::FieldAdaptorType replaceMap;
             replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
             m_configLauncher->startConfig(this->getSptr(), replaceMap);
             m_sigLaunched->asyncEmit();
@@ -123,7 +123,7 @@ void SConfigLauncher::stopConfig()
     if (m_configLauncher->configIsRunning())
     {
         m_configLauncher->stopConfig();
-        services::registry::Proxy::sptr proxies = services::registry::Proxy::getDefault();
+        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         this->setIsActive(false);
     }

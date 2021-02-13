@@ -98,7 +98,7 @@ protected:
      *
      * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_ADD_MESH_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_VIZ_OGRE_API void updating() override;

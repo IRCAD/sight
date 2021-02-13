@@ -26,18 +26,18 @@
 
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-
-#include <OGRE/OgreCamera.h>
-#include <OGRE/OgreMath.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreSceneNode.h>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <viz/ogre/helper/ManualObject.hpp>
 #include <viz/ogre/registry/macros.hpp>
 #include <viz/ogre/SRender.hpp>
 #include <viz/ogre/Utils.hpp>
+
+#include <OGRE/OgreCamera.h>
+#include <OGRE/OgreMath.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -45,9 +45,9 @@ namespace sight::modules::viz::ogre::adaptor
 static const core::com::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
 static const core::com::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 
-static const services::IService::KeyType s_TRANSFORM_INOUT      = "transform";
-static const services::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
-static const services::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
+static const service::IService::KeyType s_TRANSFORM_INOUT      = "transform";
+static const service::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
+static const service::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
 
 static const std::string s_NAME_CONFIG         = "name";
 static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
@@ -196,9 +196,9 @@ void SLight::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SLight::getAutoConnections() const
+service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT );

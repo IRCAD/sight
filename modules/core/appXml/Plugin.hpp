@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <services/AppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 
 namespace sight::module::appXml
 {
@@ -56,7 +56,7 @@ public:
 private:
     std::string m_configurationName;
     std::string m_parametersName;
-    services::AppConfigManager::sptr m_appConfigMng;
+    service::AppConfigManager::sptr m_appConfigMng;
 };
 
 } // namespace sight::module::appXml

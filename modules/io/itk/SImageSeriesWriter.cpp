@@ -31,9 +31,9 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-#include <io/base/services/IWriter.hpp>
+#include <io/base/service/IWriter.hpp>
 #include <io/itk/ImageWriter.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -44,7 +44,7 @@
 namespace sight::modules::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter, ::sight::modules::io::itk::SImageSeriesWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::itk::SImageSeriesWriter,
                          ::sight::data::ImageSeries )
 
 //------------------------------------------------------------------------------
@@ -61,16 +61,16 @@ SImageSeriesWriter::~SImageSeriesWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SImageSeriesWriter::getIOPathType() const
+sight::io::base::service::IOPathType SImageSeriesWriter::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -134,8 +134,8 @@ void SImageSeriesWriter::updating()
     {
         // Retrieve dataStruct associated with this service
 
-        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", iseries);
+        data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();
         SLM_ASSERT("associatedImage not instanced", associatedImage);

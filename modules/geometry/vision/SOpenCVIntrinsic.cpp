@@ -36,8 +36,8 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <io/opencv/Matrix.hpp>
 
@@ -46,7 +46,7 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::services::ICalibration, ::sight::modules::geometry::vision::SOpenCVIntrinsic,
+fwServicesRegisterMacro(::sight::service::ICalibration, ::sight::modules::geometry::vision::SOpenCVIntrinsic,
                         ::sight::data::Camera)
 
 namespace sight::modules::geometry::vision

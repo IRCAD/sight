@@ -27,7 +27,7 @@
 #include <fwRenderQt3D/core/GenericScene.hpp>
 #include <fwRenderQt3D/data/Mesh.hpp>
 
-#include <services/AppManager.hpp>
+#include <service/AppManager.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -39,7 +39,7 @@ namespace Tuto07SceneQt3DQml
  * @brief This class manages the services used by the Application. It is launched by the qml file 'ui.qml'.
  */
 class TUTO07SCENEQT3DQML_CLASS_API AppManager : public QObject,
-                                                public services::AppManager
+                                                public service::AppManager
 {
 
 Q_OBJECT

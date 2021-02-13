@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QApplication>
 #include <QDesktopWidget>

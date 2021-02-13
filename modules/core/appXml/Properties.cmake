@@ -5,9 +5,9 @@ set( TYPE MODULE )
 set( START ON )
 set( DEPENDENCIES
     core
-    services
+    service
 )
 set( REQUIREMENTS
-    module_services
+    module_service
 )
 

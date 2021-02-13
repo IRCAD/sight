@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activities/registry/Activities.hpp>
-#include <activities/registry/ActivityMsg.hpp>
+#include <activity/registry/Activity.hpp>
+#include <activity/registry/ActivityMsg.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
@@ -60,7 +60,7 @@ namespace action
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
  *
  * @section Signal Signal
- * - \b activityLaunched(activities::registry::ActivityMsg) : This signal is emitted when the activity is created,
+ * - \b activityLaunched(activity::registry::ActivityMsg) : This signal is emitted when the activity is created,
  *      it contains the activity information. It should be connected to the slot 'createTab' of the service
  *      '::modules::ui::qt::editor::SDynamicView'.
  *
@@ -155,7 +155,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void ( activities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void ( activity::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
@@ -189,7 +189,7 @@ protected:
      */
     virtual void configuring() override;
 
-    typedef activities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activity::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     typedef std::vector< std::string > KeysType;
 
@@ -228,12 +228,12 @@ private:
 
     /**
      * @brief Send message to launch new tab view
-     * If given activity info contains an activities::IValidator, first checks if activity is valid according to
+     * If given activity info contains an activity::IValidator, first checks if activity is valid according to
      * validator, then build activity with activity builder.
      *
      * @param info activity information
      */
-    void sendConfig( const activities::registry::ActivityInfo& info );
+    void sendConfig( const activity::registry::ActivityInfo& info );
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -241,12 +241,12 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const activities::registry::ActivityInfo& info, const data::Vector::csptr& selection);
+    void buildActivity(const activity::registry::ActivityInfo& info, const data::Vector::csptr& selection);
 
-    typedef activities::registry::Activities::ActivitiesType ActivityInfoContainer;
+    typedef activity::registry::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    activities::registry::ActivityInfo show( const ActivityInfoContainer& infos );
+    activity::registry::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

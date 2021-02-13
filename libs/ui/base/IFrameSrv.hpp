@@ -32,7 +32,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 namespace sight::ui::base
 {
@@ -83,12 +83,12 @@ namespace sight::ui::base
  * - The menuBar section isn't mandatory.
 
  */
-class UI_BASE_CLASS_API IFrameSrv : public services::IService
+class UI_BASE_CLASS_API IFrameSrv : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IFrameSrv, services::IService)
+    fwCoreServiceMacro(IFrameSrv, service::IService)
 
     /// Get widget defined for progress bar
     UI_BASE_API static ui::base::container::fwContainer::sptr getProgressWidget();

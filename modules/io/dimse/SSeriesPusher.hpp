@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
@@ -62,11 +62,11 @@ namespace sight::modules::io::dimse
  * - \b pacsConfig [sight::io::dimse::data::PacsConfiguration]: PACS configuration data.
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to push to the PACS.
  */
-class MODULE_IO_DIMSE_CLASS_API SSeriesPusher : public services::IController
+class MODULE_IO_DIMSE_CLASS_API SSeriesPusher : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher,  services::IController )
+    fwCoreServiceMacro(SSeriesPusher,  service::IController )
 
     typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 

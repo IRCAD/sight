@@ -32,8 +32,8 @@
 #include <core/com/Slots.hxx>
 #endif // _WIN32
 
-#include <services/IService.hpp>
-#include <services/macros.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <filesystem>
 #include <boost/lexical_cast.hpp>

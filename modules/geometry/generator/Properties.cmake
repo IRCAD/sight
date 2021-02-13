@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    services
+    service
     io_vtk
     geometry_data
 )

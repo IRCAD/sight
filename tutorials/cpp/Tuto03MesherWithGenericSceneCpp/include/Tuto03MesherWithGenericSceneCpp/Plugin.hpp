@@ -27,7 +27,7 @@
 #include <core/com/SlotBase.hpp>
 #include <core/runtime/Plugin.hpp>
 
-#include <services/AppManager.hpp>
+#include <service/AppManager.hpp>
 
 namespace Tuto03MesherWithGenericSceneCpp
 {
@@ -56,7 +56,7 @@ public:
 
 private:
 
-    std::unique_ptr< services::AppManager > m_appManager;
+    std::unique_ptr< service::AppManager > m_appManager;
 
     core::com::SlotBase::sptr m_slotRecSelected;
     core::com::SlotBase::sptr m_slotEmptySelection;

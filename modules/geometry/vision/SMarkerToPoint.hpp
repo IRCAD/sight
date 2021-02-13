@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 #include <string>
 #include <vector>
@@ -58,14 +58,14 @@ namespace sight::modules::geometry::vision
  * @subsection In-Out In-Out
  * - \b pointList [sight::data::Pointlist]: marker position.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public services::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public service::IController
 {
 public:
-    fwCoreServiceMacro(SMarkerToPoint, services::IController)
+    fwCoreServiceMacro(SMarkerToPoint, service::IController)
 
     /// Data xml keys
-    static const services::IService::KeyType s_MATRIXTL_INPUT;
-    static const services::IService::KeyType s_POINTLIST_INOUT;
+    static const service::IService::KeyType s_MATRIXTL_INPUT;
+    static const service::IService::KeyType s_POINTLIST_INOUT;
 
     /**
      * @name Slots API

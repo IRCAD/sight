@@ -27,7 +27,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QApplication>
 #include <QDir>
@@ -46,7 +46,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-const services::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
@@ -94,7 +94,7 @@ void SActivitySequencer::configuring()
 {
     this->sight::ui::base::IGuiContainerSrv::initialize();
 
-    const services::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfigTree();
 
     auto pair = config.equal_range("activity");
     auto it   = pair.first;
@@ -177,7 +177,7 @@ void SActivitySequencer::starting()
 
     QStringList activitiesName;
 
-    auto activityReg = activities::registry::Activities::getDefault();
+    auto activityReg = activity::registry::Activity::getDefault();
     for (size_t i = 0; i < m_activityIds.size(); ++i)
     {
         std::string name = m_activityNames[i];
@@ -350,7 +350,7 @@ void SActivitySequencer::enableActivity(int index)
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
+service::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT );
@@ -362,4 +362,4 @@ services::IService::KeyConnectionsMap SActivitySequencer::getAutoConnections() c
 //------------------------------------------------------------------------------
 
 } // namespace editor
-} // namespace activities
+} // namespace activity

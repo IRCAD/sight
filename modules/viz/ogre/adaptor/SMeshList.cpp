@@ -91,7 +91,7 @@ void SMeshList::starting()
 
         // Create adaptors configurations
         const std::string transformID = this->getID() + transform->getID();
-        services::IService::ConfigType config;
+        service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", m_layerID);
         config.add("config.<xmlattr>." + s_TRANSFORM_INPUT, transformID);
         config.add("config.<xmlattr>.autoresetcamera", "no");
@@ -114,7 +114,7 @@ void SMeshList::starting()
         const sight::viz::ogre::IAdaptor::sptr textureAdaptor =
             this->registerService< sight::viz::ogre::IAdaptor >("::sight::modules::viz::ogre::adaptor::STexture");
 
-        services::IService::ConfigType textureConfig = config;
+        service::IService::ConfigType textureConfig = config;
         textureConfig.add("config.<xmlattr>.textureName", image->getID());
         textureConfig.add("config.<xmlattr>.useAlpha", "true");
 
@@ -131,7 +131,7 @@ void SMeshList::starting()
         const sight::viz::ogre::IAdaptor::sptr meshAdaptor =
             this->registerService< sight::viz::ogre::IAdaptor >("::sight::modules::viz::ogre::adaptor::SMesh");
 
-        services::IService::ConfigType meshConfig = config;
+        service::IService::ConfigType meshConfig = config;
         meshConfig.add("config.<xmlattr>.textureName", image->getID());
 
         meshAdaptor->setLayerID(m_layerID);
@@ -152,9 +152,9 @@ void SMeshList::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMeshList::getAutoConnections() const
+service::IService::KeyConnectionsMap SMeshList::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_SLOT);
     return connections;
 }

@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     utestData
     data
-    services
+    service
     ui_base
 )
 set( REQUIREMENTS module_io_vtk )

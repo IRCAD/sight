@@ -27,7 +27,7 @@
 #include <data/reflection/exception/ObjectNotFound.hpp>
 #include <data/reflection/getObject.hpp>
 
-#include <services/registry/ObjectService.hpp>
+#include <service/registry/ObjectService.hpp>
 
 namespace sight::modules::data
 {

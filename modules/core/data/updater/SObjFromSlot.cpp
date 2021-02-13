@@ -25,7 +25,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::data
 {

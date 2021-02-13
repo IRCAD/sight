@@ -1,7 +1,7 @@
 <plugin id="calibrationActivity" class="::calibrationActivity::Plugin" version="@PROJECT_VERSION@" >
 
     <library name="calibrationActivity" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="module_ui_base" />
     <requirement id="module_viz_ogre" />
     <requirement id="module_activity" />
@@ -18,7 +18,7 @@
     <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
@@ -26,7 +26,7 @@
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
-        <builder>::activities::builder::ActivitySeriesInitData</builder>
+        <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibration">
             <parameters>
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />
@@ -34,7 +34,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>calibrationEdition</id>
         <title>Calibration Edition</title>
         <desc>
@@ -57,7 +57,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
@@ -70,7 +70,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
@@ -78,7 +78,7 @@
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
-        <builder>::activities::builder::ActivitySeriesInitData</builder>
+        <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibrationCharuco">
             <parameters>
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />
@@ -87,7 +87,7 @@
     </extension>
 
     <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
-    <extension implements="::sight::services::registry::ServiceConfig">
+    <extension implements="::sight::service::registry::ServiceConfig">
         <id>InfraredRealsenseGrabberConfig</id>
         <service>::sight::modules::io::realsense::SScan</service>
         <desc>Infrared grabber without IR emitter </desc>

@@ -29,7 +29,7 @@
 #include <data/String.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
@@ -38,7 +38,7 @@ namespace sight::modules::geometry::base
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IService, ::sight::modules::geometry::base::SPointToLandmarkDistance )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::SPointToLandmarkDistance )
 
 static const core::com::Signals::SignalKeyType DISTANCE_CHANGED_SIG = "distanceChanged";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";

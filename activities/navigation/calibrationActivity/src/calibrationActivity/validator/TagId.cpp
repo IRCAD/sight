@@ -22,7 +22,7 @@
 
 #include "calibrationActivity/validator/TagId.hpp"
 
-#include <activities/validator/registry/macros.hpp>
+#include <activity/validator/registry/macros.hpp>
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>
@@ -42,7 +42,7 @@ fwActivitiesValidatorRegisterMacro(::calibrationActivity::validator::TagId, "::c
 
 //-----------------------------------------------------------------------------
 
-TagId::TagId(activities::IValidator::Key key)
+TagId::TagId(activity::IValidator::Key key)
 {
 }
 
@@ -54,7 +54,7 @@ TagId::~TagId()
 
 //-----------------------------------------------------------------------------
 
-activities::IValidator::ValidationType TagId::validate(const CSPTR(data::Object)& currentData ) const
+activity::IValidator::ValidationType TagId::validate(const CSPTR(data::Object)& currentData ) const
 {
     IValidator::ValidationType validation;
 

@@ -32,7 +32,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <geometry/data/TransformationMatrix3D.hpp>
 
@@ -55,7 +55,7 @@ fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::u
 
 //------------------------------------------------------------------------------
 
-const services::IService::KeyType s_MATRIX_INOUT = "matrix";
+const service::IService::KeyType s_MATRIX_INOUT = "matrix";
 
 //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ void STransformEditor::configuring()
 
     this->initialize();
 
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     const std::string rotation = config.get< std::string >("rotation.<xmlattr>.enabled", "yes");
 
@@ -231,7 +231,7 @@ void STransformEditor::updating()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
+service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 

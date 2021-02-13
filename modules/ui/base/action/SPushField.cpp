@@ -28,9 +28,9 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/AppConfig.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/AppConfig.hpp>
+#include <service/registry/ObjectService.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -118,7 +118,7 @@ void SPushField::updateObjects()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPushField::getAutoConnections() const
+service::IService::KeyConnectionsMap SPushField::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SOURCE_KEY, data::Object::s_ADDED_FIELDS_SIG, s_UPDATE_OBJECTS_SLOT );

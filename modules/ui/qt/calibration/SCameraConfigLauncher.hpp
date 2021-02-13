@@ -27,7 +27,7 @@
 #include <data/ActivitySeries.hpp>
 #include <data/CameraSeries.hpp>
 
-#include <services/helper/ConfigLauncher.hpp>
+#include <service/helper/ConfigLauncher.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -133,8 +133,8 @@ private:
     QPointer<QPushButton> m_removeButton;
     QPointer<QPushButton> m_extrinsicButton;
 
-    services::helper::ConfigLauncher m_intrinsicLauncher;
-    services::helper::ConfigLauncher m_extrinsicLauncher;
+    service::helper::ConfigLauncher m_intrinsicLauncher;
+    service::helper::ConfigLauncher m_extrinsicLauncher;
 
     data::CameraSeries::sptr m_cameraSeries;
     data::ActivitySeries::sptr m_activitySeries;

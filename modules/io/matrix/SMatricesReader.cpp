@@ -33,7 +33,7 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -46,10 +46,10 @@
 namespace sight::modules::io::matrix
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::matrix::SMatricesReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::matrix::SMatricesReader,
                          ::sight::data::MatrixTL)
 
-static const services::IService::KeyType s_MATRIXTL = "matrixTL";
+static const service::IService::KeyType s_MATRIXTL = "matrixTL";
 
 static const core::com::Slots::SlotKeyType s_START_READING = "startReading";
 static const core::com::Slots::SlotKeyType s_STOP_READING  = "stopReading";
@@ -94,18 +94,18 @@ SMatricesReader::~SMatricesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SMatricesReader::getIOPathType() const
+sight::io::base::service::IOPathType SMatricesReader::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatricesReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 
-    services::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
     SLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);

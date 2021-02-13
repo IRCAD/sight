@@ -25,7 +25,7 @@
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
-#include <services/registry/ActiveWorkers.hpp>
+#include <service/registry/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -96,7 +96,7 @@ bool LoggerDialog::show()
     if(m_implementation)
     {
         std::function<bool()> func = std::bind(&ILoggerDialog::show, m_implementation);
-        std::shared_future<bool> f = services::registry::ActiveWorkers::getDefaultWorker()->postTask<bool>(func);
+        std::shared_future<bool> f = service::registry::ActiveWorkers::getDefaultWorker()->postTask<bool>(func);
         f.wait();
 
         return f.get();

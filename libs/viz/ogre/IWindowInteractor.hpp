@@ -30,7 +30,7 @@
 
 #include <core/base.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/Overlay/OgreOverlay.h>
@@ -196,13 +196,13 @@ public:
     VIZ_OGRE_API virtual void setFullscreen(bool _fullscreen, int _screenNumber);
 
     /// Set the render service using the IOgreRenderWindowInteractor
-    virtual void setRenderService(services::IService::sptr srv)
+    virtual void setRenderService(service::IService::sptr srv)
     {
         m_renderService = srv;
     }
 
 protected:
-    services::IService::wptr m_renderService;
+    service::IService::wptr m_renderService;
 };
 
 } // namespace sight::viz::ogre

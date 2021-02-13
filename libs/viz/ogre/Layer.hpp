@@ -246,7 +246,7 @@ public:
     VIZ_OGRE_API viz::ogre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
     /// @returns the list of adaptors in the chain manager.
-    VIZ_OGRE_API services::IHasServices::ServiceVector getRegisteredAdaptors() const;
+    VIZ_OGRE_API service::IHasServices::ServiceVector getRegisteredAdaptors() const;
 
     /// @returns the viewport.
     VIZ_OGRE_API ::Ogre::Viewport* getViewport() const;

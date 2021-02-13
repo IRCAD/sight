@@ -30,7 +30,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <services/registry/ObjectService.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <regex>
 

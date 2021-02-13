@@ -28,8 +28,8 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <services/AppConfigManager.hpp>
-#include <services/IController.hpp>
+#include <service/AppConfigManager.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::ui::qt::calibration
 {
@@ -65,12 +65,12 @@ namespace sight::modules::ui::qt::calibration
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
-class MODULE_UI_QT_CLASS_API SDisplayCalibrationInfo : public services::IController
+class MODULE_UI_QT_CLASS_API SDisplayCalibrationInfo : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(SDisplayCalibrationInfo, services::IController)
+    fwCoreServiceMacro(SDisplayCalibrationInfo, service::IController)
 
     /// Constructor. Does nothing.
     MODULE_UI_QT_API SDisplayCalibrationInfo() noexcept;
@@ -108,7 +108,7 @@ private:
      */
 
     /// AppConfig manager, used to launch the config
-    services::IAppConfigManager::sptr m_configMgr;
+    service::IAppConfigManager::sptr m_configMgr;
 
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };

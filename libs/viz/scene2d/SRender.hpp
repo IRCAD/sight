@@ -30,7 +30,7 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
-#include <services/helper/Config.hpp>
+#include <service/helper/Config.hpp>
 
 #include <viz/base/IRender.hpp>
 

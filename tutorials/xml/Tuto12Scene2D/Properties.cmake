@@ -9,7 +9,7 @@ set( REQUIREMENTS
     module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
 
     # Objects declaration
-    module_services             # fwService
+    module_service             # fwService
 
     # UI declaration/Actions
     module_ui_base

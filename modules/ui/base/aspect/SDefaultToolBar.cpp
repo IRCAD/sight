@@ -22,7 +22,7 @@
 
 #include "modules/ui/base/aspect/SDefaultToolBar.hpp"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 fwServicesRegisterMacro( ::sight::ui::base::IToolBarSrv, ::sight::modules::ui::base::aspect::SDefaultToolBar )
 

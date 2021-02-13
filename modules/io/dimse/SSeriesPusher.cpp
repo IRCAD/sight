@@ -31,7 +31,7 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <dcmtk/dcmdata/dcistrmb.h>
 
@@ -43,7 +43,7 @@
 namespace sight::modules::io::dimse
 {
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::io::dimse::SSeriesPusher,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dimse::SSeriesPusher,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------

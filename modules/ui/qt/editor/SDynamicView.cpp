@@ -22,8 +22,8 @@
 
 #include "modules/ui/qt/editor/SDynamicView.hpp"
 
-#include <activities/IActivityValidator.hpp>
-#include <activities/IValidator.hpp>
+#include <activity/IActivityValidator.hpp>
+#include <activity/IValidator.hpp>
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
@@ -37,8 +37,8 @@
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/AppConfig.hpp>
+#include <service/macros.hpp>
+#include <service/registry/AppConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -184,7 +184,7 @@ void SDynamicView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::createTab( activities::registry::ActivityMsg info )
+void SDynamicView::createTab( activity::registry::ActivityMsg info )
 {
     SDynamicViewInfo viewInfo;
     viewInfo.title          = info.getTitle();
@@ -233,10 +233,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     ::sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
     info.replaceMap[ "WID_PARENT" ] = info.wid;
-    std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
+    std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-    services::IAppConfigManager::sptr helper = services::IAppConfigManager::New();
+    service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
 
     try
     {
@@ -395,8 +395,8 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
     ReplaceMapType replaceMap;
     this->translateParameters(m_parameters, replaceMap);
 
-    activities::registry::ActivityInfo info;
-    info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    activity::registry::ActivityInfo info;
+    info = activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     std::string tabInfo;
     if(info.tabInfo.empty())

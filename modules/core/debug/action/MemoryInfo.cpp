@@ -25,7 +25,7 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/memory/tools/MemoryMonitorTools.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 

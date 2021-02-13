@@ -24,7 +24,7 @@
 
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::io::dicom
 {

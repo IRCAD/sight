@@ -25,7 +25,7 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <services/registry/ObjectService.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 

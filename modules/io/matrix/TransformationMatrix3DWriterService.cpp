@@ -30,7 +30,7 @@
 #include <data/location/SingleFile.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <io/base/writer/TransformationMatrix3DWriter.hpp>
 
@@ -45,7 +45,7 @@ namespace sight::modules::io::matrix
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::io::base::services::IWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter,
                          ::sight::modules::io::matrix::TransformationMatrix3DWriterService,
                          data::TransformationMatrix3D )
 
@@ -65,16 +65,16 @@ void TransformationMatrix3DWriterService::starting( )
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
+sight::io::base::service::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DWriterService::configuring()
 {
-    sight::io::base::services::IWriter::configuring();
+    sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -125,8 +125,8 @@ void TransformationMatrix3DWriterService::updating()
     {
         // Retrieve object
         data::TransformationMatrix3D::csptr matrix =
-            this->getInput< data::TransformationMatrix3D >(sight::io::base::services::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::services::s_DATA_KEY + "' is not correctly set.", matrix);
+            this->getInput< data::TransformationMatrix3D >(sight::io::base::service::s_DATA_KEY);
+        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
 
         sight::io::base::writer::TransformationMatrix3DWriter::sptr writer =
             sight::io::base::writer::TransformationMatrix3DWriter::New();

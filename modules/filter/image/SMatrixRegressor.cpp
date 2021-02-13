@@ -28,19 +28,19 @@
 #include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <filter/image/MatrixRegressor.hpp>
 
 namespace sight::modules::filter::image
 {
 
-fwServicesRegisterMacro(::sight::services::IOperator, ::sight::modules::filter::image::SMatrixRegressor,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SMatrixRegressor,
                         ::sight::data::Vector)
 
-static const services::IService::KeyType s_MATRIX_LIST_IN = "matrixList";
-static const services::IService::KeyType s_POINT_LIST_IN        = "pointList";
-static const services::IService::KeyType s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
+static const service::IService::KeyType s_MATRIX_LIST_IN = "matrixList";
+static const service::IService::KeyType s_POINT_LIST_IN        = "pointList";
+static const service::IService::KeyType s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
 
 //-----------------------------------------------------------------------------
 
@@ -116,9 +116,9 @@ void SMatrixRegressor::stopping()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMatrixRegressor::getAutoConnections() const
+service::IService::KeyConnectionsMap SMatrixRegressor::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MATRIX_LIST_IN, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
     connections.push(s_MATRIX_LIST_IN, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
     connections.push(s_MATRIX_LIST_IN, data::Vector::s_MODIFIED_SIG, s_UPDATE_SLOT);

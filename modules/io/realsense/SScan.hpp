@@ -27,7 +27,7 @@
 #include <data/FrameTL.hpp>
 #include <data/Mesh.hpp>
 
-#include <services/IRGBDGrabber.hpp>
+#include <service/IRGBDGrabber.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -176,11 +176,11 @@ namespace sight::modules::io::realsense
  * - \b recordFile (optionnal): path & filename where recording will be saved.
  */
 
-class MODULE_IO_REALSENSE_CLASS_API SScan : public services::IRGBDGrabber
+class MODULE_IO_REALSENSE_CLASS_API SScan : public service::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceMacro(SScan, ::sight::services::IRGBDGrabber)
+    fwCoreServiceMacro(SScan, ::sight::service::IRGBDGrabber)
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal< void (double) > DistanceComputedSignalType;

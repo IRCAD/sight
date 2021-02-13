@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/scene2d/SRender.hpp>
 

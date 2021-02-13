@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <services/op/Add.hpp>
+#include <service/op/Add.hpp>
 
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
@@ -89,37 +89,37 @@ void SMesh::starting()
 
     // create and register the render service
     // create the frame configuration
-    services::IService::ConfigType renderConfig;
+    service::IService::ConfigType renderConfig;
     renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
 
-    services::IService::ConfigType interactorCfg;
+    service::IService::ConfigType interactorCfg;
     interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");
-    services::IService::ConfigType negatoCfg;
+    service::IService::ConfigType negatoCfg;
     negatoCfg.put("<xmlattr>.uid", this->getID() + "meshAdaptor");
-    services::IService::ConfigType cameraCfg;
+    service::IService::ConfigType cameraCfg;
     cameraCfg.put("<xmlattr>.uid", this->getID() + "cameraAdaptor");
 
     renderConfig.add_child("scene.adaptor", interactorCfg);
     renderConfig.add_child("scene.adaptor", negatoCfg);
     renderConfig.add_child("scene.adaptor", cameraCfg);
 
-    m_renderSrv = services::add("::sight::viz::ogre::SRender");
+    m_renderSrv = service::add("::sight::viz::ogre::SRender");
     m_renderSrv->setConfiguration(renderConfig);
     m_renderSrv->setID(genericSceneId);
     m_renderSrv->configure();
 
-    services::IService::ConfigType interactorConfig;
+    service::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = services::add("::sight::modules::viz::ogre::adaptor::STrackballCamera");
+    m_interactorSrv = service::add("::sight::modules::viz::ogre::adaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
-    services::IService::ConfigType meshConfig;
+    service::IService::ConfigType meshConfig;
     meshConfig.put("config.<xmlattr>.layer", "default");
-    m_meshSrv = services::add("::sight::modules::viz::ogre::adaptor::SMesh");
+    m_meshSrv = service::add("::sight::modules::viz::ogre::adaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
     m_meshSrv->registerInOut(std::const_pointer_cast< data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
@@ -129,9 +129,9 @@ void SMesh::starting()
     m_connections.connect(m_cameraTransform, data::Object::s_MODIFIED_SIG,
                           this->getSptr(), s_UPDATE_CAM_TRANSFORM_SLOT);
 
-    services::IService::ConfigType cameraConfig;
+    service::IService::ConfigType cameraConfig;
     cameraConfig.put("config.<xmlattr>.layer", "default");
-    m_cameraSrv = services::add("::sight::modules::viz::ogre::adaptor::SCamera");
+    m_cameraSrv = service::add("::sight::modules::viz::ogre::adaptor::SCamera");
     m_cameraSrv->setConfiguration(cameraConfig);
     m_cameraSrv->registerInOut(m_cameraTransform->getSptr(), "transform", true);
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");
@@ -145,7 +145,7 @@ void SMesh::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
@@ -172,10 +172,10 @@ void SMesh::stopping()
 
     sight::ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
-    services::OSR::unregisterService(m_cameraSrv);
-    services::OSR::unregisterService(m_meshSrv);
-    services::OSR::unregisterService(m_interactorSrv);
-    services::OSR::unregisterService(m_renderSrv);
+    service::OSR::unregisterService(m_cameraSrv);
+    service::OSR::unregisterService(m_meshSrv);
+    service::OSR::unregisterService(m_interactorSrv);
+    service::OSR::unregisterService(m_renderSrv);
 
     m_cameraSrv.reset();
     m_meshSrv.reset();

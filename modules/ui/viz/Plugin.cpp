@@ -24,7 +24,7 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::ui::viz
 {

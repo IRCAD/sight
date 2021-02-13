@@ -38,7 +38,7 @@
 #include <data/tools/helper/SeriesDB.hpp>
 #include <data/tools/helper/Vector.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <QVBoxLayout>
 
@@ -71,8 +71,8 @@ static const std::string s_ICON_CONFIG              = "icon";
 static const std::string s_REMOVE_STUDY_ICON_CONFIG = "removeStudyIcon";
 static const std::string s_REMOVE_SERIE_ICON_CONFIG = "removeSerieIcon";
 
-static const services::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
-static const services::IService::KeyType s_SELECTION_INOUT = "selection";
+static const service::IService::KeyType s_SERIES_DB_INOUT = "seriesDB";
+static const service::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 
@@ -271,7 +271,7 @@ void SSelector::starting()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT);

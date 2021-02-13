@@ -28,7 +28,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -61,12 +61,12 @@ namespace sight::modules::geometry::base
  * - \b append (optional, default=false): does the service append points in the pointlist on update (true) or clear it
  * (false)?
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SPointListFromMatrices final : public sight::services::IOperator
+class MODULE_GEOMETRY_BASE_CLASS_API SPointListFromMatrices final : public sight::service::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPointListFromMatrices, sight::services::IOperator)
+    fwCoreServiceMacro(SPointListFromMatrices, sight::service::IOperator)
 
     /// Initializes a member variable
     MODULE_GEOMETRY_BASE_API SPointListFromMatrices();

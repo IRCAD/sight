@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slots.hpp>
 
-#include <services/IService.hpp>
+#include <service/IService.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
@@ -74,13 +74,13 @@ namespace sight::modules::geometry::base
  *    - \b unit: unit of the distance computed by this service
  *    - \b precision: precision of the displayed distance
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkDistance final : public services::IService
+class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkDistance final : public service::IService
 {
 
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro(SPointToLandmarkDistance, services::IService)
+    fwCoreServiceMacro(SPointToLandmarkDistance, service::IService)
 
     /// Initializes signals and slots.
     MODULE_GEOMETRY_BASE_API SPointToLandmarkDistance() noexcept;

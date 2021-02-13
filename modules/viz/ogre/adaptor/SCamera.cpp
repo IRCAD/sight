@@ -26,7 +26,11 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/helper/Camera.hpp>
+#include <viz/ogre/SRender.hpp>
+#include <viz/ogre/Utils.hpp>
 
 #include <OgreCamera.h>
 #include <OgreMatrix4.h>
@@ -34,19 +38,15 @@
 #include <OgreSceneNode.h>
 #include <OgreVector3.h>
 
-#include <viz/ogre/helper/Camera.hpp>
-#include <viz/ogre/SRender.hpp>
-#include <viz/ogre/Utils.hpp>
-
 namespace sight::modules::viz::ogre::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
 
-static const services::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
-static const services::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
-static const services::IService::KeyType s_TRANSFORM_INOUT     = "transform";
+static const service::IService::KeyType s_CALIBRATION_INPUT   = "calibration";
+static const service::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
+static const service::IService::KeyType s_TRANSFORM_INOUT     = "transform";
 
 //-----------------------------------------------------------------------------
 
@@ -112,9 +112,9 @@ void SCamera::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SCamera::getAutoConnections() const
+service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);

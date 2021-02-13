@@ -27,7 +27,7 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -62,13 +62,13 @@ namespace sight::modules::geometry::base
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public services::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public service::IController
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SManagePointList, ::sight::services::IController)
+    fwCoreServiceMacro(SManagePointList, ::sight::service::IController)
 
     /// Initialize slots.
     MODULE_GEOMETRY_BASE_API SManagePointList() noexcept;

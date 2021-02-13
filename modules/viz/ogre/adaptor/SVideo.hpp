@@ -26,10 +26,10 @@
 
 #include <data/PointList.hpp>
 
-#include <OGRE/OgreTexture.h>
-
 #include <viz/ogre/IAdaptor.hpp>
 #include <viz/ogre/TransferFunction.hpp>
+
+#include <OGRE/OgreTexture.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -106,7 +106,7 @@ protected:
      * Connect data::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      * Connect data::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      */
-    MODULE_VIZ_OGRE_API services::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates the frame from the current Image.
     MODULE_VIZ_OGRE_API void updating() override;

@@ -2,9 +2,9 @@
 
     <library name="module_activity" />
 
-    <requirement id="module_services"/>
+    <requirement id="module_service"/>
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::sight::modules::activity::registry::Activities" schema="activities-0.1/activities.xsd"/>
+    <extension-point id="::sight::modules::activity::registry::Activity" schema="activity-0.1/activity.xsd"/>
 
 </plugin>

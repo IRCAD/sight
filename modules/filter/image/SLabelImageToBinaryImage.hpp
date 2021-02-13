@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <services/IOperator.hpp>
+#include <service/IOperator.hpp>
 
 #include <boost/optional.hpp>
 
@@ -64,12 +64,12 @@ namespace sight::modules::filter::image
  * - \b config (optional):
  *     - \b labelsField (optional): name of the field holding the list of labels to add to the mask.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage final : public services::IOperator
+class MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage final : public service::IOperator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLabelImageToBinaryImage, services::IOperator)
+    fwCoreServiceMacro(SLabelImageToBinaryImage, service::IOperator)
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage();

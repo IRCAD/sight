@@ -24,7 +24,7 @@
 
 #include "modules/navigation/calibration/config.hpp"
 
-#include <services/IRegisterer.hpp>
+#include <service/IRegisterer.hpp>
 
 namespace sight::modules::navigation::calibration
 {
@@ -50,11 +50,11 @@ namespace sight::modules::navigation::calibration
  * is moved
  *
  */
-class MODULE_NAVIGATION_CALIBRATION_CLASS_API SToolCalibration : public services::IRegisterer
+class MODULE_NAVIGATION_CALIBRATION_CLASS_API SToolCalibration : public service::IRegisterer
 {
 
 public:
-    fwCoreServiceMacro(SToolCalibration, services::IRegisterer)
+    fwCoreServiceMacro(SToolCalibration, service::IRegisterer)
 
     /**
      * @brief Constructor.

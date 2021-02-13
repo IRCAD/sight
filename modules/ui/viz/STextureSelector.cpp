@@ -29,10 +29,10 @@
 #include <data/Material.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
-#include <io/base/services/ioTypes.hpp>
+#include <io/base/service/ioTypes.hpp>
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -136,14 +136,14 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv = services::add< sight::ui::base::editor::IDialogEditor >("::modules::ui::base::editor::SIOSelector");
-    srv->registerInOut(image, io::base::services::s_DATA_KEY);
+    auto srv = service::add< sight::ui::base::editor::IDialogEditor >("::modules::ui::base::editor::SIOSelector");
+    srv->registerInOut(image, io::base::service::s_DATA_KEY);
 
     srv->configure();
     srv->start();
     srv->update();
     srv->stop();
-    services::OSR::unregisterService( srv );
+    service::OSR::unregisterService( srv );
 
     // If we didn't have to create a new texture, we can notify the associated image
     if(existingTexture)

@@ -32,18 +32,18 @@
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
-#include <services/op/Get.hpp>
-
-#include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/op/Get.hpp>
 
 #include <viz/ogre/helper/Font.hpp>
 #include <viz/ogre/helper/Scene.hpp>
 #include <viz/ogre/R2VBRenderable.hpp>
 #include <viz/ogre/SRender.hpp>
+
+#include <OGRE/OgreAxisAlignedBox.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
 
 #include <cstdint>
 
@@ -52,8 +52,8 @@ namespace sight::modules::viz::ogre::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const services::IService::KeyType s_POINTLIST_INPUT = "pointList";
-static const services::IService::KeyType s_MESH_INPUT      = "mesh";
+static const service::IService::KeyType s_POINTLIST_INPUT = "pointList";
+static const service::IService::KeyType s_MESH_INPUT      = "mesh";
 
 static const std::string s_COLOR_CONFIG             = "color";
 static const std::string s_VISIBLE_CONFIG           = "visible";
@@ -200,9 +200,9 @@ void SPointList::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPointList::getAutoConnections() const
+service::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT );
     connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT );
     connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT );

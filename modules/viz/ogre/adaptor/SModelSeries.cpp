@@ -35,8 +35,8 @@
 #include <data/Reconstruction.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
-#include <services/op/Add.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -106,9 +106,9 @@ void SModelSeries::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
+service::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);

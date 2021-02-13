@@ -28,7 +28,7 @@
 #include <data/String.hpp>
 #include <data/tools/helper/Field.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <viz/ogre/ogre.hpp>
 #include <viz/ogre/Utils.hpp>
@@ -55,7 +55,7 @@ fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::u
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
-static const services::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
+static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
 static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 

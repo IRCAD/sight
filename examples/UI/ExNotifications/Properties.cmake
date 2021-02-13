@@ -11,7 +11,7 @@ set( REQUIREMENTS
     module_ui_qt                   # Start the module, allow dark theme
 
     # Objects declaration
-    module_services             # fwService
+    module_service             # fwService
 
     # UI declaration/Actions
     module_ui_base

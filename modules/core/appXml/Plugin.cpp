@@ -24,8 +24,8 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <services/registry/AppConfig.hpp>
-#include <services/registry/AppConfigParameters.hpp>
+#include <service/registry/AppConfig.hpp>
+#include <service/registry/AppConfigParameters.hpp>
 
 namespace sight::module::appXml
 {
@@ -65,17 +65,17 @@ void Plugin::initialize()
     SLM_ASSERT("The OSR is already initialized.", !m_appConfigMng );
     SLM_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
-    m_appConfigMng = services::AppConfigManager::New();
+    m_appConfigMng = service::AppConfigManager::New();
 
     if( m_parametersName.empty() )
     {
-        const services::registry::FieldAdaptorType fields;
+        const service::registry::FieldAdaptorType fields;
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
     else
     {
-        const services::registry::FieldAdaptorType& fields =
-            services::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
+        const service::registry::FieldAdaptorType& fields =
+            service::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
 

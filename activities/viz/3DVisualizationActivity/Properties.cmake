@@ -10,7 +10,7 @@ set( REQUIREMENTS
     module_ui_qt
     module_memory
     data
-    module_services
+    module_service
     visuVTKQt
     visuVTKAdaptor
     media

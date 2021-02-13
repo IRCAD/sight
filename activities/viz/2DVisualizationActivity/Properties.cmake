@@ -10,7 +10,7 @@ set( REQUIREMENTS
     data
     module_data
     module_memory
-    module_services
+    module_service
     visuVTKAdaptor
     visuVTKQt
     media 

@@ -31,19 +31,19 @@
 #include <data/MatrixTL.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/ISynchronizer.hpp>
+#include <service/ISynchronizer.hpp>
 
 namespace sight::modules::sync
 {
 /**
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a TransformationMatrix3D.
  */
-class MODULE_SYNC_CLASS_API SMatrixSynchronizer : public services::ISynchronizer
+class MODULE_SYNC_CLASS_API SMatrixSynchronizer : public service::ISynchronizer
 {
 
 public:
 
-    fwCoreServiceMacro(SMatrixSynchronizer, services::ISynchronizer)
+    fwCoreServiceMacro(SMatrixSynchronizer, service::ISynchronizer)
 
     /**
      * @brief Constructor.

@@ -28,8 +28,8 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <openssl/rand.h>
 #include <openssl/sha.h>
@@ -251,11 +251,11 @@ std::filesystem::path getPreferencesFile()
 ui::base::preferences::IPreferences::sptr getPreferencesSrv()
 {
     ui::base::preferences::IPreferences::sptr srv;
-    const auto preferencesServicesList = services::OSR::getServices("::sight::ui::base::preferences::IPreferences");
+    const auto preferencesServicesList = service::OSR::getServices("::sight::ui::base::preferences::IPreferences");
 
     if(!preferencesServicesList.empty())
     {
-        services::IService::sptr prefService = *preferencesServicesList.begin();
+        service::IService::sptr prefService = *preferencesServicesList.begin();
         srv = ui::base::preferences::IPreferences::dynamicCast(prefService);
     }
     SLM_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);

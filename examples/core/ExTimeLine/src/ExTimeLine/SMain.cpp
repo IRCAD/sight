@@ -26,9 +26,9 @@
 
 #include <core/thread/Timer.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::services::IService, ::ExTimeLine::SMain, ::sight::data::Composite )
+fwServicesRegisterMacro( ::sight::service::IService, ::ExTimeLine::SMain, ::sight::data::Composite )
 
 namespace ExTimeLine
 {

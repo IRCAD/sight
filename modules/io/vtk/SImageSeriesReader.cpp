@@ -40,12 +40,12 @@
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
-#include <io/base/services/ioTypes.hpp>
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/ioTypes.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/vtk/BitmapImageReader.hpp>
 
 #include <ui/base/Cursor.hpp>
@@ -58,7 +58,7 @@
 namespace sight::modules::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::services::IReader, ::sight::modules::io::vtk::SImageSeriesReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SImageSeriesReader,
                          ::sight::data::ImageSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -72,9 +72,9 @@ SImageSeriesReader::SImageSeriesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::services::IOPathType SImageSeriesReader::getIOPathType() const
+sight::io::base::service::IOPathType SImageSeriesReader::getIOPathType() const
 {
-    return sight::io::base::services::FILE;
+    return sight::io::base::service::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ void SImageSeriesReader::stopping()
 
 void SImageSeriesReader::configuring()
 {
-    sight::io::base::services::IReader::configuring();
+    sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void SImageSeriesReader::updating()
     {
         // Retrieve dataStruct associated with this service
         data::ImageSeries::sptr imageSeries =
-            this->getInOut< data::ImageSeries >(sight::io::base::services::s_DATA_KEY);
+            this->getInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
         SLM_ASSERT("ImageSeries is not instanced", imageSeries);
 
         sight::ui::base::Cursor cursor;
@@ -216,7 +216,7 @@ void SImageSeriesReader::updating()
 
 void SImageSeriesReader::notificationOfDBUpdate()
 {
-    data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(sight::io::base::services::s_DATA_KEY);
+    data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
     SLM_ASSERT("imageSeries not instanced", imageSeries);
 
     auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);

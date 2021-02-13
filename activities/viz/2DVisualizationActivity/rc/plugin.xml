@@ -1,18 +1,18 @@
 <plugin id="2DVisualizationActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
     <requirement id="visuVTKQt" />
     <requirement id="module_ui_qt" />
 
     <requirement id="module_activity" />
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
     <xi:include href="configurations/2DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DNegato.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DNegatoWithTF.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activities::registry::Activities">
+    <extension implements="::activity::registry::Activity">
         <id>2DVisualization</id>
         <title>2D visualization</title>
         <desc>Display a medical image in 2D.</desc>
@@ -25,7 +25,7 @@
                 <desc>Landmarks to display.</desc>
             </requirement>
         </requirements>
-        <builder>::activities::builder::ActivitySeriesInitData</builder>
+        <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
         <appConfig id="2DVisualization">
             <parameters>
                 <parameter replace="image" by="@values.imageSeries.image" />

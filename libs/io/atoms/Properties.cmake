@@ -6,6 +6,6 @@ set( DEPENDENCIES
     core
     data
     io_zip
-    activities
+    activity
 )
 set( REQUIREMENTS  )

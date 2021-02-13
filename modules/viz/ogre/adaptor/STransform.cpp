@@ -25,12 +25,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::viz::ogre::adaptor
 {
 
-static const services::IService::KeyType s_TRANSFORM_INOUT = "transform";
+static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 static const std::string s_PARENT_CONFIG = "parent";
 
@@ -48,9 +48,9 @@ STransform::~STransform() noexcept
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap STransform::getAutoConnections() const
+service::IService::KeyConnectionsMap STransform::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }

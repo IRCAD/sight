@@ -2,7 +2,7 @@ set( NAME module_filter_vision )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
-    services
+    service
     data
     geometry_data
     filter_vision

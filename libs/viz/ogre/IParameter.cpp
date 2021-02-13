@@ -35,15 +35,15 @@
 #include <data/PointList.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
+
+#include <viz/ogre/ogre.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
-
-#include <viz/ogre/ogre.hpp>
 
 namespace sight::viz::ogre
 {
@@ -106,9 +106,9 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap IParameter::getAutoConnections() const
+service::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;

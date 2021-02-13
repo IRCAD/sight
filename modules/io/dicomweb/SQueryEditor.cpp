@@ -25,7 +25,7 @@
 #include <data/DicomSeries.hpp>
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -59,7 +59,7 @@ SQueryEditor::~SQueryEditor() noexcept
 
 void SQueryEditor::configuring()
 {
-    services::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
     if(configuration.count("server"))
     {

@@ -27,10 +27,10 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <services/IController.hpp>
-#include <services/IHasServices.hpp>
+#include <service/IController.hpp>
+#include <service/IHasServices.hpp>
 
-#include <io/base/services/IReader.hpp>
+#include <io/base/service/IReader.hpp>
 #include <io/dimse/SeriesRetriever.hpp>
 
 #include <vector>
@@ -67,14 +67,14 @@ namespace sight::modules::io::dimse
  * - \b dicomReader (mandatory, string): reader type to use.
  * - \b dicomReaderConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
-class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public services::IController,
-                                                      public services::IHasServices
+class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public service::IController,
+                                                      public service::IHasServices
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSeriesPuller,  sight::services::IController)
+    fwCoreServiceMacro(SSeriesPuller,  sight::service::IController)
 
     /// Creates the service and slots.
     MODULE_IO_DIMSE_API SSeriesPuller() noexcept;
@@ -143,7 +143,7 @@ private:
     std::string m_readerConfig { "" };
 
     /// Contains the DICOM reader.
-    sight::io::base::services::IReader::sptr m_dicomReader { nullptr };
+    sight::io::base::service::IReader::sptr m_dicomReader { nullptr };
 
     /// Contains the seriesDB where the DICOM reader sets its output.
     data::SeriesDB::sptr m_seriesDB { nullptr };

@@ -1,6 +1,6 @@
 <plugin id="Tuto07SceneQt3DQml" class="::Tuto07SceneQt3DQml::Plugin"  version="@PROJECT_VERSION@" >
 
-    <requirement id="module_services" />
+    <requirement id="module_service" />
 
     <library name="Tuto07SceneQt3DQml" />
 

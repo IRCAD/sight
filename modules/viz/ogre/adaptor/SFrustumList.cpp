@@ -27,13 +27,13 @@
 #include <data/Camera.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
-
-#include <OgreCamera.h>
-#include <OgreSceneNode.h>
+#include <service/macros.hpp>
 
 #include <viz/ogre/helper/Camera.hpp>
 #include <viz/ogre/helper/Scene.hpp>
+
+#include <OgreCamera.h>
+#include <OgreSceneNode.h>
 
 namespace sight::modules::viz::ogre::adaptor
 {
@@ -107,9 +107,9 @@ void SFrustumList::starting()
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
+service::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
 {
-    services::IService::KeyConnectionsMap connections;
+    service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT);
     return connections;
 }

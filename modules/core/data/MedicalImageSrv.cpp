@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 namespace sight::modules::data
 {
@@ -37,7 +37,7 @@ static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::services::IController, ::sight::modules::data::MedicalImageSrv, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::data::MedicalImageSrv, ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ void MedicalImageSrv::info( std::ostream& )
 
 //-----------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
+service::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push("image", sight::data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);

@@ -26,8 +26,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/AppConfig.hpp>
+#include <service/macros.hpp>
+#include <service/registry/AppConfig.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -100,7 +100,7 @@ void SActivityView::starting()
 
     parentContainer->setLayout(layout);
 
-    m_configManager = services::IAppConfigManager::New();
+    m_configManager = service::IAppConfigManager::New();
 
     if (!m_mainActivityId.empty())
     {
@@ -145,15 +145,15 @@ void SActivityView::launchActivity(data::ActivitySeries::sptr activitySeries)
         {
             m_configManager->stopAndDestroy();
         }
-        activities::registry::ActivityInfo info;
-        info = activities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        activity::registry::ActivityInfo info;
+        info = activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"]       = activitySeries->getID();
         replaceMap[ "WID_PARENT" ] = m_wid;
-        std::string genericUidAdaptor = services::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
+        std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
         replaceMap["GENERIC_UID"] = genericUidAdaptor;
         try
         {

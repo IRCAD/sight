@@ -37,7 +37,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransformationMatrix3D.hpp>
 
-#include <services/macros.hpp>
+#include <service/macros.hpp>
 
 #include <librealsense2/rs_advanced_mode.hpp>
 
@@ -52,9 +52,9 @@ namespace sight::modules::io::realsense
 {
 namespace fwClock = core::HiResClock;
 
-const services::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
-const services::IService::KeyType s_POINTCLOUD_OUTPUT   = "pointcloud";
-const services::IService::KeyType s_DISTANCE_OUTPUT     = "distance";
+const service::IService::KeyType s_CAMERA_SERIES_INOUT = "cameraSeries";
+const service::IService::KeyType s_POINTCLOUD_OUTPUT   = "pointcloud";
+const service::IService::KeyType s_DISTANCE_OUTPUT     = "distance";
 
 static const std::string s_FPS           = "fps";
 static const std::string s_COLOR_FRAME_H = "colorH";
@@ -558,8 +558,8 @@ void SScan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal< services::IGrabber::CameraStartedSignalType >(
-        services::IGrabber::s_CAMERA_STARTED_SIG);
+    auto sigStarted = this->signal< service::IGrabber::CameraStartedSignalType >(
+        service::IGrabber::s_CAMERA_STARTED_SIG);
     sigStarted->asyncEmit();
 }
 
@@ -594,8 +594,8 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal< services::IGrabber::CameraStoppedSignalType >(
-            services::IGrabber::s_CAMERA_STOPPED_SIG);
+        auto sig = this->signal< service::IGrabber::CameraStoppedSignalType >(
+            service::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
 }

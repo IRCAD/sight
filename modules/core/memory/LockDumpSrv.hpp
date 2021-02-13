@@ -26,7 +26,7 @@
 
 #include <data/ObjectLock.hpp>
 
-#include <services/IController.hpp>
+#include <service/IController.hpp>
 
 namespace sight::modules::memory
 {
@@ -44,12 +44,12 @@ namespace sight::modules::memory
  * @subsection In-Out In-Out
  * - \b target [sight::data::Object]: object to dump lock.
  */
-class MODULE_MEMORY_CLASS_API LockDumpSrv : public services::IController
+class MODULE_MEMORY_CLASS_API LockDumpSrv : public service::IController
 {
 
 public:
 
-    fwCoreServiceMacro(LockDumpSrv, sight::services::IController)
+    fwCoreServiceMacro(LockDumpSrv, sight::service::IController)
 
     /// Constructor. Does nothing
     MODULE_MEMORY_API LockDumpSrv() noexcept;

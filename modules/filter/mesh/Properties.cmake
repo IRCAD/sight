@@ -5,7 +5,7 @@ set( TYPE MODULE )
 set( DEPENDENCIES 
     data
     ui_base
-    services
+    service
     io_vtk
     geometry_data
     core

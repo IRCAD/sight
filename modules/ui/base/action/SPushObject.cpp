@@ -31,9 +31,9 @@
 #include <data/Composite.hpp>
 #include <data/tools/helper/Composite.hpp>
 
-#include <services/macros.hpp>
-#include <services/registry/AppConfig.hpp>
-#include <services/registry/ObjectService.hpp>
+#include <service/macros.hpp>
+#include <service/registry/AppConfig.hpp>
+#include <service/registry/ObjectService.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -100,8 +100,8 @@ void SPushObject::updating()
     data::Object::sptr obj = compositeSrc->at< data::Object>(m_srcKey);
 
     SLM_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
-    if (services::OSR::isRegistered(s_DESTINATION_KEY, services::IService::AccessType::OUTPUT,
-                                    this->getSptr()))
+    if (service::OSR::isRegistered(s_DESTINATION_KEY, service::IService::AccessType::OUTPUT,
+                                   this->getSptr()))
     {
         this->setOutput(s_DESTINATION_KEY, nullptr);
     }
@@ -130,7 +130,7 @@ void SPushObject::updateObjects()
 
 //------------------------------------------------------------------------------
 
-services::IService::KeyConnectionsMap SPushObject::getAutoConnections() const
+service::IService::KeyConnectionsMap SPushObject::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     connections.push( s_SOURCE_KEY, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT );
