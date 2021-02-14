@@ -4,7 +4,7 @@
 
     <requirement id="module_service" />
     <requirement id="module_ui_qt" />
-    <requirement id="visuQt3DQt" />
+    <requirement id="module_viz_qt3d" />
 
     <extension implements="::sight::service::registry::ServiceConfig" >
         <id>Tuto16SceneQt3D_jsonReader_SrvCfg</id>
@@ -76,7 +76,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::fwRenderQt3D::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::qt3d::SRender" >
                 <scene>
                     <background color="#2d2d2d" />
 
@@ -85,12 +85,12 @@
                 </scene>
             </service>
 
-            <service uid="materialAdp" type="::visuQt3DAdaptor::SMaterial" autoConnect="yes">
+            <service uid="materialAdp" type="::sight::modules::viz::qt3d::adaptor::SMaterial" autoConnect="yes">
                 <inout key="material" uid="material" />
                 <config materialName="mat"/>
             </service>
 
-            <service uid="meshAdp" type="::visuQt3DAdaptor::SMesh" autoConnect="yes">
+            <service uid="meshAdp" type="::sight::modules::viz::qt3d::adaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="mesh" />
                 <config autoresetcamera="true" visible="true"  materialName="mat"/>
             </service>

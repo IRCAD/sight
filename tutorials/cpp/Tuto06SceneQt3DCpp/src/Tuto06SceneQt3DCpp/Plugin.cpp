@@ -74,8 +74,9 @@ void Plugin::initialize()
 
     const auto meshReaderSrv = m_appManager->addService("::modules::ui::base::editor::SIOSelector", "meshReader", true,
                                                         false);
-    const auto renderSrv   = m_appManager->addService("::fwRenderQt3D::SRender", "genericScene", true, false);
-    const auto meshAdaptor = m_appManager->addService("::visuQt3DAdaptor::SMesh", "meshAdaptor", true, false);
+    const auto renderSrv   = m_appManager->addService("::viz::qt3d::SRender", "genericScene", true, false);
+    const auto meshAdaptor =
+        m_appManager->addService("::modules::viz::qt3d::adaptor::SMesh", "meshAdaptor", true, false);
 
     /* **************************************************************************************
     *              GUI configuration

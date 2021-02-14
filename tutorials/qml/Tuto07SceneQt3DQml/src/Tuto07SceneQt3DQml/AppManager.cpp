@@ -61,28 +61,28 @@ void AppManager::uninitialize()
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3Ddata::Mesh* AppManager::getMesh()
+viz::qt3d::data::Mesh* AppManager::getMesh()
 {
     return m_mesh;
 }
 
 //------------------------------------------------------------------------------
 
-::fwRenderQt3Dcore::GenericScene* AppManager::getScene()
+sight::viz::qt3d::core::GenericScene* AppManager::getScene()
 {
     return m_scene;
 }
 
 //------------------------------------------------------------------------------
 
-void AppManager::setMesh(::fwRenderQt3Ddata::Mesh* _mesh)
+void AppManager::setMesh(viz::qt3d::data::Mesh* _mesh)
 {
     m_mesh = _mesh;
 }
 
 //------------------------------------------------------------------------------
 
-void AppManager::setScene(::fwRenderQt3Dcore::GenericScene* _scene)
+void AppManager::setScene(sight::viz::qt3d::core::GenericScene* _scene)
 {
     m_scene = _scene;
 }

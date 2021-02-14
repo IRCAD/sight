@@ -21,8 +21,7 @@ set( REQUIREMENTS
     module_io_atoms
 
     # Generic Scene
-    visuQt3DAdaptor
-    visuQt3DQt
+    module_viz_qt3d
 )
 
 moduleParam(module_ui_qt

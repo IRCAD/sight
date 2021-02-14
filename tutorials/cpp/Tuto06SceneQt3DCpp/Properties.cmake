@@ -11,7 +11,7 @@ set( REQUIREMENTS
 
     module_ui_base             # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
-    visuQt3DQt              # Enable Qt3D to render things in Qt window
+    module_viz_qt3d              # Enable Qt3D to render things in Qt window
 
     # Objects declaration
     data
@@ -26,8 +26,7 @@ set( REQUIREMENTS
     # Services
 
     # Generic Scene
-    visuQt3DAdaptor
-    visuQt3DQt
+    module_viz_qt3d
 )
 
 moduleParam(module_ui_qt

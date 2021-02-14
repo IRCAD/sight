@@ -6,7 +6,7 @@ set( START ON )
 set( DEPENDENCIES
     ui_qml
     service
-    fwRenderQt3D
+    viz_qt3d
 )
 set( REQUIREMENTS
     module_ui_qml
@@ -15,5 +15,5 @@ set( REQUIREMENTS
     module_ui_base
     module_service
     fwlauncher
-    visuQt3DAdaptor
+    module_viz_qt3d
 )
