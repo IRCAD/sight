@@ -15,7 +15,7 @@
 
     You can also launch this configuration as an activity :
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>sequencerActivityName</id>
         <title>Activity title</title>
         <desc>Description of the activity</desc>

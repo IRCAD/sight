@@ -1,8 +1,8 @@
 <plugin id="tu_validator" version="@PROJECT_VERSION@">
 
-    <extension-point id="::activity::registry::Activity" schema="activity-0.1/activity.xsd" />
+    <extension-point id="::sight::activity::registry::Activity" schema="activity-0.1/activity.xsd" />
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>TestValidator0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
@@ -23,7 +23,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>TestValidator1</id>
         <title>test 1</title>
         <desc>This is test 1.</desc>
@@ -37,7 +37,7 @@
             </requirement>
             <requirement name="vectorImage" type="::sight::data::ImageSeries" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>Some image series...</desc>
-                <validator>::activity::validator::ImageProperties</validator>
+                <validator>::sight::activity::validator::ImageProperties</validator>
             </requirement>
             <requirement name="vectorModel" type="::sight::data::ModelSeries" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>

@@ -23,14 +23,13 @@ set( REQUIREMENTS
     # Reader
     module_io_atoms
     module_io_vision
-    ioActivity
+    module_io_activity
     module_io_realsense
 
     # Services
     module_ui_base
     module_activity
     calibrationActivity
-    trackedCameraRegistrationActivity
     toolCalibrationActivity
     module_data
     module_memory

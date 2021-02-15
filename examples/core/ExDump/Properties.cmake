@@ -28,7 +28,7 @@ set( REQUIREMENTS
     module_memory
     2DVisualizationActivity
     3DVisualizationActivity
-    ioActivity
+    module_io_activity
     atoms
     module_debug
     module_ui_debug

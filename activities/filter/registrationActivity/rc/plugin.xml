@@ -12,7 +12,7 @@
     <xi:include href="configurations/ManualRegistrationView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/Registration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>registrationActivity</id>
         <title>Registration</title>
         <desc>Activity to register two images.</desc>

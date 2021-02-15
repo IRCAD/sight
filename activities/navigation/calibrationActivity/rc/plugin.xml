@@ -18,7 +18,7 @@
     <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
@@ -34,7 +34,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>calibrationEdition</id>
         <title>Calibration Edition</title>
         <desc>
@@ -57,7 +57,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
@@ -70,7 +70,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>

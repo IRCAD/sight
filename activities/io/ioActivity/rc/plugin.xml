@@ -1,10 +1,10 @@
-<plugin id="ioActivity" version="@PROJECT_VERSION@">
+<plugin id="module_io_activity" version="@PROJECT_VERSION@">
 
     <requirement id="module_io_atoms" />
     <requirement id="module_activity" />
 
     <!-- Activity used to export an image series. -->
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>ImageSeriesExport</id>
         <title>ImageSeries Export</title>
         <desc>Activity to export the selected ImageSeries.</desc>
@@ -21,7 +21,7 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>ModelSeriesExport</id>
         <title>ModelSeries Export</title>
         <desc>Activity to export the selected ModelSeries.</desc>
@@ -38,7 +38,7 @@
     </extension>
 
     <!-- Activity used to export a model series. -->
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>DicomSegmentationSurfaceExport</id>
         <title>Dicom Segmentation Surface Export</title>
         <desc>Activity to export a ModelSeries as a Dicom Segmentation Surface file.</desc>

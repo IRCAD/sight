@@ -95,7 +95,7 @@ are already displayed and where they are displayed on screen.
             </service>
 
             <!-- preference to apply new theme on app -->
-            <service uid="changeThemeAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
+            <service uid="changeThemeAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
                 <preference>
                     <type>combobox</type>
                     <name>Color Theme</name>

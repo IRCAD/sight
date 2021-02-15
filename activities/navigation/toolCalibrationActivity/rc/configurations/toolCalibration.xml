@@ -129,7 +129,7 @@
             <red>Sensor is not tracked</red>
         </service>
 
-        <service uid="configureClient" type="::sight::modules::ui::base::action::SPreferencesConfiguration">
+        <service uid="configureClient" type="::sight::modules::ui::qt::action::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Tracker hostname</name>

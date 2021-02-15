@@ -35,8 +35,7 @@ namespace sight::activity
 namespace validator
 {
 
-fwActivitiesValidatorRegisterMacro(
-    activity::validator::RelatedStudy, "::activity::validator::RelatedStudy");
+fwActivitiesValidatorRegisterMacro(::sight::activity::validator::RelatedStudy);
 
 //-----------------------------------------------------------------------------
 

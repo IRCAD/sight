@@ -22,12 +22,12 @@
 
 #include "StereoCameraTest.hpp"
 
+#include <activity/IObjectValidator.hpp>
+#include <activity/IValidator.hpp>
+
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <modules/activity/IObjectValidator.hpp>
-#include <modules/activity/IValidator.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::activity::validator::ut::StereoCameraTest );
@@ -36,6 +36,10 @@ namespace sight::modules::activity::validator
 {
 namespace ut
 {
+
+namespace factory = sight::activity::validator::factory;
+using sight::activity::IObjectValidator;
+using sight::activity::IValidator;
 
 //------------------------------------------------------------------------------
 
@@ -55,15 +59,13 @@ void StereoCameraTest::tearDown()
 
 void StereoCameraTest::testValidator()
 {
-    modules::activity::IValidator::sptr validator =
-        modules::activity::validator::factory::New("::modules::activity::validator::CameraSeries::StereoCamera");
+    auto validator = factory::New("::sight::modules::activity::validator::CameraSeries::StereoCamera");
     CPPUNIT_ASSERT(validator);
 
-    modules::activity::IObjectValidator::sptr objValidator =
-        modules::activity::IObjectValidator::dynamicCast(validator);
+    auto objValidator = IObjectValidator::dynamicCast(validator);
     CPPUNIT_ASSERT(objValidator);
 
-    modules::activity::IValidator::ValidationType validation;
+    IValidator::ValidationType validation;
 
     data::CameraSeries::sptr cameraSeries     = data::CameraSeries::New();
     data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();

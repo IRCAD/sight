@@ -20,26 +20,25 @@
  *
  ***********************************************************************/
 
-#include "modules/activity/validator/ModelSeries/ContainOneSkin.hpp"
+#include "ContainOneSkin.hpp"
+
+#include <activity/validator/registry/macros.hpp>
 
 #include <data/Composite.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
-#include <modules/activity/validator/registry/macros.hpp>
-
 namespace sight::modules::activity::validator
 {
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(modules::activity::validator::ModelSeries::ContainOneSkin,
-                                   "::modules::activity::validator::ModelSeries::ContainOneSkin");
+fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::ModelSeries::ContainOneSkin);
 
 //-----------------------------------------------------------------------------
 
-ContainOneSkin::ContainOneSkin(modules::activity::IValidator::Key key)
+ContainOneSkin::ContainOneSkin(::sight::activity::IValidator::Key key)
 {
 
 }
@@ -53,7 +52,7 @@ ContainOneSkin::~ContainOneSkin()
 
 //-----------------------------------------------------------------------------
 
-modules::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData ) const
+::sight::activity::IValidator::ValidationType ContainOneSkin::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

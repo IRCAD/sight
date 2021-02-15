@@ -183,7 +183,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     // Set Default validator if none is defined
     if (validatorsImpl.empty())
     {
-        validatorsImpl.push_back("::activity::validator::DefaultActivity");
+        validatorsImpl.push_back("::sight::activity::validator::DefaultActivity");
     }
 }
 
@@ -254,7 +254,7 @@ Activity::~Activity()
 void Activity::parseBundleInformation()
 {
     std::vector< SPTR( core::runtime::Extension ) >  extensions
-        = core::runtime::getAllExtensionsForPoint("::activity::registry::Activity");
+        = core::runtime::getAllExtensionsForPoint("::sight::activity::registry::Activity");
 
     for( const SPTR( core::runtime::Extension ) &ext :  extensions )
     {

@@ -24,7 +24,7 @@
 
 #include "modules/activity/config.hpp"
 
-#include <modules/activity/IObjectValidator.hpp>
+#include <activity/IObjectValidator.hpp>
 
 namespace sight::modules::activity::validator
 {
@@ -35,14 +35,14 @@ namespace ModelSeries
  * @note If the given Obect is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
  *       with one and only one Tool.
  */
-class MODULE_ACTIVITY_CLASS_API ContainOneTool : public sight::modules::activity::IObjectValidator
+class MODULE_ACTIVITY_CLASS_API ContainOneTool : public sight::activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(ContainOneTool, modules::activity::IObjectValidator,
-                     modules::activity::validator::factory::New< ContainOneTool >)
+    fwCoreClassMacro(ContainOneTool, ::sight::activity::IObjectValidator,
+                     ::sight::activity::validator::factory::New< ContainOneTool >)
 
     /// Constructor. Do nothing.
-    MODULE_ACTIVITY_API ContainOneTool(modules::activity::IValidator::Key key);
+    MODULE_ACTIVITY_API ContainOneTool(::sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
     MODULE_ACTIVITY_API virtual ~ContainOneTool();
@@ -52,8 +52,7 @@ public:
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
      * @see modules::activity::IValidator::validate
      */
-    MODULE_ACTIVITY_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
-    override;
+    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
 };
 
 } // namespace ModelSeries

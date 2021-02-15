@@ -38,7 +38,7 @@ namespace calibrationActivity
 namespace validator
 {
 
-fwActivitiesValidatorRegisterMacro(::calibrationActivity::validator::TagId, "::calibrationActivity::validator::TagId");
+fwActivitiesValidatorRegisterMacro(::sight::calibrationActivity::validator::TagId);
 
 //-----------------------------------------------------------------------------
 

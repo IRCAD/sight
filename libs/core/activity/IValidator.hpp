@@ -68,8 +68,8 @@ public:
     public:
         Registrar(std::string functorKey)
         {
-            activity::validator::registry::get()->addFactory( functorKey,
-                                                              &activity::validator::factory::New<T> );
+            sight::activity::validator::registry::get()->addFactory( functorKey,
+                                                                     &sight::activity::validator::factory::New<T> );
         }
     };
 

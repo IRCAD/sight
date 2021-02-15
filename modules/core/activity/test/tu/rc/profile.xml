@@ -2,9 +2,9 @@
 
     <activate id="module_service" version="0.1" />
 
-    <activate id="::sight::modules::activity::validator" version="0.1" />
+    <activate id="module_activity" version="0.1" />
 
-    <start id="::sight::modules::activity::validator" />
+    <start id="module_activity" />
 
 </profile>
 

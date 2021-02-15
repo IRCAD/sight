@@ -152,7 +152,7 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  *
  * Example of activity configuration:
  * @code{.xml}
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>3DVisualization</id>
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>

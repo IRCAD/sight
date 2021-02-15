@@ -9,7 +9,7 @@
     <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>3DVisualization</id>
         <title>3D visualization</title>
         <desc>Activity to display a 3D model, and optionally its associated image.</desc>

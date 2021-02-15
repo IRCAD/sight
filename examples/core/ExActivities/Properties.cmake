@@ -23,7 +23,7 @@ set( REQUIREMENTS
     # Reader
     module_io_atoms
     module_io_vtk
-    ioActivity
+    module_io_activity
 
     # Config
     2DVisualizationActivity

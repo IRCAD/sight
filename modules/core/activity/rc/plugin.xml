@@ -5,6 +5,6 @@
     <requirement id="module_service"/>
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="::sight::modules::activity::registry::Activity" schema="activity-0.1/activity.xsd"/>
+    <extension-point id="::sight::activity::registry::Activity" schema="activity-0.1/activity.xsd"/>
 
 </plugin>

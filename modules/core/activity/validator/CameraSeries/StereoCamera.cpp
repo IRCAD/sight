@@ -20,25 +20,24 @@
  *
  ***********************************************************************/
 
-#include "modules/activity/validator/CameraSeries/StereoCamera.hpp"
+#include "StereoCamera.hpp"
+
+#include <activity/validator/registry/macros.hpp>
 
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 #include <data/TransformationMatrix3D.hpp>
-
-#include <modules/activity/validator/registry/macros.hpp>
 
 namespace sight::modules::activity::validator
 {
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(modules::activity::validator::CameraSeries::StereoCamera,
-                                   "::modules::activity::validator::CameraSeries::StereoCamera");
+fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::CameraSeries::StereoCamera);
 
 //-----------------------------------------------------------------------------
 
-StereoCamera::StereoCamera(modules::activity::IValidator::Key key)
+StereoCamera::StereoCamera(::sight::activity::IValidator::Key key)
 {
 
 }
@@ -52,7 +51,7 @@ StereoCamera::~StereoCamera()
 
 //-----------------------------------------------------------------------------
 
-modules::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData ) const
+::sight::activity::IValidator::ValidationType StereoCamera::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

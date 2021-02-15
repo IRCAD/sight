@@ -20,24 +20,23 @@
  *
  ***********************************************************************/
 
-#include "modules/activity/validator/CameraSeries/MonoCamera.hpp"
+#include "MonoCamera.hpp"
+
+#include <activity/validator/registry/macros.hpp>
 
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
-
-#include <modules/activity/validator/registry/macros.hpp>
 
 namespace sight::modules::activity::validator
 {
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(modules::activity::validator::CameraSeries::MonoCamera,
-                                   "::modules::activity::validator::CameraSeries::MonoCamera");
+fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::CameraSeries::MonoCamera);
 
 //-----------------------------------------------------------------------------
 
-MonoCamera::MonoCamera(modules::activity::IValidator::Key key)
+MonoCamera::MonoCamera(sight::activity::IValidator::Key key)
 {
 
 }
@@ -51,7 +50,7 @@ MonoCamera::~MonoCamera()
 
 //-----------------------------------------------------------------------------
 
-modules::activity::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData ) const
+sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

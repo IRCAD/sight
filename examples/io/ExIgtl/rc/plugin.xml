@@ -85,7 +85,7 @@
                 <state visible="false" />
             </service>
 
-            <service uid="configureServerAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
+            <service uid="configureServerAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
                 <preference>
                     <type>int</type>
                     <name>Server port</name>
@@ -103,7 +103,7 @@
                 <state visible="false" />
             </service>
 
-            <service uid="configureClientAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
+            <service uid="configureClientAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
                 <preference>
                     <type>text</type>
                     <name>Client IP address</name>

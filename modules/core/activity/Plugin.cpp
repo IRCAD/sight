@@ -39,7 +39,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    modules::activity::registry::Activity::getDefault()->parseBundleInformation();
+    sight::activity::registry::Activity::getDefault()->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
     // Clear all operator configurations
-    modules::activity::registry::Activity::getDefault()->clearRegistry();
+    sight::activity::registry::Activity::getDefault()->clearRegistry();
 }
 
 } // namespace sight::modules::activity

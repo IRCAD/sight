@@ -9,7 +9,7 @@ set( REQUIREMENTS
         module_ui_base
         module_ui_qt
         module_io_atoms
-        ioActivity
+        module_io_activity
         media
         module_ui_flaticon
     )

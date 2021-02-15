@@ -20,26 +20,25 @@
  *
  ***********************************************************************/
 
-#include "modules/activity/validator/ModelSeries/ContainOneTool.hpp"
+#include "ContainOneTool.hpp"
+
+#include <activity/validator/registry/macros.hpp>
 
 #include <data/Composite.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
-#include <modules/activity/validator/registry/macros.hpp>
-
 namespace sight::modules::activity::validator
 {
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(modules::activity::validator::ModelSeries::ContainOneTool,
-                                   "::modules::activity::validator::ModelSeries::ContainOneTool");
+fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::ModelSeries::ContainOneTool);
 
 //-----------------------------------------------------------------------------
 
-ContainOneTool::ContainOneTool(modules::activity::IValidator::Key key)
+ContainOneTool::ContainOneTool(::sight::activity::IValidator::Key key)
 {
 
 }
@@ -53,7 +52,7 @@ ContainOneTool::~ContainOneTool()
 
 //-----------------------------------------------------------------------------
 
-modules::activity::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData ) const
+::sight::activity::IValidator::ValidationType ContainOneTool::validate(const data::Object::csptr& currentData ) const
 {
     IValidator::ValidationType validation;
 

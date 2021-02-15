@@ -24,7 +24,7 @@
 
 #include "modules/activity/config.hpp"
 
-#include <modules/activity/IObjectValidator.hpp>
+#include <activity/IObjectValidator.hpp>
 
 namespace sight::modules::activity::validator
 {
@@ -34,14 +34,14 @@ namespace CameraSeries
  * @brief Defines a validator which checks if the current CameraSeries contains one and only one Camera and is
  *        calibrated.
  */
-class MODULE_ACTIVITY_CLASS_API MonoCamera : public sight::modules::activity::IObjectValidator
+class MODULE_ACTIVITY_CLASS_API MonoCamera : public sight::activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(MonoCamera, modules::activity::IObjectValidator,
-                     modules::activity::validator::factory::New< MonoCamera >)
+    fwCoreClassMacro(MonoCamera, sight::activity::IObjectValidator,
+                     sight::activity::validator::factory::New< MonoCamera >)
 
     /// Constructor. Do nothing.
-    MODULE_ACTIVITY_API MonoCamera(modules::activity::IValidator::Key key);
+    MODULE_ACTIVITY_API MonoCamera(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
     MODULE_ACTIVITY_API virtual ~MonoCamera();
@@ -50,8 +50,7 @@ public:
      * @brief Checks if the current CameraSeries contains one and only one Camera and is calibrated.
      * @see modules::activity::IValidator::validate
      */
-    MODULE_ACTIVITY_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const
-    override;
+    MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
 };
 
 } // namespace CameraSeries

@@ -78,7 +78,7 @@ void DefaultActivityTest::tearDown()
 void DefaultActivityTest::requirementsTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::activity::validator::DefaultActivity");
+        activity::validator::factory::New("::sight::activity::validator::DefaultActivity");
     CPPUNIT_ASSERT(validator);
 
     activity::IActivityValidator::sptr activityValidator =
@@ -176,7 +176,7 @@ void DefaultActivityTest::requirementsTest()
 void DefaultActivityTest::parametersTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::activity::validator::DefaultActivity");
+        activity::validator::factory::New("::sight::activity::validator::DefaultActivity");
     CPPUNIT_ASSERT(validator);
 
     activity::IActivityValidator::sptr activityValidator =
@@ -250,7 +250,7 @@ void DefaultActivityTest::parametersTest()
 void DefaultActivityTest::objectTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::activity::validator::DefaultActivity");
+        activity::validator::factory::New("::sight::activity::validator::DefaultActivity");
     CPPUNIT_ASSERT(validator);
 
     activity::IActivityValidator::sptr activityValidator =
@@ -289,13 +289,13 @@ void DefaultActivityTest::objectTest()
     }
     {
         // An existing validator implementation with valid data should be valid
-        validation = activityValidator->checkObject(vector, "::activity::validator::ImageProperties");
+        validation = activityValidator->checkObject(vector, "::sight::activity::validator::ImageProperties");
         CPPUNIT_ASSERT_EQUAL_MESSAGE("An existing validator implementation with valid data should be valid",
                                      true, validation.first);
     }
     {
         // An existing validator implementation with invalid data should NOT be valid
-        validation = activityValidator->checkObject(vector2, "::activity::validator::ImageProperties");
+        validation = activityValidator->checkObject(vector2, "::sight::activity::validator::ImageProperties");
         CPPUNIT_ASSERT_EQUAL_MESSAGE("An existing validator implementation with invalid data should NOT be valid",
                                      false, validation.first);
     }
@@ -306,7 +306,7 @@ void DefaultActivityTest::objectTest()
 void DefaultActivityTest::validatorTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::activity::validator::DefaultActivity");
+        activity::validator::factory::New("::sight::activity::validator::DefaultActivity");
     CPPUNIT_ASSERT(validator);
 
     activity::IActivityValidator::sptr activityValidator =
@@ -408,7 +408,7 @@ void DefaultActivityTest::validatorTest()
 void DefaultActivityTest::bigActivityTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::activity::validator::DefaultActivity");
+        activity::validator::factory::New("::sight::activity::validator::DefaultActivity");
     CPPUNIT_ASSERT(validator);
 
     activity::IActivityValidator::sptr activityValidator =

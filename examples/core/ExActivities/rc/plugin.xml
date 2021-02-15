@@ -8,7 +8,7 @@
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activity::registry::Activity" >
+    <extension implements="::sight::activity::registry::Activity" >
         <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
@@ -25,7 +25,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activity::registry::Activity" >
+    <extension implements="::sight::activity::registry::Activity" >
         <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
@@ -47,7 +47,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::activity::registry::Activity" >
+    <extension implements="::sight::activity::registry::Activity" >
         <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>

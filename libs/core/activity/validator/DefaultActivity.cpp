@@ -33,8 +33,7 @@ namespace sight::activity
 namespace validator
 {
 
-fwActivitiesValidatorRegisterMacro(
-    activity::validator::DefaultActivity, "::activity::validator::DefaultActivity");
+fwActivitiesValidatorRegisterMacro(::sight::activity::validator::DefaultActivity);
 
 //-----------------------------------------------------------------------------
 

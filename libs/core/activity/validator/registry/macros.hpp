@@ -34,9 +34,9 @@ namespace validator
 namespace registry
 {
 
-#define fwActivitiesValidatorRegisterMacro( ValidatorClassname, ValidatorFunctorKey )   \
-    static activity::IValidator::Registrar< ValidatorClassname >                \
-    BOOST_PP_CAT( s__factory__record__, __LINE__) ( ValidatorFunctorKey );
+#define fwActivitiesValidatorRegisterMacro( ValidatorClassname )   \
+    static sight::activity::IValidator::Registrar< ValidatorClassname >                \
+    BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(ValidatorClassname) );
 
 } // end namespace registry
 } // end namespace validator

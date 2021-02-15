@@ -240,7 +240,7 @@
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>

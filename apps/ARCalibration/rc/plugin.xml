@@ -12,7 +12,7 @@
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::activity::registry::Activity">
+    <extension implements="::sight::activity::registry::Activity">
         <id>ARCalibrationActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for ARCalibration</desc>

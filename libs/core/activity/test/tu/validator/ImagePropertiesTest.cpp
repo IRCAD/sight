@@ -66,7 +66,7 @@ void ImagePropertiesTest::tearDown()
 void ImagePropertiesTest::propertiesTest()
 {
     activity::IValidator::sptr validator =
-        activity::validator::factory::New("::activity::validator::ImageProperties");
+        activity::validator::factory::New("::sight::activity::validator::ImageProperties");
     CPPUNIT_ASSERT(validator);
 
     activity::IObjectValidator::sptr objValidator = activity::IObjectValidator::dynamicCast(validator);

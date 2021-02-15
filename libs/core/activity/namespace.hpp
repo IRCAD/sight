@@ -62,7 +62,7 @@ namespace factory
 /**
  * @page Activity Activity configuration
  *
- * An activity is defined by the extension "::activity::registry::Activity". It is used to launch an
+ * An activity is defined by the extension "::sight::activity::registry::Activity". It is used to launch an
  * AppConfig with the selected data, it will create a new data data::ActivitySeries that inherits from a
  * data::Series.
  *
@@ -78,7 +78,7 @@ namespace factory
  * - data::Vector contains the set of selected data .
  *
  * @code{.xml}
-     <extension implements="::activity::registry::Activity">
+     <extension implements="::sight::activity::registry::Activity">
          <id>myActivityId</id>
          <title>3D Visu</title>
          <desc>Activity description ...</desc>

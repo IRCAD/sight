@@ -84,7 +84,7 @@
             </config>
         </service>
 
-        <service uid="chessboardSizeAct" type="::sight::modules::ui::base::action::SPreferencesConfiguration">
+        <service uid="chessboardSizeAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration">
             <preference>
                 <type>int</type>
                 <name>Chessboard width</name>

@@ -24,7 +24,7 @@ set( REQUIREMENTS
     module_ui_flaticon
 
     # Reader
-    ioActivity
+    module_io_activity
     module_io_matrix
     module_io_dicom
     module_io_vtk

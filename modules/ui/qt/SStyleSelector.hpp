@@ -44,7 +44,7 @@ namespace sight::modules::ui::qt
  *
  * To change a theme while application is running please use a SPreferencesConfiguration like :
  * @code{.xml}
-    <service uid=".." type="::sight::modules::ui::base::action::SPreferencesConfiguration">
+    <service uid=".." type="::sight::modules::ui::qt::action::SPreferencesConfiguration">
         <preference>
             <type>combobox</type>
             <name>Color Theme</name>
