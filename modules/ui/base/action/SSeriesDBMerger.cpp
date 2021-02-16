@@ -43,7 +43,7 @@ namespace sight::modules::ui::base
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SSeriesDBMerger,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SSeriesDBMerger,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -78,7 +78,7 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 void SSeriesDBMerger::configuring()
 {
 
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -138,14 +138,14 @@ void SSeriesDBMerger::updating( )
 
 void SSeriesDBMerger::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

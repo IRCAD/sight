@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ui/base/IGuiContainerSrv.hpp"
+#include "ui/base/IGuiContainer.hpp"
 
 #include "ui/base/builder/IContainerBuilder.hpp"
 #include "ui/base/builder/ISlideViewBuilder.hpp"
@@ -42,36 +42,36 @@
 namespace sight::ui::base
 {
 
-const core::com::Slots::SlotKeyType IGuiContainerSrv::s_SET_ENABLED_SLOT = "setEnabled";
-const core::com::Slots::SlotKeyType IGuiContainerSrv::s_ENABLE_SLOT      = "enable";
-const core::com::Slots::SlotKeyType IGuiContainerSrv::s_DISABLE_SLOT     = "disable";
-const core::com::Slots::SlotKeyType IGuiContainerSrv::s_SET_VISIBLE_SLOT = "setVisible";
-const core::com::Slots::SlotKeyType IGuiContainerSrv::s_SHOW_SLOT        = "show";
-const core::com::Slots::SlotKeyType IGuiContainerSrv::s_HIDE_SLOT        = "hide";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_SLOT = "setEnabled";
+const core::com::Slots::SlotKeyType IGuiContainer::s_ENABLE_SLOT      = "enable";
+const core::com::Slots::SlotKeyType IGuiContainer::s_DISABLE_SLOT     = "disable";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT = "setVisible";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT        = "show";
+const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
-IGuiContainerSrv::IGuiContainerSrv() :
+IGuiContainer::IGuiContainer() :
     m_viewLayoutManagerIsCreated(false),
     m_hasToolBar(false)
 {
-    newSlot(s_SET_ENABLED_SLOT, &IGuiContainerSrv::setEnabled, this);
-    newSlot(s_ENABLE_SLOT, &IGuiContainerSrv::enable, this);
-    newSlot(s_DISABLE_SLOT, &IGuiContainerSrv::disable, this);
-    newSlot(s_SET_VISIBLE_SLOT, &IGuiContainerSrv::setVisible, this);
-    newSlot(s_SHOW_SLOT, &IGuiContainerSrv::show, this);
-    newSlot(s_HIDE_SLOT, &IGuiContainerSrv::hide, this);
+    newSlot(s_SET_ENABLED_SLOT, &IGuiContainer::setEnabled, this);
+    newSlot(s_ENABLE_SLOT, &IGuiContainer::enable, this);
+    newSlot(s_DISABLE_SLOT, &IGuiContainer::disable, this);
+    newSlot(s_SET_VISIBLE_SLOT, &IGuiContainer::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IGuiContainer::show, this);
+    newSlot(s_HIDE_SLOT, &IGuiContainer::hide, this);
 }
 
 //-----------------------------------------------------------------------------
 
-IGuiContainerSrv::~IGuiContainerSrv()
+IGuiContainer::~IGuiContainer()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::initialize()
+void IGuiContainer::initialize()
 {
     SLM_ASSERT("The service '" + this->getID() + "' does not contain a configuration", m_configuration);
 
@@ -123,7 +123,7 @@ void IGuiContainerSrv::initialize()
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::create()
+void IGuiContainer::create()
 {
     SLM_ASSERT("["+this->getID()+"'] ViewRegistrar must be initialized, don't forget to call 'initialize()' in "
                "'configuring()' method.", m_viewRegistrar);
@@ -181,7 +181,7 @@ void IGuiContainerSrv::create()
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::destroy()
+void IGuiContainer::destroy()
 {
     SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
 
@@ -221,7 +221,7 @@ void IGuiContainerSrv::destroy()
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
+void IGuiContainer::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'layout', actual: '"
                +layoutConfig->getName()+ "'",
@@ -238,7 +238,7 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
+void IGuiContainer::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
     SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
                +toolBarConfig->getName()+ "'",
@@ -254,7 +254,7 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::initializeSlideViewBuilder(ConfigurationType slideViewConfig)
+void IGuiContainer::initializeSlideViewBuilder(ConfigurationType slideViewConfig)
 {
     SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'slideView', actual: '"
                +slideViewConfig->getName()+ "'",
@@ -274,14 +274,14 @@ void IGuiContainerSrv::initializeSlideViewBuilder(ConfigurationType slideViewCon
 
 //-----------------------------------------------------------------------------
 
-ui::base::container::fwContainer::sptr IGuiContainerSrv::getContainer()
+ui::base::container::fwContainer::sptr IGuiContainer::getContainer()
 {
     return m_containerBuilder->getContainer();
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::setParent(std::string wid)
+void IGuiContainer::setParent(std::string wid)
 {
     service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >([this, &wid]
         {
@@ -294,7 +294,7 @@ void IGuiContainerSrv::setParent(std::string wid)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::setEnabled(bool isEnabled)
+void IGuiContainer::setEnabled(bool isEnabled)
 {
     ui::base::container::fwContainer::sptr container = m_viewRegistrar->getParent();
     container->setEnabled(isEnabled);
@@ -302,21 +302,21 @@ void IGuiContainerSrv::setEnabled(bool isEnabled)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::enable()
+void IGuiContainer::enable()
 {
     this->setEnabled(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::disable()
+void IGuiContainer::disable()
 {
     this->setEnabled(false);
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::setVisible(bool isVisible)
+void IGuiContainer::setVisible(bool isVisible)
 {
     ui::base::container::fwContainer::sptr container = m_viewRegistrar->getParent();
     container->setVisible(isVisible);
@@ -324,14 +324,14 @@ void IGuiContainerSrv::setVisible(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::show()
+void IGuiContainer::show()
 {
     this->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainerSrv::hide()
+void IGuiContainer::hide()
 {
     this->setVisible(false);
 }

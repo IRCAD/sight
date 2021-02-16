@@ -16,7 +16,7 @@
     </extension>
 
     <extension implements="::sight::service::registry::ServiceFactory">
-        <type>::sight::ui::base::IActionSrv</type>
+        <type>::sight::ui::base::IAction</type>
         <service>::sight::modules::ui::dicom::SSeriesDBMerger</service>
         <object>::sight::data::Vector</object>
         <desc>Push Series to SeriesDB</desc>

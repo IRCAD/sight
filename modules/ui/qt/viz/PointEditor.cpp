@@ -70,7 +70,7 @@ PointEditor::~PointEditor() noexcept
 
 void PointEditor::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -114,7 +114,7 @@ void PointEditor::stopping()
 
 void PointEditor::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 }
 
 //------------------------------------------------------------------------------

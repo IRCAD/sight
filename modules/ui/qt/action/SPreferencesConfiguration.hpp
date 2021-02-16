@@ -35,7 +35,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <vector>
 
@@ -117,7 +117,7 @@ namespace action
  * - \b max (optional, int/double, default=999999/1000000.0): maximum value allowed in the field.
  */
 class MODULE_UI_QT_CLASS_API SPreferencesConfiguration final : public QObject,
-                                                               public ::sight::ui::base::IActionSrv
+                                                               public ::sight::ui::base::IAction
 {
 
 Q_OBJECT
@@ -125,7 +125,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPreferencesConfiguration, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SPreferencesConfiguration, ::sight::ui::base::IAction)
 
     /// Initializes the signal.
     MODULE_UI_QT_API SPreferencesConfiguration() noexcept;

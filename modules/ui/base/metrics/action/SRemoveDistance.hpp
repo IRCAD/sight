@@ -29,7 +29,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base::metrics
 {
@@ -68,13 +68,13 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: Image containing the distance field.
  */
-class MODULE_UI_BASE_CLASS_API SRemoveDistance final : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SRemoveDistance final : public ::sight::ui::base::IAction
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SRemoveDistance, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SRemoveDistance, sight::ui::base::IAction)
 
     /// Initialize slots.
     MODULE_UI_BASE_API SRemoveDistance() noexcept;

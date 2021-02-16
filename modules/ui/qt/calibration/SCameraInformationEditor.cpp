@@ -56,14 +56,14 @@ SCameraInformationEditor::SCameraInformationEditor() noexcept
 
 void SCameraInformationEditor::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 }
 
 // -------------------------------------------------------------------------
 
 void SCameraInformationEditor::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);

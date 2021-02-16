@@ -26,7 +26,7 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <filesystem>
 
@@ -50,11 +50,11 @@ namespace sight::modules::ui::dicom
  * @subsection In-Out In-Out:
  * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the series.
  */
-class MODULE_UI_DICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IActionSrv
+class MODULE_UI_DICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(SSeriesDBMerger, sight::ui::base::IActionSrv )
+    fwCoreServiceMacro(SSeriesDBMerger, sight::ui::base::IAction )
 
     /// Constructor
     MODULE_UI_DICOM_API SSeriesDBMerger() noexcept;

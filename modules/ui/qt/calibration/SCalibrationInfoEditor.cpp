@@ -126,14 +126,14 @@ void SCalibrationInfoEditor::updating()
 
 void SCalibrationInfoEditor::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SCalibrationInfoEditor::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Creation of the Qt elements
@@ -170,7 +170,7 @@ void SCalibrationInfoEditor::starting()
 
 void SCalibrationInfoEditor::stopping()
 {
-    sight::ui::base::IGuiContainerSrv::destroy();
+    sight::ui::base::IGuiContainer::destroy();
 }
 
 // ----------------------------------------------------------------------------

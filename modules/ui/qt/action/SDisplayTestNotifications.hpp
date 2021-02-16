@@ -25,7 +25,7 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <ui/base/dialog/NotificationDialog.hpp>
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace dial = sight::ui::base::dialog;
 
@@ -46,11 +46,11 @@ namespace action
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
-class MODULE_UI_QT_CLASS_API SDisplayTestNotifications final : public ::sight::ui::base::IActionSrv
+class MODULE_UI_QT_CLASS_API SDisplayTestNotifications final : public ::sight::ui::base::IAction
 {
 
 public:
-    fwCoreServiceMacro(SDisplayTestNotifications, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SDisplayTestNotifications, sight::ui::base::IAction)
 
     /**
      * @name Constructor/Destructor
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    /// Initializes IActionSrv.
+    /// Initializes IAction.
     void configuring() override;
 
     /// Starts action

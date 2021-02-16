@@ -70,7 +70,7 @@ Distance::~Distance() noexcept
 
 void Distance::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -105,7 +105,7 @@ void Distance::stopping()
 
 void Distance::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 }
 
 //------------------------------------------------------------------------------

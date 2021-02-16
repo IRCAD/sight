@@ -22,7 +22,7 @@
 
 #include "ui/base/ActionCallbackBase.hpp"
 
-#include "ui/base/IActionSrv.hpp"
+#include "ui/base/IAction.hpp"
 
 #include <core/tools/fwID.hpp>
 
@@ -73,7 +73,7 @@ void ActionCallbackBase::check(bool checked)
     SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
     service::IService::sptr service = service::get( m_sid );
     SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
-    ui::base::IActionSrv::sptr action = ui::base::IActionSrv::dynamicCast(service);
+    ui::base::IAction::sptr action = ui::base::IAction::dynamicCast(service);
     SLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
     checked = (action->isInverted() ? !checked : checked);
     if (action->getIsActive() != checked)

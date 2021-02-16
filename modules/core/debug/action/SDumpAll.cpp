@@ -35,7 +35,7 @@ namespace sight::modules::debug
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::debug::action::SDumpAll,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::SDumpAll,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -87,20 +87,20 @@ void SDumpAll::updating( )
 
 void SDumpAll::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SDumpAll::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void SDumpAll::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

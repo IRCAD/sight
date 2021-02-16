@@ -101,7 +101,7 @@ SActivityWizard::~SActivityWizard() noexcept
 
 void SActivityWizard::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -138,7 +138,7 @@ void SActivityWizard::configuring()
 
 void SActivityWizard::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 

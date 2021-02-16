@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <ui/base/IToolBarSrv.hpp>
+#include <ui/base/IToolBar.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -34,12 +34,12 @@ namespace sight::modules::ui::base
 /**
  * @brief   Defines the default toolbar for standard application
  */
-class MODULE_UI_BASE_CLASS_API SToolBar : public ::sight::ui::base::IToolBarSrv
+class MODULE_UI_BASE_CLASS_API SToolBar : public ::sight::ui::base::IToolBar
 {
 
 public:
 
-    fwCoreServiceMacro(SToolBar, ::sight::ui::base::IToolBarSrv)
+    fwCoreServiceMacro(SToolBar, ::sight::ui::base::IToolBar)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SToolBar() noexcept;
@@ -59,13 +59,13 @@ protected:
 
     /**
      * @brief Create the toolBar
-     * @see sight::ui::base::IToolBarSrv::create()
+     * @see sight::ui::base::IToolBar::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
-     * @see sight::ui::base::IToolBarSrv::destroy()
+     * @see sight::ui::base::IToolBar::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 
@@ -79,7 +79,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="::ui::base::IToolBarSrv" impl="::sight::modules::ui::base::SToolBar"
+       <service uid="toolbar2" type="::ui::base::IToolBar" impl="::sight::modules::ui::base::SToolBar"
      * autoConnect="no"
      *>
            <gui>
@@ -107,8 +107,8 @@ protected:
        @endcode
      *   - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *   - \<registry\> \</registry\> : (mandatory) describe the service management.
-     *     - \<menuItem\> represents IActionSrv
-     *     - \<menu\> represents IMenuSrv
+     *     - \<menuItem\> represents IAction
+     *     - \<menu\> represents IMenu
      *     - \<editor\> represents container service (IEditor, IView, ...)
      *
      *   @warning
@@ -117,7 +117,7 @@ protected:
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
      *
-     *  @see sight::ui::base::IToolBarSrv::initialize(),
+     *  @see sight::ui::base::IToolBar::initialize(),
      * sight::ui::base::layoutManager::IToolBarLayoutManager::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;

@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -37,12 +37,12 @@ namespace action
 /**
  * @brief   This action launch a browser on the url given in configuration.
  */
-class MODULE_UI_QT_CLASS_API LaunchBrowserActionService : public ::sight::ui::base::IActionSrv
+class MODULE_UI_QT_CLASS_API LaunchBrowserActionService : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(LaunchBrowserActionService, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(LaunchBrowserActionService, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API LaunchBrowserActionService() noexcept;
@@ -55,7 +55,7 @@ protected:
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="::ui::base::IActionSrv" impl="::sight::modules::ui::qt::action::LaunchBrowserActionService"
+       <service type="::ui::base::IAction" impl="::sight::modules::ui::qt::action::LaunchBrowserActionService"
      * autoConnect="no">
         <url>http://www.ircad.fr</url>
        </service>

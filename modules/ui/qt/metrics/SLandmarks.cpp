@@ -110,7 +110,7 @@ SLandmarks::~SLandmarks() noexcept
 
 void SLandmarks::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 
     const service::IService::ConfigType config = this->getConfigTree();
 
@@ -137,7 +137,7 @@ void SLandmarks::configuring()
 
 void SLandmarks::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );

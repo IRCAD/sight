@@ -35,7 +35,7 @@ namespace action
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SConfigLauncher )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SConfigLauncher )
 
 const core::com::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 
@@ -90,7 +90,7 @@ void SConfigLauncher::configuring()
 
 void SConfigLauncher::setIsActive(bool isActive)
 {
-    this->::sight::ui::base::IActionSrv::setIsActive(isActive);
+    this->::sight::ui::base::IAction::setIsActive(isActive);
     if(isActive)
     {
         // Check if the config is already running, this avoids to start a running config.

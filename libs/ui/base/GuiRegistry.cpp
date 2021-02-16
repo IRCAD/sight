@@ -22,8 +22,8 @@
 
 #include "ui/base/GuiRegistry.hpp"
 
-#include "ui/base/IMenuSrv.hpp"
-#include "ui/base/IToolBarSrv.hpp"
+#include "ui/base/IMenu.hpp"
+#include "ui/base/IToolBar.hpp"
 
 #include <core/tools/fwID.hpp>
 
@@ -316,8 +316,8 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
             if(service_exists)
             {
                 service::IService::sptr service        = service::get( parentSid );
-                ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
-                ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
+                ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
+                ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if (menuSrv)
                 {
                     menuSrv->actionServiceStopping(actionSid);
@@ -353,8 +353,8 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
             if(service_exists)
             {
                 service::IService::sptr service        = service::get( parentSid );
-                ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
-                ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
+                ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
+                ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if (menuSrv)
                 {
                     menuSrv->actionServiceStarting(actionSid);
@@ -391,8 +391,8 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
             if(service_exists)
             {
                 service::IService::sptr service        = service::get( parentSid );
-                ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
-                ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
+                ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
+                ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if (menuSrv)
                 {
                     menuSrv->actionServiceSetActive(actionSid, isActive);
@@ -429,8 +429,8 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
             if(service_exists)
             {
                 service::IService::sptr service        = service::get( parentSid );
-                ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
-                ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
+                ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
+                ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if (menuSrv)
                 {
                     menuSrv->actionServiceSetExecutable(actionSid, isExecutable);
@@ -466,8 +466,8 @@ void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
             if(service_exists)
             {
                 service::IService::sptr service        = service::get( parentSid );
-                ui::base::IMenuSrv::sptr menuSrv       = ui::base::IMenuSrv::dynamicCast(service);
-                ui::base::IToolBarSrv::sptr toolbarSrv = ui::base::IToolBarSrv::dynamicCast(service);
+                ui::base::IMenu::sptr menuSrv       = ui::base::IMenu::dynamicCast(service);
+                ui::base::IToolBar::sptr toolbarSrv = ui::base::IToolBar::dynamicCast(service);
                 if (menuSrv)
                 {
                     menuSrv->actionServiceSetVisible(actionSid, isVisible);

@@ -139,7 +139,7 @@ namespace sight::service
  *     - \b uid (optional): unique identifier of the service. If it is not defined, it will be automatically
  *       generated.
  *     - \b impl: service implementation
- *     - \b type (optional): service type (ex: ui::base::IFrameSrv)
+ *     - \b type (optional): service type (ex: ui::base::IFrame)
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working object
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *

@@ -24,7 +24,7 @@
 
 #include "modules/debug/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::debug
 {
@@ -32,12 +32,12 @@ namespace sight::modules::debug
 namespace action
 {
 /// Implements an action for show metrics about Sight factories (number of data, message and service in factories).
-class MODULE_DEBUG_CLASS_API fwMetrics : public ::sight::ui::base::IActionSrv
+class MODULE_DEBUG_CLASS_API fwMetrics : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(fwMetrics, sight::ui::base::IActionSrv )
+    fwCoreServiceMacro(fwMetrics, sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_DEBUG_API fwMetrics() noexcept;

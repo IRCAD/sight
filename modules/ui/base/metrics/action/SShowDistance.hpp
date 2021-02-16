@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base::metrics
 {
@@ -49,13 +49,13 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image containing the distances.
  */
-class MODULE_UI_BASE_CLASS_API SShowDistance final : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SShowDistance final : public ::sight::ui::base::IAction
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShowDistance, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SShowDistance, sight::ui::base::IAction)
 
     /// Initialize slots.
     MODULE_UI_BASE_API SShowDistance() noexcept;

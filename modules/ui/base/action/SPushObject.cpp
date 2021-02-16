@@ -47,7 +47,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SPushObject,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SPushObject,
                          ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
@@ -120,9 +120,9 @@ void SPushObject::updateObjects()
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
 
-    this->::sight::ui::base::IActionSrv::setIsExecutable( executable );
+    this->::sight::ui::base::IAction::setIsExecutable( executable );
 
-    if(executable && this->::sight::ui::base::IActionSrv::getIsActive())
+    if(executable && this->::sight::ui::base::IAction::getIsActive())
     {
         this->updating();
     }

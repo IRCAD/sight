@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ui/base/IFrameSrv.hpp"
+#include "ui/base/IFrame.hpp"
 
 #include "ui/base/Application.hpp"
 
@@ -41,40 +41,40 @@
 namespace sight::ui::base
 {
 
-const std::string IFrameSrv::CLOSE_POLICY_EXIT    = "exit";
-const std::string IFrameSrv::CLOSE_POLICY_NOTIFY  = "notify";
-const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
+const std::string IFrame::CLOSE_POLICY_EXIT    = "exit";
+const std::string IFrame::CLOSE_POLICY_NOTIFY  = "notify";
+const std::string IFrame::CLOSE_POLICY_MESSAGE = "message";
 
-const core::com::Slots::SlotKeyType IFrameSrv::s_SET_VISIBLE_SLOT = "setVisible";
-const core::com::Slots::SlotKeyType IFrameSrv::s_SHOW_SLOT        = "show";
-const core::com::Slots::SlotKeyType IFrameSrv::s_HIDE_SLOT        = "hide";
+const core::com::Slots::SlotKeyType IFrame::s_SET_VISIBLE_SLOT = "setVisible";
+const core::com::Slots::SlotKeyType IFrame::s_SHOW_SLOT        = "show";
+const core::com::Slots::SlotKeyType IFrame::s_HIDE_SLOT        = "hide";
 
-const core::com::Signals::SignalKeyType IFrameSrv::s_CLOSED_SIG = "closed";
+const core::com::Signals::SignalKeyType IFrame::s_CLOSED_SIG = "closed";
 
-ui::base::container::fwContainer::wptr IFrameSrv::m_progressWidget =
+ui::base::container::fwContainer::wptr IFrame::m_progressWidget =
     std::weak_ptr< ui::base::container::fwContainer >();
 
-IFrameSrv::IFrameSrv() :
+IFrame::IFrame() :
     m_hasMenuBar(false),
     m_hasToolBar(false),
     m_closePolicy("exit")
 {
     m_sigClosed = newSignal< ClosedSignalType >(s_CLOSED_SIG);
 
-    newSlot(s_SET_VISIBLE_SLOT, &IFrameSrv::setVisible, this);
-    newSlot(s_SHOW_SLOT, &IFrameSrv::show, this);
-    newSlot(s_HIDE_SLOT, &IFrameSrv::hide, this);
+    newSlot(s_SET_VISIBLE_SLOT, &IFrame::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IFrame::show, this);
+    newSlot(s_HIDE_SLOT, &IFrame::hide, this);
 }
 
 //-----------------------------------------------------------------------------
 
-IFrameSrv::~IFrameSrv()
+IFrame::~IFrame()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::initialize()
+void IFrame::initialize()
 {
     // find gui configuration
     std::vector < ConfigurationType > vectGui    = m_configuration->find("gui");
@@ -135,7 +135,7 @@ void IFrameSrv::initialize()
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::create()
+void IFrame::create()
 {
     SLM_ASSERT("["+this->getID()+"' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
                "'configuring()' method.", m_frameLayoutManager);
@@ -160,15 +160,15 @@ void IFrameSrv::create()
 
     if (m_closePolicy == CLOSE_POLICY_EXIT)
     {
-        fct = std::bind( &ui::base::IFrameSrv::onCloseExit, this);
+        fct = std::bind( &ui::base::IFrame::onCloseExit, this);
     }
     else if (m_closePolicy == CLOSE_POLICY_NOTIFY)
     {
-        fct = std::bind( &ui::base::IFrameSrv::onCloseNotify, this);
+        fct = std::bind( &ui::base::IFrame::onCloseNotify, this);
     }
     else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
     {
-        fct = std::bind( &ui::base::IFrameSrv::onCloseMessage, this);
+        fct = std::bind( &ui::base::IFrame::onCloseMessage, this);
         auto app = ui::base::Application::New();
         app->setConfirm(true);
     }
@@ -198,7 +198,7 @@ void IFrameSrv::create()
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::destroy()
+void IFrame::destroy()
 {
     SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
 
@@ -235,7 +235,7 @@ void IFrameSrv::destroy()
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
+void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
 {
     SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'frame', actual: '"
                +frameConfig->getName()+ "'",
@@ -251,7 +251,7 @@ void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
+void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 {
     SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'menuBar', actual: '"
                +menuBarConfig->getName()+ "'",
@@ -267,7 +267,7 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
+void IFrame::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
     SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
                +toolBarConfig->getName()+ "'",
@@ -283,21 +283,21 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::onCloseExit()
+void IFrame::onCloseExit()
 {
     ui::base::Application::New()->exit(0);
 }
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::onCloseNotify()
+void IFrame::onCloseNotify()
 {
     m_sigClosed->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::onCloseMessage()
+void IFrame::onCloseMessage()
 {
     auto app = ui::base::Application::New();
     app->exit(0);
@@ -305,14 +305,14 @@ void IFrameSrv::onCloseMessage()
 
 //-----------------------------------------------------------------------------
 
-ui::base::container::fwContainer::sptr IFrameSrv::getProgressWidget()
+ui::base::container::fwContainer::sptr IFrame::getProgressWidget()
 {
     return m_progressWidget.lock();
 }
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::setVisible(bool isVisible)
+void IFrame::setVisible(bool isVisible)
 {
     ui::base::container::fwContainer::sptr container = m_frameLayoutManager->getFrame();
     container->setVisible(isVisible);
@@ -320,14 +320,14 @@ void IFrameSrv::setVisible(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::show()
+void IFrame::show()
 {
     this->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void IFrameSrv::hide()
+void IFrame::hide()
 {
     this->setVisible(false);
 }

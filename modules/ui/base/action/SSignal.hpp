@@ -24,7 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -44,16 +44,16 @@ namespace action
         <service type="::sight::modules::ui::base::action::SSignal" />
    @endcode
  *
- * See also sight::ui::base::IActionSrv::initialize for more configuration parameters.
- * @see IActionSrv::initialize
+ * See also sight::ui::base::IAction::initialize for more configuration parameters.
+ * @see IAction::initialize
  */
 
-class MODULE_UI_BASE_CLASS_API SSignal : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SSignal : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SSignal, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SSignal, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal

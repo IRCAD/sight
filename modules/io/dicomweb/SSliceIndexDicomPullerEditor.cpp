@@ -82,7 +82,7 @@ SSliceIndexDicomPullerEditor::~SSliceIndexDicomPullerEditor() noexcept
 
 void SSliceIndexDicomPullerEditor::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service modules::io::dicomweb::SPacsConfigurationInitializer must have "
@@ -127,7 +127,7 @@ void SSliceIndexDicomPullerEditor::configuring()
 
 void SSliceIndexDicomPullerEditor::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QHBoxLayout* layout = new QHBoxLayout();

@@ -150,7 +150,7 @@ protected:
 
     /**
      * @brief Configure the view
-     * @see sight::ui::base::IGuiContainerSrv::initialize()
+     * @see sight::ui::base::IGuiContainer::initialize()
      */
     virtual void configuring() override;
 

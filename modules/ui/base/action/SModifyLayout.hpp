@@ -28,7 +28,7 @@
 
 #include <boost/logic/tribool.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <vector>
 
@@ -40,12 +40,12 @@ namespace action
 /**
  * @brief This action is used to modify the layout configuration.
  */
-class MODULE_UI_BASE_CLASS_API SModifyLayout : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SModifyLayout : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SModifyLayout, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SModifyLayout, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**

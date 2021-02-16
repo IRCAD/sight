@@ -36,7 +36,7 @@ namespace sight::modules::debug
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::debug::action::MemoryInfo,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::MemoryInfo,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -90,21 +90,21 @@ void MemoryInfo::updating( )
 
 void MemoryInfo::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

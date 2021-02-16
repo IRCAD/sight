@@ -33,7 +33,7 @@ namespace sight::modules::ui::base
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SBooleanSlotCaller )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SBooleanSlotCaller )
 
 //-----------------------------------------------------------------------------
 

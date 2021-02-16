@@ -32,7 +32,7 @@
 #include <QQuickWindow>
 
 #include <ui/base/container/fwContainer.hpp>
-#include <ui/base/IFrameSrv.hpp>
+#include <ui/base/IFrame.hpp>
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
 

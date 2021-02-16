@@ -78,7 +78,7 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-           <service uid="toolbar2" type="::ui::base::IToolBarSrv"
+           <service uid="toolbar2" type="::ui::base::IToolBar"
      * impl="::sight::modules::ui::base::SToolBar"
      * autoConnect="no" >
                <gui>

@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <map>
 #include <set>
@@ -49,12 +49,12 @@ namespace action
        </service>
    @endcode
  */
-class MODULE_UI_BASE_CLASS_API SPushObject : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SPushObject : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SPushObject, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SPushObject, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SPushObject() noexcept;

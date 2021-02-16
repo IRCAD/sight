@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ui/base/IActionSrv.hpp"
+#include "ui/base/IAction.hpp"
 
 #include "ui/base/dialog/IMessageDialog.hpp"
 #include "ui/base/dialog/MessageDialog.hpp"
@@ -35,32 +35,32 @@
 namespace sight::ui::base
 {
 
-const core::com::Slots::SlotKeyType IActionSrv::s_SET_IS_ACTIVE_SLOT     = "setIsActive";
-const core::com::Slots::SlotKeyType IActionSrv::s_ACTIVATE_SLOT          = "activate";
-const core::com::Slots::SlotKeyType IActionSrv::s_DEACTIVATE_SLOT        = "deactivate";
-const core::com::Slots::SlotKeyType IActionSrv::s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
-const core::com::Slots::SlotKeyType IActionSrv::s_SET_EXECUTABLE_SLOT    = "setExecutable";
-const core::com::Slots::SlotKeyType IActionSrv::s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
-const core::com::Slots::SlotKeyType IActionSrv::s_SET_VISIBLE_SLOT       = "setVisible";
-const core::com::Slots::SlotKeyType IActionSrv::s_SHOW_SLOT              = "show";
-const core::com::Slots::SlotKeyType IActionSrv::s_HIDE_SLOT              = "hide";
+const core::com::Slots::SlotKeyType IAction::s_SET_IS_ACTIVE_SLOT     = "setIsActive";
+const core::com::Slots::SlotKeyType IAction::s_ACTIVATE_SLOT          = "activate";
+const core::com::Slots::SlotKeyType IAction::s_DEACTIVATE_SLOT        = "deactivate";
+const core::com::Slots::SlotKeyType IAction::s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+const core::com::Slots::SlotKeyType IAction::s_SET_EXECUTABLE_SLOT    = "setExecutable";
+const core::com::Slots::SlotKeyType IAction::s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
+const core::com::Slots::SlotKeyType IAction::s_SET_VISIBLE_SLOT       = "setVisible";
+const core::com::Slots::SlotKeyType IAction::s_SHOW_SLOT              = "show";
+const core::com::Slots::SlotKeyType IAction::s_HIDE_SLOT              = "hide";
 
-const core::com::Signals::SignalKeyType IActionSrv::s_ENABLED_SIG   = "enabled";
-const core::com::Signals::SignalKeyType IActionSrv::s_DISABLED_SIG  = "disabled";
-const core::com::Signals::SignalKeyType IActionSrv::s_CHECKED_SIG   = "checked";
-const core::com::Signals::SignalKeyType IActionSrv::s_UNCHECKED_SIG = "unchecked";
+const core::com::Signals::SignalKeyType IAction::s_ENABLED_SIG   = "enabled";
+const core::com::Signals::SignalKeyType IAction::s_DISABLED_SIG  = "disabled";
+const core::com::Signals::SignalKeyType IAction::s_CHECKED_SIG   = "checked";
+const core::com::Signals::SignalKeyType IAction::s_UNCHECKED_SIG = "unchecked";
 
-IActionSrv::IActionSrv()
+IAction::IAction()
 {
-    newSlot(s_SET_IS_ACTIVE_SLOT, &IActionSrv::setIsActive, this);
-    newSlot(s_ACTIVATE_SLOT, &IActionSrv::activate, this);
-    newSlot(s_DEACTIVATE_SLOT, &IActionSrv::deactivate, this);
-    newSlot(s_SET_IS_EXECUTABLE_SLOT, &IActionSrv::setIsExecutable, this);
-    newSlot(s_SET_EXECUTABLE_SLOT, &IActionSrv::setExecutable, this);
-    newSlot(s_SET_INEXECUTABLE_SLOT, &IActionSrv::setInexecutable, this);
-    newSlot(s_SET_VISIBLE_SLOT, &IActionSrv::setVisible, this);
-    newSlot(s_SHOW_SLOT, &IActionSrv::show, this);
-    newSlot(s_HIDE_SLOT, &IActionSrv::hide, this);
+    newSlot(s_SET_IS_ACTIVE_SLOT, &IAction::setIsActive, this);
+    newSlot(s_ACTIVATE_SLOT, &IAction::activate, this);
+    newSlot(s_DEACTIVATE_SLOT, &IAction::deactivate, this);
+    newSlot(s_SET_IS_EXECUTABLE_SLOT, &IAction::setIsExecutable, this);
+    newSlot(s_SET_EXECUTABLE_SLOT, &IAction::setExecutable, this);
+    newSlot(s_SET_INEXECUTABLE_SLOT, &IAction::setInexecutable, this);
+    newSlot(s_SET_VISIBLE_SLOT, &IAction::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IAction::show, this);
+    newSlot(s_HIDE_SLOT, &IAction::hide, this);
 
     m_sigEnabled   = newSignal< EnabledSignalType >(s_ENABLED_SIG);
     m_sigDisabled  = newSignal< DisabledSignalType >(s_DISABLED_SIG);
@@ -70,13 +70,13 @@ IActionSrv::IActionSrv()
 
 //-----------------------------------------------------------------------------
 
-IActionSrv::~IActionSrv()
+IAction::~IAction()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::initialize()
+void IAction::initialize()
 {
     m_registrar = ui::base::registrar::ActionRegistrar::New(this->getID());
 
@@ -160,14 +160,14 @@ void IActionSrv::initialize()
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::actionServiceStopping()
+void IAction::actionServiceStopping()
 {
     this->m_registrar->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::actionServiceStarting()
+void IAction::actionServiceStarting()
 {
     this->m_registrar->actionServiceStarting();
     this->setIsActive(m_isActive);
@@ -175,7 +175,7 @@ void IActionSrv::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::setIsActive(bool isActive)
+void IAction::setIsActive(bool isActive)
 {
     m_isActive = isActive;
 
@@ -192,28 +192,28 @@ void IActionSrv::setIsActive(bool isActive)
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::activate()
+void IAction::activate()
 {
     this->setIsActive(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::deactivate()
+void IAction::deactivate()
 {
     this->setIsActive(false);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getIsActive() const
+bool IAction::getIsActive() const
 {
     return m_isActive;
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::setIsExecutable(bool isExecutable)
+void IAction::setIsExecutable(bool isExecutable)
 {
     m_isExecutable = isExecutable;
 
@@ -230,28 +230,28 @@ void IActionSrv::setIsExecutable(bool isExecutable)
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::setExecutable()
+void IAction::setExecutable()
 {
     this->setIsExecutable(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::setInexecutable()
+void IAction::setInexecutable()
 {
     this->setIsExecutable(false);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getIsExecutable() const
+bool IAction::getIsExecutable() const
 {
     return m_isExecutable;
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::setVisible(bool isVisible)
+void IAction::setVisible(bool isVisible)
 {
     m_isVisible = isVisible;
     this->m_registrar->actionServiceSetVisible(isVisible);
@@ -259,28 +259,28 @@ void IActionSrv::setVisible(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::show()
+void IAction::show()
 {
     this->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void IActionSrv::hide()
+void IAction::hide()
 {
     this->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::isVisible() const
+bool IAction::isVisible() const
 {
     return m_isVisible;
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::getActiveStateValue() const
+bool IAction::getActiveStateValue() const
 {
     FW_DEPRECATED_MSG("`getActiveStateValue` is deprecated, please use `isInverted` instead.", "21.0");
     return this->isInverted();
@@ -288,14 +288,14 @@ bool IActionSrv::getActiveStateValue() const
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::isInverted() const
+bool IAction::isInverted() const
 {
     return m_isInverted;
 }
 
 //-----------------------------------------------------------------------------
 
-bool IActionSrv::confirmAction()
+bool IAction::confirmAction()
 {
     bool actionIsConfirmed = true;
 

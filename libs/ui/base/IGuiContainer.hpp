@@ -118,12 +118,12 @@ class ISlideViewBuilder;
  *
  *
  */
-class UI_BASE_CLASS_API IGuiContainerSrv : public service::IService
+class UI_BASE_CLASS_API IGuiContainer : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IGuiContainerSrv, service::IService)
+    fwCoreServiceMacro(IGuiContainer, service::IService)
 
     UI_BASE_API SPTR(ui::base::container::fwContainer) getContainer();
 
@@ -131,9 +131,9 @@ public:
 
 protected:
 
-    UI_BASE_API IGuiContainerSrv();
+    UI_BASE_API IGuiContainer();
 
-    UI_BASE_API virtual ~IGuiContainerSrv();
+    UI_BASE_API virtual ~IGuiContainer();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 

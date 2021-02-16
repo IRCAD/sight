@@ -55,14 +55,14 @@ SAddDistance::~SAddDistance() noexcept
 
 void SAddDistance::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SAddDistance::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void SAddDistance::updating()
 
 void SAddDistance::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

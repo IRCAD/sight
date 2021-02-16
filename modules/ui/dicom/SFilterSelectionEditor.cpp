@@ -72,7 +72,7 @@ void SFilterSelectionEditor::info(std::ostream& _sstream )
 
 void SFilterSelectionEditor::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void SFilterSelectionEditor::starting()
     data::Vector::csptr dataVector = this->getInput< data::Vector >("selection");
     SLM_ASSERT("Vector object should not be null.", dataVector);
 
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QVBoxLayout* mainLayout = new QVBoxLayout();

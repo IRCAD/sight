@@ -38,7 +38,7 @@ namespace sight::modules::debug
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::debug::action::fwMetrics,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::fwMetrics,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -81,21 +81,21 @@ void fwMetrics::updating()
 
 void fwMetrics::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void fwMetrics::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

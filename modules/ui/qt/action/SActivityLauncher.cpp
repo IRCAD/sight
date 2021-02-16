@@ -113,7 +113,7 @@ void SActivityLauncher::stopping()
 
 void SActivityLauncher::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
     typedef service::IService::ConfigType ConfigType;
 
     m_parameters.clear();

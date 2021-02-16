@@ -441,7 +441,7 @@ DumpEditor::~DumpEditor() noexcept
 
 void DumpEditor::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
@@ -531,7 +531,7 @@ void DumpEditor::stopping()
 
 void DumpEditor::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 }
 
 //------------------------------------------------------------------------------

@@ -29,7 +29,7 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -44,11 +44,11 @@ namespace action
      slot->asyncRun(timestamp);
    @endcode
  */
-class MODULE_UI_BASE_CLASS_API STimestampSlotCaller : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API STimestampSlotCaller : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(STimestampSlotCaller, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(STimestampSlotCaller, ::sight::ui::base::IAction)
 
     /// Constructor
     MODULE_UI_BASE_API STimestampSlotCaller();
@@ -70,7 +70,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::STimestampSlotCaller"
+        <service uid="..." type="::ui::base::IAction" impl="::sight::modules::ui::base::STimestampSlotCaller"
      * autoConnect="no">
             <slots>
               <slot>hasSlotsId/slotKey</slot>

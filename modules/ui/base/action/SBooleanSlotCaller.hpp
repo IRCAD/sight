@@ -29,7 +29,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <vector>
 
@@ -51,7 +51,7 @@ class MODULE_UI_BASE_CLASS_API SBooleanSlotCaller : public modules::ui::base::ac
 
 public:
 
-    fwCoreServiceMacro(SBooleanSlotCaller, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SBooleanSlotCaller, ::sight::ui::base::IAction)
 
     /**
      * @brief Constructor. Do nothing.

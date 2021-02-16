@@ -44,7 +44,7 @@ namespace sight::modules::ui::base::viz
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::viz::action::CrossTypeAction,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::viz::action::CrossTypeAction,
                          ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
@@ -68,21 +68,21 @@ CrossTypeAction::~CrossTypeAction() noexcept
 
 void CrossTypeAction::starting()
 {
-    sight::ui::base::IActionSrv::actionServiceStarting();
+    sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void CrossTypeAction::stopping()
 {
-    sight::ui::base::IActionSrv::actionServiceStopping();
+    sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void CrossTypeAction::configuring()
 {
-    sight::ui::base::IActionSrv::initialize();
+    sight::ui::base::IAction::initialize();
 
     if( this->m_configuration->size() > 0 )
     {

@@ -52,7 +52,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::filter::mesh::action::SMeshCreation )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::filter::mesh::action::SMeshCreation )
 
 //-----------------------------------------------------------------------------
 

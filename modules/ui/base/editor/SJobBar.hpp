@@ -30,7 +30,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 #include <ui/base/IDialogEditor.hpp>
 
 #include <set>

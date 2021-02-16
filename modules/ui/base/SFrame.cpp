@@ -29,7 +29,7 @@
 namespace sight::modules::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IFrameSrv, ::sight::modules::ui::base::SFrame )
+fwServicesRegisterMacro( ::sight::ui::base::IFrame, ::sight::modules::ui::base::SFrame )
 
 SFrame::SFrame() noexcept
 {

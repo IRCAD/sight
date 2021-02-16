@@ -37,7 +37,7 @@ namespace sight::modules::ui::debug
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::debug::action::ComponentsTree,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::debug::action::ComponentsTree,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -99,14 +99,14 @@ void ComponentsTree::updating( )
 
 void ComponentsTree::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ComponentsTree::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 
     QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
@@ -127,7 +127,7 @@ void ComponentsTree::stopping()
     delete m_treeContainer;
     delete m_dialog;
 
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

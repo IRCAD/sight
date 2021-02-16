@@ -24,7 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <filesystem>
 
@@ -49,10 +49,10 @@ namespace action
  * @subsection Configuration Configuration:
  * - \b dialogTitle (optional): title of the dialog.
  */
-class MODULE_UI_BASE_CLASS_API SFolderSelector : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SFolderSelector : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SFolderSelector, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SFolderSelector, sight::ui::base::IAction)
 
     /**
      * @name Signals API

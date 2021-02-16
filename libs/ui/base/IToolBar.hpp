@@ -34,12 +34,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the toolBar.
  */
-class UI_BASE_CLASS_API IToolBarSrv : public service::IService
+class UI_BASE_CLASS_API IToolBar : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IToolBarSrv, service::IService)
+    fwCoreServiceMacro(IToolBar, service::IService)
 
     /// Method called when an action service is stopping
     UI_BASE_API void actionServiceStopping(std::string actionSrvSID);
@@ -58,9 +58,9 @@ public:
 
 protected:
 
-    UI_BASE_API IToolBarSrv();
+    UI_BASE_API IToolBar();
 
-    UI_BASE_API virtual ~IToolBarSrv();
+    UI_BASE_API virtual ~IToolBar();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="::ui::base::IToolBarSrv" impl="::sight::modules::ui::base::SToolBar"
+       <service uid="toolbar2" type="::ui::base::IToolBar" impl="::sight::modules::ui::base::SToolBar"
      * autoConnect="no"
      *>
            <gui>
@@ -101,8 +101,8 @@ protected:
      *     - \b style: (optional, default=ToolButtonIconOnly):  describe the style of the tool button (possible values:
      * ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon/ToolButtonFollowStyle )
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
-     *   - \<menuItem\> represents IActionSrv
-     *   - \<menu\> represents IMenuSrv
+     *   - \<menuItem\> represents IAction
+     *   - \<menu\> represents IMenu
      *   - \<editor\> represents container service (IEditor, IView, ...)
      *
      *   @warning

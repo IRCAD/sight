@@ -41,7 +41,7 @@ namespace action
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::viz::action::SSnapshot,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::viz::action::SSnapshot,
                          ::sight::data::Object )
 
 SSnapshot::SSnapshot() noexcept
@@ -59,21 +59,21 @@ SSnapshot::~SSnapshot() noexcept
 
 void SSnapshot::starting()
 {
-    sight::ui::base::IActionSrv::actionServiceStarting();
+    sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::stopping()
 {
-    sight::ui::base::IActionSrv::actionServiceStopping();
+    sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
 
 void SSnapshot::configuring()
 {
-    sight::ui::base::IActionSrv::initialize();
+    sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------

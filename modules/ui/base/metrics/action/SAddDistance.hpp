@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base::metrics
 {
@@ -46,13 +46,13 @@ namespace action
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: Image containing the distance field.
  */
-class MODULE_UI_BASE_CLASS_API SAddDistance final : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SAddDistance final : public ::sight::ui::base::IAction
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SAddDistance, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SAddDistance, sight::ui::base::IAction)
 
     /// Creates the service.
     MODULE_UI_BASE_API SAddDistance() noexcept;

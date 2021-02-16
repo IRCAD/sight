@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/base/config.hpp"
-#include "ui/base/IGuiContainerSrv.hpp"
+#include "ui/base/IGuiContainer.hpp"
 
 #include <activity/IActivityLauncher.hpp>
 #include <activity/registry/Activity.hpp>
@@ -67,12 +67,12 @@ namespace view
  *          frontal) or define a camp path (ex. \@values.myImage). The root object of the sesh@ path if the
  *          composite contained in the ActivitySeries.
  */
-class UI_BASE_CLASS_API IActivityView : public ui::base::IGuiContainerSrv,
+class UI_BASE_CLASS_API IActivityView : public ui::base::IGuiContainer,
                                         public activity::IActivityLauncher
 {
 public:
 
-    fwCoreClassMacro(IActivityView, ui::base::IGuiContainerSrv)
+    fwCoreClassMacro(IActivityView, ui::base::IGuiContainer)
 
     UI_BASE_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
     UI_BASE_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;

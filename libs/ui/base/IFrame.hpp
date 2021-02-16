@@ -50,7 +50,7 @@ namespace sight::ui::base
  *
  * Example of configuration
  * @code{.xml}
-   <service uid="mainFrame" type="::ui::base::IFrameSrv" impl="::sight::modules::ui::base::SFrame"
+   <service uid="mainFrame" type="::ui::base::IFrame" impl="::sight::modules::ui::base::SFrame"
  * autoConnect="no">
      <window onclose="notify" />
      <gui>
@@ -83,12 +83,12 @@ namespace sight::ui::base
  * - The menuBar section isn't mandatory.
 
  */
-class UI_BASE_CLASS_API IFrameSrv : public service::IService
+class UI_BASE_CLASS_API IFrame : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IFrameSrv, service::IService)
+    fwCoreServiceMacro(IFrame, service::IService)
 
     /// Get widget defined for progress bar
     UI_BASE_API static ui::base::container::fwContainer::sptr getProgressWidget();
@@ -123,9 +123,9 @@ public:
 
 protected:
 
-    UI_BASE_API IFrameSrv();
+    UI_BASE_API IFrame();
 
-    UI_BASE_API virtual ~IFrameSrv();
+    UI_BASE_API virtual ~IFrame();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     /**

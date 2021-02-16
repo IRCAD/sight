@@ -28,7 +28,7 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::core::jobs
 {
@@ -58,11 +58,11 @@ namespace sight::modules::io::dicom
  * @subsection In-Out In-Out:
  * - \b target [sight::data::SeriesDB]: Destination SeriesDB.
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base::IActionSrv
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(SDicomSeriesConverter, sight::ui::base::IActionSrv )
+    fwCoreServiceMacro(SDicomSeriesConverter, sight::ui::base::IAction )
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 

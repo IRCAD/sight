@@ -24,7 +24,7 @@
 
 #include "modules/filter/mesh/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::filter::mesh
 {
@@ -58,12 +58,12 @@ namespace action
  * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)..
  */
-class MODULE_FILTER_MESH_CLASS_API SMeshCreation : public ::sight::ui::base::IActionSrv
+class MODULE_FILTER_MESH_CLASS_API SMeshCreation : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SMeshCreation, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SMeshCreation, ::sight::ui::base::IAction)
 
     MODULE_FILTER_MESH_API SMeshCreation() noexcept;
 

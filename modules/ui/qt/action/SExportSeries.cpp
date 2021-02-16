@@ -46,7 +46,7 @@ namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::SExportSeries,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::qt::action::SExportSeries,
                          ::sight::data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
@@ -83,7 +83,7 @@ service::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 
 void SExportSeries::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------

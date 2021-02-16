@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/base/config.hpp"
-#include "ui/base/IGuiContainerSrv.hpp"
+#include "ui/base/IGuiContainer.hpp"
 
 #include <core/tools/Failed.hpp>
 

@@ -59,7 +59,7 @@ SMesh::~SMesh() noexcept
 
 void SMesh::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -78,7 +78,7 @@ void SMesh::configuring()
 
 void SMesh::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());

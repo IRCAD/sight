@@ -26,7 +26,7 @@
 
 #include <data/TransformationMatrix3D.hpp>
 
-#include <ui/base/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainer.hpp>
 
 namespace sight::modules::viz::sample
 {
@@ -50,13 +50,13 @@ namespace sight::modules::viz::sample
  * @subsection Input Input
  * - \b mesh [sight::data::Mesh]: mesh to display.
  */
-class MODULE_VIZ_SAMPLE_CLASS_API SMesh : public sight::ui::base::IGuiContainerSrv
+class MODULE_VIZ_SAMPLE_CLASS_API SMesh : public sight::ui::base::IGuiContainer
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMesh, sight::ui::base::IGuiContainerSrv)
+    fwCoreServiceMacro(SMesh, sight::ui::base::IGuiContainer)
 
     MODULE_VIZ_SAMPLE_API static const core::com::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
 

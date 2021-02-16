@@ -75,14 +75,14 @@ void SQueryEditor::configuring()
         throw core::tools::Failed("'server' element not found");
     }
 
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SQueryEditor::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main Widget

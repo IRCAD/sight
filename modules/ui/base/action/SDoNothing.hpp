@@ -26,7 +26,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -37,12 +37,12 @@ namespace action
  * @brief   This action does nothing.
  * @deprecated use SDefault instead
  */
-class MODULE_UI_BASE_CLASS_API SDoNothing : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SDoNothing : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SDoNothing, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SDoNothing, ::sight::ui::base::IAction)
 
     /**
      * @brief Constructor. Do nothing.

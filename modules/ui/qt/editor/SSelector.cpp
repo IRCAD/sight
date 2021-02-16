@@ -94,7 +94,7 @@ SSelector::~SSelector() noexcept
 
 void SSelector::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 
     // Deprecated configuration.
 
@@ -231,7 +231,7 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );

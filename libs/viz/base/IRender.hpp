@@ -28,7 +28,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainer.hpp>
 
 namespace sight::viz::base
 {
@@ -45,12 +45,12 @@ namespace sight::viz::base
  *
  */
 
-class VIZ_BASE_CLASS_API IRender : public ui::base::IGuiContainerSrv
+class VIZ_BASE_CLASS_API IRender : public ui::base::IGuiContainer
 {
 
 public:
 
-    fwCoreServiceMacro(IRender, ui::base::IGuiContainerSrv)
+    fwCoreServiceMacro(IRender, ui::base::IGuiContainer)
 
 protected:
 

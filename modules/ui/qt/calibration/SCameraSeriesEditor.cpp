@@ -59,7 +59,7 @@ SCameraSeriesEditor::SCameraSeriesEditor() noexcept :
 
 void SCameraSeriesEditor::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 
     service::IService::ConfigType config = this->getConfigTree();
     m_camIndex = config.get<size_t>("index", 1);
@@ -69,7 +69,7 @@ void SCameraSeriesEditor::configuring()
 
 void SCameraSeriesEditor::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);

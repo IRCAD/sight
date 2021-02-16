@@ -42,7 +42,7 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::debug::action::MemoryConsumption,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::MemoryConsumption,
                          ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ void MemoryConsumption::updating()
 
 void MemoryConsumption::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 
     core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
@@ -129,13 +129,13 @@ void MemoryConsumption::configuring()
 
 void MemoryConsumption::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 void MemoryConsumption::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

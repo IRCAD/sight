@@ -28,7 +28,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <vector>
 
@@ -52,12 +52,12 @@ namespace action
  * - \b sync : Determines whether slots are called asynchronously ("false") or synchronously ("true")
  */
 
-class MODULE_UI_BASE_CLASS_API SSlotCaller : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SSlotCaller : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SSlotCaller, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SSlotCaller, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;

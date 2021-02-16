@@ -43,7 +43,7 @@
 #include <QSharedPointer>
 #include <QtQml>
 
-#include <ui/base/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainer.hpp>
 #include <ui/qml/App.hpp>
 #include <ui/qml/IQmlAppManager.hpp>
 #include <ui/qml/QmlEngine.hpp>

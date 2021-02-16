@@ -75,7 +75,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::ShowHelpContents,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::qt::action::ShowHelpContents,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void ShowHelpContents::configuring()
      * .qhcp/.qhc (source/binary): Contains information that is used to customize
      *                             the appearance and available features of Qt Assistant.
      */
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
     if( m_configuration->findConfigurationElement("filename") )
     {
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
@@ -162,14 +162,14 @@ void ShowHelpContents::updating()
 
 void ShowHelpContents::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void ShowHelpContents::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -64,7 +64,7 @@ ImageTransparency::~ImageTransparency() noexcept
 
 void ImageTransparency::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
@@ -113,7 +113,7 @@ void ImageTransparency::stopping()
 
 void ImageTransparency::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 
     //<shortcut value="X"/>
     std::vector < ConfigurationType > vectCfg = m_configuration->find("shortcut");

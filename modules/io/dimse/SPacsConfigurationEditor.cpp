@@ -65,7 +65,7 @@ SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept
 
 void SPacsConfigurationEditor::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 
     const ConfigType configType = this->getConfigTree();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -86,7 +86,7 @@ void SPacsConfigurationEditor::starting()
     const auto pacsConfiguration = this->getLockedInOut< const sight::io::dimse::data::PacsConfiguration >(
         s_CONFIG_INOUT);
 
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     QGridLayout* gridLayout = new QGridLayout();

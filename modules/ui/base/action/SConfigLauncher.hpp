@@ -32,7 +32,7 @@
 
 #include <service/helper/ConfigLauncher.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -73,12 +73,12 @@ namespace action
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  */
-class MODULE_UI_BASE_CLASS_API SConfigLauncher : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SConfigLauncher : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SConfigLauncher, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SConfigLauncher, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SConfigLauncher() noexcept;
@@ -119,7 +119,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::sight::modules::ui::base::action::SConfigLauncher" type="::ui::base::IActionSrv">
+       <service impl="::sight::modules::ui::base::action::SConfigLauncher" type="::ui::base::IAction">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>

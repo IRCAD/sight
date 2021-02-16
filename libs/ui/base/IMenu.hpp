@@ -34,12 +34,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the menu.
  */
-class UI_BASE_CLASS_API IMenuSrv : public service::IService
+class UI_BASE_CLASS_API IMenu : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IMenuSrv, service::IService)
+    fwCoreServiceMacro(IMenu, service::IService)
 
     /// Method called when an action service is stopping
     UI_BASE_API void actionServiceStopping(std::string actionSrvSID);
@@ -58,9 +58,9 @@ public:
 
 protected:
 
-    UI_BASE_API IMenuSrv();
+    UI_BASE_API IMenu();
 
-    UI_BASE_API virtual ~IMenuSrv();
+    UI_BASE_API virtual ~IMenu();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-        <service uid="myMenu" type="::ui::base::IMenuSrv" impl="::sight::modules::ui::base::SMenu"
+        <service uid="myMenu" type="::ui::base::IMenu" impl="::sight::modules::ui::base::SMenu"
      * autoConnect="no" >
             <gui>
                 <layout hideAction="false">
@@ -96,8 +96,8 @@ protected:
      *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
      *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
-     *   - \<menuItem\> represents IActionSrv
-     *   - \<menu\> represents IMenuSrv
+     *   - \<menuItem\> represents IAction
+     *   - \<menu\> represents IMenu
      *
      * @warning
      * - The number of item in the gui section must be <b> EQUAL </b> to the registry section.

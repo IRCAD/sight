@@ -33,7 +33,7 @@
 
 #include <ui/base/container/fwContainer.hpp>
 #include <ui/base/GuiRegistry.hpp>
-#include <ui/base/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainer.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <memory>
@@ -90,7 +90,7 @@ void SSignalShortcut::starting()
         if(sidExists)
         {
             service::IService::sptr service = service::get( m_sid );
-            auto containerSrv               = sight::ui::base::IGuiContainerSrv::dynamicCast(service);
+            auto containerSrv               = sight::ui::base::IGuiContainer::dynamicCast(service);
             fwc = containerSrv->getContainer();
         }
         else

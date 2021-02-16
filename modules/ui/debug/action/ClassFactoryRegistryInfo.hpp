@@ -28,7 +28,7 @@
 #include <QDialog>
 #include <QTreeWidget>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::debug
 {
@@ -37,12 +37,12 @@ namespace action
 /**
  * @brief   Implements an action to show services registered in factory
  */
-class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public ::sight::ui::base::IActionSrv
+class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(ClassFactoryRegistryInfo, sight::ui::base::IActionSrv )
+    fwCoreServiceMacro(ClassFactoryRegistryInfo, sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_UI_DEBUG_API ClassFactoryRegistryInfo() noexcept;

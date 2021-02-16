@@ -26,7 +26,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -36,12 +36,12 @@ namespace action
 /**
  * @brief  Defines the default action to have a simple action button.
  */
-class MODULE_UI_BASE_CLASS_API SDefault : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SDefault : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SDefault, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SDefault, ::sight::ui::base::IAction)
 
     /**
      * @brief Constructor. Do nothing.

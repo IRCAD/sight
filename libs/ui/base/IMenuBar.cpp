@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ui/base/IMenuBarSrv.hpp"
+#include "ui/base/IMenuBar.hpp"
 
 #include <core/base.hpp>
 #include <core/thread/Worker.hpp>
@@ -33,20 +33,20 @@
 namespace sight::ui::base
 {
 
-IMenuBarSrv::IMenuBarSrv() :
+IMenuBar::IMenuBar() :
     m_hideMenus(false)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-IMenuBarSrv::~IMenuBarSrv()
+IMenuBar::~IMenuBar()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::initialize()
+void IMenuBar::initialize()
 {
 
     m_registrar = ui::base::registrar::MenuBarRegistrar::New(this->getID());
@@ -79,7 +79,7 @@ void IMenuBarSrv::initialize()
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::create()
+void IMenuBar::create()
 {
     ui::base::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
@@ -94,7 +94,7 @@ void IMenuBarSrv::create()
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::destroy()
+void IMenuBar::destroy()
 {
     m_registrar->unmanage();
 
@@ -106,7 +106,7 @@ void IMenuBarSrv::destroy()
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
+void IMenuBar::menuServiceStopping(std::string menuSrvSID)
 {
     ui::base::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
@@ -129,7 +129,7 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
+void IMenuBar::menuServiceStarting(std::string menuSrvSID)
 {
     ui::base::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
@@ -151,7 +151,7 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
+void IMenuBar::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     SLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
                layoutConfig->getName() == "layout");

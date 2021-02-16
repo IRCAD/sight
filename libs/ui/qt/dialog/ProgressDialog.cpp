@@ -27,7 +27,7 @@
 #include <QPaintEvent>
 
 #include <ui/base/container/fwContainer.hpp>
-#include <ui/base/IFrameSrv.hpp>
+#include <ui/base/IFrame.hpp>
 #include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::dialog::ProgressDialog, ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY );
@@ -48,8 +48,8 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
     m_pmainWindow( NULL )
 {
 
-    // Use progress widget defined by IFrameSrv
-    ui::base::container::fwContainer::sptr progressWidget = ui::base::IFrameSrv::getProgressWidget();
+    // Use progress widget defined by IFrame
+    ui::base::container::fwContainer::sptr progressWidget = ui::base::IFrame::getProgressWidget();
     QWidget* activeWindow                                 =
         ui::qt::container::QtContainer::dynamicCast( progressWidget )->getQtContainer();
     m_pmainWindow = qobject_cast< QMainWindow* >( activeWindow );

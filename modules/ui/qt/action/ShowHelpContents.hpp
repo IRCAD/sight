@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <filesystem>
 
@@ -36,10 +36,10 @@ namespace action
 /**
  * @brief   This action show the help contents.
  */
-class MODULE_UI_QT_CLASS_API ShowHelpContents : public ::sight::ui::base::IActionSrv
+class MODULE_UI_QT_CLASS_API ShowHelpContents : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(ShowHelpContents, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(ShowHelpContents, sight::ui::base::IAction)
     MODULE_UI_QT_API ShowHelpContents() noexcept;
 
     MODULE_UI_QT_API virtual ~ShowHelpContents() noexcept;
@@ -51,7 +51,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="::sight::modules::ui::qt::ui::action::ShowHelpContents" type="::ui::base::IActionSrv">
+       <service impl="::sight::modules::ui::qt::ui::action::ShowHelpContents" type="::ui::base::IAction">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

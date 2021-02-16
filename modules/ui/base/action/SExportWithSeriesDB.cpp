@@ -43,7 +43,7 @@ namespace sight::modules::ui::base
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SExportWithSeriesDB,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SExportWithSeriesDB,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -77,7 +77,7 @@ void SExportWithSeriesDB::info(std::ostream& _sstream )
 
 void SExportWithSeriesDB::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("IOSelectorSrvConfig");
     if(!vectConfig.empty())
     {
@@ -135,7 +135,7 @@ void SExportWithSeriesDB::updating( )
 
 void SExportWithSeriesDB::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 
     data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
     SLM_FATAL_IF( "The associated object must be a data::Series.", !series);
@@ -145,7 +145,7 @@ void SExportWithSeriesDB::starting()
 
 void SExportWithSeriesDB::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

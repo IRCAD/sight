@@ -48,7 +48,7 @@ SImage::~SImage() noexcept
 
 void SImage::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 
     const auto config = this->getConfigTree();
 
@@ -67,7 +67,7 @@ void SImage::configuring()
 
 void SImage::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer());

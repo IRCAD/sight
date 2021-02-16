@@ -23,7 +23,7 @@
 #include "ui/base/registrar/MenuRegistrar.hpp"
 
 #include "ui/base/GuiRegistry.hpp"
-#include "ui/base/IActionSrv.hpp"
+#include "ui/base/IAction.hpp"
 
 #include <core/tools/fwID.hpp>
 

@@ -36,12 +36,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the menu items.
  */
-class UI_BASE_CLASS_API IActionSrv : public ::sight::service::IService
+class UI_BASE_CLASS_API IAction : public ::sight::service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IActionSrv, service::IService)
+    fwCoreServiceMacro(IAction, service::IService)
     fwCoreAllowSharedFromThis();
 
     /**
@@ -162,9 +162,9 @@ public:
 
 protected:
 
-    UI_BASE_API IActionSrv();
+    UI_BASE_API IAction();
 
-    UI_BASE_API virtual ~IActionSrv();
+    UI_BASE_API virtual ~IAction();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -223,7 +223,7 @@ private:
 class LockAction
 {
 public:
-    LockAction(IActionSrv::wptr action) :
+    LockAction(IAction::wptr action) :
         m_action(action)
     {
         m_action.lock()->setIsExecutable(false);
@@ -233,7 +233,7 @@ public:
         m_action.lock()->setIsExecutable(true);
     }
 private:
-    IActionSrv::wptr m_action;
+    IAction::wptr m_action;
 };
 
 //-----------------------------------------------------------------------------

@@ -28,7 +28,7 @@
 #include <QSize>
 #include <QUrl>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 #include <filesystem>
 
@@ -42,12 +42,12 @@ namespace action
  * @brief   This action show the about frame.
  */
 class MODULE_UI_QT_CLASS_API SShowAbout : public QObject,
-                                          public ::sight::ui::base::IActionSrv
+                                          public ::sight::ui::base::IAction
 {
 
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SShowAbout, sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SShowAbout, sight::ui::base::IAction)
 
     /**
      * @name Constructor/Destructor
@@ -62,7 +62,7 @@ protected:
      *
      * XML configuration sample:
        @code{.xml}
-       <service impl="::sight::modules::ui::qt::action::SShowAbout" type="::ui::base::IActionSrv">
+       <service impl="::sight::modules::ui::qt::action::SShowAbout" type="::ui::base::IAction">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />

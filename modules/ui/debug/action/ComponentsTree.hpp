@@ -29,7 +29,7 @@
 #include <QPointer>
 #include <QTreeWidget>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::debug
 {
@@ -39,12 +39,12 @@ namespace action
 /**
  * @brief  Implements an action that show module information.
  */
-class MODULE_UI_DEBUG_CLASS_API ComponentsTree : public ::sight::ui::base::IActionSrv
+class MODULE_UI_DEBUG_CLASS_API ComponentsTree : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(ComponentsTree, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(ComponentsTree, ::sight::ui::base::IAction)
 
     /// Does nothing
     MODULE_UI_DEBUG_API ComponentsTree() noexcept;

@@ -46,7 +46,7 @@ namespace sight::modules::ui::qt
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::qt::action::SShowAbout,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::qt::action::SShowAbout,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void SShowAbout::info(std::ostream& _sstream )
 
 void SShowAbout::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 
     typedef SPTR (core::runtime::ConfigurationElement) ConfigurationElement;
 
@@ -161,14 +161,14 @@ void SShowAbout::updating( )
 
 void SShowAbout::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowAbout::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

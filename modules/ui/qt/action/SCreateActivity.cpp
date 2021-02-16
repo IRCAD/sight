@@ -95,7 +95,7 @@ void SCreateActivity::stopping()
 
 void SCreateActivity::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
     typedef service::IService::ConfigType ConfigType;
 
     const service::IService::ConfigType srvconfig = this->getConfigTree();

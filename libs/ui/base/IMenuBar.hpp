@@ -35,12 +35,12 @@ namespace sight::ui::base
 /**
  * @brief   Defines the service interface managing the menu bar.
  */
-class UI_BASE_CLASS_API IMenuBarSrv : public service::IService
+class UI_BASE_CLASS_API IMenuBar : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IMenuBarSrv, service::IService)
+    fwCoreServiceMacro(IMenuBar, service::IService)
 
     /// Method called when a menu service is stopping
     UI_BASE_API void menuServiceStopping(std::string menuSrvSID);
@@ -50,9 +50,9 @@ public:
 
 protected:
 
-    UI_BASE_API IMenuBarSrv();
+    UI_BASE_API IMenuBar();
 
-    UI_BASE_API virtual ~IMenuBarSrv();
+    UI_BASE_API virtual ~IMenuBar();
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -61,7 +61,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::SMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBar" impl="::sight::modules::ui::base::SMenuBar"
      * autoConnect="no"
      *>
           <gui>

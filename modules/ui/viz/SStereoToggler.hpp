@@ -28,7 +28,7 @@
 
 #include <viz/ogre/Layer.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::viz
 {
@@ -53,11 +53,11 @@ namespace sight::modules::ui::viz
  * interlaced image pairs.
  *
  */
-class MODULE_UI_VIZ_CLASS_API SStereoToggler : public ::sight::ui::base::IActionSrv
+class MODULE_UI_VIZ_CLASS_API SStereoToggler : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(SStereoToggler, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SStereoToggler, ::sight::ui::base::IAction)
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoToggler();

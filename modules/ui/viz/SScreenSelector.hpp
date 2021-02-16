@@ -26,7 +26,7 @@
 
 #include <core/com/Signals.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::viz
 {
@@ -52,11 +52,11 @@ namespace sight::modules::ui::viz
  *   - \b current: select the screen on which the application is currently displayed.
  *   - \b neighbor: select a neighboring screen if there is one.
  */
-class MODULE_UI_VIZ_CLASS_API SScreenSelector : public ::sight::ui::base::IActionSrv
+class MODULE_UI_VIZ_CLASS_API SScreenSelector : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(SScreenSelector, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SScreenSelector, ::sight::ui::base::IAction)
 
     /// Constructor.
     MODULE_UI_VIZ_API SScreenSelector();

@@ -35,7 +35,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SSignal )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SSignal )
 
 static const core::com::Signals::SignalKeyType s_TRIGGERED_SIG = "triggered";
 static const core::com::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";

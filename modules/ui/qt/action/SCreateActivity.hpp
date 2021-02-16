@@ -29,7 +29,7 @@
 
 #include <data/Vector.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -71,12 +71,12 @@ namespace action
  *      (exclude).
  *    - \b id: id of the activity
  */
-class MODULE_UI_QT_CLASS_API SCreateActivity : public ::sight::ui::base::IActionSrv
+class MODULE_UI_QT_CLASS_API SCreateActivity : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SCreateActivity, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SCreateActivity, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SCreateActivity() noexcept;
@@ -110,7 +110,7 @@ protected:
 
     /**
      * @brief Initialize the action.
-     * @see sight::ui::base::IActionSrv::initialize()
+     * @see sight::ui::base::IAction::initialize()
      */
     virtual void configuring() override;
 

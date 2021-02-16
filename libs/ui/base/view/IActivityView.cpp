@@ -66,7 +66,7 @@ IActivityView::~IActivityView()
 
 void IActivityView::configuring()
 {
-    this->ui::base::IGuiContainerSrv::initialize();
+    this->ui::base::IGuiContainer::initialize();
 
     const ConfigType config = this->getConfigTree();
 

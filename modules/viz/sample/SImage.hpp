@@ -24,7 +24,7 @@
 
 #include "modules/viz/sample/config.hpp"
 
-#include <ui/base/IGuiContainerSrv.hpp>
+#include <ui/base/IGuiContainer.hpp>
 
 namespace sight::modules::viz::sample
 
@@ -41,13 +41,13 @@ namespace sight::modules::viz::sample
  * @subsection Input Input
  * - \b image [sight::data::Image]: image to display.
  */
-class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::base::IGuiContainerSrv
+class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::base::IGuiContainer
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImage, sight::ui::base::IGuiContainerSrv)
+    fwCoreServiceMacro(SImage, sight::ui::base::IGuiContainer)
 
     /// Creates the service.
     MODULE_VIZ_SAMPLE_API SImage() noexcept;

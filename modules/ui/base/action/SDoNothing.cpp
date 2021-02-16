@@ -30,7 +30,7 @@ namespace sight::modules::ui::base
 {
 namespace action
 {
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SDoNothing )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SDoNothing )
 
 SDoNothing::SDoNothing() noexcept
 {

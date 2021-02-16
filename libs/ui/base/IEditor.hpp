@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/base/config.hpp"
-#include "ui/base/IGuiContainerSrv.hpp"
+#include "ui/base/IGuiContainer.hpp"
 
 #include <core/tools/Failed.hpp>
 
@@ -36,12 +36,12 @@ namespace sight::ui::base
  * @brief Defines the service interface managing the editor service for object.
  */
 
-class UI_BASE_CLASS_API IEditor : public ui::base::IGuiContainerSrv
+class UI_BASE_CLASS_API IEditor : public ui::base::IGuiContainer
 {
 
 public:
 
-    fwCoreServiceMacro(IEditor, ui::base::IGuiContainerSrv)
+    fwCoreServiceMacro(IEditor, ui::base::IGuiContainer)
 
 protected:
 

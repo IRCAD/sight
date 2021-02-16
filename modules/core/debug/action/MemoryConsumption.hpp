@@ -24,7 +24,7 @@
 
 #include "modules/debug/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::debug
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MODULE_DEBUG_CLASS_API MemoryConsumption : public ::sight::ui::base::IActionSrv
+class MODULE_DEBUG_CLASS_API MemoryConsumption : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(MemoryConsumption,   sight::ui::base::IActionSrv )
+    fwCoreServiceMacro(MemoryConsumption,   sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_DEBUG_API MemoryConsumption() noexcept;
@@ -53,7 +53,7 @@ protected:
      * Sample of declaration configuration :
      *
      * @code{.xml}
-         <service uid="myIncMemConsum"  type="::ui::base::IActionSrv"
+         <service uid="myIncMemConsum"  type="::ui::base::IAction"
             implementation="::sight::modules::core::debug::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>

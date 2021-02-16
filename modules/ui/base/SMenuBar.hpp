@@ -24,7 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <ui/base/IMenuBarSrv.hpp>
+#include <ui/base/IMenuBar.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -32,12 +32,12 @@ namespace sight::modules::ui::base
 /**
  * @brief   Defines the default menubar for standard application
  */
-class MODULE_UI_BASE_CLASS_API SMenuBar : public ::sight::ui::base::IMenuBarSrv
+class MODULE_UI_BASE_CLASS_API SMenuBar : public ::sight::ui::base::IMenuBar
 {
 
 public:
 
-    fwCoreServiceMacro(SMenuBar, ::sight::ui::base::IMenuBarSrv)
+    fwCoreServiceMacro(SMenuBar, ::sight::ui::base::IMenuBar)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SMenuBar() noexcept;
@@ -55,7 +55,7 @@ protected:
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::SMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBar" impl="::sight::modules::ui::base::SMenuBar"
      * autoConnect="no"
      *>
           <gui>
@@ -81,20 +81,20 @@ protected:
      *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see sight::ui::base::IMenuBarSrv::initialize(),
+     *  @see sight::ui::base::IMenuBar::initialize(),
      * sight::ui::base::layoutManager::IMenuBarLayoutManager::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 
     /**
      * @brief Create the menus and start the managed services.
-     * @see sight::ui::base::IMenuBarSrv::create()
+     * @see sight::ui::base::IMenuBar::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief Stop all menu of this menuBar and destroy MenuBar
-     * @see sight::ui::base::IMenuBarSrv::destroy()
+     * @see sight::ui::base::IMenuBar::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 

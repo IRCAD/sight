@@ -92,7 +92,7 @@ SActivitySequencer::~SActivitySequencer() noexcept
 
 void SActivitySequencer::configuring()
 {
-    this->sight::ui::base::IGuiContainerSrv::initialize();
+    this->sight::ui::base::IGuiContainer::initialize();
 
     const service::IService::ConfigType config = this->getConfigTree();
 
@@ -117,7 +117,7 @@ void SActivitySequencer::configuring()
 
 void SActivitySequencer::starting()
 {
-    this->sight::ui::base::IGuiContainerSrv::create();
+    this->sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 

@@ -62,14 +62,14 @@ SShowDistance::~SShowDistance() noexcept
 
 void SShowDistance::configuring()
 {
-    this->sight::ui::base::IActionSrv::initialize();
+    this->sight::ui::base::IAction::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowDistance::starting()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStarting();
+    this->sight::ui::base::IAction::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void SShowDistance::updating()
 
     if(!data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
-        this->sight::ui::base::IActionSrv::setIsActive(false);
+        this->sight::ui::base::IAction::setIsActive(false);
     }
     else
     {
@@ -93,7 +93,7 @@ void SShowDistance::updating()
         image->setField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(toShow));
 
         // Manage hide/show from the field information.
-        this->sight::ui::base::IActionSrv::setIsActive(!toShow);
+        this->sight::ui::base::IAction::setIsActive(!toShow);
 
         const auto sig = image->signal< data::Image::DistanceDisplayedSignalType >(
             data::Image::s_DISTANCE_DISPLAYED_SIG);
@@ -108,7 +108,7 @@ void SShowDistance::updating()
 
 void SShowDistance::stopping()
 {
-    this->sight::ui::base::IActionSrv::actionServiceStopping();
+    this->sight::ui::base::IAction::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ void SShowDistance::showDistance(bool)
         image->getField< data::Boolean >(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                              true));
 
-    this->sight::ui::base::IActionSrv::setIsActive( !(SShowDistances->value()) );
+    this->sight::ui::base::IAction::setIsActive( !(SShowDistances->value()) );
 }
 
 //------------------------------------------------------------------------------

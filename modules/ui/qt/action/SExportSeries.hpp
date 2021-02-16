@@ -29,7 +29,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -60,10 +60,10 @@ namespace action
  * - \b series [sight::data::Series]: Source series to export.
  * - \b seriesDB [sight::data::SeriesDB]: Target series database where the series should be exported.
  */
-class MODULE_UI_QT_CLASS_API SExportSeries : public ::sight::ui::base::IActionSrv
+class MODULE_UI_QT_CLASS_API SExportSeries : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SExportSeries, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SExportSeries, ::sight::ui::base::IAction)
 
     /// Constructor
     MODULE_UI_QT_API SExportSeries();

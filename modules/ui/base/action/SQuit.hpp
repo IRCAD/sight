@@ -26,7 +26,7 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -36,12 +36,12 @@ namespace action
 /**
  * @brief   This action tries to close the window and reset root object.
  */
-class MODULE_UI_BASE_CLASS_API SQuit : public ::sight::ui::base::IActionSrv
+class MODULE_UI_BASE_CLASS_API SQuit : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(SQuit, ::sight::ui::base::IActionSrv)
+    fwCoreServiceMacro(SQuit, ::sight::ui::base::IAction)
 
     /**
      * @brief Constructor. Do nothing.

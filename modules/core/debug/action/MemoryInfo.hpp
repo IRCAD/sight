@@ -24,7 +24,7 @@
 
 #include "modules/debug/config.hpp"
 
-#include <ui/base/IActionSrv.hpp>
+#include <ui/base/IAction.hpp>
 
 namespace sight::modules::debug
 {
@@ -32,12 +32,12 @@ namespace action
 {
 
 /// Implements an action to show in a message box few memory information
-class MODULE_DEBUG_CLASS_API MemoryInfo : public ::sight::ui::base::IActionSrv
+class MODULE_DEBUG_CLASS_API MemoryInfo : public ::sight::ui::base::IAction
 {
 
 public:
 
-    fwCoreServiceMacro(MemoryInfo, sight::ui::base::IActionSrv )
+    fwCoreServiceMacro(MemoryInfo, sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_DEBUG_API MemoryInfo() noexcept;

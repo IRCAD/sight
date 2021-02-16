@@ -118,7 +118,7 @@ void SDynamicView::configuring()
 
 void SDynamicView::starting()
 {
-    this->::sight::ui::base::IGuiContainerSrv::create();
+    this->::sight::ui::base::IGuiContainer::create();
 
     auto parentContainer = ::sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 

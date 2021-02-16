@@ -24,7 +24,7 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <ui/base/IMenuSrv.hpp>
+#include <ui/base/IMenu.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -32,12 +32,12 @@ namespace sight::modules::ui::base
 /**
  * @brief   Defines the default menu for standard application
  */
-class MODULE_UI_BASE_CLASS_API SMenu : public ::sight::ui::base::IMenuSrv
+class MODULE_UI_BASE_CLASS_API SMenu : public ::sight::ui::base::IMenu
 {
 
 public:
 
-    fwCoreServiceMacro(SMenu, ::sight::ui::base::IMenuSrv)
+    fwCoreServiceMacro(SMenu, ::sight::ui::base::IMenu)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SMenu() noexcept;
@@ -56,7 +56,7 @@ protected:
 
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::SMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBar" impl="::sight::modules::ui::base::SMenuBar"
      * autoConnect="no"
      *>
           <gui>
@@ -81,20 +81,20 @@ protected:
      *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see sight::ui::base::IMenuBarSrv::initialize(),
+     *  @see sight::ui::base::IMenuBar::initialize(),
      * sight::ui::base::layoutManager::IMenuLayoutManager::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 
     /**
      * @brief Create the menu items and start the managed services.
-     * @see sight::ui::base::IMenuSrv::create()
+     * @see sight::ui::base::IMenu::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to menuBar
-     * @see sight::ui::base::IMenuSrv::destroy()
+     * @see sight::ui::base::IMenu::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 

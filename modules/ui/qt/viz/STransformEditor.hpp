@@ -75,10 +75,10 @@ protected:
     /// This method is used to configure the service parameters:
     MODULE_UI_QT_API virtual void configuring() override;
 
-    ///This method launches the sight::ui::base::IGuiContainerSrv::create method.
+    ///This method launches the sight::ui::base::IGuiContainer::create method.
     MODULE_UI_QT_API virtual void starting() override;
 
-    ///This method launches the sight::ui::base::IGuiContainerSrv::destroy method.
+    ///This method launches the sight::ui::base::IGuiContainer::destroy method.
     MODULE_UI_QT_API virtual void stopping() override;
 
     /// Updates Slider value

@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/base/config.hpp"
-#include "ui/base/IGuiContainerSrv.hpp"
+#include "ui/base/IGuiContainer.hpp"
 
 #include <service/IService.hpp>
 
@@ -36,12 +36,12 @@ namespace view
  * @brief   Defines the service interface managing a view placed in main frame.
  *
  */
-class UI_BASE_CLASS_API IView : public ui::base::IGuiContainerSrv
+class UI_BASE_CLASS_API IView : public ui::base::IGuiContainer
 {
 
 public:
 
-    fwCoreClassMacro(IView, ui::base::IGuiContainerSrv)
+    fwCoreClassMacro(IView, ui::base::IGuiContainer)
 
 protected:
 

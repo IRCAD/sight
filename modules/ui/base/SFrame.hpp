@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <ui/base/IFrameSrv.hpp>
+#include <ui/base/IFrame.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -34,12 +34,12 @@ namespace sight::modules::ui::base
 /**
  * @brief Defines the default frame for standard application.
  */
-class MODULE_UI_BASE_CLASS_API SFrame : public ::sight::ui::base::IFrameSrv
+class MODULE_UI_BASE_CLASS_API SFrame : public ::sight::ui::base::IFrame
 {
 
 public:
 
-    fwCoreServiceMacro(SFrame, ::sight::ui::base::IFrameSrv)
+    fwCoreServiceMacro(SFrame, ::sight::ui::base::IFrame)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SFrame() noexcept;
@@ -55,19 +55,19 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters.
-     * @see sight::ui::base::IFrameSrv::initialize()
+     * @see sight::ui::base::IFrame::initialize()
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 
     /**
      * @brief Register a view with defined id.
-     * @see sight::ui::base::IFrameSrv::create()
+     * @see sight::ui::base::IFrame::create()
      */
     MODULE_UI_BASE_API virtual void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
-     * @see sight::ui::base::IFrameSrv::destroy()
+     * @see sight::ui::base::IFrame::destroy()
      */
     MODULE_UI_BASE_API virtual void stopping() override;
 

@@ -46,7 +46,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::base::action::SPushField )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::action::SPushField )
 
 //------------------------------------------------------------------------------
 
@@ -113,7 +113,7 @@ void SPushField::updateObjects()
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
 
-    this->::sight::ui::base::IActionSrv::setIsExecutable( executable );
+    this->::sight::ui::base::IAction::setIsExecutable( executable );
 }
 
 //------------------------------------------------------------------------------

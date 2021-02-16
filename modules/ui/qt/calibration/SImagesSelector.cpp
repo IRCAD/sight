@@ -71,7 +71,7 @@ SImagesSelector::~SImagesSelector() noexcept
 
 void SImagesSelector::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void SImagesSelector::starting()
     m_frameTL = this->getInput< data::FrameTL>("frameTL");
     SLM_ASSERT("Frame timeline is not found.", m_frameTL);
 
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main container, VBox

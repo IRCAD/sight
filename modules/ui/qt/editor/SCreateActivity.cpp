@@ -83,7 +83,7 @@ SCreateActivity::~SCreateActivity() noexcept
 
 void SCreateActivity::configuring()
 {
-    sight::ui::base::IGuiContainerSrv::initialize();
+    sight::ui::base::IGuiContainer::initialize();
 
     const auto cfg = this->getConfigTree();
 
@@ -109,7 +109,7 @@ void SCreateActivity::configuring()
 
 void SCreateActivity::starting()
 {
-    sight::ui::base::IGuiContainerSrv::create();
+    sight::ui::base::IGuiContainer::create();
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
