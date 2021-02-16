@@ -35,12 +35,12 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 
 #include <vtkAppendPolyData.h>
-#include <vtkCellData.h>
 #include <vtkCleanPolyData.h>
 #include <vtkConeSource.h>
 #include <vtkCylinderSource.h>
 #include <vtkParametricFunctionSource.h>
 #include <vtkParametricTorus.h>
+#include <vtkPointData.h>
 #include <vtkTransform.h>
 #include <vtkTransformPolyDataFilter.h>
 #include <vtkTriangleFilter.h>
@@ -295,14 +295,14 @@ vtkSmartPointer<vtkPolyData> SNeedleGenerator::filterAndColorSourceObject(vtkAlg
     vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer< vtkUnsignedCharArray >::New();
     colors->SetName("Colors");
     colors->SetNumberOfComponents(4);
-    colors->SetNumberOfTuples(polyData->GetNumberOfCells());
+    colors->SetNumberOfTuples(polyData->GetNumberOfPoints());
     colors->Fill(0);
     for(std::uint8_t i = 0; i < 4; ++i)
     {
         colors->FillTypedComponent(i, _rgba[i]);
     }
 
-    polyData->GetCellData()->SetScalars(colors);
+    polyData->GetPointData()->SetScalars(colors);
 
     return polyData;
 }
