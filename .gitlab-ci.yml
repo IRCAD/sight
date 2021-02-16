@@ -72,7 +72,6 @@ lint:sheldon:
       -DBUILD_TESTS=ON
       -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
       -DENABLE_PCH=OFF
-      -DPROJECTS_TO_BUILD=${PROJECTS_TO_BUILD}
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
