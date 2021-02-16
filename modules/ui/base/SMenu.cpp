@@ -20,64 +20,54 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/base/frame/SDefaultFrame.hpp"
-
-#include <core/tools/fwID.hpp>
+#include "SMenu.hpp"
 
 #include <service/macros.hpp>
 
+fwServicesRegisterMacro( ::sight::ui::base::IMenuSrv, ::sight::modules::ui::base::SMenu )
+
 namespace sight::modules::ui::base
 {
-namespace frame
-{
 
-fwServicesRegisterMacro( ::sight::ui::base::IFrameSrv, ::sight::modules::ui::base::frame::SDefaultFrame )
+//-----------------------------------------------------------------------------
 
-SDefaultFrame::SDefaultFrame() noexcept
+SMenu::SMenu() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultFrame::~SDefaultFrame() noexcept
+SMenu::~SMenu() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::configuring()
+void SMenu::configuring()
 {
-    SLM_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::starting()
+void SMenu::starting()
 {
     this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::stopping()
+void SMenu::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::info(std::ostream& _sstream )
+void SMenu::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultFrame::updating()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-}
 }

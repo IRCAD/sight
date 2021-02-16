@@ -30,24 +30,22 @@
 
 namespace sight::modules::ui::base
 {
-namespace frame
-{
 
 /**
  * @brief Defines the default frame for standard application.
  */
-class MODULE_UI_BASE_CLASS_API SDefaultFrame : public ::sight::ui::base::IFrameSrv
+class MODULE_UI_BASE_CLASS_API SFrame : public ::sight::ui::base::IFrameSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultFrame, ::sight::ui::base::IFrameSrv)
+    fwCoreServiceMacro(SFrame, ::sight::ui::base::IFrameSrv)
 
     /// Constructor. Do nothing.
-    MODULE_UI_BASE_API SDefaultFrame() noexcept;
+    MODULE_UI_BASE_API SFrame() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SDefaultFrame() noexcept;
+    MODULE_UI_BASE_API virtual ~SFrame() noexcept;
 
 protected:
 
@@ -86,5 +84,4 @@ protected:
 
 };
 
-} // namespace frame
 } // namespace sight::modules::ui::base

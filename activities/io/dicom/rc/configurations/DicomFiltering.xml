@@ -17,7 +17,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="module_ui_media-0.1/icons/Import.svg" />
@@ -59,7 +59,7 @@
         </service>
 
 
-        <service uid="centerView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="centerView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -73,7 +73,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="bottomView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="rightView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="rightView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -100,7 +100,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="menuHelp" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="menuHelp" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Activity help" />

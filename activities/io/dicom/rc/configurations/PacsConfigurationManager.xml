@@ -9,7 +9,7 @@
         <object uid="${PACS_CONFIGURATION}" type="::sight::io::dimse::data::PacsConfiguration" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="pacsConfigurationManagerFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+        <service uid="pacsConfigurationManagerFrame" type="::sight::modules::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -24,7 +24,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />

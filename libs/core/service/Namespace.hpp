@@ -55,11 +55,11 @@ namespace sight::service
 
                  <!--
                      Description service of the GUI:
-                     The modules::ui::base::frame::SDefaultFrame service automatically positions the various
+                     The modules::ui::base::frame::SFrame service automatically positions the various
                      containers in the application main window.
                      Here, it declares a container for the 3D rendering service.
                  -->
-                 <service uid="myFrame" impl="::sight::modules::ui::base::frame::SDefaultFrame">
+                 <service uid="myFrame" impl="::sight::modules::ui::base::SFrame">
                      <gui>
                          <frame>
                              <name>${appName}</name>
@@ -251,11 +251,11 @@ namespace sight::service
 
              <!--
                  Description service of the GUI:
-                 The modules::ui::base::frame::SDefaultFrame service automatically positions the various
+                 The modules::ui::base::frame::SFrame service automatically positions the various
                  containers in the application main window.
                  Here, it declares a container for the 3D rendering service.
              -->
-             <service uid="myFrame" type="::sight::modules::ui::base::frame::SDefaultFrame">
+             <service uid="myFrame" type="::sight::modules::ui::base::SFrame">
                  <gui>
                      <frame>
                          <name>${appName}</name>

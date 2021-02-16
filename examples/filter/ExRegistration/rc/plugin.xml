@@ -81,7 +81,7 @@ Detail of the ToolBar
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExRegistration</name>
@@ -94,7 +94,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="center" />
@@ -108,7 +108,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load image" icon="ExRegistration-0.1/icons/icon-load1.png" />
@@ -128,7 +128,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="multiView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::TabLayoutManager" >
                         <view caption="Point List 1" selected="yes" border="5" backgroundColor="#2E3034" />
@@ -144,7 +144,7 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW    (Content of the first Tab)-->
-            <service uid="image1View" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="image1View" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />

@@ -30,24 +30,22 @@
 
 namespace sight::modules::ui::base
 {
-namespace view
-{
 
 /**
  * @brief Defines the generic layout for application.
  * @see sight::ui::base::IGuiContainer for the service configuration
  */
-class MODULE_UI_BASE_CLASS_API SDefaultView : public ::sight::ui::base::view::IView
+class MODULE_UI_BASE_CLASS_API SView : public ::sight::ui::base::view::IView
 {
 public:
 
-    fwCoreServiceMacro(SDefaultView, ::sight::ui::base::view::IView)
+    fwCoreServiceMacro(SView, ::sight::ui::base::view::IView)
 
     /// Constructor. Do nothing.
-    MODULE_UI_BASE_API SDefaultView() noexcept;
+    MODULE_UI_BASE_API SView() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SDefaultView() noexcept;
+    MODULE_UI_BASE_API virtual ~SView() noexcept;
 
 protected:
 
@@ -87,5 +85,4 @@ protected:
 
 };
 
-} // namespace view
 } // namespace sight::modules::ui::base

@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Threshold" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />

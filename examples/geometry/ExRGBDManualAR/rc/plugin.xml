@@ -29,7 +29,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExRGBDManualAR</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuPreferencesView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -80,7 +80,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load calibration" icon="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
@@ -125,7 +125,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />

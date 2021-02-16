@@ -34,7 +34,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainView" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto16SceneQt3D</name>
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -60,7 +60,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />

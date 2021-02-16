@@ -44,7 +44,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="mainView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100" >
                     <styleSheet>
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarSliderView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="topToolbarSliderView" type="::sight::modules::ui::base::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
                 <layout type="::sight::ui::base::LineLayoutManager">
@@ -99,7 +99,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="topToolbarView" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Fullscreen" icon="module_ui_flaticon-0.1/icons/YellowFullscreen.svg" />
@@ -115,7 +115,7 @@
             </registry>
         </service>
 
-        <service uid="topNegatoSlicerSliderView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="topNegatoSlicerSliderView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -127,7 +127,7 @@
             </registry>
         </service>
 
-        <service uid="bottomNegatoSlicerSliderView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="bottomNegatoSlicerSliderView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -140,7 +140,7 @@
             </registry>
         </service>
 
-        <service uid="bottomNegatoSlicerView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="bottomNegatoSlicerView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />

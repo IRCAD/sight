@@ -20,7 +20,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoRecorder</name>
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>

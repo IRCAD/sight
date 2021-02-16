@@ -31,7 +31,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -46,7 +46,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolbar" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="start" icon="module_ui_media-0.1/icons/start-cam.svg" />
@@ -70,7 +70,7 @@
         </service>
 
         <!-- Begin Scanning views -->
-        <service uid="scanningView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="scanningView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -84,7 +84,7 @@
             </registry>
         </service>
 
-        <service uid="RGBDView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="RGBDView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -98,7 +98,7 @@
             </registry>
         </service>
 
-        <service uid="snapshotView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="snapshotView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />

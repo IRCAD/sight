@@ -25,7 +25,7 @@
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::sight::data::Image" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="view_negato2_and_3" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="view_negato2_and_3" type="::sight::modules::ui::base::SView">
             <in key="image" uid="optionalInputImage" />
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
@@ -59,7 +59,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="3D MPR Axial view" icon="module_ui_media-0.1/icons/icon-axial.png" />
@@ -107,7 +107,7 @@
         </service>
 
 
-        <service uid="menu" type="::sight::modules::ui::base::aspect::SDefaultMenu">
+        <service uid="menu" type="::sight::modules::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="module_ui_media-0.1/icons/ManageOrgan.png" />

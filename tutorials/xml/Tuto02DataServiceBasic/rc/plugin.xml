@@ -18,11 +18,11 @@
 
             <!--
                 Description service of the GUI:
-                The ::sight::modules::ui::base::frame::SDefaultFrame service automatically positions the various
+                The ::sight::modules::ui::base::SFrame service automatically positions the various
                 containers in the application main window.
                 Here, it declares a container for the 3D rendering service.
             -->
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto02DataServiceBasic</name>

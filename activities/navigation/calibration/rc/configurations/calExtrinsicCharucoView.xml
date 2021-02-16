@@ -26,7 +26,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="extrinsicView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="extrinsicView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="extrinsicCameraView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -55,7 +55,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start camera" icon="module_ui_media-0.1/icons/start-cam.svg" />
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="calibrationInfoView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="calibrationInfoView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="videoView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -101,7 +101,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="camerasView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -115,7 +115,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCamera" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="extrinsicCamera" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -136,7 +136,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="cameraInfoView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />

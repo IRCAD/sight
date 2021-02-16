@@ -14,7 +14,7 @@
     <config>
         <object uid="${image}" type="::sight::data::Image" src="ref" />
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="multiView_negato_bottom" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />

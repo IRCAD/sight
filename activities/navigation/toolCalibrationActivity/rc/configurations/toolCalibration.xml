@@ -14,7 +14,7 @@
 
         <!-- *************************** Begin Layouts *************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -31,7 +31,7 @@
             </registry>
         </service>
 
-        <service uid="footer" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="footer" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start Tracker client" icon="module_ui_media-0.1/icons/Network-Receiving.svg" />

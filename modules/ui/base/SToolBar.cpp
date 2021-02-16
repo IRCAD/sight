@@ -20,59 +20,56 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/base/aspect/SDefaultMenuBar.hpp"
+#include "SToolBar.hpp"
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IMenuBarSrv, ::sight::modules::ui::base::aspect::SDefaultMenuBar )
+fwServicesRegisterMacro( ::sight::ui::base::IToolBarSrv, ::sight::modules::ui::base::SToolBar )
 
 namespace sight::modules::ui::base
 {
 
-namespace aspect
-{
-
-//-----------------------------------------------------------------------------
-
-SDefaultMenuBar::SDefaultMenuBar() noexcept
+SToolBar::SToolBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultMenuBar::~SDefaultMenuBar() noexcept
+SToolBar::~SToolBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenuBar::configuring()
-{
-    this->initialize();
-}
-
-//-----------------------------------------------------------------------------
-
-void SDefaultMenuBar::starting()
+void SToolBar::starting()
 {
     this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenuBar::stopping()
+void SToolBar::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenuBar::updating()
+void SToolBar::configuring()
+{
+    this->initialize();
+}
+
+//-----------------------------------------------------------------------------
+
+void SToolBar::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
+void SToolBar::info( std::ostream& _sstream )
+{
 }
 
 }

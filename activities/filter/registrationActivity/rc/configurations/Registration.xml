@@ -63,7 +63,7 @@
         <object uid="centerTransformReference" type="::sight::data::TransformationMatrix3D" />
         <object uid="flipTransform" type="::sight::data::TransformationMatrix3D" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -78,7 +78,7 @@
             </registry>
         </service>
 
-        <service uid="imagesAndManagersView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="imagesAndManagersView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -92,7 +92,7 @@
             </registry>
         </service>
 
-        <service uid="scenesView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="scenesView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="Manual" />
@@ -105,7 +105,7 @@
             </registry>
         </service>
 
-        <service uid="windowLevelEditors" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="windowLevelEditors" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -129,7 +129,7 @@
             <inout key="tf" uid="referenceTransferFunction" />
         </service>
 
-        <service uid="ParamView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="ParamView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="Automatic" />
@@ -144,7 +144,7 @@
             </registry>
         </service>
 
-        <service uid="automaticRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="automaticRegistrationView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -167,7 +167,7 @@
             </registry>
         </service>
 
-        <service uid="multiResolutionView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="multiResolutionView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -181,7 +181,7 @@
             </registry>
         </service>
 
-        <service uid="importExportButtons" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="importExportButtons" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -226,7 +226,7 @@
             <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DWriterService" />
         </service>
 
-        <service uid="manualRegistrationView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="manualRegistrationView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -241,7 +241,7 @@
             </registry>
         </service>
 
-        <service uid="flipEditor" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="flipEditor" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -257,7 +257,7 @@
             </registry>
         </service>
 
-        <service uid="TFView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="TFView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />

@@ -23,7 +23,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto07GenericScene</name>
@@ -41,7 +41,7 @@
             <!-- Status bar used to display the progress bar for reading -->
             <service uid="progressBarView" type="::sight::modules::ui::base::editor::SJobBar" />
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -52,7 +52,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
@@ -71,7 +71,7 @@
             </service>
 
             <!-- main view -->
-            <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -86,7 +86,7 @@
             </service>
 
             <!-- View for editors to update image visualization -->
-            <service uid="editorsView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="editorsView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />

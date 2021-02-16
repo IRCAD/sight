@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,15 +20,21 @@
  *
  ***********************************************************************/
 
+/**
+ * @brief The namespace sight::modules::ui::base contains the basic services to build the application IHM.
+ *
+ */
 #pragma once
 
-/// The namespace sight::modules::ui::base contains editors to manage the preferences configuration.
 namespace sight::modules::ui::base
 {
 
-/// The namespace action contains action to open dialog box with preferences to set.
+/**
+ * @brief The namespace sight::modules::ui::base::action contains basic services managing action.
+ */
 namespace action
 {
-}
 
-}
+} // namespace action
+
+} // namespace sight::modules::ui::base

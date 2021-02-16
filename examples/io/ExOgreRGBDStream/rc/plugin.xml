@@ -33,7 +33,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExOgreRGBDStream</name>
@@ -48,7 +48,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -70,7 +70,7 @@
             </service>
 
             <!-- Begin Scanning views -->
-            <service uid="scanningView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="scanningView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -84,7 +84,7 @@
                 </registry>
             </service>
 
-            <service uid="TFView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="TFView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="RGBDView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />

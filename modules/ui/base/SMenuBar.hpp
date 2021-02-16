@@ -28,24 +28,22 @@
 
 namespace sight::modules::ui::base
 {
-namespace aspect
-{
 
 /**
  * @brief   Defines the default menubar for standard application
  */
-class MODULE_UI_BASE_CLASS_API SDefaultMenuBar : public ::sight::ui::base::IMenuBarSrv
+class MODULE_UI_BASE_CLASS_API SMenuBar : public ::sight::ui::base::IMenuBarSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultMenuBar, ::sight::ui::base::IMenuBarSrv)
+    fwCoreServiceMacro(SMenuBar, ::sight::ui::base::IMenuBarSrv)
 
     /// Constructor. Do nothing.
-    MODULE_UI_BASE_API SDefaultMenuBar() noexcept;
+    MODULE_UI_BASE_API SMenuBar() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SDefaultMenuBar() noexcept;
+    MODULE_UI_BASE_API virtual ~SMenuBar() noexcept;
 
 protected:
 
@@ -57,7 +55,7 @@ protected:
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::aspect::SDefaultMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::SMenuBar"
      * autoConnect="no"
      *>
           <gui>
@@ -105,7 +103,5 @@ protected:
 
     ///@}
 };
-
-}
 
 }

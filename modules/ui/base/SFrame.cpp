@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/base/view/SDefaultView.hpp"
+#include "SFrame.hpp"
 
 #include <core/tools/fwID.hpp>
 
@@ -28,55 +28,53 @@
 
 namespace sight::modules::ui::base
 {
-namespace view
-{
 
-fwServicesRegisterMacro( ::sight::ui::base::view::IView, ::sight::modules::ui::base::view::SDefaultView)
+fwServicesRegisterMacro( ::sight::ui::base::IFrameSrv, ::sight::modules::ui::base::SFrame )
 
-SDefaultView::SDefaultView() noexcept
+SFrame::SFrame() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultView::~SDefaultView() noexcept
+SFrame::~SFrame() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::configuring()
+void SFrame::configuring()
 {
+    SLM_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::starting()
+void SFrame::starting()
 {
     this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::stopping()
+void SFrame::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::info(std::ostream& _sstream )
+void SFrame::info(std::ostream& _sstream )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::updating()
+void SFrame::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-}
 }

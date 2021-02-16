@@ -21,7 +21,7 @@ are already displayed and where they are displayed on screen.
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExNotifications</name>
@@ -36,7 +36,7 @@ are already displayed and where they are displayed on screen.
                 </registry>
             </service>
 
-           <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+           <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -58,7 +58,7 @@ are already displayed and where they are displayed on screen.
                 </registry>
             </service>
 
-            <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="mainview" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />

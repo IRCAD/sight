@@ -7,7 +7,7 @@
     <config>
         <object uid="${objectID}" type="::sight::data::DicomSeries" src="ref" />
         <object uid="image" type="::sight::data::Image" src="deferred" />
-        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />

@@ -20,7 +20,7 @@
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="yes"' attribute.
             -->
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto03DataService</name>
@@ -65,7 +65,7 @@
                 In this tutorial, the attribute 'specialAction' has the value "QUIT". On MS Windows, there's no
                 impact, but on Linux this value installs the default 'Quit' system icon in the menuItem.
             -->
-            <service uid="menuView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />

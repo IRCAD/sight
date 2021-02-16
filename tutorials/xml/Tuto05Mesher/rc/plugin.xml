@@ -17,7 +17,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto05Mesher</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -66,7 +66,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuMesherView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Compute Mesh (VTK)" />
@@ -84,7 +84,7 @@
                 It is possible to add a 'proportion' attribute for the <view> to defined the proportion
                 used by the view compared to the others.
             -->
-            <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="containerView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />

@@ -24,7 +24,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto04MeshGeneratorCpp</name>
@@ -40,7 +40,7 @@
 
             <service uid="progressBarView" type="::sight::modules::ui::base::editor::SJobBar" />
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -53,7 +53,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="modifierFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="modifierFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Shake mesh point" shortcut="Q" />

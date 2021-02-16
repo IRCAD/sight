@@ -18,7 +18,7 @@
         <object uid="${image}" type="::sight::data::Image" src="ref" />
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato1" align="center" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="module_ui_media-0.1/icons/Back.svg" />

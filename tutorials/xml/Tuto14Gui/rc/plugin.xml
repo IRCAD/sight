@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
             <gui>
                 <menuBar />
                 <toolBar >
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+        <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="My Menu" />
@@ -53,7 +53,7 @@
             </registry>
         </service>
 
-        <service uid="menu1View" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="menu1View" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" shortcut="1" style="check" />
@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <service uid="menu2View" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="menu2View" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" style="check" />
@@ -93,7 +93,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
                     <menuItem name="start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" />
@@ -133,7 +133,7 @@
             </registry>
         </service>
 
-        <service uid="testHideShowView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="testHideShowView" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" />
@@ -148,7 +148,7 @@
             </registry>
         </service>
 
-        <service uid="backgroundView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="backgroundView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -160,7 +160,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="containerView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -174,7 +174,7 @@
             </registry>
         </service>
 
-        <service uid="sub1View" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="sub1View" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -191,7 +191,7 @@
             </registry>
         </service>
 
-        <service uid="sub2View" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="sub2View" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager" >
                     <view align="center" backgroundColor="#36393E" />
@@ -204,7 +204,7 @@
             </registry>
         </service>
 
-        <service uid="sub3View" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="sub3View" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::TabLayoutManager" >
                     <view caption="TabView1"  />
@@ -215,7 +215,7 @@
             <registry/>
         </service>
 
-        <service uid="sub4View" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="sub4View" type="::sight::modules::ui::base::SView" >
         <gui>
             <layout type="::sight::ui::base::LineLayoutManager" >
                 <orientation value="horizontal" />
@@ -229,7 +229,7 @@
         </registry>
         </service>
 
-        <service uid="sub5View" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="sub5View" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -243,7 +243,7 @@
             </registry>
         </service>
 
-        <service uid="view12" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="view12" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -261,7 +261,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar2View" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+        <service uid="toolbar2View" type="::sight::modules::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Item 2" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />

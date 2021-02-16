@@ -55,7 +55,7 @@ void Plugin::initialize()
     m_image = data::Image::New();
 
     // UI declaration
-    m_frameSrv = service::add("::sight::modules::ui::base::frame::SDefaultFrame");
+    m_frameSrv = service::add("::sight::modules::ui::base::SFrame");
     {
         service::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto01DataServiceBasicCpp");

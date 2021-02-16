@@ -8,7 +8,7 @@
     </parameters>
     <config>
 
-        <service uid="blendEditor" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="blendEditor" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -23,7 +23,7 @@
             </registry>
         </service>
 
-        <service uid="blendTransparencyAndModeEditor" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="blendTransparencyAndModeEditor" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />

@@ -18,7 +18,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -33,7 +33,7 @@
             </registry>
         </service>
 
-        <service uid="leftPanelView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="leftPanelView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -47,7 +47,7 @@
             </registry>
         </service>
 
-        <service uid="toolboxView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="toolboxView" type="::sight::modules::ui::base::SView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::ToolboxLayoutManager">
@@ -63,7 +63,7 @@
             </registry>
         </service>
 
-        <service uid="videoToolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="videoToolbarView" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor />
@@ -85,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="calibrationDataView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="calibrationDataView" type="::sight::modules::ui::base::SView">
             <gui>
                 <toolBar>
                     <toolBitmapSize height="24" width="24" />
@@ -100,7 +100,7 @@
             </registry>
         </service>
 
-        <service uid="intrinsicCameraView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="intrinsicCameraView" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -127,7 +127,7 @@
             </registry>
         </service>
 
-        <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="cameraView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -149,7 +149,7 @@
             </registry>
         </service>
 
-        <service uid="videoSliderView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="videoSliderView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />

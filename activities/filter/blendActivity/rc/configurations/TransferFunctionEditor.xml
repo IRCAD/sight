@@ -13,7 +13,7 @@
         <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
         <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato" align="center" />
@@ -27,7 +27,7 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="sceneView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -41,7 +41,7 @@
             </registry>
         </service>
 
-        <service uid="sceneView_bottom" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="sceneView_bottom" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -57,7 +57,7 @@
 
         <service uid="snapshotEditor" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="tfView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="tfView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />

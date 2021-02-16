@@ -23,7 +23,7 @@
             <config id="MDAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </service>
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame">
+        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame">
             <gui>
                 <frame>
                     <name>${appName}</name>
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="menuBar" type="::sight::modules::ui::base::aspect::SDefaultMenuBar">
+        <service uid="menuBar" type="::sight::modules::ui::base::SMenuBar">
             <gui>
                 <layout>
                     <menu name="File" />
@@ -53,7 +53,7 @@
             </registry>
         </service>
 
-        <service uid="menu_file" type="::sight::modules::ui::base::aspect::SDefaultMenu">
+        <service uid="menu_file" type="::sight::modules::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Open" shortcut="Ctrl+O" />
@@ -68,7 +68,7 @@
             </registry>
         </service>
 
-        <service uid="menu_preferences" type="::sight::modules::ui::base::aspect::SDefaultMenu">
+        <service uid="menu_preferences" type="::sight::modules::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Preferences configuration"/>
@@ -79,7 +79,7 @@
             </registry>
         </service>
 
-        <service uid="menu_help" type="::sight::modules::ui::base::aspect::SDefaultMenu">
+        <service uid="menu_help" type="::sight::modules::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="About" specialAction="ABOUT" />

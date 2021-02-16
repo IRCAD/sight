@@ -16,7 +16,7 @@ This example shows the possibilities of SParameters:
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExSParameters</name>
@@ -29,7 +29,7 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="mainview" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -43,7 +43,7 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="parametersView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -57,7 +57,7 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="minmaxParametersSrvView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="minmaxParametersSrvView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />

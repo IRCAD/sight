@@ -19,7 +19,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame">
+        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -32,7 +32,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />

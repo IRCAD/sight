@@ -69,7 +69,7 @@ void GuiQtTest::testDefaultFrame()
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
-    service::IService::sptr srv = service::add( "::sight::modules::ui::base::frame::SDefaultFrame" );
+    service::IService::sptr srv = service::add( "::sight::modules::ui::base::SFrame" );
     CPPUNIT_ASSERT(srv);
 
     srv->setConfiguration( frameConfig );

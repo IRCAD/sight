@@ -29,7 +29,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Show settings" shortcut="Ctrl+H" style="check" />
@@ -71,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+            <service uid="menuPreferencesView" type="::sight::modules::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -82,7 +82,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
@@ -108,7 +108,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="cameraView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -122,7 +122,7 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="videoView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -136,7 +136,7 @@
                 </registry>
             </service>
 
-            <service uid="infoView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="infoView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -150,7 +150,7 @@
                 </registry>
             </service>
 
-            <service uid="stereoView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="stereoView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -164,7 +164,7 @@
                 </registry>
             </service>
 
-            <service uid="reprojectionInfoView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="reprojectionInfoView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -179,7 +179,7 @@
             </service>
 
 
-            <service uid="parametersView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="parametersView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />

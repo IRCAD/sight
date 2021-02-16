@@ -73,19 +73,19 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
     // GUI
-    auto frameSrv = m_appManager->addService("::sight::modules::ui::base::frame::SDefaultFrame", true, false);
-    auto menuBar  = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenuBar", "menuBar", true,
+    auto frameSrv = m_appManager->addService("::sight::modules::ui::base::SFrame", true, false);
+    auto menuBar  = m_appManager->addService("::sight::modules::ui::base::SMenuBar", "menuBar", true,
                                              false);
     auto menuFile =
-        m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenu", "menuFile", true, false);
-    auto menuMesher = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenu", "menuMesher", true,
+        m_appManager->addService("::sight::modules::ui::base::SMenu", "menuFile", true, false);
+    auto menuMesher = m_appManager->addService("::sight::modules::ui::base::SMenu", "menuMesher", true,
                                                false);
-    auto mainView = m_appManager->addService("::sight::modules::ui::base::view::SDefaultView", "mainView", true,
+    auto mainView = m_appManager->addService("::sight::modules::ui::base::SView", "mainView", true,
                                              false);
-    auto multiViewOrgans = m_appManager->addService("::sight::modules::ui::base::view::SDefaultView", "multiViewOrgans",
+    auto multiViewOrgans = m_appManager->addService("::sight::modules::ui::base::SView", "multiViewOrgans",
                                                     true,
                                                     false);
-    auto sceneEditorsView = m_appManager->addService("::sight::modules::ui::base::view::SDefaultView",
+    auto sceneEditorsView = m_appManager->addService("::sight::modules::ui::base::SView",
                                                      "scenesceneEditorsView",
                                                      true, false);
 

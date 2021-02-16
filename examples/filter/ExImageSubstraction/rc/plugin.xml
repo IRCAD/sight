@@ -74,7 +74,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExImageSubstraction</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="mainView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="center" />
@@ -101,7 +101,7 @@
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar" >
+            <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load image 1" icon="ExImageSubstraction-0.1/icons/icon-load1.png" />
@@ -121,7 +121,7 @@
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="multiView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::TabLayoutManager" >
                         <view caption="Image 1" selected="yes" border="5" backgroundColor="#2E3034" />
@@ -137,7 +137,7 @@
             </service>
 
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-            <service uid="image1View" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="image1View" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -151,7 +151,7 @@
                 </registry>
             </service>
 
-            <service uid="image1BottomView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="image1BottomView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -166,7 +166,7 @@
             </service>
 
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-            <service uid="image2View" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="image2View" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -180,7 +180,7 @@
                 </registry>
             </service>
 
-            <service uid="image2BottomView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="image2BottomView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -195,7 +195,7 @@
             </service>
 
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-            <service uid="substractionView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="substractionView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -209,7 +209,7 @@
                 </registry>
             </service>
 
-            <service uid="substractionBottomView" type="::sight::modules::ui::base::view::SDefaultView" >
+            <service uid="substractionBottomView" type="::sight::modules::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />

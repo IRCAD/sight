@@ -26,7 +26,7 @@
 
         <object uid="identity" type="::sight::data::TransformationMatrix3D" />
 
-        <service uid="blendSceneView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="blendSceneView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />

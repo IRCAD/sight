@@ -10,7 +10,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="LightView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="LightView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />

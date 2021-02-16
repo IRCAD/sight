@@ -20,61 +20,54 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/base/aspect/SDefaultToolBar.hpp"
+#include "modules/ui/base/SMenuBar.hpp"
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IToolBarSrv, ::sight::modules::ui::base::aspect::SDefaultToolBar )
+fwServicesRegisterMacro( ::sight::ui::base::IMenuBarSrv, modules::ui::base::SMenuBar )
 
 namespace sight::modules::ui::base
 {
 
-namespace aspect
-{
+//-----------------------------------------------------------------------------
 
-SDefaultToolBar::SDefaultToolBar() noexcept
+SMenuBar::SMenuBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultToolBar::~SDefaultToolBar() noexcept
+SMenuBar::~SMenuBar() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::starting()
-{
-    this->create();
-}
-
-//-----------------------------------------------------------------------------
-
-void SDefaultToolBar::stopping()
-{
-    this->destroy();
-}
-
-//-----------------------------------------------------------------------------
-
-void SDefaultToolBar::configuring()
+void SMenuBar::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::updating()
+void SMenuBar::starting()
 {
+    this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultToolBar::info( std::ostream& _sstream )
+void SMenuBar::stopping()
+{
+    this->destroy();
+}
+
+//-----------------------------------------------------------------------------
+
+void SMenuBar::updating()
 {
 }
 
-}
+//-----------------------------------------------------------------------------
 
 }

@@ -15,7 +15,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::ui::base::aspect::SDefaultMenuBar" >
+        <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="New Activity..." shortcut="Ctrl+N" />
@@ -66,7 +66,7 @@
             </registry>
         </service>
 
-        <service uid="menuToolsView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="menuToolsView" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Show selector" style="check"/>
@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <service uid="menuPreferencesView" type="::sight::modules::ui::base::aspect::SDefaultMenu" >
+        <service uid="menuPreferencesView" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Video directory" />
@@ -89,7 +89,7 @@
         </service>
 
 
-        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="mainview" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />

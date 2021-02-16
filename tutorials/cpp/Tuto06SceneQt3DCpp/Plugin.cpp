@@ -62,12 +62,12 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
 
-    const auto frameSrv = m_appManager->addService("::sight::modules::ui::base::frame::SDefaultFrame", true, false);
-    const auto menuBar  = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenuBar", "menuBar",
+    const auto frameSrv = m_appManager->addService("::sight::modules::ui::base::SFrame", true, false);
+    const auto menuBar  = m_appManager->addService("::sight::modules::ui::base::SMenuBar", "menuBar",
                                                    true,
                                                    false);
     const auto menu =
-        m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenu", "menuFile", true, false);
+        m_appManager->addService("::sight::modules::ui::base::SMenu", "menuFile", true, false);
     const auto actionOpenMesh = m_appManager->addService("::sight::modules::ui::base::action::SStarter",
                                                          "actionOpenMesh",
                                                          true,
@@ -75,7 +75,7 @@ void Plugin::initialize()
     const auto actionQuit = m_appManager->addService("::sight::modules::ui::base::action::SQuit", "actionQuit", true,
                                                      false);
     const auto mainView =
-        m_appManager->addService("::sight::modules::ui::base::view::SDefaultView", "mainView", true, false);
+        m_appManager->addService("::sight::modules::ui::base::SView", "mainView", true, false);
 
     const auto meshReaderSrv = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector", "meshReader",
                                                         true,

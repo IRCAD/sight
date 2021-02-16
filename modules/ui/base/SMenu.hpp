@@ -28,24 +28,22 @@
 
 namespace sight::modules::ui::base
 {
-namespace aspect
-{
 
 /**
  * @brief   Defines the default menu for standard application
  */
-class MODULE_UI_BASE_CLASS_API SDefaultMenu : public ::sight::ui::base::IMenuSrv
+class MODULE_UI_BASE_CLASS_API SMenu : public ::sight::ui::base::IMenuSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultMenu, ::sight::ui::base::IMenuSrv)
+    fwCoreServiceMacro(SMenu, ::sight::ui::base::IMenuSrv)
 
     /// Constructor. Do nothing.
-    MODULE_UI_BASE_API SDefaultMenu() noexcept;
+    MODULE_UI_BASE_API SMenu() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SDefaultMenu() noexcept;
+    MODULE_UI_BASE_API virtual ~SMenu() noexcept;
 
 protected:
 
@@ -58,7 +56,7 @@ protected:
 
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::aspect::SDefaultMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::SMenuBar"
      * autoConnect="no"
      *>
           <gui>
@@ -105,7 +103,5 @@ protected:
     ///@}
 
 };
-
-}
 
 }

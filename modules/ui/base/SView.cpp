@@ -20,59 +20,60 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/base/aspect/SDefaultMenu.hpp"
+#include "SView.hpp"
+
+#include <core/tools/fwID.hpp>
 
 #include <service/macros.hpp>
-
-fwServicesRegisterMacro( ::sight::ui::base::IMenuSrv, ::sight::modules::ui::base::aspect::SDefaultMenu )
 
 namespace sight::modules::ui::base
 {
 
-namespace aspect
-{
+fwServicesRegisterMacro( ::sight::ui::base::view::IView, ::sight::modules::ui::base::SView)
 
-//-----------------------------------------------------------------------------
-
-SDefaultMenu::SDefaultMenu() noexcept
+SView::SView() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultMenu::~SDefaultMenu() noexcept
+SView::~SView() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::configuring()
+void SView::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::starting()
+void SView::starting()
 {
     this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::stopping()
+void SView::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SDefaultMenu::updating()
+void SView::info(std::ostream& _sstream )
 {
 }
 
 //-----------------------------------------------------------------------------
 
+void SView::updating()
+{
 }
+
+//-----------------------------------------------------------------------------
 
 }

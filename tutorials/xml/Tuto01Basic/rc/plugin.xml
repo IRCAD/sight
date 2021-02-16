@@ -14,7 +14,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="myFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+            <service uid="myFrame" type="::sight::modules::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto01Basic</name>

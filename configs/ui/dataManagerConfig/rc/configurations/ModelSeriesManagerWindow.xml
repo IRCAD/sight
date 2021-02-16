@@ -28,7 +28,7 @@ With:
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::sight::data::ModelSeries" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="::sight::modules::ui::base::frame::SDefaultFrame">
+        <service uid="organManagerFrame" type="::sight::modules::ui::base::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>

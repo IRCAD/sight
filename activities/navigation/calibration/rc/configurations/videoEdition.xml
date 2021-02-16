@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::LineLayoutManager">
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor/>

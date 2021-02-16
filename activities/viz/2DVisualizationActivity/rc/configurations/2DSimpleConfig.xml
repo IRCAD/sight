@@ -9,7 +9,7 @@
     <config>
         <object uid="${objectID}" type="::sight::data::ImageSeries" src="ref" />
         <object uid="${imageID}" type="::sight::data::Image" src="ref" />
-        <service uid="mainview" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainview" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />

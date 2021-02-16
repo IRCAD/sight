@@ -31,7 +31,7 @@
         <!-- TF editor -->
         <object uid="Histogram" type="::sight::data::Histogram" />
         <object uid="landmarks" type="::sight::data::Landmarks" />
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="VR" align="center" />
@@ -47,7 +47,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Show 3d slice cursor" icon="module_ui_media-0.1/icons/icon-landmark.png" style="check" />

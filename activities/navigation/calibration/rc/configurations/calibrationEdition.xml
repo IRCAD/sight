@@ -18,7 +18,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::LineLayoutManager">
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
+        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Export camera series" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
@@ -60,7 +60,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="camerasView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -74,7 +74,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::sight::modules::ui::base::view::SDefaultView">
+        <service uid="cameraInfoView" type="::sight::modules::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />

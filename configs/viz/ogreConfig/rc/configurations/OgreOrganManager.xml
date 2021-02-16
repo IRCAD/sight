@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="organView" type="::sight::modules::ui::base::view::SDefaultView" >
+        <service uid="organView" type="::sight::modules::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <view caption="Organs" expanded="true"  />

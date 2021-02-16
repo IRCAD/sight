@@ -19,7 +19,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::frame::SDefaultFrame" >
+        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>

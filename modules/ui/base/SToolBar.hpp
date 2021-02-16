@@ -30,24 +30,22 @@
 
 namespace sight::modules::ui::base
 {
-namespace aspect
-{
 
 /**
  * @brief   Defines the default toolbar for standard application
  */
-class MODULE_UI_BASE_CLASS_API SDefaultToolBar : public ::sight::ui::base::IToolBarSrv
+class MODULE_UI_BASE_CLASS_API SToolBar : public ::sight::ui::base::IToolBarSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SDefaultToolBar, ::sight::ui::base::IToolBarSrv)
+    fwCoreServiceMacro(SToolBar, ::sight::ui::base::IToolBarSrv)
 
     /// Constructor. Do nothing.
-    MODULE_UI_BASE_API SDefaultToolBar() noexcept;
+    MODULE_UI_BASE_API SToolBar() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SDefaultToolBar() noexcept;
+    MODULE_UI_BASE_API virtual ~SToolBar() noexcept;
 
 protected:
 
@@ -81,7 +79,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="::ui::base::IToolBarSrv" impl="::sight::modules::ui::base::aspect::SDefaultToolBar"
+       <service uid="toolbar2" type="::ui::base::IToolBarSrv" impl="::sight::modules::ui::base::SToolBar"
      * autoConnect="no"
      *>
            <gui>
@@ -131,7 +129,5 @@ protected:
     ///@}
 
 };
-
-}
 
 }

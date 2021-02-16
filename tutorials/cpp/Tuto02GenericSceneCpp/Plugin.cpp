@@ -65,7 +65,7 @@ void Plugin::initialize()
     m_appManager->addObject(snapshot, snapshot->getID());
 
     // UI declaration.
-    auto mainView = m_appManager->addService("::sight::modules::ui::base::frame::SDefaultFrame", true, false);
+    auto mainView = m_appManager->addService("::sight::modules::ui::base::SFrame", true, false);
     {
         service::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto02GenericSceneCpp");
@@ -80,7 +80,7 @@ void Plugin::initialize()
 
     auto progressBarView = m_appManager->addService("::sight::modules::ui::base::editor::SJobBar", true, false);
 
-    auto menuBarView = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenuBar", "menuBarView",
+    auto menuBarView = m_appManager->addService("::sight::modules::ui::base::SMenuBar", "menuBarView",
                                                 true,
                                                 false);
     {
@@ -90,7 +90,7 @@ void Plugin::initialize()
         menuBarView->configure(config);
     }
 
-    auto menuFileView = m_appManager->addService("::sight::modules::ui::base::aspect::SDefaultMenu", "menuFileView",
+    auto menuFileView = m_appManager->addService("::sight::modules::ui::base::SMenu", "menuFileView",
                                                  true,
                                                  false);
     {
@@ -146,7 +146,7 @@ void Plugin::initialize()
         menuFileView->configure(config);
     }
 
-    auto containerView = m_appManager->addService("::sight::modules::ui::base::view::SDefaultView", "containerView",
+    auto containerView = m_appManager->addService("::sight::modules::ui::base::SView", "containerView",
                                                   true,
                                                   false);
     {
@@ -187,7 +187,7 @@ void Plugin::initialize()
         containerView->configure(config);
     }
 
-    auto editorsView = m_appManager->addService("::sight::modules::ui::base::view::SDefaultView", "editorsView", true,
+    auto editorsView = m_appManager->addService("::sight::modules::ui::base::SView", "editorsView", true,
                                                 false);
     {
         service::IService::ConfigType config;
