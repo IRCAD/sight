@@ -35,7 +35,7 @@
 #include <QTableView>
 #include <QTableWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <vector>
 
@@ -54,13 +54,13 @@ namespace sight::modules::ui::debug
  * @brief   Editor to dump or restore selected buffer.
  */
 class MODULE_UI_DEBUG_CLASS_API DumpEditor : public QObject,
-                                             public sight::ui::base::editor::IEditor
+                                             public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(DumpEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(DumpEditor, sight::ui::base::IEditor)
 
     /// Constructor. Does nothing.
     MODULE_UI_DEBUG_API DumpEditor() noexcept;

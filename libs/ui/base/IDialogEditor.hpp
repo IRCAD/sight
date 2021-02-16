@@ -31,35 +31,27 @@
 
 namespace sight::ui::base
 {
-namespace editor
-{
 
 /**
- * @brief Defines the service interface managing the editor service for object.
+ * @brief Defines the service interface managing the editor service which create their own container.
  */
-
-class UI_BASE_CLASS_API IEditor : public ui::base::IGuiContainerSrv
+class UI_BASE_CLASS_API IDialogEditor : public service::IService
 {
 
 public:
 
-    fwCoreServiceMacro(IEditor, ui::base::IGuiContainerSrv)
+    fwCoreServiceMacro(IDialogEditor, service::IService)
 
 protected:
 
-    /**
-     * @brief   Constructor. Do nothing (Just initialize parameters).
-     */
-    IEditor() noexcept
+    IDialogEditor() noexcept
     {
     }
 
-    /// Destructor. Do nothing.
-    virtual ~IEditor() noexcept
+    virtual ~IDialogEditor() noexcept
     {
     }
 
 };
 
-} // namespace editor
 } // namespace sight::ui::base

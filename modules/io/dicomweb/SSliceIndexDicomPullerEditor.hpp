@@ -29,7 +29,7 @@
 #include <QLineEdit>
 #include <QSlider>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -61,13 +61,13 @@ namespace sight::modules::io::dicomweb
 {
 
 class MODULE_IO_DICOMWEB_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
-                                                                  public sight::ui::base::editor::IEditor
+                                                                  public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  sight::ui::base::editor::IEditor )
+    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  sight::ui::base::IEditor )
 
     /**
      * @brief Constructor

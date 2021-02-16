@@ -53,7 +53,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SSelector,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------

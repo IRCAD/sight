@@ -43,7 +43,7 @@
 namespace sight::modules::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::SShaderParameterEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SShaderParameterEditor,
                          ::sight::data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";

@@ -34,7 +34,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::calibration
 {
@@ -82,12 +82,12 @@ namespace sight::modules::ui::qt::calibration
  *
  */
 class MODULE_UI_QT_CLASS_API SCameraConfigLauncher : public QObject,
-                                                     public sight::ui::base::editor::IEditor
+                                                     public sight::ui::base::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SCameraConfigLauncher, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCameraConfigLauncher, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SCameraConfigLauncher() noexcept;

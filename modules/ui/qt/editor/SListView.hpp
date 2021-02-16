@@ -27,7 +27,7 @@
 #include <QListWidget>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -54,13 +54,13 @@ namespace editor
  * - \b removeItem(int): This slot allows to remove the element at the index.
  */
 class MODULE_UI_QT_CLASS_API SListView : public QObject,
-                                         public sight::ui::base::editor::IEditor
+                                         public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SListView, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SListView, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SListView() noexcept;

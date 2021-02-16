@@ -36,7 +36,7 @@
 #include <QPointer>
 #include <QVector>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -77,7 +77,7 @@ namespace editor
  */
 class MODULE_UI_QT_CLASS_API SSelector final :
     public QObject,
-    public sight::ui::base::editor::IEditor
+    public sight::ui::base::IEditor
 {
 
 Q_OBJECT
@@ -85,7 +85,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSelector, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSelector, sight::ui::base::IEditor)
 
     /// Creates the signal and slots.
     MODULE_UI_QT_API SSelector();

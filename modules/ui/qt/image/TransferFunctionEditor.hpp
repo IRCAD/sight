@@ -29,7 +29,7 @@
 
 #include <QObject>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -78,13 +78,13 @@ namespace sight::modules::ui::qt::image
  * - \b path (optional): path to a directory containing tf files.
  */
 class MODULE_UI_QT_CLASS_API TransferFunctionEditor : public QObject,
-                                                      public sight::ui::base::editor::IEditor
+                                                      public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(TransferFunctionEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(TransferFunctionEditor, sight::ui::base::IEditor)
 
     /// Basic constructor, do nothing.
     MODULE_UI_QT_API TransferFunctionEditor();

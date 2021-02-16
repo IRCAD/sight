@@ -51,7 +51,7 @@
 namespace sight::modules::ui::qt::reconstruction
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor,
                          ::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor, data::Reconstruction )
 
 static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";

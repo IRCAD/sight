@@ -37,7 +37,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QTreeWidget;
 class QCheckBox;
@@ -96,7 +96,7 @@ class ValueView;
  */
 class MODULE_UI_QT_CLASS_API SModelSeriesList final :
     public QObject,
-    public sight::ui::base::editor::IEditor
+    public sight::ui::base::IEditor
 {
 
 Q_OBJECT
@@ -104,7 +104,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SModelSeriesList, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SModelSeriesList, sight::ui::base::IEditor)
 
     /// Initializes the slot and signals.
     MODULE_UI_QT_API SModelSeriesList() noexcept;

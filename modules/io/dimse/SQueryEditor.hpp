@@ -37,7 +37,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::io::dimse
 {
@@ -70,7 +70,7 @@ namespace sight::modules::io::dimse
  */
 class MODULE_IO_DIMSE_CLASS_API SQueryEditor final :
     public QObject,
-    public sight::ui::base::editor::IEditor
+    public sight::ui::base::IEditor
 {
 
 Q_OBJECT;
@@ -78,7 +78,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::IEditor )
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SQueryEditor() noexcept;

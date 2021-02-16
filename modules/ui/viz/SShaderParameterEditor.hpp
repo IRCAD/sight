@@ -33,7 +33,7 @@
 
 #include <QVBoxLayout>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::modules::ui::viz
@@ -52,12 +52,12 @@ namespace sight::modules::ui::viz
  * @subsection In-Out In-Out:
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction whose paremeters should be edited.
  */
-class MODULE_UI_VIZ_CLASS_API SShaderParameterEditor : public sight::ui::base::editor::IEditor
+class MODULE_UI_VIZ_CLASS_API SShaderParameterEditor : public sight::ui::base::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SShaderParameterEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SShaderParameterEditor, sight::ui::base::IEditor)
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;

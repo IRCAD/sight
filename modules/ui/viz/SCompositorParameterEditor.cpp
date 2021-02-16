@@ -44,7 +44,7 @@
 namespace sight::modules::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::SCompositorParameterEditor)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SCompositorParameterEditor)
 
 const core::com::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
 

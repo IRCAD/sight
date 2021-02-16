@@ -29,7 +29,7 @@
 #include <QPointer>
 #include <QVector>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::calibration
 {
@@ -55,12 +55,12 @@ namespace sight::modules::ui::qt::calibration
  * -\b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class MODULE_UI_QT_CLASS_API SCameraSeriesEditor : public QObject,
-                                                   public sight::ui::base::editor::IEditor
+                                                   public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraSeriesEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCameraSeriesEditor, sight::ui::base::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

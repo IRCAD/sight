@@ -36,7 +36,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <string>
 #include <vector>
@@ -60,7 +60,7 @@ namespace sight::modules::ui::viz
  */
 class MODULE_UI_VIZ_CLASS_API SLightSelector final :
     public QObject,
-    public sight::ui::base::editor::IEditor
+    public sight::ui::base::IEditor
 {
 
 Q_OBJECT
@@ -68,7 +68,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLightSelector, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SLightSelector, sight::ui::base::IEditor)
 
     /// Initializes signals and slots.
     MODULE_UI_VIZ_API SLightSelector() noexcept;

@@ -34,7 +34,7 @@
 #include <QPushButton>
 #include <QString>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::viz
 {
@@ -60,13 +60,13 @@ namespace sight::modules::ui::viz
  * @brief
  */
 class MODULE_UI_VIZ_CLASS_API SMaterialSelector : public QObject,
-                                                  public sight::ui::base::editor::IEditor
+                                                  public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SMaterialSelector, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SMaterialSelector, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SMaterialSelector() noexcept;

@@ -34,7 +34,7 @@
 #include <QSlider>
 #include <QWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -91,13 +91,13 @@ namespace sight::modules::ui::dicom
  * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  */
 class MODULE_UI_DICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
-                                                         public sight::ui::base::editor::IEditor
+                                                         public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::editor::IEditor )
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::IEditor )
 
     MODULE_UI_DICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;

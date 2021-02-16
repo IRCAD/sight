@@ -30,7 +30,7 @@
 #include <QPointer>
 #include <QQuickWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -105,14 +105,14 @@ namespace editor
  * @todo listen the current activity data to notify when the next activity can be created
  */
 class MODULE_UI_QT_CLASS_API SActivitySequencer : public QObject,
-                                                  public sight::ui::base::editor::IEditor,
+                                                  public sight::ui::base::IEditor,
                                                   public activity::IActivitySequencer
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SActivitySequencer, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SActivitySequencer, sight::ui::base::IEditor)
 
     /// Initialize signals and slots
     MODULE_UI_QT_API SActivitySequencer() noexcept;

@@ -27,7 +27,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QSlider;
 class QLabel;
@@ -58,11 +58,11 @@ namespace sight::modules::ui::qt::viz
  * - \b max (optional): set the maximum value for translation/rotation (default: translation=+300, rotation=180).
  */
 class MODULE_UI_QT_CLASS_API STransformEditor : public QObject,
-                                                public sight::ui::base::editor::IEditor
+                                                public sight::ui::base::IEditor
 {
 Q_OBJECT;
 public:
-    fwCoreServiceMacro(STransformEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(STransformEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API STransformEditor() noexcept;

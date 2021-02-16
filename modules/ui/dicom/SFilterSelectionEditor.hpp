@@ -37,7 +37,7 @@
 #include <QShortcut>
 #include <QWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::dicom
 {
@@ -60,13 +60,13 @@ namespace sight::modules::ui::dicom
  */
 
 class MODULE_UI_DICOM_CLASS_API SFilterSelectionEditor : public QObject,
-                                                         public sight::ui::base::editor::IEditor
+                                                         public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectionEditor,  sight::ui::base::editor::IEditor )
+    fwCoreServiceMacro(SFilterSelectionEditor,  sight::ui::base::IEditor )
 
     typedef std::map< std::string, filter::dicom::IFilter::sptr > FilterMapType;
 

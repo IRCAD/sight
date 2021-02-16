@@ -43,7 +43,7 @@
 namespace sight::modules::ui::qt::calibration
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::calibration::SImagesSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::calibration::SImagesSelector,
                          ::sight::data::Vector)
 
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";

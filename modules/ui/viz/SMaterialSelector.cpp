@@ -50,7 +50,7 @@
 namespace sight::modules::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::SMaterialSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SMaterialSelector,
                          ::sight::data::Reconstruction)
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";

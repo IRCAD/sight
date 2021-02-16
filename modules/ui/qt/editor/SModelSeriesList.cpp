@@ -143,8 +143,8 @@ public:
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SModelSeriesList,
-                        ::sight::data::ModelSeries)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SModelSeriesList,
+                         ::sight::data::ModelSeries)
 
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
 static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";

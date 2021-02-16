@@ -43,7 +43,7 @@ namespace sight::modules::ui::qt
 namespace video
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::video::SSlider )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::video::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 

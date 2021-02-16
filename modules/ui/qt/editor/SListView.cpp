@@ -38,7 +38,7 @@ namespace sight::modules::ui::qt
 {
 namespace editor
 {
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SListView )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SListView )
 
 const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
 const core::com::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";

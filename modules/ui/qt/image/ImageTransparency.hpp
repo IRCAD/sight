@@ -34,7 +34,7 @@
 #include <QPointer>
 #include <QSlider>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::image
 {
@@ -56,13 +56,13 @@ namespace sight::modules::ui::qt::image
  * - \b shortcut : shortcut used to show/hide the image
  */
 class MODULE_UI_QT_CLASS_API ImageTransparency : public QObject,
-                                                 public sight::ui::base::editor::IEditor
+                                                 public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageTransparency, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(ImageTransparency, sight::ui::base::IEditor)
 
     MODULE_UI_QT_API ImageTransparency() noexcept;
 

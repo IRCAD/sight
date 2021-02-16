@@ -31,7 +31,7 @@
 #include <QLabel>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -61,12 +61,12 @@ namespace editor
  *
  */
 class MODULE_UI_QT_CLASS_API SShowVectorSize : public QObject,
-                                               public sight::ui::base::editor::IEditor
+                                               public sight::ui::base::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SShowVectorSize, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SShowVectorSize, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SShowVectorSize() noexcept;

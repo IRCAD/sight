@@ -35,7 +35,7 @@
 #include <QSlider>
 #include <QTreeWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::metrics
 {
@@ -86,14 +86,14 @@ namespace sight::modules::ui::qt::metrics
  *      and groups with multiple points.
  */
 class MODULE_UI_QT_CLASS_API SLandmarks final : public QObject,
-                                                public sight::ui::base::editor::IEditor
+                                                public sight::ui::base::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLandmarks, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SLandmarks, sight::ui::base::IEditor)
 
     /// Initializes slots.
     MODULE_UI_QT_API SLandmarks() noexcept;

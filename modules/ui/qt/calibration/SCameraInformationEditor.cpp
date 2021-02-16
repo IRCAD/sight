@@ -39,7 +39,7 @@ namespace sight::modules::ui::qt::calibration
 {
 // -------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor,
                          sight::modules::ui::qt::calibration::SCameraInformationEditor,
                          ::sight::data::Camera)
 

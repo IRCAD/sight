@@ -52,7 +52,7 @@ namespace sight::modules::ui::qt::viz
 
 const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::viz::SnapshotEditor )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::SnapshotEditor )
 
 //------------------------------------------------------------------------------
 

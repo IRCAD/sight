@@ -36,7 +36,7 @@
 #include <QSlider>
 #include <QSpinBox>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::viz
 {
@@ -53,13 +53,13 @@ namespace sight::modules::ui::viz
  *  <service uid=SLightEditorUid" type="modules::ui::viz::SLightEditor" />
  */
 class MODULE_UI_VIZ_CLASS_API SLightEditor : public QObject,
-                                             public sight::ui::base::editor::IEditor
+                                             public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SLightEditor, sight::ui::base::IEditor)
 
     /// Creates the service.
     MODULE_UI_VIZ_API SLightEditor() noexcept;

@@ -55,7 +55,7 @@
 namespace sight::modules::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::image::SliceIndexPositionEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::SliceIndexPositionEditor,
                          ::sight::data::Image )
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =

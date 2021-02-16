@@ -46,7 +46,7 @@ namespace sight::modules::ui::viz
 using sight::viz::ogre::ILight;
 using sight::viz::ogre::Layer;
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::SLightEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SLightEditor,
                          ::sight::data::Composite )
 
 //------------------------------------------------------------------------------

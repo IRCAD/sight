@@ -40,13 +40,13 @@
 #include <QString>
 #include <QVBoxLayout>
 
-#include <ui/base/editor/IDialogEditor.hpp>
+#include <ui/base/IDialogEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::modules::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::STextureSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::STextureSelector,
                          ::sight::data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
@@ -136,7 +136,7 @@ void STextureSelector::onLoadButton()
         material->setDiffuseTexture(image);
     }
 
-    auto srv = service::add< sight::ui::base::editor::IDialogEditor >("::modules::ui::base::editor::SIOSelector");
+    auto srv = service::add< sight::ui::base::IDialogEditor >("::modules::ui::base::editor::SIOSelector");
     srv->registerInOut(image, io::base::service::s_DATA_KEY);
 
     srv->configure();

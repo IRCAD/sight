@@ -32,7 +32,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::calibration
 {
@@ -56,12 +56,12 @@ namespace sight::modules::ui::qt::calibration
  * - \b calInfo2 [sight::data::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class MODULE_UI_QT_CLASS_API SCalibrationInfoEditor : public QObject,
-                                                      public sight::ui::base::editor::IEditor
+                                                      public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCalibrationInfoEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCalibrationInfoEditor, sight::ui::base::IEditor)
 
     /**
      * @name Slots API

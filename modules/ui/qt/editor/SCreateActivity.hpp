@@ -31,7 +31,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -71,13 +71,13 @@ namespace editor
  *    - \b id: id of the activity
  */
 class MODULE_UI_QT_CLASS_API SCreateActivity : public QObject,
-                                               public sight::ui::base::editor::IEditor
+                                               public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCreateActivity, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCreateActivity, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SCreateActivity() noexcept;

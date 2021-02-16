@@ -29,7 +29,7 @@
 
 #include <QObject>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -87,7 +87,7 @@ namespace sight::modules::ui::qt::image
  * - \b iconHeight (optional, default="16"): icon height.
  */
 class MODULE_UI_QT_CLASS_API STransferFunction final : public QObject,
-                                                       public sight::ui::base::editor::IEditor
+                                                       public sight::ui::base::IEditor
 {
 
 Q_OBJECT
@@ -95,7 +95,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STransferFunction, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(STransferFunction, sight::ui::base::IEditor)
 
     /// Does nothing.
     MODULE_UI_QT_API STransferFunction();

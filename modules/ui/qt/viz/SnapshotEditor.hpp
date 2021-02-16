@@ -31,7 +31,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -45,14 +45,14 @@ namespace sight::modules::ui::qt::viz
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
 class MODULE_UI_QT_CLASS_API SnapshotEditor : public QObject,
-                                              public sight::ui::base::editor::IEditor
+                                              public sight::ui::base::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SnapshotEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SnapshotEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SnapshotEditor() noexcept;

@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::viz
 {
@@ -42,13 +42,13 @@ namespace sight::modules::ui::qt::viz
  * @brief   PointEditor service allows to display point information.
  */
 class MODULE_UI_QT_CLASS_API PointEditor : public QObject,
-                                           public sight::ui::base::editor::IEditor
+                                           public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(PointEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(PointEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API PointEditor() noexcept;

@@ -30,7 +30,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QAbstractButton;
 class QButtonGroup;
@@ -52,13 +52,13 @@ namespace sight::modules::ui::viz
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class MODULE_UI_VIZ_CLASS_API SCoreCompositorEditor : public QObject,
-                                                      public sight::ui::base::editor::IEditor
+                                                      public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCoreCompositorEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCoreCompositorEditor, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SCoreCompositorEditor() noexcept;

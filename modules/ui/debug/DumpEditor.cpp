@@ -55,7 +55,7 @@ namespace sight::modules::ui::debug
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::debugQt::DumpEditor )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::debugQt::DumpEditor )
 
 core::memory::BufferManager::BufferInfoMapType m_bufferInfos;
 core::memory::BufferManager::BufferStats m_bufferStats = {0, 0};

@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -90,14 +90,14 @@ namespace video
  * - \b label (optional, default="Video source: "): label of the selector.
  */
 class MODULE_UI_QT_CLASS_API SCamera final : public QObject,
-                                             public sight::ui::base::editor::IEditor
+                                             public sight::ui::base::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCamera, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCamera, sight::ui::base::IEditor)
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API SCamera();

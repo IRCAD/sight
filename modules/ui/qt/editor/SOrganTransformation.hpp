@@ -30,7 +30,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <map>
 #include <string>
@@ -60,12 +60,12 @@ namespace editor
  * - \b composite [sight::data::Composite]: composite.
  */
 class MODULE_UI_QT_CLASS_API SOrganTransformation : public QObject,
-                                                    public sight::ui::base::editor::IEditor
+                                                    public sight::ui::base::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOrganTransformation, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SOrganTransformation, sight::ui::base::IEditor)
 
     /// constructor
     MODULE_UI_QT_API SOrganTransformation() noexcept;

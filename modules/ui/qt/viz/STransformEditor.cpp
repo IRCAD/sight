@@ -50,7 +50,7 @@
 namespace sight::modules::ui::qt::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::viz::STransformEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::STransformEditor,
                          ::sight::data::TransformationMatrix3D)
 
 //------------------------------------------------------------------------------

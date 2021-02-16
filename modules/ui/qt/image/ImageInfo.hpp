@@ -33,7 +33,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::image
 {
@@ -58,13 +58,13 @@ namespace sight::modules::ui::qt::image
  * - \b image [sight::data::Image]: image used to retrieve the pixel value.
  */
 class MODULE_UI_QT_CLASS_API ImageInfo : public QObject,
-                                         public sight::ui::base::editor::IEditor
+                                         public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageInfo, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(ImageInfo, sight::ui::base::IEditor)
 
     MODULE_UI_QT_API ImageInfo() noexcept;
 

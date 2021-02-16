@@ -37,7 +37,7 @@ namespace sight::modules::ui::qt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SImage )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SImage )
 
 //-----------------------------------------------------------------------------
 

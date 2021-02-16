@@ -42,7 +42,7 @@ namespace sight::modules::ui::qt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SSlider )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 

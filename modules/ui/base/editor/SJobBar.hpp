@@ -30,8 +30,8 @@
 
 #include <service/IService.hpp>
 
-#include <ui/base/editor/IDialogEditor.hpp>
 #include <ui/base/IActionSrv.hpp>
+#include <ui/base/IDialogEditor.hpp>
 
 #include <set>
 
@@ -52,12 +52,12 @@ namespace editor
  * @brief   Service displaying a progress bar.
  */
 
-class MODULE_UI_BASE_CLASS_API SJobBar : public ::sight::ui::base::editor::IDialogEditor
+class MODULE_UI_BASE_CLASS_API SJobBar : public ::sight::ui::base::IDialogEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SJobBar, ::sight::ui::base::editor::IDialogEditor)
+    fwCoreServiceMacro(SJobBar, ::sight::ui::base::IDialogEditor)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 

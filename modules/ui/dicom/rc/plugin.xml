@@ -3,14 +3,14 @@
 
     
     <extension implements="::sight::service::registry::ServiceFactory">
-        <type>::sight::ui::base::editor::IEditor</type>
+        <type>::sight::ui::base::IEditor</type>
         <service>::sight::modules::ui::dicom::SFilterSelectionEditor</service>
         <object>::sight::data::Vector</object>
         <desc>Filter Selection Editor</desc>
     </extension>
 
     <extension implements="::sight::service::registry::ServiceFactory">
-        <type>::sight::ui::base::editor::IDialogEditor</type>
+        <type>::sight::ui::base::IDialogEditor</type>
         <service>::sight::modules::ui::dicom::SFilterSelectorDialog</service>
         <object>::sight::data::String</object>
     </extension>
@@ -23,7 +23,7 @@
     </extension>
 
     <extension implements="::sight::service::registry::ServiceFactory">
-        <type>::sight::ui::base::editor::IEditor</type>
+        <type>::sight::ui::base::IEditor</type>
         <service>::sight::modules::ui::dicom::SSliceIndexDicomEditor</service>
         <object>::sight::data::DicomSeries</object>
         <desc>Slice Index Dicom Editor</desc>

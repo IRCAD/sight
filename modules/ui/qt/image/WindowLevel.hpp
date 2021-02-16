@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QAction;
 class QComboBox;
@@ -81,14 +81,14 @@ namespace sight::modules::ui::qt::image
  * TF.
  */
 class MODULE_UI_QT_CLASS_API WindowLevel final : public QObject,
-                                                 public sight::ui::base::editor::IEditor
+                                                 public sight::ui::base::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(WindowLevel, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(WindowLevel, sight::ui::base::IEditor)
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API WindowLevel() noexcept;

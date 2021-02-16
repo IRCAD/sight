@@ -30,7 +30,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QMenu;
 class QActionGroup;
@@ -81,14 +81,14 @@ namespace editor
  * - \b disable(): This slots allows to disable the button
  */
 class MODULE_UI_QT_CLASS_API SSelectionMenuButton : public QObject,
-                                                    public sight::ui::base::editor::IEditor
+                                                    public sight::ui::base::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSelectionMenuButton, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSelectionMenuButton, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSelectionMenuButton() noexcept;

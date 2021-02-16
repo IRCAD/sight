@@ -28,7 +28,7 @@
 #include <core/com/Slot.hpp>
 #include <core/jobs/IJob.hpp>
 
-#include <ui/base/editor/IDialogEditor.hpp>
+#include <ui/base/IDialogEditor.hpp>
 
 namespace sight::modules::ui::base
 {
@@ -87,7 +87,7 @@ namespace editor
  *      - \b id (mandatory) : the id of the configuration to use.
  *      - \b service (mandatory) :  the name of the service.
  */
-class MODULE_UI_BASE_CLASS_API SIOSelector : public sight::ui::base::editor::IDialogEditor
+class MODULE_UI_BASE_CLASS_API SIOSelector : public sight::ui::base::IDialogEditor
 {
 
 public:
@@ -99,7 +99,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceMacro(SIOSelector,  sight::ui::base::editor::IDialogEditor)
+    fwCoreServiceMacro(SIOSelector,  sight::ui::base::IDialogEditor)
 
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
     typedef core::com::Signal< void ( ) > JobFailedSignalType;

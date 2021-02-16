@@ -54,7 +54,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IDialogEditor, ::sight::modules::ui::base::editor::SIOSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::modules::ui::base::editor::SIOSelector,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";

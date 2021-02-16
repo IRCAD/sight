@@ -42,7 +42,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -103,12 +103,12 @@ namespace editor
 
  */
 class MODULE_UI_QT_CLASS_API SActivityWizard : public QObject,
-                                               public sight::ui::base::editor::IEditor
+                                               public sight::ui::base::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SActivityWizard, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SActivityWizard, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SActivityWizard() noexcept;

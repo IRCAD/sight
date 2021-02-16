@@ -54,7 +54,7 @@ namespace sight::modules::ui::qt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SSelectionMenuButton )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SSelectionMenuButton )
 
 static const core::com::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 

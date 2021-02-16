@@ -28,7 +28,7 @@
 
 #include <data/tools/helper/MedicalImage.hpp>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 #include <ui/qt/SliceSelector.hpp>
 
 namespace sight::modules::ui::qt::image
@@ -55,12 +55,12 @@ namespace sight::modules::ui::qt::image
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
-class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::editor::IEditor
+class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SliceIndexPositionEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SliceIndexPositionEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SliceIndexPositionEditor() noexcept;

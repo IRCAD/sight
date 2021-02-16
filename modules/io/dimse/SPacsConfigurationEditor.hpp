@@ -37,7 +37,7 @@
 #include <QSpinBox>
 #include <QWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -63,7 +63,7 @@ namespace sight::modules::io::dimse
  *                                                 notification.
  */
 class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationEditor : public QObject,
-                                                           public sight::ui::base::editor::IEditor
+                                                           public sight::ui::base::IEditor
 {
 
 Q_OBJECT;
@@ -71,7 +71,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPacsConfigurationEditor,  sight::ui::base::editor::IEditor )
+    fwCoreServiceMacro(SPacsConfigurationEditor,  sight::ui::base::IEditor )
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SPacsConfigurationEditor() noexcept;

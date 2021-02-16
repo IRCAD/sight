@@ -48,7 +48,7 @@ namespace sight::modules::ui::qt::metrics
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::metrics::Distance,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::metrics::Distance,
                          ::sight::data::Image )
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";

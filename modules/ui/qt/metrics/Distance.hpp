@@ -30,7 +30,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt::metrics
 {
@@ -56,12 +56,12 @@ namespace sight::modules::ui::qt::metrics
  * -\b image [data::Image]: Image in which we calculate the distance.
  */
 class MODULE_UI_QT_CLASS_API Distance : public QObject,
-                                        public sight::ui::base::editor::IEditor
+                                        public sight::ui::base::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(Distance, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(Distance, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API Distance() noexcept;

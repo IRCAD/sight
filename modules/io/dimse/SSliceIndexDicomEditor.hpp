@@ -39,7 +39,7 @@
 #include <QPointer>
 #include <QSlider>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::io::dimse
 {
@@ -72,7 +72,7 @@ namespace sight::modules::io::dimse
  */
 class MODULE_IO_DIMSE_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
-    public sight::ui::base::editor::IEditor,
+    public sight::ui::base::IEditor,
     public service::IHasServices
 {
 
@@ -81,7 +81,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::IEditor)
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SSliceIndexDicomEditor() noexcept;

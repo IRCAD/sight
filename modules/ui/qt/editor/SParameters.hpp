@@ -34,7 +34,7 @@
 #include <QSignalMapper>
 #include <QSlider>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -120,11 +120,11 @@ namespace editor
  * dependsReverse (optional, bool, default=false): reverse the dependency status checking.
  */
 class MODULE_UI_QT_CLASS_API SParameters : public QObject,
-                                           public sight::ui::base::editor::IEditor
+                                           public sight::ui::base::IEditor
 {
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SParameters, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SParameters, sight::ui::base::IEditor)
 
     /// Boolean changed signal type
     typedef core::com::Signal< void (bool, std::string) > BooleanChangedSignalType;

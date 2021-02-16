@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -95,12 +95,12 @@ namespace editor
  * status.
  */
 class MODULE_UI_QT_CLASS_API SStatus : public QObject,
-                                       public sight::ui::base::editor::IEditor
+                                       public sight::ui::base::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SStatus, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SStatus, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SStatus() noexcept;

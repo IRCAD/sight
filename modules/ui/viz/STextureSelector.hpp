@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -50,14 +50,14 @@ namespace sight::modules::ui::viz
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction where the texture should be applied.
  */
 class MODULE_UI_VIZ_CLASS_API STextureSelector : public QObject,
-                                                 public sight::ui::base::editor::IEditor
+                                                 public sight::ui::base::IEditor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(STextureSelector, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(STextureSelector, sight::ui::base::IEditor)
 
     MODULE_UI_VIZ_API STextureSelector() noexcept;
     MODULE_UI_VIZ_API virtual ~STextureSelector() noexcept;

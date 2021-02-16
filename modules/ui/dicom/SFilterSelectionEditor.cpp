@@ -47,7 +47,7 @@
 namespace sight::modules::ui::dicom
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::dicom::SFilterSelectionEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::dicom::SFilterSelectionEditor,
                          ::sight::data::Vector )
 
 //------------------------------------------------------------------------------

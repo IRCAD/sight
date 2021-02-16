@@ -50,7 +50,7 @@
 namespace sight::modules::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::SLightSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SLightSelector,
                          ::sight::data::Composite )
 
 using sight::viz::ogre::ILight;

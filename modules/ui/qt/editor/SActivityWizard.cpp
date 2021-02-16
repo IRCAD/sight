@@ -72,7 +72,7 @@ static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SActivityWizard,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SActivityWizard,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------

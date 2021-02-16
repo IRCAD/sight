@@ -29,7 +29,7 @@
 #include <QPointer>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -87,7 +87,7 @@ namespace editor
  * - \b iconHeight (optional, unsigned, default=0): icon height.
  */
 class MODULE_UI_QT_CLASS_API SSignalButton : public QObject,
-                                             public sight::ui::base::editor::IEditor
+                                             public sight::ui::base::IEditor
 {
 
 Q_OBJECT
@@ -95,7 +95,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSignalButton, ::sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSignalButton, ::sight::ui::base::IEditor)
 
     /// Creates signals and slots.
     MODULE_UI_QT_API SSignalButton() noexcept;

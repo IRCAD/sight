@@ -35,7 +35,7 @@
 #include <QPointer>
 #include <QVBoxLayout>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <vector>
 
@@ -46,13 +46,13 @@ namespace sight::modules::ui::viz
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class MODULE_UI_VIZ_CLASS_API SCompositorSelector : public QObject,
-                                                    public sight::ui::base::editor::IEditor
+                                                    public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCompositorSelector, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCompositorSelector, sight::ui::base::IEditor)
 
     /** @} */
 

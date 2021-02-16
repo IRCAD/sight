@@ -45,7 +45,7 @@ namespace sight::modules::ui::viz
 
 using sight::viz::ogre::Layer;
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::viz::SCompositorSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SCompositorSelector,
                          ::sight::data::Composite)
 
 const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";

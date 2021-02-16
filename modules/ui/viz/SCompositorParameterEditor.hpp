@@ -29,7 +29,7 @@
 
 #include <QVBoxLayout>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::modules::ui::viz
@@ -46,12 +46,12 @@ namespace sight::modules::ui::viz
        </service>
        @endcode
  */
-class MODULE_UI_VIZ_CLASS_API SCompositorParameterEditor : public sight::ui::base::editor::IEditor
+class MODULE_UI_VIZ_CLASS_API SCompositorParameterEditor : public sight::ui::base::IEditor
 {
 
 public:
 
-    fwCoreServiceMacro(SCompositorParameterEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCompositorParameterEditor, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SCompositorParameterEditor() noexcept;

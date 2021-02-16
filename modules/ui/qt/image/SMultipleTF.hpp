@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QPushButton>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -86,7 +86,7 @@ namespace sight::modules::ui::qt::image
  */
 class MODULE_UI_QT_CLASS_API SMultipleTF final :
     public QObject,
-    public sight::ui::base::editor::IEditor
+    public sight::ui::base::IEditor
 {
 
 Q_OBJECT
@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(modules::ui::qt::image::SMultipleTF, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(modules::ui::qt::image::SMultipleTF, sight::ui::base::IEditor)
 
     /// Creates the editor.
     MODULE_UI_QT_API SMultipleTF();

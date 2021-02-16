@@ -29,7 +29,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 class QSlider;
 class QPushButton;
@@ -53,13 +53,13 @@ namespace sight::modules::ui::qt::reconstruction
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction containing the material to update.
  */
 class MODULE_UI_QT_CLASS_API SOrganMaterialEditor : public QObject,
-                                                    public sight::ui::base::editor::IEditor
+                                                    public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SOrganMaterialEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SOrganMaterialEditor, sight::ui::base::IEditor)
 
     /// Creates the service.
     MODULE_UI_QT_API SOrganMaterialEditor() noexcept;

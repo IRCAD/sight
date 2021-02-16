@@ -43,7 +43,7 @@ namespace editor
 
 static const service::IService::KeyType s_MATRIX_INPUT = "matrix";
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SMatrixViewer)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SMatrixViewer)
 
 // ------------------------------------------------------------------------------
 

@@ -35,7 +35,7 @@
 #include <QPushButton>
 #include <QSlider>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 namespace sight::modules::ui::qt
 {
@@ -74,13 +74,13 @@ namespace editor
  * - \b setMaxValue(int): This slot allows to set maximum value.
  */
 class MODULE_UI_QT_CLASS_API SSlider : public QObject,
-                                       public sight::ui::base::editor::IEditor
+                                       public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSlider, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SSlider, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSlider() noexcept;

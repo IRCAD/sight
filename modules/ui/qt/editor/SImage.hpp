@@ -26,7 +26,7 @@
 
 #include <QObject>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -53,12 +53,12 @@ namespace editor
  * - \b height (optional): height of the image in pixels.
  */
 class MODULE_UI_QT_CLASS_API SImage : public QObject,
-                                      public sight::ui::base::editor::IEditor
+                                      public sight::ui::base::IEditor
 {
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SImage, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SImage, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SImage() noexcept;

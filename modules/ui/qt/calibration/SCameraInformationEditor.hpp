@@ -31,7 +31,7 @@
 #include <QLabel>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <list>
 
@@ -54,12 +54,12 @@ namespace sight::modules::ui::qt::calibration
  * - \b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class MODULE_UI_QT_CLASS_API SCameraInformationEditor : public QObject,
-                                                        public sight::ui::base::editor::IEditor
+                                                        public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraInformationEditor, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SCameraInformationEditor, sight::ui::base::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

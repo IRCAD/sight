@@ -57,7 +57,7 @@ namespace sight::modules::ui::qt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::qt::editor::SOrganTransformation )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::editor::SOrganTransformation )
 
 static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const service::IService::KeyType s_COMPOSITE_INOUT = "composite";

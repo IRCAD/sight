@@ -35,7 +35,7 @@
 #include <QPushButton>
 #include <QWidget>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -65,13 +65,13 @@ namespace sight::modules::io::dicomweb
 
  */
 class MODULE_IO_DICOMWEB_CLASS_API SQueryEditor : public QObject,
-                                                  public sight::ui::base::editor::IEditor
+                                                  public sight::ui::base::IEditor
 {
 Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::editor::IEditor )
+    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::IEditor )
 
     /// Constructor
     MODULE_IO_DICOMWEB_API SQueryEditor() noexcept;

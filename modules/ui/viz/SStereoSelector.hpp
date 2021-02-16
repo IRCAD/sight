@@ -31,7 +31,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include <ui/base/editor/IEditor.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <vector>
 
@@ -42,13 +42,13 @@ namespace sight::modules::ui::viz
  * @brief   Allows to select the stereo mode of an Ogre Compositor
  */
 class MODULE_UI_VIZ_CLASS_API SStereoSelector : public QObject,
-                                                public sight::ui::base::editor::IEditor
+                                                public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SStereoSelector, sight::ui::base::editor::IEditor)
+    fwCoreServiceMacro(SStereoSelector, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoSelector() noexcept;

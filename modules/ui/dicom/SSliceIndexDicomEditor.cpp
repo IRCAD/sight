@@ -56,7 +56,7 @@
 namespace sight::modules::ui::dicom
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IEditor, ::sight::modules::ui::dicom::SSliceIndexDicomEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::dicom::SSliceIndexDicomEditor,
                          ::sight::data::DicomSeries )
 
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";

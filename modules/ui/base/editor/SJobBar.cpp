@@ -36,7 +36,7 @@ namespace sight::modules::ui::base
 namespace editor
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::editor::IDialogEditor, ::sight::modules::ui::base::editor::SJobBar )
+fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::modules::ui::base::editor::SJobBar )
 
 static const core::com::Slots::SlotKeyType SHOW_JOB_SLOT = "showJob";
 static const core::com::Signals::SignalKeyType STARTED_SIGNAL = "started";
