@@ -179,40 +179,40 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
 
-            <service uid="loadCalibAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
             </service>
 
-            <service uid="startOpenvslamAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startOpenvslamAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>frustumListAdp/clear</slot>
                     <slot>resetOpenvslamAct/show</slot>
@@ -226,58 +226,58 @@
                 </slots>
             </service>
 
-            <service uid="pauseOpenvslamAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseOpenvslamAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/pauseTracker</slot>
                 </slots>
             </service>
 
-            <service uid="showHidePointCloudAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="showHidePointCloudAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>pointCloudAdp/toggleVisibility</slot>
                 </slots>
             </service>
 
-            <service uid="enableLocalizationAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+            <service uid="enableLocalizationAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
              <state active="false" />
                 <slots>
                     <slot>openvslamSrv/enableLocalization</slot>
                 </slots>
             </service>
 
-            <service uid="saveMapAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="saveMapAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/saveMap</slot>
                 </slots>
             </service>
 
-            <service uid="saveTrajectoriesAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="saveTrajectoriesAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/saveTrajectories</slot>
                 </slots>
             </service>
 
 
-            <service uid="loadMapAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadMapAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/loadMap</slot>
                 </slots>
             </service>
 
-            <service uid="resetOpenvslamAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="resetOpenvslamAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>openvslamSrv/resetPointCloud</slot>
                     <slot>frustumListAdp/clear</slot>
                 </slots>
             </service>
 
-            <service uid="savePCAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="savePCAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>meshWriterSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="stopOpenvslamAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopOpenvslamAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>resetOpenvslamAct/hide</slot>
                     <slot>stopOpenvslamAct/hide</slot>
@@ -289,7 +289,7 @@
                 </slots>
             </service>
 
-            <service uid="HideAtStart" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="HideAtStart" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>stopOpenvslamAct/hide</slot>
                     <slot>resetOpenvslamAct/hide</slot>
@@ -414,7 +414,7 @@
                 <green>Loaded</green>
             </service>
 
-            <service uid="openvslamOrbSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="openvslamOrbSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Number of features per image" key="nFeatures" defaultValue="2000" min="10" max="10000" />
                     <param type="double" name="Scale factor between levels in the scale pyramid" key="scaleFactor" defaultValue="1.2" min="1" max="10.0" />
@@ -427,7 +427,7 @@
                 <config sendAtStart="false" />
             </service>
 
-            <service uid="openvslamInitSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="openvslamInitSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Number of RANSAC Iterations" key="initializer.numRansacIterations" defaultValue="100" min="1" max="1000" />
                     <param type="int" name="Minimum number of triangulated points" key="initializer.minNumTriangulatedPts" defaultValue="50" min="10" max="200" />
@@ -472,7 +472,7 @@
                 <out key="pointCloud" uid="openvslamPointCloud" />
             </service>
 
-            <service uid="meshWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="openvslamPointCloud" />
                 <type mode="writer" />
                 <selection mode="include" />

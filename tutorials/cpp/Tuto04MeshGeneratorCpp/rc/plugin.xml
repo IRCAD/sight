@@ -38,7 +38,7 @@
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="::sight::modules::ui::base::editor::SJobBar" />
+            <service uid="progressBarView" type="::sight::modules::ui::base::SJobBar" />
 
             <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
@@ -121,15 +121,15 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="saveMeshAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <service uid="shakeMeshPointAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
@@ -173,12 +173,12 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="writer" />
             </service>

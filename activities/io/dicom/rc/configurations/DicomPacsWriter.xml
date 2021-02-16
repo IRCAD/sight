@@ -48,26 +48,26 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
+        <service uid="action_import" type="::sight::modules::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
-        <service uid="action_editPacsConfiguration" type="::sight::modules::ui::base::action::SConfigLauncher">
+        <service uid="action_editPacsConfiguration" type="::sight::modules::ui::base::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
             <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
             <parameter replace="ICON_PATH" by="module_ui_media-0.1/icons/Settings.svg"  />
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="action_anonymize" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>anonymizeController/update</slot>
             </slots>
         </service>
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="action_pushSeriesToPacs" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
             </slots>
@@ -77,7 +77,7 @@
 
         <service uid="progressBarController" type="::sight::modules::io::dimse::SProgressBarController"  />
 
-        <service uid="selector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
@@ -97,7 +97,7 @@
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">
+        <service uid="viewer" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

@@ -41,7 +41,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="importAct" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />
@@ -56,7 +56,7 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <!-- The channel is used to call "SActivitySequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
+        <!-- The channel is used to call "SSequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
         <connect channel="${validationChannel}" >
             <signal>${image}/modified</signal>
         </connect>

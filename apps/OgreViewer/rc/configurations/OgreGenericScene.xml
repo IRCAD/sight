@@ -471,7 +471,7 @@
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
@@ -492,7 +492,7 @@
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="windowedAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <state visible="false" />
             <slots>
                 <slot>genericSceneSrv/disableFullscreen</slot>
@@ -501,7 +501,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="snapshotAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>imageWriterSrv/update</slot>
             </slots>

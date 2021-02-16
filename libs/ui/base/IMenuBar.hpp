@@ -25,7 +25,7 @@
 #include "ui/base/config.hpp"
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/layoutManager/IMenuBarLayoutManager.hpp"
-#include "ui/base/registrar/MenuBarRegistrar.hpp"
+#include "ui/base/registry/MenuBar.hpp"
 
 #include <service/IService.hpp>
 
@@ -85,7 +85,7 @@ protected:
      *   For example: the menu named "My Menu" will be connected with the service which have the sid = "myMenu".
      * - A menu bar can't have the same service connected on two different menu.
      *
-     *  @see ui::base::registrar::MenuBarRegistrar::initialize(),
+     *  @see ui::base::registry::MenuBar::initialize(),
      *::ui::base::layoutManager::IMenuBarLayoutManager::initialize()
      */
     UI_BASE_API void initialize();
@@ -101,7 +101,7 @@ private:
     void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
 
     ui::base::layoutManager::IMenuBarLayoutManager::sptr m_layoutManager;
-    ui::base::registrar::MenuBarRegistrar::sptr m_registrar;
+    ui::base::registry::MenuBar::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;

@@ -38,7 +38,7 @@
 
     <extension implements="::sight::service::registry::ServiceConfig">
         <id>sequencerServiceConfigName</id>
-        <service>::sight::modules::ui::qt::editor::SActivitySequencer</service>
+        <service>::sight::modules::ui::qt::activity::SSequencer</service>
         <desc>Configuration for the sequencer</desc>
         <config>
             <activity id="activity1" name="my activity 1" />
@@ -121,7 +121,7 @@
 
         <!-- ************************************* Begin editor declaration *************************************** -->
 
-        <service uid="openButton" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="openButton" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <icon>module_ui_media-0.1/icons/open.svg</icon>
                <iconWidth>40</iconWidth>
@@ -129,7 +129,7 @@
             </config>
         </service>
 
-        <service uid="saveButton" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="saveButton" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <icon>module_ui_media-0.1/icons/save.svg</icon>
                <iconWidth>40</iconWidth>
@@ -137,31 +137,31 @@
             </config>
         </service>
 
-        <service uid="appLogoView" type="::sight::modules::ui::qt::editor::SImage" >
+        <service uid="appLogoView" type="::sight::modules::ui::qt::image::SImage" >
             <path>${APPLICATION_ICON_PATH}</path>
             <height>70</height>
         </service>
 
-        <service uid="ircadIhuLogoView" type="::sight::modules::ui::qt::editor::SImage" >
+        <service uid="ircadIhuLogoView" type="::sight::modules::ui::qt::image::SImage" >
             <path>flatIcon-0.1/icons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 
         <!-- ************************************* Begin reader/writer declaration *************************************** -->
 
-        <service uid="SDBReader" type="::sight::modules::ui::base::editor::SIOSelector" config="${ACTIVITY_READER_CONFIG}">
+        <service uid="SDBReader" type="::sight::modules::ui::base::io::SSelector" config="${ACTIVITY_READER_CONFIG}">
             <inout key="data" uid="${seriesDB}" />
         </service>
 
         <!-- Service to save the launched activities -->
-        <service uid="SDBWriter" type="::sight::modules::ui::base::editor::SIOSelector" config="${ACTIVITY_WRITER_CONFIG}">
+        <service uid="SDBWriter" type="::sight::modules::ui::base::io::SSelector" config="${ACTIVITY_WRITER_CONFIG}">
             <inout key="data" uid="${seriesDB}" />
         </service>
 
         <!-- *************************************** Begin view declaration **************************************** -->
 
         <!-- Display the activity in the current view -->
-        <service uid="dynamicView" type="::sight::modules::ui::qt::editor::SActivityView">
+        <service uid="dynamicView" type="::sight::modules::ui::qt::activity::SView">
             <inout key="SERIESDB" uid="${seriesDB}" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
@@ -173,12 +173,12 @@
         </service>
 
         <!-- Display the activity data selector -->
-        <service uid="activityCreator" type="::sight::modules::ui::qt::editor::SActivityWizard" config="${WIZARD_CONFIG}">
+        <service uid="activityCreator" type="::sight::modules::ui::qt::activity::SWizard" config="${WIZARD_CONFIG}">
             <inout key="seriesDB" uid="${seriesDB}" />
         </service>
 
         <!-- Launch the activity sequentially -->
-        <service uid="activitySequencer" type="::sight::modules::ui::qt::editor::SActivitySequencer" config="${SEQUENCER_CONFIG}" >
+        <service uid="activitySequencer" type="::sight::modules::ui::qt::activity::SSequencer" config="${SEQUENCER_CONFIG}" >
             <inout key="seriesDB" uid="${seriesDB}" autoConnect="yes" />
         </service>
 

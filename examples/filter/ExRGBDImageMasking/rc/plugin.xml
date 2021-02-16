@@ -142,22 +142,22 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-            <service uid="loadTransformationAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadTransformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>transformReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="loadMeshAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadMeshAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>meshReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -165,7 +165,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -175,7 +175,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -185,7 +185,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -199,26 +199,26 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="learnBackgroundAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="learnBackgroundAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>maskerSrv/setBackground</slot>
                 </slots>
             </service>
 
-            <service uid="organManagerAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
+            <service uid="organManagerAct" type="::sight::modules::ui::base::SConfigLauncher" >
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
                 <parameter replace="ICON_PATH" by="ExRGBDImageMasking-0.1/app.ico" />
             </service>
 
-            <service uid="showSettingsAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+            <service uid="showSettingsAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>settingsView/setVisible</slot>
                 </slots>
@@ -291,14 +291,14 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Parameter to enable/disable hole filling from the RealSense grabber -->
-            <service uid="enableHoleFillingFilterParamSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="enableHoleFillingFilterParamSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
                 </parameters>
             </service>
 
             <!-- Parameter to tune the threshold value from the SRGBDImageMasking service -->
-            <service uid="maskerThresholdParamSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="maskerThresholdParamSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
                 </parameters>
@@ -332,7 +332,7 @@
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="transformReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="registrationMatrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
@@ -340,7 +340,7 @@
             </service>
 
             <!-- Reader to open seriesDB data (.jsonz format) -->
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="seriesDB" />
             </service>
 

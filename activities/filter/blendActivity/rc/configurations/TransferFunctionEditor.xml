@@ -130,7 +130,8 @@
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="fieldMgr" type="::sight::modules::ui::base::action::SPushField">
+        <!-- Please use SManager -->
+        <service uid="fieldMgr" type="::sight::modules::ui::base::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />

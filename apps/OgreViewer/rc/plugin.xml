@@ -279,7 +279,7 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesDBAct" type="::sight::modules::ui::base::editor::SIOSelector" worker="COMPUTING_THREAD" >
+            <service uid="openSeriesDBAct" type="::sight::modules::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="::sight::modules::io::dicom::SDicomSeriesDBReader" />
@@ -289,14 +289,14 @@
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="::sight::modules::ui::base::action::SSignal" />
+            <service uid="negatoViewAct" type="::sight::modules::ui::base::com::SSignal" />
 
-            <service uid="volumeViewAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="volumeViewAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
-            <service uid="volumeManagerAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="volumeManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -306,7 +306,7 @@
                 </config>
             </service>
 
-            <service uid="organsManagerAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="organsManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <show wid="organsParameterView" />
@@ -316,7 +316,7 @@
                 </config>
             </service>
 
-            <service uid="landmarksManagerAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="landmarksManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -326,7 +326,7 @@
                 </config>
             </service>
 
-            <service uid="lightManagerAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="lightManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -336,7 +336,7 @@
                 </config>
             </service>
 
-            <service uid="extrudedMeshesManagerAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="extrudedMeshesManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -347,7 +347,7 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="hideParameterAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <sync>true</sync>
                 <slots>
                     <slot>parameterView/hide</slot>
@@ -355,7 +355,7 @@
                 </slots>
              </service>
 
-            <service uid="showParameterAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+            <service uid="showParameterAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>parameterView/show</slot>
                     <slot>rightToolbarSliderView/hide</slot>
@@ -364,7 +364,7 @@
             </service>
 
             <!-- TF manager -->
-            <service uid="volumeTFAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
+            <service uid="volumeTFAct" type="::sight::modules::ui::base::SConfigLauncher" >
                 <appConfig id="OgreViewer_TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
                 <parameter replace="WINDOW_ICON" by="OgreViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
@@ -378,7 +378,7 @@
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
+            <service uid="pacsAct" type="::sight::modules::ui::base::SConfigLauncher" >
                 <appConfig id="OgreViewer_PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="OgreViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
@@ -388,48 +388,48 @@
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="volumeVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="negato3DVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="meshVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="boxWidgetVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="boxWidgetResetAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="shapeExtruderAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="::sight::modules::ui::base::action::SSignal" >
+            <service uid="shapeExtruderRevertAct" type="::sight::modules::ui::base::com::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="::sight::modules::ui::base::action::SSignal" />
+            <service uid="axisVisibilityAct" type="::sight::modules::ui::base::com::SSignal" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="::sight::modules::ui::base::metrics::action::SAddDistance">
+            <service uid="addDistanceAct" type="::sight::modules::ui::base::metrics::SAddDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="removeDistanceAct" type="::sight::modules::ui::base::metrics::action::SRemoveDistance">
+            <service uid="removeDistanceAct" type="::sight::modules::ui::base::metrics::SRemoveDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="hideDistanceAct" type="::sight::modules::ui::base::metrics::action::SShowDistance" autoConnect="yes" >
+            <service uid="hideDistanceAct" type="::sight::modules::ui::base::metrics::SShowDistance" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
@@ -500,7 +500,7 @@
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volumeParameterSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="volumeParameterSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />

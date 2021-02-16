@@ -123,7 +123,7 @@ void IFrame::initialize()
                    || m_closePolicy == CLOSE_POLICY_MESSAGE);
     }
 
-    m_viewRegistrar = ui::base::registrar::ViewRegistrar::New(this->getID());
+    m_viewRegistrar = ui::base::registry::View::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     if(!vectRegistrar.empty())
@@ -200,7 +200,7 @@ void IFrame::create()
 
 void IFrame::destroy()
 {
-    SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
+    SLM_ASSERT("View must be initialized.", m_viewRegistrar);
 
     if (m_hasToolBar)
     {

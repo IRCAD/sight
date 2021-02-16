@@ -83,18 +83,18 @@
 
             <!--
                 Quit action:
-                The action service (::sight::modules::ui::base::action::SQuit) is a generic action that will close the application
+                The action service (::sight::modules::ui::base::SQuit) is a generic action that will close the application
                 when the user click on the menuItem "Quit".
             -->
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!--
                 Open file action:
-                This service (::sight::modules::ui::base::action::SStarter) is a generic action, it starts and updates the
+                This service (::sight::modules::ui::base::com::SStarter) is a generic action, it starts and updates the
                 services given in the configuration when the user clicks on the action.
                 Here, the reader selector will be called when the action is clicked.
             -->
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
@@ -109,7 +109,7 @@
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="image" />
             </service>
 

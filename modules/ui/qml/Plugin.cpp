@@ -30,8 +30,8 @@
 #include <service/registry/ActiveWorkers.hpp>
 
 #include <modules/ui/qml/activity/ActivityLauncherManager.hpp>
-#include <modules/ui/qml/activity/SActivitySequencer.hpp>
-#include <modules/ui/qml/activity/SActivityView.hpp>
+#include <modules/ui/qml/activity/SSequencer.hpp>
+#include <modules/ui/qml/activity/SView.hpp>
 #include <modules/ui/qml/image/SSliceIndexPositionEditor.hpp>
 #include <modules/ui/qml/model/OrganListModel.hpp>
 #include <modules/ui/qml/model/SModelSeriesList.hpp>
@@ -96,8 +96,8 @@ void Plugin::start()
     qmlRegisterType<image::SSliceIndexPositionEditor>("image", 1, 0, "SSliceIndexPositionEditor");
     qmlRegisterType<reconstruction::SOrganMaterialEditor>("reconstruction", 1, 0, "SOrganMaterialEditor");
     qmlRegisterType<reconstruction::SRepresentationEditor>("reconstruction", 1, 0, "SRepresentationEditor");
-    qmlRegisterType<activity::SActivityView >("activitiesQml", 1, 0, "SActivityView");
-    qmlRegisterType<activity::SActivitySequencer >("activitiesQml", 1, 0, "SActivitySequencer");
+    qmlRegisterType<activity::SView >("activitiesQml", 1, 0, "SView");
+    qmlRegisterType<activity::SSequencer >("activitiesQml", 1, 0, "SSequencer");
     qmlRegisterType<activity::ActivityLauncherManager >("activitiesQml", 1, 0, "ActivityLauncherManager");
 
     QStringList iconPath = QIcon::themeSearchPaths();

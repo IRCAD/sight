@@ -68,14 +68,14 @@
             </registry>
         </service>
 
-        <service uid="applyLandmarkRegistration" type="::sight::modules::ui::qt::editor::SSignalButton">
+        <service uid="applyLandmarkRegistration" type="::sight::modules::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
             </config>
         </service>
 
-        <service uid="resetLandmarks" type="::sight::modules::ui::qt::editor::SSignalButton">
+        <service uid="resetLandmarks" type="::sight::modules::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Reset</text>

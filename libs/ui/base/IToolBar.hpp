@@ -24,7 +24,7 @@
 
 #include "ui/base/config.hpp"
 #include "ui/base/layoutManager/IToolBarLayoutManager.hpp"
-#include "ui/base/registrar/ToolBarRegistrar.hpp"
+#include "ui/base/registry/ToolBar.hpp"
 
 #include <service/IService.hpp>
 
@@ -110,7 +110,7 @@ protected:
      *   - The order of the item in each section (gui and registry) must be the same.\n
      *  For example: the item named "My item 2" will be connected with the service which have the sid = "item2".
      *   - A toolbar can't have the same service connected on two different buttons.
-     *  @see ui::base::registrar::ToolBarRegistrar::initialize(),
+     *  @see ui::base::registry::ToolBar::initialize(),
      *::ui::base::layoutManager::IToolBarLayoutManager::initialize()
      */
     UI_BASE_API void initialize();
@@ -126,7 +126,7 @@ private:
     void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
 
     ui::base::layoutManager::IToolBarLayoutManager::sptr m_layoutManager;
-    ui::base::registrar::ToolBarRegistrar::sptr m_registrar;
+    ui::base::registry::ToolBar::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;

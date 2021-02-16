@@ -60,7 +60,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationWriterSrv/update</slot>
             </slots>
@@ -84,7 +84,7 @@
             </config>
         </service>
 
-        <service uid="chessboardSizeAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration">
+        <service uid="chessboardSizeAct" type="::sight::modules::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>int</type>
                 <name>Chessboard width</name>
@@ -111,18 +111,18 @@
             </preference>
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes">
+        <service uid="exportAct" type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
         </service>
 
-        <!-- The action "previous" and "next" are visible only if the application use a "SActivitySequencer".
+        <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="::sight::modules::ui::base::action::SSignal">
+        <service uid="previousAct" type="::sight::modules::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="::sight::modules::ui::base::action::SSignal">
+        <service uid="nextAct" type="::sight::modules::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
@@ -138,26 +138,26 @@
             <signal>chessboardSizeAct/parametersModified</signal>
         </connect>
 
-        <!-- Connection to enable "previous" action. It should be connected to a SActivitySequencer in the application configuration.-->
+        <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application configuration.-->
         <connect channel="${enabledPreviousChannel}">
             <slot>exportAct/hide</slot>
             <slot>previousAct/show</slot>
             <slot>previousAct/setIsExecutable</slot>
         </connect>
 
-        <!-- Connection to called 'previous' slot of the application's SActivitySequencer. -->
+        <!-- Connection to called 'previous' slot of the application's SSequencer. -->
         <connect channel="${previousActivityChannel}">
             <signal>previousAct/triggered</signal>
         </connect>
 
-        <!-- Connection to enable "next" action. It should be connected to a SActivitySequencer in the application configuration.-->
+        <!-- Connection to enable "next" action. It should be connected to a SSequencer in the application configuration.-->
         <connect channel="${enabledNextChannel}">
             <slot>exportAct/hide</slot>
             <slot>nextAct/show</slot>
             <slot>nextAct/setIsExecutable</slot>
         </connect>
 
-        <!-- Connection to called 'next' slot of the application's SActivitySequencer. -->
+        <!-- Connection to called 'next' slot of the application's SSequencer. -->
         <connect channel="${nextActivityChannel}">
             <signal>nextAct/triggered</signal>
         </connect>

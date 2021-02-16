@@ -39,7 +39,7 @@
             </service>
 
             <!-- Status bar used to display the progress bar for reading -->
-            <service uid="progressBarView" type="::sight::modules::ui::base::editor::SJobBar" />
+            <service uid="progressBarView" type="::sight::modules::ui::base::SJobBar" />
 
             <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
@@ -148,37 +148,37 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Actions to call readers -->
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="openTextureAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openTextureAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="textureReaderSrv" />
             </service>
 
             <!-- Quit action -->
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Image displayed in the scene -->
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
             <!-- Mesh reader -->
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
             <!-- texture reader -->
-            <service uid="textureReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="textureReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="texture" />
                 <type mode="reader" />
             </service>
@@ -191,7 +191,7 @@
 
                 Here, this editor is used to show or hide the image. It is connected to the image adaptor.
             -->
-            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
                     <icon>module_ui_flaticon-0.1/icons/RedCross.svg</icon>
@@ -208,7 +208,7 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="snapshotSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="snapshotSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
@@ -216,7 +216,7 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />

@@ -199,10 +199,10 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::qt::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -211,40 +211,40 @@
                 </preference>
             </service>
 
-            <service uid="showParametersAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="showParametersAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/startCamera</slot>
                     <slot>videoGrabber2Srv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/stopCamera</slot>
                     <slot>videoGrabber2Srv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/pauseCamera</slot>
                     <slot>videoGrabber2Srv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="startRecordAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startRecordAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>matricesWriterSrv/startRecord</slot>
                     <slot>startRecordAct/hide</slot>
@@ -252,7 +252,7 @@
                 </slots>
             </service>
 
-            <service uid="stopRecordAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopRecordAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>matricesWriterSrv/stopRecordAct</slot>
@@ -345,7 +345,7 @@
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="arucoParamsSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -399,26 +399,26 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="reprojectionParamsSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
                 </parameters>
             </service>
 
-            <service uid="synchroParamsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="synchroParamsSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Delay" key="frameDelay" defaultValue="0" min="0" max="2000" />
                 </parameters>
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelLeftSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
+            <service uid="errorLabelLeftSrv" type="::sight::modules::ui::qt::STextStatus" >
                 <label>Reprojection Error Left (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
-            <service uid="errorLabelRightSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
+            <service uid="errorLabelRightSrv" type="::sight::modules::ui::qt::STextStatus" >
                 <label>Reprojection Error Right (RMSE)</label>
                 <color>#D25252</color>
             </service>
@@ -554,7 +554,7 @@
                 <inout key="output" uid="rightMat" />
             </service>
 
-            <service uid="hideAxisSrv" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+            <service uid="hideAxisSrv" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>LAxisAdp/updateVisibility</slot>
                     <slot>RAxisAdp/updateVisibility</slot>

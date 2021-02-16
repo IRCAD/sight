@@ -48,7 +48,6 @@
         <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
             <gui>
                 <layout>
-                    <menuItem name="New Activity..." shortcut="Ctrl+N" />
                     <menuItem name="Open Series..." shortcut="Ctrl+O" />
                     <menuItem name="Open Activity..." shortcut="Ctrl+Shift+O" />
                     <menuItem name="Save..." shortcut="Ctrl+S" />
@@ -57,7 +56,6 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="newActivityAct" start="yes" />
                 <menuItem sid="openSeriesAct" start="yes" />
                 <menuItem sid="openActivityAct" start="yes" />
                 <menuItem sid="saveAct" start="yes" />
@@ -102,7 +100,7 @@
             </registry>
         </service>
 
-        <service uid="dynamicView" type="::sight::modules::ui::qt::editor::SDynamicView" >
+        <service uid="dynamicView" type="::sight::modules::ui::qt::activity::SDynamicView" >
             <mainActivity id="ARCalibrationActivitySelector_Activity" closable="false" />
             <inout key="SERIESDB" uid="seriesDB" />
             <inout key="LOADING_SERIESDB" uid="loadingSeriesDB" />
@@ -119,7 +117,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="videoDirectoryAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
+        <service uid="videoDirectoryAct" type="::sight::modules::ui::qt::SPreferencesConfiguration" >
             <preference>
                 <type>path</type>
                 <name>Video directory</name>
@@ -128,44 +126,30 @@
             </preference>
         </service>
 
-        <!-- Action to create/update an activity. -->
-        <service uid="newActivityAct" type="::sight::modules::ui::qt::action::SCreateActivity">
-            <in key="series" uid="selections" />
-            <filter>
-                <mode>include</mode>
-                <id>Calibration</id>
-                <id>CalibrationCharuco</id>
-                <id>RGBDCalibration</id>
-                <id>calibrationEdition</id>
-                <id>TrackedCameraRegistration</id>
-                <id>toolCalibrationActivity</id>
-            </filter>
-        </service>
-
-        <service uid="openSeriesAct" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
+        <service uid="openSeriesAct" type="::sight::modules::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
 
-        <service uid="openActivityAct" type="::sight::modules::ui::base::action::SSeriesDBMerger">
+        <service uid="openActivityAct" type="::sight::modules::ui::base::series::SDBMerger">
             <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
-        <service uid="saveAct" type="::sight::modules::ui::base::action::SStarter">
+        <service uid="saveAct" type="::sight::modules::ui::base::com::SStarter">
             <start uid="seriesDBWriterSrv" />
         </service>
 
         <!-- Save current activity. -->
-        <service uid="saveActivityAct" type="::sight::modules::ui::base::action::SExportWithSeriesDB" >
+        <service uid="saveActivityAct" type="::sight::modules::ui::base::series::SExportWithSeriesDB" >
             <inout key="series" uid="currentActivity" />
             <IOSelectorSrvConfig name="ActivityWriterConfig" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-        <service uid="selectorAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
+        <service uid="selectorAct" type="::sight::modules::ui::base::SConfigLauncher" >
             <appConfig id="ARCalibration_Selector_AppCfg" />
             <inout key="SERIESDB" uid="seriesDB" />
             <parameter replace="WID_PARENT" uid="selectorView" />
@@ -174,7 +158,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="seriesDBWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+        <service uid="seriesDBWriterSrv" type="::sight::modules::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
             <inout key="data" uid="seriesDB" />
         </service>
 
@@ -200,11 +184,6 @@
         <!-- When an activity is opened: it calls the creator's update activity slot. -->
         <connect channel="LAUNCH_ACTIVITY_SERIES_RECEIVER_CHANNEL">
             <slot>dynamicView/launchActivitySeries</slot>
-        </connect>
-
-        <!-- connect to show the creator editor when the activity should be created. -->
-        <connect channel="CREATE_ACTIVITY_SENDER_CHANNEL">
-            <signal>newActivityAct/activityIDSelected</signal>
         </connect>
 
         <!-- connect to launch the activity when it is created/updated. -->

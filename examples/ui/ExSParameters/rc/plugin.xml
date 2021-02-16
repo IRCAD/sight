@@ -73,7 +73,7 @@ This example shows the possibilities of SParameters:
 
             <!-- ******************************* Services ******************************* -->
 
-            <service uid="parameters1Srv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="parameters1Srv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="true" depends="enable" />
@@ -90,7 +90,7 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
-            <service uid="parameters2Srv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="parameters2Srv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="false" depends="enable"  />
@@ -107,7 +107,7 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
-            <service uid="minParametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="minParametersSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.2" min="0." max="0.8" />
                     <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0." min="0." max="80." />
@@ -120,7 +120,7 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
-            <service uid="maxParametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="maxParametersSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.7" min="0.2" max="1." />
                     <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="75.3" min="35." max="150." />

@@ -105,15 +105,15 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -156,14 +156,14 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="snapshotSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
                     <icon>module_ui_flaticon-0.1/icons/RedCross.svg</icon>
@@ -176,12 +176,12 @@
 
             <service uid="pointEditorSrv" type="::sight::modules::ui::qt::viz::PointEditor" />
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
@@ -197,7 +197,7 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />

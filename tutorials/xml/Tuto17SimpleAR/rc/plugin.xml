@@ -148,20 +148,20 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="showParametersAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="showParametersAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -169,7 +169,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -179,7 +179,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -189,7 +189,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -203,14 +203,14 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="startUndistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startUndistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>undistortAdp/show</slot>
                     <slot>startDistortAct/setInexecutable</slot>
@@ -219,7 +219,7 @@
                 </slots>
             </service>
 
-            <service uid="stopUndistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopUndistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>undistortAdp/hide</slot>
@@ -229,7 +229,7 @@
                 </slots>
             </service>
 
-            <service uid="startDistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startDistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>distortAdp/show</slot>
                     <slot>startUndistortAct/setInexecutable</slot>
@@ -238,7 +238,7 @@
                 </slots>
             </service>
 
-            <service uid="stopDistortAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopDistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>distortAdp/hide</slot>
@@ -248,7 +248,7 @@
                 </slots>
             </service>
 
-            <service uid="showMeshAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+            <service uid="showMeshAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>cubeAdp/updateVisibility</slot>
                 </slots>
@@ -317,7 +317,7 @@
             </service>
 
             <!-- hide axis adaptor until a marker is found -->
-            <service uid="hideAxisSrv" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+            <service uid="hideAxisSrv" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>axisAdp/updateVisibility</slot>
                 </slots>
@@ -339,7 +339,7 @@
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="arucoParamametersSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -393,7 +393,7 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamametersSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="reprojectionParamametersSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />
@@ -401,7 +401,7 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
+            <service uid="errorLabelSrv" type="::sight::modules::ui::qt::STextStatus" >
                 <label>Reprojection error (RMSE)</label>
                 <color>#D25252</color>
             </service>

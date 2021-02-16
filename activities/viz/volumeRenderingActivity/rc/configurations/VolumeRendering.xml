@@ -73,28 +73,28 @@
             </registry>
         </service>
 
-        <service uid="ActionExportActivity" type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes">
+        <service uid="ActionExportActivity" type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="ActionShowSliceCursor" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="ActionShowSliceCursor" type="::sight::modules::ui::base::com::SStarter" >
             <start_or_stop uid="image3DCursorAdaptor" />
         </service>
 
-        <service uid="ActionShowMesh" type="::sight::modules::ui::base::action::SPushObject">
+        <service uid="ActionShowMesh" type="::sight::modules::ui::base::SPushObject">
             <inout key="source" uid="${optionalModelSeriesComposite}" />
             <out key="destination" uid="optionalModelSeries" />
             <push srcKey="optionalModelSeriesKey" />
         </service>
 
-        <service uid="action_organManager" type="::sight::modules::ui::base::action::SConfigLauncher">
+        <service uid="action_organManager" type="::sight::modules::ui::base::SConfigLauncher">
             <appConfig id="ModelSeriesManagerWindow" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
         </service>
 
-        <service uid="ActionSnapshotVR" type="::sight::modules::ui::base::viz::action::SSnapshot" />
+        <service uid="ActionSnapshotVR" type="::sight::modules::ui::base::viz::SSnapshot" />
         <!-- Generic Scene VR -->
         <!-- *************************** Begin generic scene *************************** -->
 
@@ -152,14 +152,14 @@
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="ActionShowHideBoxWidget" type="::sight::modules::ui::base::action::SBooleanSlotCaller">
+        <service uid="ActionShowHideBoxWidget" type="::sight::modules::ui::base::com::SBooleanSlotCaller">
             <slots>
                 <slot>VolumeScene3DA/activateBoxClipping</slot>
             </slots>
             <state active="true" />
         </service>
 
-        <service uid="ActionResetBoxWidget" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionResetBoxWidget" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VolumeScene3DA/resetBoxWidget</slot>
             </slots>

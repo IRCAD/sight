@@ -47,7 +47,7 @@ Example
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditor" type="::sight::modules::ui::qt::editor::SModelSeriesList" autoConnect="yes">
+        <service uid="listOrganEditor" type="::sight::modules::ui::qt::model::SModelSeriesList" autoConnect="yes">
             <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
             <columns>
                 <organ_name>@organ_name</organ_name>

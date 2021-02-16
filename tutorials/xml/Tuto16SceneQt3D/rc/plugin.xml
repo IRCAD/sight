@@ -97,14 +97,14 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="meshReaderAct" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderAct" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
                 <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::sight::modules::io::atoms::SReader" />
                 <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="::sight::modules::io::vtk::SMeshReader" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- ******************************* Start services ***************************************** -->
 

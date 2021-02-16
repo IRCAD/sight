@@ -281,25 +281,25 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="item1Act" type="::sight::modules::ui::base::action::SDefault" >
+        <service uid="item1Act" type="::sight::modules::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="item2Act" type="::sight::modules::ui::base::action::SDefault" >
+        <service uid="item2Act" type="::sight::modules::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="item3Act" type="::sight::modules::ui::base::action::SDefault" />
+        <service uid="item3Act" type="::sight::modules::ui::base::SDefaultAction" />
 
-        <service uid="item4Act" type="::sight::modules::ui::base::action::SDefault" >
+        <service uid="item4Act" type="::sight::modules::ui::base::SDefaultAction" >
             <state active="false" />
         </service>
 
-        <service uid="item5Act" type="::sight::modules::ui::base::action::SDefault" >
+        <service uid="item5Act" type="::sight::modules::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="startAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="startAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>startAct/hide</slot>
                 <slot>stopAct/setExecutable</slot>
@@ -307,7 +307,7 @@
             </slots>
         </service>
 
-        <service uid="stopAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="stopAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <state executable="false" />
             <slots>
                 <slot>startAct/show</slot>
@@ -316,7 +316,7 @@
             </slots>
         </service>
 
-        <service uid="pauseAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="pauseAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <state active="true" visible="false" />
             <slots>
                 <slot>startAct/show</slot>
@@ -324,14 +324,14 @@
             </slots>
         </service>
 
-        <service uid="view5VisibilityAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller" >
+        <service uid="view5VisibilityAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
             <state active="true" inverse="true" />
             <slots>
                 <slot>sub5View/setVisible</slot>
             </slots>
         </service>
 
-        <service uid="item16Act" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="item16Act" type="::sight::modules::ui::base::com::SStarter" >
             <state active="true" />
             <start uid="item2Act" />
             <start uid="item3Act" />
@@ -339,7 +339,7 @@
             <stop uid="item5Act" />
         </service>
 
-        <service uid="item17Act" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="item17Act" type="::sight::modules::ui::base::com::SStarter" >
             <stop uid="item2Act" />
             <stop uid="item3Act" />
             <start uid="item4Act" />
@@ -348,19 +348,19 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="clickSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="clickSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                 <text>Click</text>
             </config>
         </service>
 
-        <service uid="meSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="meSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                 <text>Me</text>
             </config>
         </service>
 
-        <service uid="checkableSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="checkableSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
                 <icon>module_ui_flaticon-0.1/icons/GreenStart.svg</icon>
@@ -369,18 +369,18 @@
             </config>
         </service>
 
-        <service uid="ircadIHULogoSrv" type="::sight::modules::ui::qt::editor::SImage" >
+        <service uid="ircadIHULogoSrv" type="::sight::modules::ui::qt::image::SImage" >
             <path>flatIcon-0.1/icons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 
-        <service uid="textStatusSrv" type="::sight::modules::ui::qt::editor::STextStatus" >
+        <service uid="textStatusSrv" type="::sight::modules::ui::qt::STextStatus" >
              <in key="string" uid="text" />
              <label>Text status</label>
              <color>#6997BB</color>
          </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
         <!-- ******************************* Connections ***************************************** -->
 

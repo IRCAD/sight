@@ -209,7 +209,7 @@ void SShaderParameterEditor::updateGuiInfo()
 
     ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = service::add("::sight::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
+    auto editorService = service::add("::sight::modules::ui::qt::SParameters", m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
     service::IService::ConfigType editorConfig;

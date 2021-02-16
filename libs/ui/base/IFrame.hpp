@@ -27,7 +27,7 @@
 #include "ui/base/config.hpp"
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/layoutManager/IFrameLayoutManager.hpp"
-#include "ui/base/registrar/ViewRegistrar.hpp"
+#include "ui/base/registry/View.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -131,7 +131,7 @@ protected:
     /**
      * @brief Initialize frame managers.
      *
-     * @see ui::base::registrar::ViewRegistrar::initialize(),
+     * @see ui::base::registry::View::initialize(),
      * ui::base::layoutManager::IFrameLayoutManager::initialize(),
      *      ui::base::builder::IToolBarBuilder::initialize(), ui::base::builder::IMenuBarBuilder::initialize()
      */
@@ -167,7 +167,7 @@ private:
     void initializeToolBarBuilder( core::runtime::ConfigurationElement::sptr toolBarConfig );
 
     ui::base::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
-    ui::base::registrar::ViewRegistrar::sptr m_viewRegistrar;
+    ui::base::registry::View::sptr m_viewRegistrar;
     ui::base::builder::IMenuBarBuilder::sptr m_menuBarBuilder;
     ui::base::builder::IToolBarBuilder::sptr m_toolBarBuilder;
 

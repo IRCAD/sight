@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ui/base/config.hpp"
-#include "ui/base/registrar/ActionRegistrar.hpp"
+#include "ui/base/registry/Action.hpp"
 
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hpp>
@@ -173,7 +173,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-           <service uid="item" type="::sight::modules::ui::base::action::SDefault" autoConnect="no" >
+           <service uid="item" type="::sight::modules::ui::base::SDefaultAction" autoConnect="no" >
               <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>
@@ -197,7 +197,7 @@ protected:
 
 private:
 
-    ui::base::registrar::ActionRegistrar::sptr m_registrar;
+    ui::base::registry::Action::sptr m_registrar;
 
     /// Handle the information of the action state inversion.
     bool m_isInverted{false};

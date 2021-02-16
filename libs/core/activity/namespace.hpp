@@ -66,14 +66,14 @@ namespace factory
  * AppConfig with the selected data, it will create a new data data::ActivitySeries that inherits from a
  * data::Series.
  *
- * The service activity::action::SActivityLauncher allows to launch an activity. Its role is to create the specific
+ * The service activity::action::SLauncher allows to launch an activity. Its role is to create the specific
  * Activity associated with the selected data.
  *
  * This action should be followed by the service modules::ui::qt::editor::SDynamicView : this service listens the action
  * signals
  * and launchs the activity in a new tab.
  *
- * - activity::action::SActivityLauncher uses the selected data to generate the activity.
+ * - activity::action::SLauncher uses the selected data to generate the activity.
  * - modules::ui::qt::editor::SDynamicView  displays the activity in the application.
  * - data::Vector contains the set of selected data .
  *
@@ -116,9 +116,9 @@ namespace factory
  *
  * - \b id: it is the activity unique identifier.
  * - \b title: it is the activity title that will be displayed on the tab.
- * - \b desc: it is the description of the activity. It is displayed by the SActivityLauncher when several activity can
+ * - \b desc: it is the description of the activity. It is displayed by the SLauncher when several activity can
  *   be launched with the selected data.
- * - \b icon: it is the path to the activity icon. It is displayed by the SActivityLauncher when several activity can be
+ * - \b icon: it is the path to the activity icon. It is displayed by the SLauncher when several activity can be
  *   launched with the selected data.
  * - \b requirements: it is the list of the data required to launch the activity.
  *     - \b requirement: a required data.

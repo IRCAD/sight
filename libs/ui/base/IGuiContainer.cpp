@@ -27,7 +27,7 @@
 #include "ui/base/builder/IToolBarBuilder.hpp"
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/layoutManager/IViewLayoutManager.hpp"
-#include "ui/base/registrar/ViewRegistrar.hpp"
+#include "ui/base/registry/View.hpp"
 
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
@@ -76,8 +76,8 @@ void IGuiContainer::initialize()
     SLM_ASSERT("The service '" + this->getID() + "' does not contain a configuration", m_configuration);
 
     // Create view registrar
-    m_viewRegistrar = ui::base::registrar::ViewRegistrar::New( this->getID() );
-    // find ViewRegistrar configuration
+    m_viewRegistrar = ui::base::registry::View::New( this->getID() );
+    // find View configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
     if ( !vectViewMng.empty() )
     {
@@ -125,14 +125,14 @@ void IGuiContainer::initialize()
 
 void IGuiContainer::create()
 {
-    SLM_ASSERT("["+this->getID()+"'] ViewRegistrar must be initialized, don't forget to call 'initialize()' in "
+    SLM_ASSERT("["+this->getID()+"'] View must be initialized, don't forget to call 'initialize()' in "
                "'configuring()' method.", m_viewRegistrar);
     ui::base::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
     service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >([this, &parent]
         {
-            SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
+            SLM_ASSERT("View must be initialized.", m_viewRegistrar);
 
             ui::base::GuiBaseObject::sptr guiObj =
                 ui::base::factory::New(ui::base::builder::IContainerBuilder::REGISTRY_KEY);
@@ -183,7 +183,7 @@ void IGuiContainer::create()
 
 void IGuiContainer::destroy()
 {
-    SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
+    SLM_ASSERT("View must be initialized.", m_viewRegistrar);
 
     if ( m_viewLayoutManagerIsCreated )
     {

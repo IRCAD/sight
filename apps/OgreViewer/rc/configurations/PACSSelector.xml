@@ -282,7 +282,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="seriesPullerAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="seriesPullerAct" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>module_ui_flaticon-0.1/icons/YellowPull.svg</icon>
@@ -292,7 +292,7 @@
             </config>
         </service>
 
-        <service uid="waitAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="waitAct" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -303,7 +303,7 @@
             </config>
         </service>
 
-        <service uid="exportImageAct" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="exportImageAct" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -316,7 +316,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="showAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>module_ui_flaticon-0.1/icons/YellowBottomChevron.svg</icon>
@@ -325,7 +325,7 @@
             </config>
         </service>
 
-        <service uid="hideAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="hideAdvancedQueryEditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>module_ui_flaticon-0.1/icons/YellowTopChevron.svg</icon>
@@ -334,7 +334,7 @@
             </config>
         </service>
 
-        <service uid="showPACSConfigurationSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="showPACSConfigurationSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>module_ui_flaticon-0.1/icons/BlueParametersConnected.svg</icon>
@@ -343,7 +343,7 @@
             </config>
         </service>
 
-        <service uid="hidePACSConfigurationSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+        <service uid="hidePACSConfigurationSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>module_ui_flaticon-0.1/icons/BlueParametersConnected.svg</icon>
@@ -381,19 +381,19 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="previewNegatoStopperSrv" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="previewNegatoStopperSrv" type="::sight::modules::ui::base::com::SStarter" >
             <stop uid="pNegatoAdp" />
         </service>
 
-        <service uid="previewNegatoStarterSrv" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="previewNegatoStarterSrv" type="::sight::modules::ui::base::com::SStarter" >
             <start uid="pNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStopperSrv" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="localNegatoStopperSrv" type="::sight::modules::ui::base::com::SStarter" >
             <stop uid="lNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStarterSrv" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="localNegatoStarterSrv" type="::sight::modules::ui::base::com::SStarter" >
             <start uid="lNegatoAdp" />
         </service>
 
@@ -432,7 +432,7 @@
             <config icon="module_ui_flaticon-0.1/icons/BlueMagnifyingGlass.svg" />
         </service>
 
-        <service uid="previewSelectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
+        <service uid="previewSelectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
@@ -463,7 +463,7 @@
             <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" />
         </service>
 
-        <service uid="localSelectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
+        <service uid="localSelectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>

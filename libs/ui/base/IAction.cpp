@@ -78,7 +78,7 @@ IAction::~IAction()
 
 void IAction::initialize()
 {
-    m_registrar = ui::base::registrar::ActionRegistrar::New(this->getID());
+    m_registrar = ui::base::registry::Action::New(this->getID());
 
     SLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", !m_configuration->hasAttribute(
                    "name"));

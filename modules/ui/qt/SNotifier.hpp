@@ -32,7 +32,7 @@ namespace sight::modules::ui::qt
 {
 /**
  * @brief SNotifier is a general service used to display notification in a centralized way.
- * SNotifier needs to be connected to [Sucess/Failure/Info]Notified signals implemented in IService.
+ * SNotifier needs to be connected to [Success/Failure/Info]Notified signals implemented in IService.
  *
  * @section Slots Slots
  * - \b popInfo(): Adds an INFO popup in the queue & display it.
@@ -54,7 +54,7 @@ namespace sight::modules::ui::qt
    @endcode
  *
  * @subsection Configuration Configuration
- * - \b message (optional): Default message of the notification is the emited signal contains empty string (default:
+ * - \b message (optional): Default message of the notification if the emitted signal contains empty string (default:
  * "Notification").
  * - \b maxNotifications (optional): Maximum number of queued notifications (default: 3).
  * - \b position (optional): Position of the notification queue (default: TOP_RIGHT).
@@ -62,7 +62,7 @@ namespace sight::modules::ui::qt
  *   - TOP_RIGHT: default value.
  *   - TOP_LEFT
  *   - CENTERED_TOP
- *   - CENTERED: when choosing CENTERED, only ONE notification can be displayed at time (maxNotifications is ignored).
+ *   - CENTERED: when choosing CENTERED, only ONE notification can be displayed at once (maxNotifications is ignored).
  *   - BOTTOM_RIGHT
  *   - BOTTOM_LEFT
  *   - CENTERED_BOTTOM

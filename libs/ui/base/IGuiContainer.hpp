@@ -40,9 +40,9 @@ namespace layoutManager
 {
 class IViewLayoutManager;
 }
-namespace registrar
+namespace registry
 {
-class ViewRegistrar;
+class View;
 }
 namespace builder
 {
@@ -140,7 +140,7 @@ protected:
     /**
      * @brief Initialize managers.
      *
-       @see ui::base::registrar::ViewRegistrar::initialize(), ui::base::layoutManager::IViewLayoutManager::initialize(),
+       @see ui::base::registry::View::initialize(), ui::base::layoutManager::IViewLayoutManager::initialize(),
      *::ui::base::builder::IToolBarBuilder::initialize()
      */
     UI_BASE_API void initialize();
@@ -205,7 +205,7 @@ private:
     bool m_viewLayoutManagerIsCreated;
     SPTR( ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
 
-    SPTR( ui::base::registrar::ViewRegistrar) m_viewRegistrar;
+    SPTR( ui::base::registry::View) m_viewRegistrar;
     SPTR( ui::base::builder::IToolBarBuilder) m_toolBarBuilder;
     SPTR( ui::base::builder::IContainerBuilder) m_containerBuilder;
     SlideViewContainerType m_slideViewBuilders;

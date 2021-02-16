@@ -191,39 +191,39 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="addAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="addAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>chessboardDetectorSrv/recordPoints</slot>
             </slots>
         </service>
 
-        <service uid="resetAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="resetAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/reset</slot>
             </slots>
         </service>
 
-        <service uid="removeAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="removeAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/remove</slot>
             </slots>
         </service>
 
-        <service uid="goOpenCVAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="goOpenCVAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCalSrv/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="displayImageAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="displayImageAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/getSelection</slot>
             </slots>
         </service>
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
@@ -231,7 +231,7 @@
         </service>
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
@@ -242,7 +242,7 @@
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
@@ -253,7 +253,7 @@
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
@@ -268,7 +268,7 @@
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideo</slot>
                 <slot>videoGrabber2Srv/loopVideo</slot>
@@ -276,13 +276,13 @@
             <state executable="false" />
         </service>
 
-        <service uid="exportExtrinsicAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="exportExtrinsicAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>extrinsicExporterSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="saveInputsAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="saveInputsAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataWriter1Srv/openLocationDialog</slot>
@@ -292,7 +292,7 @@
             </slots>
         </service>
 
-        <service uid="loadInputsAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="loadInputsAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataReader1Srv/openLocationDialog</slot>
@@ -349,7 +349,7 @@
             <framerate>0</framerate>
         </service>
 
-        <service uid="extrinsicExporterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="extrinsicExporterSrv" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="exportExtrinsicMat" />
             <type mode="writer" />
             <selection mode="include" />
@@ -367,7 +367,7 @@
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabelSrv" type="::sight::modules::ui::qt::editor::STextStatus">
+        <service uid="errorLabelSrv" type="::sight::modules::ui::qt::STextStatus">
             <label>Reprojection error (RMSE)</label>
             <color>#D25252</color>
         </service>

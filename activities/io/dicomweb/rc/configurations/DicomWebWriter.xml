@@ -45,20 +45,20 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
+        <service uid="action_import" type="::sight::modules::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="action_anonymize" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>anonymizeController/update</slot>
             </slots>
         </service>
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="action_pushSeriesToPacs" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
                 <slot>action_pushSeriesToPacs/setInexecutable</slot>
@@ -72,13 +72,13 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selector" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes">
+        <service uid="viewer" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>

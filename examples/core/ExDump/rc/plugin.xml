@@ -134,14 +134,14 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-            <service uid="openAct" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
+            <service uid="openAct" type="::sight::modules::ui::base::series::SDBMerger" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
 
-            <service uid="saveAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="saveAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="SDBWriterSrv" />
             </service>
 
@@ -165,11 +165,11 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="SDBWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig" >
+            <service uid="SDBWriterSrv" type="::sight::modules::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
                 <inout key="data" uid="seriesDB" />
             </service>
 
-            <service uid="selectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
+            <service uid="selectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <inout key="selection" uid="selections" />
             </service>
@@ -178,7 +178,7 @@
             <service uid="dumpEditorSrv" type="::sight::modules::ui::debug::DumpEditor" />
 
             <!-- Service to display the preview when an image or an mesh is selected -->
-            <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes" >
+            <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes" >
                 <in key="series" uid="selections" />
                 <parentView wid="previewView" />
                 <configs>

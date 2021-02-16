@@ -53,13 +53,8 @@ namespace layoutManager
 {
 } // namespace layoutManager
 
-/// The namespace sight::ui::base::registrar contains the classes of service management of GUI elements (Menu, View,
+/// The namespace sight::ui::base::registry contains the classes of service management of GUI elements (Menu, View,
 // ToolBar).
-namespace registrar
-{
-} // namespace registrar
-
-///Contains ui::base::registry details
 namespace registry
 {
 } // namespace registry

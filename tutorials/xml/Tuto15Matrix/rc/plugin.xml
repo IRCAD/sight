@@ -107,11 +107,11 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
             <start uid="meshReaderSrv" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
         <!-- *************************** Begin generic scene *************************** -->
 
@@ -193,7 +193,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="mesh" />
             <type mode="reader" />
         </service>
@@ -226,7 +226,7 @@
             <inout key="output" uid="rotTransMatrix" />
         </service>
 
-        <service uid="shhowMeshSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+        <service uid="shhowMeshSrv" type="::sight::modules::ui::qt::SParameters" >
              <parameters>
                  <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
              </parameters>

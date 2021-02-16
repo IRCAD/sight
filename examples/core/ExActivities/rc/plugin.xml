@@ -71,7 +71,7 @@
 
     <extension implements="::sight::service::registry::ServiceConfig" >
         <id>ExActivities_Sequencer_SrvCfg</id>
-        <service>::sight::modules::ui::qt::editor::SActivitySequencer</service>
+        <service>::sight::modules::ui::qt::activity::SSequencer</service>
         <desc>Configuration for sequencer</desc>
         <config>
             <activity id="ExImage_Import_Activity" name="Import" />
@@ -88,7 +88,7 @@
 
     <extension implements="::sight::service::registry::ServiceConfig" >
         <id>ExActivities_Wizard_SrvCfg</id>
-        <service>::sight::modules::ui::qt::editor::SActivityWizard</service>
+        <service>::sight::modules::ui::qt::activity::SWizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
         <config>
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>

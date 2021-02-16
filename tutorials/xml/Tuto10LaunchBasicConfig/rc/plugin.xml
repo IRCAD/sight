@@ -62,11 +62,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- ************************ Configuration launchers ********************************* -->
 
@@ -75,7 +75,7 @@
                 This service allows to launch a sub-configuration.
                 The configuration is defined by its id.
             -->
-            <service uid="launchConfigAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
+            <service uid="launchConfigAct" type="::sight::modules::ui::base::SConfigLauncher" >
                 <appConfig id="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" />
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key
@@ -86,7 +86,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="image" />
             </service>
 

@@ -38,7 +38,7 @@
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="::sight::modules::ui::base::editor::SJobBar" />
+            <service uid="progressBarView" type="::sight::modules::ui::base::SJobBar" />
 
             <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
                 <gui>
@@ -176,34 +176,34 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="saveModelSeriesAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="saveModelSeriesAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start_if_exists uid="modelSeriesWriterSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-            <service uid="createMesh50Act" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="createMesh50Act" type="::sight::modules::ui::base::com::SStarter" >
                 <start_if_exists uid="mesher50Srv" />
             </service>
 
-            <service uid="createMesh80Act" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="createMesh80Act" type="::sight::modules::ui::base::com::SStarter" >
                 <start_if_exists uid="mesher80Srv" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="snapshotSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
                     <icon>module_ui_flaticon-0.1/icons/RedCross.svg</icon>
@@ -214,7 +214,7 @@
                 </config>
             </service>
 
-            <service uid="listOrganEditorSrv" type="::sight::modules::ui::qt::editor::SModelSeriesList" autoConnect="yes" >
+            <service uid="listOrganEditorSrv" type="::sight::modules::ui::qt::model::SModelSeriesList" autoConnect="yes" >
                 <inout key="modelSeries" uid="modelSeries" />
                 <columns>
                     <organ_name>@organ_name</organ_name>
@@ -242,12 +242,12 @@
                 </config>
             </service>
 
-            <service uid="modelSeriesWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="modelSeriesWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="modelSeries" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>
@@ -280,7 +280,7 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />

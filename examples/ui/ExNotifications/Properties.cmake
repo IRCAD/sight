@@ -2,7 +2,8 @@
 set( NAME ExNotifications )
 set( VERSION 0.2 )
 set( TYPE APP )
-set( DEPENDENCIES  )
+set( DEPENDENCIES 
+    ui_base )
 set( REQUIREMENTS
     fwlauncher              # Needed to build the launcher
     module_appXml                  # XML configurations

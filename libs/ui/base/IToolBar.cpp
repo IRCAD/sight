@@ -51,7 +51,7 @@ IToolBar::~IToolBar()
 
 void IToolBar::initialize()
 {
-    m_registrar = ui::base::registrar::ToolBarRegistrar::New(this->getID());
+    m_registrar = ui::base::registry::ToolBar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
@@ -151,7 +151,7 @@ void IToolBar::actionServiceStarting(std::string actionSrvSID)
     ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
-    const service::IService::csptr service      = service::get( actionSrvSID );
+    const service::IService::csptr service   = service::get( actionSrvSID );
     const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
     service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
@@ -171,7 +171,7 @@ void IToolBar::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
-    const service::IService::csptr service      = service::get( actionSrvSID );
+    const service::IService::csptr service   = service::get( actionSrvSID );
     const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
     service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]

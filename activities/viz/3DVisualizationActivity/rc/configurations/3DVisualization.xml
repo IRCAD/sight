@@ -125,7 +125,7 @@
             </registry>
         </service>
 
-        <service uid="action_organManager" type="::sight::modules::ui::base::action::SConfigLauncher">
+        <service uid="action_organManager" type="::sight::modules::ui::base::SConfigLauncher">
             <appConfig id="ModelSeriesManagerWindow" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="${modelSeries}" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
@@ -146,14 +146,14 @@
             <parameter replace="setAxialCameraChannel" by="setAxialCameraChannel" />
         </service>
 
-        <service uid="action_SagittalViewMPR3D" type="::sight::modules::ui::base::action::SSignal" />
-        <service uid="action_FrontalViewMPR3D" type="::sight::modules::ui::base::action::SSignal" />
-        <service uid="action_AxialViewMPR3D" type="::sight::modules::ui::base::action::SSignal" />
+        <service uid="action_SagittalViewMPR3D" type="::sight::modules::ui::base::com::SSignal" />
+        <service uid="action_FrontalViewMPR3D" type="::sight::modules::ui::base::com::SSignal" />
+        <service uid="action_AxialViewMPR3D" type="::sight::modules::ui::base::com::SSignal" />
 
         <!-- Negato -->
 
         <!-- This service extracts the image if it exists from the optional image parameter. -->
-        <service uid="extractImage" type="::sight::modules::ui::base::action::SPushObject" >
+        <service uid="extractImage" type="::sight::modules::ui::base::SPushObject" >
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
             <push srcKey="OptionalInputImageKey" />
@@ -192,24 +192,24 @@
             <parameter replace="patient_name" by="${patient_name}" />
         </service>
 
-        <service uid="ActionSFocusLandmark" type="::sight::modules::ui::base::metrics::action::SFocusLandmark" >
+        <service uid="ActionSFocusLandmark" type="::sight::modules::ui::base::metrics::SFocusLandmark" >
             <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
             <inout key="image" uid="optionalInputImage" />
         </service>
 
-        <service uid="ActionLoadLandmark" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="ActionLoadLandmark" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>LoadLandmark/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionSaveLandmark" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="ActionSaveLandmark" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>SaveLandmark/update</slot>
             </slots>
         </service>
 
-        <service uid="LoadLandmark" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="LoadLandmark" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
             <selection mode="include" />
@@ -217,7 +217,7 @@
             <config id="LandmarksAtomsConfig" service="::sight::modules::io::atoms::SReader" />
         </service>
 
-        <service uid="SaveLandmark" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="SaveLandmark" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="writer" />
             <selection mode="include" />
@@ -225,30 +225,30 @@
             <config id="LandmarksAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
         </service>
 
-        <service uid="ActionEditLandmark" type="::sight::modules::ui::base::action::SBooleanSlotCaller">
+        <service uid="ActionEditLandmark" type="::sight::modules::ui::base::com::SBooleanSlotCaller">
             <slots>
                 <slot>landmarksEditor/setVisible</slot>
             </slots>
         </service>
-        <service uid="ActionAddDistance" type="::sight::modules::ui::base::metrics::action::AddDistance">
+        <service uid="ActionAddDistance" type="::sight::modules::ui::base::metrics::AddDistance">
             <inout key="image" uid="optionalInputImage" />
         </service>
-        <service uid="ActionRemoveDistance" type="::sight::modules::ui::base::metrics::action::RemoveDistance" >
+        <service uid="ActionRemoveDistance" type="::sight::modules::ui::base::metrics::RemoveDistance" >
             <inout key="image" uid="optionalInputImage" />
         </service>
-        <service uid="ActionHideDistance" type="::sight::modules::ui::base::metrics::action::ShowDistance" autoConnect="yes">
+        <service uid="ActionHideDistance" type="::sight::modules::ui::base::metrics::ShowDistance" autoConnect="yes">
             <inout key="image" uid="optionalInputImage" />
         </service>
-        <service uid="ActionHideCross" type="::sight::modules::ui::base::viz::action::CrossTypeAction">
+        <service uid="ActionHideCross" type="::sight::modules::ui::base::viz::CrossTypeAction">
         <inout key="image" uid="optionalInputImage" />
             <crossType>hide</crossType>
         </service>
-        <service uid="ActionShowNormalCross" type="::sight::modules::ui::base::viz::action::CrossTypeAction">
+        <service uid="ActionShowNormalCross" type="::sight::modules::ui::base::viz::CrossTypeAction">
             <inout key="image" uid="optionalInputImage" />
             <crossType>half</crossType>
             <state active="true" />
         </service>
-        <service uid="ActionShowFullCross" type="::sight::modules::ui::base::viz::action::CrossTypeAction">
+        <service uid="ActionShowFullCross" type="::sight::modules::ui::base::viz::CrossTypeAction">
             <inout key="image" uid="optionalInputImage" />
             <crossType>full</crossType>
         </service>
@@ -256,7 +256,7 @@
             <inout key="image" uid="optionalInputImage" />
         </service>
 
-        <service uid="ActionExportActivity" type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes">
+        <service uid="ActionExportActivity" type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${AS_UID}" />
         </service>

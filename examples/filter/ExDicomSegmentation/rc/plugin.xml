@@ -79,7 +79,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="dynamicViewSrv" type="::sight::modules::ui::qt::editor::SDynamicView" >
+            <service uid="dynamicViewSrv" type="::sight::modules::ui::qt::activity::SDynamicView" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>

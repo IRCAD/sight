@@ -78,7 +78,7 @@ void Plugin::initialize()
         mainView->configure(config);
     }
 
-    auto progressBarView = m_appManager->addService("::sight::modules::ui::base::editor::SJobBar", true, false);
+    auto progressBarView = m_appManager->addService("::sight::modules::ui::base::SJobBar", true, false);
 
     auto menuBarView = m_appManager->addService("::sight::modules::ui::base::SMenuBar", "menuBarView",
                                                 true,
@@ -322,7 +322,7 @@ void Plugin::initialize()
     }
 
     // Actions.
-    auto openImageAct = m_appManager->addService("::sight::modules::ui::base::action::SStarter", "openImageAct", true,
+    auto openImageAct = m_appManager->addService("::sight::modules::ui::base::com::SStarter", "openImageAct", true,
                                                  false);
     {
         service::IService::ConfigType config;
@@ -330,7 +330,7 @@ void Plugin::initialize()
         openImageAct->configure(config);
     }
 
-    auto openMeshAct = m_appManager->addService("::sight::modules::ui::base::action::SStarter", "openMeshAct", true,
+    auto openMeshAct = m_appManager->addService("::sight::modules::ui::base::com::SStarter", "openMeshAct", true,
                                                 false);
     {
         service::IService::ConfigType config;
@@ -338,7 +338,7 @@ void Plugin::initialize()
         openMeshAct->configure(config);
     }
 
-    auto openTextureAct = m_appManager->addService("::sight::modules::ui::base::action::SStarter", "openTextureAct",
+    auto openTextureAct = m_appManager->addService("::sight::modules::ui::base::com::SStarter", "openTextureAct",
                                                    true,
                                                    false);
     {
@@ -347,13 +347,13 @@ void Plugin::initialize()
         openTextureAct->configure(config);
     }
 
-    auto quitAct = m_appManager->addService("::sight::modules::ui::base::action::SQuit", "quitAct", true, false);
+    auto quitAct = m_appManager->addService("::sight::modules::ui::base::SQuit", "quitAct", true, false);
     {
         quitAct->configure();
     }
 
     // Services.
-    auto imageReaderSrv = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector", "imageReaderSrv",
+    auto imageReaderSrv = m_appManager->addService("::sight::modules::ui::base::io::SSelector", "imageReaderSrv",
                                                    true,
                                                    false);
     {
@@ -363,7 +363,7 @@ void Plugin::initialize()
         imageReaderSrv->configure(config);
     }
 
-    auto meshReaderSrv = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector", "meshReaderSrv",
+    auto meshReaderSrv = m_appManager->addService("::sight::modules::ui::base::io::SSelector", "meshReaderSrv",
                                                   true,
                                                   false);
     {
@@ -373,7 +373,7 @@ void Plugin::initialize()
         meshReaderSrv->configure(config);
     }
 
-    auto textureReaderSrv = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector",
+    auto textureReaderSrv = m_appManager->addService("::sight::modules::ui::base::io::SSelector",
                                                      "textureReaderSrv",
                                                      true, false);
     {
@@ -384,7 +384,7 @@ void Plugin::initialize()
     }
 
     auto showNegatoSrv =
-        m_appManager->addService("::sight::modules::ui::qt::editor::SSignalButton", "showNegatoSrv", true, false);
+        m_appManager->addService("::sight::modules::ui::qt::com::SSignalButton", "showNegatoSrv", true, false);
     {
         service::IService::ConfigType config;
         config.add("config.checkable", true);
@@ -405,7 +405,7 @@ void Plugin::initialize()
         sliderIndexEditorSrv->configure(config);
     }
 
-    auto snapshotSrv = m_appManager->addService("::sight::modules::ui::qt::editor::SSignalButton", "snapshotSrv", true,
+    auto snapshotSrv = m_appManager->addService("::sight::modules::ui::qt::com::SSignalButton", "snapshotSrv", true,
                                                 false);
     {
         service::IService::ConfigType config;
@@ -414,7 +414,7 @@ void Plugin::initialize()
         snapshotSrv->configure(config);
     }
 
-    auto imageWriterSrv = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector", "imageWriterSrv",
+    auto imageWriterSrv = m_appManager->addService("::sight::modules::ui::base::io::SSelector", "imageWriterSrv",
                                                    true,
                                                    false);
     {

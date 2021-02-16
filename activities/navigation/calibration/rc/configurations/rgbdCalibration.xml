@@ -116,7 +116,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="startVideo" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="startVideo" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>startVideo/setInexecutable</slot>
                 <slot>scanner/startCamera</slot>
@@ -125,7 +125,7 @@
             </slots>
         </service>
 
-        <service uid="stopVideo" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="stopVideo" type="::sight::modules::ui::base::com::SSlotCaller">
             <state executable="false" />
             <slots>
                 <slot>stopVideo/setInexecutable</slot>
@@ -135,25 +135,25 @@
             </slots>
         </service>
 
-        <service uid="configureDepthRecord" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="configureDepthRecord" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>depthRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="configureColorRecord" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="configureColorRecord" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>rgbRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="configureIRRecord" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="configureIRRecord" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>irRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="takeSnapshot" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="takeSnapshot" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>scanner/takeSnapshot</slot>
                 <slot>actionRecord/update</slot>
@@ -277,7 +277,7 @@
             <inout key="snapshotTLIR" uid="exportTLIR" />
         </service>
 
-        <service uid="actionRecord" type="::sight::modules::ui::base::action::STimestampSlotCaller">
+        <service uid="actionRecord" type="::sight::modules::ui::base::com::STimestampSlotCaller">
             <slots>
                 <slot>depthRecorder/saveFrame</slot>
                 <slot>rgbRecorder/saveFrame</slot>

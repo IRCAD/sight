@@ -68,16 +68,16 @@ void Plugin::initialize()
                                                    false);
     const auto menu =
         m_appManager->addService("::sight::modules::ui::base::SMenu", "menuFile", true, false);
-    const auto actionOpenMesh = m_appManager->addService("::sight::modules::ui::base::action::SStarter",
+    const auto actionOpenMesh = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
                                                          "actionOpenMesh",
                                                          true,
                                                          false);
-    const auto actionQuit = m_appManager->addService("::sight::modules::ui::base::action::SQuit", "actionQuit", true,
+    const auto actionQuit = m_appManager->addService("::sight::modules::ui::base::SQuit", "actionQuit", true,
                                                      false);
     const auto mainView =
         m_appManager->addService("::sight::modules::ui::base::SView", "mainView", true, false);
 
-    const auto meshReaderSrv = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector", "meshReader",
+    const auto meshReaderSrv = m_appManager->addService("::sight::modules::ui::base::io::SSelector", "meshReader",
                                                         true,
                                                         false);
     const auto renderSrv   = m_appManager->addService("::sight::viz::qt3d::SRender", "genericScene", true, false);

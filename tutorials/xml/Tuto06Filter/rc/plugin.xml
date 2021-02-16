@@ -92,24 +92,24 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to quit the application -->
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- Action to open image file: call update on image reader service -->
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>imageReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Action apply threshold filter: call update on threshold filter service -->
-            <service uid="imageFilterAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="imageFilterAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>imageFilterSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Action apply flip filter: call 'flipAxisY' slot on flip service -->
-            <service uid="imageFlipperAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="imageFlipperAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>imageFlipperSrv/flipAxisY</slot>
                 </slots>
@@ -118,7 +118,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Reader of the input image -->
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage1" />
                 <type mode="reader" />
             </service>

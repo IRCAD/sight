@@ -49,7 +49,7 @@ IMenuBar::~IMenuBar()
 void IMenuBar::initialize()
 {
 
-    m_registrar = ui::base::registrar::MenuBarRegistrar::New(this->getID());
+    m_registrar = ui::base::registry::MenuBar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );

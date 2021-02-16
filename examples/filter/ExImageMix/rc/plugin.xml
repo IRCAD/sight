@@ -142,15 +142,15 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="openBackgroundFileAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openBackgroundFileAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="backgroundImageReaderSrv" />
             </service>
 
-            <service uid="openFrontFileAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openFrontFileAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="foregroundImageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -269,12 +269,12 @@
 
             <service uid="snapshotBlendSceneEditorSrv" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
 
-            <service uid="backgroundImageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="backgroundImageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="backgroundImage" />
                 <type mode="reader" class="::sight::data::Image" />
             </service>
 
-            <service uid="foregroundImageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="foregroundImageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="frontImage" />
                 <type mode="reader" class="::sight::data::Image" />
             </service>

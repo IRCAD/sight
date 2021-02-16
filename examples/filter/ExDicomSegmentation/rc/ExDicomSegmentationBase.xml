@@ -63,12 +63,12 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="::sight::modules::ui::base::action::SSeriesDBMerger" >
+        <service uid="importAct" type="::sight::modules::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::qt::action::SActivityLauncher" autoConnect="yes" >
+        <service uid="exportAct" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -83,7 +83,7 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="::sight::modules::ui::qt::action::SActivityLauncher" autoConnect="yes" >
+        <service uid="mesherAct" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -96,7 +96,7 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="::sight::modules::ui::qt::action::SActivityLauncher" autoConnect="yes" >
+        <service uid="thresholdAct" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -111,12 +111,12 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes" >
+        <service uid="selectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="selection" uid="selection" />
         </service>
 
-        <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::SSeriesViewer" autoConnect="yes" >
+        <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes" >
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>

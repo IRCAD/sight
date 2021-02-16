@@ -170,11 +170,11 @@ void SGrabberProxy::startCamera()
             const auto srvConfigFactory = service::registry::ServiceConfig::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
-            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
-                                                                                 "::service::IRGBDGrabber");
+            auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::sight::data::FrameTL",
+                                                                                 "::sight::service::IRGBDGrabber");
 
-            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("data::FrameTL",
-                                                                                    "::service::IGrabber");
+            auto rgbGrabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::sight::data::FrameTL",
+                                                                                    "::sight::service::IGrabber");
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
 

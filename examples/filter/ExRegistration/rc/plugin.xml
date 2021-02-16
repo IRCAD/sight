@@ -161,22 +161,22 @@ Detail of the ToolBar
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="openMesh1Act" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openMesh1Act" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshReader1Srv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 2 (Point list 2)    -->
-            <service uid="openMesh2Act" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openMesh2Act" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshReader2Srv" />
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="registerAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="registerAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>PLRegistrationSrv/update</slot>
                 </slots>
@@ -308,7 +308,7 @@ Detail of the ToolBar
                 <inout key="image" uid="myImage" />
             </service>
 
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
@@ -319,12 +319,12 @@ Detail of the ToolBar
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="meshReader1Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReader1Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="meshOnNegato1" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshReader2Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReader2Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="meshOnNegato2" />
                 <type mode="reader" />
             </service>

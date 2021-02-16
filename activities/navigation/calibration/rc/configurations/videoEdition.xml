@@ -50,7 +50,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="editionAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="editionAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>intrinsicEditionSrv/update</slot>
             </slots>

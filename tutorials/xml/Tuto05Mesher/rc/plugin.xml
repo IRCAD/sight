@@ -100,21 +100,21 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-            <service uid="openImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="saveImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="saveImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageWriterSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="saveMeshAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="meshWriterSrv" />
             </service>
 
@@ -127,7 +127,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Add a shortcut in the application (key "v") -->
-            <service uid="shortcutSrv" type="::sight::modules::ui::qt::SSignalShortcut" >
+            <service uid="shortcutSrv" type="::sight::modules::ui::qt::com::SSignalShortcut" >
                 <config shortcut="v" sid="containerView" />
             </service>
 
@@ -139,12 +139,12 @@
                 <in key="image" uid="myImage" autoConnect="yes" />
             </service>
 
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
 
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="writer" />
             </service>
@@ -157,12 +157,12 @@
                 <in key="mesh" uid="myMesh" autoConnect="yes" />
             </service>
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>

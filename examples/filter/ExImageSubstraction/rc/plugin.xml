@@ -226,22 +226,22 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Action to load an image in the Tab 1 -->
-            <service uid="openImage1Act" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImage1Act" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="readerFile1Srv" />
             </service>
 
             <!-- Action to load an image in the Tab 2 -->
-            <service uid="openImage2Act" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="openImage2Act" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="readerFile2Srv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="saveImageAct" type="::sight::modules::ui::base::action::SStarter" >
+            <service uid="saveImageAct" type="::sight::modules::ui::base::com::SStarter" >
                 <start uid="imageWriterSrv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="computeImageAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="computeImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>imageSubstractSrv/update</slot>
                 </slots>
@@ -330,21 +330,21 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotNegato1EditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="snapshotNegato1EditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="snapshotNegato2EditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="snapshotNegato2EditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="snapshotNegato3EditorSrv" type="::sight::modules::ui::qt::editor::SSignalButton" >
+            <service uid="snapshotNegato3EditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
                    <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
@@ -355,7 +355,7 @@
                 <inout key="image" uid="image1" />
             </service>
 
-            <service uid="readerFile1Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="readerFile1Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="image1" />
                 <type mode="reader" />
             </service>
@@ -370,7 +370,7 @@
                 <inout key="image" uid="image2" />
             </service>
 
-            <service uid="readerFile2Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="readerFile2Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="image2" />
                 <type mode="reader" />
             </service>
@@ -397,22 +397,22 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="imageResult" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter1Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriter1Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot1" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter2Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriter2Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot2" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter3Srv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="imageWriter3Srv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot3" />
                 <type mode="writer" />
             </service>

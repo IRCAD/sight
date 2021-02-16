@@ -58,31 +58,31 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="previousImageAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="previousImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/previousImage</slot>
                 </slots>
             </service>
 
-            <service uid="nextImageAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="nextImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/nextImage</slot>
                 </slots>

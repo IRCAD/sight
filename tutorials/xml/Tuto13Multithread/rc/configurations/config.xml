@@ -81,19 +81,19 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="openMeshAct" type="::sight::modules::ui::base::action::SStarter" >
+        <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
             <start uid="meshReaderSrv" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-        <service uid="startDeformationAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="startDeformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>meshDeformationSrv/startDeformation</slot>
             </slots>
         </service>
 
-        <service uid="stopDeformationAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="stopDeformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>meshDeformationSrv/stopDeformation</slot>
             </slots>
@@ -101,7 +101,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="mesh" />
             <type mode="reader" />
         </service>

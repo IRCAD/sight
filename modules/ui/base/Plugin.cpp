@@ -54,7 +54,7 @@ void Plugin::start()
     m_preferences = data::Composite::New();
 
     service::IService::sptr prefSrv;
-    prefSrv = service::add("::sight::modules::ui::base::preferences::SPreferences", s_PREF_SERVICE_UID);
+    prefSrv = service::add("::sight::modules::ui::base::SPreferences", s_PREF_SERVICE_UID);
     prefSrv->registerInOut(m_preferences, sight::ui::base::preferences::s_PREFERENCES_KEY);
 
     try

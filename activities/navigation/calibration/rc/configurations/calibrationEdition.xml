@@ -92,13 +92,13 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>CalibrationXmlWriter/update</slot>
             </slots>
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::qt::action::SExportSeries" autoConnect="yes">
+        <service uid="exportAct" type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="newCameraSeries" />
         </service>
@@ -107,28 +107,28 @@
             <in key="data" uid="newCameraSeries"/>
         </service>
 
-        <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideoAct</slot>
                 <slot>videoGrabber2Srv/loopVideoAct</slot>

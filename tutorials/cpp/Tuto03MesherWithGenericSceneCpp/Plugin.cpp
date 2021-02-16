@@ -90,28 +90,28 @@ void Plugin::initialize()
                                                      true, false);
 
     // actions
-    auto actionOpenImage = m_appManager->addService("::sight::modules::ui::base::action::SStarter", "actionOpenImage",
+    auto actionOpenImage = m_appManager->addService("::sight::modules::ui::base::com::SStarter", "actionOpenImage",
                                                     true,
                                                     false);
-    auto actionSaveModelSeries = m_appManager->addService("::sight::modules::ui::base::action::SStarter",
+    auto actionSaveModelSeries = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
                                                           "actionSaveModelSeries",
                                                           false,
                                                           false);
-    auto actionCreateMesh50 = m_appManager->addService("::sight::modules::ui::base::action::SStarter",
+    auto actionCreateMesh50 = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
                                                        "actionCreateMesh50",
                                                        true,
                                                        false);
-    auto actionCreateMesh80 = m_appManager->addService("::sight::modules::ui::base::action::SStarter",
+    auto actionCreateMesh80 = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
                                                        "actionCreateMesh80",
                                                        true,
                                                        false);
-    auto actionQuit = m_appManager->addService("::sight::modules::ui::base::action::SQuit", "actionQuit", true, false);
+    auto actionQuit = m_appManager->addService("::sight::modules::ui::base::SQuit", "actionQuit", true, false);
 
     //readers/writers
-    auto imageSeriesReader = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector",
+    auto imageSeriesReader = m_appManager->addService("::sight::modules::ui::base::io::SSelector",
                                                       "imageSeriesReader",
                                                       true, false);
-    auto modelSeriesWriter = m_appManager->addService("::sight::modules::ui::base::editor::SIOSelector",
+    auto modelSeriesWriter = m_appManager->addService("::sight::modules::ui::base::io::SSelector",
                                                       "modelSeriesWriter",
                                                       true, false);
 
@@ -123,14 +123,14 @@ void Plugin::initialize()
     auto snapshotEditor = m_appManager->addService("::sight::modules::ui::qt::viz::SnapshotEditor", "snapshotEditor",
                                                    true,
                                                    false);
-    auto sliceListEditor = m_appManager->addService("::sight::modules::ui::qt::editor::SSelectionMenuButton",
+    auto sliceListEditor = m_appManager->addService("::sight::modules::ui::qt::SSelectionMenuButton",
                                                     "sliceListEditor", true, false);
-    auto showScanEditor = m_appManager->addService("::sight::modules::ui::qt::editor::SSignalButton", "showScanEditor",
+    auto showScanEditor = m_appManager->addService("::sight::modules::ui::qt::com::SSignalButton", "showScanEditor",
                                                    true,
                                                    false);
     auto sliderIndexEditor = m_appManager->addService("::sight::modules::ui::qt::image::SliceIndexPositionEditor",
                                                       "sliderIndexEditor", true, false);
-    auto listOrganEditor = m_appManager->addService("::sight::modules::ui::qt::editor::SModelSeriesList",
+    auto listOrganEditor = m_appManager->addService("::sight::modules::ui::qt::model::SModelSeriesList",
                                                     "listOrganEditor", true, false);
     auto organMaterialEditor = m_appManager->addService(
         "::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor",
@@ -138,7 +138,7 @@ void Plugin::initialize()
     auto representationEditor = m_appManager->addService(
         "::sight::modules::ui::qt::reconstruction::RepresentationEditor",
         "representationEditor", true, false);
-    auto progressBar = m_appManager->addService("::sight::modules::ui::base::editor::SJobBar", true, false);
+    auto progressBar = m_appManager->addService("::sight::modules::ui::base::SJobBar", true, false);
 
     // meshers
     auto mesher50 = m_appManager->addService("::sight::modules::filter::mesh::SVTKMesher", "mesher50", true, false);

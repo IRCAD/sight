@@ -36,7 +36,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityWizardSrv" type="::sight::modules::ui::qt::editor::SActivityWizard" >
+        <service uid="activityWizardSrv" type="::sight::modules::ui::qt::activity::SWizard" >
             <inout key="seriesDB" uid="${SERIESDB}" />
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
@@ -47,7 +47,7 @@
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="activityCreatorSrv" type="::sight::modules::ui::qt::editor::SCreateActivity">
+        <service uid="activityCreatorSrv" type="::sight::modules::ui::qt::activity::SSelector">
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>

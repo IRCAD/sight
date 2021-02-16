@@ -11,9 +11,17 @@ are already displayed and where they are displayed on screen.
 -->
 <plugin id="ExNotifications" version="@PROJECT_VERSION@" >
 
+    <library name="ExNotifications" />
+
     <requirement id="module_service" />
     <requirement id="module_ui_qt" />
     <requirement id="module_ui_base" />
+
+    <extension implements="::sight::service::registry::ServiceFactory" >
+        <type>::sight::ui::base::IAction</type>
+        <service>::exnotifications::SDisplayTestNotifications</service>
+        <object>::sight::data::Object</object>
+    </extension>
 
     <extension implements="::sight::service::registry::AppConfig" >
         <id>ExNotifications_AppCfg</id>
@@ -70,32 +78,32 @@ are already displayed and where they are displayed on screen.
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="useNotifierAct" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="useNotifierAct" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
                 </parameters>
             </service>
 
-            <service uid="typeAct" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="typeAct" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
                 </parameters>
             </service>
 
-            <service uid="positionAct" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="positionAct" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
                 </parameters>
             </service>
 
-            <service uid="notifyAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="notifyAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>testNotifierSrv/update</slot>
                 </slots>
             </service>
 
             <!-- preference to apply new theme on app -->
-            <service uid="changeThemeAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
+            <service uid="changeThemeAct" type="::sight::modules::ui::qt::SPreferencesConfiguration" >
                 <preference>
                     <type>combobox</type>
                     <name>Color Theme</name>
@@ -108,7 +116,7 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="::sight::modules::ui::qt::action::SDisplayTestNotifications" />
+            <service uid="testNotifierSrv" type="::exnotifications::SDisplayTestNotifications" />
 
             <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifierSrv" type="::sight::modules::ui::qt::SNotifier" >

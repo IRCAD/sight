@@ -24,7 +24,7 @@
 
 #include "ui/base/config.hpp"
 #include "ui/base/layoutManager/IMenuLayoutManager.hpp"
-#include "ui/base/registrar/MenuRegistrar.hpp"
+#include "ui/base/registry/Menu.hpp"
 
 #include <service/IService.hpp>
 
@@ -105,7 +105,7 @@ protected:
      *   For example: the menu item named "My item 1" will be connected with the service which have the sid = "item1".
      * - A menu can't have the same service connected on two different menu items.
      *
-     * @see ui::base::registrar::MenuRegistrar::initialize(), ui::base::layoutManager::IMenuLayoutManager::initialize()
+     * @see ui::base::registry::Menu::initialize(), ui::base::layoutManager::IMenuLayoutManager::initialize()
      */
     UI_BASE_API void initialize();
 
@@ -120,7 +120,7 @@ private:
     void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
 
     ui::base::layoutManager::IMenuLayoutManager::sptr m_layoutManager;
-    ui::base::registrar::MenuRegistrar::sptr m_registrar;
+    ui::base::registry::Menu::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;

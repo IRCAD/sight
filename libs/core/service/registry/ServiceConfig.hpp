@@ -66,7 +66,7 @@ public:
  * @code{.xml}
     <extension implements="::sight::service::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>
-        <service>::modules::ui::base::editor::SIOSelector</service>
+        <service>::modules::ui::base::editor::SSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />

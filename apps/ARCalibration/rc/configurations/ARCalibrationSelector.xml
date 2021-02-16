@@ -29,7 +29,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="selectorSrv" type="::sight::modules::ui::qt::editor::SSelector" autoConnect="yes">
+        <service uid="selectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>

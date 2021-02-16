@@ -156,59 +156,59 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="ActionAdd" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionAdd" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>CharucoBoardDetector/detectPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionReset" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionRemove" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionGoOpenCV" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCal/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionDisplayImage" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/getSelection</slot>
             </slots>
         </service>
 
-        <service uid="ActionStartCamera" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionStartCamera" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/startCamera</slot>
                 <slot>VideoGrabber2/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="ActionStopCamera" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="ActionStopCamera" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/stopCamera</slot>
                 <slot>VideoGrabber2/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="PauseVideo" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="PauseVideo" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/pauseCamera</slot>
                 <slot>VideoGrabber2/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="LoopVideo" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="LoopVideo" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/loopVideo</slot>
                 <slot>VideoGrabber2/loopVideo</slot>
@@ -274,7 +274,7 @@
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabel" type="::sight::modules::ui::qt::editor::STextStatus">
+        <service uid="errorLabel" type="::sight::modules::ui::qt::STextStatus">
             <label>Reprojection error (RMSE)</label>
         </service>
 

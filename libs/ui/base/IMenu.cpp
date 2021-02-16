@@ -51,7 +51,7 @@ IMenu::~IMenu()
 
 void IMenu::initialize()
 {
-    m_registrar = ui::base::registrar::MenuRegistrar::New(this->getID());
+    m_registrar = ui::base::registry::Menu::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
     SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
@@ -155,7 +155,7 @@ void IMenu::actionServiceStarting(std::string actionSrvSID)
     }
     else
     {
-        const service::IService::csptr service      = service::get( actionSrvSID );
+        const service::IService::csptr service   = service::get( actionSrvSID );
         const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
         service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
@@ -176,7 +176,7 @@ void IMenu::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
-    const service::IService::csptr service      = service::get( actionSrvSID );
+    const service::IService::csptr service   = service::get( actionSrvSID );
     const ui::base::IAction::csptr actionSrv = ui::base::IAction::dynamicCast(service);
 
     service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]

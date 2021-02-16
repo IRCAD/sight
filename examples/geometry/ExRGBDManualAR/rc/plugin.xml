@@ -141,28 +141,28 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::sight::modules::ui::base::action::SQuit" />
+            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
 
-            <service uid="loadCalibAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="loadTransformationAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadTransformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>transformReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="loadMeshAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loadMeshAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>meshReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -170,7 +170,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -180,7 +180,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -190,7 +190,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -204,32 +204,32 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="organManagerAct" type="::sight::modules::ui::base::action::SConfigLauncher" >
+            <service uid="organManagerAct" type="::sight::modules::ui::base::SConfigLauncher" >
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR-0.1/app.ico" />
             </service>
 
-            <service uid="learnBackgroundAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="learnBackgroundAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>extractForegroundSrv/setBackground</slot>
                 </slots>
             </service>
 
-            <service uid="learnForegroundAct" type="::sight::modules::ui::base::action::SSlotCaller" >
+            <service uid="learnForegroundAct" type="::sight::modules::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>extractForegroundSrv/setForeground</slot>
                 </slots>
             </service>
 
-            <service uid="segmentationParametersAct" type="::sight::modules::ui::base::action::SModifyLayout" >
+            <service uid="segmentationParametersAct" type="::sight::modules::ui::base::SModifyLayout" >
                 <state active="false" />
                 <config>
                     <show_or_hide sid="noiseLevelSrv" />
@@ -240,7 +240,7 @@
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::sight::modules::ui::qt::action::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="::sight::modules::ui::qt::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -314,7 +314,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="seriesDB" />
                 <type mode="reader" />
             </service>
@@ -335,7 +335,7 @@
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="::sight::modules::ui::base::editor::SIOSelector" >
+            <service uid="transformReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
@@ -357,25 +357,25 @@
                 </out>
             </service>
 
-            <service uid="thresholdSliderSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="thresholdSliderSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
                 </parameters>
             </service>
 
-            <service uid="noiseLevelSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="noiseLevelSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
                 </parameters>
             </service>
 
-            <service uid="bgComponentsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="bgComponentsSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>
             </service>
 
-            <service uid="fgComponentsSrv" type="::sight::modules::ui::qt::editor::SParameters" >
+            <service uid="fgComponentsSrv" type="::sight::modules::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>

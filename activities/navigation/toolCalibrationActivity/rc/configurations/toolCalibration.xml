@@ -68,30 +68,30 @@
 
         <!-- *************************** Begin Actions *************************** -->
 
-        <service uid="actionStartOpenIGTLinkClient" type="::sight::modules::ui::base::action::SStarter">
+        <service uid="actionStartOpenIGTLinkClient" type="::sight::modules::ui::base::com::SStarter">
             <state active="true" visible="true" />
             <start uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionStopOpenIGTLinkClient" type="::sight::modules::ui::base::action::SStarter">
+        <service uid="actionStopOpenIGTLinkClient" type="::sight::modules::ui::base::com::SStarter">
             <state active="true" visible="false" />
             <stop uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionAddPoint" type="::sight::modules::ui::base::action::SSlotCaller" >
+        <service uid="actionAddPoint" type="::sight::modules::ui::base::com::SSlotCaller" >
            <slots>
                <slot>markerToPoint/addPoint</slot>
                <slot>manageVector/addCopy</slot>
            </slots>
         </service>
 
-        <service uid="actionComputeCalibration" type="::sight::modules::ui::base::action::STimestampSlotCaller" >
+        <service uid="actionComputeCalibration" type="::sight::modules::ui::base::com::STimestampSlotCaller" >
            <slots>
                <slot>toolCalibration/computeRegistration</slot>
            </slots>
         </service>
 
-        <service uid="actionExportMatrix" type="::sight::modules::ui::base::action::SSlotCaller">
+        <service uid="actionExportMatrix" type="::sight::modules::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationMatrixWriter/update</slot>
             </slots>
@@ -129,7 +129,7 @@
             <red>Sensor is not tracked</red>
         </service>
 
-        <service uid="configureClient" type="::sight::modules::ui::qt::action::SPreferencesConfiguration">
+        <service uid="configureClient" type="::sight::modules::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Tracker hostname</name>
@@ -162,7 +162,7 @@
            <inout key="vector" uid="matricesVector" />
         </service>
 
-        <service uid="calibrationMatrixWriter" type="::sight::modules::ui::base::editor::SIOSelector" >
+        <service uid="calibrationMatrixWriter" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
