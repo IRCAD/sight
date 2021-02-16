@@ -263,6 +263,14 @@ private:
     void insertPoint(std::string _groupName, size_t _index, const ::fwData::Landmarks::csptr& _data = nullptr);
 
     /**
+     * @brief inserts a point.
+     * @param _groupName group name of the landmark.
+     * @param _index index of the point relative to the group.
+     * @param _landmarks landmarks data in which the point will be inserted.
+     */
+    void insertMyPoint(std::string _groupName, size_t _index, ::fwData::Landmarks::csptr _landmarks);
+
+    /**
      * @brief SLOT: hightlights the selected landmark.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
@@ -320,6 +328,16 @@ private:
      * @param _data landmarks data in which the landmarks should be hidden.
      */
     void hideLandmark(std::shared_ptr< Landmark > _landmark, const ::fwData::Landmarks::csptr& _data = nullptr);
+
+    /**
+     * @brief Hides the landmark if it's not on the current image slice index (if one is given).
+     * @param _landmark the landmark to hide.
+     * @param imageLock boolean to know if the image is present and locked.
+     * @param _landmarks landmarks data in which the landmarks should be hidden.
+     */
+    void hideMyLandmark(std::shared_ptr<Landmark> _landmark,
+                        const bool imageLock,
+                        ::fwData::Landmarks::csptr _landmarks);
 
     /// Contains the root scene node.
     ::Ogre::SceneNode* m_transNode { nullptr };
