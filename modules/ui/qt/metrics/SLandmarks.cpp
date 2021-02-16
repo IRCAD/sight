@@ -679,7 +679,8 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             const double* const pickedPos       = _info.m_worldPos;
             data::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
 
-            const auto matrix = this->getLockedInput< data::TransformationMatrix3D >(s_MATRIX_IN);
+            const auto matrixWeak = this->getWeakInput< data::TransformationMatrix3D >(s_MATRIX_IN);
+            const auto matrix     = matrixWeak.lock();
             if(matrix)
             {
                 const auto pickedPoint = ::glm::dvec4 {pickedPos[0], pickedPos[1], pickedPos[2], 1.0};

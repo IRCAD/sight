@@ -50,7 +50,7 @@ namespace sight::modules::viz::qt3d
 {
 
 /// Defines a class to manage a render window.
-class MODULE_VIZ_QT3D_CLASS_API WindowInteractor : public QObject,
+class MODULE_VIZ_QT3D_CLASS_API WindowInteractor final : public QObject,
                                                    public sight::viz::qt3d::IWindowInteractor
 {
 

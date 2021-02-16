@@ -53,6 +53,7 @@ fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
 static const core::com::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
+static const core::com::Slots::SlotKeyType s_RECORD               = "record";
 static const core::com::Slots::SlotKeyType s_WRITE                = "write";
 static const core::com::Slots::SlotKeyType s_SET_FORMAT_PARAMETER = "setFormatParameter";
 
@@ -66,6 +67,7 @@ SFrameWriter::SFrameWriter() noexcept :
     newSlot(s_SAVE_FRAME, &SFrameWriter::saveFrame, this);
     newSlot(s_START_RECORD, &SFrameWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SFrameWriter::stopRecord, this);
+    newSlot(s_RECORD, &SFrameWriter::record, this);
     newSlot(s_WRITE, &SFrameWriter::write, this);
     newSlot(s_SET_FORMAT_PARAMETER, &SFrameWriter::setFormatParameter, this);
 }
@@ -264,6 +266,20 @@ void SFrameWriter::startRecord()
 void SFrameWriter::stopRecord()
 {
     m_isRecording = false;
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameWriter::record(bool state)
+{
+    if (state)
+    {
+        this->startRecord();
+    }
+    else
+    {
+        this->stopRecord();
+    }
 }
 
 //------------------------------------------------------------------------------

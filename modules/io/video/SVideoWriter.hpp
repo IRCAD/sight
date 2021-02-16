@@ -95,17 +95,20 @@ protected:
 
 private:
 
-    /// SLOT: add the current frame in the video
+    /// SLOT: adds the current frame in the video
     void saveFrame(core::HiResClock::HiResClockType timestamp);
 
-    /// save current buffer with OpenCV video writer (m_writer must be initialized)
+    /// saves current buffer with OpenCV video writer (m_writer must be initialized)
     void writeBuffer(int width, int height, CSPTR(data::FrameTL::BufferType) buffer);
 
-    /// SLOT: Start recording
+    /// SLOT: Starts recording
     void startRecord();
 
-    /// SLOT: Stop recording
+    /// SLOT: Stops recording
     void stopRecord();
+
+    /// SLOT: Starts/stops recording, according to the parameter value
+    void record(bool);
 
     /// opencv video writer
     UPTR(::cv::VideoWriter) m_writer;
