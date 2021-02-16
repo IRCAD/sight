@@ -57,7 +57,7 @@ protected:
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::modules::ui::base::aspect::SDefaultMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBarSrv" impl="::sight::modules::ui::base::aspect::SDefaultMenuBar"
      * autoConnect="no"
      *>
           <gui>

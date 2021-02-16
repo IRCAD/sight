@@ -95,7 +95,7 @@ protected:
      * @brief Configure action. Retrieves the IOSelector config.
      *
      * @code{.xml}
-        <service impl="::modules::ui::base::action::SSeriesDBMerger">
+        <service impl="::sight::modules::ui::base::action::SSeriesDBMerger">
             <IOSelectorSrvConfig name="myConfig" />
         </service>
        @endcode

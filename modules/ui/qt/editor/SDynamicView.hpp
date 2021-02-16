@@ -84,7 +84,7 @@ namespace editor
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="media-0.1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_media-0.1/icons/app.ico"  />
      </parameters>
      <config document="true" />
    </service>

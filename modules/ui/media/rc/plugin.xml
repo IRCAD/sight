@@ -1,2 +1,2 @@
-<plugin id="media" version="@PROJECT_VERSION@" >
+<plugin id="module_ui_media" version="@PROJECT_VERSION@" >
 </plugin>

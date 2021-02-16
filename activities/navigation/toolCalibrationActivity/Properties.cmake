@@ -8,11 +8,10 @@ set( REQUIREMENTS
         module_ui_base
         module_ui_qt
         module_data
-        visuVTKAdaptor
-        media
+        module_viz_ogre
+        module_ui_media
         module_io_video
-        visuVTKQt
-        visuVTKARAdaptor
+        module_viz_ogreQt
         data
         module_service
         module_navigation_calibration

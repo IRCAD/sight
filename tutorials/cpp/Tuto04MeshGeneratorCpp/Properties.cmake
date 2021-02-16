@@ -4,31 +4,26 @@ set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES
     data
+    geometry_data
     service
+    ui_base
     )
 set( REQUIREMENTS
-    fwlauncher              # Needed to build the launcher
+    fwlauncher                     # Needed to build the launcher
     module_appXml                  # XML configurations
 
-    module_ui_base             # Start the module, load file location or window module_ui_base
+    # UI declaration/Actions
+    module_ui_base                 # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
     module_viz_ogre                # Start the module, allow to use viz_ogre
     module_viz_ogreQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
-    data
-    module_service             # fwService
-
-    # UI declaration/Actions
-    module_ui_base
+    module_service
 
     # Reader
     module_io_matrix
     module_io_vtk
-
-    # Services
-
-    # Generic Scene
 )
 
 moduleParam(module_ui_qt

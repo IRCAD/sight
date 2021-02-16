@@ -72,7 +72,7 @@ namespace editor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service impl="::modules::ui::qt::editor::SActivityWizard">
+   <service impl="::sight::modules::ui::qt::editor::SActivityWizard">
      <inout key="seriesDB" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>
      <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
@@ -80,8 +80,8 @@ namespace editor
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="data::ImageSeries" icon="media-0.1/icons/ImageSeries.svg" />
-         <icon type="data::ModelSeries" icon="media-0.1/icons/ModelSeries.svg" />
+         <icon type="data::ImageSeries" icon="module_ui_media-0.1/icons/ImageSeries.svg" />
+         <icon type="data::ModelSeries" icon="module_ui_media-0.1/icons/ModelSeries.svg" />
      </icons>
    </service>
    @endcode

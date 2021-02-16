@@ -11,7 +11,7 @@ set( REQUIREMENTS
     module_appXml
     module_service
     fwlauncher
-    console
+    module_ui_console
     exTimeLineData
 )
 

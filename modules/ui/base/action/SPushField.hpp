@@ -42,7 +42,7 @@ namespace action
  * @section XML Configuration
  *
  * @code{.xml}
-       <service impl="::modules::ui::base::action::SPushField">
+       <service impl="::sight::modules::ui::base::action::SPushField">
            <inout key="source" uid="compositeId" />
            <out key="destination" uid="objectId" />
            <push field="item" />

@@ -32,7 +32,7 @@ namespace sight::Tuto06GuiQml
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO06GUIQML_CLASS_API Plugin : public core::runtime::Plugin
+class TUTO06GUIQML_CLASS_API Plugin : public sight::core::runtime::Plugin
 {
 public:
     /// Constructor.

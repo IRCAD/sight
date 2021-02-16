@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_io_dicom
     module_ui_dicom
     module_io_dicomweb
-    media
+    module_ui_media
     module_service
     module_viz_ogre
     module_viz_ogreQt

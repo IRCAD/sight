@@ -37,7 +37,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service id="abscissa" class="::modules::viz::scene2d::adaptor::SLine" >
+   <service id="abscissa" class="::sight::modules::viz::scene2d::adaptor::SLine" >
     <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
    </service>
    @endcode

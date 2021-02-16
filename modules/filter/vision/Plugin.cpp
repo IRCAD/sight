@@ -29,7 +29,8 @@
 namespace sight::modules::filter::vision
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::modules::filter::vision::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+    "::sight::modules::filter::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {

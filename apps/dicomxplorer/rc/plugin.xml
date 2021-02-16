@@ -21,7 +21,7 @@
         <id>SDBVRRender</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>media-0.1/icons/selector.svg</icon>
+        <icon>module_ui_media-0.1/icons/selector.svg</icon>
         <requirements />
         <appConfig id="SDBVRRender">
             <parameters />

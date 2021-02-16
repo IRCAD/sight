@@ -106,11 +106,7 @@ macro(initProject PRJNAME )
         list(APPEND SUBDIRS ${PRJ_SOURCE_DIR})
     endif()
 
-    set(${FWPROJECT_NAME}_INCLUDE_DIR)
-
     foreach(SUBDIR ${SUBDIRS})
-        list(APPEND ${FWPROJECT_NAME}_INCLUDE_DIR ${SUBDIR}/include)
-
         file(GLOB_RECURSE HEADERS "${SUBDIR}/*.hpp" "${SUBDIR}/*.h" "${SUBDIR}/*.hxx")
         file(GLOB_RECURSE SOURCES "${SUBDIR}/*.cpp" "${SUBDIR}/*.c" "${SUBDIR}/*.cxx")
 
@@ -127,7 +123,6 @@ macro(initProject PRJNAME )
         list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
     endforeach()
 
-    set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
     set (${FWPROJECT_NAME}_DIR       ${${FWPROJECT_NAME}_DIR}  PARENT_SCOPE)
     set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME})
@@ -261,8 +256,6 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-    target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
-
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
@@ -371,8 +364,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
-
-    target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
 
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
         set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/tu/rc")
@@ -690,8 +681,6 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         # create the config.hpp for the current module
         configure_header_file(${FWPROJECT_NAME} "config.hpp")
 
-        # ???
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${${FWPROJECT_NAME}_INCLUDE_DIR})
         # Allows include of type <ui/config.hpp>
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include")
         # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...

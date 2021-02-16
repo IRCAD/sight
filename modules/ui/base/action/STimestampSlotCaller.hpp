@@ -70,7 +70,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::ui::base::IActionSrv" impl="::modules::ui::base::STimestampSlotCaller"
+        <service uid="..." type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::STimestampSlotCaller"
      * autoConnect="no">
             <slots>
               <slot>hasSlotsId/slotKey</slot>

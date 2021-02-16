@@ -63,12 +63,12 @@
  */
 struct configuration
 {
-    io::igtl::Server::sptr server;
+    sight::io::igtl::Server::sptr server;
     std::string deviceIn;
     std::string deviceOut;
     std::string deviceType;
     std::uint16_t port;
-    core::thread::Worker::sptr worker;
+    sight::core::thread::Worker::sptr worker;
 
 };
 
@@ -131,9 +131,9 @@ std::map< std::string, configuration > initialize(std::string configFile)
     {
         //check if port num for this config isn't used
         std::map< std::string, configuration >::iterator it;
-        io::igtl::Server::sptr server     = io::igtl::Server::sptr(new io::igtl::Server());
-        core::thread::Worker::sptr worker = core::thread::Worker::New();
-        bool serverAlreadyStarted         = false;
+        auto server               = std::make_shared<sight::io::igtl::Server>();
+        auto worker               = sight::core::thread::Worker::New();
+        bool serverAlreadyStarted = false;
 
         for(it = association.begin(); it != association.end(); ++it)
         {
@@ -160,7 +160,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
         {
             config.server->start(config.port);
 
-            std::function<void() > task = std::bind(&::io::igtl::Server::runServer, config.server);
+            std::function<void() > task = std::bind(&sight::io::igtl::Server::runServer, config.server);
             config.worker->post(task);
         }
 
@@ -193,12 +193,12 @@ int main (int argc, char** argv)
     //Initialization of parameters
     std::map< std::string, configuration > associationDeviceServer = initialize(configFile);
 
-    io::igtl::Server::sptr receiveServer = io::igtl::Server::sptr(new io::igtl::Server());
-    core::thread::Worker::sptr worker    = core::thread::Worker::New();
+    auto receiveServer = std::make_shared<sight::io::igtl::Server>();
+    auto worker        = sight::core::thread::Worker::New();
     try
     {
         receiveServer->start(port);
-        std::function<void() > task = std::bind(&::io::igtl::Server::runServer, receiveServer);
+        std::function<void() > task = std::bind(&sight::io::igtl::Server::runServer, receiveServer);
         worker->post(task);
 
     }
@@ -231,7 +231,7 @@ int main (int argc, char** argv)
                 std::string deviceName = headerMsg->GetDeviceName();
                 std::string deviceType = headerMsg->GetDeviceType();
 
-                io::igtl::Server::sptr sendingServer;
+                sight::io::igtl::Server::sptr sendingServer;
 
                 if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
                 {

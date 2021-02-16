@@ -32,19 +32,19 @@
         <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="media-0.1/icons/Import.svg" />
-                    <menuItem name="Export" icon="media-0.1/icons/Export.svg" />
+                    <menuItem name="Import" icon="module_ui_media-0.1/icons/Import.svg" />
+                    <menuItem name="Export" icon="module_ui_media-0.1/icons/Export.svg" />
                     <separator />
-                    <menuItem name="2D visualization" icon="media-0.1/icons/icon-2D.png" />
-                    <menuItem name="3D visualization" icon="media-0.1/icons/icon-3D.png" />
-                    <menuItem name="Volume rendering" icon="media-0.1/icons/icon-VR.png" />
-                    <menuItem name="Blend" icon="media-0.1/icons/icon-blend.png" />
+                    <menuItem name="2D visualization" icon="module_ui_media-0.1/icons/icon-2D.png" />
+                    <menuItem name="3D visualization" icon="module_ui_media-0.1/icons/icon-3D.png" />
+                    <menuItem name="Volume rendering" icon="module_ui_media-0.1/icons/icon-VR.png" />
+                    <menuItem name="Blend" icon="module_ui_media-0.1/icons/icon-blend.png" />
                     <separator />
-                    <menuItem name="DICOM PACS Reader" icon="media-0.1/icons/Pull.svg" />
-                    <menuItem name="DICOM PACS Writer" icon="media-0.1/icons/Push.svg" />
-                    <menuItem name="DICOM Filtering" icon="media-0.1/icons/icon-DICOM-Filtering.svg" />
-                    <menuItem name="DICOM Web Reader" icon="media-0.1/icons/Pull.svg" />
-                    <menuItem name="DICOM Web Writer" icon="media-0.1/icons/Push.svg" />
+                    <menuItem name="DICOM PACS Reader" icon="module_ui_media-0.1/icons/Pull.svg" />
+                    <menuItem name="DICOM PACS Writer" icon="module_ui_media-0.1/icons/Push.svg" />
+                    <menuItem name="DICOM Filtering" icon="module_ui_media-0.1/icons/icon-DICOM-Filtering.svg" />
+                    <menuItem name="DICOM Web Reader" icon="module_ui_media-0.1/icons/Pull.svg" />
+                    <menuItem name="DICOM Web Writer" icon="module_ui_media-0.1/icons/Push.svg" />
                 </layout>
             </gui>
             <registry>

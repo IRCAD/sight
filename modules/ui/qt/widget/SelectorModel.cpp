@@ -446,12 +446,12 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(_series);
         if(imageSeries)
         {
-            const auto path = core::runtime::getModuleResourceFilePath("media", "icons/ImageSeries.svg");
+            const auto path = core::runtime::getModuleResourceFilePath("module_ui_media", "icons/ImageSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (modelSeries)
         {
-            const auto path = core::runtime::getModuleResourceFilePath("media", "icons/ModelSeries.svg");
+            const auto path = core::runtime::getModuleResourceFilePath("module_ui_media", "icons/ModelSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (activitySeries)

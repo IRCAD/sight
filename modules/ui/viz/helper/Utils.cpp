@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/viz/helper/Utils.hpp"
+#include "Utils.hpp"
 
 namespace sight::modules::ui::viz
 {

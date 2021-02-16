@@ -109,7 +109,7 @@ void SFilterSelectionEditor::starting()
     this->fillAvailableFilters();
     topLayout->addWidget(m_availableFilterListWidget);
 
-    auto path = core::runtime::getModuleResourcePath("media");
+    auto path = core::runtime::getModuleResourcePath("module_ui_media");
 
     // Add filter button
     m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Plus.svg").string())), "Add");
@@ -572,7 +572,7 @@ bool SFilterSelectionEditor::sortFilters(const filter::dicom::IFilter::sptr& a,
 
 QIcon SFilterSelectionEditor::getFilterIcon(filter::dicom::IFilter::sptr filter)
 {
-    const std::filesystem::path path = core::runtime::getModuleResourcePath(std::string("media"));
+    const std::filesystem::path path = core::runtime::getModuleResourcePath(std::string("module_ui_media"));
     QIcon icons[]                    = {
         QIcon(QString::fromStdString((path / "icons/Modifier.svg").string())),
         QIcon(QString::fromStdString((path / "icons/Sorter.svg").string())),

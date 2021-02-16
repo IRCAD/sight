@@ -8,7 +8,7 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     module_data
-    media
+    module_ui_media
     module_service
     data
 )

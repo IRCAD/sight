@@ -82,7 +82,7 @@ namespace factory
          <id>myActivityId</id>
          <title>3D Visu</title>
          <desc>Activity description ...</desc>
-         <icon>media-0.1/icons/icon-3D.png</icon>
+         <icon>module_ui_media-0.1/icons/icon-3D.png</icon>
          <requirements>
             <requirement name="param1" type="data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="data::Mesh" maxOccurs="3" >

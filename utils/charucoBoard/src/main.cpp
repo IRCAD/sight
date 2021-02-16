@@ -83,7 +83,7 @@ int main(int argc, char** argv)
         ::cv::Mat boardImg;
 
         ::cv::Ptr< ::cv::aruco::Dictionary > dictionary =
-            geometry::vision::helper::generateArucoDictionary(squareX, squareY, markerBits);
+            sight::geometry::vision::helper::generateArucoDictionary(squareX, squareY, markerBits);
 
         ::cv::Ptr< ::cv::aruco::CharucoBoard > board =
             ::cv::aruco::CharucoBoard::create(static_cast<int>(squareX), static_cast<int>(squareY),

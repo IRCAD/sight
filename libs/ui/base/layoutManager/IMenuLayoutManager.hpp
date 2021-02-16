@@ -113,7 +113,7 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="myMenu" type="::ui::base::IMenuSrv" impl="::modules::ui::base::aspect::SDefaultMenu"
+       <service uid="myMenu" type="::ui::base::IMenuSrv" impl="::sight::modules::ui::base::aspect::SDefaultMenu"
      * autoConnect="no" >
             <gui>
                 <layout>

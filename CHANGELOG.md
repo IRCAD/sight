@@ -590,9 +590,9 @@ Remove the useless hack that skipped some events in VTK picker interactor, so th
 
 ### ExSimpleARCVOgre
 
-*Add missing media bundle.*
+*Add missing module_ui_media bundle.*
 
-This solves the crash of ExSimpleARCVOgre at start. The bundle media was missing.
+This solves the crash of ExSimpleARCVOgre at start. The bundle module_ui_media was missing.
 
 ### fwData/Image
 
@@ -1090,7 +1090,7 @@ Simplifies Array API by moving the methods from the helper to the data itself:
 
 Refactor `fwRenderOgre` and `uiVisuOgre` to use new Image, Array and Mesh API.
 
-*Clean the media folder.*
+*Clean the module_ui_media folder.*
 
 Sorts glsl, metarial and compostior.
 
@@ -1229,12 +1229,12 @@ for (; itr != itrEnd ; ++itr)
 }
 ```
 
-### media
+### module_ui_media
 
-*Fuse all media bundles.*
+*Fuse all module_ui_media bundles.*
 
 * Deprecate `arMedia` bundle.
-* Copy all `arMedia` content into `media`.
+* Copy all `arMedia` content into `module_ui_media`.
 * Fixes xml files that used these bundles.
 
 ### Mesh
@@ -1448,9 +1448,9 @@ When iterating through mesh cells, the iterator return the type as a CellType en
 
 ### resource
 
-*Fuse all media bundles.*
+*Fuse all module_ui_media bundles.*
 
-* Adds `arMedia` and `media` into a folder `resource`.
+* Adds `arMedia` and `module_ui_media` into a folder `resource`.
 * Adds a new bundle `flatIcon` with flat theme icons.
 
 ### SNegato2DCamera

@@ -112,7 +112,7 @@ void SExportWithSeriesDB::updating( )
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add( "::modules::ui::base::editor::SIOSelector");
+    ioSelectorSrv = service::add( "::sight::modules::ui::base::editor::SIOSelector");
     ioSelectorSrv->registerInOut(localSeriesDB, io::base::service::s_DATA_KEY);
 
     ioSelectorSrv->setWorker(m_associatedWorker);

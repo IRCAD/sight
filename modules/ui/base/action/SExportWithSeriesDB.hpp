@@ -59,7 +59,7 @@ namespace action
  *
  * The available reader can be configured
  * @code{.xml}
-    <service uid="action_seriesExporter" impl="::modules::ui::base::action::SExportWithSeriesDB">
+    <service uid="action_seriesExporter" impl="::sight::modules::ui::base::action::SExportWithSeriesDB">
         <inout key="series" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
     </service>

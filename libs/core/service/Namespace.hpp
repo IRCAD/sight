@@ -59,7 +59,7 @@ namespace sight::service
                      containers in the application main window.
                      Here, it declares a container for the 3D rendering service.
                  -->
-                 <service uid="myFrame" impl="::modules::ui::base::frame::SDefaultFrame">
+                 <service uid="myFrame" impl="::sight::modules::ui::base::frame::SDefaultFrame">
                      <gui>
                          <frame>
                              <name>${appName}</name>
@@ -80,7 +80,7 @@ namespace sight::service
                              The <file> tag defines the path of the image to load. Here, it is a relative
                              path from the repository in which you launch the application.
                          -->
-                         <service uid="myReaderPathFile" impl="::modules::io::vtk::SImageReader">
+                         <service uid="myReaderPathFile" impl="::sight::modules::io::vtk::SImageReader">
                             <file>./TutoData/patient1.vtk</file>
                          </service>
 

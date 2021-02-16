@@ -8,10 +8,10 @@ set( REQUIREMENTS
     module_ui_qt
     module_memory
     module_data
-    visuVTKAdaptor
+    module_viz_ogre
     module_viz_scene2d
     data
-    media
+    module_ui_media
     qtSceneConfig
     module_service
  )

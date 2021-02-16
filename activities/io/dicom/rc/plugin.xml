@@ -16,7 +16,7 @@
         <id>DicomPacsReader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
-        <icon>media-0.1/icons/Pull.svg</icon>
+        <icon>module_ui_media-0.1/icons/Pull.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -28,7 +28,7 @@
         <id>DicomPacsWriter</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
-        <icon>media-0.1/icons/Push.svg</icon>
+        <icon>module_ui_media-0.1/icons/Push.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -48,7 +48,7 @@
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
-        <icon>media-0.1/icons/icon-DICOM-Filtering.svg</icon>
+        <icon>module_ui_media-0.1/icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>

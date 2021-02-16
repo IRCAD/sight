@@ -1,0 +1,20 @@
+<profile name="calibrationActivityTest" version="0.1">
+
+    <activate id="module_service" version="0.1" />
+
+    <activate id="visuVTK" version="0.1" />
+    <activate id="visuVTKQt" version="0.1" />
+    <activate id="visuVTKAdaptor" version="0.1" />
+    <activate id="visuVTKARAdaptor" version="0.1" />
+
+    <activate id="module_ui_base" version="0.1" />
+
+    <activate id="module_ui_media" version="0.1" />
+
+    <activate id="module_activity" version="0.1" />
+    <activate id="::sight::modules::activity::validator" version="0.1" />
+    <activate id="::sight::activity::navigation::calibration" version="0.1" />
+
+    <start id="::sight::activity::navigation::calibration" />
+
+</profile>

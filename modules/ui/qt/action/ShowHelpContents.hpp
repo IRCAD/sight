@@ -51,7 +51,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="::modules::ui::qt::ui::action::ShowHelpContents" type="::ui::base::IActionSrv">
+       <service impl="::sight::modules::ui::qt::ui::action::ShowHelpContents" type="::ui::base::IActionSrv">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

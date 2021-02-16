@@ -10,6 +10,6 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     module_viz_scene2d
-    media
+    module_ui_media
     viz_scene2d
 )

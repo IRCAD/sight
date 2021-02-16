@@ -46,12 +46,12 @@
         <service uid="toolBar" type="::sight::modules::ui::base::aspect::SDefaultToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Start Tracker client" icon="media-0.1/icons/Network-Receiving.svg" />
-                    <menuItem name="Stop Tracker client" icon="media-0.1/icons/Network-Stop-Receiving.svg" />
-                    <menuItem name="Configure Tracker client" icon="media-0.1/icons/Settings.svg" />
-                    <menuItem name="Add point" icon="media-0.1/icons/Import.svg" />
-                    <menuItem name="Compute tool calibration" icon="media-0.1/icons/CheckButton.svg" />
-                    <menuItem name="Save calibration matrix" icon="media-0.1/icons/Export.svg" />
+                    <menuItem name="Start Tracker client" icon="module_ui_media-0.1/icons/Network-Receiving.svg" />
+                    <menuItem name="Stop Tracker client" icon="module_ui_media-0.1/icons/Network-Stop-Receiving.svg" />
+                    <menuItem name="Configure Tracker client" icon="module_ui_media-0.1/icons/Settings.svg" />
+                    <menuItem name="Add point" icon="module_ui_media-0.1/icons/Import.svg" />
+                    <menuItem name="Compute tool calibration" icon="module_ui_media-0.1/icons/CheckButton.svg" />
+                    <menuItem name="Save calibration matrix" icon="module_ui_media-0.1/icons/Export.svg" />
                 </layout>
             </gui>
             <registry>

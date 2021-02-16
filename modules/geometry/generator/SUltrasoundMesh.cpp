@@ -58,7 +58,7 @@ static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
 static const service::IService::KeyType s_MESH_INOUT = "mesh";
 
-fwServicesRegisterMacro(::sight::service::IGenerator, ::sight::modules::filter::mesh::generator::SUltrasoundMesh)
+fwServicesRegisterMacro(::sight::service::IGenerator, ::sight::modules::geometry::generator::SUltrasoundMesh)
 
 // -----------------------------------------------------------------------------
 
@@ -244,7 +244,7 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
         }
     }
 
-    geometry::data::Mesh::generatePointNormals(_mesh);
+    sight::geometry::data::Mesh::generatePointNormals(_mesh);
 
     const auto sig = _mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));

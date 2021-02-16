@@ -27,6 +27,7 @@
 
 #include <data/Color.hpp>
 #include <data/Mesh.hpp>
+#include <data/tools/Color.hpp>
 
 #include <service/macros.hpp>
 
@@ -51,7 +52,8 @@ namespace sight::modules::geometry
 namespace generator
 {
 
-fwServicesRegisterMacro( ::sight::service::IGenerator, ::sight::modules::geometry::SNeedle, ::sight::data::Mesh)
+fwServicesRegisterMacro( ::sight::service::IGenerator, ::sight::modules::geometry::generator::SNeedle,
+                         ::sight::data::Mesh)
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
 
@@ -176,8 +178,8 @@ void SNeedle::updating()
         vtkMesh = triangleFilter->GetOutput();
     }
 
-    data::Mesh::sptr mesh = this->getInOut< data::Mesh >("mesh");
-    ::fwVtkIO::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
+    auto mesh = this->getInOut< sight::data::Mesh >("mesh");
+    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = mesh->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
@@ -298,10 +300,10 @@ vtkSmartPointer<vtkPolyData> SNeedle::filterAndColorSourceObject(vtkAlgorithmOut
     colors->SetName("Colors");
     colors->SetNumberOfComponents(4);
     colors->SetNumberOfTuples(polyData->GetNumberOfCells());
-    colors->Fill(0);
+    colors->FillComponent(0, 0.);
     for(std::uint8_t i = 0; i < 4; ++i)
     {
-        colors->FillTypedComponent(i, _rgba[i]);
+        colors->FillComponent(i, _rgba[i]);
     }
 
     polyData->GetCellData()->SetScalars(colors);

@@ -33,7 +33,7 @@
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>
-                <icon series="::sight::data::CameraSeries" icon="media-0.1/icons/calibrationActivity.svg" />
+                <icon series="::sight::data::CameraSeries" icon="module_ui_media-0.1/icons/calibrationActivity.svg" />
             </icons>
         </service>
 

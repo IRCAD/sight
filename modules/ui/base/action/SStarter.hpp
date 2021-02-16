@@ -42,7 +42,7 @@ namespace action
  * This action can be :
  *   - Start a service :
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <start uid="Uid_of_the_service" />
            </service>
@@ -52,7 +52,7 @@ namespace action
  *
  *   - Only start a service :
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <start_only uid="Uid_of_the_service" />
            </service>
@@ -61,7 +61,7 @@ namespace action
  *
  *   - Start a service if exists :
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <start_if_exists uid="Uid_of_the_service" />
            </service>
@@ -70,7 +70,7 @@ namespace action
  *
  *   - Stop a service :
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <stop uid="Uid_of_the_service" />
            </service>
@@ -79,7 +79,7 @@ namespace action
  *
  *   - Stop a service if exists :  Test if the service exist before stopping it
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <stop_if_exists uid="Uid_of_the_service" />
            </service>
@@ -88,7 +88,7 @@ namespace action
  *
  *   - Start and update or stop the service:
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
@@ -98,7 +98,7 @@ namespace action
  *
  *   - Only start or stop the service:
  * @code{.xml}
-           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::modules::ui::base::action::SStarter"
+           <service uid="actionUid" type="::ui::base::IActionSrv" impl="::sight::modules::ui::base::action::SStarter"
  * autoConnect="no">
               <start_only_or_stop uid="Uid_of_the_service" />
            </service>

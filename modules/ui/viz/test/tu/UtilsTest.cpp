@@ -25,7 +25,7 @@
 #ifdef WIN32
 #define UIVISUOGRE_EXPORTS
 #endif
-#include "../../../src/modules/ui/viz/helper/Utils.cpp"
+#include "../../../../../modules/ui/viz/helper/Utils.cpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::ui::viz::ut::UtilsTest );

@@ -85,8 +85,8 @@ int main(int argc, char** argv)
 
     // Generate the result
     std::filesystem::path versionFile(vm["output"].as< std::string >());
-    io::atoms::patch::VersionsManager::generateNewFile(versionFile, vm["context"].as< std::string >(),
-                                                       vm["version"].as< std::string >());
+    sight::io::atoms::patch::VersionsManager::generateNewFile(versionFile, vm["context"].as< std::string >(),
+                                                              vm["version"].as< std::string >());
 
     return EXIT_SUCCESS;
 }

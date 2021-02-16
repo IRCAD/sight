@@ -70,7 +70,7 @@
         <param name="WIZARD_CONFIG" default="defaultWizardConfig"/>
         <param name="ACTIVITY_READER_CONFIG" default="ActivityReaderConfig" />
         <param name="ACTIVITY_WRITER_CONFIG" default="ActivityWriterConfig" />
-        <param name="APPLICATION_ICON_PATH" default="media-0.1/icons/sight_logo.svg" />
+        <param name="APPLICATION_ICON_PATH" default="module_ui_media-0.1/icons/sight_logo.svg" />
     </parameters>
     <desc>Configuration to launch activities sequentially</desc>
     <config>
@@ -123,7 +123,7 @@
 
         <service uid="openButton" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
-               <icon>media-0.1/icons/open.svg</icon>
+               <icon>module_ui_media-0.1/icons/open.svg</icon>
                <iconWidth>40</iconWidth>
                <iconHeight>40</iconHeight>
             </config>
@@ -131,7 +131,7 @@
 
         <service uid="saveButton" type="::sight::modules::ui::qt::editor::SSignalButton" >
             <config>
-               <icon>media-0.1/icons/save.svg</icon>
+               <icon>module_ui_media-0.1/icons/save.svg</icon>
                <iconWidth>40</iconWidth>
                <iconHeight>40</iconHeight>
             </config>

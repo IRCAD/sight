@@ -55,7 +55,7 @@ class GenericScene;
  *
  * @section XML XML Configuration
  * @code{.xml}
-     <service type="::viz::qt3d::SRender">
+     <service type="::sight::viz::qt3d::SRender">
         <scene>
             <background color="...">
         </scene>

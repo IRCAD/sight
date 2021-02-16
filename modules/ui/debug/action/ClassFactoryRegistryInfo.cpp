@@ -34,7 +34,7 @@ namespace sight::modules::ui::debug
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::debugQt::action::ClassFactoryRegistryInfo,
+fwServicesRegisterMacro( ::sight::ui::base::IActionSrv, ::sight::modules::ui::debug::action::ClassFactoryRegistryInfo,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------

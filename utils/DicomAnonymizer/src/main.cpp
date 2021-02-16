@@ -97,8 +97,8 @@ int main(int argc, char** argv)
     }
 
     // Copy and anonymize
-    io::dicom::helper::DicomAnonymizer::copyDirectory(input, output);
-    io::dicom::helper::DicomAnonymizer anonymizer;
+    sight::io::dicom::helper::DicomAnonymizer::copyDirectory(input, output);
+    sight::io::dicom::helper::DicomAnonymizer anonymizer;
     anonymizer.anonymize(output);
 
     return EXIT_SUCCESS;

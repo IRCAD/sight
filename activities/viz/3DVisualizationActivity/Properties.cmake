@@ -11,9 +11,9 @@ set( REQUIREMENTS
     module_memory
     data
     module_service
-    visuVTKQt
-    visuVTKAdaptor
-    media
+    module_viz_ogreQt
+    module_viz_ogre
+    module_ui_media
     dataManagerConfig
     2DVisualizationActivity
 )

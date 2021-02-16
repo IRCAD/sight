@@ -152,7 +152,7 @@ void SSliceIndexDicomEditor::starting()
     sight::io::base::service::IReader::sptr dicomReader;
     dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-               "::modules::ui::dicom::SSliceIndexDicomEditor.", dicomReader);
+               "::sight::modules::ui::dicom::SSliceIndexDicomEditor.", dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
                                   service::IService::AccessType::INOUT, dicomReader);
 

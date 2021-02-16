@@ -22,14 +22,19 @@
 
 #include "geometry/glm/mesh.hpp"
 
+#include <core/spyLog.hpp>
+
 #include <glm/glm.hpp>
+
+#include <string>
 
 namespace sight::geometry::glm
 {
 
 //-----------------------------------------------------------------------------
 
-::glm::dvec3 toBarycentricCoord(const glm::dvec3& _P, const glm::dvec3& _A, const glm::dvec3& _B, const glm::dvec3& _C)
+::glm::dvec3 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A, const ::glm::dvec3& _B,
+                                const ::glm::dvec3& _C)
 {
     ::glm::dvec3 baryCoord;
 

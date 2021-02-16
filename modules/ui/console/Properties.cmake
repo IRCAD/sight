@@ -1,5 +1,5 @@
 
-set( NAME console )
+set( NAME module_ui_console )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( START ON )

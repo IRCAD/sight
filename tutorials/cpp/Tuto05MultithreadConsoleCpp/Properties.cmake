@@ -13,9 +13,9 @@ set( REQUIREMENTS
     data
     module_service             # fwService
 
-    # The module console is used to run a console application with a main loop
+    # The module module_ui_console is used to run a module_ui_console application with a main loop
     # Typically it can be used for server command line applications
-    console
+    module_ui_console
 )
 
 moduleParam(module_ui_qt

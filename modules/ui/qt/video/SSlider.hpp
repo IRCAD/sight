@@ -100,7 +100,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::ui::base::editor::IEditor" impl="::modules::ui::qt::video::SSlider"
+        <service uid="..." type="::ui::base::editor::IEditor" impl="::sight::modules::ui::qt::video::SSlider"
      * autoConnect="no"/>
        @endcode
      */

@@ -8,8 +8,6 @@ set( REQUIREMENTS
 
     module_ui_base             # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, allow dark theme
-        # Patch old atoms data
-    arPatchMedicalData      # Patch old atoms data
 
     # Objects declaration
     module_service             # fwService
@@ -18,7 +16,7 @@ set( REQUIREMENTS
     # UI declaration/Actions
     module_ui_base
     module_ui_flaticon
-    media
+    module_ui_media
 
     # Reader
     module_io_atoms
@@ -29,7 +27,7 @@ set( REQUIREMENTS
     # Services
     module_ui_base
     module_activity
-    calibrationActivity
+    activity_navigation_calibration
     toolCalibrationActivity
     module_data
     module_memory

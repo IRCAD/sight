@@ -372,7 +372,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         this->updateLightsList();
 
         service::registry::ObjectService::ServiceVectorType materialServices =
-            service::OSR::getServices("::modules::viz::ogre::adaptor::SMaterial");
+            service::OSR::getServices("::sight::modules::viz::ogre::adaptor::SMaterial");
 
         for(auto srv : materialServices)
         {

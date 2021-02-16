@@ -47,7 +47,7 @@ fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::vi
 
 SAddPoint::SAddPoint() noexcept
 {
-    FW_DEPRECATED("::modules::ui::viz::SAddPoint", "::modules::geometry::base::SManagePointList", "21.0");
+    FW_DEPRECATED("::sight::modules::ui::viz::SAddPoint", "::sight::modules::geometry::base::SManagePointList", "21.0");
 
     newSlot(s_PICK_SLOT, &SAddPoint::pick, this );
     newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this );

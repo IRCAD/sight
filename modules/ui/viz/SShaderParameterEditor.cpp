@@ -146,7 +146,7 @@ void SShaderParameterEditor::updateGuiInfo()
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
     service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
-        "::modules::viz::ogre::adaptor::SMaterial");
+        "::sight::modules::viz::ogre::adaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
     if(srvVec.empty())
@@ -175,7 +175,7 @@ void SShaderParameterEditor::updateGuiInfo()
     for (const auto& wParamSrv : matService->getRegisteredServices())
     {
         const auto paramSrv = wParamSrv.lock();
-        if (paramSrv->getClassname() == "::modules::viz::ogre::adaptor::SShaderParameter")
+        if (paramSrv->getClassname() == "::sight::modules::viz::ogre::adaptor::SShaderParameter")
         {
             /// Filter object types
             const data::Object::csptr shaderObj =
@@ -209,7 +209,7 @@ void SShaderParameterEditor::updateGuiInfo()
 
     ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = service::add("::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
+    auto editorService = service::add("::sight::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
     service::IService::ConfigType editorConfig;
@@ -218,7 +218,7 @@ void SShaderParameterEditor::updateGuiInfo()
     for (auto wAdaptor : matService->getRegisteredServices())
     {
         const auto adaptor = wAdaptor.lock();
-        if (adaptor->getClassname() == "::modules::viz::ogre::adaptor::SShaderParameter")
+        if (adaptor->getClassname() == "::sight::modules::viz::ogre::adaptor::SShaderParameter")
         {
             auto paramAdaptor = sight::viz::ogre::IParameter::dynamicCast(adaptor);
             auto paramConfig  = modules::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,

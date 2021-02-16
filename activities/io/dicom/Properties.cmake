@@ -15,7 +15,7 @@ set( REQUIREMENTS
     module_ui_dicom
     module_io_dicom
     module_io_dimse
-    media
+    module_ui_media
     module_service
     module_viz_ogre
     module_viz_ogreQt

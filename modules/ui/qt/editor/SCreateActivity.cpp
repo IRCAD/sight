@@ -129,8 +129,9 @@ void SCreateActivity::starting()
 
     // Add the load button
     activity::registry::ActivityInfo infoLoad;
-    infoLoad.title       = "Load activity";
-    infoLoad.icon        = core::runtime::getModuleResourceFilePath("media", "icons/LoadActivity.svg").string();
+    infoLoad.title = "Load activity";
+    infoLoad.icon  =
+        core::runtime::getModuleResourceFilePath("module_ui_media", "icons/LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

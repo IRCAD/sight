@@ -119,7 +119,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::modules::ui::base::action::SConfigLauncher" type="::ui::base::IActionSrv">
+       <service impl="::sight::modules::ui::base::action::SConfigLauncher" type="::ui::base::IActionSrv">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>

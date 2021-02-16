@@ -50,7 +50,7 @@ namespace sight::ui::base
  *
  * Example of configuration
  * @code{.xml}
-   <service uid="mainFrame" type="::ui::base::IFrameSrv" impl="::modules::ui::base::frame::SDefaultFrame"
+   <service uid="mainFrame" type="::ui::base::IFrameSrv" impl="::sight::modules::ui::base::frame::SDefaultFrame"
  * autoConnect="no">
      <window onclose="notify" />
      <gui>

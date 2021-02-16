@@ -43,8 +43,6 @@ namespace sight::modules::viz::scene2d
 namespace ut
 {
 
-static ::utest::Exception fwTestException(""); // force link with fwTest
-
 //------------------------------------------------------------------------------
 
 void ProcessingTest::setUp()
@@ -72,7 +70,7 @@ void ProcessingTest::histogramTest()
     const int sizeZ     = 50;
     const int imageSize = sizeX * sizeY * sizeZ;
 
-    std::string implementation = "::modules::viz::scene2d::processing::SComputeHistogram";
+    std::string implementation = "::sight::modules::viz::scene2d::processing::SComputeHistogram";
 
     // Configure data hirearchy
     data::Image::sptr image         = data::Image::New();

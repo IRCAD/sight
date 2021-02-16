@@ -26,6 +26,8 @@
 
 #include <glm/glm.hpp>
 
+#include <boost/unordered_map.hpp>
+
 namespace sight::geometry::glm
 {
 
@@ -39,8 +41,8 @@ namespace sight::geometry::glm
  * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return barycentric coordinates (u, v, w).
  */
-GEOMETRY_DATA_API ::glm::dvec3 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                                                  const ::glm::dvec3& _B, const ::glm::dvec3& _C);
+GEOMETRY_GLM_API ::glm::dvec3 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                                 const ::glm::dvec3& _B, const ::glm::dvec3& _C);
 
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w isn't equal to 1.
@@ -51,8 +53,8 @@ GEOMETRY_DATA_API ::glm::dvec3 toBarycentricCoord(const ::glm::dvec3& _P, const 
  * @param _C third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
-GEOMETRY_DATA_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoord, const ::glm::dvec3& _A,
-                                                    const ::glm::dvec3& _B, const ::glm::dvec3& _C);
+GEOMETRY_GLM_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoord, const ::glm::dvec3& _A,
+                                                   const ::glm::dvec3& _B, const ::glm::dvec3& _C);
 
 /**
  * @brief Converts the barycentric coordinates of a point inside a tetrahedron, from the world coordinates.
@@ -65,9 +67,9 @@ GEOMETRY_DATA_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec3& _baryCoo
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return barycentric coordinates (u, v, w, h).
  */
-GEOMETRY_DATA_API ::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                                                  const ::glm::dvec3& _B, const ::glm::dvec3& _C,
-                                                  const ::glm::dvec3& _D);
+GEOMETRY_GLM_API ::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                                 const ::glm::dvec3& _B, const ::glm::dvec3& _C,
+                                                 const ::glm::dvec3& _D);
 
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w+h isn't equal to 1.
@@ -79,9 +81,9 @@ GEOMETRY_DATA_API ::glm::dvec4 toBarycentricCoord(const ::glm::dvec3& _P, const 
  * @param _C fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return world coordinates (x, y, z).
  */
-GEOMETRY_DATA_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, const ::glm::dvec3& _A,
-                                                    const ::glm::dvec3& _B, const ::glm::dvec3& _C,
-                                                    const ::glm::dvec3& _D);
+GEOMETRY_GLM_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoord, const ::glm::dvec3& _A,
+                                                   const ::glm::dvec3& _B, const ::glm::dvec3& _C,
+                                                   const ::glm::dvec3& _D);
 
 /**
  * @brief Determine if the point _P is inside the tetrahedron made of (ABCD).
@@ -92,8 +94,8 @@ GEOMETRY_DATA_API ::glm::dvec3 fromBarycentricCoord(const ::glm::dvec4& _baryCoo
  * @param _D fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-GEOMETRY_DATA_API bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
-                                           const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
+GEOMETRY_GLM_API bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::dvec3& _A,
+                                          const ::glm::dvec3& _B, const ::glm::dvec3& _C, const ::glm::dvec3& _D);
 
 /**
  * @brief Determine if the point _P is inside the tetrahedron made of (ABCD) based on P barycentric coordinates in
@@ -101,7 +103,7 @@ GEOMETRY_DATA_API bool isInsideTetrahedron(const ::glm::dvec3& _P, const ::glm::
  * @param barycentricCoordPInsideABCD: P coordinates expressed as barycentric coordinates in (ABCD).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-GEOMETRY_DATA_API bool isInsideTetrahedron( const ::glm::dvec4 barycentricCoordPInsideABCD);
+GEOMETRY_GLM_API bool isInsideTetrahedron( const ::glm::dvec4 barycentricCoordPInsideABCD);
 //-----------------------------------------------------------------------------
 
 template <typename T, typename U>

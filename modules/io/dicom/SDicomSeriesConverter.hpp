@@ -48,7 +48,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="..." impl="::modules::io::dicom::SDicomSeriesConverter">
+   <service uid="..." impl="::sight::modules::io::dicom::SDicomSeriesConverter">
      <in key="source" uid="..." />
      <inout key="target" uid="..." />
    </service>

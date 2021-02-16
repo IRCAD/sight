@@ -15,8 +15,8 @@ set( REQUIREMENTS
     module_io_vtk
     module_service
     module_filter_mesh
-    visuVTKAdaptor
-    visuVTKQt
-    media
+    module_viz_ogre
+    module_viz_ogreQt
+    module_ui_media
     fwlauncher
 )

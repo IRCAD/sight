@@ -12,8 +12,8 @@ set( REQUIREMENTS
         module_ui_base
         module_ui_qt
         module_data
-        visuVTKAdaptor
-        visuVTKQt
+        module_viz_ogre
+        module_viz_ogreQt
         module_viz_scene2d
-        media
+        module_ui_media
         )

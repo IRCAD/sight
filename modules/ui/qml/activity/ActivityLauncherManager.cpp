@@ -93,7 +93,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
     sight::ui::qml::IQmlEditor::sptr srv(obj.value< sight::ui::qml::IQmlEditor* >());
     if (srv)
     {
-        if (srv->isA("::modules::ui::qml::activity::SActivityView"))
+        if (srv->isA("::sight::modules::ui::qml::activity::SActivityView"))
         {
             srv->configure(m_activityViewConfig);
             // connect to launch the activity when it is created/updated.
@@ -104,7 +104,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 
             this->addService(srv, true);
         }
-        else if (srv->isA("::modules::ui::qml::activity::SActivitySequencer"))
+        else if (srv->isA("::sight::modules::ui::qml::activity::SActivitySequencer"))
         {
             // create the services;
             m_activitySequencer = srv;
@@ -136,11 +136,11 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 void ActivityLauncherManager::open()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto reader          = service::add("::modules::ui::base::editor::SIOSelector");
+    auto reader          = service::add("::sight::modules::ui::base::editor::SIOSelector");
     reader->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = service::registry::ServiceConfig::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityReaderConfig",
-                                                                "::modules::ui::base::editor::SIOSelector");
+                                                                "::sight::modules::ui::base::editor::SIOSelector");
     reader->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     reader->configure();
 
@@ -158,11 +158,11 @@ void ActivityLauncherManager::open()
 void ActivityLauncherManager::save()
 {
     const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto writer          = service::add("::modules::ui::base::editor::SIOSelector");
+    auto writer          = service::add("::sight::modules::ui::base::editor::SIOSelector");
     writer->registerInOut(seriesDB, "data");
     const auto srvCfgFactory = service::registry::ServiceConfig::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig( "ActivityWriterConfig",
-                                                                "::modules::ui::base::editor::SIOSelector");
+                                                                "::sight::modules::ui::base::editor::SIOSelector");
     writer->setConfiguration(core::runtime::ConfigurationElement::constCast(cfgElem));
     writer->configure();
     writer->start();

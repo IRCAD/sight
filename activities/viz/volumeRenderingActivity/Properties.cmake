@@ -11,10 +11,9 @@ set( REQUIREMENTS
     module_ui_qt
     module_data
     module_memory
-    visuVTKAdaptor
-    visuVTKVRAdaptor
+    module_viz_ogre
     module_viz_scene2d
-    media
+    module_ui_media
     imageConfig
     dataManagerConfig
     module_service

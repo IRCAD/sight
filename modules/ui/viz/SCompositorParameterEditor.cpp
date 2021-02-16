@@ -118,7 +118,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::modules::viz::ogre::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::sight::modules::viz::ogre::adaptor::SCompositorParameter")
             {
                 /// Filter object types
                 const data::Object::csptr shaderObj =
@@ -152,7 +152,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
 
         ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = service::add( "::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
+        auto editorService = service::add( "::sight::modules::ui::qt::editor::SParameters", m_editorInfo.uuid );
         m_editorInfo.service = editorService;
 
         service::IService::ConfigType editorConfig;
@@ -161,7 +161,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::modules::viz::ogre::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::sight::modules::viz::ogre::adaptor::SCompositorParameter")
             {
                 auto paramAdaptor = sight::viz::ogre::IParameter::dynamicConstCast(adaptor);
                 auto paramConfig  = modules::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,

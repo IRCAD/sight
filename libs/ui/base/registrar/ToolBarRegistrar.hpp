@@ -78,7 +78,8 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-           <service uid="toolbar2" type="::ui::base::IToolBarSrv" impl="::modules::ui::base::aspect::SDefaultToolBar"
+           <service uid="toolbar2" type="::ui::base::IToolBarSrv"
+            *impl="::sight::modules::ui::base::aspect::SDefaultToolBar"
      * autoConnect="no" >
                <gui>
                    <layout>

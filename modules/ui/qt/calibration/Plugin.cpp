@@ -30,7 +30,7 @@ namespace sight::modules::ui::qt::calibration
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::modules::ui::qt::calibration::Plugin");
+    "::sight::modules::ui::qt::calibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {

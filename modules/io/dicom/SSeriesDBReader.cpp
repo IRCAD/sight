@@ -117,7 +117,7 @@ void SSeriesDBReader::openLocationDialog()
         // Get the config
         core::runtime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = service::registry::ServiceConfig::getDefault()->getServiceConfig(
-            m_filterConfig, "::modules::ui::dicom::SFilterSelectorDialog");
+            m_filterConfig, "::sight::modules::ui::dicom::SFilterSelectorDialog");
 
         SLM_ASSERT("Sorry, there is no service configuration "
                    << m_filterConfig
@@ -126,7 +126,7 @@ void SSeriesDBReader::openLocationDialog()
         // Init and execute the service
         service::IService::sptr filterSelectorSrv;
         data::String::sptr key = data::String::New();
-        filterSelectorSrv = service::add("::modules::ui::dicom::SFilterSelectorDialog");
+        filterSelectorSrv = service::add("::sight::modules::ui::dicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();

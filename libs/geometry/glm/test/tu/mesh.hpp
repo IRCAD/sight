@@ -26,8 +26,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <geometry/data/IntrasecTypes.hpp>
-
 namespace sight::geometry::glm
 {
 namespace ut

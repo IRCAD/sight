@@ -4,17 +4,15 @@ set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    fwlauncher              # Needed to build the launcher
-    module_appXml                  # XML configurations
+    fwlauncher                 # Needed to build the launcher
+    module_appXml              # XML configurations
 
     module_ui_base             # Start the module, load file location or window module_ui_base
-    visuVTK                 # Start the module, allow to use fwRenderVTK
-    module_ui_qt                   # Start the module, allow dark theme
-    visuVTKQt               # Enable VTK to render things in Qt window
+    module_ui_qt               # Start the module, allow dark theme
 
     # Objects declaration
     data
-    module_service             # fwService
+    module_service
 
     # UI declaration/Actions
     module_ui_base
@@ -27,7 +25,8 @@ set( REQUIREMENTS
     module_data
 
     # Generic Scene
-    visuVTKAdaptor
+    module_viz_ogre
+    module_viz_ogreQt            # Enable Ogre to render things in Qt window
 )
 
 moduleParam(module_ui_qt

@@ -104,19 +104,19 @@ void SCameraConfigLauncher::starting()
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("media",
+    QIcon addIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("module_ui_media",
                                                                                   "icons/Import.svg").string()));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon importIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("media",
+    QIcon importIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("module_ui_media",
                                                                                      "icons/CameraSeries.svg").string()));
     m_importButton = new QPushButton(importIcon, "");
     m_importButton->setToolTip("Import an intrinsic calibration.");
     layout->addWidget(m_importButton);
 
-    QIcon removeIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("media",
+    QIcon removeIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("module_ui_media",
                                                                                      "icons/remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");

@@ -35,7 +35,7 @@ namespace sight::modules::ui::qt
  * @brief   This service sends a signal when the associated shortcut is activated.
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." impl="::modules::ui::qt::SSignalShortcut" >
+   <service uid="..." impl="::sight::modules::ui::qt::SSignalShortcut" >
         <config shortcut="..." sid="..." />
    </service>
    @endcode
