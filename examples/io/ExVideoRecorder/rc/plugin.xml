@@ -114,13 +114,13 @@
                 <state executable="false" />
             </service>
 
-            <service uid="frameRecordingAct" type="::gui::action::SBooleanSlotCaller">
+            <service uid="frameRecordingAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller">
                 <slots>
                     <slot>frameWriterSrv/record</slot>
                 </slots>
             </service>
 
-            <service uid="videoRecordingAct" type="::gui::action::SBooleanSlotCaller">
+            <service uid="videoRecordingAct" type="::sight::modules::ui::base::action::SBooleanSlotCaller">
                 <slots>
                     <slot>videoWriterSrv/record</slot>
                 </slots>
