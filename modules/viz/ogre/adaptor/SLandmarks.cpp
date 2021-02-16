@@ -26,8 +26,6 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/Landmarks.hpp>
-
 #include <service/macros.hpp>
 
 #include <viz/ogre/helper/Font.hpp>
@@ -233,7 +231,7 @@ void SLandmarks::updating()
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
         for(size_t index = 0; index < group.m_points.size(); ++index)
         {
-            this->insertPoint(groupName, index);
+            this->insertPoint(groupName, index, landmarks.get_shared());
         }
     }
 }
@@ -437,78 +435,89 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertPoint(std::string _groupName, size_t _index)
+void SLandmarks::insertPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _data)
 {
     // Make the context as current since we create data here.
     this->getRenderService()->makeCurrent();
 
+    // Get landmarks.
+    if (_data == nullptr)
     {
-        // Get landmarks.
         const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+        insertMyPoint(_groupName, _index, landmarks.get_shared());
+    }
+    else
+    {
+        insertMyPoint(_groupName, _index, _data);
+    }
+}
 
-        // Retrieve group.
-        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+//------------------------------------------------------------------------------
 
-        // Create the point name.
-        const std::string pointName = _groupName + "_" + std::to_string(_index);
+void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, ::fwData::Landmarks::csptr _landmarks)
+{
+    // Retrieve group.
+    const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
 
-        // Create the manual object.
-        const ::Ogre::ColourValue color
-            = ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
+    // Create the point name.
+    const std::string pointName = _groupName + "_" + std::to_string(_index);
 
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        ::Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
-        switch(group.m_shape)
-        {
-            case data::Landmarks::Shape::SPHERE:
-                sight::viz::ogre::helper::ManualObject::createSphere(object,
-                                                                     m_materialAdaptor->getMaterialName(),
-                                                                     color, group.m_size*0.5f);
-                break;
-            case data::Landmarks::Shape::CUBE:
-                sight::viz::ogre::helper::ManualObject::createCube(object,
-                                                                   m_materialAdaptor->getMaterialName(),
-                                                                   color, group.m_size);
-                break;
-        }
+    // Create the manual object.
+    const ::Ogre::ColourValue color
+        = ::Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
 
-        object->setQueryFlags(m_landmarksQueryFlag);
-
-        ::Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
-
-        // Set the point to the right position.
-        const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
-        node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));
-
-        // Attach data.
-        node->attachObject(object);
-
-        // Create the label.
-        sight::viz::ogre::Text* text = nullptr;
-        if(m_enableLabels)
-        {
-            // Get necessary data.
-            const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-            ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-            const std::string textName = this->getID() + "_" + pointName + "_text";
-            ::Ogre::OverlayContainer* overlay = this->getLayer()->getOverlayTextPanel();
-
-            // Create the label.
-            text = sight::viz::ogre::Text::New(textName, sceneMgr, overlay, m_fontSource, m_fontSize, dpi, cam);
-            text->setText(pointName);
-            text->setTextColor(color);
-            text->setVisible(group.m_visibility && m_isVisible);
-
-            // Attach data.
-            node->attachObject(text);
-        }
-
-        // Store the created data.
-        m_manualObjects.push_back(std::make_shared< Landmark >(node, object, _groupName, _index, text));
+    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    ::Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
+    switch(group.m_shape)
+    {
+        case data::Landmarks::Shape::SPHERE:
+            sight::viz::ogre::helper::ManualObject::createSphere(object,
+                                                               m_materialAdaptor->getMaterialName(),
+                                                               color, group.m_size*0.5f);
+            break;
+        case data::Landmarks::Shape::CUBE:
+            sight::viz::ogre::helper::ManualObject::createCube(object,
+                                                             m_materialAdaptor->getMaterialName(),
+                                                             color, group.m_size);
+            break;
     }
 
+    object->setQueryFlags(m_landmarksQueryFlag);
+
+    ::Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
+
+    // Set the point to the right position.
+    const data::Landmarks::PointType& point = _landmarks->getPoint(_groupName, _index);
+    node->setPosition(::Ogre::Real(point[0]), ::Ogre::Real(point[1]), ::Ogre::Real(point[2]));
+
+    // Attach data.
+    node->attachObject(object);
+
+    // Create the label.
+    sight::viz::ogre::Text* text = nullptr;
+    if(m_enableLabels)
+    {
+        // Get necessary data.
+        const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
+        ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
+        const std::string textName = this->getID() + "_" + pointName + "_text";
+        ::Ogre::OverlayContainer* overlay = this->getLayer()->getOverlayTextPanel();
+
+        // Create the label.
+        text = sight::viz::ogre::Text::New(textName, sceneMgr, overlay, m_fontSource, m_fontSize, dpi, cam);
+        text->setText(pointName);
+        text->setTextColor(color);
+        text->setVisible(group.m_visibility && m_isVisible);
+
+        // Attach data.
+        node->attachObject(text);
+    }
+
+    // Store the created data.
+    m_manualObjects.push_back(std::make_shared< Landmark >(node, object, _groupName, _index, text));
+
     // Hide landmarks if an image is given to the service.
-    this->hideLandmark(m_manualObjects.back());
+    this->hideLandmark(m_manualObjects.back(), _landmarks);
 
     // Request the rendering.
     this->requestRender();
@@ -659,36 +668,33 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideLandmarks()
-{
-    const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
-
-    const auto imageLock = image.lock();
-
-    // Hide landmarks only if there is an image.
-    if(imageLock)
-    {
-        for(std::shared_ptr<Landmark> landmark : m_manualObjects)
-        {
-            this->hideLandmark(landmark);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
+void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark, const data::Landmarks::csptr& _data)
 {
     // Get image.
     const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
 
-    // Get landmarks.
-    const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+    if (_data == nullptr)
+    {
+        const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+        hideMyLandmark(_landmark, (imageLock.operator bool()), landmarks.get_shared());
+    }
+    else
+    {
+        hideMyLandmark(_landmark, (imageLock.operator bool()), _data);
+    }
 
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::hideMyLandmark(std::shared_ptr<Landmark> _landmark,
+                                const bool imageLock,
+                                data::Landmarks::csptr _landmarks)
+{
     // Retrieve group.
-    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_landmark->m_groupName);
+    const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_landmark->m_groupName);
 
     // Hide landmarks only if there is an image.
     bool show = true;
