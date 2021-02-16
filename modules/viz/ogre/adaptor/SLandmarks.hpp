@@ -256,9 +256,9 @@ private:
      * @brief SLOT: inserts a point.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
-     * @param _data landmarks data in which the point will be inserted.
+     * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertPoint(std::string _groupName, size_t _index, const ::fwData::Landmarks::csptr& _data = nullptr);
+    void insertPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks = nullptr);
 
     /**
      * @brief inserts a point.
@@ -266,7 +266,7 @@ private:
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertMyPoint(std::string _groupName, size_t _index, ::fwData::Landmarks::csptr _landmarks);
+    void insertMyPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks);
 
     /**
      * @brief SLOT: hightlights the selected landmark.

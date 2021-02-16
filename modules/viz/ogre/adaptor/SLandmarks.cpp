@@ -435,26 +435,26 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _data)
+void SLandmarks::insertPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks)
 {
     // Make the context as current since we create data here.
     this->getRenderService()->makeCurrent();
 
     // Get landmarks.
-    if (_data == nullptr)
+    if (_landmarks == nullptr)
     {
-        const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+        const auto landmarks = this->getLockedInOut< const data::Landmarks >(s_LANDMARKS_INPUT);
         insertMyPoint(_groupName, _index, landmarks.get_shared());
     }
     else
     {
-        insertMyPoint(_groupName, _index, _data);
+        insertMyPoint(_groupName, _index, _landmarks);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, ::fwData::Landmarks::csptr _landmarks)
+void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks)
 {
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
@@ -472,13 +472,13 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, ::fwData::
     {
         case data::Landmarks::Shape::SPHERE:
             sight::viz::ogre::helper::ManualObject::createSphere(object,
-                                                               m_materialAdaptor->getMaterialName(),
-                                                               color, group.m_size*0.5f);
+                                                                 m_materialAdaptor->getMaterialName(),
+                                                                 color, group.m_size*0.5f);
             break;
         case data::Landmarks::Shape::CUBE:
             sight::viz::ogre::helper::ManualObject::createCube(object,
-                                                             m_materialAdaptor->getMaterialName(),
-                                                             color, group.m_size);
+                                                               m_materialAdaptor->getMaterialName(),
+                                                               color, group.m_size);
             break;
     }
 
