@@ -1,5 +1,5 @@
 
-set( NAME calibrationActivityTest )
+set( NAME activity_navigation_calibrationTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES
