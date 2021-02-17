@@ -42,7 +42,7 @@ namespace sight::modules::data
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, sight::modules::data::SSeriesSignal, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::data::SSeriesSignal, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
