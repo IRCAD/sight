@@ -9,7 +9,7 @@ set( DEPENDENCIES
         geometry_data
         module_ui_qt
         service
-        viz_ogre
+        viz_scene3d
         ui_base
 )
 

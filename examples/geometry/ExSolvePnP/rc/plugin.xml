@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::service::registry::AppConfig" >
@@ -210,7 +210,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="ARSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="ARSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -226,34 +226,34 @@
                 </scene>
             </service>
 
-            <service uid="ARPickerAdp" type="::sight::modules::viz::ogre::adaptor::SPicker" >
+            <service uid="ARPickerAdp" type="::sight::modules::viz::scene3d::adaptor::SPicker" >
                 <config layer="video" layerOrderDependant="false" />
             </service>
 
-            <service uid="ARVideoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="ARVideoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="video" />
             </service>
 
-            <service uid="ARPointListAdp" type="::sight::modules::viz::ogre::adaptor::SPointList" autoConnect="yes" >
+            <service uid="ARPointListAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
                 <in key="pointList" uid="2dPoints" />
                 <config layer="video" color="#619647" radius="0.01" />
             </service>
 
-            <service uid="ARCameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
+            <service uid="ARCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="registrationMatrix" />
                 <in key="camera" uid="camera" />
                 <config layer="default" />
             </service>
 
-            <service uid="ARMeshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
+            <service uid="ARMeshAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="cube" />
                 <config layer="default" autoresetcamera="no" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="VRSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="VRSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -266,24 +266,24 @@
                 </scene>
             </service>
 
-            <service uid="VRTrackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
+            <service uid="VRTrackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="VRPickerAdp" type="::sight::modules::viz::ogre::adaptor::SPicker" >
+            <service uid="VRPickerAdp" type="::sight::modules::viz::scene3d::adaptor::SPicker" >
                 <config layer="default" />
             </service>
 
-            <service uid="VRAxisAdp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
+            <service uid="VRAxisAdp" type="::sight::modules::viz::scene3d::adaptor::SAxis" >
                 <config layer="default" length="0.3" origin="false" label="false" />
             </service>
 
-            <service uid="VRPointListAdp" type="::sight::modules::viz::ogre::adaptor::SPointList" autoConnect="yes" >
+            <service uid="VRPointListAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
                 <in key="pointList" uid="3dPoints" />
                 <config layer="default" color="#619647" radius="0.01" />
             </service>
 
-            <service uid="VRMeshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
+            <service uid="VRMeshAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="cube" />
                 <config layer="default"/>
             </service>

@@ -24,8 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/ogre/compositor/ChainManager.hpp>
-#include <viz/ogre/Layer.hpp>
+#include <viz/scene3d/compositor/ChainManager.hpp>
+#include <viz/scene3d/Layer.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -95,8 +95,8 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QComboBox> m_modeBox;
 
-    std::vector< sight::viz::ogre::Layer::wptr > m_layers;
-    sight::viz::ogre::Layer::wptr m_currentLayer;
+    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    sight::viz::scene3d::Layer::wptr m_currentLayer;
 };
 
 } // uiVisuOgre

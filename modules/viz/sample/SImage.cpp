@@ -90,7 +90,7 @@ void SImage::starting()
     renderConfig.add_child("scene.adaptor", interactorCfg);
     renderConfig.add_child("scene.adaptor", negatoCfg);
 
-    m_renderSrv = service::add("::sight::viz::ogre::SRender");
+    m_renderSrv = service::add("::sight::viz::scene3d::SRender");
     m_renderSrv->setConfiguration(renderConfig);
     m_renderSrv->setID(genericSceneId);
 
@@ -98,7 +98,7 @@ void SImage::starting()
 
     service::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = service::add("::sight::modules::viz::ogre::adaptor::STrackballCamera");
+    m_interactorSrv = service::add("::sight::modules::viz::scene3d::adaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
@@ -106,7 +106,7 @@ void SImage::starting()
     service::IService::ConfigType negatoConfig;
     negatoConfig.put("config.<xmlattr>.layer", "default");
     negatoConfig.put("config.<xmlattr>.interactive", "true");
-    m_negatoSrv = service::add("::sight::modules::viz::ogre::adaptor::SNegato3D");
+    m_negatoSrv = service::add("::sight::modules::viz::scene3d::adaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
     m_negatoSrv->registerInOut( std::const_pointer_cast< data::Object >(image->getConstSptr()), "image", true );
     m_negatoSrv->setID(this->getID() + "negato3DAdaptor");

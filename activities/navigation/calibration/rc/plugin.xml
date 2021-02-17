@@ -3,7 +3,7 @@
     <library name="activity_navigation_calibration" />
     <requirement id="module_service" />
     <requirement id="module_ui_base" />
-    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_scene3d" />
     <requirement id="module_activity" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

@@ -29,7 +29,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/ogre/SRender.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -43,7 +43,7 @@
 namespace sight::modules::ui::viz
 {
 
-using sight::viz::ogre::Layer;
+using sight::viz::scene3d::Layer;
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SCompositorSelector,
                          ::sight::data::Composite)
@@ -177,11 +177,11 @@ void SCompositorSelector::refreshRenderers()
 
     // Fill layer box with all enabled layers
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::ogre::SRender");
+        service::OSR::getServices("::sight::viz::scene3d::SRender");
 
     for(auto srv : renderers)
     {
-        auto render = sight::viz::ogre::SRender::dynamicCast(srv);
+        auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -249,7 +249,7 @@ void SCompositorSelector::checkEnabledCompositors()
 
                 auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                                     m_layerCompositorChain.end(),
-                                                    sight::viz::ogre::compositor::ChainManager::FindCompositorByName(
+                                                    sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
                                                         currentCompositorName));
 
                 if(layerCompositor != m_layerCompositorChain.end())
@@ -282,7 +282,7 @@ bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
 {
     auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                         m_layerCompositorChain.end(),
-                                        sight::viz::ogre::compositor::ChainManager::FindCompositorByName(
+                                        sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
                                             compositorName));
 
     if(layerCompositor != m_layerCompositorChain.end())

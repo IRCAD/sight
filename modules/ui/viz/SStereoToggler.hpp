@@ -26,7 +26,7 @@
 
 #include <core/com/Signals.hpp>
 
-#include <viz/ogre/Layer.hpp>
+#include <viz/scene3d/Layer.hpp>
 
 #include <ui/base/IAction.hpp>
 
@@ -81,14 +81,14 @@ protected:
 
 private:
 
-    using StereoModeType      = sight::viz::ogre::compositor::Core::StereoModeType;
+    using StereoModeType      = sight::viz::scene3d::compositor::Core::StereoModeType;
     using StereoActiveSigType = core::com::Signal< void(bool) >;
 
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;
 
     /// Mode that is toggled.
-    sight::viz::ogre::compositor::Core::StereoModeType m_stereoMode { StereoModeType::NONE };
+    sight::viz::scene3d::compositor::Core::StereoModeType m_stereoMode { StereoModeType::NONE };
 
     /// Sent at each update, notifies if stereo is enabled.
     StereoActiveSigType::sptr m_stereoActiveSig;

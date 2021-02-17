@@ -31,8 +31,8 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
-#include <viz/ogre/IAdaptor.hpp>
-#include <viz/ogre/SRender.hpp>
+#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
 
@@ -103,7 +103,7 @@ void SCompositorParameterEditor::updating()
 //------------------------------------------------------------------------------
 
 void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*/, bool /*_enabled*/,
-                                                  sight::viz::ogre::Layer::sptr _layer)
+                                                  sight::viz::scene3d::Layer::sptr _layer)
 {
     if(_layer->getLayerID() == m_layerID)
     {
@@ -118,11 +118,11 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::sight::modules::viz::ogre::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::sight::modules::viz::scene3d::adaptor::SCompositorParameter")
             {
                 /// Filter object types
                 const data::Object::csptr shaderObj =
-                    adaptor->getInOut< data::Object>(sight::viz::ogre::IParameter::s_PARAMETER_INOUT);
+                    adaptor->getInOut< data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
                 const auto& objType = shaderObj->getClassname();
 
                 if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
@@ -161,9 +161,9 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::sight::modules::viz::ogre::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::sight::modules::viz::scene3d::adaptor::SCompositorParameter")
             {
-                auto paramAdaptor = sight::viz::ogre::IParameter::dynamicConstCast(adaptor);
+                auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicConstCast(adaptor);
                 auto paramConfig  = modules::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                             m_editorInfo.service.lock(),
                                                                                             m_editorInfo.connections);

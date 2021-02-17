@@ -22,8 +22,8 @@
 
 #include "SStereoToggler.hpp"
 
-#include <viz/ogre/compositor/Core.hpp>
-#include <viz/ogre/SRender.hpp>
+#include <viz/scene3d/compositor/Core.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 namespace sight::modules::ui::viz
 {
@@ -89,14 +89,14 @@ void SStereoToggler::updating()
     if(this->confirmAction())
     {
         service::registry::ObjectService::ServiceVectorType renderers =
-            service::OSR::getServices("::sight::viz::ogre::SRender");
+            service::OSR::getServices("::sight::viz::scene3d::SRender");
 
         const bool enableStereo = this->getIsActive() && this->getIsExecutable();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
 
         for(auto srv : renderers)
         {
-            auto renderSrv = sight::viz::ogre::SRender::dynamicCast(srv);
+            auto renderSrv = sight::viz::scene3d::SRender::dynamicCast(srv);
             auto layerMap  = renderSrv->getLayers();
 
             auto layerIt = layerMap.find(m_layerId);

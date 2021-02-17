@@ -71,7 +71,7 @@ std::pair<T, T> getRange(T _value)
 
 //-----------------------------------------------------------------------------
 
-service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::ogre::IParameter::csptr& _adaptor,
+service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::scene3d::IParameter::csptr& _adaptor,
                                                             const service::IService::csptr& _paramSrv,
                                                             core::com::helper::SigSlotConnection& _connections)
 {
@@ -79,7 +79,7 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::og
 
     /// Getting associated object infos
     const data::Object::csptr shaderObj =
-        _adaptor->getInOut< data::Object>(sight::viz::ogre::IParameter::s_PARAMETER_INOUT);
+        _adaptor->getInOut< data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
 
     const auto& objType = shaderObj->getClassname();
 

@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::service::registry::AppConfig" >
@@ -263,7 +263,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="leftGenericSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="leftGenericSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -274,16 +274,16 @@
                 </scene>
             </service>
 
-            <service uid="LVideoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="LVideoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage1" />
                 <config layer="video" />
             </service>
 
-            <service uid="LAxisAdp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
+            <service uid="LAxisAdp" type="::sight::modules::viz::scene3d::adaptor::SAxis" >
                 <config layer="default" length="30" origin="true" />
             </service>
 
-            <service uid="LCameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
+            <service uid="LCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="camera1" />
                 <config layer="default" />
@@ -292,7 +292,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <!-- Scene in which the video and the 3D will be rendered -->           
-            <service uid="rightGenericSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="rightGenericSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -303,16 +303,16 @@
                 </scene>
             </service>
 
-            <service uid="RVideoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="RVideoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage2" />
                 <config layer="video" />
             </service>
 
-            <service uid="RAxisAdp" type="::sight::modules::viz::ogre::adaptor::SAxis" >
+            <service uid="RAxisAdp" type="::sight::modules::viz::scene3d::adaptor::SAxis" >
                 <config layer="default" length="30" origin="true" />
             </service>
 
-            <service uid="RCameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
+            <service uid="RCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="rightMat" />
                 <in key="calibration" uid="camera2" />
                 <config layer="default" />

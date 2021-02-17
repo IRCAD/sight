@@ -113,7 +113,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
+        <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -124,17 +124,17 @@
             </scene>
         </service>
 
-        <service uid="modelSeriesAdp" type="::sight::modules::viz::ogre::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modelSeriesAdp" type="::sight::modules::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="modelSeries" />
             <config layer="default" picker="" />
         </service>
 
-        <service uid="negatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
+        <service uid="negatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="default" sliceIndex="axial" />
         </service>
 
-        <service uid="snapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo" >
+        <service uid="snapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
             <inout key="image" uid="snapshot" />
             <config layer="default" />
         </service>

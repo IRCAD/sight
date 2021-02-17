@@ -34,7 +34,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/ogre/SRender.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -53,8 +53,8 @@ namespace sight::modules::ui::viz
 fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SLightSelector,
                          ::sight::data::Composite )
 
-using sight::viz::ogre::ILight;
-using sight::viz::ogre::Layer;
+using sight::viz::scene3d::ILight;
+using sight::viz::scene3d::Layer;
 
 //------------------------------------------------------------------------------
 
@@ -298,12 +298,12 @@ void SLightSelector::refreshLayers()
     m_layersBox->clear();
 
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::ogre::SRender");
+        service::OSR::getServices("::sight::viz::scene3d::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(auto srv : renderers)
     {
-        auto render = sight::viz::ogre::SRender::dynamicCast(srv);
+        auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -372,11 +372,11 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         this->updateLightsList();
 
         service::registry::ObjectService::ServiceVectorType materialServices =
-            service::OSR::getServices("::sight::modules::viz::ogre::adaptor::SMaterial");
+            service::OSR::getServices("::sight::modules::viz::scene3d::adaptor::SMaterial");
 
         for(auto srv : materialServices)
         {
-            auto materialAdaptor = sight::viz::ogre::IAdaptor::dynamicCast(srv);
+            auto materialAdaptor = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
 
             if(materialAdaptor->getLayerID() == currentLayer->getLayerID())
             {

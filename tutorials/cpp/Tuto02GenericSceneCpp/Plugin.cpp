@@ -237,7 +237,7 @@ void Plugin::initialize()
     }
 
     // Begin generic scene.
-    auto genericSceneSrv = m_appManager->addService("::sight::viz::ogre::SRender", "genericSceneSrv", true, false);
+    auto genericSceneSrv = m_appManager->addService("::sight::viz::scene3d::SRender", "genericSceneSrv", true, false);
     {
         service::IService::ConfigType config;
         config.add("scene.background.<xmlattr>.topColor", "#36393E");
@@ -272,7 +272,7 @@ void Plugin::initialize()
         genericSceneSrv->configure(config);
     }
 
-    auto trackballInteractorAdp = m_appManager->addService("::sight::modules::viz::ogre::adaptor::STrackballCamera",
+    auto trackballInteractorAdp = m_appManager->addService("::sight::modules::viz::scene3d::adaptor::STrackballCamera",
                                                            "trackballInteractorAdp", true, false);
     {
         service::IService::ConfigType config;
@@ -280,7 +280,7 @@ void Plugin::initialize()
         trackballInteractorAdp->configure(config);
     }
 
-    auto textureAdp = m_appManager->addService("::sight::modules::viz::ogre::adaptor::STexture", "textureAdp", true,
+    auto textureAdp = m_appManager->addService("::sight::modules::viz::scene3d::adaptor::STexture", "textureAdp", true,
                                                false);
     {
         textureAdp->registerInput(texture, "image", true);
@@ -290,7 +290,7 @@ void Plugin::initialize()
         textureAdp->configure(config);
     }
 
-    auto meshAdp = m_appManager->addService("::sight::modules::viz::ogre::adaptor::SMesh", "meshAdp", true, false);
+    auto meshAdp = m_appManager->addService("::sight::modules::viz::scene3d::adaptor::SMesh", "meshAdp", true, false);
     {
         meshAdp->registerInOut(mesh, "mesh", true);
         service::IService::ConfigType config;
@@ -299,7 +299,7 @@ void Plugin::initialize()
         meshAdp->configure(config);
     }
 
-    auto negatoAdp = m_appManager->addService("::sight::modules::viz::ogre::adaptor::SNegato3D", "negatoAdp", true,
+    auto negatoAdp = m_appManager->addService("::sight::modules::viz::scene3d::adaptor::SNegato3D", "negatoAdp", true,
                                               false);
     {
         negatoAdp->registerInOut(image, "image", true );
@@ -310,7 +310,8 @@ void Plugin::initialize()
         negatoAdp->configure(config);
     }
 
-    auto snapshotAdp = m_appManager->addService("::sight::modules::viz::ogre::adaptor::SFragmentsInfo", "snapshotAdp",
+    auto snapshotAdp = m_appManager->addService("::sight::modules::viz::scene3d::adaptor::SFragmentsInfo",
+                                                "snapshotAdp",
                                                 true,
                                                 false);
     {

@@ -29,7 +29,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/ogre/SRender.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -124,7 +124,7 @@ void SStereoSelector::onSelectedLayerItem(int index)
 
 void SStereoSelector::onSelectedModeItem(int index)
 {
-    using sight::viz::ogre::compositor::Core;
+    using sight::viz::scene3d::compositor::Core;
     m_currentLayer.lock()->setStereoMode(index == 1 ? Core::StereoModeType::AUTOSTEREO_5 :
                                          index == 2 ? Core::StereoModeType::AUTOSTEREO_8 :
                                          Core::StereoModeType::NONE);
@@ -138,16 +138,16 @@ void SStereoSelector::refreshRenderers()
 
     // Fill layer box with all enabled layers
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::ogre::SRender");
+        service::OSR::getServices("::sight::viz::scene3d::SRender");
 
     for(auto srv : renderers)
     {
-        auto render = sight::viz::ogre::SRender::dynamicCast(srv);
+        auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
             const std::string& id = layerMap.first;
-            if(id != sight::viz::ogre::SRender::s_OGREBACKGROUNDID)
+            if(id != sight::viz::scene3d::SRender::s_OGREBACKGROUNDID)
             {
                 m_layersBox->addItem(QString::fromStdString(id));
                 m_layers.push_back(layerMap.second);

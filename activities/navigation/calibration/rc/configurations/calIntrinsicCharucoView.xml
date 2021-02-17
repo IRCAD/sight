@@ -164,7 +164,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
+        <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -173,7 +173,7 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame" />
             <config layer="default" />
         </service>

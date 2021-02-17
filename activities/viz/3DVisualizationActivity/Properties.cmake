@@ -11,9 +11,9 @@ set( REQUIREMENTS
     module_memory
     data
     module_service
-    module_viz_ogreQt
-    module_viz_ogre
+    module_viz_scene3dQt
+    module_viz_scene3d
     module_ui_media
-    dataManagerConfig
+    config_ui_datamanager
     2DVisualizationActivity
 )

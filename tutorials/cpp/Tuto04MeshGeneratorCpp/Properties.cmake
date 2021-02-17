@@ -15,8 +15,8 @@ set( REQUIREMENTS
     # UI declaration/Actions
     module_ui_base                 # Start the module, load file location or window module_ui_base
     module_ui_qt                   # Start the module, load module_ui_qt implementation of module_ui_base
-    module_viz_ogre                # Start the module, allow to use viz_ogre
-    module_viz_ogreQt              # Enable Ogre to render things in Qt window
+    module_viz_scene3d                # Start the module, allow to use viz_scene3d
+    module_viz_scene3dQt              # Enable Ogre to render things in Qt window
 
     # Objects declaration
     module_service

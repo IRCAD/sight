@@ -2,7 +2,7 @@
 
     <requirement id="module_activity" />
     <requirement id="module_ui_qt" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3dQt" />
 
     <xi:include href="configurations/DicomPacsReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/DicomPacsWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

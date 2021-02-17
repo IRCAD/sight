@@ -27,7 +27,7 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <viz/ogre/SRender.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -188,12 +188,12 @@ void SCoreCompositorEditor::refreshRenderers()
 
     // Fill layer box with all enabled layers
     service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("::sight::viz::ogre::SRender");
+        service::OSR::getServices("::sight::viz::scene3d::SRender");
 
     bool is3DLayer = false;
     for(auto srv : renderers)
     {
-        sight::viz::ogre::SRender::sptr render = sight::viz::ogre::SRender::dynamicCast(srv);
+        sight::viz::scene3d::SRender::sptr render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -229,7 +229,7 @@ void SCoreCompositorEditor::updating()
 
 void SCoreCompositorEditor::onSelectedLayerItem(int index)
 {
-    using namespace sight::viz::ogre::compositor;
+    using namespace sight::viz::scene3d::compositor;
 
     if(!m_isLayerSelected)
     {
@@ -295,7 +295,7 @@ void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 
 void SCoreCompositorEditor::onEditTransparency(int index)
 {
-    using namespace sight::viz::ogre::compositor;
+    using namespace sight::viz::scene3d::compositor;
 
     auto layer = m_currentLayer.lock();
     if(layer)

@@ -25,8 +25,8 @@ set( REQUIREMENTS
     module_data
 
     # Generic Scene
-    module_viz_ogre
-    module_viz_ogreQt            # Enable Ogre to render things in Qt window
+    module_viz_scene3d
+    module_viz_scene3dQt            # Enable Ogre to render things in Qt window
 )
 
 moduleParam(module_ui_qt

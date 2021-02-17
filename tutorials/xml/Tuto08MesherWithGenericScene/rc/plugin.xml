@@ -6,7 +6,7 @@
 <plugin id="Tuto08MesherWithGenericScene" version="@PROJECT_VERSION@" >
 
     <requirement id="module_ui_base" />
-    <requirement id="module_viz_ogre" />
+    <requirement id="module_viz_scene3d" />
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
 
@@ -143,7 +143,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -155,21 +155,21 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="modelSeriesAdp" type="::sight::modules::viz::ogre::adaptor::SModelSeries" autoConnect="yes" >
+            <service uid="modelSeriesAdp" type="::sight::modules::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
                 <in key="model" uid="modelSeries" />
                 <config layer="default" />
             </service>
 
-            <service uid="negatoAdp" type="::sight::modules::viz::ogre::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="negatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="snapshotAdp" type="::sight::modules::viz::ogre::adaptor::SFragmentsInfo" >
+            <service uid="snapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot" />
                 <config layer="default" flip="true" />
             </service>

@@ -1,6 +1,0 @@
-set( NAME viz_ogreTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core utestData data viz_ogre)
-set( REQUIREMENTS  )
-set( WARNINGS_AS_ERRORS ON )

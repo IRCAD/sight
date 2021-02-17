@@ -32,7 +32,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
-#include <viz/ogre/IAdaptor.hpp>
+#include <viz/scene3d/IAdaptor.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
 
@@ -146,23 +146,23 @@ void SShaderParameterEditor::updateGuiInfo()
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
     service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
-        "::sight::modules::viz::ogre::adaptor::SMaterial");
+        "::sight::modules::viz::scene3d::adaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
     if(srvVec.empty())
     {
-        SLM_WARN("No modules::viz::ogre::adaptor::SMaterial found in the application");
+        SLM_WARN("No modules::viz::scene3d::adaptor::SMaterial found in the application");
         return;
     }
 
     /// Try to find the material adaptor working with the same data::Material
     /// as the one contained by the current reconstruction
-    sight::viz::ogre::IAdaptor::sptr matService;
+    sight::viz::scene3d::IAdaptor::sptr matService;
     for (auto srv : srvVec)
     {
         if (srv->getInOut< data::Object>("material")->getID() == reconstruction->getMaterial()->getID())
         {
-            matService = sight::viz::ogre::IAdaptor::dynamicCast(srv);
+            matService = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
             break;
         }
     }
@@ -175,11 +175,11 @@ void SShaderParameterEditor::updateGuiInfo()
     for (const auto& wParamSrv : matService->getRegisteredServices())
     {
         const auto paramSrv = wParamSrv.lock();
-        if (paramSrv->getClassname() == "::sight::modules::viz::ogre::adaptor::SShaderParameter")
+        if (paramSrv->getClassname() == "::sight::modules::viz::scene3d::adaptor::SShaderParameter")
         {
             /// Filter object types
             const data::Object::csptr shaderObj =
-                paramSrv->getInOut< data::Object>(sight::viz::ogre::IParameter::s_PARAMETER_INOUT);
+                paramSrv->getInOut< data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
             const ObjectClassnameType objType = shaderObj->getClassname();
 
             if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
@@ -218,9 +218,9 @@ void SShaderParameterEditor::updateGuiInfo()
     for (auto wAdaptor : matService->getRegisteredServices())
     {
         const auto adaptor = wAdaptor.lock();
-        if (adaptor->getClassname() == "::sight::modules::viz::ogre::adaptor::SShaderParameter")
+        if (adaptor->getClassname() == "::sight::modules::viz::scene3d::adaptor::SShaderParameter")
         {
-            auto paramAdaptor = sight::viz::ogre::IParameter::dynamicCast(adaptor);
+            auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicCast(adaptor);
             auto paramConfig  = modules::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                         m_editorInfo.service.lock(),
                                                                                         m_editorInfo.connections);

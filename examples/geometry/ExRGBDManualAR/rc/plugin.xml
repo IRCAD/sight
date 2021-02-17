@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::service::registry::AppConfig" >
@@ -251,7 +251,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -267,22 +267,22 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="video" />
             </service>
 
-            <service uid="foregroundAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="foregroundAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="foregroundMask" />
                 <config layer="foreground" />
             </service>
 
-            <service uid="modelseriesAdp" type="::sight::modules::viz::ogre::adaptor::SModelSeries" autoConnect="yes" >
+            <service uid="modelseriesAdp" type="::sight::modules::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
                 <in key="model" uid="modelseries" />
                 <config layer="default" autoresetcamera="no" />
             </service>
 
-            <service uid="cameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="cameraRGB" />
                 <config layer="default" />
@@ -290,7 +290,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="offscreenRenderSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="offscreenRenderSrv" type="::sight::viz::scene3d::SRender" >
                 <inout key="offScreen" uid="backgroundMask" />
                 <scene width="1280" height="720" >
                     <background topColor="#36393E" bottomColor="#36393E" />
@@ -301,12 +301,12 @@
                 </scene>
             </service>
 
-            <service uid="meshOffscreenAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshOffscreenAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <in key="mesh" uid="skinMesh" />
                 <config layer="default" autoresetcamera="no" shadingMode="ambient" />
             </service>
 
-            <service uid="cameraOffscreenAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraOffscreenAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="cameraRGB" />
                 <config layer="default" />

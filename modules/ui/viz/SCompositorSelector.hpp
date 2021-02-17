@@ -24,8 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/ogre/compositor/ChainManager.hpp>
-#include <viz/ogre/Layer.hpp>
+#include <viz/scene3d/compositor/ChainManager.hpp>
+#include <viz/scene3d/Layer.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -60,7 +60,7 @@ public:
      * @name Slots API
      * @{
      */
-    typedef core::com::Slot< void (sight::viz::ogre::Layer::sptr) > InitLayerSlotType;
+    typedef core::com::Slot< void (sight::viz::scene3d::Layer::sptr) > InitLayerSlotType;
 
     /// Slot: Populate the list of available compositors for the selected layer
     MODULE_UI_VIZ_API static const core::com::Slots::SlotKeyType s_INIT_COMPOSITOR_LIST_SLOT;
@@ -106,7 +106,7 @@ private Q_SLOTS:
 
 private:
     /// Slot: Populate the list of available compositors for the selected layer
-    void initCompositorList(sight::viz::ogre::Layer::sptr layer);
+    void initCompositorList(sight::viz::scene3d::Layer::sptr layer);
 
     /// Retrieves all the layers from the application thanks to the render services
     void refreshRenderers();
@@ -131,10 +131,10 @@ private:
 
     QPointer<QListWidget> m_compositorChain;
 
-    std::vector< sight::viz::ogre::Layer::wptr > m_layers;
-    sight::viz::ogre::Layer::wptr m_currentLayer;
+    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    sight::viz::scene3d::Layer::wptr m_currentLayer;
 
-    sight::viz::ogre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
+    sight::viz::scene3d::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
     core::com::helper::SigSlotConnection m_connections;

@@ -15,8 +15,8 @@ set( REQUIREMENTS
     module_io_vtk
     module_service
     module_filter_mesh
-    module_viz_ogre
-    module_viz_ogreQt
+    module_viz_scene3d
+    module_viz_scene3dQt
     module_ui_media
     fwlauncher
 )

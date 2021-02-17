@@ -3,8 +3,8 @@
     <requirement id="module_activity" />
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
 
     <xi:include href="ExDicomSegmentationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

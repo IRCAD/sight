@@ -3,8 +3,8 @@
     <requirement id="module_viz_scene2d" />
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::service::registry::AppConfig" >
@@ -166,14 +166,14 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="distanceMapRenderSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="distanceMapRenderSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <layer id="default" order="1" background="0.0" />
                     <adaptor uid="depthAdp" />
                 </scene>
             </service>
 
-            <service uid="depthAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="depthAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="default" />
@@ -181,14 +181,14 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="videoRenderSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="videoRenderSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <layer id="default" order="1" background="0.0" />
                     <adaptor uid="videoAdp" />
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageVideo" />
                 <config layer="default" />
             </service>

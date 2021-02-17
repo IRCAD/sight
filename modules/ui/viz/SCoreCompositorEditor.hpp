@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/ogre/Layer.hpp>
+#include <viz/scene3d/Layer.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -91,8 +91,8 @@ protected:
     /// FILL ME.
     MODULE_UI_VIZ_API void refreshRenderers();
 
-    std::vector< sight::viz::ogre::Layer::wptr > m_layers;
-    sight::viz::ogre::Layer::wptr m_currentLayer;
+    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    sight::viz::scene3d::Layer::wptr m_currentLayer;
 
 protected Q_SLOTS:
 

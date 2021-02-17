@@ -8,10 +8,10 @@ set( REQUIREMENTS
         module_ui_base
         module_ui_qt
         module_data
-        module_viz_ogre
+        module_viz_scene3d
         module_ui_media
         module_io_video
-        module_viz_ogreQt
+        module_viz_scene3dQt
         data
         module_service
         module_navigation_calibration

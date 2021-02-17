@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
 
     <extension implements="::sight::service::registry::AppConfig" >
@@ -120,7 +120,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -132,21 +132,21 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::sight::modules::viz::ogre::adaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="cameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="cameraMatrix" />
                 <config layer="default" />
             </service>
 
-            <service uid="transformAdp" type="::sight::modules::viz::ogre::adaptor::STransform" autoConnect="yes" >
+            <service uid="transformAdp" type="::sight::modules::viz::scene3d::adaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="meshMatrix" />
                 <config layer="default" transform="meshMatrixTransform" />
             </service>
 
-            <service uid="meshAdp" type="::sight::modules::viz::ogre::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="objectMeshUid" />
                 <config layer="default" transform="meshMatrixTransform" autoresetcamera="no" />
             </service>

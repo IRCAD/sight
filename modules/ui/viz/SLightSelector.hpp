@@ -24,8 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/ogre/ILight.hpp>
-#include <viz/ogre/Layer.hpp>
+#include <viz/scene3d/ILight.hpp>
+#include <viz/scene3d/Layer.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -48,10 +48,10 @@ namespace sight::modules::ui::viz
  * @brief User interface to select light adaptor from a selected layer or create a new one.
  *
  * @section Signals Signals
- * - \b lightSelected(viz::ogre::ILight::sptr): Emitted when a light is selected in the list widget.
+ * - \b lightSelected(viz::scene3d::ILight::sptr): Emitted when a light is selected in the list widget.
  *
  * @section Slots Slots
- * - \b initLightList(viz::ogre::Layer::sptr): populates the list of available light adaptors for the current
+ * - \b initLightList(viz::scene3d::Layer::sptr): populates the list of available light adaptors for the current
  * layer.
  *
  * @section XML XML Configuration
@@ -126,12 +126,12 @@ private Q_SLOTS:
 
 private:
 
-    typedef core::com::Signal<void (sight::viz::ogre::ILight::sptr)> LightSelectedSignalType;
+    typedef core::com::Signal<void (sight::viz::scene3d::ILight::sptr)> LightSelectedSignalType;
 
     /// Checks or unchecks all item in m_lightsList.
     void onCheckAllBoxes(bool visible);
 
-    void initLightList(sight::viz::ogre::Layer::sptr _layer);
+    void initLightList(sight::viz::scene3d::Layer::sptr _layer);
 
     /// Retrieves all the layers from the application thanks to the render services.
     void refreshLayers();
@@ -143,7 +143,7 @@ private:
     void createLightAdaptor(const std::string& _name);
 
     /// Finds the light adaptor with the specified name.
-    sight::viz::ogre::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
+    sight::viz::scene3d::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
 
     QPointer<QComboBox>   m_layersBox;
 
@@ -159,16 +159,16 @@ private:
 
     QPointer<QPushButton> m_ambientColorBtn;
 
-    std::vector< sight::viz::ogre::Layer::wptr > m_layers;
-    sight::viz::ogre::Layer::wptr m_currentLayer;
+    std::vector< sight::viz::scene3d::Layer::wptr > m_layers;
+    sight::viz::scene3d::Layer::wptr m_currentLayer;
 
     /// Stores all light adaptors (existing in the configuration and those created by this editor).
-    std::vector< sight::viz::ogre::ILight::sptr > m_lightAdaptors;
+    std::vector< sight::viz::scene3d::ILight::sptr > m_lightAdaptors;
 
     /// Stores a light adaptor and it's data to keep a reference on them.
     struct Light
     {
-        sight::viz::ogre::ILight::sptr m_light;
+        sight::viz::scene3d::ILight::sptr m_light;
         data::Color::sptr m_diffuse;
         data::Color::sptr m_specular;
     };
@@ -177,7 +177,7 @@ private:
     std::vector< Light > m_managedLightAdaptors;
 
     /// Defines the current selected light.
-    sight::viz::ogre::ILight::sptr m_currentLight;
+    sight::viz::scene3d::ILight::sptr m_currentLight;
 
     /// Handles connections with the layer.
     core::com::helper::SigSlotConnection m_connections;

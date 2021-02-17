@@ -193,7 +193,7 @@ endif()
 ########################################################################################################################
 # Automatic detection of additional repositories using .sight files
 ########################################################################################################################
-file(GLOB ADDITIONAL_REPOSITORIES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../*/.sight ${CMAKE_CURRENT_SOURCE_DIR}/../*/.fw4spl)
+file(GLOB ADDITIONAL_REPOSITORIES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../*/.sight)
 
 foreach(REPOSITORY ${ADDITIONAL_REPOSITORIES_FILES})
     file(READ ${REPOSITORY} REPO_RAW_NAME)
@@ -201,6 +201,7 @@ foreach(REPOSITORY ${ADDITIONAL_REPOSITORIES_FILES})
     string(TOUPPER ${REPO_RAW_NAME} REPO_NAME)
 
     if(NOT ${REPO_NAME} STREQUAL "SIGHT")
+      message(${REPO_NAME})
 
         get_filename_component(REPO_DIR ${REPOSITORY} DIRECTORY)
         get_filename_component(REPO_DIR ${REPO_DIR} ABSOLUTE)

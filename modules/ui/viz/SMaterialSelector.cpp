@@ -30,8 +30,8 @@
 
 #include <service/macros.hpp>
 
-#include <viz/ogre/ogre.hpp>
-#include <viz/ogre/Utils.hpp>
+#include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/Utils.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePass.h>
@@ -182,7 +182,7 @@ void SMaterialSelector::onReloadMaterial()
 {
     auto materialName = m_materialBox->currentText().toStdString();
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName,
-                                                                                     sight::viz::ogre::RESOURCE_GROUP);
+                                                                                     sight::viz::scene3d::RESOURCE_GROUP);
 
     if(!material)
     {

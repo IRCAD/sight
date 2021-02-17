@@ -28,7 +28,7 @@ set( REQUIREMENTS
     # Config
     2DVisualizationActivity
     volumeRenderingActivity
-    activityConfig
+    config_ui_activity
 
     # Services
 

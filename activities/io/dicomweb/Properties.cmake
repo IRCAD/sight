@@ -15,6 +15,6 @@ set( REQUIREMENTS
     module_io_dicomweb
     module_ui_media
     module_service
-    module_viz_ogre
-    module_viz_ogreQt
+    module_viz_scene3d
+    module_viz_scene3dQt
 )

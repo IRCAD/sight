@@ -2,8 +2,8 @@
 
     <requirement id="module_ui_qt" />
     <requirement id="module_service" />
-    <requirement id="module_viz_ogre" />
-    <requirement id="module_viz_ogreQt" />
+    <requirement id="module_viz_scene3d" />
+    <requirement id="module_viz_scene3dQt" />
     <requirement id="module_ui_base" />
     
     <extension implements="::sight::service::registry::AppConfig" >
@@ -305,7 +305,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="distanceMapRenderSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="distanceMapRenderSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -318,18 +318,18 @@
                 </scene>
             </service>
 
-            <service uid="DMDepthAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="DMDepthAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="video" />
             </service>
 
-            <service uid="DMPointAdp" type="::sight::modules::viz::ogre::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="DMPointAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
 
-            <service uid="DMCameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" >
+            <service uid="DMCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="identity" />
                 <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
                 <config layer="AR" />
@@ -337,7 +337,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="videoRenderSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="videoRenderSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -350,17 +350,17 @@
                 </scene>
             </service>
 
-            <service uid="VVideoAdp" type="::sight::modules::viz::ogre::adaptor::SVideo" autoConnect="yes" >
+            <service uid="VVideoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageVideo" />
                 <config layer="video" />
             </service>
 
-            <service uid="VPointAdp" type="::sight::modules::viz::ogre::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="VPointAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
 
-            <service uid="VCameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" >
+            <service uid="VCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="identity" />
                 <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
                 <config layer="AR" />
@@ -368,7 +368,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="reconstructionRenderSrv" type="::sight::viz::ogre::SRender" >
+            <service uid="reconstructionRenderSrv" type="::sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -378,12 +378,12 @@
                 </scene>
             </service>
 
-            <service uid="RPointAdp" type="::sight::modules::viz::ogre::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="RPointAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="default" autoresetcamera="no" radius="1" />
             </service>
 
-            <service uid="RCameraAdp" type="::sight::modules::viz::ogre::adaptor::SCamera" >
+            <service uid="RCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="3dCameraTrf" />
                 <config layer="default" />
             </service>

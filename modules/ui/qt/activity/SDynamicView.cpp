@@ -93,10 +93,10 @@ void SDynamicView::configuring()
 
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
-    ConfigType activityConfig = m_configuration->findConfigurationElement("mainActivity");
-    if (activityConfig)
+    ConfigType config_ui_activity = m_configuration->findConfigurationElement("mainActivity");
+    if (config_ui_activity)
     {
-        const std::string closableStr = activityConfig->getAttributeValue("closable");
+        const std::string closableStr = config_ui_activity->getAttributeValue("closable");
         SLM_ASSERT("main activity 'closable' attribute value must be 'yes', 'true', 'no' or 'false'",
                    closableStr == "yes" || closableStr == "true" ||
                    closableStr == "no" || closableStr == "false");

@@ -5,7 +5,7 @@ set( DEPENDENCIES
     module_ui_qt
 )
 set( REQUIREMENTS
-    module_viz_ogre
-    module_viz_ogreQt
+    module_viz_scene3d
+    module_viz_scene3dQt
 )
 set( WARNINGS_AS_ERRORS ON )

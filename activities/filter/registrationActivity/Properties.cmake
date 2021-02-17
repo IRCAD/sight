@@ -12,12 +12,12 @@ set( REQUIREMENTS
     module_ui_base
     module_ui_qt
     module_data
-    module_viz_ogre
+    module_viz_scene3d
     module_viz_scene2d
     module_ui_media
     module_geometry_base
-    module_viz_ogreQt
-    qtSceneConfig
+    module_viz_scene3dQt
+    config_viz_scene2d
     module_filter_image
 )
 

@@ -30,7 +30,7 @@
 
 #include <service/macros.hpp>
 
-#include <viz/ogre/helper/Scene.hpp>
+#include <viz/scene3d/helper/Scene.hpp>
 
 #include <QColorDialog>
 #include <QHBoxLayout>
@@ -43,8 +43,8 @@
 namespace sight::modules::ui::viz
 {
 
-using sight::viz::ogre::ILight;
-using sight::viz::ogre::Layer;
+using sight::viz::scene3d::ILight;
+using sight::viz::scene3d::Layer;
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SLightEditor,
                          ::sight::data::Composite )
@@ -405,7 +405,7 @@ void SLightEditor::onResetZTranslation(bool)
 {
     ::Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
     ::Ogre::Node* const lightNode =
-        sight::viz::ogre::helper::Scene::getNodeById(m_currentLight->getTransformId(), root);
+        sight::viz::scene3d::helper::Scene::getNodeById(m_currentLight->getTransformId(), root);
     return lightNode;
 }
 
@@ -468,7 +468,7 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
                                                ILight::s_OFFSET_RANGE / 2));
 
         ::Ogre::SceneNode* const root = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();
-        const ::Ogre::Node* const lightNode = sight::viz::ogre::helper::Scene::getNodeById(
+        const ::Ogre::Node* const lightNode = sight::viz::scene3d::helper::Scene::getNodeById(
             m_currentLight->getTransformId(), root);
         const ::Ogre::Vector3 currentPos = lightNode->getPosition();
 

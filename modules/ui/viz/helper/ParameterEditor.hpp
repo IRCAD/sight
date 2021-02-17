@@ -26,7 +26,7 @@
 
 #include <service/IService.hpp>
 
-#include <viz/ogre/IParameter.hpp>
+#include <viz/scene3d/IParameter.hpp>
 
 namespace sight::modules::ui::viz
 {
@@ -46,7 +46,7 @@ public:
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
     MODULE_UI_VIZ_API static service::IService::ConfigType
-    createConfig(const sight::viz::ogre::IParameter::csptr& _adaptor,
+    createConfig(const sight::viz::scene3d::IParameter::csptr& _adaptor,
                  const service::IService::csptr& _paramSrv,
                  core::com::helper::SigSlotConnection& _connections);
 };
