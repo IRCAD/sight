@@ -334,7 +334,7 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, data::Image::cspt
 
 // -----------------------------------------------------------------------------
 
-vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( data::TransformationMatrix3D::csptr _transfoMatrix )
+vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( data::Matrix4::csptr _transfoMatrix )
 {
     auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(std::uint8_t l = 0; l < 4; l++)
@@ -349,7 +349,7 @@ vtkSmartPointer<vtkMatrix4x4> toVTKMatrix( data::TransformationMatrix3D::csptr _
 
 // -----------------------------------------------------------------------------
 
-bool fromVTKMatrix( vtkMatrix4x4* _matrix, data::TransformationMatrix3D::sptr _transfoMatrix)
+bool fromVTKMatrix( vtkMatrix4x4* _matrix, data::Matrix4::sptr _transfoMatrix)
 {
     bool res = true;
     for(std::uint8_t l = 0; l < 4; l++)

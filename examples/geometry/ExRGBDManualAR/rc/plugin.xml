@@ -21,9 +21,9 @@
             <object uid="videoImage" type="::sight::data::Image" />
             <object uid="backgroundMask" type="::sight::data::Image" />
             <object uid="foregroundMask" type="::sight::data::Image" />
-            <object uid="matrix" type="::sight::data::TransformationMatrix3D" />
-            <object uid="inverseMat" type="::sight::data::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::sight::data::TransformationMatrix3D" src="deferred" />
+            <object uid="matrix" type="::sight::data::Matrix4" />
+            <object uid="inverseMat" type="::sight::data::Matrix4" />
+            <object uid="extrinsic" type="::sight::data::Matrix4" src="deferred" />
             <object uid="skinMesh" type="::sight::data::Mesh" src="deferred" />
             <object uid="modelseries" type="::sight::data::ModelSeries" src="deferred" />
 
@@ -339,7 +339,7 @@
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DReaderService" />
+                <addSelection service="::sight::modules::io::matrix::Matrix4ReaderService" />
             </service>
 
             <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->

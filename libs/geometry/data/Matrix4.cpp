@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include "geometry/data/TransformationMatrix3D.hpp"
+#include "geometry/data/Matrix4.hpp"
 
+#include <core/data/Matrix4.hpp>
 #include <core/data/Point.hpp>
-#include <core/data/TransformationMatrix3D.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/matrix.hpp>
@@ -33,8 +33,8 @@ namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
-bool invert(const ::sight::data::TransformationMatrix3D::csptr& _input,
-            ::sight::data::TransformationMatrix3D::sptr& _output)
+bool invert(const ::sight::data::Matrix4::csptr& _input,
+            ::sight::data::Matrix4::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost and inversion does not care about the layout, so we skip it
@@ -58,9 +58,9 @@ bool invert(const ::sight::data::TransformationMatrix3D::csptr& _input,
 
 // ----------------------------------------------------------------------------
 
-void multiply(const ::sight::data::TransformationMatrix3D::csptr& _trfA,
-              const ::sight::data::TransformationMatrix3D::csptr& _trfB,
-              ::sight::data::TransformationMatrix3D::sptr& _output)
+void multiply(const ::sight::data::Matrix4::csptr& _trfA,
+              const ::sight::data::Matrix4::csptr& _trfB,
+              ::sight::data::Matrix4::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them
@@ -85,7 +85,7 @@ void multiply(const ::sight::data::TransformationMatrix3D::csptr& _trfA,
 
 // ----------------------------------------------------------------------------
 
-void identity(::sight::data::TransformationMatrix3D::sptr& _trf)
+void identity(::sight::data::Matrix4::sptr& _trf)
 {
     for (size_t i = 0; i < 4; ++i)
     {
@@ -98,7 +98,7 @@ void identity(::sight::data::TransformationMatrix3D::sptr& _trf)
 
 // ----------------------------------------------------------------------------
 
-void multiply(const ::sight::data::TransformationMatrix3D::csptr& _trf,
+void multiply(const ::sight::data::Matrix4::csptr& _trf,
               const ::sight::data::Point::csptr& _input, ::sight::data::Point::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and Sight uses row-major layout
@@ -120,12 +120,12 @@ void multiply(const ::sight::data::TransformationMatrix3D::csptr& _trf,
 
 // ----------------------------------------------------------------------------
 
-bool isIdentity(const ::sight::data::TransformationMatrix3D::csptr& _trf, const double _epsilon)
+bool isIdentity(const ::sight::data::Matrix4::csptr& _trf, const double _epsilon)
 {
-    static const ::sight::data::TransformationMatrix3D::sptr s_IDENTITY = ::sight::data::TransformationMatrix3D::New();
+    static const ::sight::data::Matrix4::sptr s_IDENTITY = ::sight::data::Matrix4::New();
 
-    const ::sight::data::TransformationMatrix3D::TMCoefArray& arrayID  = s_IDENTITY->getCoefficients();
-    const ::sight::data::TransformationMatrix3D::TMCoefArray& arrayTrf = _trf->getCoefficients();
+    const ::sight::data::Matrix4::TMCoefArray& arrayID  = s_IDENTITY->getCoefficients();
+    const ::sight::data::Matrix4::TMCoefArray& arrayTrf = _trf->getCoefficients();
 
     for(size_t i = 0; i < arrayID.size(); ++i)
     {

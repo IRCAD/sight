@@ -57,7 +57,7 @@ namespace sight::modules::filter::image
  * - \b reference [sight::data::Image]: Image that will be deformed to match the target.
  *
  * @subsection In-Out In-Out
- * - \b transform [sight::data::TransformationMatrix3D]: The initial transform used during registration, will be updated
+ * - \b transform [sight::data::Matrix4]: The initial transform used during registration, will be updated
  * with the new value after registration.
  *
  * @subsection Configuration Configuration

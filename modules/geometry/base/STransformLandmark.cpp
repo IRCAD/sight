@@ -30,7 +30,7 @@
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -71,7 +71,7 @@ STransformLandmark::~STransformLandmark() noexcept
 
 void STransformLandmark::starting()
 {
-    const auto transformLocked = this->getLockedInput< data::TransformationMatrix3D>(s_TRANSFORM_INPUT);
+    const auto transformLocked = this->getLockedInput< data::Matrix4>(s_TRANSFORM_INPUT);
     m_transform = transformLocked.get_shared();
 }
 
@@ -103,8 +103,8 @@ void STransformLandmark::updating()
         const auto landmark = this->getLockedInOut< data::Landmarks >(s_LANDMARK_INOUT);
         try
         {
-            data::Landmarks::PointType& point               = landmark->getPoint(m_label, m_index);
-            data::TransformationMatrix3D::TMCoefArray array = m_transform->getCoefficients();
+            data::Landmarks::PointType& point = landmark->getPoint(m_label, m_index);
+            data::Matrix4::TMCoefArray array  = m_transform->getCoefficients();
             point[0] = array[3];
             point[1] = array[7];
             point[2] = array[11];

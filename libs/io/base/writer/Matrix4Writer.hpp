@@ -26,7 +26,7 @@
 #include "io/base/writer/GenericObjectWriter.hpp"
 
 #include <data/location/SingleFile.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::io::base
 {
@@ -38,26 +38,26 @@ namespace writer
  * @brief   Writer for transformation of 3D Matrix. Write file format .trf
  *
  *
- * Ircad writer to write a data::TransformationMatrix3D on filesystem which the file format
+ * Ircad writer to write a data::Matrix4 on filesystem which the file format
  * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
  */
-class IO_BASE_CLASS_API TransformationMatrix3DWriter :
-    public GenericObjectWriter< data::TransformationMatrix3D>,
+class IO_BASE_CLASS_API Matrix4Writer :
+    public GenericObjectWriter< data::Matrix4>,
     public data::location::enableSingleFile< io::base::writer::IObjectWriter >
 {
 
 public:
 
     fwCoreClassMacro(
-        TransformationMatrix3DWriter,
-        GenericObjectWriter< data::TransformationMatrix3D >,
-        io::base::writer::factory::New< TransformationMatrix3DWriter >
+        Matrix4Writer,
+        GenericObjectWriter< data::Matrix4 >,
+        io::base::writer::factory::New< Matrix4Writer >
         )
     /// Constructor. Do nothing.
-    IO_BASE_API TransformationMatrix3DWriter(io::base::writer::IObjectWriter::Key key);
+    IO_BASE_API Matrix4Writer(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor. Do nothing.
-    IO_BASE_API virtual ~TransformationMatrix3DWriter();
+    IO_BASE_API virtual ~Matrix4Writer();
 
     /// Write the file with standard iostream API.
     IO_BASE_API virtual void write() override;

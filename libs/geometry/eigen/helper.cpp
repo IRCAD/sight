@@ -32,9 +32,9 @@ namespace helper
 
 //-------------------------------------------------------------------------------------------------
 
-data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4f& _mat)
+data::Matrix4::sptr toF4s( const ::Eigen::Matrix4f& _mat)
 {
-    data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr trf = data::Matrix4::New();
 
     for(unsigned int r = 0; r < 4; ++r)
     {
@@ -49,9 +49,9 @@ data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4f& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-data::TransformationMatrix3D::sptr toF4s( const ::Eigen::Matrix4d& _mat)
+data::Matrix4::sptr toF4s( const ::Eigen::Matrix4d& _mat)
 {
-    data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr trf = data::Matrix4::New();
 
     for(unsigned int r = 0; r < 4; ++r)
     {
@@ -90,7 +90,7 @@ RvecTvecType eigenMatToRvecTvec(const Eigen::Matrix4d& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-RvecTvecType f4sMatToRvecTvec(const data::TransformationMatrix3D::csptr _mat)
+RvecTvecType f4sMatToRvecTvec(const data::Matrix4::csptr _mat)
 {
     ::Eigen::Matrix4d eigenMat = toEigen< double >(_mat);
     return eigenMatToRvecTvec(eigenMat);

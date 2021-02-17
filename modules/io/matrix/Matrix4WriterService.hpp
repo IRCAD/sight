@@ -31,26 +31,26 @@
 namespace sight::modules::io::matrix
 {
 /**
- * @brief This service write a data::TransformationMatrix3D into a .trf file.
+ * @brief This service write a data::Matrix4 into a .trf file.
  *
  * This format is basic: an ascii file which contains matrix 4x4 values.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::matrix::TransformationMatrix3DWriterService">
+   <service type="::sight::modules::io::matrix::Matrix4WriterService">
        <in key="data" uid="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::TransformationMatrix3D]: matrix to save.
+ * - \b data [sight::data::Matrix4]: matrix to save.
  */
-class MODULE_IO_MATRIX_CLASS_API TransformationMatrix3DWriterService : public sight::io::base::service::IWriter
+class MODULE_IO_MATRIX_CLASS_API Matrix4WriterService : public sight::io::base::service::IWriter
 {
 
 public:
 
-    fwCoreServiceMacro(TransformationMatrix3DWriterService, sight::io::base::service::IWriter)
+    fwCoreServiceMacro(Matrix4WriterService, sight::io::base::service::IWriter)
 
     /// Super class of writer services
     typedef sight::io::base::service::IWriter SuperClass;
@@ -111,7 +111,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( service::IService )
      *
      * This method is used to update the service.
-     * The transformation matrix is written with the writer io::base::writer::TransformationMatrix3DWriter.
+     * The transformation matrix is written with the writer io::base::writer::Matrix4Writer.
      * Notify writing.
      */
     MODULE_IO_MATRIX_API void updating() override;

@@ -32,7 +32,7 @@ namespace sight::modules::geometry::base
 /**
  * @brief   This service decomposes a matrix into a 3 by 3 rotation matrix, a 3 dimensional translation vector
  * and a 3 by 3 scaling matrix. The skew and the perspective are also decomposed. These information are not in
- * data::TransformationMatrix3D data for the moment but it is possible to do it later.
+ * data::Matrix4 data for the moment but it is possible to do it later.
  *
  * @section XML XML Configuration
  *
@@ -45,11 +45,11 @@ namespace sight::modules::geometry::base
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [sight::data::TransformationMatrix3D]: matrix to decompose.
+ * - \b matrix [sight::data::Matrix4]: matrix to decompose.
  * @subsection In-Out In-Out:
- * - \b translation [sight::data::TransformationMatrix3D] (optional): translation matrix.
- * - \b rotation [sight::data::TransformationMatrix3D] (optional): rotation matrix.
- * - \b scale [sight::data::TransformationMatrix3D] (optional): scaling matrix.
+ * - \b translation [sight::data::Matrix4] (optional): translation matrix.
+ * - \b rotation [sight::data::Matrix4] (optional): rotation matrix.
+ * - \b scale [sight::data::Matrix4] (optional): scaling matrix.
  *
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public service::IOperator

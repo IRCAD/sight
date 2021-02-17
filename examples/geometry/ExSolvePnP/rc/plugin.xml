@@ -19,7 +19,7 @@
 
             <object uid="cube" type="::sight::data::Mesh" />
 
-            <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
+            <object uid="registrationMatrix" type="::sight::data::Matrix4" />
 
             <object uid="2dPoints" type="::sight::data::PointList" />
             <object uid="2dPixels" type="::sight::data::PointList" />

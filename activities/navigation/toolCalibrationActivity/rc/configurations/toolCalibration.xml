@@ -7,9 +7,9 @@
     <config>
         <object uid="matrixTL" type="::sight::data::MatrixTL" />
         <object uid="matricesVector" type="::sight::data::Vector" />
-        <object uid="toolMatrix" type="::sight::data::TransformationMatrix3D" src="deferred"/>
-        <object uid="matrixCalibration" type="::sight::data::TransformationMatrix3D" src="deferred"/>
-        <object uid="trackerMatrix0" type="::sight::data::TransformationMatrix3D" />
+        <object uid="toolMatrix" type="::sight::data::Matrix4" src="deferred"/>
+        <object uid="matrixCalibration" type="::sight::data::Matrix4" src="deferred"/>
+        <object uid="trackerMatrix0" type="::sight::data::Matrix4" />
         <object uid="pointlist" type="::sight::data::PointList" />
 
         <!-- *************************** Begin Layouts *************************** -->
@@ -166,7 +166,7 @@
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DWriterService" />
+            <addSelection service="::sight::modules::io::matrix::Matrix4WriterService" />
         </service>
 
         <!-- *************************** End Services *************************** -->

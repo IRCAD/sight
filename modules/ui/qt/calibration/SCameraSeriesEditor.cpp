@@ -29,7 +29,7 @@
 #include <core/tools/Object.hpp>
 
 #include <data/CameraSeries.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
@@ -120,7 +120,7 @@ void SCameraSeriesEditor::updateInformations()
     data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >("cameraSeries");
 
     //IS CALIBRATED
-    data::TransformationMatrix3D::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
+    data::Matrix4::csptr matrix = cameraSeries->getExtrinsicMatrix(m_camIndex);
     if(matrix)
     {
         m_description->setText("<b>The cameras are calibrated.</b>");

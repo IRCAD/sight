@@ -22,10 +22,10 @@
             <object uid="videoImage1" type="::sight::data::Image" />
             <object uid="videoImage2" type="::sight::data::Image" />
             <object uid="matrixTL" type="::sight::data::MatrixTL" />
-            <object uid="matrix" type="::sight::data::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::sight::data::TransformationMatrix3D" src="deferred" />
-            <object uid="inverseMat" type="::sight::data::TransformationMatrix3D" />
-            <object uid="rightMat" type="::sight::data::TransformationMatrix3D" />
+            <object uid="matrix" type="::sight::data::Matrix4" />
+            <object uid="extrinsic" type="::sight::data::Matrix4" src="deferred" />
+            <object uid="inverseMat" type="::sight::data::Matrix4" />
+            <object uid="rightMat" type="::sight::data::Matrix4" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

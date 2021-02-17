@@ -29,9 +29,9 @@
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/timeline/Buffer.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -141,11 +141,11 @@ void SFrameMatrixSynchronizer::starting()
 
         m_matrixTLs.push_back(this->getWeakInput< data::MatrixTL>(s_MATRIXTL_INPUT, i));
 
-        std::vector< data::mt::weak_ptr< data::TransformationMatrix3D> > matricesVector;
+        std::vector< data::mt::weak_ptr< data::Matrix4> > matricesVector;
         for(size_t j = 0; j < numMatrices; ++j)
         {
             matricesVector.push_back(
-                this->getWeakInOut< data::TransformationMatrix3D >( s_MATRICES_INOUT + std::to_string(i), j));
+                this->getWeakInOut< data::Matrix4 >( s_MATRICES_INOUT + std::to_string(i), j));
         }
         m_totalOutputMatrices += numMatrices;
         m_matrices.push_back(matricesVector);

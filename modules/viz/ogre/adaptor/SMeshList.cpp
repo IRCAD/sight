@@ -78,7 +78,7 @@ void SMeshList::starting()
 
     // Get the inputs.
     const auto mesh           = this->getWeakInOut< data::Mesh >(s_MESH_INOUT);
-    const auto transformInOut = this->getLockedInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+    const auto transformInOut = this->getLockedInput< data::Matrix4 >(s_TRANSFORM_INPUT);
     const auto imageInput     = this->getLockedInput< data::Image >(s_TEXTURE_INPUT);
 
     // initialise N meshes adaptor
@@ -86,7 +86,7 @@ void SMeshList::starting()
     {
         // Matrix and Image are copied because the input ones will change. Mesh is not copied because we want to use
         // the same mesh of all the adaptors
-        const auto transform = data::TransformationMatrix3D::copy(transformInOut.get_shared());
+        const auto transform = data::Matrix4::copy(transformInOut.get_shared());
         const auto image     = data::Image::copy(imageInput.get_shared());
 
         // Create adaptors configurations
@@ -155,7 +155,7 @@ void SMeshList::starting()
 service::IService::KeyConnectionsMap SMeshList::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_ADD_SLOT);
+    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, s_ADD_SLOT);
     return connections;
 }
 
@@ -284,9 +284,9 @@ void SMeshList::add()
         const sight::viz::ogre::IAdaptor::sptr transformAdp = instance.m_transform;
         {
             // set current matrix
-            const auto transform = transformAdp->getLockedInOut< data::TransformationMatrix3D >("transform");
+            const auto transform = transformAdp->getLockedInOut< data::Matrix4 >("transform");
 
-            const auto transformInOut = this->getLockedInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+            const auto transformInOut = this->getLockedInput< data::Matrix4 >(s_TRANSFORM_INPUT);
             transform->deepCopy(transformInOut.get_shared());
 
         }

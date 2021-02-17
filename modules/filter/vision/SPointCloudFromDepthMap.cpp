@@ -36,7 +36,7 @@
 
 #include <filter/vision/Projection.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 namespace sight::modules::filter::vision
 {
@@ -94,7 +94,7 @@ void SPointCloudFromDepthMap::updating()
 
     auto rgbMap = this->getInput< data::Image>("rgbMap");
     data::Camera::csptr colorCalibration;
-    data::TransformationMatrix3D::csptr extrinsicMatrix;
+    data::Matrix4::csptr extrinsicMatrix;
     if (rgbMap)
     {
         colorCalibration = calibration->getCamera(1);
@@ -261,7 +261,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const data::Camera::csptr& colorCamera,
     const data::Image::csptr& depthMap,
     const data::Image::csptr& colorMap,
-    const data::TransformationMatrix3D::csptr& extrinsic,
+    const data::Matrix4::csptr& extrinsic,
     const data::Mesh::sptr& pointCloud)
 {
     SLM_INFO("Input RGB map was supplied, including colors");

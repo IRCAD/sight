@@ -59,7 +59,7 @@ namespace sight::modules::geometry::vision
    @endcode
  *
  * @subsection Input Input
- * - \b tranform [sight::data::TransformationMatrix3D] (mandatory): transform between the chessboard and the camera.
+ * - \b tranform [sight::data::Matrix4] (mandatory): transform between the chessboard and the camera.
  * - \b camera [sight::data::Camera] (mandatory): camera filming the chessboard.
  * - \b detectedChessboard [sight::data::PointList] (mandatory): detected chessboard corners.
  *

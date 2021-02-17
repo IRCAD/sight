@@ -49,7 +49,7 @@
 namespace sight::data
 {
 class Color;
-class TransformationMatrix3D;
+class Matrix4;
 }
 
 namespace sight::viz::ogre

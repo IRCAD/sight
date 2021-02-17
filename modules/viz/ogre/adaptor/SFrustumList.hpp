@@ -57,7 +57,7 @@ namespace sight::modules::viz::ogre::adaptor
  *
  * @subsection Input Input:
  * - \b camera [sight::data::Camera]: data::Camera that handles calibration parameters
- * - \b transform [sight::data::TransformationMatrix3D]: each time this transform is modified, a frustum is created.
+ * - \b transform [sight::data::Matrix4]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the frustum's layer
@@ -95,7 +95,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
+     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
      */
     MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 

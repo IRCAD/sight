@@ -62,11 +62,11 @@ namespace sight::modules::geometry::base
    @endcode
  *
  * @subsection In In
- * - \b pointMatrix [sight::data::TransformationMatrix3D]: point transformation matrix.
+ * - \b pointMatrix [sight::data::Matrix4]: point transformation matrix.
  * - \b landmark [sight::data::Landmarks]: landmark.
  *
  * @subsection In-Out In-Out
- * - \b pointToLandmarkMatrix [sight::data::TransformationMatrix3D]: point to landmark transformation matrix
+ * - \b pointToLandmarkMatrix [sight::data::Matrix4]: point to landmark transformation matrix
  * - \b distanceText [sight::data::String]: string containing the distance
  *
  * @subsection Configuration Configuration

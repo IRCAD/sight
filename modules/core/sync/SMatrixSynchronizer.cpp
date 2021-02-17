@@ -32,15 +32,15 @@
 #include <core/tools/Object.hpp>
 
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/timeline/Buffer.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
 fwServicesRegisterMacro(::sight::service::ISynchronizer, sight::modules::sync::SMatrixSynchronizer,
-                        ::sight::data::TransformationMatrix3D)
+                        ::sight::data::Matrix4)
 
 // ----------------------------------------------------------------------------
 
@@ -82,8 +82,8 @@ void SMatrixSynchronizer::stopping()
 
 void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestamp)
 {
-    data::TransformationMatrix3D::sptr matrix3D = this->getInOut< data::TransformationMatrix3D >("matrix");
-    data::MatrixTL::csptr matrixTL              = this->getInput< data::MatrixTL >("TL");
+    data::Matrix4::sptr matrix3D   = this->getInOut< data::Matrix4 >("matrix");
+    data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >("TL");
 
     if (timestamp > m_lastTimestamp)
     {

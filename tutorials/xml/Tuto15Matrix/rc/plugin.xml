@@ -14,13 +14,13 @@
         <!-- Mesh object associated to the uid 'mesh' -->
         <object uid="mesh"              type="::sight::data::Mesh" />
         <!-- Matrix object associated to the uid 'matrix' -->
-        <object uid="matrix"            type="::sight::data::TransformationMatrix3D" />
+        <object uid="matrix"            type="::sight::data::Matrix4" />
         <!-- Translation matrix object associated to the uid 'translationMatrix' -->
-        <object uid="translationMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="translationMatrix" type="::sight::data::Matrix4" />
         <!-- Rotation matrix object associated to the uid 'rotationMatrix' -->
-        <object uid="rotationMatrix"    type="::sight::data::TransformationMatrix3D" />
-        <object uid="transRotMatrix"    type="::sight::data::TransformationMatrix3D" />
-        <object uid="rotTransMatrix"    type="::sight::data::TransformationMatrix3D" />
+        <object uid="rotationMatrix"    type="::sight::data::Matrix4" />
+        <object uid="transRotMatrix"    type="::sight::data::Matrix4" />
+        <object uid="rotTransMatrix"    type="::sight::data::Matrix4" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -154,8 +154,8 @@
 
         <!--
             Defines transform adaptors:
-            This adaptor works on a ::sight::data::TransformationMatrix3D and manages a vtkTransform. When
-            the ::sight::data::TransformationMatrix3D is modified, it updates the vtkTransform, and vice
+            This adaptor works on a ::sight::data::Matrix4 and manages a vtkTransform. When
+            the ::sight::data::Matrix4 is modified, it updates the vtkTransform, and vice
             versa.
         -->
         <service uid="matrix1Adp" type="::sight::modules::viz::ogre::adaptor::STransform" autoConnect="yes" >

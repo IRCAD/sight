@@ -24,7 +24,7 @@
 
 #include "data/tools/thread/RegionThreader.hpp"
 
-#include "geometry/data/TransformationMatrix3D.hpp"
+#include "geometry/data/Matrix4.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/tools/NumericRoundCast.hxx>
@@ -470,7 +470,7 @@ void Mesh::shakePoint(sight::data::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 void Mesh::transform( sight::data::Mesh::csptr inMesh, sight::data::Mesh::sptr outMesh,
-                      sight::data::TransformationMatrix3D::csptr t )
+                      sight::data::Matrix4::csptr t )
 {
     const auto inDumpLock  = inMesh->lock();
     const auto outDumpLock = outMesh->lock();
@@ -532,7 +532,7 @@ void Mesh::transform( sight::data::Mesh::csptr inMesh, sight::data::Mesh::sptr o
 
 //------------------------------------------------------------------------------
 
-void Mesh::transform( sight::data::Mesh::sptr mesh, sight::data::TransformationMatrix3D::csptr t )
+void Mesh::transform( sight::data::Mesh::sptr mesh, sight::data::Matrix4::csptr t )
 {
     Mesh::transform(mesh, mesh, t);
 }

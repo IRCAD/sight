@@ -26,16 +26,16 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 namespace sight::modules::filter::image
 {
@@ -90,8 +90,8 @@ void SImageCenter::updating()
         return;
     }
 
-    data::TransformationMatrix3D::sptr matrix =
-        this->getInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    data::Matrix4::sptr matrix =
+        this->getInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
 
     SLM_ASSERT("Missing matrix '"+ s_TRANSFORM_INOUT +"'", matrix);
 
@@ -124,8 +124,8 @@ void SImageCenter::updating()
 
     // output the translation matrix
 
-    auto sig = matrix->signal< data::TransformationMatrix3D::ModifiedSignalType >
-                   (data::TransformationMatrix3D::s_MODIFIED_SIG);
+    auto sig = matrix->signal< data::Matrix4::ModifiedSignalType >
+                   (data::Matrix4::s_MODIFIED_SIG);
 
     sig->asyncEmit();
 

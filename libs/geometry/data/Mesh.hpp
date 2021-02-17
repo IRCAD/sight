@@ -28,7 +28,7 @@
 #include <core/base.hpp>
 #include <core/data/Mesh.hpp>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::geometry::data
 {
@@ -129,10 +129,10 @@ public:
 
     /// Apply a transformation 4x4 from an input mesh to an output mesh
     DATA_API static void transform(sight::data::Mesh::csptr inMesh, sight::data::Mesh::sptr outMesh,
-                                   sight::data::TransformationMatrix3D::csptr t );
+                                   sight::data::Matrix4::csptr t );
 
     /// Apply a transformation 4x4 on a mesh
-    DATA_API static void transform( sight::data::Mesh::sptr mesh, sight::data::TransformationMatrix3D::csptr t );
+    DATA_API static void transform( sight::data::Mesh::sptr mesh, sight::data::Matrix4::csptr t );
 
     /**
      * @brief Colorize the mesh points with the given color

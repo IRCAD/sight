@@ -29,7 +29,7 @@
 
 #include <utestData/Data.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 #include <geometry/vision/helper.hpp>
 
 #include <opencv2/core.hpp>
@@ -292,8 +292,8 @@ void helperTest::toolCalibrationBasic()
     const std::uint8_t nbMatrices            = 34;
     sight::data::Vector::sptr matricesVector = sight::data::Vector::New();
 
-    sight::data::TransformationMatrix3D::sptr resCenterMatrix    = sight::data::TransformationMatrix3D::New();
-    sight::data::TransformationMatrix3D::sptr resTransformMatrix = sight::data::TransformationMatrix3D::New();
+    sight::data::Matrix4::sptr resCenterMatrix    = sight::data::Matrix4::New();
+    sight::data::Matrix4::sptr resTransformMatrix = sight::data::Matrix4::New();
 
     const ::glm::dvec3 center(0., 0., 0.);
     const double radius = 18;
@@ -318,7 +318,7 @@ void helperTest::toolCalibrationBasic()
 
         matrix = ::glm::translate(matrix, translation);
 
-        auto mat = sight::data::TransformationMatrix3D::New();
+        auto mat = sight::data::Matrix4::New();
         geometry::data::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);
@@ -350,8 +350,8 @@ void helperTest::toolCalibration()
     const std::uint8_t nbMatrices            = 46;
     sight::data::Vector::sptr matricesVector = sight::data::Vector::New();
 
-    sight::data::TransformationMatrix3D::sptr resCenterMatrix    = sight::data::TransformationMatrix3D::New();
-    sight::data::TransformationMatrix3D::sptr resTransformMatrix = sight::data::TransformationMatrix3D::New();
+    sight::data::Matrix4::sptr resCenterMatrix    = sight::data::Matrix4::New();
+    sight::data::Matrix4::sptr resTransformMatrix = sight::data::Matrix4::New();
 
     const ::glm::dvec3 center(36., 52., -530.);
     const ::glm::dvec3 translation(-459.45, 46.6, -88.54);
@@ -373,7 +373,7 @@ void helperTest::toolCalibration()
         matrix              = ::glm::rotate(matrix, angle, axis);
         matrix              = ::glm::translate(matrix, translation);
 
-        sight::data::TransformationMatrix3D::sptr mat = sight::data::TransformationMatrix3D::New();
+        sight::data::Matrix4::sptr mat = sight::data::Matrix4::New();
         geometry::data::setTF3DFromMatrix(mat, matrix);
 
         matricesVector->getContainer().push_back(mat);

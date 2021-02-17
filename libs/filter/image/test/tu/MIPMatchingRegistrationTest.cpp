@@ -27,8 +27,8 @@
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
+#include <data/Matrix4.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -70,14 +70,14 @@ void MIPMatchingRegistrationTest::tearDown()
 
 void MIPMatchingRegistrationTest::identityTest()
 {
-    data::Image::csptr moving              = createSphereImage< ::std::uint16_t, 3>();
-    data::Image::csptr fixed               = data::Object::copy(moving);
-    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
+    data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
+    data::Image::csptr fixed  = data::Object::copy(moving);
+    data::Matrix4::sptr mat   = data::Matrix4::New();
 
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
-    params.transform = data::TransformationMatrix3D::New();
+    params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
 
@@ -95,7 +95,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     data::Image::csptr moving = createSphereImage< ::std::uint16_t, 3>();
     data::Image::sptr fixed   = data::Image::New();
 
-    data::TransformationMatrix3D::sptr transform = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr transform = data::Matrix4::New();
     transform->setCoefficient(0, 3, 4.);
     transform->setCoefficient(1, 3, 12.);
     transform->setCoefficient(2, 3, 7.);
@@ -105,7 +105,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
-    params.transform = data::TransformationMatrix3D::New();
+    params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)
@@ -130,7 +130,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{ 4., 19., 7. }};
-    data::TransformationMatrix3D::sptr transform = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr transform = data::Matrix4::New();
     transform->setCoefficient(0, 3, vTrans[0]);
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
@@ -167,7 +167,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;
     params.moving    = moving;
-    params.transform = data::TransformationMatrix3D::New();
+    params.transform = data::Matrix4::New();
     core::tools::Type type = moving->getType();
     core::tools::Dispatcher< core::tools::SupportedDispatcherTypes, RegistrationDispatch >::invoke( type, params );
     for(size_t i = 0; i < 3; ++i)

@@ -44,6 +44,7 @@
 #include "io/patch/structural/data/Material/V2ToV3.hpp"
 #include "io/patch/structural/data/Material/V3ToV4.hpp"
 #include "io/patch/structural/data/Material/V4ToV3.hpp"
+#include "io/patch/structural/data/Matrix4/V1ToV2.hpp"
 #include "io/patch/structural/data/Mesh/V1ToV2.hpp"
 #include "io/patch/structural/data/Mesh/V1ToV3.hpp"
 #include "io/patch/structural/data/Mesh/V2ToV3.hpp"
@@ -61,7 +62,6 @@
 #include "io/patch/structural/data/Study/V1ToFwMedDataStudyV1.hpp"
 #include "io/patch/structural/data/Study/V1ToV2.hpp"
 #include "io/patch/structural/data/Study/V2ToV1.hpp"
-#include "io/patch/structural/data/TransformationMatrix3D/V1ToV2.hpp"
 
 #include <io/atoms/patch/StructuralPatchDB.hpp>
 
@@ -91,7 +91,7 @@ struct runner
         structuralPatches->registerPatch(patch::structural::data::Mesh::V2ToV3::New());
         structuralPatches->registerPatch(patch::structural::data::Mesh::V3ToV4::New());
         structuralPatches->registerPatch(patch::structural::data::Mesh::V4ToV3::New());
-        structuralPatches->registerPatch(patch::structural::data::TransformationMatrix3D::V1ToV2::New());
+        structuralPatches->registerPatch(patch::structural::data::Matrix4::V1ToV2::New());
         structuralPatches->registerPatch(patch::structural::data::ActivitySeries::V1ToV2::New());
         structuralPatches->registerPatch(patch::structural::data::ActivitySeries::V2ToV1::New());
         structuralPatches->registerPatch(patch::structural::data::AttachmentSeries::V1ToV2::New());

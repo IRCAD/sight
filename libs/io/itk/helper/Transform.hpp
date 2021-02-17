@@ -24,7 +24,7 @@
 
 #include "io/itk/config.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <itkMatrix.h>
 
@@ -33,7 +33,7 @@ namespace sight::io::itk
 namespace helper
 {
 /**
- * @brief Helper class to convert Sight TransformationMatrix3D to itk Matrix and the other way around.
+ * @brief Helper class to convert Sight Matrix4 to itk Matrix and the other way around.
  */
 class IO_ITK_CLASS_API Transform
 {
@@ -42,18 +42,18 @@ public:
     typedef ::itk::Matrix< double, 4, 4> MatrixType;
     /**
      * @brief convert a Sight transformation to itk
-     * @param _inTrf input data::TransformationMatrix3D
+     * @param _inTrf input data::Matrix4
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    IO_ITK_API static MatrixType convertToITK(const data::TransformationMatrix3D::csptr& _inTrf);
+    IO_ITK_API static MatrixType convertToITK(const data::Matrix4::csptr& _inTrf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a Sight one
      * @param _inTrf Const Pointer to a itk::Transform<double, 4,4>
-     * @param _outTrf output data::TransformationMatrix3D (needs to be allocated before)
+     * @param _outTrf output data::Matrix4 (needs to be allocated before)
      */
     IO_ITK_API static void convertFromITK(const MatrixType& _inTrf,
-                                          data::TransformationMatrix3D::sptr& _outTrf );
+                                          data::Matrix4::sptr& _outTrf );
 };
 
 }// namespace helper

@@ -28,13 +28,13 @@
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 #include <data/MarkerTL.hpp>
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -313,7 +313,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                     ++indexTL;
                 }
 
-                data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(
+                data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(
                     s_MATRIX_INOUT, markerIndex);
                 SLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
                 if(markers.empty())
@@ -322,7 +322,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                 }
                 else
                 {
-                    data::TransformationMatrix3D::TMCoefArray matrixValues;
+                    data::Matrix4::TMCoefArray matrixValues;
                     ::cv::Matx44f Rt;
                     if(markers.size() == 1)
                     {
@@ -398,7 +398,7 @@ void SPoseFrom2d::initialize()
         // set extrinsic matrix only if stereo.
         if (idx == 1)
         {
-            auto extrinsicMatrix = this->getInput< data::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
+            auto extrinsicMatrix = this->getInput< data::Matrix4 >(s_EXTRINSIC_INPUT);
             data::mt::ObjectReadLock matrixLock(extrinsicMatrix);
 
             SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);

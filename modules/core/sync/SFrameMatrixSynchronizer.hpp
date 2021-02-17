@@ -42,7 +42,7 @@ class MatrixTL;
 namespace sight::data
 {
 class Image;
-class TransformationMatrix3D;
+class Matrix4;
 }
 
 namespace sight::modules::sync
@@ -110,7 +110,7 @@ namespace sight::modules::sync
  * - \b image [sight::data::Image]: defines the images where to extract the image. The number of \b image keys must
  * match
  * the number of \b frameTL keys.
- * - \b matricesX [sight::data::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
+ * - \b matricesX [sight::data::Matrix4]: defines the matrices where to extract the matrices from the
  * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration
@@ -219,7 +219,7 @@ private:
     /// Contains the output images.
     std::vector< data::mt::weak_ptr< data::Image > > m_images;
     /// registers matrices with associated timeline key
-    std::vector<std::vector< data::mt::weak_ptr< data::TransformationMatrix3D> > > m_matrices;
+    std::vector<std::vector< data::mt::weak_ptr< data::Matrix4> > > m_matrices;
     /// registers index of matrices that need to send their status through signals
     std::vector<std::vector<int> > m_sendMatricesStatus;
 

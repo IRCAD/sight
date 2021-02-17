@@ -155,7 +155,7 @@ void SCamera::starting()
                 data::Camera::sptr camera = data::Camera::New();
                 const size_t index        = cameraSeries->getNumberOfCameras();
                 cameraSeries->addCamera(camera);
-                cameraSeries->setExtrinsicMatrix(index, data::TransformationMatrix3D::New());
+                cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
                 const auto sig = cameraSeries->signal< data::CameraSeries::AddedCameraSignalType >(
                     data::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);

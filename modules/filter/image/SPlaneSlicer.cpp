@@ -160,7 +160,7 @@ service::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
     connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT);
     connections.push(s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_EXTENT_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_AXES_IN, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_AXES_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -208,7 +208,7 @@ void SPlaneSlicer::setReslicerExtent()
 
 void SPlaneSlicer::setReslicerAxes()
 {
-    data::TransformationMatrix3D::csptr axes = this->getInput< data::TransformationMatrix3D>(s_AXES_IN);
+    data::Matrix4::csptr axes = this->getInput< data::Matrix4>(s_AXES_IN);
 
     SLM_ASSERT("No axes found.", axes);
 

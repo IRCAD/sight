@@ -28,9 +28,9 @@
 #include "filter/image/Resampler.hpp"
 
 #include <data/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -58,7 +58,7 @@ struct RegistrationDispatch {
     struct Parameters {
         data::Image::csptr fixed;
         data::Image::csptr moving;
-        data::TransformationMatrix3D::sptr transform;
+        data::Matrix4::sptr transform;
     };
 
     //------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ public:
      */
     static void registerImage(const data::Image::csptr& _moving,
                               const data::Image::csptr& _fixed,
-                              data::TransformationMatrix3D::sptr& _transform);
+                              data::Matrix4::sptr& _transform);
 
 private:
     enum class Direction : unsigned int { X = 0, Y = 1, Z = 2 };
@@ -127,7 +127,7 @@ private:
 template <class PIX>
 void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _moving,
                                                  const data::Image::csptr& _fixed,
-                                                 data::TransformationMatrix3D::sptr& _transform)
+                                                 data::Matrix4::sptr& _transform)
 {
     const double fixedVoxelVolume = std::accumulate(_fixed->getSpacing2().begin(), _fixed->getSpacing2().end(), 1.,
                                                     std::multiplies<double>());
@@ -141,7 +141,7 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
     // Resample the image with the smallest voxels to match the other's voxel size.
     if(fixedVoxelVolume < movingVoxelVolume)
     {
-        auto inverseTransform = data::TransformationMatrix3D::New();
+        auto inverseTransform = data::Matrix4::New();
         geometry::data::invert(_transform, inverseTransform);
 
         fixed = filter::image::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing2());
@@ -164,7 +164,7 @@ void MIPMatchingRegistration<PIX>::registerImage(const data::Image::csptr& _movi
 
     const std::array<double, 3> res {{ transY[0], transX[1], transY[1] }};
 
-    data::TransformationMatrix3D::sptr translation = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr translation = data::Matrix4::New();
     for(std::uint8_t i = 0; i != 3; ++i)
     {
         translation->setCoefficient(i, 3, res[i]);

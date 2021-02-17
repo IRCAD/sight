@@ -30,10 +30,10 @@
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <service/IService.hpp>
@@ -179,7 +179,7 @@ void SOpenCVIntrinsic::updating()
 
             for(size_t index = 0; index < rvecs.size(); ++index)
             {
-                data::TransformationMatrix3D::sptr mat3D = data::TransformationMatrix3D::New();
+                data::Matrix4::sptr mat3D = data::Matrix4::New();
 
                 io::opencv::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 

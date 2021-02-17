@@ -29,10 +29,10 @@ namespace sight::data
 namespace ut
 {
 
-class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
+class Matrix4Test : public CPPUNIT_NS::TestFixture
 {
 private:
-    CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
+    CPPUNIT_TEST_SUITE( Matrix4Test );
     CPPUNIT_TEST( getterSetterByCoef );
     CPPUNIT_TEST( getterSetterByArray );
     CPPUNIT_TEST( getterSetterByMatrix );

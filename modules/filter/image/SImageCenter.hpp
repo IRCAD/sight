@@ -47,7 +47,7 @@ namespace sight::modules::filter::image
  * - \b image [sight::data::Image]: Input image on which the center will be computed.
  *
  * @subsection In-Out In-Out
- * - \b transform [sight::data::TransformationMatrix3D]: Will be first reset to identity and then will contain
+ * - \b transform [sight::data::Matrix4]: Will be first reset to identity and then will contain
  * translation
  * from world origin(0,0,0) to the image center (in mm).
  *

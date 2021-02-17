@@ -20,19 +20,19 @@
  *
  ***********************************************************************/
 
-#include "TransformationMatrix3DTest.hpp"
+#include "Matrix4Test.hpp"
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <sstream>
 #include <cmath>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( sight::geometry::data::ut::TransformationMatrix3DTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::geometry::data::ut::Matrix4Test );
 
 namespace sight::geometry::data
 {
@@ -41,51 +41,51 @@ namespace ut
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::setUp()
+void Matrix4Test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::tearDown()
+void Matrix4Test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::identityMatrixTest()
+void Matrix4Test::identityMatrixTest()
 {
-    auto tm1 = sight::data::TransformationMatrix3D::New();
-    auto tm2 = sight::data::TransformationMatrix3D::New();
-    auto tm3 = sight::data::TransformationMatrix3D::New();
-    auto tm4 = sight::data::TransformationMatrix3D::New();
+    auto tm1 = sight::data::Matrix4::New();
+    auto tm2 = sight::data::Matrix4::New();
+    auto tm3 = sight::data::Matrix4::New();
+    auto tm4 = sight::data::Matrix4::New();
 
     auto p1 = sight::data::Point::New(1.0f, 2.3f, 5.1f);
     auto p2 = sight::data::Point::New();
 
     bool shouldBeTrue = geometry::data::isIdentity(tm1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("TransformationMatrix3D should be identity", true, shouldBeTrue);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
     // dummy precision
     shouldBeTrue = geometry::data::isIdentity(tm1, 1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("TransformationMatrix3D should be identity", true, shouldBeTrue);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
     // high precision
     shouldBeTrue = geometry::data::isIdentity(tm1, 1e-17);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("TransformationMatrix3D should be identity", true, shouldBeTrue);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
 
     tm1->setCoefficient(0, 2, 3.4);
     tm1->setCoefficient(1, 3, 18);
 
     bool shouldBeFalse = geometry::data::isIdentity(tm1);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("TransformationMatrix3D should not be identity", false, shouldBeFalse);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
     //Test with dummy precision
     shouldBeTrue = geometry::data::isIdentity(tm1, 20);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("TransformationMatrix3D should be identity with a precision of 20", true,
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity with a precision of 20", true,
                                  shouldBeTrue);
     //Test with nice precision
     shouldBeFalse = geometry::data::isIdentity(tm1, 1e-14);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("TransformationMatrix3D should not be identity", false, shouldBeFalse);
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);
@@ -136,16 +136,16 @@ void TransformationMatrix3DTest::identityMatrixTest()
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::matrixTest()
+void Matrix4Test::matrixTest()
 {
-    auto tm1 = sight::data::TransformationMatrix3D::New();
-    auto tm2 = sight::data::TransformationMatrix3D::New();
-    auto tm3 = sight::data::TransformationMatrix3D::New();
-    auto tm4 = sight::data::TransformationMatrix3D::New();
+    auto tm1 = sight::data::Matrix4::New();
+    auto tm2 = sight::data::Matrix4::New();
+    auto tm3 = sight::data::Matrix4::New();
+    auto tm4 = sight::data::Matrix4::New();
 
     geometry::data::identity(tm2);
 
-    sight::data::TransformationMatrix3D::TMCoefArray tm1Coefs;
+    sight::data::Matrix4::TMCoefArray tm1Coefs;
     for (int i = 0; i < 16; ++i)
     {
         tm1Coefs[i] = i+1;
@@ -195,10 +195,10 @@ void TransformationMatrix3DTest::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5,  tm4->getCoefficient(3, 2), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4->getCoefficient(3, 3), 0.00001);
 
-    sight::data::TransformationMatrix3D::TMCoefArray tm2Coefs = { 3.1, 1., -7.9689, 4.9,
-                                                                  5., -21., -1.3646, 14.4,
-                                                                  9., -7.2, -23.36, 79.04,
-                                                                  0.1, -3., -1.234, -49.94 };
+    sight::data::Matrix4::TMCoefArray tm2Coefs = { 3.1, 1., -7.9689, 4.9,
+                                                   5., -21., -1.3646, 14.4,
+                                                   9., -7.2, -23.36, 79.04,
+                                                   0.1, -3., -1.234, -49.94 };
     tm2->setCoefficients(tm2Coefs);
     geometry::data::invert(tm2, tm4);
 
@@ -239,14 +239,14 @@ void TransformationMatrix3DTest::matrixTest()
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::glmGetterSetterTest()
+void Matrix4Test::glmGetterSetterTest()
 {
-    sight::data::TransformationMatrix3D::TMCoefArray coefs = { 2, -2, .3, .12,
-                                                               4, 8.9, 4.2, 1.2,
-                                                               7.8, -12.1, 2.3, 1.2,
-                                                               .3, 1.21, -3.1, 1.2};
+    sight::data::Matrix4::TMCoefArray coefs = { 2, -2, .3, .12,
+                                                4, 8.9, 4.2, 1.2,
+                                                7.8, -12.1, 2.3, 1.2,
+                                                .3, 1.21, -3.1, 1.2};
 
-    auto mat = sight::data::TransformationMatrix3D::New();
+    auto mat = sight::data::Matrix4::New();
     mat->setCoefficients(coefs);
 
     // Test getter
@@ -264,7 +264,7 @@ void TransformationMatrix3DTest::glmGetterSetterTest()
     glmMat = geometry::data::getMatrixFromTF3D(mat);
 #endif
 
-    // TransformationMatrix3D is stored row-major
+    // Matrix4 is stored row-major
     // glm matrices are stored column-major
     for (size_t i = 0; i < 4; ++i)
     {

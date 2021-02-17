@@ -98,7 +98,7 @@ void STransform::starting()
 void STransform::updating()
 {
     {
-        const auto transform = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+        const auto transform = this->getLockedInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
         m_ogreTransform = ::Ogre::Affine3(sight::viz::ogre::Utils::convertTM3DToOgreMx(transform.get_shared()));
     }
 

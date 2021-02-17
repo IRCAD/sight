@@ -22,8 +22,8 @@
 
 #include "SToolCalibration.hpp"
 
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -99,10 +99,10 @@ void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
 
     data::mt::ObjectReadLock lock(matricesVector);
 
-    data::TransformationMatrix3D::sptr calibrationMatrix = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr calibrationMatrix = data::Matrix4::New();
     this->setOutput(s_MATRIX_CALIBRATION_OUTPUT, calibrationMatrix);
 
-    data::TransformationMatrix3D::sptr centerMatrixNoRot = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr centerMatrixNoRot = data::Matrix4::New();
 
     geometry::vision::helper::calibratePointingTool(matricesVector, calibrationMatrix, centerMatrixNoRot);
 

@@ -25,7 +25,7 @@
 #include "filter/image/config.hpp"
 
 #include <data/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::filter::image
 {

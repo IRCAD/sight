@@ -26,7 +26,7 @@
 #include "filter/image/Metric.hpp"
 
 #include <data/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <itkEuler3DTransform.h>
 #include <itkImageRegistrationMethodv4.h>
@@ -69,7 +69,7 @@ public:
      */
     FILTER_IMAGE_API void registerImage(const data::Image::csptr& _target,
                                         const data::Image::csptr& _reference,
-                                        const data::TransformationMatrix3D::sptr& _trf,
+                                        const data::Matrix4::sptr& _trf,
                                         MetricType _metric,
                                         const MultiResolutionParametersType& _multiResolutionParameters,
                                         RealType _samplingPercentage    = 1.0,
@@ -101,7 +101,7 @@ public:
     FILTER_IMAGE_API ::itk::SizeValueType getCurrentLevel() const;
 
     /// Current registration result.
-    FILTER_IMAGE_API void getCurrentMatrix(const data::TransformationMatrix3D::sptr& _trf) const;
+    FILTER_IMAGE_API void getCurrentMatrix(const data::Matrix4::sptr& _trf) const;
 
 private:
     typedef typename ::itk::Euler3DTransform< RealType > TransformType;
@@ -115,7 +115,7 @@ private:
 
     bool m_invert { false };
 
-    void convertToF4sMatrix(const TransformType* _itkMat, const data::TransformationMatrix3D::sptr& _f4sMat) const;
+    void convertToF4sMatrix(const TransformType* _itkMat, const data::Matrix4::sptr& _f4sMat) const;
 
     static double computeVolume(const data::Image::csptr& _img);
 };

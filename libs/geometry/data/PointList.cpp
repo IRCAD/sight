@@ -28,7 +28,7 @@
 #include <glm/geometric.hpp>
 #include <glm/vec3.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <list>
 
@@ -81,7 +81,7 @@ PointList::computeDistance(::sight::data::PointList::sptr _pointList1,
 //------------------------------------------------------------------------------
 
 void PointList::transform(::sight::data::PointList::sptr& _pointList,
-                          const ::sight::data::TransformationMatrix3D::csptr& _matrix)
+                          const ::sight::data::Matrix4::csptr& _matrix)
 {
     ::sight::data::PointList::PointListContainer points = _pointList->getPoints();
     const size_t size = points.size();

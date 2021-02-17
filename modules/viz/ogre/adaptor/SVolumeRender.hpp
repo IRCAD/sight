@@ -94,7 +94,7 @@ namespace sight::modules::viz::ogre::adaptor
  * - \b image [sight::data::Image]: input volume data.
  * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
- * - \b clippingMatrix [sight::data::TransformationMatrix3D]: matrix used to clip the volume.
+ * - \b clippingMatrix [sight::data::Matrix4]: matrix used to clip the volume.
  *
  * @subsection Configuration Configuration
  * - \b layer (mandatory, string): id of the layer where this adaptor applies.

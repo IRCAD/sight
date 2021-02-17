@@ -36,7 +36,7 @@
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -210,7 +210,7 @@ void SOrganTransformation::refresh()
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::notitfyTransformationMatrix(data::TransformationMatrix3D::sptr aTransMat)
+void SOrganTransformation::notitfyTransformationMatrix(data::Matrix4::sptr aTransMat)
 {
     auto sig = aTransMat->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
@@ -261,8 +261,8 @@ void SOrganTransformation::onResetClick()
     {
         data::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
-        data::TransformationMatrix3D::sptr pTmpMat =
-            pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
+        data::Matrix4::sptr pTmpMat =
+            pTmpTrMesh->getField< data::Matrix4>( s_MATRIX_FIELD_NAME );
         if (pTmpMat)
         {
             geometry::data::identity(pTmpMat);
@@ -283,12 +283,12 @@ void SOrganTransformation::onSaveClick()
     {
         for(data::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
-            data::Mesh::sptr pTmpTrMesh                = rec->getMesh();
-            data::TransformationMatrix3D::sptr pTmpMat =
-                pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
+            data::Mesh::sptr pTmpTrMesh = rec->getMesh();
+            data::Matrix4::sptr pTmpMat =
+                pTmpTrMesh->getField< data::Matrix4>( s_MATRIX_FIELD_NAME );
             if (pTmpMat)
             {
-                data::TransformationMatrix3D::sptr pCpyTmpMat;
+                data::Matrix4::sptr pCpyTmpMat;
                 pCpyTmpMat                  = data::Object::copy(pTmpMat);
                 matMap[pTmpTrMesh->getID()] = pCpyTmpMat;
             }
@@ -318,8 +318,8 @@ void SOrganTransformation::onLoadClick()
             data::Mesh::sptr pTmpTrMesh = rec->getMesh();
             if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
             {
-                data::TransformationMatrix3D::sptr pTmpMat =
-                    pTmpTrMesh->getField< data::TransformationMatrix3D>( s_MATRIX_FIELD_NAME );
+                data::Matrix4::sptr pTmpMat =
+                    pTmpTrMesh->getField< data::Matrix4>( s_MATRIX_FIELD_NAME );
                 if (pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
@@ -385,7 +385,7 @@ void SOrganTransformation::addMeshTransform()
         if (!mesh->getField( s_MATRIX_FIELD_NAME ))
         {
             data::tools::helper::Field fieldHelper(mesh);
-            fieldHelper.setField(s_MATRIX_FIELD_NAME, data::TransformationMatrix3D::New());
+            fieldHelper.setField(s_MATRIX_FIELD_NAME, data::Matrix4::New());
             fieldHelper.notify();
         }
     }

@@ -54,7 +54,7 @@ namespace sight::modules::geometry::vision
  * - \b pointList3d [sight::data::PointList]: list of corresponding 3d points clicked on 3d model
  * - \b calibration [sight::data::Camera]: camera parameters (intrinsic & distorison coefficients)
  * @subsection In-Out In-Out:
- * - \b matrix [sight::data::TransformationMatrix3D]: output registration matrix
+ * - \b matrix [sight::data::Matrix4]: output registration matrix
  * (updated when calling 'computeRegistration' slot), in-out is used since matrix is not created in this service.
  * @subsection Configuration Configuration:
  *      Values are "top_left" or "center" (default: "top_left")

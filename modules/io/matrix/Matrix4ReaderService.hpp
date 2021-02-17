@@ -32,25 +32,25 @@ namespace sight::modules::io::matrix
 {
 
 /**
- * @brief This service read a data::TransformationMatrix3D from a .trf file.
+ * @brief This service read a data::Matrix4 from a .trf file.
  *
  * This format is basic: an ascii file which contains matrix 4x4 values.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::matrix::TransformationMatrix3DReaderService">
+   <service type="::sight::modules::io::matrix::Matrix4ReaderService">
        <inout key="data" uid="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::TransformationMatrix3D]: matrix to read.
+ * - \b data [sight::data::Matrix4]: matrix to read.
  */
-class MODULE_IO_MATRIX_CLASS_API TransformationMatrix3DReaderService : public sight::io::base::service::IReader
+class MODULE_IO_MATRIX_CLASS_API Matrix4ReaderService : public sight::io::base::service::IReader
 {
 
 public:
-    fwCoreServiceMacro(TransformationMatrix3DReaderService, sight::io::base::service::IReader)
+    fwCoreServiceMacro(Matrix4ReaderService, sight::io::base::service::IReader)
 
     /// Super class of reader services
     typedef sight::io::base::service::IReader SuperClass;
@@ -115,7 +115,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( service::IService )
      *
      * This method is used to update the service.
-     * The transformation matrix is read with the reader io::base::reader::TransformationMatrix3DReader.
+     * The transformation matrix is read with the reader io::base::reader::Matrix4Reader.
      * Notify reading.
      */
     MODULE_IO_MATRIX_API void updating() override;

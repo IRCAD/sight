@@ -25,11 +25,11 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 #include <data/Landmarks.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
@@ -122,7 +122,7 @@ void STargeting::updating()
 
     // Get the input matrix for the needle tip
     const auto matrix =
-        this->getLockedInput< data::TransformationMatrix3D >( s_MATRIX_INPUT );
+        this->getLockedInput< data::Matrix4 >( s_MATRIX_INPUT );
     SLM_ASSERT("Input \"matrix\" is missing.", matrix);
 
     const ::glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());

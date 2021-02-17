@@ -27,11 +27,11 @@
 
 #include <data/Camera.hpp>
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -149,8 +149,8 @@ void SChessboardReprojection::updating()
 
     if (camera->getIsCalibrated() && !detectedPointsF.empty())
     {
-        data::TransformationMatrix3D::csptr transform =
-            this->getInput< data::TransformationMatrix3D >(s_TRANSFORM_INPUT);
+        data::Matrix4::csptr transform =
+            this->getInput< data::Matrix4 >(s_TRANSFORM_INPUT);
         SLM_ASSERT("Missing 'transform'.", transform);
         data::mt::ObjectReadLock trfLock(transform);
 
@@ -317,7 +317,7 @@ void SChessboardReprojection::updateChessboardSize()
 service::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_DETECTED_CHESSBOARD_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);

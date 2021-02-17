@@ -59,7 +59,7 @@ void CameraSeriesTest::propertiesTest()
 {
     data::CameraSeries::sptr series = data::CameraSeries::New();
 
-    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr mat = data::Matrix4::New();
     for (size_t i = 0; i < 4; ++i)
     {
         for (size_t j = 0; j < 4; ++j)

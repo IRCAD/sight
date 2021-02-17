@@ -54,7 +54,7 @@ namespace sight::modules::filter::image
  * matrix.
  *
  * @subsection In-Out In-Out
- * - \b optimalMatrix [sight::data::TransformationMatrix3D]: The optimal matrix.
+ * - \b optimalMatrix [sight::data::Matrix4]: The optimal matrix.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public service::IOperator
 {

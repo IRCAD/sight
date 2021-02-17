@@ -20,18 +20,18 @@
  *
  ***********************************************************************/
 
-#include "modules/io/matrix/TransformationMatrix3DReaderService.hpp"
+#include "modules/io/matrix/Matrix4ReaderService.hpp"
 
 #include <core/base.hpp>
 #include <core/com/Signal.hxx>
 
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
-#include <io/base/reader/TransformationMatrix3DReader.hpp>
+#include <io/base/reader/Matrix4Reader.hpp>
 #include <io/base/service/IReader.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -46,27 +46,27 @@ namespace sight::modules::io::matrix
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::sight::io::base::service::IReader,
-                         ::sight::modules::io::matrix::TransformationMatrix3DReaderService,
-                         data::TransformationMatrix3D )
+                         ::sight::modules::io::matrix::Matrix4ReaderService,
+                         data::Matrix4 )
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType TransformationMatrix3DReaderService::getIOPathType() const
+sight::io::base::service::IOPathType Matrix4ReaderService::getIOPathType() const
 {
     return sight::io::base::service::FILE;
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::info(std::ostream& _sstream )
+void Matrix4ReaderService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
-    _sstream << std::endl << " TransformationMatrix3D object reader";
+    _sstream << std::endl << " Matrix4 object reader";
 }
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExtensions()
+std::vector< std::string > Matrix4ReaderService::getSupportedExtensions()
 {
     std::vector< std::string > extensions;
     extensions.push_back(".trf");
@@ -75,27 +75,27 @@ std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExte
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::starting( )
+void Matrix4ReaderService::starting( )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::configuring()
+void Matrix4ReaderService::configuring()
 {
     sight::io::base::service::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::configureWithIHM()
+void Matrix4ReaderService::configureWithIHM()
 {
     this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::openLocationDialog()
+void Matrix4ReaderService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath;
 
@@ -121,23 +121,23 @@ void TransformationMatrix3DReaderService::openLocationDialog()
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::stopping()
+void Matrix4ReaderService::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::updating()
+void Matrix4ReaderService::updating()
 {
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        data::TransformationMatrix3D::sptr matrix =
-            this->getInOut< data::TransformationMatrix3D >(sight::io::base::service::s_DATA_KEY);
+        data::Matrix4::sptr matrix =
+            this->getInOut< data::Matrix4 >(sight::io::base::service::s_DATA_KEY);
         SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
 
-        sight::io::base::reader::TransformationMatrix3DReader::sptr reader =
-            sight::io::base::reader::TransformationMatrix3DReader::New();
+        sight::io::base::reader::Matrix4Reader::sptr reader =
+            sight::io::base::reader::Matrix4Reader::New();
         reader->setObject( matrix );
         reader->setFile(this->getFile());
         reader->read();

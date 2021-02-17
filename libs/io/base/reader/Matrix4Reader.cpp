@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "io/base/reader/TransformationMatrix3DReader.hpp"
+#include "io/base/reader/Matrix4Reader.hpp"
 
 #include "io/base/reader/registry/macros.hpp"
 
@@ -30,27 +30,27 @@
 #include <fstream>
 #include <iostream>
 
-fwDataIOReaderRegisterMacro( ::sight::io::base::reader::TransformationMatrix3DReader );
+fwDataIOReaderRegisterMacro( ::sight::io::base::reader::Matrix4Reader );
 
 namespace sight::io::base
 {
 namespace reader
 {
 
-TransformationMatrix3DReader::TransformationMatrix3DReader(io::base::reader::IObjectReader::Key) :
+Matrix4Reader::Matrix4Reader(io::base::reader::IObjectReader::Key) :
     data::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3DReader::~TransformationMatrix3DReader()
+Matrix4Reader::~Matrix4Reader()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DReader::read()
+void Matrix4Reader::read()
 {
     assert( ::std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
     std::filesystem::path file =
@@ -76,7 +76,7 @@ void TransformationMatrix3DReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string TransformationMatrix3DReader::extension()
+std::string Matrix4Reader::extension()
 {
     return (".trf");
 }

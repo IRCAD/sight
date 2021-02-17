@@ -34,8 +34,8 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 #include <data/location/SingleFile.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -303,7 +303,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
         if (!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
         {
             // copy device calibration into the camera series
-            data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
+            data::Matrix4::sptr matrix = data::Matrix4::New();
 
             const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
             const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();

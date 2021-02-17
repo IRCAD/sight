@@ -132,8 +132,8 @@ void SAutomaticRegistration::updating()
     data::mt::ObjectReadLock targetLock(target);
     data::mt::ObjectReadLock refLock(reference);
 
-    data::TransformationMatrix3D::sptr transform =
-        this->getInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    data::Matrix4::sptr transform =
+        this->getInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
 
     data::mt::ObjectWriteLock trfLock(transform);
 
@@ -190,8 +190,8 @@ void SAutomaticRegistration::updating()
                << std::endl;
     }
 
-    auto transfoModifiedSig = transform->signal< data::TransformationMatrix3D::ModifiedSignalType >
-                                  (data::TransformationMatrix3D::s_MODIFIED_SIG);
+    auto transfoModifiedSig = transform->signal< data::Matrix4::ModifiedSignalType >
+                                  (data::Matrix4::s_MODIFIED_SIG);
 
     std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
     size_t i = 0;
@@ -282,7 +282,7 @@ service::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections(
     connections.push(s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_REFERENCE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

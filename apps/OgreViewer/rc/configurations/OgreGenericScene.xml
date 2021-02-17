@@ -34,8 +34,8 @@
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
 
         <object uid="extrudedImage" type="::sight::data::Image" />
-        <object uid="clippingMatrix" type="::sight::data::TransformationMatrix3D" />
-        <object uid="identityMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="clippingMatrix" type="::sight::data::Matrix4" />
+        <object uid="identityMatrix" type="::sight::data::Matrix4" />
         <object uid="background" type="::sight::data::Image" />
         <object uid="border" type="::sight::data::Color" >
             <value>#2E3034</value>

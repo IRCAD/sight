@@ -29,9 +29,9 @@ namespace sight::io::opencv
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::TransformationMatrix3D::sptr& _dst)
+void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::Matrix4::sptr& _dst)
 {
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _dst);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _dst);
 
     for (std::uint8_t i = 0; i < 4; ++i)
     {
@@ -44,9 +44,9 @@ void Matrix::copyFromCv(const ::cv::Matx44d& _src, data::TransformationMatrix3D:
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, ::cv::Matx44d& _dst)
+void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44d& _dst)
 {
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _src);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _src);
 
     for (std::uint8_t i = 0; i < 4; ++i)
     {
@@ -60,9 +60,9 @@ void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, ::cv::Mat
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::TransformationMatrix3D::sptr& _dst)
+void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::Matrix4::sptr& _dst)
 {
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _dst);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _dst);
 
     for (std::uint8_t i = 0; i < 4; ++i)
     {
@@ -75,9 +75,9 @@ void Matrix::copyFromCv(const ::cv::Matx44f& _src, data::TransformationMatrix3D:
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, ::cv::Matx44f& _dst)
+void Matrix::copyToCv(const data::Matrix4::csptr& _src, ::cv::Matx44f& _dst)
 {
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _src);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _src);
 
     for (std::uint8_t i = 0; i < 4; ++i)
     {
@@ -90,14 +90,14 @@ void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, ::cv::Mat
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::TransformationMatrix3D::sptr& _dst)
+void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix4::sptr& _dst)
 {
     // Check validity of _rvec & _tvec.
     SLM_ASSERT("Rotation vector 'rvec' should be of size 1x3", _rvec.size().width == 1 && _rvec.size().height == 3);
     SLM_ASSERT("Rotation vector 'tvec' should be of size 1x3", _tvec.size().width == 1 && _tvec.size().height == 3);
     SLM_ASSERT("Could not convert opencv matrix with multi-channels", _rvec.channels() == 1 && _tvec.channels() == 1 );
     // Check that _dst has correctly been initialized.
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _dst);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _dst);
 
     SLM_WARN_IF("OpenCV matrices has non-double type but will be cast in 'double'.",
                 _rvec.type() != CV_64F || _tvec.type() != CV_64F );
@@ -122,10 +122,10 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Transf
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, cv::Mat& _rvec, cv::Mat& _tvec)
+void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _rvec, cv::Mat& _tvec)
 {
     // Check that _src is not null.
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _src);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _src);
 
     ::cv::Mat mat4x4;
     // reinitialize _R & _T.
@@ -145,12 +145,12 @@ void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, cv::Mat& 
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyFromCv(const cv::Mat& _src, data::TransformationMatrix3D::sptr& _dst)
+void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
 {
 
     SLM_ASSERT("Size of OpenCV matrix should be 4x4", _src.cols == 4 && _src.rows == 4);
     SLM_ASSERT("Could not convert opencv matrix with multi-channels", _src.channels() == 1 );
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _dst);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _dst);
 
     SLM_WARN_IF("OpenCV matrix has non-double type but will be cast in 'double'.",
                 _src.type() != CV_64F );
@@ -170,9 +170,9 @@ void Matrix::copyFromCv(const cv::Mat& _src, data::TransformationMatrix3D::sptr&
 
 //-----------------------------------------------------------------------------
 
-void Matrix::copyToCv(const data::TransformationMatrix3D::csptr& _src, cv::Mat& _dst)
+void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _dst)
 {
-    SLM_ASSERT("::sight::data::TransformationMatrix3D is null", _src);
+    SLM_ASSERT("::sight::data::Matrix4 is null", _src);
 
     // Reinitialize _dst.
     _dst = ::cv::Mat(4, 4, CV_64F);

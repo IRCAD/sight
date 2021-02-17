@@ -36,7 +36,7 @@
 #include <viz/ogre/helper/Shading.hpp>
 #include <viz/ogre/ogre.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -112,7 +112,7 @@ service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 
     connections.push( s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT );
-    connections.push( s_CLIPPING_MATRIX_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG,
+    connections.push( s_CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG,
                       s_UPDATE_CLIPPING_BOX_SLOT );
 
     return connections;
@@ -772,7 +772,7 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 
 void SVolumeRender::createWidget()
 {
-    const auto clippingMatrix = this->getLockedInOut< data::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = this->getLockedInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
 
     auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
 
@@ -907,7 +907,7 @@ void SVolumeRender::updateClippingBox()
         ::Ogre::Matrix4 clippingMx;
         {
             const auto clippingMatrix =
-                this->getLockedInOut< data::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+                this->getLockedInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
             clippingMx = sight::viz::ogre::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
         }
 
@@ -919,7 +919,7 @@ void SVolumeRender::updateClippingBox()
 
 void SVolumeRender::updateClippingTM3D()
 {
-    const auto clippingMatrix = this->getLockedInOut< data::TransformationMatrix3D>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = this->getLockedInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
 
     if(clippingMatrix)
     {

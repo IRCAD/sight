@@ -27,9 +27,9 @@
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
@@ -404,7 +404,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
         }
         break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
-            object = data::TransformationMatrix3D::New();
+            object = data::Matrix4::New();
             break;
         case ::Ogre::GpuConstantType::GCT_INT1:
         {
@@ -511,7 +511,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
         }
         break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
-            object = data::TransformationMatrix3D::New();
+            object = data::Matrix4::New();
             break;
         default:
             std::string GpuConstantTypeNames[] =

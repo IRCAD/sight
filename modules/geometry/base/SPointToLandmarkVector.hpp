@@ -57,10 +57,10 @@ namespace sight::modules::geometry::base
  * - \b landmark [sight::data::Landmarks]: landmarks representing a point and target
  *
  * @subsection InOut InOut:
- * - \b transform [sight::data::TransformationMatrix3D]: transform containing the computed vector (in the
+ * - \b transform [sight::data::Matrix4]: transform containing the computed vector (in the
  * translation part)
  * - \b computedLandmark [sight::data::Landmarks]: computed landmark
- * - \b translationMatrix [sight::data::TransformationMatrix3D]: translation matrix
+ * - \b translationMatrix [sight::data::Matrix4]: translation matrix
  *
  * @subsection Configuration Configuration:
  * - \b originLabel: (std::string) label of the landmark group corresponding to the origin of the vector

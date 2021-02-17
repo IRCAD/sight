@@ -233,7 +233,7 @@ void SOpenCVReader::updating()
 
         if(!extrinsic.empty())
         {
-            data::TransformationMatrix3D::sptr extMat = data::TransformationMatrix3D::New();
+            data::Matrix4::sptr extMat = data::Matrix4::New();
 
             for(size_t i = 0; i < 4; ++i)
             {

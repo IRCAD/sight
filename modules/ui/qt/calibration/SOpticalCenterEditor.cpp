@@ -23,9 +23,9 @@
 #include "modules/ui/qt/calibration/SOpticalCenterEditor.hpp"
 
 #include <data/Camera.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -128,7 +128,7 @@ void SOpticalCenterEditor::updating()
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
     SLM_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
 
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     // Reset matrix if it isn't correctly formatted.
@@ -171,7 +171,7 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -182,7 +182,7 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
@@ -205,7 +205,7 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
@@ -228,7 +228,7 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
     SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);

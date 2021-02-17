@@ -26,9 +26,9 @@
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/Object.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -225,8 +225,8 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 
         SPTR(data::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
-        data::TransformationMatrix3D::TMCoefArray values;
-        data::TransformationMatrix3D::sptr t = data::TransformationMatrix3D::dynamicCast(obj);
+        data::Matrix4::TMCoefArray values;
+        data::Matrix4::sptr t = data::Matrix4::dynamicCast(obj);
         values = t->getCoefficients();
         float matrixValues[16];
 

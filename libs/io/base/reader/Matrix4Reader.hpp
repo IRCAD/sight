@@ -26,7 +26,7 @@
 #include "io/base/reader/GenericObjectReader.hpp"
 
 #include <data/location/SingleFile.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::io::base
 {
@@ -38,24 +38,24 @@ namespace reader
  * @brief   Reader for transformation of 3D Matrix. Read file format .trf
  *
  *
- * Ircad reader to read a data::TransformationMatrix3D on filesystem which the file format
+ * Ircad reader to read a data::Matrix4 on filesystem which the file format
  * is .trf. This format is basic. This is an ascii file which contains matrix 4x4 values
  */
-class IO_BASE_CLASS_API TransformationMatrix3DReader :
-    public GenericObjectReader< data::TransformationMatrix3D >,
+class IO_BASE_CLASS_API Matrix4Reader :
+    public GenericObjectReader< data::Matrix4 >,
     public data::location::enableSingleFile< IObjectReader >
 {
 
 public:
 
-    fwCoreClassMacro(TransformationMatrix3DReader, GenericObjectReader< data::TransformationMatrix3D >,
-                     io::base::reader::factory::New< TransformationMatrix3DReader >)
+    fwCoreClassMacro(Matrix4Reader, GenericObjectReader< data::Matrix4 >,
+                     io::base::reader::factory::New< Matrix4Reader >)
 
     /// Constructor. Do nothing.
-    IO_BASE_API TransformationMatrix3DReader(io::base::reader::IObjectReader::Key key);
+    IO_BASE_API Matrix4Reader(io::base::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
-    IO_BASE_API virtual ~TransformationMatrix3DReader();
+    IO_BASE_API virtual ~Matrix4Reader();
 
     /// Read the file with standard iostream API.
     IO_BASE_API virtual void read() override;

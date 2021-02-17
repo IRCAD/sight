@@ -22,7 +22,7 @@
 
 #include "SMatrixViewer.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
@@ -117,7 +117,7 @@ void SMatrixViewer::updating()
 
 void SMatrixViewer::updateFromMatrix()
 {
-    auto matrix = this->getInput< data::TransformationMatrix3D >(s_MATRIX_INPUT);
+    auto matrix = this->getInput< data::Matrix4 >(s_MATRIX_INPUT);
     for(unsigned int i = 0; i < 4; ++i)
     {
         for(unsigned int j = 0; j < 4; ++j)
@@ -145,7 +145,7 @@ void SMatrixViewer::clearLabels()
 service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_MATRIX_INPUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push( s_MATRIX_INPUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
     return connections;
 }
 

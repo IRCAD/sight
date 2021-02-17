@@ -23,8 +23,8 @@
 #include "ResamplerTest.hpp"
 
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -70,10 +70,10 @@ void ResamplerTest::identityTest()
     data::Image::sptr imageOut = data::Image::New();
 
     // Identity.
-    data::TransformationMatrix3D::sptr idMat = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr idMat = data::Matrix4::New();
 
     filter::image::Resampler::resample(
-        data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(idMat), imageIn);
+        data::Image::csptr(imageIn), imageOut, data::Matrix4::csptr(idMat), imageIn);
 
     CPPUNIT_ASSERT(imageOut->getSize2() == SIZE);
     CPPUNIT_ASSERT(imageOut->getSpacing2() == SPACING);
@@ -132,11 +132,11 @@ void ResamplerTest::translateTest()
     imageIn->at<std::uint8_t>(8, 8, 8) = value;
 
     // 5 mm translation along the x axis.
-    data::TransformationMatrix3D::sptr transMat = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr transMat = data::Matrix4::New();
     transMat->setCoefficient(0, 3, 5);
 
     filter::image::Resampler::resample(
-        data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(transMat));
+        data::Image::csptr(imageIn), imageOut, data::Matrix4::csptr(transMat));
 
     const auto dumpLock = imageOut->lock();
 
@@ -194,7 +194,7 @@ void ResamplerTest::rotateTest()
 
     // FIXME: compute to appropriate matrix to rotate a face from negative Z to negative X.
 
-    data::TransformationMatrix3D::sptr rotMat = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr rotMat = data::Matrix4::New();
     // 90° rotation along the Y axis.
     rotMat->setCoefficient(0, 0, 0);
     rotMat->setCoefficient(0, 2, 1);
@@ -205,7 +205,7 @@ void ResamplerTest::rotateTest()
     rotMat->setCoefficient(0, 3, SIZE[0] / 2.);
 
     filter::image::Resampler::resample(
-        data::Image::csptr(imageIn), imageOut, data::TransformationMatrix3D::csptr(rotMat));
+        data::Image::csptr(imageIn), imageOut, data::Matrix4::csptr(rotMat));
 
     const auto outDumpLock = imageOut->lock();
 

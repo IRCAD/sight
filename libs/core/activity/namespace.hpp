@@ -96,7 +96,7 @@ namespace factory
                  <desc>Description of the required data....</desc>
                  <validator>activity::validator::ImageProperties</validator>
             </requirement>
-            <requirement name="transformationMatrix" type="data::TransformationMatrix3D" minOccurs="0" maxOccurs="1"
+            <requirement name="transformationMatrix" type="data::Matrix4" minOccurs="0" maxOccurs="1"
  * create="true" />
              <!-- ...-->
          </requirements>

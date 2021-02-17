@@ -30,8 +30,8 @@
 
     <extension implements="::sight::service::registry::ServiceFactory">
         <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::TransformationMatrix3D</service>
-        <object>::sight::data::TransformationMatrix3D</object>
+        <service>::sight::service::parser::Matrix4</service>
+        <object>::sight::data::Matrix4</object>
     </extension>
 
     <extension implements="::sight::service::registry::ServiceFactory">

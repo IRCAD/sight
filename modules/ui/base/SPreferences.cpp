@@ -45,7 +45,7 @@ namespace sight::modules::ui::base
 {
 
 fwServicesRegisterMacro( ::sight::ui::base::preferences::IPreferences,
-                         modules::ui::base::SPreferences,
+                         ::sight::modules::ui::base::SPreferences,
                          ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------

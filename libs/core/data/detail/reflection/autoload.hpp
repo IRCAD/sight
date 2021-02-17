@@ -55,6 +55,7 @@
 #include "data/location/Folder.hpp"
 #include "data/location/SingleFile.hpp"
 #include "data/Material.hpp"
+#include "data/Matrix4.hpp"
 #include "data/Mesh.hpp"
 #include "data/ModelSeries.hpp"
 #include "data/Patient.hpp"
@@ -76,7 +77,6 @@
 #include "data/StructureTraitsDictionary.hpp"
 #include "data/Study.hpp"
 #include "data/Tag.hpp"
-#include "data/TransformationMatrix3D.hpp"
 #include "data/Vector.hpp"
 
 #include <core/reflection/macros.hpp>
@@ -113,7 +113,7 @@ struct runner
         localDeclaresightdataComposite();
         localDeclaresightdataPoint();
         localDeclaresightdataPointList();
-        localDeclaresightdataTransformationMatrix3D();
+        localDeclaresightdataMatrix4();
         localDeclaresightdataTransferFunctionInterpolationMode();
         localDeclaresightdataTransferFunction();
         localDeclaresightdataPort();

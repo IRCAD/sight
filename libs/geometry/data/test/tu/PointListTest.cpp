@@ -165,7 +165,7 @@ void PointListTest::transform()
             pl2->pushBack(sight::data::Point::New(tmp[0], tmp[1], tmp[2]));
         }
 
-        const auto tf1 = sight::data::TransformationMatrix3D::New();
+        const auto tf1 = sight::data::Matrix4::New();
         geometry::data::PointList::transform(pl1, tf1);
 
         const sight::data::PointList::PointListContainer points2 = pl2->getPoints();
@@ -212,7 +212,7 @@ void PointListTest::transform()
                                                   tmp[2] + translation[2]));
         }
 
-        const auto tf1 = sight::data::TransformationMatrix3D::New();
+        const auto tf1 = sight::data::Matrix4::New();
         tf1->setCoefficient(0, 3, translation[0]);
         tf1->setCoefficient(1, 3, translation[1]);
         tf1->setCoefficient(2, 3, translation[2]);
@@ -255,7 +255,7 @@ void PointListTest::transform()
         pl2->pushBack(sight::data::Point::New(0.0f, -1.0f, 1.0f));
 
         // Perform a 180 degrees rotation around Z
-        const auto tf1 = sight::data::TransformationMatrix3D::New();
+        const auto tf1 = sight::data::Matrix4::New();
         tf1->setCoefficient(0, 0, -1.0f);
         tf1->setCoefficient(0, 1, 0.0f);
         tf1->setCoefficient(1, 0, 0.0f);
@@ -319,9 +319,9 @@ void PointListTest::associate()
         }
 
         // Transform the point lists, shift the points in y
-        auto tf1 = sight::data::TransformationMatrix3D::New();
+        auto tf1 = sight::data::Matrix4::New();
         tf1->setCoefficient(1, 3, 42.0);
-        auto tf2 = sight::data::TransformationMatrix3D::New();
+        auto tf2 = sight::data::Matrix4::New();
         tf2->setCoefficient(1, 3, -42.0);
 
         geometry::data::PointList::transform(pl1, tf1);
@@ -380,7 +380,7 @@ void PointListTest::associate()
         pl2->pushBack(sight::data::Point::New(0.0f, 0.0f, 7.2f));
 
         // Transform the point list
-        auto tf1 = sight::data::TransformationMatrix3D::New();
+        auto tf1 = sight::data::Matrix4::New();
         // Shift the points in Z
         tf1->setCoefficient(2, 3, 4.2);
 

@@ -107,7 +107,7 @@ struct Resampling
 
 void Resampler::resample(const data::Image::csptr& _inImage,
                          const data::Image::sptr& _outImage,
-                         const data::TransformationMatrix3D::csptr& _trf,
+                         const data::Matrix4::csptr& _trf,
                          const data::Image::csptr& _targetImg)
 {
     const itk::Matrix<double, 4, 4 > itkMatrix = io::itk::helper::Transform::convertToITK(_trf);
@@ -147,7 +147,7 @@ void Resampler::resample(const data::Image::csptr& _inImage,
 //-----------------------------------------------------------------------------
 
 data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
-                                      const data::TransformationMatrix3D::csptr& _trf,
+                                      const data::Matrix4::csptr& _trf,
                                       const data::Image::SpacingType& _outputSpacing)
 {
     data::Image::Spacing spacing = {_outputSpacing[0], _outputSpacing[1], _outputSpacing[2]};
@@ -157,7 +157,7 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
 //-----------------------------------------------------------------------------
 
 data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
-                                      const data::TransformationMatrix3D::csptr& _trf,
+                                      const data::Matrix4::csptr& _trf,
                                       const data::Image::Spacing& _outputSpacing)
 {
     using PointType           = ::itk::Point<double, 3>;

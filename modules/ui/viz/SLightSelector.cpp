@@ -29,7 +29,7 @@
 
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>

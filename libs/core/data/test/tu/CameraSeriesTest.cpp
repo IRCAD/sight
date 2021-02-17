@@ -80,12 +80,12 @@ data::CameraSeries::sptr initCameraSeries()
     series->addCamera(camera2);
 
     // --------------- Extrinsic matrix ----------------------
-    data::TransformationMatrix3D::sptr mat = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr mat = data::Matrix4::New();
     for (size_t i = 0; i < 4; ++i)
     {
         for (size_t j = 0; j < 4; ++j)
         {
-            const auto value = static_cast< data::TransformationMatrix3D::TM3DType >(2*i+j);
+            const auto value = static_cast< data::Matrix4::TM3DType >(2*i+j);
             mat->setCoefficient(i, j, value);
         }
     }
@@ -102,13 +102,13 @@ void CameraSeriesTest::cameraTest()
     data::CameraSeries::sptr series = data::CameraSeries::New();
     CPPUNIT_ASSERT(series);
 
-    data::TransformationMatrix3D::sptr identity = data::TransformationMatrix3D::New();
-    data::TransformationMatrix3D::sptr mat      = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr identity = data::Matrix4::New();
+    data::Matrix4::sptr mat      = data::Matrix4::New();
     for (size_t i = 0; i < 4; ++i)
     {
         for (size_t j = 0; j < 4; ++j)
         {
-            const auto value = static_cast< data::TransformationMatrix3D::TM3DType >(2*i+j);
+            const auto value = static_cast< data::Matrix4::TM3DType >(2*i+j);
             mat->setCoefficient(i, j, value);
         }
     }

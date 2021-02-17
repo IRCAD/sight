@@ -29,11 +29,11 @@
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Line.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/Object.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Mesh.hpp>
@@ -205,10 +205,10 @@ void DataConverterTest::matrixConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     ::igtl::TransformMessage::Pointer convertedMatrix;
-    data::TransformationMatrix3D::sptr matrix;
+    data::Matrix4::sptr matrix;
     ::igtl::Matrix4x4 igtlMatrix;
 
-    matrix = data::TransformationMatrix3D::New();
+    matrix = data::Matrix4::New();
     for (int i = 0; i < 4; ++i)
     {
         for (int j = 0; j < 4; ++j)
@@ -230,7 +230,7 @@ void DataConverterTest::matrixConverterTest()
 
     data::Object::sptr destObj =
         converter->fromIgtlMessage(::igtl::MessageBase::Pointer(convertedMatrix.GetPointer()));
-    data::TransformationMatrix3D::sptr matrix2 = data::TransformationMatrix3D::dynamicCast(destObj);
+    data::Matrix4::sptr matrix2 = data::Matrix4::dynamicCast(destObj);
     for (int i = 0; i < 4; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix2->getCoefficients().begin() + i * 4));
@@ -375,8 +375,8 @@ void DataConverterTest::compositeConverterTest()
 
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
 
-    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
-    data::Composite::sptr composite           = data::Composite::New();
+    data::Matrix4::sptr matrix      = data::Matrix4::New();
+    data::Composite::sptr composite = data::Composite::New();
     (*composite)["H_marker1_2_polaris"] = matrix;
 
     for (size_t i = 0; i < 4; ++i)
@@ -415,8 +415,8 @@ void DataConverterTest::compositeConverterTest()
     data::Composite::iterator iter = destComposite->find("H_marker1_2_polaris");
     CPPUNIT_ASSERT(iter != destComposite->end());
 
-    data::TransformationMatrix3D::sptr destMmatrix = data::TransformationMatrix3D::New();
-    destMmatrix = data::TransformationMatrix3D::dynamicCast(iter->second);
+    data::Matrix4::sptr destMmatrix = data::Matrix4::New();
+    destMmatrix = data::Matrix4::dynamicCast(iter->second);
     for(size_t i = 0; i < 4; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMmatrix->getCoefficients().begin() + i * 4));

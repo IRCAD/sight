@@ -46,7 +46,7 @@
                 ]]>
                 </desc>
             </requirement>
-            <requirement name="transformationMatrix" type="::sight::data::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true">
+            <requirement name="transformationMatrix" type="::sight::data::Matrix4" minOccurs="0" maxOccurs="1" create="true">
                 <desc>
                 <![CDATA[
                 Optional <b>matrix</b>.

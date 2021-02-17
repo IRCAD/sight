@@ -94,7 +94,7 @@ private:
 
 void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
                                           const data::Image::csptr& _reference,
-                                          const data::TransformationMatrix3D::sptr& _trf,
+                                          const data::Matrix4::sptr& _trf,
                                           MetricType _metric,
                                           const MultiResolutionParametersType& _multiResolutionParameters,
                                           RealType _samplingPercentage,
@@ -341,7 +341,7 @@ itk::SizeValueType filter::image::AutomaticRegistration::getCurrentLevel() const
 
 //------------------------------------------------------------------------------
 
-void AutomaticRegistration::getCurrentMatrix(const data::TransformationMatrix3D::sptr& _trf) const
+void AutomaticRegistration::getCurrentMatrix(const data::Matrix4::sptr& _trf) const
 {
     SLM_ASSERT("No registration process running.", m_registrator);
     auto itkMatrix = m_registrator->GetTransform();
@@ -351,7 +351,7 @@ void AutomaticRegistration::getCurrentMatrix(const data::TransformationMatrix3D:
 //------------------------------------------------------------------------------
 
 void AutomaticRegistration::convertToF4sMatrix(const AutomaticRegistration::TransformType* _itkMat,
-                                               const data::TransformationMatrix3D::sptr& _f4sMat) const
+                                               const data::Matrix4::sptr& _f4sMat) const
 {
     ::itk::Matrix<RealType, 3, 3> rigidMat = _itkMat->GetMatrix();
     ::itk::Vector<RealType, 3> offset      = _itkMat->GetOffset();

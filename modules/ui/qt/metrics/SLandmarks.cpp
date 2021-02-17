@@ -32,14 +32,14 @@
 
 #include <data/Exception.hpp>
 #include <data/Landmarks.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -679,7 +679,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             const double* const pickedPos       = _info.m_worldPos;
             data::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
 
-            const auto matrixWeak = this->getWeakInput< data::TransformationMatrix3D >(s_MATRIX_IN);
+            const auto matrixWeak = this->getWeakInput< data::Matrix4 >(s_MATRIX_IN);
             const auto matrix     = matrixWeak.lock();
             if(matrix)
             {

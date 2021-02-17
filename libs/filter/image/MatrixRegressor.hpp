@@ -24,7 +24,7 @@
 
 #include "filter/image/config.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Vector.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -61,8 +61,8 @@ public:
      * @param maxIter the maximum number of iterations for the solver.
      * @return the 'average' matrix
      */
-    FILTER_IMAGE_API data::TransformationMatrix3D::sptr minimize(
-        const data::TransformationMatrix3D::csptr& initValue,
+    FILTER_IMAGE_API data::Matrix4::sptr minimize(
+        const data::Matrix4::csptr& initValue,
         double stepLength     = 1.,
         double stepTolerance  = 1e-2,
         double valueTolerance = 1e-2,

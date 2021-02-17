@@ -25,14 +25,14 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <glm/glm.hpp>
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -97,9 +97,9 @@ void SPointToLandmarkVector::configuring()
 
 void SPointToLandmarkVector::updating()
 {
-    auto transformLocked = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    auto transformLocked = this->getLockedInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
     auto transform = transformLocked.get_shared();
-    auto translationMatrix = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSLATION_INOUT);
+    auto translationMatrix = this->getLockedInOut< data::Matrix4 >(s_TRANSLATION_INOUT);
     const auto landmark = this->getLockedInput< data::Landmarks >(s_LANDMARK_INPUT);
     std::array< double, 3> sourcePoint, targetPoint;
     if(landmark->getGroup(m_originLabel).m_size >= 1)

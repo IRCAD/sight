@@ -27,11 +27,11 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -98,7 +98,7 @@ void SMarkerToPoint::addPoint()
     data::MatrixTL::csptr matrixTL = this->getInput< data::MatrixTL >(s_MATRIXTL_INPUT);
     data::PointList::sptr pl       = this->getInOut< data::PointList >(s_POINTLIST_INOUT);
 
-    data::TransformationMatrix3D::sptr matrix3D = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr matrix3D = data::Matrix4::New();
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
     CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);

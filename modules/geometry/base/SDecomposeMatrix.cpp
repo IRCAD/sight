@@ -28,7 +28,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -78,7 +78,7 @@ service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() cons
 
 void SDecomposeMatrix::updating()
 {
-    auto matrix = this->getInput< data::TransformationMatrix3D >(s_SOURCE_INPUT);
+    auto matrix = this->getInput< data::Matrix4 >(s_SOURCE_INPUT);
     SLM_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
     data::mt::ObjectReadLock srcLock(matrix);
 
@@ -93,9 +93,9 @@ void SDecomposeMatrix::updating()
     ::glm::decompose(glmMatrix, scale, orientation, translation, skew, perspective);
     ::glm::dmat4 orientationMat = ::glm::toMat4(orientation);
 
-    auto rotation       = this->getInOut< data::TransformationMatrix3D >(s_ROTATION_INOUT);
-    auto translationMat = this->getInOut< data::TransformationMatrix3D >(s_TRANSLATION_INOUT);
-    auto scaleMat       = this->getInOut< data::TransformationMatrix3D >(s_SCALE_INOUT);
+    auto rotation       = this->getInOut< data::Matrix4 >(s_ROTATION_INOUT);
+    auto translationMat = this->getInOut< data::Matrix4 >(s_TRANSLATION_INOUT);
+    auto scaleMat       = this->getInOut< data::Matrix4 >(s_SCALE_INOUT);
 
     if( rotation)
     {

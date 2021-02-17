@@ -27,7 +27,7 @@
 
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::activity::validator::ut::StereoCameraTest );
@@ -67,8 +67,8 @@ void StereoCameraTest::testValidator()
 
     IValidator::ValidationType validation;
 
-    data::CameraSeries::sptr cameraSeries     = data::CameraSeries::New();
-    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
+    data::CameraSeries::sptr cameraSeries = data::CameraSeries::New();
+    data::Matrix4::sptr matrix            = data::Matrix4::New();
 
     data::Camera::sptr camera1 = data::Camera::New();
     data::Camera::sptr camera2 = data::Camera::New();

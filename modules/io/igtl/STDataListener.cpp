@@ -26,8 +26,8 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Composite.hpp>
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -207,8 +207,8 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
 
     for(const data::Composite::ContainerType::value_type& elt : obj->getContainer())
     {
-        data::TransformationMatrix3D::csptr transfoMatrix =
-            data::TransformationMatrix3D::dynamicConstCast(elt.second);
+        data::Matrix4::csptr transfoMatrix =
+            data::Matrix4::dynamicConstCast(elt.second);
 
         MatrixNameIndexType::const_iterator it = m_matrixNameIndex.find(elt.first);
 
@@ -216,7 +216,7 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
         {
             unsigned long index = it->second;
 
-            data::TransformationMatrix3D::TMCoefArray values;
+            data::Matrix4::TMCoefArray values;
             values = transfoMatrix->getCoefficients();
             float matrixValues[16];
             bool isZero = true;

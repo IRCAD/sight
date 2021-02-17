@@ -26,17 +26,17 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <functional>
 #include <numeric>
@@ -82,7 +82,7 @@ void SMIPMatchingRegistration::updating()
 {
     auto fixed     = this->getInput< data::Image>("fixed");
     auto moving    = this->getInput< data::Image>("moving");
-    auto transform = this->getInOut< data::TransformationMatrix3D>("transform");
+    auto transform = this->getInOut< data::Matrix4>("transform");
     SLM_ASSERT("Missing required input 'fixed'", fixed);
     SLM_ASSERT("Missing required input 'moving'", moving);
     SLM_ASSERT("Missing required inout 'transform'", transform);
@@ -101,8 +101,8 @@ void SMIPMatchingRegistration::updating()
         ::invoke( type, params );
     }
 
-    transform->signal< data::TransformationMatrix3D::ModifiedSignalType>(
-        data::TransformationMatrix3D::s_MODIFIED_SIG)
+    transform->signal< data::Matrix4::ModifiedSignalType>(
+        data::Matrix4::s_MODIFIED_SIG)
     ->asyncEmit();
 }
 

@@ -31,10 +31,10 @@
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::base::SConcatenateMatrices,
-                         ::sight::data::TransformationMatrix3D)
+                         ::sight::data::Matrix4)
 
 namespace sight::modules::geometry::base
 {
@@ -88,19 +88,19 @@ void SConcatenateMatrices::stopping()
 
 void SConcatenateMatrices::updating()
 {
-    auto outputMatrix = this->getInOut< data::TransformationMatrix3D>(s_OUTPUT);
+    auto outputMatrix = this->getInOut< data::Matrix4>(s_OUTPUT);
     SLM_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
     {
         data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
 
         sight::geometry::data::identity(outputMatrix);
 
-        auto inverse = data::TransformationMatrix3D::New();
+        auto inverse = data::Matrix4::New();
 
         size_t index = 0;
         for (const bool invertCurrentMatrix : m_invertVector)
         {
-            auto inputMatrix = this->getInput< data::TransformationMatrix3D>(s_MATRIX_GROUP_INOUT, index++);
+            auto inputMatrix = this->getInput< data::Matrix4>(s_MATRIX_GROUP_INOUT, index++);
             data::mt::ObjectReadLock inputMatrixLock(inputMatrix);
 
             if (invertCurrentMatrix)

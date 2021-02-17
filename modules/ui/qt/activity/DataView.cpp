@@ -33,6 +33,7 @@
 #include <data/Float.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Patient.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/reflection/visitor/CompareObjects.hpp>
@@ -40,7 +41,6 @@
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 #include <data/Study.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <service/IService.hpp>
@@ -276,7 +276,7 @@ void DataView::fillInformation(const ActivityInfo& _info)
         QVBoxLayout* const buttonLayout = new QVBoxLayout();
         if (req.type == "::sight::data::String" || req.type == "::sight::data::Boolean"
             || req.type == "::sight::data::Integer" || req.type == "::sight::data::Float"
-            || req.type == "::sight::data::TransformationMatrix3D")
+            || req.type == "::sight::data::Matrix4")
         {
             QPushButton* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
@@ -802,12 +802,12 @@ void DataView::addObjectItem(size_t _index, const data::Object::csptr& _obj)
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
     newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
 
-    const data::Series::csptr series              = data::Series::dynamicCast(_obj);
-    const data::String::csptr strObj              = data::String::dynamicCast(_obj);
-    const data::Integer::csptr intObj             = data::Integer::dynamicCast(_obj);
-    const data::Float::csptr floatObj             = data::Float::dynamicCast(_obj);
-    const data::Boolean::csptr boolObj            = data::Boolean::dynamicCast(_obj);
-    const data::TransformationMatrix3D::csptr trf = data::TransformationMatrix3D::dynamicCast(_obj);
+    const data::Series::csptr series   = data::Series::dynamicCast(_obj);
+    const data::String::csptr strObj   = data::String::dynamicCast(_obj);
+    const data::Integer::csptr intObj  = data::Integer::dynamicCast(_obj);
+    const data::Float::csptr floatObj  = data::Float::dynamicCast(_obj);
+    const data::Boolean::csptr boolObj = data::Boolean::dynamicCast(_obj);
+    const data::Matrix4::csptr trf     = data::Matrix4::dynamicCast(_obj);
     if (series)
     {
         newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
@@ -1062,9 +1062,9 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                     boolObj->value() = (button == QMessageBox::Yes);
                     _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
                 }
-                else if (obj->isA("::sight::data::TransformationMatrix3D"))
+                else if (obj->isA("::sight::data::Matrix4"))
                 {
-                    data::TransformationMatrix3D::sptr trf = data::TransformationMatrix3D::dynamicCast(obj);
+                    data::Matrix4::sptr trf = data::Matrix4::dynamicCast(obj);
                     std::stringstream str;
                     str << *trf;
 
@@ -1076,7 +1076,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                     QStringList coeffList = value.trimmed().split(QRegularExpression("\\s+"));
                     if (isOkClicked && coeffList.size() == 16)
                     {
-                        data::TransformationMatrix3D::TMCoefArray coeffs;
+                        data::Matrix4::TMCoefArray coeffs;
 
                         bool conversionOK = false;
                         for (int i = 0; i < 16; ++i)

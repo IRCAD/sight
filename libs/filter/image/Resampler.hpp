@@ -25,7 +25,7 @@
 #include "filter/image/config.hpp"
 
 #include <data/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::filter::image
 {
@@ -46,7 +46,7 @@ public:
      */
     static FILTER_IMAGE_API void resample(const data::Image::csptr& _inImg,
                                           const data::Image::sptr& outImg,
-                                          const data::TransformationMatrix3D::csptr& _trf,
+                                          const data::Matrix4::csptr& _trf,
                                           const data::Image::csptr& _targetImg = nullptr);
 
     /**
@@ -58,7 +58,7 @@ public:
      */
     [[deprecated("Will be removed in sigth 22.0")]]
     static FILTER_IMAGE_API data::Image::sptr resample(const data::Image::csptr& _img,
-                                                       const data::TransformationMatrix3D::csptr& _trf,
+                                                       const data::Matrix4::csptr& _trf,
                                                        const data::Image::SpacingType& _outputSpacing);
 
     /**
@@ -69,7 +69,7 @@ public:
      * @return resampled image.
      */
     static FILTER_IMAGE_API data::Image::sptr resample(const data::Image::csptr& _img,
-                                                       const data::TransformationMatrix3D::csptr& _trf,
+                                                       const data::Matrix4::csptr& _trf,
                                                        const data::Image::Spacing& _outputSpacing);
 
 };

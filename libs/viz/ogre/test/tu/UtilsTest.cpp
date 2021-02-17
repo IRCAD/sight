@@ -22,9 +22,9 @@
 
 #include "UtilsTest.hpp"
 
-#include <OGRE/OgreColourValue.h>
-
 #include <viz/ogre/Utils.hpp>
+
+#include <OGRE/OgreColourValue.h>
 
 #include <random>
 
@@ -75,7 +75,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
     // Convert from Sight to ogre and back to Sight.
     {
-        data::TransformationMatrix3D::sptr mat0 = data::TransformationMatrix3D::New();
+        data::Matrix4::sptr mat0 = data::Matrix4::New();
 
         for(double& coeff : mat0->getCoefficients())
         {
@@ -93,7 +93,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         }
 
         // Convert back to TM3D.
-        data::TransformationMatrix3D::sptr mat0Copy = data::TransformationMatrix3D::New();
+        data::Matrix4::sptr mat0Copy = data::Matrix4::New();
 
         viz::ogre::Utils::copyOgreMxToTM3D(ogreMat0, mat0Copy);
 
@@ -118,7 +118,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
 
-        data::TransformationMatrix3D::sptr mat1Copy = data::TransformationMatrix3D::New();
+        data::Matrix4::sptr mat1Copy = data::Matrix4::New();
         viz::ogre::Utils::copyOgreMxToTM3D(ogreMat1, mat1Copy);
 
         for(std::uint8_t l = 0; l < 4; ++l)

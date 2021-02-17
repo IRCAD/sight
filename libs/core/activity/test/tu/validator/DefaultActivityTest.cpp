@@ -37,9 +37,9 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
+#include <data/Matrix4.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/String.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <utestData/generator/Image.hpp>
@@ -430,7 +430,7 @@ void DefaultActivityTest::bigActivityTest()
     data::ModelSeries::sptr modelSeries2 = data::ModelSeries::New();
     data::ModelSeries::sptr modelSeries3 = data::ModelSeries::New();
 
-    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr matrix = data::Matrix4::New();
 
     data::Float::sptr floatObj  = data::Float::New();
     data::Integer::sptr intObj  = data::Integer::New();

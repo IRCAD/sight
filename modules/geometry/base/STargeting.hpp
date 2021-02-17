@@ -52,7 +52,7 @@ namespace sight::modules::geometry::base
  *
  * @subsection Input Input:
  * - \b landmark [sight::data::Landmarks]: landmarks representing the needle tip and target
- * - \b matrix [sight::data::TransformationMatrix3D]: Targeting matrix.
+ * - \b matrix [sight::data::Matrix4]: Targeting matrix.
  *
  * @subsection InOut InOut:
  * - \b pointList [sight::data::PointList]: computed pointlist

@@ -32,14 +32,14 @@ namespace sight::io::patch::structural
 namespace data
 {
 
-namespace TransformationMatrix3D
+namespace Matrix4
 {
 
 /// Structural patch to convert a data::Mesh from version '1' to version '2'.
 class IO_PATCH_CLASS_API V1ToV2 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToV2, patch::structural::data::TransformationMatrix3D::V1ToV2, new V1ToV2)
+    fwCoreClassMacro(V1ToV2, patch::structural::data::Matrix4::V1ToV2, new V1ToV2)
 
     /// Constructor
     IO_PATCH_API V1ToV2();
@@ -62,7 +62,7 @@ public:
 
 };
 
-} // namespace TransformationMatrix3D
+} // namespace Matrix4
 
 } // namespace data
 

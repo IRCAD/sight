@@ -26,11 +26,11 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -113,9 +113,9 @@ void SPointListRegistration::stopping()
 
 void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType)
 {
-    data::PointList::sptr registeredPL        = this->getInOut< data::PointList >("registeredPL");
-    data::PointList::sptr referencePL         = this->getInOut< data::PointList >("referencePL");
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >("output");
+    data::PointList::sptr registeredPL = this->getInOut< data::PointList >("registeredPL");
+    data::PointList::sptr referencePL  = this->getInOut< data::PointList >("referencePL");
+    data::Matrix4::sptr matrix         = this->getInOut< data::Matrix4 >("output");
 
     if( registeredPL->getPoints().size() >= 3 &&
         registeredPL->getPoints().size() == referencePL->getPoints().size() )

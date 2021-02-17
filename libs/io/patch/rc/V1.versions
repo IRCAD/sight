@@ -42,7 +42,7 @@
         "::sight::data::Study": "1",
         "::sight::data::Tag": "1",
         "::sight::data::TransferFunction": "1",
-        "::sight::data::TransformationMatrix3D": "1",
+        "::sight::data::Matrix4": "1",
         "::sight::data::Vector": "1",
         "::sight::data::Video": "1",
         "::sight::data::location::Folder": "1",

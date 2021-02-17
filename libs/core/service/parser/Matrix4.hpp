@@ -35,24 +35,24 @@ namespace sight::service
 namespace parser
 {
 /**
- * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an
+ * @brief   Specific service for the construction of a Matrix4 and its associated services from an
  * XML-based description.
  * @see     service::IXMLParser
  */
-class SERVICE_CLASS_API TransformationMatrix3D : public service::IXMLParser
+class SERVICE_CLASS_API Matrix4 : public service::IXMLParser
 {
 
 public:
 
-    fwCoreServiceMacro(TransformationMatrix3D, service::IXMLParser)
+    fwCoreServiceMacro(Matrix4, service::IXMLParser)
 
     /// Constructor : does nothing.
-    TransformationMatrix3D()
+    Matrix4()
     {
     }
 
     /// Destructor : does nothing.
-    virtual ~TransformationMatrix3D()
+    virtual ~Matrix4()
     {
     }
 

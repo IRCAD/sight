@@ -30,10 +30,10 @@
 
 #include <data/Boolean.hpp>
 #include <data/Material.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>

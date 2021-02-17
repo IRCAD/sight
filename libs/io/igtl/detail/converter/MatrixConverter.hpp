@@ -31,7 +31,7 @@ namespace converter
 {
 /**
  *
- * @brief class to manage conversion between data::TransformationMatrix3D and igtl::TransformationMessage
+ * @brief class to manage conversion between data::Matrix4 and igtl::TransformationMessage
  */
 class IO_IGTL_CLASS_API MatrixConverter :
     public IConverter

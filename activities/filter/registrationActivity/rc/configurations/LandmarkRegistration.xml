@@ -11,7 +11,7 @@
     <config>
         <object uid="${referenceImageUid}" type="::sight::data::Image" src="ref" />
         <object uid="${targetImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${transformUid}" type="::sight::data::TransformationMatrix3D" src="ref" />
+        <object uid="${transformUid}" type="::sight::data::Matrix4" src="ref" />
 
         <object uid="${targetTransferFunction}" type="::sight::data::TransferFunction" src="ref" />
         <object uid="${referenceTransferFunction}" type="::sight::data::TransferFunction" src="deferred" />

@@ -26,7 +26,7 @@
 
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 namespace sight::modules::activity::validator
 {
@@ -82,7 +82,7 @@ StereoCamera::~StereoCamera()
                 validation.second = "The second CameraSeries should be calibrated.";
             }
 
-            data::TransformationMatrix3D::sptr matrix = cameraSeries->getExtrinsicMatrix(1);
+            data::Matrix4::sptr matrix = cameraSeries->getExtrinsicMatrix(1);
             if (!matrix)
             {
                 validation.first  = false;

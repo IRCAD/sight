@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "io/patch/structural/data/TransformationMatrix3D/V1ToV2.hpp"
+#include "io/patch/structural/data/Matrix4/V1ToV2.hpp"
 
 #include <atoms/Map.hpp>
 #include <atoms/Numeric.hpp>
@@ -36,14 +36,14 @@ namespace sight::io::patch::structural
 namespace data
 {
 
-namespace TransformationMatrix3D
+namespace Matrix4
 {
 
 V1ToV2::V1ToV2() :
     io::atoms::patch::IStructuralPatch()
 {
-    m_originClassname = "::sight::data::TransformationMatrix3D";
-    m_targetClassname = "::sight::data::TransformationMatrix3D";
+    m_originClassname = "::sight::data::Matrix4";
+    m_targetClassname = "::sight::data::Matrix4";
     m_originVersion   = "1";
     m_targetVersion   = "2";
 }
@@ -87,7 +87,7 @@ void V1ToV2::apply( const sight::atoms::Object::sptr& previous,
     helper.addAttribute("coefficient", newCoefs);
 }
 
-} // namespace TransformationMatrix3D
+} // namespace Matrix4
 
 } // namespace data
 

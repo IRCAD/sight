@@ -127,7 +127,7 @@ namespace sight::service
  *
  * - \b object: it defines an object of the AppConfig. We usually use a data::Composite in order to add
  *   sub-objects. An object can defines a list of services. Some object object can have a specific configuration :
- *   data::TransformationMatrix3D, data::Float, data::List, ...
+ *   data::Matrix4, data::Float, data::List, ...
  *    - \b uid (optional): unique identifier of the object (core::tools::fwID). If it is not defined, it will be
  *      automatically generated.
  *    - \b type: object type (ex: data::Image, data::Composite)
@@ -143,11 +143,11 @@ namespace sight::service
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working object
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *
- * - \b matrix (optional): it works only for data::TransformationMatrix3D objects. It defines the value of the
+ * - \b matrix (optional): it works only for data::Matrix4 objects. It defines the value of the
  *   matrix.
  *
  * @code{.xml}
-    <object uid="matrix" type="data::TransformationMatrix3D">
+    <object uid="matrix" type="data::Matrix4">
         <matrix>
          <![CDATA[
          1  0  0  0
@@ -332,11 +332,11 @@ namespace sight::service
  *        - "deferred" : defines that the object will be created later (by a service).
  *
  * Some objects can have a specific configuration :
- * - \b matrix (optional): it works only for data::TransformationMatrix3D objects. It defines the value of the
+ * - \b matrix (optional): it works only for data::Matrix4 objects. It defines the value of the
  *   matrix.
  *
  * @code{.xml}
-    <object uid="matrix" type="data::TransformationMatrix3D">
+    <object uid="matrix" type="data::Matrix4">
         <matrix>
          <![CDATA[
          1  0  0  0

@@ -24,7 +24,7 @@
 
 #include "modules/geometry/base/config.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/IService.hpp>
 
@@ -53,7 +53,7 @@ namespace sight::modules::geometry::base
    @endcode
  *
  * @subsection Input Input:
- * - \b matrix [sight::data::TransformationMatrix3D]: transform applied to the landmark
+ * - \b matrix [sight::data::Matrix4]: transform applied to the landmark
  *
  * @subsection InOut InOut:
  * - \b landmark [sight::data::Landmarks]: landmark to modify
@@ -110,7 +110,7 @@ private:
     void removePoint();
 
     /// Transform to apply to Landmark.
-    data::TransformationMatrix3D::csptr m_transform;
+    data::Matrix4::csptr m_transform;
 
     /// Label containing the landmark group name.
     std::string m_label{""};

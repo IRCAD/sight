@@ -68,7 +68,7 @@ namespace sight::modules::viz::ogre::adaptor
  * - \b calibration [sight::data::Camera]: camera containing calibration information.
  *
  * @subsection InOut InOut
- * - \b transform [sight::data::TransformationMatrix3D]: transform matrix for the camera.
+ * - \b transform [sight::data::Matrix4]: transform matrix for the camera.
  *
  * @subsection Configuration Configuration
  * - \b layer (mandatory, string): defines the camera's layer
@@ -99,7 +99,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
      * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSeries::s_MODIFIED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SERIES_INPUT to s_CALIBRATE_SLOT

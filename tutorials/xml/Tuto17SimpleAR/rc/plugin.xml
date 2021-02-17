@@ -38,9 +38,9 @@
             <!-- Map containing all detected markers in the current frame -->
             <object uid="markerMap" type="::sight::data::MarkerMap" />
             <!-- Marker matrix in the camera world -->
-            <object uid="markerToCamera" type="::sight::data::TransformationMatrix3D" />
+            <object uid="markerToCamera" type="::sight::data::Matrix4" />
             <!-- Camera matrix in the marker world -->
-            <object uid="cameraToMarker" type="::sight::data::TransformationMatrix3D" />
+            <object uid="cameraToMarker" type="::sight::data::Matrix4" />
             <!-- Cube superimposed on the video at the marker location -->
             <object uid="cubeMesh" type="::sight::data::Mesh" />
             <object uid="undistortMap" type="::sight::data::Image" />

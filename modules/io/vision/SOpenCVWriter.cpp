@@ -153,7 +153,7 @@ void SOpenCVWriter::updating()
     std::vector< ::cv::Mat > cameraDistCoefs;
 
     // Set the cameras
-    data::TransformationMatrix3D::sptr extrinsicMatrix;
+    data::Matrix4::sptr extrinsicMatrix;
     ::cv::Mat extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
 
     data::mt::ObjectReadLock camSeriesLock(camSeries);

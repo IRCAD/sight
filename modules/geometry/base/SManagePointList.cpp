@@ -26,20 +26,20 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
 #include <service/macros.hpp>
 
+#include <geometry/data/Matrix4.hpp>
 #include <geometry/data/PointList.hpp>
-#include <geometry/data/TransformationMatrix3D.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -112,7 +112,7 @@ void SManagePointList::pick(data::tools::PickingInfo _info) const
     {
         const data::Point::sptr point = data::Point::New();
 
-        const auto matrixW = this->getWeakInput< data::TransformationMatrix3D >(s_MATRIX_INPUT);
+        const auto matrixW = this->getWeakInput< data::Matrix4 >(s_MATRIX_INPUT);
         const auto matrix  = matrixW.lock();
 
         if(matrix)

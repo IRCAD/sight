@@ -83,12 +83,12 @@ void SMatrixList::starting()
 
     for(size_t j = 0; j < numMatrices; ++j)
     {
-        m_inputVector.push_back(this->getLockedInOut< data::TransformationMatrix3D >(s_MATRICES_INOUT,
-                                                                                     j).get_shared());
+        m_inputVector.push_back(this->getLockedInOut< data::Matrix4 >(s_MATRICES_INOUT,
+                                                                      j).get_shared());
         // create vector and push it back into the main vector
         m_outputVector.push_back(data::Vector::New());
-        m_selectedVector.push_back(this->getLockedInOut< data::TransformationMatrix3D >(s_SELECTED_INOUT,
-                                                                                        j).get_shared());
+        m_selectedVector.push_back(this->getLockedInOut< data::Matrix4 >(s_SELECTED_INOUT,
+                                                                         j).get_shared());
     }
 
     if(m_inputVector.empty() || m_selectedVector.empty() || m_outputVector.empty() )
@@ -121,7 +121,7 @@ void SMatrixList::updating()
     {
         for(int i = 0; i < m_inputVector.size(); ++i)
         {
-            data::TransformationMatrix3D::sptr computedMatrix = data::TransformationMatrix3D::New();
+            data::Matrix4::sptr computedMatrix = data::Matrix4::New();
             computedMatrix->deepCopy(m_inputVector[i]);
 
             // Fill the output vector group with the matrix
@@ -142,9 +142,9 @@ void SMatrixList::updating()
 
     // create string containing matrix values
     std::string str;
-    data::TransformationMatrix3D::sptr computedMatrix = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr computedMatrix = data::Matrix4::New();
     computedMatrix->deepCopy(m_inputVector[0]);
-    const data::TransformationMatrix3D::TMCoefArray& coef = computedMatrix->getCoefficients();
+    const data::Matrix4::TMCoefArray& coef = computedMatrix->getCoefficients();
     for(int i = 0; i < 4; ++i)
     {
         str += "[ ";
@@ -178,12 +178,12 @@ void SMatrixList::selectMatrix(int index)
 {
     for(int i = 0; i < m_inputVector.size(); ++i)
     {
-        data::TransformationMatrix3D::sptr selectedMatrix = m_selectedVector[i];
-        selectedMatrix->deepCopy(data::TransformationMatrix3D::dynamicCast(m_outputVector[i]->getContainer()[
-                                                                               index]));
+        data::Matrix4::sptr selectedMatrix = m_selectedVector[i];
+        selectedMatrix->deepCopy(data::Matrix4::dynamicCast(m_outputVector[i]->getContainer()[
+                                                                index]));
 
-        auto sig = selectedMatrix->signal< data::TransformationMatrix3D::ModifiedSignalType >(
-            data::TransformationMatrix3D::s_MODIFIED_SIG);
+        auto sig = selectedMatrix->signal< data::Matrix4::ModifiedSignalType >(
+            data::Matrix4::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
 }

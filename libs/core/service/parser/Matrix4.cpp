@@ -20,14 +20,14 @@
  *
  ***********************************************************************/
 
-#include "service/parser/TransformationMatrix3D.hpp"
+#include "service/parser/Matrix4.hpp"
 
 #include "service/macros.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::TransformationMatrix3D,
-                         ::sight::data::TransformationMatrix3D )
+fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::Matrix4,
+                         ::sight::data::Matrix4 )
 
 namespace sight::service
 {
@@ -36,16 +36,16 @@ namespace parser
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3D::updating( )
+void Matrix4::updating( )
 {
     SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3D::createConfig( core::tools::Object::sptr _obj )
+void Matrix4::createConfig( core::tools::Object::sptr _obj )
 {
-    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::dynamicCast( _obj );
+    data::Matrix4::sptr matrix = data::Matrix4::dynamicCast( _obj );
     SLM_ASSERT("matrix not instanced", matrix);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )

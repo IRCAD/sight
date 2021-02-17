@@ -32,10 +32,10 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -425,7 +425,7 @@ void SOpenCVExtrinsic::updating()
 
         this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
 
-        data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
+        data::Matrix4::sptr matrix = data::Matrix4::New();
 
         ::cv::Mat cv4x4 = ::cv::Mat::eye(4, 4, CV_64F);
         rotationMatrix.copyTo(cv4x4(::cv::Rect(0, 0, 3, 3)));

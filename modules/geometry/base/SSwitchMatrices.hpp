@@ -28,7 +28,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/IController.hpp>
 
@@ -56,9 +56,9 @@ namespace sight::modules::geometry::base
        </service>
    @endcode
  * @subsection Input Input:
- * - \b matrix [sight::data::TransformationMatrix3D]: List of two matrices keys to switch.
+ * - \b matrix [sight::data::Matrix4]: List of two matrices keys to switch.
  * @subsection In-Out In-Out:
- * - \b output [sight::data::TransformationMatrix3D]: Output matrix.
+ * - \b output [sight::data::Matrix4]: Output matrix.
  *
  */
 class MODULE_GEOMETRY_BASE_CLASS_API SSwitchMatrices : public service::IController

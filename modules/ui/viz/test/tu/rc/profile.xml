@@ -3,11 +3,9 @@
     <activate id="module_service" version="0.1" />
 
     <activate id="module_ui_base" version="0.1" />
-    <activate id="::sight::modules::ui::base" version="0.1" />
-    <activate id="material" version="0.1" />
 
-    <activate id="::sight::modules::ui::base::vizOgre" version="0.1" />
+    <activate id="module_ui_viz" version="0.1" />
 
-    <start id="::sight::modules::ui::base::vizOgre" />
+    <start id="module_ui_viz" />
 
 </profile>

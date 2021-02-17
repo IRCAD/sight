@@ -34,7 +34,7 @@ namespace sight::modules::viz::ogre::adaptor
 {
 
 /**
- * @brief This adaptor binds a data::TransformationMatrix3D to an Ogre scene node.
+ * @brief This adaptor binds a data::Matrix4 to an Ogre scene node.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -45,7 +45,7 @@ namespace sight::modules::viz::ogre::adaptor
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b transform [sight::data::TransformationMatrix3D]: Sight transform matrix.
+ * - \b transform [sight::data::Matrix4]: Sight transform matrix.
  *
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): Defines the transform's layer.
@@ -84,7 +84,7 @@ protected:
      */
     MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
-    /// Updates m_transformNode from the data::TransformationMatrix3D.
+    /// Updates m_transformNode from the data::Matrix4.
     MODULE_VIZ_OGRE_API void updating() override;
 
     /// Does nothing.

@@ -24,8 +24,8 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -80,7 +80,7 @@ void SMatrixRegressor::updating()
     SLM_ASSERT("'matrixList' does not exist", matrixList);
     SLM_ASSERT("'pointList' does not exist", pointList);
 
-    const auto optimalMatrix = this->getLockedInOut< data::TransformationMatrix3D >(s_OPTIMAL_MATRIX_INOUT);
+    const auto optimalMatrix = this->getLockedInOut< data::Matrix4 >(s_OPTIMAL_MATRIX_INOUT);
 
     SLM_ASSERT("'optimalMatrix' does not exist", optimalMatrix);
 
@@ -97,10 +97,10 @@ void SMatrixRegressor::updating()
     {
         sight::filter::image::MatrixRegressor regressor(matrixList.get_shared(), ptList);
 
-        data::TransformationMatrix3D::csptr initVal =
-            data::TransformationMatrix3D::dynamicCast((*matrixList)[0]);
+        data::Matrix4::csptr initVal =
+            data::Matrix4::dynamicCast((*matrixList)[0]);
 
-        data::TransformationMatrix3D::sptr res = regressor.minimize(initVal, 1., 1e-4, 1e-4);
+        data::Matrix4::sptr res = regressor.minimize(initVal, 1., 1e-4, 1e-4);
         optimalMatrix->deepCopy(res);
 
         m_sigComputed->asyncEmit();

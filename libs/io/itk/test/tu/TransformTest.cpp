@@ -22,7 +22,7 @@
 
 #include "TransformTest.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <io/itk/helper/Transform.hpp>
 
@@ -55,7 +55,7 @@ void TransformTest::tearDown()
 void TransformTest::testConversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
-    data::TransformationMatrix3D::sptr sightMat = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr sightMat = data::Matrix4::New();
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {
@@ -75,7 +75,7 @@ void TransformTest::testConversion()
         }
     }
 
-    data::TransformationMatrix3D::csptr sightMat2 = sightMat;
+    data::Matrix4::csptr sightMat2 = sightMat;
 
     ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::Transform::convertToITK(sightMat2);
 

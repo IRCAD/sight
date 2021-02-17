@@ -10,7 +10,7 @@
     <config>
         <object uid="${referenceImageUid}" type="::sight::data::Image" src="ref" />
         <object uid="${targetImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${transformUid}" type="::sight::data::TransformationMatrix3D" src="ref" />
+        <object uid="${transformUid}" type="::sight::data::Matrix4" src="ref" />
         <object uid="Histogram" type="::sight::data::Histogram" />
 
         <!-- Transfer Functions -->
@@ -24,9 +24,9 @@
         <object uid="referenceTransferFunction" type="::sight::data::TransferFunction" src="deferred" />
 
         <!-- Matrices -->
-        <object uid="identityMatrix" type="::sight::data::TransformationMatrix3D" />
+        <object uid="identityMatrix" type="::sight::data::Matrix4" />
 
-        <object uid="flipSagittalMatrix" type="::sight::data::TransformationMatrix3D">
+        <object uid="flipSagittalMatrix" type="::sight::data::Matrix4">
             <matrix>
                 <![CDATA[
                     1      0      0     0
@@ -37,7 +37,7 @@
             </matrix>
         </object>
 
-        <object uid="flipFrontalMatrix" type="::sight::data::TransformationMatrix3D">
+        <object uid="flipFrontalMatrix" type="::sight::data::Matrix4">
             <matrix>
                 <![CDATA[
                    -1      0      0     0
@@ -48,7 +48,7 @@
             </matrix>
         </object>
 
-        <object uid="flipAxialMatrix" type="::sight::data::TransformationMatrix3D">
+        <object uid="flipAxialMatrix" type="::sight::data::Matrix4">
             <matrix>
                 <![CDATA[
                     -1      0     0     0
@@ -59,9 +59,9 @@
             </matrix>
         </object>
 
-        <object uid="centerTransformTarget" type="::sight::data::TransformationMatrix3D" />
-        <object uid="centerTransformReference" type="::sight::data::TransformationMatrix3D" />
-        <object uid="flipTransform" type="::sight::data::TransformationMatrix3D" />
+        <object uid="centerTransformTarget" type="::sight::data::Matrix4" />
+        <object uid="centerTransformReference" type="::sight::data::Matrix4" />
+        <object uid="flipTransform" type="::sight::data::Matrix4" />
 
         <service uid="mainView" type="::sight::modules::ui::base::SView">
             <gui>
@@ -216,14 +216,14 @@
             <inout key="data" uid="${transformUid}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DReaderService" />
+            <addSelection service="::sight::modules::io::matrix::Matrix4ReaderService" />
         </service>
 
         <service uid="exportTransform" type="::sight::modules::ui::base::io::SSelector" >
             <inout key="data" uid="${transformUid}" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DWriterService" />
+            <addSelection service="::sight::modules::io::matrix::Matrix4WriterService" />
         </service>
 
         <service uid="manualRegistrationView" type="::sight::modules::ui::base::SView">

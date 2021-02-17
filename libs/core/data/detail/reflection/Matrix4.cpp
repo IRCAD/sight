@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,38 +20,18 @@
  *
  ***********************************************************************/
 
-#pragma once
+#define CAMP_COMPILATION
 
-#include <data/TransformationMatrix3D.hpp>
+#include "data/Matrix4.hpp"
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <core/reflection/UserObject.hpp>
 
-namespace sight::geometry::data
+fwCampImplementDataMacro((sight)(data)(Matrix4))
 {
-namespace ut
-{
-
-/**
- * @brief Test many methods to create image.
- */
-class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
-CPPUNIT_TEST( identityMatrixTest );
-CPPUNIT_TEST( matrixTest );
-CPPUNIT_TEST( glmGetterSetterTest );
-CPPUNIT_TEST_SUITE_END();
-
-public:
-    // interface
-    void setUp();
-    void tearDown();
-
-    void identityMatrixTest();
-    void matrixTest();
-    void glmGetterSetterTest();
-
-};
-
-} //namespace ut
-} //namespace sight::geometry::data
+    builder
+    .tag("object_version", "2")
+    .tag("lib_name", "::sight::data")
+    .base< ::sight::data::Object>()
+    .property("coefficient", &::sight::data::Matrix4::m_vCoefficients)
+    ;
+}

@@ -25,8 +25,8 @@
 #include "geometry/data/config.hpp"
 
 #include <core/base.hpp>
+#include <core/data/Matrix4.hpp>
 #include <core/data/Point.hpp>
-#include <core/data/TransformationMatrix3D.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -37,8 +37,8 @@ namespace sight::geometry::data
  * @param[in] _input Input matrix
  * @param[out] _output Inverted matrix.
  */
-GEOMETRY_DATA_API bool invert(const sight::data::TransformationMatrix3D::csptr& _input,
-                              sight::data::TransformationMatrix3D::sptr& _output);
+GEOMETRY_DATA_API bool invert(const sight::data::Matrix4::csptr& _input,
+                              sight::data::Matrix4::sptr& _output);
 
 /**
  * @brief Multiply two matrices.
@@ -46,15 +46,15 @@ GEOMETRY_DATA_API bool invert(const sight::data::TransformationMatrix3D::csptr& 
  * @param[in] trfB Second matrix.
  * @param[out] _output Output matrix.
  */
-GEOMETRY_DATA_API void multiply(const sight::data::TransformationMatrix3D::csptr& _trfA,
-                                const sight::data::TransformationMatrix3D::csptr& _trfB,
-                                sight::data::TransformationMatrix3D::sptr& _output);
+GEOMETRY_DATA_API void multiply(const sight::data::Matrix4::csptr& _trfA,
+                                const sight::data::Matrix4::csptr& _trfB,
+                                sight::data::Matrix4::sptr& _output);
 
 /**
  * @brief Set the matrix to identity.
  * @param[in,out] _trf Matrix we want to set to identity.
  */
-GEOMETRY_DATA_API void identity(sight::data::TransformationMatrix3D::sptr& _trf);
+GEOMETRY_DATA_API void identity(sight::data::Matrix4::sptr& _trf);
 
 /**
  * @brief Multiply a point and a matrix.
@@ -62,26 +62,26 @@ GEOMETRY_DATA_API void identity(sight::data::TransformationMatrix3D::sptr& _trf)
  * @param[in] _input Input point.
  * @param[out] _output Output point.
  */
-GEOMETRY_DATA_API void multiply(const sight::data::TransformationMatrix3D::csptr& _trf,
+GEOMETRY_DATA_API void multiply(const sight::data::Matrix4::csptr& _trf,
                                 const sight::data::Point::csptr& _input, sight::data::Point::sptr& _output);
 
 /**
- * @brief Return whether a data::TransformationMatrix3D is an identity matrix.
- * @param[in] _trf Input data::TransformationMatrix3D.
+ * @brief Return whether a data::Matrix4 is an identity matrix.
+ * @param[in] _trf Input data::Matrix4.
  * @param[in] _epsilon Precision of the test (default 1e-12)
  * @return boolean value: true if the matrix is identity, false otherwise.
  */
-GEOMETRY_DATA_API bool isIdentity(const sight::data::TransformationMatrix3D::csptr& _trf,
+GEOMETRY_DATA_API bool isIdentity(const sight::data::Matrix4::csptr& _trf,
                                   const double _epsilon = 1e-12);
 
 /**
- * @brief Convert a data::TransformationMatrix3D into a GLM matrix.
- * @param[in] _trf Input data::TransformationMatrix3D.
+ * @brief Convert a data::Matrix4 into a GLM matrix.
+ * @param[in] _trf Input data::Matrix4.
  * @return GLM matrix.
  */
-inline ::glm::dmat4x4 getMatrixFromTF3D(const sight::data::TransformationMatrix3D::csptr& _trf)
+inline ::glm::dmat4x4 getMatrixFromTF3D(const sight::data::Matrix4::csptr& _trf)
 {
-    // TransformationMatrix3D is stored row-major
+    // Matrix4 is stored row-major
     // glm matrices are stored column-major
     const auto& coefs = _trf->getCoefficients();
 
@@ -94,14 +94,14 @@ inline ::glm::dmat4x4 getMatrixFromTF3D(const sight::data::TransformationMatrix3
 }
 
 /**
- * @brief Convert a GLM matrix into a data::TransformationMatrix3D.
- * @param[out] _trf Output data::TransformationMatrix3D.
+ * @brief Convert a GLM matrix into a data::Matrix4.
+ * @param[out] _trf Output data::Matrix4.
  * @param[in] _input Input GLM matrix.
  */
-inline void setTF3DFromMatrix(sight::data::TransformationMatrix3D::sptr& _trf,
+inline void setTF3DFromMatrix(sight::data::Matrix4::sptr& _trf,
                               const ::glm::dmat4x4& _input)
 {
-    // TransformationMatrix3D is stored row-major
+    // Matrix4 is stored row-major
     // glm matrices are stored column-major
     auto& coefs = _trf->getCoefficients();
     for (size_t i = 0; i < 4; ++i)

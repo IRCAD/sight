@@ -52,7 +52,7 @@ namespace sight::modules::geometry::vision
  * @subsection In-Out In-Out:
  * - \b camera [sight::data::CameraSeries]: Output calibration.
  *  * @subsection Output Output:
- * - \b matrix [sight::data::TransformationMatrix3D]: Extrinsic matrix (for export purpose) (optionnal).
+ * - \b matrix [sight::data::Matrix4]: Extrinsic matrix (for export purpose) (optionnal).
  * @subsection Configuration Configuration:
  * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).

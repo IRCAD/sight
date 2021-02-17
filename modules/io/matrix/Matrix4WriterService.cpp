@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/io/matrix/TransformationMatrix3DWriterService.hpp"
+#include "modules/io/matrix/Matrix4WriterService.hpp"
 
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
@@ -28,11 +28,11 @@
 
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
-#include <io/base/writer/TransformationMatrix3DWriter.hpp>
+#include <io/base/writer/Matrix4Writer.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -46,47 +46,47 @@ namespace sight::modules::io::matrix
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::sight::io::base::service::IWriter,
-                         ::sight::modules::io::matrix::TransformationMatrix3DWriterService,
-                         data::TransformationMatrix3D )
+                         ::sight::modules::io::matrix::Matrix4WriterService,
+                         data::Matrix4 )
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::info(std::ostream& _sstream )
+void Matrix4WriterService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
-    _sstream << std::endl << " TransformationMatrix3D object writer";
+    _sstream << std::endl << " Matrix4 object writer";
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::starting( )
+void Matrix4WriterService::starting( )
 {
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
+sight::io::base::service::IOPathType Matrix4WriterService::getIOPathType() const
 {
     return sight::io::base::service::FILE;
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::configuring()
+void Matrix4WriterService::configuring()
 {
     sight::io::base::service::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::configureWithIHM()
+void Matrix4WriterService::configureWithIHM()
 {
     this->openLocationDialog();
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::openLocationDialog()
+void Matrix4WriterService::openLocationDialog()
 {
     static std::filesystem::path _sDefaultPath("");
 
@@ -113,23 +113,23 @@ void TransformationMatrix3DWriterService::openLocationDialog()
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::stopping()
+void Matrix4WriterService::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::updating()
+void Matrix4WriterService::updating()
 {
     if(this->hasLocationDefined())
     {
         // Retrieve object
-        data::TransformationMatrix3D::csptr matrix =
-            this->getInput< data::TransformationMatrix3D >(sight::io::base::service::s_DATA_KEY);
+        data::Matrix4::csptr matrix =
+            this->getInput< data::Matrix4 >(sight::io::base::service::s_DATA_KEY);
         SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
 
-        sight::io::base::writer::TransformationMatrix3DWriter::sptr writer =
-            sight::io::base::writer::TransformationMatrix3DWriter::New();
+        sight::io::base::writer::Matrix4Writer::sptr writer =
+            sight::io::base::writer::Matrix4Writer::New();
         writer->setObject( matrix );
         writer->setFile(this->getFile());
         writer->write();

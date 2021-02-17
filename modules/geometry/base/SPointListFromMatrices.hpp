@@ -26,7 +26,7 @@
 
 #include <core/com/Signal.hpp>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/IOperator.hpp>
 
@@ -51,7 +51,7 @@ namespace sight::modules::geometry::base
    @endcode
  *
  * @subsection Input Input
- * - \b matrices [sight::data::TransformationMatrix3D]: input matrices (only translation part will be extracted).
+ * - \b matrices [sight::data::Matrix4]: input matrices (only translation part will be extracted).
  *
  * @subsection Inout Inout
  * - \b pointList [sight::data::PointList]: output pointlist, each point represent translation part of corresponding

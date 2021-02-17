@@ -47,6 +47,7 @@
 #include <data/Integer.hpp>
 #include <data/Landmarks.hpp>
 #include <data/Material.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
@@ -55,7 +56,6 @@
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 #include <data/TransferFunction.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 #include <utestData/generator/Object.hpp>
@@ -117,7 +117,7 @@ void ConversionTest::dataToAtomTest()
         data::Composite::New(),
         data::Point::New(),
         data::PointList::New(),
-        data::TransformationMatrix3D::New(),
+        data::Matrix4::New(),
         data::TransferFunction::New(),
         data::Graph::New(),
     };

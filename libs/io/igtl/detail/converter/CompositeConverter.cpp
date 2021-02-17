@@ -25,7 +25,7 @@
 #include "io/igtl/detail/DataConverter.hpp"
 
 #include <data/Composite.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -58,8 +58,8 @@ CompositeConverter::~CompositeConverter()
     data::Composite::csptr composite = data::Composite::dynamicConstCast(src);
     for(const data::Composite::ContainerType::value_type& elt : composite->getContainer())
     {
-        data::TransformationMatrix3D::csptr transfoMatrix =
-            data::TransformationMatrix3D::dynamicConstCast(elt.second);
+        data::Matrix4::csptr transfoMatrix =
+            data::Matrix4::dynamicConstCast(elt.second);
         if(transfoMatrix)
         {
             ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
@@ -99,7 +99,7 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
         trackingMsg->GetTrackingDataElement(i, trackElement);
         const std::string name = trackElement->GetName();
 
-        data::TransformationMatrix3D::sptr transfoMatrix = data::TransformationMatrix3D::New();
+        data::Matrix4::sptr transfoMatrix = data::Matrix4::New();
         (*composite)[name] = transfoMatrix;
 
         ::igtl::Matrix4x4 matrix;

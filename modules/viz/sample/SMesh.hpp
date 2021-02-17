@@ -24,7 +24,7 @@
 
 #include "modules/viz/sample/config.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <ui/base/IGuiContainer.hpp>
 
@@ -62,7 +62,7 @@ public:
 
     MODULE_VIZ_SAMPLE_API static const core::com::Signals::SignalKeyType s_CAM_UPDATED_SIG;
 
-    typedef core::com::Signal< void (data::TransformationMatrix3D::sptr) > CamUpdatedSignalType;
+    typedef core::com::Signal< void (data::Matrix4::sptr) > CamUpdatedSignalType;
 
     /// Creates slots and the signal.
     MODULE_VIZ_SAMPLE_API SMesh() noexcept;
@@ -97,7 +97,7 @@ private:
 private:
 
     /// SLOT: receives new camera transform and update the camera.
-    void updateCamPosition(data::TransformationMatrix3D::sptr _transform);
+    void updateCamPosition(data::Matrix4::sptr _transform);
 
     /// SLOT: receives new camera transform from the camera service and trigger the signal.
     void updateCamTransform();
@@ -115,7 +115,7 @@ private:
     service::IService::sptr m_cameraSrv;
 
     /// Contains the transformation adaptor.
-    data::TransformationMatrix3D::sptr m_cameraTransform;
+    data::Matrix4::sptr m_cameraTransform;
 
     /// Defines whether or not to autoConnect to the mesh, needed for the purpose of tutorials.
     bool m_meshAutoConnect { false };

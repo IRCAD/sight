@@ -42,7 +42,7 @@ class MatrixTL;
 namespace sight::data
 {
 class Image;
-class TransformationMatrix3D;
+class Matrix4;
 }
 
 namespace sight::modules::sync
@@ -72,7 +72,7 @@ namespace sight::modules::sync
  * @subsection Input Input
  * - \b matrixTL [sight::data::MatrixTL]: matrix timeline used to extract matrices.
  * @subsection In-Out In-Out
- * - \b matrices [sight::data::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
+ * - \b matrices [sight::data::Matrix4]: list of Matrix4 used to store extracted matrices.
  */
 class MODULE_SYNC_CLASS_API SMatrixTLSynchronizer : public service::ISynchronizer
 {

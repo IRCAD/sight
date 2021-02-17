@@ -30,7 +30,7 @@
 #include "viz/ogre/SRender.hpp"
 
 #include <data/Color.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreLight.h>

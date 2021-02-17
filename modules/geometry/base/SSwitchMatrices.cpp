@@ -29,10 +29,10 @@
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::base::SSwitchMatrices,
-                         ::sight::data::TransformationMatrix3D)
+                         ::sight::data::Matrix4)
 
 namespace sight::modules::geometry::base
 {
@@ -84,9 +84,9 @@ service::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
 
 void SSwitchMatrices::updating()
 {
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_OUTPUT);
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_OUTPUT);
 
-    auto desiredMatrix = this->getInput< data::TransformationMatrix3D >(s_MATRIX_INPUT, m_indexOfDesiredMatrix);
+    auto desiredMatrix = this->getInput< data::Matrix4 >(s_MATRIX_INPUT, m_indexOfDesiredMatrix);
 
     matrix->shallowCopy(desiredMatrix);
 

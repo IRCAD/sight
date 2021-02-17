@@ -24,7 +24,7 @@
 
 #include "modules/viz/ogre/config.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <viz/ogre/IAdaptor.hpp>
 
@@ -56,7 +56,7 @@ namespace sight::modules::viz::ogre
  *
  * @subsection Input Input
  * - \b texture [sight::data::Image]: image displayed as a texture on the mesh
- * - \b transform [sight::data::TransformationMatrix3D]: Sight transform matrix.
+ * - \b transform [sight::data::Matrix4]: Sight transform matrix.
  *
  * @subsection In-Out In-Out
  * - \b mesh [sight::data::Mesh]: adapted mesh. It can not be a read-only data because we may generate normals or add
@@ -96,7 +96,7 @@ protected:
      * @brief Proposal to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::TransformationMatrix3D::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_ADD_MESH_SLOT
+     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_ADD_MESH_SLOT
      */
     MODULE_VIZ_OGRE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -118,7 +118,7 @@ private:
     /// Stores all services and data needed to add a new mesh.
     struct MeshInstance
     {
-        data::TransformationMatrix3D::sptr m_matrix { nullptr };
+        data::Matrix4::sptr m_matrix { nullptr };
         data::Image::sptr m_image { nullptr };
         sight::viz::ogre::IAdaptor::sptr m_transform { nullptr };
         sight::viz::ogre::IAdaptor::sptr m_mesh { nullptr };

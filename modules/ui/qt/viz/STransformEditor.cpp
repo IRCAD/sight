@@ -24,9 +24,9 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -34,7 +34,7 @@
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -51,7 +51,7 @@ namespace sight::modules::ui::qt::viz
 {
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::STransformEditor,
-                         ::sight::data::TransformationMatrix3D)
+                         ::sight::data::Matrix4)
 
 //------------------------------------------------------------------------------
 
@@ -235,7 +235,7 @@ service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() cons
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_MATRIX_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
@@ -244,7 +244,7 @@ service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() cons
 
 void STransformEditor::onSliderChanged(int)
 {
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
 
     const double rx = ::glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
     const double ry = ::glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
@@ -289,7 +289,7 @@ void STransformEditor::onTextChanged()
 
 void STransformEditor::updateFromMatrix()
 {
-    data::TransformationMatrix3D::sptr matrix = this->getInOut< data::TransformationMatrix3D >("matrix");
+    data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >("matrix");
 
     SLM_ASSERT("Unable to get matrix", matrix);
 

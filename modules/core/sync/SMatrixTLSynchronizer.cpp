@@ -26,10 +26,10 @@
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/timeline/Buffer.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -103,7 +103,7 @@ void SMatrixTLSynchronizer::synchronize()
             if(buffer->isPresent(index))
             {
                 const float* values = buffer->getElement(index);
-                auto matrix         = this->getInOut< data::TransformationMatrix3D >(s_MATRICES_INOUT, matrixIndex);
+                auto matrix         = this->getInOut< data::Matrix4 >(s_MATRICES_INOUT, matrixIndex);
 
                 {
                     data::mt::ObjectWriteLock lock(matrix);

@@ -25,9 +25,9 @@
             <object uid="RGBcamera" type="::sight::data::Camera" src="deferred" />
             <object uid="Dcamera" type="::sight::data::Camera" src="deferred" />
             <!-- Matrices to register to mesh in the right space regading the camera position -->
-            <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
-            <object uid="inverseMatrix" type="::sight::data::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::sight::data::TransformationMatrix3D" src="deferred" />
+            <object uid="registrationMatrix" type="::sight::data::Matrix4" />
+            <object uid="inverseMatrix" type="::sight::data::Matrix4" />
+            <object uid="extrinsic" type="::sight::data::Matrix4" src="deferred" />
             <!-- Objectes related to the models loaded to perform AR -->
             <object uid="seriesDB" type="::sight::data::SeriesDB" />
             <object uid="modelSeries" type="::sight::data::ModelSeries" src="deferred" />
@@ -336,7 +336,7 @@
                 <inout key="data" uid="registrationMatrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::modules::io::matrix::TransformationMatrix3DReaderService" />
+                <addSelection service="::sight::modules::io::matrix::Matrix4ReaderService" />
             </service>
 
             <!-- Reader to open seriesDB data (.jsonz format) -->

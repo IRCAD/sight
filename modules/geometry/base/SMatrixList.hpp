@@ -24,7 +24,7 @@
 
 #include "modules/geometry/base/config.hpp"
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Vector.hpp>
 
 #include <service/IService.hpp>
@@ -73,8 +73,8 @@ namespace sight::modules::geometry::base
    @endcode
  *
  * @subsection InOut InOut:
- * - \b matrices [sight::data::TransformationMatrix3D]: input matrix
- * - \b selectedMatrix [sight::data::TransformationMatrix3D]: selected matrix
+ * - \b matrices [sight::data::Matrix4]: input matrix
+ * - \b selectedMatrix [sight::data::Matrix4]: selected matrix
  *
  * @subsection Output Output:
  * - \b vector [sight::data::Vector]: vector containing matrices
@@ -116,13 +116,13 @@ private:
     void removeMatrix(int);
 
     /// Vector containing input matrices.
-    std::vector< data::TransformationMatrix3D::sptr > m_inputVector;
+    std::vector< data::Matrix4::sptr > m_inputVector;
 
     /// Vector containing output vector.
     std::vector< data::Vector::sptr > m_outputVector;
 
     /// Vector containing selected vector.
-    std::vector< data::TransformationMatrix3D::sptr > m_selectedVector;
+    std::vector< data::Matrix4::sptr > m_selectedVector;
 
     typedef core::com::Signal< void (int, std::string) > MatrixAddedSignalType;
     typedef core::com::Signal< void (int) > MatrixRemovedSignalType;

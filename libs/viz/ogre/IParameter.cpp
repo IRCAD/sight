@@ -30,10 +30,10 @@
 #include <data/Float.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -310,10 +310,10 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         delete [] paramValues;
     }
-    else if(objClass == "::sight::data::TransformationMatrix3D")
+    else if(objClass == "::sight::data::Matrix4")
     {
-        data::TransformationMatrix3D::sptr transValue = data::TransformationMatrix3D::dynamicCast(obj);
-        SLM_ASSERT("The given TransformationMatrix3D object is null", transValue);
+        data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj);
+        SLM_ASSERT("The given Matrix4 object is null", transValue);
 
         float paramValues[16];
 

@@ -25,7 +25,7 @@
 #include "io/vtk/config.hpp"
 
 #include <data/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <vtkSmartPointer.h>
 
@@ -92,22 +92,22 @@ IO_VTK_API void fromVTKImage( vtkImageData* _source, data::Image::sptr _destinat
 IO_VTK_API void configureVTKImageImport( ::vtkImageImport* _pImageImport, data::Image::csptr _pDataImage );
 
 /*!
- * @brief Convert a data::TransformationMatrix3D::sptr to a vtkMatrix4x4*.
+ * @brief Convert a data::Matrix4::sptr to a vtkMatrix4x4*.
  *
- * @param[in] _transfoMatrix data::TransformationMatrix3D::sptr.
+ * @param[in] _transfoMatrix data::Matrix4::sptr.
  * @return vtkPolyData*.
  */
-IO_VTK_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(  data::TransformationMatrix3D::csptr _transfoMatrix );
+IO_VTK_API vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(  data::Matrix4::csptr _transfoMatrix );
 
 /*!
- * @brief Convert a vtkMatrix4x4* to a data::TransformationMatrix3D::sptr.
+ * @brief Convert a vtkMatrix4x4* to a data::Matrix4::sptr.
  *
  * @param[in] _matrix vtkMatrix4x4*.
- * @param[out] _transfoMatrix data::TransformationMatrix3D::sptr.
+ * @param[out] _transfoMatrix data::Matrix4::sptr.
  * @return bool.
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-IO_VTK_API bool fromVTKMatrix( vtkMatrix4x4* _matrix,  data::TransformationMatrix3D::sptr _transfoMatrix);
+IO_VTK_API bool fromVTKMatrix( vtkMatrix4x4* _matrix,  data::Matrix4::sptr _transfoMatrix);
 
 }

@@ -77,7 +77,7 @@ Detail of the ToolBar
             <!-- Object to store the point put in the second tab -->
             <object uid="pointList2" type="::sight::data::PointList" />
             <!-- Object to store the registration matrix -->
-            <object uid="registrationMatrix" type="::sight::data::TransformationMatrix3D" />
+            <object uid="registrationMatrix" type="::sight::data::Matrix4" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "io/base/writer/TransformationMatrix3DWriter.hpp"
+#include "io/base/writer/Matrix4Writer.hpp"
 
 #include "io/base/writer/registry/macros.hpp"
 
@@ -29,7 +29,7 @@
 #include <iostream>
 #include <vector>
 
-fwDataIOWriterRegisterMacro( ::sight::io::base::writer::TransformationMatrix3DWriter);
+fwDataIOWriterRegisterMacro( ::sight::io::base::writer::Matrix4Writer);
 
 namespace sight::io::base
 {
@@ -39,20 +39,20 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3DWriter::TransformationMatrix3DWriter(io::base::writer::IObjectWriter::Key) :
+Matrix4Writer::Matrix4Writer(io::base::writer::IObjectWriter::Key) :
     data::location::enableSingleFile< io::base::writer::IObjectWriter >(this)
 {
 }
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3DWriter::~TransformationMatrix3DWriter()
+Matrix4Writer::~Matrix4Writer()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DWriter::write()
+void Matrix4Writer::write()
 {
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);
@@ -61,8 +61,8 @@ void TransformationMatrix3DWriter::write()
         SLM_ERROR( "Trf file writing error for " << getFile());
         return;
     }
-    data::TransformationMatrix3D::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
-    int i                                         = 0;
+    data::Matrix4::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
+    int i                          = 0;
     for (auto val : mat)
     {
         file << val;
@@ -82,7 +82,7 @@ void TransformationMatrix3DWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string TransformationMatrix3DWriter::extension()
+std::string Matrix4Writer::extension()
 {
     static std::string ext(".trf");
     return ext;

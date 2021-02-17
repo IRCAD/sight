@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Matrix4.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -107,14 +107,14 @@ private Q_SLOTS:
 private:
 
     void refresh();
-    void notitfyTransformationMatrix(data::TransformationMatrix3D::sptr aTransMat);
+    void notitfyTransformationMatrix(data::Matrix4::sptr aTransMat);
 
     /// Create the transformation in mesh field. This field is used in the adaptors to transform the mesh
     void addMeshTransform();
 
     // ReconstructionMapType
     typedef ::std::map< ::std::string, data::Reconstruction::sptr > ReconstructionMapType;
-    typedef ::std::map< ::std::string, data::TransformationMatrix3D::sptr> InnerMatMappingType;
+    typedef ::std::map< ::std::string, data::Matrix4::sptr> InnerMatMappingType;
     typedef ::std::map< ::std::string, InnerMatMappingType> SaveMappingType;
 
     ReconstructionMapType m_reconstructionMap;

@@ -16,7 +16,7 @@
             <object uid="Frame"        type="::sight::data::Image" />
             <object uid="Timeline"          type="::sight::data::FrameTL" />
             <object uid="CamMatrixTimeline" type="::sight::data::MatrixTL" />
-            <object uid="CameraPoseMatrix"  type="::sight::data::TransformationMatrix3D" />
+            <object uid="CameraPoseMatrix"  type="::sight::data::Matrix4" />
 
             <object uid="openvslamPointCloud" type="::sight::data::Mesh"     src="deferred" />
             <object uid="camera"              type="::sight::data::Camera"   src="deferred" />

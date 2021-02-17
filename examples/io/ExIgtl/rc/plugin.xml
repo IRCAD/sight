@@ -13,8 +13,8 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="objectMeshUid" type="::sight::data::Mesh" />
-            <object uid="cameraMatrix" type="::sight::data::TransformationMatrix3D" />
-            <object uid="meshMatrix" type="::sight::data::TransformationMatrix3D" >
+            <object uid="cameraMatrix" type="::sight::data::Matrix4" />
+            <object uid="meshMatrix" type="::sight::data::Matrix4" >
                 <matrix>
                     <![CDATA[
                         1    0    0    5

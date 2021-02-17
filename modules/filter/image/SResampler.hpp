@@ -47,7 +47,7 @@ namespace sight::modules::filter::image
    @endcode
  * @subsection Input Input
  * - \b imageIn [sight::data::Image]: Image to resample.
- * - \b transform [sight::data::TransformationMatrix3D]: Transform to apply.
+ * - \b transform [sight::data::Matrix4]: Transform to apply.
  * - \b target [sight::data::Image] (optional): target image defining the size, spacing and origin of the output.
  * @subsection In-Out In-Out
  * - \b imageOut [sight::data::Image]: New resampled image.

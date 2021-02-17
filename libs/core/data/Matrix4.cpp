@@ -20,19 +20,19 @@
  *
  ***********************************************************************/
 
-#include "data/TransformationMatrix3D.hpp"
+#include "data/Matrix4.hpp"
 
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::TransformationMatrix3D );
+fwDataRegisterMacro( ::sight::data::Matrix4 );
 
 namespace sight::data
 {
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3D::TransformationMatrix3D(data::Object::Key)
+Matrix4::Matrix4(data::Object::Key)
 {
     //default initialization
     m_vCoefficients.fill(0.);
@@ -44,15 +44,15 @@ TransformationMatrix3D::TransformationMatrix3D(data::Object::Key)
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3D::~TransformationMatrix3D()
+Matrix4::~Matrix4()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::shallowCopy(const Object::csptr& _source )
+void Matrix4::shallowCopy(const Object::csptr& _source )
 {
-    TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
+    Matrix4::csptr other = Matrix4::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
@@ -62,9 +62,9 @@ void TransformationMatrix3D::shallowCopy(const Object::csptr& _source )
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3D::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Matrix4::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
-    TransformationMatrix3D::csptr other = TransformationMatrix3D::dynamicConstCast(_source);
+    Matrix4::csptr other = Matrix4::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( data::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );

@@ -100,7 +100,7 @@ void CameraSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
 
     for(MatricesContainer::value_type elt : other->m_extrinsicMatrices)
     {
-        data::TransformationMatrix3D::sptr matrix;
+        data::Matrix4::sptr matrix;
         matrix = data::Object::copy(elt, cache);
         m_extrinsicMatrices.push_back(matrix);
     }
@@ -113,10 +113,10 @@ void CameraSeries::addCamera(const data::Camera::sptr& camera)
     FW_RAISE_IF("Camera already exists in CameraSeries.",
                 std::find(m_cameras.begin(), m_cameras.end(), camera) != m_cameras.end());
     m_cameras.push_back(camera);
-    data::TransformationMatrix3D::sptr matrix;
+    data::Matrix4::sptr matrix;
     if (m_extrinsicMatrices.empty())
     {
-        matrix = data::TransformationMatrix3D::New();
+        matrix = data::Matrix4::New();
     }
     m_extrinsicMatrices.push_back(matrix);
 }
@@ -145,7 +145,7 @@ void CameraSeries::removeCamera(const data::Camera::sptr& camera)
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::setExtrinsicMatrix(size_t index, data::TransformationMatrix3D::sptr matrix)
+void CameraSeries::setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix)
 {
     FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     m_extrinsicMatrices[index] = matrix;
@@ -153,7 +153,7 @@ void CameraSeries::setExtrinsicMatrix(size_t index, data::TransformationMatrix3D
 
 //------------------------------------------------------------------------------
 
-data::TransformationMatrix3D::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
+data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
 {
     FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     return m_extrinsicMatrices[index];

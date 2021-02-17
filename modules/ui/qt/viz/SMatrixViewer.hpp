@@ -39,7 +39,7 @@ namespace viz
 {
 
 /**
- * @brief  This class defines a viewer for a data::TransformationMatrix3D.
+ * @brief  This class defines a viewer for a data::Matrix4.
  *
  * @section XML XML Configuration
  *
@@ -51,7 +51,7 @@ namespace viz
    @endcode
 
  * @subsection Input Input
- * - \b matrix [sight::data::TransformationMatrix3D]: matrix to display
+ * - \b matrix [sight::data::Matrix4]: matrix to display
  *
  * @subsection Configuration Configuration
  * - \b title (optional): defines the displayed title on top of the matrix viewer (default: matrix).
@@ -73,7 +73,7 @@ public:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect TransformationMatrix3D::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Matrix4::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
 

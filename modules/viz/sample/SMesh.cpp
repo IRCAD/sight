@@ -125,7 +125,7 @@ void SMesh::starting()
     m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
 
-    m_cameraTransform = data::TransformationMatrix3D::New();
+    m_cameraTransform = data::Matrix4::New();
     m_connections.connect(m_cameraTransform, data::Object::s_MODIFIED_SIG,
                           this->getSptr(), s_UPDATE_CAM_TRANSFORM_SLOT);
 
@@ -190,7 +190,7 @@ void SMesh::stopping()
 
 //------------------------------------------------------------------------------
 
-void SMesh::updateCamPosition(data::TransformationMatrix3D::sptr _transform)
+void SMesh::updateCamPosition(data::Matrix4::sptr _transform)
 {
     m_cameraTransform->shallowCopy(_transform);
     m_cameraSrv->update().wait();

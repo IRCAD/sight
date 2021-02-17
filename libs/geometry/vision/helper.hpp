@@ -24,8 +24,8 @@
 
 #include "geometry/vision/config.hpp"
 
+#include <core/data/Matrix4.hpp>
 #include <core/data/PointList.hpp>
-#include <core/data/TransformationMatrix3D.hpp>
 #include <core/data/Vector.hpp>
 
 #include <opencv2/aruco.hpp>
@@ -99,15 +99,15 @@ GEOMETRY_VISION_API ::cv::Matx44f cameraPoseStereo(const std::vector< ::cv::Poin
 /**
  * @brief calibrateTool compute a transformation matrix from tracked device attached to a passive pointing tool and its
  * tip
- * @param _matricesVector: vector containing a set of sight::data::TransformationMatrix3D from the tracked device
+ * @param _matricesVector: vector containing a set of sight::data::Matrix4 from the tracked device
  * @param _calibrationMatrix corresponding to the transformation matrix from the tracked device to the
  * tip of the attached passive pointing device
  * @param _centerMatrix corresponding to the center of the computed sphere used to calibrate the pointing tool
  */
 GEOMETRY_VISION_API void calibratePointingTool(
     const sight::data::Vector::csptr _matricesVector,
-    sight::data::TransformationMatrix3D::sptr _calibrationMatrix,
-    sight::data::TransformationMatrix3D::sptr _centerMatrix);
+    sight::data::Matrix4::sptr _calibrationMatrix,
+    sight::data::Matrix4::sptr _centerMatrix);
 
 /**
  * @brief generateArucoDictionary generates an Aruco Dictionary regarding the number of marker wanted

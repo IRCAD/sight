@@ -25,10 +25,10 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Camera.hpp>
+#include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -72,7 +72,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
 
     const auto fwPoints3d = this->getLockedInput< data::PointList >(s_POINTLIST3D_INPUT);
 
-    auto fwMatrix = this->getLockedInOut< data::TransformationMatrix3D >(s_MATRIX_INOUT);
+    auto fwMatrix = this->getLockedInOut< data::Matrix4 >(s_MATRIX_INOUT);
 
     //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
@@ -122,13 +122,13 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
         cvMat = cvMat.inv();
     }
 
-    data::TransformationMatrix3D::sptr matrix = data::TransformationMatrix3D::New();
+    data::Matrix4::sptr matrix = data::Matrix4::New();
     io::opencv::Matrix::copyFromCv(cvMat, matrix);
 
     fwMatrix->deepCopy(matrix);
 
-    const auto sig = fwMatrix->signal< data::TransformationMatrix3D::ModifiedSignalType >
-                         ( data::TransformationMatrix3D::s_MODIFIED_SIG);
+    const auto sig = fwMatrix->signal< data::Matrix4::ModifiedSignalType >
+                         ( data::Matrix4::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 

@@ -28,7 +28,7 @@
 
 #include <core/reflection/macros.hpp>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 fwCampDeclareAccessor((sight)(data)(CameraSeries), (sight)(data)(Camera));
-fwCampDeclareAccessor((sight)(data)(CameraSeries), (sight)(data)(TransformationMatrix3D));
+fwCampDeclareAccessor((sight)(data)(CameraSeries), (sight)(data)(Matrix4));

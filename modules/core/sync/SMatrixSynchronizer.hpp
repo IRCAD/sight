@@ -28,15 +28,15 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/ISynchronizer.hpp>
 
 namespace sight::modules::sync
 {
 /**
- * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a TransformationMatrix3D.
+ * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a Matrix4.
  */
 class MODULE_SYNC_CLASS_API SMatrixSynchronizer : public service::ISynchronizer
 {
@@ -92,12 +92,12 @@ protected:
 
 private:
 
-    /// slot to update the TransformationMatrix3D with the timeline buffer
+    /// slot to update the Matrix4 with the timeline buffer
     UpdateMatrixSlotType::sptr m_slotUpdateMatrix;
     /// Last timestamp
     core::HiResClock::HiResClockType m_lastTimestamp;
 
-    /// This function fills the TransformationMatrix3D with the current buffer content of the MatrixTL
+    /// This function fills the Matrix4 with the current buffer content of the MatrixTL
     void updateMatrix(core::HiResClock::HiResClockType timestamp);
 
 };

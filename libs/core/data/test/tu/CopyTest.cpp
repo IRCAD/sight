@@ -38,6 +38,7 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/location/SingleFile.hpp>
 #include <data/Material.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/Node.hpp>
 #include <data/Plane.hpp>
@@ -56,7 +57,6 @@
 #include <data/StructureTraitsDictionary.hpp>
 #include <data/Tag.hpp>
 #include <data/TransferFunction.hpp>
-#include <data/TransformationMatrix3D.hpp>
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
@@ -110,7 +110,7 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(data::ResectionDB);
     __FWDATA_UT_FIELD_COPY_MACRO(data::String);
     __FWDATA_UT_FIELD_COPY_MACRO(data::TransferFunction);
-    __FWDATA_UT_FIELD_COPY_MACRO(data::TransformationMatrix3D);
+    __FWDATA_UT_FIELD_COPY_MACRO(data::Matrix4);
     __FWDATA_UT_FIELD_COPY_MACRO(data::Vector);
 
 //Not implemented !?

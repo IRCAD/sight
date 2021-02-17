@@ -26,12 +26,12 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Landmarks.hpp>
+#include <data/Matrix4.hpp>
 #include <data/String.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
-#include <geometry/data/TransformationMatrix3D.hpp>
+#include <geometry/data/Matrix4.hpp>
 
 namespace sight::modules::geometry::base
 {
@@ -95,9 +95,9 @@ void SPointToLandmarkDistance::updating()
     if(m_landmarkSelected)
     {
         const auto pointMat =
-            this->getLockedInput< data::TransformationMatrix3D>("pointMatrix");
+            this->getLockedInput< data::Matrix4>("pointMatrix");
         auto pointToLandmarkMatLocked =
-            this->getLockedInOut< data::TransformationMatrix3D>("pointToLandmarkMatrix");
+            this->getLockedInOut< data::Matrix4>("pointToLandmarkMatrix");
         auto pointToLandmarkMat          = pointToLandmarkMatLocked.get_shared();
         const auto distanceText          = this->getLockedInOut< data::String>("distanceText");
         const ::glm::dmat4x4 pointMatrix = sight::geometry::data::getMatrixFromTF3D(

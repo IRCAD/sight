@@ -24,7 +24,7 @@
 
 #include <core/com/Slots.hxx>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
@@ -115,7 +115,7 @@ void SCamera::starting()
 service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
@@ -129,7 +129,7 @@ void SCamera::updating()
 {
     ::Ogre::Affine3 ogreMatrix;
     {
-        const auto transform = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+        const auto transform = this->getLockedInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
 
         // Received input line and column data from Sight transformation matrix
         for (size_t lt = 0; lt < 4; lt++)
@@ -233,7 +233,7 @@ void SCamera::updateTF3D()
 
     newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
 
-    const auto transform = this->getLockedInOut< data::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+    const auto transform = this->getLockedInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
 
     // Received input line and column data from Sight transformation matrix
     for (size_t lt = 0; lt < 4; lt++)
@@ -376,7 +376,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries::csptr& _cs)
             // first camera to the current one.
             if(i < nbCams - 1)
             {
-                const data::TransformationMatrix3D::csptr extrinsic = _cs->getExtrinsicMatrix(i + 1);
+                const data::Matrix4::csptr extrinsic = _cs->getExtrinsicMatrix(i + 1);
                 extrinsicMx = sight::viz::ogre::Utils::convertTM3DToOgreMx(extrinsic) * extrinsicMx;
             }
         }

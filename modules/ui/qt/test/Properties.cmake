@@ -1,5 +1,5 @@
 
-set( NAME guiQtTest )
+set( NAME module_ui_qtTest )
 set( VERSION  )
 set( TYPE TEST )
 set( DEPENDENCIES

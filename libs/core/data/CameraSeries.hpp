@@ -29,9 +29,9 @@
 #include <core/com/Signals.hpp>
 #include <core/macros.hpp>
 
+#include <data/Matrix4.hpp>
 #include <data/Object.hpp>
 #include <data/Series.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <map>
 #include <vector>
@@ -87,7 +87,7 @@ public:
     typedef core::com::Signal<void ()> ExtrinsicCalibratedSignalType;
     /** @} */
 
-    typedef std::vector< data::TransformationMatrix3D::sptr > MatricesContainer;
+    typedef std::vector< data::Matrix4::sptr > MatricesContainer;
 
     /**
      * @brief Adds a camera in the cameraSeries.
@@ -121,7 +121,7 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API void setExtrinsicMatrix(size_t index, data::TransformationMatrix3D::sptr matrix);
+    DATA_API void setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix);
 
     /**
      * @brief Gets the extrinsic matrix.
@@ -131,14 +131,14 @@ public:
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
      * @throws core::Exception if the index is out of range
      */
-    DATA_API data::TransformationMatrix3D::sptr getExtrinsicMatrix(size_t index) const;
+    DATA_API data::Matrix4::sptr getExtrinsicMatrix(size_t index) const;
 
     /**
      * @brief Gets the extrinsic matrix corresponding to the transformation from camera[0] to camera[1].
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @deprecated Use getExtrinsicMatrix(1) instead of this method
      */
-    data::TransformationMatrix3D::sptr getExtrinsicMatrix() const
+    data::Matrix4::sptr getExtrinsicMatrix() const
     {
         return this->getExtrinsicMatrix(1);
     }

@@ -72,7 +72,7 @@ namespace sight::modules::ui::qt::metrics
        @endcode
  *
  * @subsection In In
- * - \b matrix [sight::data::TransformationMatrix3D] (optional): Matrix used to compute transformation from the picked
+ * - \b matrix [sight::data::Matrix4] (optional): Matrix used to compute transformation from the picked
  * point to the landmarks
  *
  *  @subsection In-Out In-Out

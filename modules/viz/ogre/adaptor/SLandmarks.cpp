@@ -194,7 +194,7 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
 
-    connections.push(s_TRANSFORM_CONFIG, data::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);

@@ -20,9 +20,9 @@
             <object uid="RGBDCameraSeries" type="::sight::data::CameraSeries" />
             <object uid="RGBCamera" type="::sight::data::Camera" src="deferred" />
             <object uid="DCamera" type="::sight::data::Camera" src="deferred" />
-            <object uid="identity" type="::sight::data::TransformationMatrix3D" />
-            <object uid="3dCameraTrf" type="::sight::data::TransformationMatrix3D" />
-            <object uid="depth_to_color" type="::sight::data::TransformationMatrix3D" src="deferred" />
+            <object uid="identity" type="::sight::data::Matrix4" />
+            <object uid="3dCameraTrf" type="::sight::data::Matrix4" />
+            <object uid="depth_to_color" type="::sight::data::Matrix4" src="deferred" />
 
             <!-- Transfer function to visualize depth images -->
             <object uid="tfDepth" type="::sight::data::TransferFunction" >

@@ -27,8 +27,8 @@
 #include <core/data/PointList.hpp>
 
 #include <data/Array.hpp>
+#include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 namespace sight::geometry::data
 {
@@ -61,7 +61,7 @@ public:
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
     GEOMETRY_DATA_API static void transform(::sight::data::PointList::sptr& _pointList,
-                                            const ::sight::data::TransformationMatrix3D::csptr& _matrix);
+                                            const ::sight::data::Matrix4::csptr& _matrix);
 
     /**
      * @brief Associate 2 pointLists:

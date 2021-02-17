@@ -24,7 +24,7 @@
 
 #include <core/tools/Type.hpp>
 
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -34,8 +34,8 @@
 
 #include <utestData/generator/Mesh.hpp>
 
+#include <geometry/data/Matrix4.hpp>
 #include <geometry/data/Mesh.hpp>
-#include <geometry/data/TransformationMatrix3D.hpp>
 
 #include <sstream>
 
@@ -327,7 +327,7 @@ void MeshTest::transformTest()
     matrix = ::glm::translate(matrix, ::glm::dvec3(10., 20., 30.));
     matrix = ::glm::scale(matrix, ::glm::dvec3(2., 2., 2.));
 
-    auto trans = sight::data::TransformationMatrix3D::New();
+    auto trans = sight::data::Matrix4::New();
     geometry::data::setTF3DFromMatrix(trans, matrix);
 
     geometry::data::Mesh::transform(meshOrig, mesh, trans);

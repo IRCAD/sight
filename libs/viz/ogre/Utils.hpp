@@ -26,7 +26,7 @@
 
 #include <data/Color.hpp>
 #include <data/Image.hpp>
-#include <data/TransformationMatrix3D.hpp>
+#include <data/Matrix4.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreImage.h>
@@ -155,11 +155,11 @@ public:
     VIZ_OGRE_API static data::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
     /// Creates an ogre matrix from a Sight matrix.
-    VIZ_OGRE_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const data::TransformationMatrix3D::csptr& _tm3d);
+    VIZ_OGRE_API static ::Ogre::Matrix4 convertTM3DToOgreMx(const data::Matrix4::csptr& _tm3d);
 
     /// Copies an ogre matrix to a Sight matrix.
     VIZ_OGRE_API static void copyOgreMxToTM3D(const ::Ogre::Matrix4& _mx,
-                                              const data::TransformationMatrix3D::sptr& _tm3d);
+                                              const data::Matrix4::sptr& _tm3d);
 
     /// Copies the image's spacing and origin into Ogre vectors.
     VIZ_OGRE_API static std::pair< ::Ogre::Vector3, ::Ogre::Vector3 >

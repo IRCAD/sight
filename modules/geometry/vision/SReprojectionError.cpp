@@ -29,9 +29,9 @@
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 #include <data/MarkerTL.hpp>
+#include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <service/macros.hpp>
 
@@ -133,7 +133,7 @@ void SReprojectionError::starting()
 
     m_extrinsic = ::cv::Mat::eye(4, 4, CV_64F);
 
-    auto extrinsic = this->getInput< data::TransformationMatrix3D>(s_EXTRINSIC_INPUT);
+    auto extrinsic = this->getInput< data::Matrix4>(s_EXTRINSIC_INPUT);
     if(extrinsic != nullptr)
     {
         for(std::uint8_t i = 0; i < 4; ++i )
@@ -262,7 +262,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
             unsigned int i = 0;
             for(auto markerKey : m_matricesTag)
             {
-                auto matrix = this->getInput< data::TransformationMatrix3D >(s_MATRIX_INPUT, i);
+                auto matrix = this->getInput< data::Matrix4 >(s_MATRIX_INPUT, i);
 
                 const auto* marker = markerMap->getMarker(markerKey);
 

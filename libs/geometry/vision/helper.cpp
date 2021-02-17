@@ -185,8 +185,8 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 //-----------------------------------------------------------------------------
 
 void calibratePointingTool(const data::Vector::csptr _matricesVector,
-                           data::TransformationMatrix3D::sptr _calibrationMatrix,
-                           data::TransformationMatrix3D::sptr _centerMatrix)
+                           data::Matrix4::sptr _calibrationMatrix,
+                           data::Matrix4::sptr _centerMatrix)
 {
     const data::Vector::ContainerType matrices = _matricesVector->getContainer();
     const size_t nbrMatrices                   = matrices.size();
@@ -204,8 +204,8 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
 
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
-        data::TransformationMatrix3D::csptr m1 = data::TransformationMatrix3D::dynamicCast(matrices.at(i));
-        SLM_ASSERT("This element of the vector is not a data::TransformationMatrix3D", m1);
+        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
+        SLM_ASSERT("This element of the vector is not a data::Matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = m1->getCoefficient(0, 3);
@@ -233,8 +233,8 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
     translation.fill(0);
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
-        data::TransformationMatrix3D::csptr m1 = data::TransformationMatrix3D::dynamicCast(matrices.at(i));
-        SLM_ASSERT("This element of the vector is not a data::TransformationMatrix3D", m1);
+        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
+        SLM_ASSERT("This element of the vector is not a data::Matrix4", m1);
         const geometry::eigen::helper::EigenMatrix pointMatrix =
             geometry::eigen::helper::toEigen(m1->getCoefficients());
         geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);

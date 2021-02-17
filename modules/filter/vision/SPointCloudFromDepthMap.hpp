@@ -26,8 +26,8 @@
 
 #include <data/Camera.hpp>
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
-#include <data/TransformationMatrix3D.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -139,7 +139,7 @@ private:
                                  const data::Camera::csptr& colorCamera,
                                  const data::Image::csptr& depthMap,
                                  const data::Image::csptr& colorMap,
-                                 const data::TransformationMatrix3D::csptr& extrinsic,
+                                 const data::Matrix4::csptr& extrinsic,
                                  const data::Mesh::sptr& pointCloud);
 
     /// Min value of depth used to build pointcloud.

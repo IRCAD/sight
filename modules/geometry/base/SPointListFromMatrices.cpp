@@ -95,9 +95,9 @@ void SPointListFromMatrices::updating()
 
     for(size_t j = 0; j < numMatrices; ++j)
     {
-        const auto mat = this->getLockedInput< data::TransformationMatrix3D >(
+        const auto mat = this->getLockedInput< data::Matrix4 >(
             s_MATRICES_INPUT, j);
-        data::TransformationMatrix3D::TMCoefArray coefs = mat->getCoefficients();
+        data::Matrix4::TMCoefArray coefs = mat->getCoefficients();
 
         //extract translation
         data::Point::sptr p = data::Point::New(coefs[3], coefs[7], coefs[11]);
