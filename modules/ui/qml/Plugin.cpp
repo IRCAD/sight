@@ -26,8 +26,9 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
 
 #include <modules/ui/qml/activity/ActivityLauncherManager.hpp>
 #include <modules/ui/qml/activity/SSequencer.hpp>
@@ -83,7 +84,7 @@ void Plugin::start()
     m_workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
     QQuickStyle::setStyle("Material");
 
-    service::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
+    core::thread::ActiveWorkers::setDefaultWorker(m_workerQt);
     auto engine = sight::ui::qml::QmlEngine::getDefault();
 
     // add custom controls and the singleton theme for all qml project
@@ -133,7 +134,7 @@ int Plugin::run() noexcept
     core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
-    service::registry::ActiveWorkers::getDefault()->clearRegistry();
+    core::thread::ActiveWorkers::getDefault()->clearRegistry();
     m_workerQt.reset();
 
     return result;

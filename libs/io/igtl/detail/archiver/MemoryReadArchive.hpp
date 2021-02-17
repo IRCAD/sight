@@ -34,6 +34,7 @@
 #include <io/zip/IReadArchive.hpp>
 
 #include <map>
+#include <vector>
 
 namespace sight::io::igtl::detail
 {

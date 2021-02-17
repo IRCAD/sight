@@ -24,8 +24,9 @@
 
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
 
 namespace sight::modules::ui::console
 {
@@ -45,7 +46,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     m_worker = core::thread::Worker::New();
-    service::registry::ActiveWorkers::setDefaultWorker(m_worker);
+    core::thread::ActiveWorkers::setDefaultWorker(m_worker);
 
     core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
@@ -70,7 +71,7 @@ int Plugin::run() noexcept
     core::runtime::getCurrentProfile()->cleanup();
     const std::uint64_t result = std::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
-    service::registry::ActiveWorkers::getDefault()->clearRegistry();
+    core::thread::ActiveWorkers::getDefault()->clearRegistry();
     m_worker.reset();
 
     return result;
