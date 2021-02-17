@@ -424,26 +424,26 @@ endforeach()
 ########################################################################################################################
 
 if(BUILD_SDK)
-    # Create the SightConfig.cmake file
-    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/cmake/build/SightConfig.cmake.in)
+    # Create the sightConfig.cmake file
+    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in)
 
-    configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake" @ONLY)
+    configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" @ONLY)
 
-    # Create the SightConfigVersion file
+    # Create the sightConfigVersion file
     set(SIGHT_VERSION ${GIT_TAG})
 
     write_basic_package_version_file(
-      "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
+      "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
       VERSION ${SIGHT_VERSION}
       COMPATIBILITY AnyNewerVersion
     )
 
-    # Install the SightConfig.cmake and SightConfigVersion.cmake
+    # Install the sightConfig.cmake and sightConfigVersion.cmake
     install(
       FILES
-        "${CMAKE_BINARY_DIR}/cmake/SightConfig.cmake"
-        "${CMAKE_BINARY_DIR}/cmake/SightConfigVersion.cmake"
-        "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
         "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
       DESTINATION

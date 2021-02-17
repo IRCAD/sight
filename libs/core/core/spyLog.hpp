@@ -73,8 +73,8 @@
 #include <boost/preprocessor/comparison/greater_equal.hpp>
 #include <boost/preprocessor/control/expr_iif.hpp>
 
-# include "core/log/SpyLogger.hpp"
-# include "core/log/ScopedMessage.hpp"
+# include <core/log/SpyLogger.hpp>
+# include <core/log/ScopedMessage.hpp>
 
 // -----------------------------------------------------------------------------
 

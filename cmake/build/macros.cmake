@@ -6,8 +6,8 @@ if(FW_BUILD_EXTERNAL)
     set(FWCMAKE_INSTALL_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/install)
     set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_LIST_DIR})
 else()
-    set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_SOURCE_DIR}/cmake/build/")
-    set(FWCMAKE_INSTALL_FILES_DIR "${CMAKE_SOURCE_DIR}/cmake/install/")
+    set(FWCMAKE_BUILD_FILES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/")
+    set(FWCMAKE_INSTALL_FILES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/")
     # FWCMAKE_RESOURCE_PATH already set in main CMakeLists.txt
 endif()
 
@@ -32,8 +32,7 @@ if(NOT FW_BUILD_EXTERNAL)
     include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 endif()
 
-
-file(REMOVE "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake")
+file(REMOVE "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -51,8 +50,7 @@ macro(groupMaker FWPROJECT_NAME)
     endforeach()
 endmacro()
 
-macro(configure_header_file FWPROJECT_NAME FILENAME)
-
+function(get_header_file_install_destination)
     # Paths for config files are:
     # activities -> activity/theme/project/
     # apps -> project
@@ -69,15 +67,17 @@ macro(configure_header_file FWPROJECT_NAME FILENAME)
     string(REPLACE "core" "." THEME ${THEME})
     
     if("${ROOT}" STREQUAL "libs")
-        set(HEADER_FILE_DESTINATION_REL "${THEME}/${PROJECT}")
+        set(HEADER_FILE_DESTINATION_REL "${THEME}/${PROJECT}" PARENT_SCOPE)
     else()
         if("${ROOT}" STREQUAL "modules" OR "${ROOT}" STREQUAL "activities" )
-            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${THEME}/${PROJECT}")
+            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${THEME}/${PROJECT}" PARENT_SCOPE)
         else()
-            set(HEADER_FILE_DESTINATION_REL "${PROJECT}")
+            set(HEADER_FILE_DESTINATION_REL "${PROJECT}" PARENT_SCOPE)
         endif()
     endif()
+endfunction()
 
+macro(configure_header_file FWPROJECT_NAME FILENAME HEADER_FILE_DESTINATION_REL)
     set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${HEADER_FILE_DESTINATION_REL}")
     configure_file(
         "${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in"
@@ -85,8 +85,8 @@ macro(configure_header_file FWPROJECT_NAME FILENAME)
         IMMEDIATE @ONLY)
 
     if(BUILD_SDK)
-        install(FILES ${HEADER_FILE_DESTINATION}
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME})
+        install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL})
     endif()
 endmacro()
 
@@ -326,6 +326,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "exec")
 endmacro()
 
+
 macro(fwCppunitTest FWPROJECT_NAME)
     set(options)
     set(oneValueArgs)
@@ -378,10 +379,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${TEST_RC_DIR}" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
-
-        if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}" )
-        endif()
     endif()
 
     # Configure launcher script
@@ -396,7 +393,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
         else()
             string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
         endif()
-
 
         # Build the shell script from template_test.sh.in
         configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
@@ -511,24 +507,27 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     endif()
 
-    string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
-
     # create the config.hpp for the current library
-    configure_header_file(${FWPROJECT_NAME} "config.hpp")
+    get_header_file_install_destination()
+    message("${HEADER_FILE_DESTINATION_REL}")
+    configure_header_file(${FWPROJECT_NAME} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
 
     if(BUILD_SDK)
-        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX})
-
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+                FILES_MATCHING PATTERN "*.h"
+                               PATTERN "*.hpp"
+                               PATTERN "*.hxx"
+                               PATTERN "test/*" EXCLUDE)
         set(TARGETS_TO_EXPORT ${FWPROJECT_NAME})
 
         if(${FWPROJECT_NAME}_GENERATE_OBJECT_LIB)
             set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${FWPROJECT_NAME_OBJECT_LIB})
         endif()
         install(
-            TARGETS ${TARGETS_TO_EXPORT} EXPORT Sight-${FWPROJECT_NAME}Targets
+            TARGETS ${TARGETS_TO_EXPORT} EXPORT sight_${FWPROJECT_NAME}_Targets
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}
@@ -542,16 +541,16 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         endif()
 
         # Add all targets to the build-tree export set
-        export( EXPORT Sight-${FWPROJECT_NAME}Targets
-                FILE "${CMAKE_BINARY_DIR}/cmake/Sight-${FWPROJECT_NAME}Targets.cmake"
-                NAMESPACE Sight::)
+        export( EXPORT sight_${FWPROJECT_NAME}_Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/sight_${FWPROJECT_NAME}_Targets.cmake"
+                NAMESPACE sight::)
 
-        # Install the Sight-ProjectTargets.cmake
-        install(EXPORT Sight-${FWPROJECT_NAME}Targets
+        # Install the sight_ProjectTargets.cmake
+        install(EXPORT sight_${FWPROJECT_NAME}_Targets
                 FILE
-                  Sight-${FWPROJECT_NAME}Targets.cmake
+                  sight_${FWPROJECT_NAME}_Targets.cmake
                 NAMESPACE
-                  Sight::
+                  sight::
                 DESTINATION
                   ${FWCONFIG_PACKAGE_LOCATION}
         )
@@ -559,7 +558,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         list(APPEND FW_COMPONENTS ${FWPROJECT_NAME} )
         set(FW_COMPONENTS ${FW_COMPONENTS} PARENT_SCOPE)
 
-        # Add Sight targets depepndencies
+        # Add Sight targets dependencies
         if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
             configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake"
                             "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
@@ -569,23 +568,14 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake" "")
         endif()
 
-        set(FW_INSTALL_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES})
-        list(REMOVE_ITEM FW_INSTALL_DEPENDENCIES ${FWPROJECT_NAME})
-        if(FW_INSTALL_DEPENDENCIES)
-            file(APPEND "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-                "find_package(Sight COMPONENTS ${FW_INSTALL_DEPENDENCIES} REQUIRED)")
-        endif()
-
-        # Install the Sight-ProjectDependencies.cmake
-        if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake")
-            install(FILES
-                      "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
-                    RENAME
-                        Sight-${FWPROJECT_NAME}Dependencies.cmake
-                    DESTINATION
-                      ${FWCONFIG_PACKAGE_LOCATION}
-            )
-        endif()
+        # Install the sight_project_Dependencies.cmake
+        install(FILES
+                    "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
+                RENAME
+                    sight_${FWPROJECT_NAME}_Dependencies.cmake
+                DESTINATION
+                    ${FWCONFIG_PACKAGE_LOCATION}
+        )
     else()
         if(${FWPROJECT_NAME}_INSTALL)
             install(
@@ -679,7 +669,8 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         endif()
 
         # create the config.hpp for the current module
-        configure_header_file(${FWPROJECT_NAME} "config.hpp")
+        get_header_file_install_destination()
+        configure_header_file(${FWPROJECT_NAME} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
 
         # Allows include of type <ui/config.hpp>
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include")
@@ -1107,18 +1098,18 @@ macro(addProject PROJECT)
 
         if(BUILD_SDK)
             # Store requirements for the SDK
-            file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+            file(APPEND "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
                 "set(${PROJECT}_EXTERNAL 1)\n"
                 "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
                 "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
                 "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
                 "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
             if(${PROJECT}_START)
-                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
                     "set(${PROJECT}_START ${${PROJECT}_START})\n")
             endif()
             if(${PROJECT}_PLUGINS)
-                file(APPEND "${CMAKE_BINARY_DIR}/cmake/SightRequirements.cmake"
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
                     "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
             endif()
         endif()

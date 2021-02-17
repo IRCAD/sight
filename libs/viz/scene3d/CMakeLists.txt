@@ -8,7 +8,6 @@ endif()
 
 fwLoadProperties()
 
-find_package(OGRE REQUIRED COMPONENTS Overlay)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC OgreOverlay)
 
 find_package(OpenGL QUIET REQUIRED)

@@ -1,0 +1,64 @@
+# Use new policy to use CMAKE_CXX_STANDARD in trysight_compile() macro
+cmake_policy(SET CMP0067 NEW)
+
+set(FW_BUILD_EXTERNAL 1)
+
+include("${CMAKE_CURRENT_LIST_DIR}/sight_requirements.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/macros.cmake")
+
+# Needed for FindFilesystem.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
+
+set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
+
+if(MSVC AND NOT VCPKG_TARGET_TRIPLET)
+    string(TOLOWER ${PRJ_NAME} APP_NAME)
+    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
+endif()
+
+if(UNIX)
+    list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+endif()
+
+setExternalLibrariesDir()
+
+set(SIGHT_MODULE_LIB_PREFIX @SIGHT_MODULE_LIB_PREFIX@)
+set(SIGHT_MODULE_RC_PREFIX @SIGHT_MODULE_RC_PREFIX@)
+
+file(TO_CMAKE_PATH "${sight_DIR}/../../../bin" sight_BINARY_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../${SIGHT_MODULE_LIB_PREFIX}" sight_LIBRARY_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../${SIGHT_MODULE_RC_PREFIX}" sight_MODULES_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../" sight_DEFINE_DIR)
+
+foreach(sight_comp ${_SUPPORTED_COMPONENTS})
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+        include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
+    endif()
+    include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Targets.cmake")
+endforeach()
+
+foreach(sight_comp ${sight_FIND_COMPONENTS})
+    if(NOT ${sight_comp}_FOUND)
+        message(STATUS "Looking for sight component: ${sight_comp}")
+        if (NOT ";${_SUPPORTED_COMPONENTS};" MATCHES ${sight_comp})
+            set(sight_FOUND False)
+            set(sight_NOT_FOUND_MESSAGE "Unsupported component: ${sight_comp}")
+        endif()
+
+        # For now I do not know how to unroll this loop when configuring the file... so for now just use the default log level
+        set_property( TARGET sight::${sight_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SIGHT_DIR="${sight_DEFINE_DIR}")
+        set(${sight_comp}_FOUND 1)
+    endif()
+endforeach()
+
+set(SPYLOG_LEVEL "error" CACHE STRING "Log level")
+set(SPYLOG_LEVEL_VALUES "fatal;error;warning;info;debug;trace" CACHE INTERNAL
+    "List of possible values for log level")
+set(SPYLOG_LEVEL_MAP_fatal 1)
+set(SPYLOG_LEVEL_MAP_error 2)
+set(SPYLOG_LEVEL_MAP_warning 3)
+set(SPYLOG_LEVEL_MAP_info 4)
+set(SPYLOG_LEVEL_MAP_debug 5)
+set(SPYLOG_LEVEL_MAP_trace 6)
+set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
+
