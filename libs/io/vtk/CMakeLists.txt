@@ -15,7 +15,7 @@ find_package(VTK QUIET REQUIRED COMPONENTS
 
 if(VCPKG_TARGET_TRIPLET)
     # VTK9
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC
         VTK::FiltersGeometry
         VTK::FiltersModeling
         VTK::IOExport

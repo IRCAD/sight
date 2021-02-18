@@ -149,7 +149,10 @@ void ObjMeshWriter::write()
     vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();
     renderWindow->AddRenderer(renderer);
 
-    const std::string filename = (this->getFile().string().c_str());
+    data::location::ILocation::PathType file = this->getFile();
+    const std::string filename               = file.extension() == ".obj"
+                                               ? file.replace_extension().string()
+                                               : file.string();
 
     vtkSmartPointer< vtkOBJExporter > exporter = vtkSmartPointer< vtkOBJExporter >::New();
     exporter->SetRenderWindow(renderWindow);
