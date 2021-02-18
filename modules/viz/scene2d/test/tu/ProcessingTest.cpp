@@ -61,9 +61,6 @@ void ProcessingTest::tearDown()
 
 void ProcessingTest::histogramTest()
 {
-    service::registry::ActiveWorkers::sptr activeWorkers = service::registry::ActiveWorkers::getDefault();
-    activeWorkers->initRegistry();
-
     typedef signed short ImageType;
     const int sizeX     = 50;
     const int sizeY     = 50;
@@ -108,15 +105,16 @@ void ProcessingTest::histogramTest()
     auto srv = service::add< service::IController >(implementation, "");
     CPPUNIT_ASSERT_MESSAGE("Impossible to create the service '" + implementation + "'", srv);
 
-    core::runtime::EConfigurationElement::sptr binsWidthCfg = core::runtime::EConfigurationElement::New("binsWidth");
-    binsWidthCfg->setValue("1.0");
+    service::IService::ConfigType config;
+    config.add("binsWidth", 1.0f);
 
     srv->registerInput(image, "image");
     srv->registerInOut(histogram, "histogram");
 
-    srv->setConfiguration(binsWidthCfg);
+    srv->setConfiguration(config);
     srv->configure();
     srv->start().wait();
+    srv->update().wait();
     srv->stop().wait();
     service::OSR::unregisterService(srv);
 
@@ -131,8 +129,6 @@ void ProcessingTest::histogramTest()
     CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(20, 21));
     CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(30, 31));
     CPPUNIT_ASSERT_EQUAL((long) imageSize/4, histogram->getNbPixels(40, 41));
-
-    activeWorkers->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

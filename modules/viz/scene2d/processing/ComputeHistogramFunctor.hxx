@@ -61,7 +61,8 @@ struct ComputeHistogramFunctor
         SLM_ASSERT("Wrong image", max > min);
         if( max > min )
         {
-            histogram->initialize( min, max, param.binsWidth );
+            histogram->initialize( static_cast<float>(min), static_cast<float>(max),
+                                   static_cast<float>(param.binsWidth) );
 
             auto itr          = image->begin<IMAGETYPE>();
             const auto itrEnd = image->end<IMAGETYPE>();

@@ -63,38 +63,30 @@ SComputeHistogram::~SComputeHistogram() noexcept
 
 void SComputeHistogram::configuring()
 {
-    const std::vector < core::runtime::ConfigurationElement::sptr > binsWidthCfg = m_configuration->find("binsWidth");
-    SLM_ASSERT("Missing tag 'binsWidth'", !binsWidthCfg.empty());
-
-    const std::string binsWidth = binsWidthCfg.front()->getValue();
-    SLM_ASSERT("'binsWidth' must not be empty", !binsWidth.empty());
-    m_binsWidth = ::boost::lexical_cast<float>(binsWidth);
+    const ConfigType config = this->getConfigTree();
+    m_binsWidth = config.get<float>("binsWidth");
 }
 
 //-----------------------------------------------------------------------------
 
 void SComputeHistogram::starting()
 {
-    m_slotUpdate->asyncRun();
+    this->update();
 }
 
 //-----------------------------------------------------------------------------
 
 void SComputeHistogram::updating()
 {
-    data::Image::csptr image = this->getInput< data::Image>(s_IMAGE_INPUT);
+    const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
 
-    data::mt::ObjectReadLock imgLock(image);
-
-    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
-        data::Histogram::sptr histogram = this->getInOut< data::Histogram>(s_HISTOGRAM_INPUT);
-
-        data::mt::ObjectWriteLock lock(histogram);
+        auto histogram = this->getLockedInOut<data::Histogram>(s_HISTOGRAM_INPUT);
 
         ComputeHistogramFunctor::Parameter param;
-        param.image     = image;
-        param.histogram = histogram;
+        param.image     = image.get_shared();
+        param.histogram = histogram.get_shared();
         param.binsWidth = m_binsWidth;
 
         core::tools::Type type = image->getType();
