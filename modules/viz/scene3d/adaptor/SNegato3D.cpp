@@ -468,20 +468,31 @@ void SNegato3D::setPlanesOpacity()
 
 void SNegato3D::setVisible(bool _visible)
 {
-    {
-        const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-        image->setField(s_VISIBILITY_FIELD, data::Boolean::New(_visible));
-    }
-
-    this->setPlanesOpacity();
+    // True if the visibility need to be propagated
+    bool visibilityChanged = false;
 
     using VisModSigType = data::Image::VisibilityModifiedSignalType;
+    std::shared_ptr<VisModSigType> visModSig;
 
-    const auto image  = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-    auto visUpdateSig = image->signal<VisModSigType>( data::Image::s_VISIBILITY_MODIFIED_SIG );
     {
-        const core::com::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
-        visUpdateSig->asyncEmit(_visible);
+        const auto image      = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
+        const auto visibility = image->getField< data::Boolean >(s_VISIBILITY_FIELD);
+
+        // We propagate the visibility change if it has never been applied or if have changed
+        visibilityChanged = !visibility || visibility->getValue() != _visible;
+
+        if(visibilityChanged)
+        {
+            image->setField(s_VISIBILITY_FIELD, data::Boolean::New(_visible));
+            visModSig = image->signal<VisModSigType>(data::Image::s_VISIBILITY_MODIFIED_SIG);
+        }
+    }
+
+    if(visibilityChanged)
+    {
+        const core::com::Connection::Blocker blocker(visModSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
+        this->setPlanesOpacity();
+        visModSig->asyncEmit(_visible);
     }
 }
 
