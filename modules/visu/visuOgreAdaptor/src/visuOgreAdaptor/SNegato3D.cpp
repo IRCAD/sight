@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -464,20 +464,31 @@ void SNegato3D::setPlanesOpacity()
 
 void SNegato3D::setVisible(bool _visible)
 {
-    {
-        const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visible));
-    }
-
-    this->setPlanesOpacity();
+    // True if the visibility need to be propagated
+    bool visibilityChanged = false;
 
     using VisModSigType = ::fwData::Image::VisibilityModifiedSignalType;
+    std::shared_ptr<VisModSigType> visModSig;
 
-    const auto image  = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    auto visUpdateSig = image->signal<VisModSigType>( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG );
     {
-        const ::fwCom::Connection::Blocker blocker(visUpdateSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
-        visUpdateSig->asyncEmit(_visible);
+        const auto image      = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
+        const auto visibility = image->getField< ::fwData::Boolean >(s_VISIBILITY_FIELD);
+
+        // We propagate the visibility change if it has never been applied or if have changed
+        visibilityChanged = !visibility || visibility->getValue() != _visible;
+
+        if(visibilityChanged)
+        {
+            image->setField(s_VISIBILITY_FIELD, ::fwData::Boolean::New(_visible));
+            visModSig = image->signal<VisModSigType>(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
+        }
+    }
+
+    if(visibilityChanged)
+    {
+        const ::fwCom::Connection::Blocker blocker(visModSig->getConnection(this->slot(s_UPDATE_VISIBILITY_SLOT)));
+        this->setPlanesOpacity();
+        visModSig->asyncEmit(_visible);
     }
 }
 
