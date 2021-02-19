@@ -92,10 +92,10 @@ struct TestHandler
 void WorkerQtTest::setUp()
 {
     // Set up context before running a test.
-    char arg1[] = "fwGuiQtTest";
+    static char arg1[] = "WorkerQtTest";
 #if defined(__linux)
-    char arg2[]         = "-platform";
-    char arg3[]         = "offscreen";
+    static char arg2[]  = "-platform";
+    static char arg3[]  = "offscreen";
     static char* argv[] = {arg1, arg2, arg3, nullptr};
     static int argc     = 3;
 #else
