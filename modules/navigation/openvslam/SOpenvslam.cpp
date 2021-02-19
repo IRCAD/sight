@@ -32,8 +32,6 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
 #include <openvslam/data/landmark.h>
@@ -42,9 +40,11 @@
 #include <openvslam/publish/map_publisher.h>
 #include <openvslam/system.h>
 
+#include <service/macros.hpp>
+
 #include <io/opencv/FrameTL.hpp>
 
-#include <modules/navigation/openvslam/detail/Helper.hpp>
+#include <navigation/openvslam/Helper.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -251,9 +251,8 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     if(m_slamSystem == nullptr)
     {
         const data::mt::ObjectReadLock cameraLock(m_camera);
-        const auto config = modules::navigation::openvslam::detail::Helper::createMonocularConfig(m_camera,
-                                                                                                  m_orbParameters,
-                                                                                                  m_initializerParameters);
+        const auto config = sight::navigation::openvslam::Helper::createMonocularConfig(m_camera, m_orbParameters,
+                                                                                        m_initializerParameters);
 
         m_slamSystem = std::unique_ptr< ::openvslam::system >(new ::openvslam::system(config, m_vocabularyPath));
 

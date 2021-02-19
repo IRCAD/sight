@@ -1,8 +1,8 @@
-set( NAME module_navigation_openvslamTest )
+set( NAME navigation_openvslamTest )
 set( VERSION )
 set( TYPE TEST )
 set( DEPENDENCIES
     utestData
-    module_navigation_openvslam
+    navigation_openvslam
 )
 set( REQUIREMENTS )

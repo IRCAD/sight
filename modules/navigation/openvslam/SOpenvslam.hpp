@@ -40,7 +40,7 @@
 
 #include <service/ITracker.hpp>
 
-#include <modules/navigation/openvslam/detail/OpenvslamConfig.hpp>
+#include <navigation/openvslam/OpenvslamConfig.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -294,10 +294,10 @@ private:
     data::Mesh::sptr m_pointCloud;
 
     /// ORB Parameters structure
-    modules::navigation::openvslam::detail::OrbParams m_orbParameters;
+    sight::navigation::openvslam::OrbParams m_orbParameters;
 
     /// Openvslam initializer parameters (only used in monocular mode).
-    modules::navigation::openvslam::detail::InitParams m_initializerParameters;
+    sight::navigation::openvslam::InitParams m_initializerParameters;
 
     /// Tracking mode : MONO, STEREO, DEPTH.
     TrackingMode m_trackingMode {TrackingMode::MONO};

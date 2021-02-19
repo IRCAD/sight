@@ -24,7 +24,7 @@
 
 #include <fstream>
 
-namespace sight::modules::navigation::openvslam::detail
+namespace sight::navigation::openvslam
 {
 
 //-----------------------------------------------------------------------------
@@ -129,13 +129,13 @@ std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(const data::C
     node["Initializer.scaling_factor"]               = _initParams.scalingFactor;
 
     // Create the config with YAML node (constructor was added on our version of openvslam).
-    std::shared_ptr< ::openvslam::config > conf = std::make_shared< ::openvslam::config>(node);
+    std::shared_ptr< ::openvslam::config > conf = std::make_shared< ::openvslam::config >(node);
     return conf;
 }
 
 //-----------------------------------------------------------------------------
 
-void Helper::writeOpenvslamConfig(const std::shared_ptr<::openvslam::config> config, const std::string& _filepath)
+void Helper::writeOpenvslamConfig(const std::shared_ptr< ::openvslam::config > config, const std::string& _filepath)
 {
     writeOpenvslamConfig(config->yaml_node_, _filepath);
 }
@@ -150,7 +150,7 @@ void Helper::writeOpenvslamConfig(const YAML::Node& _node, const std::string& _f
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr<::openvslam::config> Helper::readOpenvslamConfig(const std::string& _filepath)
+std::shared_ptr< ::openvslam::config > Helper::readOpenvslamConfig(const std::string& _filepath)
 {
     std::shared_ptr< ::openvslam::config > conf;
     try
@@ -170,4 +170,4 @@ std::shared_ptr<::openvslam::config> Helper::readOpenvslamConfig(const std::stri
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::modules::navigation::openvslam::detail
+} //namespace sight::navigation::openvslam

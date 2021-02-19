@@ -29,13 +29,13 @@
 #include <openvslam/camera/perspective.h>
 #include <openvslam/system.h>
 
-#include <modules/navigation/openvslam/detail/Helper.hpp>
+#include <navigation/openvslam/Helper.hpp>
 
 #include <spdlog/spdlog.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::navigation::openvslam::detail::ut::HelperTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::navigation::openvslam::ut::HelperTest );
 
-namespace sight::modules::navigation::openvslam::detail
+namespace sight::navigation::openvslam
 {
 namespace ut
 {
@@ -64,7 +64,7 @@ void HelperTest::toSight()
                                          1920, 1080, 60,
                                          400, 401, 200, 201, 0.0, 0.1, 0.2, 0.3, 0.4);
 
-    const data::Camera::sptr cam = modules::navigation::openvslam::detail::Helper::toSight(oVSlamCam);
+    const data::Camera::sptr cam = navigation::openvslam::Helper::toSight(oVSlamCam);
 
     compareCam(cam, oVSlamCam, true);
 
@@ -87,7 +87,7 @@ void HelperTest::fromSight()
     cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
     cam->setMaximumFrameRate(60.0);
 
-    const auto oVSlamCam = modules::navigation::openvslam::detail::Helper::fromSight(cam);
+    const auto oVSlamCam = navigation::openvslam::Helper::fromSight(cam);
 
     // Compare values.
     compareCam(cam, oVSlamCam, false);
@@ -111,14 +111,14 @@ void HelperTest::createConfig()
     cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
     cam->setMaximumFrameRate(60.0);
 
-    modules::navigation::openvslam::detail::OrbParams orbParam;
+    navigation::openvslam::OrbParams orbParam;
     orbParam.maxNumKeyPts = 8000;
     orbParam.scaleFactor  = 1.2f;
     orbParam.iniFastThr   = 2;
     orbParam.minFastThr   = 1;
     orbParam.numLevels    = 8;
 
-    const auto config = modules::navigation::openvslam::detail::Helper::createMonocularConfig(cam, orbParam);
+    const auto config = navigation::openvslam::Helper::createMonocularConfig(cam, orbParam);
 
     // We know that the camera is perspective.
     ::openvslam::camera::perspective* camera = dynamic_cast< ::openvslam::camera::perspective* >(config->camera_);
@@ -152,14 +152,14 @@ void HelperTest::writeReadConfig()
     cam->setDistortionCoefficient(0.0, 0.1, 0.2, 0.3, 0.4);
     cam->setMaximumFrameRate(60.0);
 
-    modules::navigation::openvslam::detail::OrbParams orbParam;
+    navigation::openvslam::OrbParams orbParam;
     orbParam.maxNumKeyPts = 8000;
     orbParam.scaleFactor  = 1.2f;
     orbParam.iniFastThr   = 2;
     orbParam.minFastThr   = 1;
     orbParam.numLevels    = 8;
 
-    modules::navigation::openvslam::detail::InitParams initParams;
+    navigation::openvslam::InitParams initParams;
     initParams.reprojErrThr          = 10.f;
     initParams.scalingFactor         = 2.f;
     initParams.parallaxDegThr        = 3.f;
@@ -167,17 +167,15 @@ void HelperTest::writeReadConfig()
     initParams.numRansacIterations   = 9;
     initParams.minNumTriangulatedPts = 45;
 
-    const auto config =
-        modules::navigation::openvslam::detail::Helper::createMonocularConfig(cam, orbParam, initParams);
+    const auto config = navigation::openvslam::Helper::createMonocularConfig(cam, orbParam, initParams);
 
     const std::filesystem::path tmp = core::tools::System::getTemporaryFolder();
 
-    CPPUNIT_ASSERT_NO_THROW(modules::navigation::openvslam::detail::Helper::writeOpenvslamConfig(config->yaml_node_,
-                                                                                                 tmp.string() +
-                                                                                                 "/test.yaml"));
+    CPPUNIT_ASSERT_NO_THROW(navigation::openvslam::Helper::writeOpenvslamConfig(config->yaml_node_,
+                                                                                tmp.string() +
+                                                                                "/test.yaml"));
 
-    const auto config2 =
-        modules::navigation::openvslam::detail::Helper::readOpenvslamConfig(tmp.string() + "/test.yaml");
+    const auto config2 = navigation::openvslam::Helper::readOpenvslamConfig(tmp.string() + "/test.yaml");
     CPPUNIT_ASSERT(config2 != nullptr);
 
     const auto orb = config2->orb_params_;

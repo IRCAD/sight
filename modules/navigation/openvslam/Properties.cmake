@@ -8,6 +8,7 @@ set( DEPENDENCIES
         service
         ui_base
         io_opencv
+        navigation_openvslam
 )
 set( REQUIREMENTS )
 set( DISABLE_PCH TRUE)

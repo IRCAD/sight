@@ -22,20 +22,20 @@
 
 #pragma once
 
-#include "modules/navigation/openvslam/config.hpp"
-#include "modules/navigation/openvslam/detail/OpenvslamConfig.hpp"
+#include "navigation/openvslam/config.hpp"
+#include "navigation/openvslam/OpenvslamConfig.hpp"
 
 #include <data/Camera.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
 
-namespace sight::modules::navigation::openvslam::detail
+namespace sight::navigation::openvslam
 {
 /**
  * @brief The Helper class
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API Helper
+class NAVIGATION_OPENVSLAM_CLASS_API Helper
 {
 public:
     /**
@@ -61,10 +61,10 @@ public:
      * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
     static std::shared_ptr< ::openvslam::config > createMonocularConfig(const data::Camera::csptr _sightCam,
-                                                                        const modules::navigation::openvslam::detail::OrbParams& _orbParams
-                                                                            = modules::navigation::openvslam::detail::OrbParams(),
-                                                                        const modules::navigation::openvslam::detail::InitParams& _initParams
-                                                                            = modules::navigation::openvslam::detail::InitParams());
+                                                                        const navigation::openvslam::OrbParams& _orbParams
+                                                                            = navigation::openvslam::OrbParams(),
+                                                                        const navigation::openvslam::InitParams& _initParams
+                                                                            = navigation::openvslam::InitParams());
 
     static void writeOpenvslamConfig(const std::shared_ptr<::openvslam::config > config, const std::string& _filepath);
 
@@ -83,4 +83,4 @@ public:
     static std::shared_ptr<::openvslam::config > readOpenvslamConfig(const std::string& _filepath);
 };
 
-} // namespace sight::modules::navigation::openvslam::detail
+} // namespace sight::navigation::openvslam

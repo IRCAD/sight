@@ -24,11 +24,11 @@
 
 #include <data/Camera.hpp>
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <openvslam/camera/perspective.h>
 
-namespace sight::modules::navigation::openvslam::detail
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace sight::navigation::openvslam
 {
 
 namespace ut
@@ -65,4 +65,4 @@ public:
 
 }
 
-} // namespace sight::io::opencv
+} // namespace sight::navigation::openvslam
