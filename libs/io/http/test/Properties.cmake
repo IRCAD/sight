@@ -6,6 +6,5 @@ set( DEPENDENCIES
     core
     utestData
     data
-    module_ui_qt
-    )
+)
 set( REQUIREMENTS )
