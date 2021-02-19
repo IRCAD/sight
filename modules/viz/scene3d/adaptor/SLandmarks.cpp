@@ -668,6 +668,24 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 //------------------------------------------------------------------------------
 
+void SLandmarks::hideLandmarks()
+{
+    const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
+
+    const auto imageLock = image.lock();
+
+    // Hide landmarks only if there is an image.
+    if(imageLock)
+    {
+        for(std::shared_ptr<Landmark> landmark : m_manualObjects)
+        {
+            this->hideLandmark(landmark);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark, const data::Landmarks::csptr& _data)
 {
     // Get image.
