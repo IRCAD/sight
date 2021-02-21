@@ -76,7 +76,7 @@ void Plugin::initialize()
 {
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
 
-    auto path = core::runtime::getBundleResourceFilePath("Tuto07SceneQt3DQml", "ui.qml");
+    auto path = core::runtime::getModuleResourceFilePath("Tuto07SceneQt3DQml", "ui.qml");
 
     engine->loadMainComponent(path);
 }

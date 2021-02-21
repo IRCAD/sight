@@ -32,8 +32,6 @@
 namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::base::SImagePicker,
-                         ::sight::data::PointList)
 
 //-----------------------------------------------------------------------------
 

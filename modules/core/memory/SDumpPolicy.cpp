@@ -33,7 +33,6 @@
 namespace sight::module::memory
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, sight::module::memory::SDumpPolicy, ::sight::data::Object )
 
 SDumpPolicy::SDumpPolicy()
 {

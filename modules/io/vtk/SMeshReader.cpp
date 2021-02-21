@@ -49,8 +49,6 @@
 namespace sight::module::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::vtk::SMeshReader,
-                         ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

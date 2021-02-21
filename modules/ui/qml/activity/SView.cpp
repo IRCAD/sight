@@ -37,7 +37,6 @@
 namespace sight::module::ui::qml::activity
 {
 
-fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::module::ui::qml::activity::SView )
 
 static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 

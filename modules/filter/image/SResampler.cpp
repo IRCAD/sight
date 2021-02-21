@@ -35,8 +35,6 @@
 namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SResampler,
-                         ::sight::data::Image)
 
 static const service::IService::KeyType s_IMAGE_IN = "imageIn";
 static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";

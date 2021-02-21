@@ -40,7 +40,6 @@
 
 #include <io/opencv/Camera.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IRegisterer, ::sight::module::geometry::vision::SPoseFrom2d)
 
 //-----------------------------------------------------------------------------
 

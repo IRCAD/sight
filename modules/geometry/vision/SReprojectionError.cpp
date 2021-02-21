@@ -43,7 +43,6 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::vision::SReprojectionError)
 
 namespace sight::module::geometry::vision
 {

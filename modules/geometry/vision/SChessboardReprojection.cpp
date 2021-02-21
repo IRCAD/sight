@@ -47,7 +47,6 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::vision::SChessboardReprojection)
 
 namespace sight::module::geometry::vision
 {

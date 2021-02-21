@@ -36,7 +36,6 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SCurvedHistogram)
 
 #define PI 3.14159265
 

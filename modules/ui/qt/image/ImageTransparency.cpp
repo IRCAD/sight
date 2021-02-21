@@ -45,8 +45,6 @@
 namespace sight::module::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::ImageTransparency,
-                         ::sight::data::Image )
 
 static const service::IService::KeyType s_IMAGE_INOUT = "image";
 

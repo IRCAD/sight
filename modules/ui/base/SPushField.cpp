@@ -43,7 +43,6 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SPushField )
 
 //------------------------------------------------------------------------------
 

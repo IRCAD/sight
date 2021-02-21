@@ -25,9 +25,9 @@
 #include <core/thread/ActiveWorkers.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::ActiveWorkersTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::core::thread::ut::ActiveWorkersTest );
 
-namespace sight::service
+namespace sight::core::thread
 {
 namespace ut
 {
@@ -50,7 +50,7 @@ void ActiveWorkersTest::tearDown()
 
 void ActiveWorkersTest::basicTest()
 {
-    using namespace service::registry;
+    using namespace core::thread;
 
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
     CPPUNIT_ASSERT( !activeWorkers->getWorker( ActiveWorkers::s_DEFAULT_WORKER ) );
@@ -72,4 +72,4 @@ void ActiveWorkersTest::basicTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::service
+} //namespace sight::core::thread

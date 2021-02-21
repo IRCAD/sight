@@ -55,7 +55,6 @@
 namespace sight::module::navigation::openvslam
 {
 
-fwServicesRegisterMacro( service::ITracker, ::sight::module::navigation::openvslam::SOpenvslam)
 
 static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";

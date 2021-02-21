@@ -44,7 +44,6 @@ const service::IService::KeyType s_SELECTED_INOUT = "selectedMatrix";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::SMatrixList )
 
 //-----------------------------------------------------------------------------
 

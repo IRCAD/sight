@@ -40,8 +40,6 @@
 namespace sight::module::data
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::data::SExtractDeviceInfo,
-                         ::sight::data::Object)
 
 //-----------------------------------------------------------------------------
 

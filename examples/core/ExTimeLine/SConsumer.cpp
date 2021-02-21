@@ -31,7 +31,6 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::sight::service::IService, ::ExTimeLine::SConsumer )
 
 namespace ExTimeLine
 {

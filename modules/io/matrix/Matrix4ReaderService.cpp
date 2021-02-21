@@ -45,9 +45,6 @@ namespace sight::module::io::matrix
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader,
-                         ::sight::module::io::matrix::Matrix4ReaderService,
-                         data::Matrix4 )
 
 //------------------------------------------------------------------------------
 

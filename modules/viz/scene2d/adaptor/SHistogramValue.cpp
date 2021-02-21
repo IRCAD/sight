@@ -45,7 +45,6 @@ static const service::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 static const std::string s_COLOR_CONFIG     = "color";
 static const std::string s_FONT_SIZE_CONFIG = "fontSize";
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SHistogramValue)
 
 //---------------------------------------------------------------------------------------------------------------
 SHistogramValue::SHistogramValue() noexcept :

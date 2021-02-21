@@ -52,8 +52,6 @@
 namespace sight::module::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::itk::SInrSeriesDBReader,
-                         ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

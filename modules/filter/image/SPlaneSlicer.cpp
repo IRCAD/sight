@@ -40,7 +40,6 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SPlaneSlicer )
 
 namespace sight::module::filter::image
 {

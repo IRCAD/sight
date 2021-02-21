@@ -42,8 +42,6 @@
 namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::filter::image::SBitwiseAnd,
-                        ::sight::data::Image)
 
 static const service::IService::KeyType s_IMAGE_IN = "image";
 static const service::IService::KeyType s_MASK_IN = "mask";

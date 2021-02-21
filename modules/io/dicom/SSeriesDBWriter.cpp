@@ -46,8 +46,6 @@
 namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::dicom::SSeriesDBWriter,
-                         ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 

@@ -45,7 +45,6 @@
 namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::SStatus )
 
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";

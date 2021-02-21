@@ -53,8 +53,6 @@ namespace series
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::series::SSelector,
-                         ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

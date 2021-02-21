@@ -43,8 +43,6 @@
 namespace sight::module::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::itk::InrImageReaderService,
-                         ::sight::data::Image )
 
 //------------------------------------------------------------------------------
 

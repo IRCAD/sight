@@ -49,7 +49,6 @@ static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSli
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::SPointToLandmarkVector )
 
 // -----------------------------------------------------------------------------
 

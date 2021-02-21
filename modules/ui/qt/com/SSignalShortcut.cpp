@@ -43,7 +43,6 @@ namespace sight::module::ui::qt::com
 
 static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::ui::qt::com::SSignalShortcut )
 
 //-----------------------------------------------------------------------------
 

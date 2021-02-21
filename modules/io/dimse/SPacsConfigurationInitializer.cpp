@@ -56,7 +56,6 @@ struct SetFromConfig
 
 static const service::IService::KeyType s_CONFIG_INOUT = "config";
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dimse::SPacsConfigurationInitializer)
 
 //------------------------------------------------------------------------------
 

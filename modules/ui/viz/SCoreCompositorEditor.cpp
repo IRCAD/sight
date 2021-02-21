@@ -50,8 +50,6 @@
 namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SCoreCompositorEditor,
-                         ::sight::data::Composite)
 
 //------------------------------------------------------------------------------
 

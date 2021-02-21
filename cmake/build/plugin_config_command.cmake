@@ -1,185 +1,68 @@
 # CMake script file launch at build time before the build of each module
 
-if(PROJECT_REQUIREMENTS)
-    string(REPLACE " " ";" PROJECT_REQUIREMENTS ${PROJECT_REQUIREMENTS})
 
-    # Add each requirements to the requirement list
-    foreach(CURRENT_REQUIREMENT ${PROJECT_REQUIREMENTS})
-        list(APPEND REQUIREMENT_LIST "    <requirement id=\"sight_${CURRENT_REQUIREMENT}\"/>")
-    endforeach()
-endif()
+file(STRINGS "${PROJECT_DIR}/rc/plugin.xml" PLUGIN_CONTENT)
 
-if(REQUIREMENT_LIST)
-    list(SORT REQUIREMENT_LIST)
-    string(REPLACE ";" "\n" REQUIREMENT_LIST "${REQUIREMENT_LIST}")
-endif()
+list(APPEND REGISTER_INCLUDE "#include <service/macros.hpp>")
 
-# Add each service to the extension list
+set(FOUND_EXTENSION OFF)
+foreach(LINE ${PLUGIN_CONTENT})
 
-file(GLOB_RECURSE PRJ_CPP_FILES  "${PROJECT_DIR}/*.cpp")
-
-foreach(CPP_FILE ${PRJ_CPP_FILES})
-    #find associated .hpp file to find service description in doxygen
-    file(TO_CMAKE_PATH ${CPP_FILE} CPP_FILE)
-    string(REPLACE "${PROJECT_DIR}/" "" HPP_FILE ${CPP_FILE})
-    string(REPLACE ".cpp" ".hpp" HPP_FILE ${HPP_FILE})
-    file(TO_CMAKE_PATH ${PROJECT_DIR}/${HPP_FILE} HPP_FILE)
-
-    unset(SRV_DESC)
-    if(EXISTS "${HPP_FILE}")
-        set(BRIEF_REGEX "[ /*]*@brief ([^\n]+)")
-        file(STRINGS ${HPP_FILE} HPP_FILE_CONTENT NEWLINE_CONSUME)
-        if("${HPP_FILE_CONTENT}" MATCHES ${BRIEF_REGEX})
-            string(STRIP ${CMAKE_MATCH_1} SRV_DESC)
+    if(NOT FOUND_EXTENSION)
+        # Look for service extension
+        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::Factory\">")
+            set(FOUND_EXTENSION ON)
+            set(OBJECTS "")
         endif()
-    endif()
-
-    file(STRINGS ${CPP_FILE} CPP_FILE_CONTENT NEWLINE_CONSUME)
-    set(SRV_REGISTER_REGEX "fwServicesRegisterMacro\\(([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]*)\\);")
-
-    if("${CPP_FILE_CONTENT}" MATCHES ${SRV_REGISTER_REGEX})
-        string(STRIP ${CMAKE_MATCH_1} SRV_TYPE)
-        string(STRIP ${CMAKE_MATCH_2} SRV_IMPL)
-
-        if(CMAKE_MATCH_3)
-            string(STRIP ${CMAKE_MATCH_3} SRV_OBJECT)
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::extension::Factory\">"
-                                       "         <type>${SRV_TYPE}</type>"
-                                       "         <service>${SRV_IMPL}</service>"
-                                       "         <object>${SRV_OBJECT}</object>")
-        else()
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::extension::Factory\">"
-                                       "         <type>${SRV_TYPE}</type>"
-                                       "         <service>${SRV_IMPL}</service>")
-        endif()
-
-        set(SRV_REGISTER_OBJECT_REGEX "fwServicesRegisterObjectMacro\\(([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]*)\\);")
-
-        file(STRINGS ${CPP_FILE} CPP_FILE_LINES_CONTENT)
-        foreach(LINE ${CPP_FILE_LINES_CONTENT})
-            if("${LINE}" MATCHES ${SRV_REGISTER_OBJECT_REGEX})
-                if(CMAKE_MATCH_2)
-                    string(STRIP ${CMAKE_MATCH_2} SRV_OBJECT)
-                    list(APPEND EXTENSION_LIST "         <object>${SRV_OBJECT}</object>")
-                endif()
-            endif()
-        endforeach()
-
-        list(APPEND EXTENSION_LIST "         <desc>${SRV_DESC}</desc>"
-                                   "    </extension>")
     else()
+        if("${LINE}" MATCHES "</extension>")
+            set(FOUND_EXTENSION OFF)
 
-        # Guess everything from the doxygen
+            # Generate an entry for one service
+            list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${TYPE}, ${SERVICE} )\n")
 
-        # 1. Find the service type from fwCoreServiceClassDefinitionsMacro (old macro) or fwCoreServiceMacro (new macro),
-        #    we assume there is only one occurrence
-        set(SRV_TYPE_REGEX "fwCoreServiceMacro\\(([ :a-zA-Z0-9_]+)[,\n\t\r ]*([ :a-zA-Z0-9_]+)\\)")
-        string(FIND "${HPP_FILE_CONTENT}" "fwCoreServiceClassDefinitionsMacro" OLD_CORE_SRV_MACRO)
-        if( NOT ${OLD_CORE_SRV_MACRO} EQUAL -1 )
-            set(SRV_TYPE_REGEX "fwCoreServiceClassDefinitionsMacro\\([\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)[\n\t\r ]*\\([\n\t\r ]*([ :a-zA-Z0-9_]+)\\)")
-        endif()
+            # Generate the include for the service
+            set(SERVICE_INCLUDE ${SERVICE})
+            string(REGEX REPLACE "^::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+            get_filename_component(PROJECT_LAST_DIR ${PROJECT_DIR} NAME)
+            string(REGEX REPLACE ".*${PROJECT_LAST_DIR}::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+            string(REGEX REPLACE "::" "/" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+            list(APPEND REGISTER_INCLUDE "#include <${PROJECT_DIR}/${SERVICE_INCLUDE}.hpp>")
 
-        if("${HPP_FILE_CONTENT}" MATCHES ${SRV_TYPE_REGEX})
+            foreach(OBJ ${OBJECTS})
+                list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SERVICE}, ${OBJ} )\n")
+                # Generate the include for the data objects
 
-            string(STRIP ${CMAKE_MATCH_2} SRV_TYPE)
+                set(OBJECT_INCLUDE ${OBJ})
+                string(REGEX REPLACE "^::(.*)" "\\1" OBJECT_INCLUDE ${OBJECT_INCLUDE})
+                string(REGEX REPLACE "[A-z0-9]*::(.*)" "\\1" OBJECT_INCLUDE ${OBJECT_INCLUDE})
+                string(REGEX REPLACE "::" "/" OBJECT_INCLUDE ${OBJECT_INCLUDE})
 
-            # 2. Find the service implementation from the XML configuration doxygen
-            set(SRV_IMPL_REGEX "<service[\n\t\r ]*(uid[\n\t\r ]*=[\n\t\r ]*\".*\")?[\n\t\r ]*type[\n\t\r ]*=[\n\t\r ]*\"([:a-zA-Z0-9_]*)\".*>")
+                list(APPEND REGISTER_INCLUDE "#include <${OBJECT_INCLUDE}.hpp>")
+            endforeach()
 
-            if("${HPP_FILE_CONTENT}" MATCHES ${SRV_IMPL_REGEX})
-
-                string(STRIP ${CMAKE_MATCH_2} SRV_IMPL)
-                file(STRINGS ${HPP_FILE} HPP_FILE_LINES_CONTENT)
-
-                list(APPEND EXTENSION_LIST "    <extension implements=\"::sight::service::extension::Factory\">"
-                                           "         <type>${SRV_TYPE}</type>"
-                                           "         <service>${SRV_IMPL}</service>")
-                list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${SRV_TYPE}, ${SRV_IMPL} )\n")
-
-                # 3. Find the objects from input, inouts section
-                set(OBJECT_REGEX "-[\n\t\r ]*\\\\b*[\n\t\r ]*([a-zA-Z0-9_]*)[\n\t\r ]*\\[(.*)\\]")
-                foreach(LINE ${HPP_FILE_LINES_CONTENT})
-                    if("${LINE}" MATCHES ${OBJECT_REGEX})
-                        string(STRIP ${CMAKE_MATCH_1} OBJECT_KEY)
-                        string(STRIP ${CMAKE_MATCH_2} OBJECT_IMPL)
-
-                        list(APPEND EXTENSION_LIST "         <object key=\"${OBJECT_KEY}\">${OBJECT_IMPL}</object>")
-                        list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SRV_IMPL}, ${OBJECT_IMPL} )\n")
-
-                        set(OBJECT_INCLUDE_REGEX "(::([a-zA-Z0-9_]*))*")
-                        # check if the object implementation matches the regex.
-                        if("${OBJECT_IMPL}" MATCHES ${OBJECT_INCLUDE_REGEX})
-                            # Split the object implementation with "::" to get a list of namespace.
-                            string(REPLACE "sight::" "" OBJECT_SUB_IMPL ${OBJECT_IMPL})
-                            string(REPLACE "::" ";" OBJECT_SUB_IMPL ${OBJECT_SUB_IMPL})
-
-                            # Create the include directive.
-                            set(INCLUDE_DIRECTIVE "#include <")
-                            foreach(SUB_IMPL ${OBJECT_SUB_IMPL})
-                                string(APPEND INCLUDE_DIRECTIVE ${SUB_IMPL}/)
-                            endforeach()
-
-                            # Remove the last "/" from the include directive.
-                            string(LENGTH ${INCLUDE_DIRECTIVE} INCLUDE_LENGTH)
-                            math(EXPR INCLUDE_LENGTH "${INCLUDE_LENGTH}-1")
-                            string(SUBSTRING ${INCLUDE_DIRECTIVE} 0 ${INCLUDE_LENGTH} INCLUDE_DIRECTIVE)
-
-                            # Add the last hpp extension.
-                            string(APPEND INCLUDE_DIRECTIVE .hpp>)
-
-                            list(APPEND INCLUDE_SERVICES ${INCLUDE_DIRECTIVE})
-                        else()
-                            message(FATAL_ERROR "Can't split namespace from object type: " ${OBJECT_IMPL})
-                        endif()
-                    endif()
-                endforeach()
-
-                list(APPEND EXTENSION_LIST "         <desc>${SRV_DESC}</desc>")
-
-                # 4. Find the tags
-                set(TAGS_REGEX "\\\\b*[\n\t\r ]*Tags[\n\t\r ]*:[\n\t\r]*([a-zA-Z0-9_ ,]*)")
-                if("${HPP_FILE_CONTENT}" MATCHES ${TAGS_REGEX})
-                    string(STRIP ${CMAKE_MATCH_1} SRV_TAGS)
-                    list(APPEND EXTENSION_LIST "         <tags>${SRV_TAGS}</tags>")
-                endif()
-
-                list(APPEND EXTENSION_LIST "    </extension>\n")
-
-                # 5. Add the include for each hpp file
-                list(APPEND INCLUDE_SERVICES "#include \"${HPP_FILE}\"")
-
-                list(APPEND COPY_COMMAND_DEPENDS "${HPP_FILE}" )
-
+        else()
+            if("${LINE}" MATCHES "<type>(.*)</type>")
+                set(TYPE ${CMAKE_MATCH_1})
+            elseif("${LINE}" MATCHES "<service>(.*)</service>")
+                set(SERVICE ${CMAKE_MATCH_1})
+            elseif("${LINE}" MATCHES "<object>(.*)</object>")
+                list(APPEND OBJECTS ${CMAKE_MATCH_1})
+            elseif("${LINE}" MATCHES "<object key=\"(.*)\">(.*)</object>")
+                list(APPEND OBJECTS ${CMAKE_MATCH_2})
             endif()
-
         endif()
     endif()
+
 endforeach()
 
-if(EXTENSION_LIST)
-    string(REPLACE ";" "\n" EXTENSION_LIST "${EXTENSION_LIST}")
-endif()
-
-# set variables used in the configure_file command
-string(REPLACE "module_" "" STRIPPED_MODULE_NAME ${PROJECT})
-string(REPLACE "_" "::" SPLIT_MODULE_NAME "${STRIPPED_MODULE_NAME}")
-set(PLUGIN_ID "${SIGHT_REPOSITORY}::module::${SPLIT_MODULE_NAME}")
-
-# retrieves the class representing the module executable part.
-if(PRJ_CPP_FILES)
-    set(PROJECT_LIBRARY "library=\"true\"")
-endif()
-
-configure_file( "${CMAKE_SCRIPTS_DIR}/plugin.xml.in"
-                "${PLUGIN_OUTPUT_PATH}/plugin.xml")
-
 if(REGISTER_SERVICES)
-    list(APPEND INCLUDE_SERVICES "#include <service/macros.hpp>")
+    list(APPEND REGISTER_INCLUDE "#include <service/macros.hpp>")
 
     string(REPLACE ";" "" REGISTER_SERVICES "${REGISTER_SERVICES}")
 endif()
 
-string(REPLACE ";" "\n" INCLUDE_SERVICES "${INCLUDE_SERVICES}")
+string(REPLACE ";" "\n" REGISTER_INCLUDE "${REGISTER_INCLUDE}")
 
 configure_file( "${CMAKE_SCRIPTS_DIR}/registerServices.cpp.in"
                 "${REGISTERSERVICE_OUTPUT_PATH}/registerServices.cpp")

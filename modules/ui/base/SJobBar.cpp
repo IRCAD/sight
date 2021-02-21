@@ -34,7 +34,6 @@
 namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::module::ui::base::SJobBar )
 
 static const core::com::Slots::SlotKeyType SHOW_JOB_SLOT = "showJob";
 static const core::com::Signals::SignalKeyType STARTED_SIGNAL = "started";

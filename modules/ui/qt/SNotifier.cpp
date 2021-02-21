@@ -29,7 +29,6 @@
 
 #include <ui/base/GuiRegistry.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::SNotifier )
 
 namespace sight::module::ui::qt
 {

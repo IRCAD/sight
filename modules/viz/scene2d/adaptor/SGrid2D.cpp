@@ -38,7 +38,6 @@ namespace adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SGrid2D)
 
 const core::com::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
 

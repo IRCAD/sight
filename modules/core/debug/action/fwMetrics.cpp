@@ -38,8 +38,6 @@ namespace sight::module::debug
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::debug::action::fwMetrics,
-                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

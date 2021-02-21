@@ -34,7 +34,6 @@
 namespace sight::module::ui::qml::activity
 {
 
-fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::module::ui::qml::activity::SSequencer )
 
 const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 

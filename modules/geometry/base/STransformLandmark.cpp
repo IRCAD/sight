@@ -49,7 +49,6 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::STransformLandmark )
 
 // -----------------------------------------------------------------------------
 

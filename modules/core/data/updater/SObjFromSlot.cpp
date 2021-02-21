@@ -40,8 +40,6 @@ static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::module::data::IUpdaterSrv, ::sight::module::data::updater::SObjFromSlot,
-                         ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
 

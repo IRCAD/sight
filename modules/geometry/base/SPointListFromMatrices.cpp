@@ -30,7 +30,6 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::geometry::base::SPointListFromMatrices)
 
 namespace sight::module::geometry::base
 {

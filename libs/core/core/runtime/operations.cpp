@@ -280,10 +280,6 @@ bool loadLibrary(const std::string& identifier, const std::string& dirName)
     const core::runtime::Runtime& rntm = core::runtime::Runtime::get();
 
     auto searchPath = rntm.getWorkingPath() / MODULE_LIB_PREFIX;
-    if(!dirName.empty())
-    {
-        searchPath = searchPath.parent_path() / dirName;
-    }
     library->setSearchPath(searchPath);
 
     try

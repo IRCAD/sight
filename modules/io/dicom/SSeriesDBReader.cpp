@@ -51,8 +51,6 @@
 namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::dicom::SSeriesDBReader,
-                         ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

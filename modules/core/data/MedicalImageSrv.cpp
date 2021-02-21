@@ -37,7 +37,6 @@ static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::data::MedicalImageSrv, ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
 

@@ -41,8 +41,6 @@
 namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SAutomaticRegistration,
-                         ::sight::data::Image)
 
 static const service::IService::KeyType s_TARGET_IN = "target";
 static const service::IService::KeyType s_REFERENCE_IN = "reference";

@@ -45,8 +45,6 @@
 namespace sight::module::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::ImageInfo,
-                         ::sight::data::Image )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 

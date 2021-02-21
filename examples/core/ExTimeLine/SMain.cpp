@@ -26,7 +26,6 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IService, ::ExTimeLine::SMain, ::sight::data::Composite )
 
 namespace ExTimeLine
 {

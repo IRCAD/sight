@@ -28,7 +28,6 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SAxis)
 
 namespace sight::module::viz::scene2d
 {

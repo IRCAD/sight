@@ -43,8 +43,6 @@
 namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SStereoSelector,
-                         ::sight::data::Composite)
 
 //------------------------------------------------------------------------------
 

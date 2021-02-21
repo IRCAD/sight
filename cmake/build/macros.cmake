@@ -508,7 +508,6 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     # create the config.hpp for the current library
     get_header_file_install_destination()
-    message("${HEADER_FILE_DESTINATION_REL}")
     configure_header_file(${FWPROJECT_NAME} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
 
     set(${FWPROJECT_NAME}_INCLUDE_INSTALL_DIR ${FW_INSTALL_PATH_SUFFIX}/${FWPROJECT_NAME} PARENT_SCOPE)
@@ -645,7 +644,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         )
 
         # create the custom command that may generate the plugin.xml and the registerServices.cpp file
-        if(NOT EXISTS "${${FWPROJECT_NAME}_DIR}/rc/plugin.xml" )
+        if(EXISTS "${${FWPROJECT_NAME}_DIR}/rc/plugin.xml" )
             target_sources( ${FWPROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" )
             set_source_files_properties("${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" PROPERTIES
                 GENERATED TRUE

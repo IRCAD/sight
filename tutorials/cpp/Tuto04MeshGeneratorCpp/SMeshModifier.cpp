@@ -37,7 +37,6 @@ using namespace sight;
 namespace Tuto04MeshGeneratorCpp
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::Tuto04MeshGeneratorCpp::SMeshModifier, ::sight::data::Mesh )
 
 static const service::IService::KeyType s_MESH_INOUT = "mesh";
 

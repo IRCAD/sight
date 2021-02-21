@@ -437,7 +437,7 @@
             <inout key="selection" uid="previewSelections" />
             <icons>
                 <icon series="::sight::data::DicomSeries" icon="sight_module_ui_flaticons-0.1/GreenMedicine.svg" />
-            <>
+            </icons>
             <config selectionMode="extended" allowedRemove="false" />
         </service>
 
@@ -468,7 +468,7 @@
             <inout key="selection" uid="localSelections" />
             <icons>
                 <icon series="::sight::data::ImageSeries" icon="sight_module_ui_flaticons-0.1/Volume.svg" />
-            <>
+            </icons>
             <config selectionMode="extended"
                     removeStudyicon="sight_module_ui_flaticons-0.1/RedCross.svg"
                     removeSerieicon="sight_module_ui_flaticons-0.1/RemoveMedecine.svg" />

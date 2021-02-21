@@ -54,7 +54,7 @@ namespace series
         <icons>
             <icon series="..." icon="..." />
             <icon series="..." icon="..." />
-        <>
+        </icons>
         <config removeStudyIcon="..." removeSerieIcon="..." selectionMode="extended"
             allowedRemove="true" insertMode="false" />
     </service>

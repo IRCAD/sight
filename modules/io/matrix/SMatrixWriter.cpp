@@ -42,8 +42,6 @@
 namespace sight::module::io::matrix
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::matrix::SMatrixWriter,
-                         ::sight::data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";

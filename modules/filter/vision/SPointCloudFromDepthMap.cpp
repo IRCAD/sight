@@ -41,7 +41,6 @@
 namespace sight::module::filter::vision
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SPointCloudFromDepthMap)
 
 const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 

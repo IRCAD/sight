@@ -47,8 +47,6 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::service::ICalibration, ::sight::module::geometry::vision::SOpenCVExtrinsic,
-                        ::sight::data::CameraSeries)
 
 namespace sight::module::geometry::vision
 {

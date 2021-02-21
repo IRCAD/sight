@@ -44,8 +44,6 @@ static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
 static const std::string s_COLOR_CONFIG         = "color";
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor,
-                         ::sight::module::viz::scene2d::adaptor::SViewportRangeSelector)
 
 //---------------------------------------------------------------------------------------------------------------
 

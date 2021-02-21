@@ -39,8 +39,6 @@
 namespace sight::module::ui::history
 {
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::ui::history::SCommandHistory,
-                         ::sight::data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
 static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";

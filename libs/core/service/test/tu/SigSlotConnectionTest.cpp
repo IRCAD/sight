@@ -58,7 +58,7 @@ void SigSlotConnectionTest::tearDown()
 
 void SigSlotConnectionTest::basicTest()
 {
-    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
     Buffer::sptr buffer = Buffer::New();
@@ -66,7 +66,7 @@ void SigSlotConnectionTest::basicTest()
     SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
     service::OSR::registerService(showTestSrv);
     showTestSrv->registerInOut(buffer, "buffer", true);
-    showTestSrv->setWorker(activeWorkers->getWorker(registry::ActiveWorkers::s_DEFAULT_WORKER));
+    showTestSrv->setWorker(activeWorkers->getWorker(core::thread::ActiveWorkers::s_DEFAULT_WORKER));
 
     data::Object::ModifiedSignalType::sptr sig =
         buffer->signal< data::Object::ModifiedSignalType >( data::Object::s_MODIFIED_SIG );

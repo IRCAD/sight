@@ -24,7 +24,6 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IToolBar, ::sight::module::ui::base::SToolBar )
 
 namespace sight::module::ui::base
 {

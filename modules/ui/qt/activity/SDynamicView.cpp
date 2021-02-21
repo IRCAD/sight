@@ -61,7 +61,6 @@ static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-fwServicesRegisterMacro( ::sight::ui::base::view::IActivityView, ::sight::module::ui::qt::activity::SDynamicView )
 
 using sight::activity::extension::Activity;
 using sight::activity::extension::ActivityInfo;

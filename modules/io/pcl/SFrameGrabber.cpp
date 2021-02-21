@@ -46,7 +46,6 @@ static const service::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( service::IGrabber, ::sight::module::io::pcl::SFrameGrabber, ::sight::data::FrameTL)
 
 //------------------------------------------------------------------------------
 

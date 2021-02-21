@@ -44,8 +44,6 @@
 namespace sight::module::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::itk::SImageSeriesWriter,
-                         ::sight::data::ImageSeries )
 
 //------------------------------------------------------------------------------
 

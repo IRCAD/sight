@@ -42,8 +42,6 @@
 namespace sight::module::ui::base::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::viz::CrossTypeAction,
-                         ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 

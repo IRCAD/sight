@@ -29,8 +29,6 @@
 
 #include <sstream>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::Tuto05MultithreadConsoleCpp::SShowArray,
-                         ::sight::data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {

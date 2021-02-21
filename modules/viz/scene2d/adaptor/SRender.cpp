@@ -25,4 +25,3 @@
 #include <viz/scene2d/SRender.hpp>
 
 /// Register SRender service in Services registry.
-fwServicesRegisterMacro( ::sight::viz::base::IRender, ::sight::viz::scene2d::SRender )

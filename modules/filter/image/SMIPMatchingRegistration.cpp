@@ -44,8 +44,6 @@
 namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IRegisterer,
-                         module::filter::image::SMIPMatchingRegistration)
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
     service::IRegisterer()

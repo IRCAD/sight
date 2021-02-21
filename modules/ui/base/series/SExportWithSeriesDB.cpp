@@ -43,8 +43,6 @@ namespace sight::module::ui::base
 namespace series
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::series::SExportWithSeriesDB,
-                         ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";

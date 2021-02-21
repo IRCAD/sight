@@ -34,7 +34,7 @@
             <inout key="selection" uid="selections" />
             <icons>
                 <icon series="::sight::data::CameraSeries" icon="sight_module_ui_icons-0.1/calibrationActivity.svg" />
-            <>
+            </icons>
         </service>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

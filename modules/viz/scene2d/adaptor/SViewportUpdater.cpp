@@ -27,7 +27,6 @@
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SViewportUpdater)
 
 namespace sight::module::viz::scene2d
 {

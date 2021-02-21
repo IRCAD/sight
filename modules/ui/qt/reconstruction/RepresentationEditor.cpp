@@ -43,9 +43,6 @@
 namespace sight::module::ui::qt::reconstruction
 {
 
-fwServicesRegisterMacro( sight::ui::base::IEditor,
-                         ::sight::module::ui::qt::reconstruction::RepresentationEditor,
-                         sight::data::Reconstruction )
 
 //------------------------------------------------------------------------------
 

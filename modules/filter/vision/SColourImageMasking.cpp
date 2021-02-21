@@ -37,7 +37,6 @@
 namespace sight::module::filter::vision
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SColourImageMasking)
 
 const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
 const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";

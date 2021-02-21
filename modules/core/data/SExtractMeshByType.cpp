@@ -37,7 +37,6 @@
 namespace sight::module::data
 {
 
-fwServicesRegisterMacro(sight::module::data::ICamp, ::sight::module::data::SExtractMeshByType)
 
 //-----------------------------------------------------------------------------
 

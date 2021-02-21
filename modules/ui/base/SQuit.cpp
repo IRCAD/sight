@@ -27,7 +27,6 @@
 #include <ui/base/Application.hpp>
 #include <ui/base/Cursor.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SQuit )
 
 namespace sight::module::ui::base
 {

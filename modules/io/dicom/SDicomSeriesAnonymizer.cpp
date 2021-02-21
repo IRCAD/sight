@@ -43,7 +43,6 @@
 namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dicom::SDicomSeriesAnonymizer)
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

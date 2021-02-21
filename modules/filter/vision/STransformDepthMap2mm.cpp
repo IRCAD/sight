@@ -41,7 +41,6 @@ static const service::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
 static const service::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
 static const service::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::STransformDepthMap2mm)
 
 //------------------------------------------------------------------------------
 

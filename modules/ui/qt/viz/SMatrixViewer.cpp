@@ -43,7 +43,6 @@ namespace viz
 
 static const service::IService::KeyType s_MATRIX_INPUT = "matrix";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::viz::SMatrixViewer)
 
 // ------------------------------------------------------------------------------
 

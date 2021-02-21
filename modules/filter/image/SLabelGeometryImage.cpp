@@ -44,8 +44,6 @@
 namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::filter::image::SLabelGeometryImage,
-                        ::sight::data::Image)
 
 const core::com::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
 

@@ -37,8 +37,6 @@ namespace sight::module::ui::base
 namespace com
 {
 
-fwServicesRegisterMacro(sight::ui::base::IAction, sight::module::ui::base::com::STimestampSlotCaller,
-                        sight::data::Object)
 
 //-----------------------------------------------------------------------------
 

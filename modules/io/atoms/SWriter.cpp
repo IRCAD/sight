@@ -63,8 +63,6 @@ namespace sight::module::io::atoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::atoms::SWriter,
-                         ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

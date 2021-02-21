@@ -33,8 +33,6 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::base::SConcatenateMatrices,
-                         ::sight::data::Matrix4)
 
 namespace sight::module::geometry::base
 {

@@ -47,8 +47,6 @@ namespace sight::module::ui::dicom
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::module::ui::dicom::SFilterSelectorDialog,
-                         ::sight::data::String )
 
 static const service::IService::KeyType s_FILTER_INOUT = "filter";
 

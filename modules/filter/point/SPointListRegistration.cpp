@@ -41,7 +41,6 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-fwServicesRegisterMacro( ::sight::service::IRegisterer, ::sight::module::filter::point::SPointListRegistration )
 
 namespace sight::module::filter::point
 {

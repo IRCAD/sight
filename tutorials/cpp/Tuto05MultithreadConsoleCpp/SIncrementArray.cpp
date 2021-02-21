@@ -33,8 +33,6 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::Tuto05MultithreadConsoleCpp::SIncrementArray,
-                         ::sight::data::Array )
 
 namespace Tuto05MultithreadConsoleCpp
 {

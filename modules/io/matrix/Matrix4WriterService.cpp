@@ -45,9 +45,6 @@ namespace sight::module::io::matrix
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter,
-                         ::sight::module::io::matrix::Matrix4WriterService,
-                         data::Matrix4 )
 
 //-----------------------------------------------------------------------------
 

@@ -35,7 +35,6 @@ static const core::com::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgre
 static const core::com::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
 static const core::com::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dimse::SProgressBarController)
 
 //------------------------------------------------------------------------------
 

@@ -54,7 +54,6 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
-fwServicesRegisterMacro( service::IGrabber, ::sight::module::io::video::SGrabberProxy, ::sight::data::FrameTL)
 
 //-----------------------------------------------------------------------------
 

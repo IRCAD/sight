@@ -38,7 +38,6 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::sight::module::io::igtl::INetworkListener, ::sight::module::io::igtl::SClientListener)
 
 namespace sight::module::io::igtl
 {

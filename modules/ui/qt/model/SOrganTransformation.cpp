@@ -57,7 +57,6 @@ namespace sight::module::ui::qt
 namespace model
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::model::SOrganTransformation )
 
 static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 static const service::IService::KeyType s_COMPOSITE_INOUT = "composite";

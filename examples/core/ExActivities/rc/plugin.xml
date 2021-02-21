@@ -96,7 +96,7 @@
             <confirm>false</confirm>
             <icons>
                 <icon type="::sight::data::Image" icon="sight_module_ui_flaticons-0.1/Volume.svg" />
-            <>
+            </icons>
         </config>
     </extension>
 

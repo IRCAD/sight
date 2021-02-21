@@ -65,8 +65,6 @@ SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_avail
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::module::data::IWrapperSrv, ::sight::module::data::wrapper::SImageSignalForwarder,
-                         ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
 

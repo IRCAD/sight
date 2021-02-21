@@ -35,7 +35,6 @@
 namespace sight::module::data
 {
 
-fwServicesRegisterMacro(sight::module::data::ICamp, ::sight::module::data::SCopy, sight::data::Object)
 
 const service::IService::KeyType s_SOURCE_INPUT = "source";
 const service::IService::KeyType s_TARGET_INOUT  = "target";

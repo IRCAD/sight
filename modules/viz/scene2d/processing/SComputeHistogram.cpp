@@ -38,7 +38,6 @@
 
 #include <boost/lexical_cast.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::viz::scene2d::processing::SComputeHistogram)
 
 namespace sight::module::viz::scene2d
 {

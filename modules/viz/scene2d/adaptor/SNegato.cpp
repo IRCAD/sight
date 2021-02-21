@@ -46,7 +46,6 @@
 #include <QPixmap>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SNegato )
 
 namespace sight::module::viz::scene2d
 {

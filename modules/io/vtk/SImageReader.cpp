@@ -61,8 +61,6 @@ namespace sight::module::io::vtk
 //------------------------------------------------------------------------------
 
 // Register a new reader of data::Image
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::vtk::SImageReader,
-                         ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 

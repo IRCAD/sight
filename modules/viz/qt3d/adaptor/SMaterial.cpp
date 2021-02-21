@@ -30,8 +30,6 @@
 
 #include <QQmlEngine>
 
-fwServicesRegisterMacro( ::sight::viz::qt3d::IAdaptor, ::sight::module::viz::qt3d::adaptor::SMaterial,
-                         ::sight::data::Material )
 
 //-----------------------------------------------------------------------------
 

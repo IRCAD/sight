@@ -33,8 +33,6 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::sync::SFrameUpdater,
-                         ::sight::data::Composite )
 
 namespace sight::module::sync
 {

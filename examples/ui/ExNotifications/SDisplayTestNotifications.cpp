@@ -33,7 +33,6 @@ namespace exnotifications
 static const sight::core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 static const sight::core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::exnotifications::SDisplayTestNotifications)
 
 using namespace sight;
 

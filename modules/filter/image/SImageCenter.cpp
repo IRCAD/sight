@@ -40,7 +40,6 @@
 namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SImageCenter)
 
 static const service::IService::KeyType s_IMAGE_IN = "image";
 static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";

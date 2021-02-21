@@ -39,8 +39,6 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro(::sight::service::ISynchronizer, sight::module::sync::SMatrixSynchronizer,
-                        ::sight::data::Matrix4)
 
 // ----------------------------------------------------------------------------
 

@@ -46,8 +46,6 @@
 namespace sight::module::io::matrix
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::matrix::SMatricesReader,
-                         ::sight::data::MatrixTL)
 
 static const service::IService::KeyType s_MATRIXTL = "matrixTL";
 

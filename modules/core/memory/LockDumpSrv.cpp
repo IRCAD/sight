@@ -31,7 +31,6 @@ static const service::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::memory::LockDumpSrv, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 

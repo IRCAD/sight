@@ -33,7 +33,6 @@ namespace sight::module::ui::base
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SConfigLauncher )
 
 const core::com::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 

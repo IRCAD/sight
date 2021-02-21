@@ -46,7 +46,6 @@
 
 namespace sight::module::navigation::optics
 {
-fwServicesRegisterMacro(::sight::service::ITracker, ::sight::module::navigation::optics::SArucoTracker)
 //-----------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";

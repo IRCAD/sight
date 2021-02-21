@@ -71,11 +71,11 @@ void RuntimeTest::testPosix()
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
     auto module         = std::make_shared<Module>(location / "module_utest-0.1", "module_utest", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Posix>("module_utest");
+    auto nativeLibrary = std::make_unique<dl::Posix>("sight_module_utest");
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     const auto name = nativeLibrary->getName();
 
-    CPPUNIT_ASSERT_EQUAL( std::string("module_utest"), name);
+    CPPUNIT_ASSERT_EQUAL( std::string("sight_module_utest"), name);
 
     const auto path = nativeLibrary->getFullPath();
     CPPUNIT_ASSERT_EQUAL(  (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX /
@@ -91,7 +91,7 @@ void RuntimeTest::testWin32()
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
     auto module         = std::make_shared<Module>(location / "utest-0.1", "utest", "0.1");
 
-    auto nativeLibrary = std::make_unique<dl::Win32>("utest");
+    auto nativeLibrary = std::make_unique<dl::Win32>("sight_utest");
     nativeLibrary->setSearchPath(module->getLibraryLocation());
     auto nativeName = nativeLibrary->getNativeName();
 

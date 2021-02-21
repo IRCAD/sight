@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
+namespace sight::core::thread
 {
 namespace ut
 {
@@ -47,4 +47,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::service
+} //namespace sight::core::thread

@@ -17,7 +17,7 @@
             <icons>
                 <icon type="::sight::data::ImageSeries" icon="sight_module_ui_icons-0.1/ImageSeries.svg" />
                 <icon type="::sight::data::ModelSeries" icon="sight_module_ui_icons-0.1/ModelSeries.svg" />
-            <>
+            </icons>
         </config>
     </extension>
 

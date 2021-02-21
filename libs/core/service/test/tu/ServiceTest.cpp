@@ -374,7 +374,7 @@ TestServiceSignals::~TestServiceSignals()
 
 void ServiceTest::testCommunication()
 {
-    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
     const std::string EVENT        = "EVENT";

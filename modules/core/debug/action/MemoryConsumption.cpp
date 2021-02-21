@@ -42,8 +42,6 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::debug::action::MemoryConsumption,
-                         ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 

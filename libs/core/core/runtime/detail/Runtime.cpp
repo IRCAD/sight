@@ -241,14 +241,12 @@ std::shared_ptr< core::runtime::Module >
 Runtime::findModule( const std::string& identifier, const Version& version ) const
 {
     const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
-    SLM_DEBUG("Looking for module: " + id);
+    
     std::shared_ptr<Module> resModule;
     for(const std::shared_ptr<Module>& module :  m_modules)
     {
-    SLM_DEBUG("Testing: " + module->getIdentifier());
         if(module->getIdentifier() == id && module->getVersion() == version)
         {
-    SLM_DEBUG("Found: " + module->getIdentifier());
             resModule = module;
             break;
         }

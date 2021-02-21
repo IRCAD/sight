@@ -37,8 +37,6 @@ namespace sight::module::ui::qt::series
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::series::SViewer,
-                         ::sight::data::Vector)
 
 static const service::IService::KeyType s_SERIES_INPUT = "series";
 

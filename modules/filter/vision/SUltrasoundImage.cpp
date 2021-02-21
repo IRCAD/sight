@@ -62,7 +62,6 @@ static const std::string s_US_DEPTH_CONFIG      = "USDepth";
 static const std::string s_DEBUG_CONFIG         = "debug";
 static const std::string s_CONVEX_SHAPE         = "convex";
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SUltrasoundImage )
 
 // -----------------------------------------------------------------------------
 

@@ -43,8 +43,6 @@
 namespace sight::module::io::dimse
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dimse::SSeriesPusher,
-                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

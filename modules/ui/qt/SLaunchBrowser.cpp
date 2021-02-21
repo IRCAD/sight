@@ -37,8 +37,6 @@ namespace sight::module::ui::qt
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::qt::SLaunchBrowser,
-                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

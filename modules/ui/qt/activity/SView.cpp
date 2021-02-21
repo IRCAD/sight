@@ -45,7 +45,6 @@ const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunc
 
 static const std::string s_BORDER_CONFIG = "border";
 
-fwServicesRegisterMacro( ::sight::ui::base::view::IActivityView, ::sight::module::ui::qt::activity::SView )
 
 //------------------------------------------------------------------------------
 

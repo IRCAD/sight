@@ -41,7 +41,6 @@ const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoint
 
 const std::string s_POINTLIST_KEY = "pointList";
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::viz::SAddPoint, ::sight::data::PointList)
 
 //------------------------------------------------------------------------------
 

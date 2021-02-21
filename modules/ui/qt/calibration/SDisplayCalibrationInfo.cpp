@@ -41,8 +41,6 @@ namespace sight::module::ui::qt::calibration
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::calibration::SDisplayCalibrationInfo,
-                         data::Object)
 
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";

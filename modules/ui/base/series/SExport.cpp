@@ -46,8 +46,6 @@ namespace series
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::series::SExport,
-                         ::sight::data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExport::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";

@@ -37,7 +37,6 @@ namespace sight::module::ui::qt
 namespace image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::SImage )
 
 //-----------------------------------------------------------------------------
 

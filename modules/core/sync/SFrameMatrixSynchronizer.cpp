@@ -40,7 +40,6 @@
 #include <algorithm>
 #include <functional>
 
-fwServicesRegisterMacro(::sight::service::ISynchronizer, ::sight::module::sync::SFrameMatrixSynchronizer)
 
 namespace sight::module::sync
 {

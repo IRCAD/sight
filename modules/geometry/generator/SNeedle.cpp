@@ -52,8 +52,6 @@ namespace sight::module::geometry
 namespace generator
 {
 
-fwServicesRegisterMacro( ::sight::service::IGenerator, ::sight::module::geometry::generator::SNeedle,
-                         ::sight::data::Mesh)
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
 

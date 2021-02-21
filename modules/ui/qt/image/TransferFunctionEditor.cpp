@@ -60,7 +60,6 @@ static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::TransferFunctionEditor)
 
 //------------------------------------------------------------------------------
 

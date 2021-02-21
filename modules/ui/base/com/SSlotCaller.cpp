@@ -43,7 +43,6 @@ static const service::IService::KeyType s_SLOT_KEY        = "slot";
 static const service::IService::KeyType s_SLOTS_KEY       = "slots";
 static const service::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::com::SSlotCaller )
 
 //-----------------------------------------------------------------------------
 

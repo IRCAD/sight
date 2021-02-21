@@ -75,8 +75,6 @@ using sight::activity::extension::Activity;
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::activity::SWizard,
-                         ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 

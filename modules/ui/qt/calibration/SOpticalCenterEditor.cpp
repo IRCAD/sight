@@ -42,9 +42,6 @@ namespace sight::module::ui::qt::calibration
 static const service::IService::KeyType s_CAMERA_INPUT = "camera";
 static const service::IService::KeyType s_MATRIX_INOUT = "matrix";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor,
-                         ::sight::module::ui::qt::calibration::SOpticalCenterEditor,
-                         ::sight::data::Camera)
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept

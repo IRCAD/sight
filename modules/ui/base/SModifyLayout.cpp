@@ -34,7 +34,6 @@
 namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SModifyLayout )
 
 //-----------------------------------------------------------------------------
 

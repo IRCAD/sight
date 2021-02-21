@@ -50,8 +50,6 @@
 namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SLightSelector,
-                         ::sight::data::Composite )
 
 using sight::viz::scene3d::ILight;
 using sight::viz::scene3d::Layer;

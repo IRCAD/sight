@@ -25,4 +25,3 @@
 #include <viz/qt3d/SRender.hpp>
 
 /// Register SRender service in Services registry.
-fwServicesRegisterMacro( ::sight::viz::base::IRender, ::sight::viz::qt3d::SRender )

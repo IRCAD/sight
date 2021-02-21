@@ -44,8 +44,6 @@
 namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::qt::SShowAbout,
-                         ::sight::data::Object )
 
 //------------------------------------------------------------------------------
 

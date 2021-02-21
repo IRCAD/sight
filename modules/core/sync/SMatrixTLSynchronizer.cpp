@@ -40,8 +40,6 @@ namespace sight::module::sync
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(::sight::service::ISynchronizer, module::sync::SMatrixTLSynchronizer,
-                        ::sight::data::MatrixTL)
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";

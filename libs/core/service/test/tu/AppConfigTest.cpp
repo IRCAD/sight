@@ -74,7 +74,7 @@ void AppConfigTest::setUp()
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addModules(location);
-    core::runtime::loadModule("module_service");
+    core::runtime::loadModule("sight::module::service");
     core::runtime::loadModule("AppConfigTest");
 
     service::extension::AppConfig::sptr appConfig = service::extension::AppConfig::getDefault();
@@ -113,9 +113,9 @@ void AppConfigTest::addConfigTest()
     const std::string configId(service::extension::AppConfig::getUniqueIdentifier());
     const std::string group("TestGroup");
     const std::string desc("Description");
-    const std::string moduleId("::sight::module::service");
+    const std::string moduleId("sight::module::service");
     const std::string moduleVersion("0.1");
-    service::registry::AppInfo::ParametersType parameters;
+    service::extension::AppInfo::ParametersType parameters;
 
     core::runtime::ConfigurationElement::csptr config = this->buildConfig();
 

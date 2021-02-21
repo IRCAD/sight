@@ -40,7 +40,6 @@
 
 #include <itkSubtractImageFilter.h>
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SImagesSubstract )
 
 namespace sight::module::filter::image
 {

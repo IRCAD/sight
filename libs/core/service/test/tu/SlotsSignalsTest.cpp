@@ -57,12 +57,10 @@ void SlotsSignalsTest::tearDown()
 
 void SlotsSignalsTest::basicTest()
 {
-    using namespace service::registry;
-
     Buffer::sptr buffer  = Buffer::New();
     Buffer::sptr buffer2 = Buffer::New();
 
-    ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
+    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
     core::thread::Worker::sptr worker = core::thread::Worker::New();
@@ -105,8 +103,9 @@ void SlotsSignalsTest::comObjectServiceTest()
 {
     Buffer::sptr buffer = Buffer::New();
 
-    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
+
     core::thread::Worker::sptr worker1 = core::thread::Worker::New();
     activeWorkers->addWorker("worker1", worker1);
     core::thread::Worker::sptr worker2 = core::thread::Worker::New();
@@ -189,8 +188,9 @@ void SlotsSignalsTest::comServiceToServiceTest()
 {
     Buffer::sptr buffer = Buffer::New();
 
-    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
+
     core::thread::Worker::sptr worker1 = core::thread::Worker::New();
     activeWorkers->addWorker("worker1", worker1);
 
@@ -231,8 +231,9 @@ void SlotsSignalsTest::blockConnectionTest()
 {
     Buffer::sptr buffer = Buffer::New();
 
-    registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
+    auto activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
+
     core::thread::Worker::sptr worker1 = core::thread::Worker::New();
     activeWorkers->addWorker("worker1", worker1);
 

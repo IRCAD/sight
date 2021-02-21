@@ -40,8 +40,6 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::document::SPdfWriter,
-                         ::sight::data::Object )
 
 namespace sight::module::io::document
 {

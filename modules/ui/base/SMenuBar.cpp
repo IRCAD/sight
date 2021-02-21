@@ -24,7 +24,6 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IMenuBar, ::sight::module::ui::base::SMenuBar )
 
 namespace sight::module::ui::base
 {

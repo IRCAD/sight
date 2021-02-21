@@ -30,7 +30,6 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::module::io::igtl::INetworkSender, ::sight::module::io::igtl::SClientSender)
 
 namespace sight::module::io::igtl
 {

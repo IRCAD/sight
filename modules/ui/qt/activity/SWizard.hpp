@@ -82,7 +82,7 @@ namespace activity
      <icons>
          <icon type="data::ImageSeries" icon="sight_module_ui_icons-0.1/ImageSeries.svg" />
          <icon type="data::ModelSeries" icon="sight_module_ui_icons-0.1/ModelSeries.svg" />
-     <>
+     </icons>
    </service>
    @endcode
  * @subsection In-Out In-Out

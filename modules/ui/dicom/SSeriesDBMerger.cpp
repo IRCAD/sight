@@ -32,8 +32,6 @@
 namespace sight::module::ui::dicom
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::dicom::SSeriesDBMerger,
-                         ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
 

@@ -33,7 +33,6 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::sight::module::io::igtl::INetworkSender, ::sight::module::io::igtl::SServerSender)
 
 namespace sight::module::io::igtl
 {

@@ -78,7 +78,6 @@ static const std::string s_VERSION_TF = "V1";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::STransferFunction)
 
 //------------------------------------------------------------------------------
 
