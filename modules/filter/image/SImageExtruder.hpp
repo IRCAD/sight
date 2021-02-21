@@ -29,7 +29,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::filter::image::SImageExtruder">
+    <service uid="..." type="::sight::module::filter::image::SImageExtruder">
         <in key="meshes" uid="..." />
         <in key="image" uid="..." />
         <inout key="extrudedImage" uid="..." />
@@ -110,4 +110,4 @@ private:
 
 };
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

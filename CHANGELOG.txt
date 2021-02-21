@@ -534,7 +534,7 @@
   * Updated ctrlSelection to use new data and message factories
 
  * Thread-safe :
-  * Updated fwServices ServiceConfig to become thread safe
+  * Updated fwServices Config to become thread safe
   * Updated AppConfigParameters to become thread safe.
   * Updated fwServices AppConfig to become thread safe.
   * Updated fwID to become thread safe.

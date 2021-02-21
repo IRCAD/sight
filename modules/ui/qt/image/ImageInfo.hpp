@@ -35,7 +35,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="imageInfo" type="::sight::modules::ui::qt::image::ImageInfo" autoConnect="yes">
+    <service uid="imageInfo" type="::sight::module::ui::qt::image::ImageInfo" autoConnect="yes">
         <in key="image" uid="..." />
     </service>
    @endcode

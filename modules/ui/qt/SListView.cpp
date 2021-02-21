@@ -34,10 +34,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::SListView )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::SListView )
 
 const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG = "itemAdded";
 const core::com::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
@@ -162,4 +162,4 @@ void SListView::onItemDoubleClicked(QListWidgetItem* item)
 
 //------------------------------------------------------------------------------
 
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

@@ -37,7 +37,7 @@
 
 #include <OgreNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
@@ -68,7 +68,7 @@ void SVector::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string transformId = config.get<std::string>(
-        modules::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
+        module::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
         this->getID() + "_transform");
 
     this->setTransformId(transformId);
@@ -97,9 +97,9 @@ void SVector::starting()
     // set the material
     m_material = data::Material::New();
 
-    m_materialAdaptor = this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-        "::sight::modules::viz::scene3d::adaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, modules::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
@@ -233,4 +233,4 @@ void SVector::updateLength(float _length)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

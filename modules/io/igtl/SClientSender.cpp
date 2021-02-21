@@ -30,9 +30,9 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkSender, ::sight::modules::io::igtl::SClientSender)
+fwServicesRegisterMacro(::sight::module::io::igtl::INetworkSender, ::sight::module::io::igtl::SClientSender)
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 const service::IService::KeyType s_OBJECTS_GROUP = "objects";
@@ -140,4 +140,4 @@ void SClientSender::sendObject(const data::Object::csptr& obj, const size_t inde
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

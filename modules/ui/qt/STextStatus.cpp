@@ -34,7 +34,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 static const service::IService::KeyType s_STRING_INPUT = "string";
 
@@ -185,4 +185,4 @@ void STextStatus::setStringParameter(std::string _val)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

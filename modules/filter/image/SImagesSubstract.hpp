@@ -26,7 +26,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -35,7 +35,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::filter::image::SImagesSubstract">
+   <service type="::sight::module::filter::image::SImagesSubstract">
        <in key="image1" uid="..." />
        <in key="image2" uid="..." />
        <inout key="result" uid="..." />
@@ -74,4 +74,4 @@ protected:
     MODULE_FILTER_IMAGE_API virtual void swapping() override;
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

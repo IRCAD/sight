@@ -32,12 +32,12 @@
 #include <QApplication>
 #include <QVBoxLayout>
 
-namespace sight::modules::ui::debug
+namespace sight::module::ui::debug
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::debug::action::ComponentsTree,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::debug::action::ComponentsTree,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -134,4 +134,4 @@ void ComponentsTree::stopping()
 
 } // namespace action
 
-} // namespace sight::modules::ui::debug
+} // namespace sight::module::ui::debug

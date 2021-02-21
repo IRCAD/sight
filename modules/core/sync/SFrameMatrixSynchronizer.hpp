@@ -45,7 +45,7 @@ class Image;
 class Matrix4;
 }
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 /**
  * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
@@ -72,7 +72,7 @@ namespace sight::modules::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::sync::SFrameMatrixSynchronizer" autoConnect="yes">
+        <service type="::sight::module::sync::SFrameMatrixSynchronizer" autoConnect="yes">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />
@@ -257,4 +257,4 @@ private:
     core::HiResClock::HiResClockType m_lastTimestamp;
 };
 
-} // namespace sight::modules::sync
+} // namespace sight::module::sync

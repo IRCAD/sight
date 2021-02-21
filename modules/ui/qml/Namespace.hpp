@@ -23,12 +23,12 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qml contains the basic services to build the application IHM with Qml.
+ * @brief The namespace sight::module::ui::qml contains the basic services to build the application IHM with Qml.
  *
  * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
  * application's Properties.cmake.
  */
-namespace sight::modules::ui::qml
+namespace sight::module::ui::qml
 {
 
 }

@@ -41,7 +41,7 @@ namespace sight::data
 class Series;
 }
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::itk::SInrSeriesDBReader">
+   <service type="::sight::module::io::itk::SInrSeriesDBReader">
        <inout key="data" uid="..." />
        <file>...</file>
        <file>...</file>
@@ -120,4 +120,4 @@ private:
     bool createImage( const std::filesystem::path inrFile, SPTR(data::Image) image );
 };
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

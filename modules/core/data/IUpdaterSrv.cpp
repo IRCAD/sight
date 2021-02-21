@@ -26,7 +26,7 @@
 
 #include <data/tools/helper/Composite.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 //-----------------------------------------------------------------------------

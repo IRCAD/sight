@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace io
 {
@@ -42,7 +42,7 @@ namespace io
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::base::io::SFolderSelector" >
+        <service type="::sight::module::ui::base::io::SFolderSelector" >
             <dialogTitle>Select a folder</dialogTitle>
         </service>
    @endcode
@@ -86,4 +86,4 @@ private:
 };
 
 } // namespace io
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -32,7 +32,7 @@
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
@@ -440,4 +440,4 @@ void SNegato2DCamera::updateWindowing( double _dw, double _dl )
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

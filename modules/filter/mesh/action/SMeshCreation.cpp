@@ -44,7 +44,7 @@
 #include <vtkThreshold.h>
 #include <vtkWindowedSincPolyDataFilter.h>
 
-namespace sight::modules::filter::mesh
+namespace sight::module::filter::mesh
 {
 
 namespace action
@@ -52,7 +52,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::filter::mesh::action::SMeshCreation )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::filter::mesh::action::SMeshCreation )
 
 //-----------------------------------------------------------------------------
 
@@ -171,4 +171,4 @@ void SMeshCreation::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace action
-} // namespace sight::modules::filter::mesh
+} // namespace sight::module::filter::mesh

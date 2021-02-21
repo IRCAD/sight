@@ -44,10 +44,10 @@
 
 #include <string>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::dicom::SSurfaceSegmentationWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::dicom::SSurfaceSegmentationWriter,
                          ::sight::data::ModelSeries )
 
 //------------------------------------------------------------------------------
@@ -209,4 +209,4 @@ sight::io::base::service::IOPathType SSurfaceSegmentationWriter::getIOPathType()
     return sight::io::base::service::FOLDER;
 }
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

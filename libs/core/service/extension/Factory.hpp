@@ -37,14 +37,14 @@ namespace sight::service
 
 class IService;
 
-namespace registry
+namespace extension
 {
 
 /**
- * The ServiceFactory is a registrar of all the services. It allows to retrieve the informations necessary to
+ * The Factory is a registrar of all the services. It allows to retrieve the informations necessary to
  * instantiate the services.
  */
-class SERVICE_CLASS_API ServiceFactory : public core::BaseObject
+class SERVICE_CLASS_API Factory : public core::BaseObject
 {
 
 public:
@@ -57,10 +57,10 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(service::IService)() > FactoryType;
 
-    fwCoreClassMacro(ServiceFactory, core::BaseObject, new ServiceFactory)
+    fwCoreClassMacro(Factory, core::BaseObject, new Factory)
 
     /// Return the unique Instance, create it if required at first access
-    SERVICE_API static ServiceFactory::sptr getDefault();
+    SERVICE_API static Factory::sptr getDefault();
 
     /// Parse module information to retrieve service declaration
     SERVICE_API void parseBundleInformation( );
@@ -152,5 +152,5 @@ private:
     mutable core::mt::ReadWriteMutex m_supportMapMutex;
 };
 
-} // namespace registry
+} // namespace extension
 } // namespace sight::service

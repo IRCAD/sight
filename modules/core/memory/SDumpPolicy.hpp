@@ -29,7 +29,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 
 class MODULE_MEMORY_CLASS_API SDumpPolicy : public service::IController
@@ -79,4 +79,4 @@ protected:
     ParametersType m_policyParams;
 };
 
-} // namespace sight::modules::memory
+} // namespace sight::module::memory

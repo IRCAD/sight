@@ -28,8 +28,8 @@
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
 
-#include <service/registry/ActiveWorkers.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <core/thread/ActiveWorkers.hpp>
+#include <service/extension/Factory.hpp>
 
 namespace ExTimeLine
 {
@@ -50,8 +50,8 @@ void Plugin::start()
 {
 
     m_worker = sight::core::thread::Worker::New();
-    sight::service::registry::ActiveWorkers::getDefault()
-    ->addWorker(sight::service::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
+    sight::core::thread::ActiveWorkers::getDefault()
+    ->addWorker(sight::core::thread::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,11 +1,8 @@
-<plugin id="Tuto06SceneQt3DCpp" class="::Tuto06SceneQt3DCpp::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="Tuto06SceneQt3DCpp" library="true" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_viz_qt3d" />
-    <requirement id="module_ui_base" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-
-
-    <library name="Tuto06SceneQt3DCpp" />
+    <requirement id="sight::module::viz::qt3d" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
 
 </plugin>

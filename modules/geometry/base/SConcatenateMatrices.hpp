@@ -31,7 +31,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 /**
  * @brief   This service concatenates N matrices together.
@@ -42,7 +42,7 @@ namespace sight::modules::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::geometry::base::SConcatenateMatrices">
+        <service uid="..." type="::sight::module::geometry::base::SConcatenateMatrices">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." inverse="true"/>
@@ -107,4 +107,4 @@ private:
     InvertVectorType m_invertVector;
 };
 
-} //namespace sight::modules::geometry::base
+} //namespace sight::module::geometry::base

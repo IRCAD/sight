@@ -26,7 +26,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sight::modules::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::geometry::base::SDecomposeMatrix">
+        <service uid="..." type="::sight::module::geometry::base::SDecomposeMatrix">
             <in key="source" uid="..." autoConnect="yes" />
             <inout key="translation" uid="..." />
             <inout key="rotation" uid="..." />
@@ -94,4 +94,4 @@ protected:
     MODULE_GEOMETRY_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
 };
 
-} //namespace sight::modules::geometry::base
+} //namespace sight::module::geometry::base

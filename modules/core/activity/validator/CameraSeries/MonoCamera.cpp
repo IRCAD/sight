@@ -27,12 +27,12 @@
 #include <data/Camera.hpp>
 #include <data/CameraSeries.hpp>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::CameraSeries::MonoCamera);
+fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraSeries::MonoCamera);
 
 //-----------------------------------------------------------------------------
 
@@ -88,4 +88,4 @@ sight::activity::IValidator::ValidationType MonoCamera::validate(const data::Obj
 //-----------------------------------------------------------------------------
 
 } // namespace CameraSeries
-} // namespace sight::modules::activity::validator
+} // namespace sight::module::activity::validator

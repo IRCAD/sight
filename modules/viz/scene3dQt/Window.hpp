@@ -42,7 +42,7 @@
 
 #include <optional>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 class Window final :
     public QWindow,
@@ -203,4 +203,4 @@ inline int Window::getFrameId() const
     return m_frameId;
 }
 
-} // namespace sight::modules::viz::scene3dQt.
+} // namespace sight::module::viz::scene3dQt.

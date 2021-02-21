@@ -48,7 +48,7 @@ namespace sight::data
 class Material;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -56,13 +56,13 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section Slots Slots
  * - \b updateField(data::Object::FieldsContainerType): listen to the fields in the data::Material.
- * - \b swapTexture(): listen to the modules::viz::scene3d::adaptor::STexture changes.
+ * - \b swapTexture(): listen to the module::viz::scene3d::adaptor::STexture changes.
  * - \b addTexture(): called when a texture is added in the data::Material.
  * - \b removeTexture(): called when a texture is removed in the data::Material.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SMaterial">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SMaterial">
         <inout key="material" uid="..." />
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
                 shadingMode="gouraud" normalLength="0.1" representationMode="SURFACE" />
@@ -77,10 +77,10 @@ namespace sight::modules::viz::scene3d::adaptor
  * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
  * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
- *      ::sight::modules::viz::scene3d:SMesh or a ::sight::modules::viz::scene3d:SModelSeries to this material;
+ *      ::sight::module::viz::scene3d:SMesh or a ::sight::module::viz::scene3d:SModelSeries to this material;
  *      simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
- *      reference a texture managed by an another modules::viz::scene3d::adaptor::STexture.
+ *      reference a texture managed by an another module::viz::scene3d::adaptor::STexture.
  *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong): name of the used shading mode.
  *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
@@ -203,7 +203,7 @@ private:
     std::string m_materialTemplateName { sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME };
 
     /// Contains the texture adaptor the material adaptor is listening to.
-    modules::viz::scene3d::adaptor::STexture::sptr m_texAdaptor { nullptr };
+    module::viz::scene3d::adaptor::STexture::sptr m_texAdaptor { nullptr };
 
     /// Defines the texture name.
     std::string m_textureName;
@@ -295,4 +295,4 @@ inline sight::viz::scene3d::Material* SMaterial::getMaterialFw() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

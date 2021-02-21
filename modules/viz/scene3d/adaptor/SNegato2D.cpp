@@ -39,7 +39,7 @@
 
 #include <algorithm>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
@@ -383,4 +383,4 @@ void SNegato2D::setVisible(bool _visible)
 }
 
 //-----------------------------------------------------------------------------
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

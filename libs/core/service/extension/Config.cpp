@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "service/registry/ServiceConfig.hpp"
+#include "service/extension/Config.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
@@ -28,29 +28,29 @@
 
 namespace sight::service
 {
-namespace registry
+namespace extension
 {
 
-const std::string ServiceConfig::CONFIG_EXT_POINT = "::sight::service::registry::ServiceConfig";
+const std::string Config::CONFIG_EXT_POINT = "::sight::service::extension::Config";
 
-ServiceConfig::sptr ServiceConfig::s_currentServiceConfig = ServiceConfig::New();
+Config::sptr Config::s_currentServiceConfig = Config::New();
 
 //-----------------------------------------------------------------------------
 
-ServiceConfig::sptr ServiceConfig::getDefault()
+Config::sptr Config::getDefault()
 {
     return s_currentServiceConfig;
 }
 
 //-----------------------------------------------------------------------------
 
-ServiceConfig::~ServiceConfig()
+Config::~Config()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ServiceConfig::parseBundleInformation()
+void Config::parseBundleInformation()
 {
     typedef std::shared_ptr< core::runtime::Extension > ExtensionType;
 
@@ -86,7 +86,7 @@ void ServiceConfig::parseBundleInformation()
 
 //-----------------------------------------------------------------------------
 
-void ServiceConfig::addServiceConfigInfo
+void Config::addServiceConfigInfo
     (   const std::string& configId,
     const std::string& service,
     const std::string& desc,
@@ -112,13 +112,13 @@ void ServiceConfig::addServiceConfigInfo
 
 //-----------------------------------------------------------------------------
 
-ServiceConfig::ServiceConfig()
+Config::Config()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ServiceConfig::clearRegistry()
+void Config::clearRegistry()
 {
     core::mt::WriteLock lock(m_registryMutex);
     m_reg.clear();
@@ -126,7 +126,7 @@ void ServiceConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string& configId,
+core::runtime::ConfigurationElement::csptr Config::getServiceConfig( const std::string& configId,
                                                                             const std::string& serviceImpl ) const
 {
 #ifndef _DEBUG
@@ -143,7 +143,7 @@ core::runtime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( cons
 
 //-----------------------------------------------------------------------------
 
-const std::string& ServiceConfig::getConfigDesc( const std::string& configId ) const
+const std::string& Config::getConfigDesc( const std::string& configId ) const
 {
     core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
@@ -154,7 +154,7 @@ const std::string& ServiceConfig::getConfigDesc( const std::string& configId ) c
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > ServiceConfig::getAllConfigForService( std::string serviceImpl, bool matchingOnly ) const
+std::vector< std::string > Config::getAllConfigForService( std::string serviceImpl, bool matchingOnly ) const
 {
     core::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
@@ -173,6 +173,6 @@ std::vector< std::string > ServiceConfig::getAllConfigForService( std::string se
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::service

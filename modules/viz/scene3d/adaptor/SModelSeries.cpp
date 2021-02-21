@@ -38,7 +38,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 //-----------------------------------------------------------------------------
 
@@ -132,8 +132,8 @@ void SModelSeries::updating()
 
     for(auto reconstruction : modelSeries->getReconstructionDB())
     {
-        auto adaptor = this->registerService< modules::viz::scene3d::adaptor::SReconstruction>(
-            "::sight::modules::viz::scene3d::adaptor::SReconstruction");
+        auto adaptor = this->registerService< module::viz::scene3d::adaptor::SReconstruction>(
+            "::sight::module::viz::scene3d::adaptor::SReconstruction");
         adaptor->registerInput(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
@@ -149,7 +149,7 @@ void SModelSeries::updating()
         adaptor->start();
         adaptor->updateVisibility(!showRec);
 
-        modules::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
+        module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
     }
@@ -169,7 +169,7 @@ void SModelSeries::setVisible(bool _visible)
     auto adaptors = this->getRegisteredServices();
     for(auto adaptor : adaptors)
     {
-        auto recAdaptor = modules::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
+        auto recAdaptor = module::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
         recAdaptor->updateVisibility(!_visible);
     }
 }
@@ -185,9 +185,9 @@ void SModelSeries::showReconstructionsOnFieldChanged()
     auto adaptors = this->getRegisteredServices();
     for(auto adaptor : adaptors)
     {
-        auto recAdaptor = modules::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
+        auto recAdaptor = module::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
         recAdaptor->updateVisibility(!showRec);
     }
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

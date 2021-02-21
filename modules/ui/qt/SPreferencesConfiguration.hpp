@@ -44,7 +44,7 @@ namespace sight::data
 class String;
 }
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 /**
  * @brief This action shows a dialog to configure preferences of an application.
@@ -53,7 +53,7 @@ namespace sight::modules::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::ui::qt::SPreferencesConfiguration">
+    <service type="::sight::module::ui::qt::SPreferencesConfiguration">
         <preference>
             <type>path</type>
             <name>Video path</name>
@@ -184,4 +184,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

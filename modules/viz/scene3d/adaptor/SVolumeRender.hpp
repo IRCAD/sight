@@ -42,7 +42,7 @@
 #include <array>
 #include <vector>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -79,7 +79,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SVolumeRender" >
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SVolumeRender" >
         <inout key="image" uid="..." autoConnect="yes" />
         <inout key="tf" uid="..." optional="yes" />
         <inout key="clippingMatrix" uid="..." />
@@ -452,4 +452,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

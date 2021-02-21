@@ -37,10 +37,10 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SImageCenter)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SImageCenter)
 
 static const service::IService::KeyType s_IMAGE_IN = "image";
 static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
@@ -151,4 +151,4 @@ service::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

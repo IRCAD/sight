@@ -53,7 +53,7 @@ ImageProperties::~ImageProperties()
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType ImageProperties::validate(
-    const activity::registry::ActivityInfo&,
+    const activity::extension::ActivityInfo&,
     const data::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;

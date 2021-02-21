@@ -31,16 +31,16 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #ifdef ANDROID
 #include <sys/system_properties.h>
 #endif
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::data::SExtractDeviceInfo,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::data::SExtractDeviceInfo,
                          ::sight::data::Object)
 
 //-----------------------------------------------------------------------------
@@ -65,9 +65,9 @@ void SExtractDeviceInfo::configuring()
     if(configCfg)
     {
 
-        deviceConfig = service::registry::ServiceConfig::getDefault()->getServiceConfig(
+        deviceConfig = service::extension::Config::getDefault()->getServiceConfig(
             configCfg->getValue(),
-            "::sight::modules::data::SExtractDeviceInfo");
+            "::sight::module::data::SExtractDeviceInfo");
     }
     else
     {
@@ -229,4 +229,4 @@ void SExtractDeviceInfo::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

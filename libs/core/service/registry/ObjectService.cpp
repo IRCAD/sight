@@ -23,9 +23,9 @@
 #include "service/registry/ObjectService.hpp"
 
 #include "service/IService.hpp"
-#include "service/registry/AppConfig.hpp"
-#include "service/registry/ServiceConfig.hpp"
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/AppConfig.hpp"
+#include "service/extension/Config.hpp"
+#include "service/extension/Factory.hpp"
 
 #include <core/LogicStamp.hpp>
 #include <core/tools/fwID.hpp>

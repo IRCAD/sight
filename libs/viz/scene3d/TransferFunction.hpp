@@ -30,7 +30,7 @@
 
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
-#include <OGRE/OgreVector2.h>
+#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {

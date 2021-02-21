@@ -31,7 +31,7 @@
 #include <service/IController.hpp>
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 /**
  * @brief This service extract camera informations in configuration using android device name.
@@ -39,7 +39,7 @@ namespace sight::modules::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::data::SExtractDeviceInfo">
+        <service uid="..." type="::sight::module::data::SExtractDeviceInfo">
             <inout key="camera" uid="..." />
             <devices>
                 <device>
@@ -73,7 +73,7 @@ namespace sight::modules::data
  * @subsection Configuration Configuration
  * - One of devices or configId tag is needed:
  *  - \b devices: configuration of devices
- *  - \b configId: id of a ServiceConfig containing devices configuration.
+ *  - \b configId: id of a Config containing devices configuration.
  */
 class MODULE_DATA_CLASS_API SExtractDeviceInfo : public service::IController
 {
@@ -111,4 +111,4 @@ private:
 
 };
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

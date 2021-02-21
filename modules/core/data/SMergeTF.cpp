@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 static const service::IService::KeyType s_TF_POOL_INPUT = "tfPool";
@@ -253,4 +253,4 @@ sight::data::TransferFunction::TFColor SMergeTF::mergeColors(const sight::data::
     return result;
 }
 
-} // namespace sight::modules::data.
+} // namespace sight::module::data.

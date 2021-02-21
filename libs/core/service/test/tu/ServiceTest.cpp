@@ -38,7 +38,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <utest/wait.hpp>
 
@@ -135,7 +135,7 @@ void ServiceTest::testServiceCreationWithMultipleData()
     data::Integer::sptr obj3   = data::Integer::New();
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( service::registry::ServiceFactory::getDefault()->support(obj1->getClassname(),
+    CPPUNIT_ASSERT( service::extension::Factory::getDefault()->support(obj1->getClassname(),
                                                                              "::sight::service::ut::TestService") );
     typedef service::IService::AccessType AccessType;
 
@@ -192,7 +192,7 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     data::Integer::sptr obj   = data::Integer::New();
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( service::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+    CPPUNIT_ASSERT( service::extension::Factory::getDefault()->support(obj->getClassname(),
                                                                              "::sight::service::ut::TestService") );
 
     // Test adding service
@@ -228,7 +228,7 @@ void ServiceTest::testServiceCreationWithUUID()
     service::IService::sptr service2;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( service::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+    CPPUNIT_ASSERT( service::extension::Factory::getDefault()->support(obj->getClassname(),
                                                                              "::sight::service::ut::TestService") );
 
     // Test adding service
@@ -269,7 +269,7 @@ void ServiceTest::testStartStopUpdate()
     service::ut::TestService::sptr service;
 
     // Add service
-    CPPUNIT_ASSERT( service::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+    CPPUNIT_ASSERT( service::extension::Factory::getDefault()->support(obj->getClassname(),
                                                                              "::sight::service::ut::TestService") );
     service = service::add< service::ut::TestService >("::sight::service::ut::TestServiceImplementation", myUUID);
     CPPUNIT_ASSERT(service);

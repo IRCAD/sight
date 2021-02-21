@@ -43,10 +43,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::dicom::SDicomSeriesWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::dicom::SDicomSeriesWriter,
                          ::sight::data::DicomSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -215,4 +215,4 @@ sight::io::base::service::IOPathType SDicomSeriesWriter::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

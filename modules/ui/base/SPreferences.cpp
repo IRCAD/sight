@@ -41,11 +41,11 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 fwServicesRegisterMacro( ::sight::ui::base::preferences::IPreferences,
-                         ::sight::modules::ui::base::SPreferences,
+                         ::sight::module::ui::base::SPreferences,
                          ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
@@ -144,4 +144,4 @@ void SPreferences::save()
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::modules::ui::base
+} //namespace sight::module::ui::base

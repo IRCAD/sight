@@ -38,9 +38,9 @@
 
 #include <boost/lexical_cast.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::viz::scene2d::processing::SComputeHistogram)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::viz::scene2d::processing::SComputeHistogram)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace processing
 {
@@ -128,4 +128,4 @@ service::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() con
 //-----------------------------------------------------------------------------
 
 } // namespace processing
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

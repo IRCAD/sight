@@ -39,7 +39,7 @@
 
 #include <map>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace series
 {
@@ -208,4 +208,4 @@ inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
 //-----------------------------------------------------------------------------
 
 } // namespace series.
-} // namespace sight::modules::ui::qt.
+} // namespace sight::module::ui::qt.

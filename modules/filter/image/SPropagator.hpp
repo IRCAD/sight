@@ -36,7 +36,7 @@
 
 #include <ui/history/ICommand.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -57,7 +57,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::filter::image::SPropagator">
+   <service type="::sight::module::filter::image::SPropagator">
        <in key="imageIn" uid="..." autoConnect="yes" />
        <inout key="imageOut" uid="..." />
        <value>1</value>
@@ -187,4 +187,4 @@ private:
 
 };
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

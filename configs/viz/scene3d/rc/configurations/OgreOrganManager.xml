@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>OgreOrganManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="organView" type="::sight::modules::ui::base::SView" >
+        <service uid="organView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <view caption="Organs" expanded="true"  />
@@ -38,11 +38,11 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="updaterReconstSrv" type="::sight::modules::data::updater::SObjFromSlot" >
+        <service uid="updaterReconstSrv" type="::sight::module::data::updater::SObjFromSlot" >
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditorSrv" type="::sight::modules::ui::qt::model::SModelSeriesList" autoConnect="yes" >
+        <service uid="listOrganEditorSrv" type="::sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="${organManagerModelSeries}" />
             <columns>
                 <organ_name>@organ_name</organ_name>
@@ -51,19 +51,19 @@
             <config enableDelete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
         </service>
 
-        <service uid="organMaterialEditorSrv" type="::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor" >
+        <service uid="organMaterialEditorSrv" type="::sight::module::ui::qt::reconstruction::SOrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="representationEditorSrv" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" >
+        <service uid="representationEditorSrv" type="::sight::module::ui::qt::reconstruction::RepresentationEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="textureSelectorSrv" type="::sight::modules::ui::viz::STextureSelector" >
+        <service uid="textureSelectorSrv" type="::sight::module::ui::viz::STextureSelector" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="materialSelectorSrv" type="::sight::modules::ui::viz::SMaterialSelector" >
+        <service uid="materialSelectorSrv" type="::sight::module::ui::viz::SMaterialSelector" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="shaderParametersSrv" type="::sight::modules::ui::viz::SShaderParameterEditor" >
+        <service uid="shaderParametersSrv" type="::sight::module::ui::viz::SShaderParameterEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 

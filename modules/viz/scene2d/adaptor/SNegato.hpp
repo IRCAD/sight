@@ -34,7 +34,7 @@
 #include <QImage>
 #include <QPointF>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -51,7 +51,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="negato" type="::sight::modules::viz::scene2d::adaptor::SNegato" autoConnect="yes">
+   <service uid="negato" type="::sight::module::viz::scene2d::adaptor::SNegato" autoConnect="yes">
        <inout key="image" uid="..." />
        <inout key="tf" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" color="gray" opacity="0.25" zValue="5" />
@@ -168,4 +168,4 @@ private:
 };
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

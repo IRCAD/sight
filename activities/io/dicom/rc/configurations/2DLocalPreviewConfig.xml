@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>2DLocalPreviewConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -8,7 +8,7 @@
     <config>
         <object uid="${objectID}" type="::sight::data::DicomSeries" src="ref" />
         <object uid="image" type="::sight::data::Image" src="deferred" />
-        <service uid="mainview" type="::sight::modules::ui::base::SView">
+        <service uid="mainview" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -56,18 +56,18 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="imageDumpLocker" type="::sight::modules::memory::LockDumpSrv">
+        <service uid="imageDumpLocker" type="::sight::module::memory::LockDumpSrv">
             <inout key="target" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="::sight::modules::data::MedicalImageSrv">
+        <service uid="medicalImgConverter" type="::sight::module::data::MedicalImageSrv">
             <inout key="image" uid="image" />
         </service>
 
-        <service uid="sliderIndexDicomPullerEditor" type="::sight::modules::ui::dicom::SSliceIndexDicomEditor">
+        <service uid="sliderIndexDicomPullerEditor" type="::sight::module::ui::dicom::SSliceIndexDicomEditor">
             <in key="series" uid="${objectID}" />
             <out key="image" uid="image" />
-            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
+            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
                 <dicomReaderConfig>
                     <config>
                         <showLogDialog>no</showLogDialog>

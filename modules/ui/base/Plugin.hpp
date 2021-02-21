@@ -28,7 +28,7 @@
 
 #include <data/Composite.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 /**
@@ -65,4 +65,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

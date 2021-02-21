@@ -36,7 +36,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 /**
@@ -44,7 +44,7 @@ namespace sight::modules::ui::qt::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::image::SMultipleTF">
+   <service type="::sight::module::ui::qt::image::SMultipleTF">
        <in key="currentTFPool" uid="..." optional="yes" />
        <inout key="tfPools" uid="..." />
        <out key="tfPool" uid="..." />
@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(modules::ui::qt::image::SMultipleTF, sight::ui::base::IEditor)
+    fwCoreServiceMacro(module::ui::qt::image::SMultipleTF, sight::ui::base::IEditor)
 
     /// Creates the editor.
     MODULE_UI_QT_API SMultipleTF();
@@ -114,9 +114,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Composite::s_ADDED_OBJECTS_SIG to modules::ui::qt::image::SMultipleTF::s_UPDATE_SLOT.
-     * Connect data::Composite::s_CHANGED_OBJECTS_SIG to modules::ui::qt::image::SMultipleTF::s_UPDATE_SLOT.
-     * Connect data::Composite::s_REMOVED_OBJECTS_SIG to modules::ui::qt::image::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_ADDED_OBJECTS_SIG to module::ui::qt::image::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_CHANGED_OBJECTS_SIG to module::ui::qt::image::SMultipleTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_REMOVED_OBJECTS_SIG to module::ui::qt::image::SMultipleTF::s_UPDATE_SLOT.
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
@@ -260,4 +260,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::qt::image.
+} // namespace sight::module::ui::qt::image.

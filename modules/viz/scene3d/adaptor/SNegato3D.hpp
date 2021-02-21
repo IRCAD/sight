@@ -40,7 +40,7 @@
 
 #include <optional>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -61,7 +61,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SNegato3D">
+    <service type="::sight::module::viz::scene3d::adaptor::SNegato3D">
         <inout key="image" uid="..." />
         <inout key="tf" uid="..." optional="yes" />
         <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" />
@@ -290,4 +290,4 @@ private:
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

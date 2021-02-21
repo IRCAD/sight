@@ -28,9 +28,9 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SAxis)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SAxis)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
 namespace adaptor
@@ -284,4 +284,4 @@ service::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 //--------------------------------------------------------------------------------------------------
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

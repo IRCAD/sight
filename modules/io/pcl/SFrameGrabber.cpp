@@ -39,14 +39,14 @@
 #include <filesystem>
 #include <regex>
 
-namespace sight::modules::io::pcl
+namespace sight::module::io::pcl
 {
 
 static const service::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( service::IGrabber, ::sight::modules::io::pcl::SFrameGrabber, ::sight::data::FrameTL)
+fwServicesRegisterMacro( service::IGrabber, ::sight::module::io::pcl::SFrameGrabber, ::sight::data::FrameTL)
 
 //------------------------------------------------------------------------------
 
@@ -346,4 +346,4 @@ void SFrameGrabber::setPosition(int64_t position)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::pcl
+} // namespace sight::module::io::pcl

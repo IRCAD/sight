@@ -57,7 +57,7 @@ macro(profile_setup ${PROJECT})
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
 
                 #set activate tag with parameters
-                list(APPEND XML_ACTIVATE "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
+                list(APPEND XML_ACTIVATE "    <activate id=\"sight_${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
                 foreach(CURRENT_PARAM ${CURRENT_PARAM_LIST})
                     list(FIND CURRENT_PARAM_LIST "${CURRENT_PARAM}" CURRENT_INDEX)
                     list(GET CURRENT_PARAM_VALUES "${CURRENT_INDEX}" CURRENT_VALUE)
@@ -67,14 +67,14 @@ macro(profile_setup ${PROJECT})
                 list(APPEND XML_ACTIVATE "    </activate>")
             # else simply set the activate tag
             else()
-                 list(APPEND XML_ACTIVATE "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
+                 list(APPEND XML_ACTIVATE "    <activate id=\"sight_${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
             endif()
         endif()
     endforeach()
     string(REPLACE ";" "\n" XML_ACTIVATE "${XML_ACTIVATE}")
 
     foreach(CURRENT_MODULE ${START_MODULES})
-        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${CURRENT_MODULE}\" />")
+        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"sight_${CURRENT_MODULE}\" />")
     endforeach()
 
     configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"

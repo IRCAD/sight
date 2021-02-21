@@ -39,7 +39,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
 //-----------------------------------------------------------------------------
@@ -101,11 +101,11 @@ void SMesh::starting()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = service::OSR::getServices< modules::viz::qt3d::adaptor::SMaterial >();
+        auto mtlAdaptors = service::OSR::getServices< module::viz::qt3d::adaptor::SMaterial >();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),
-                         [this](const modules::viz::qt3d::adaptor::SMaterial::sptr srv)
+                         [this](const module::viz::qt3d::adaptor::SMaterial::sptr srv)
             {
                 return srv->getMaterialName() == m_materialName;
             });
@@ -113,7 +113,7 @@ void SMesh::starting()
         SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
                    result != mtlAdaptors.end());
 
-        const modules::viz::qt3d::adaptor::SMaterial::sptr materialAdaptor = *result;
+        const module::viz::qt3d::adaptor::SMaterial::sptr materialAdaptor = *result;
 
         m_mesh->setMaterial(materialAdaptor->getMaterial());
     }
@@ -159,11 +159,11 @@ void SMesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = service::OSR::getServices< modules::viz::qt3d::adaptor::SMaterial >();
+        auto mtlAdaptors = service::OSR::getServices< module::viz::qt3d::adaptor::SMaterial >();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),
-                         [this](const modules::viz::qt3d::adaptor::SMaterial::sptr& srv)
+                         [this](const module::viz::qt3d::adaptor::SMaterial::sptr& srv)
             {
                 return srv->getMaterialName() == m_materialName;
             });
@@ -203,4 +203,4 @@ void SMesh::modifyVertices()
     m_mesh->buildBuffers(mesh.get_shared());
 }
 
-} // namespace sight::modules::viz::qt3d::adaptor.
+} // namespace sight::module::viz::qt3d::adaptor.

@@ -29,7 +29,7 @@
 #include <vtkAlgorithmOutput.h>
 #include <vtkPolyData.h>
 
-namespace sight::modules::geometry
+namespace sight::module::geometry
 {
 namespace generator
 {
@@ -174,4 +174,4 @@ private:
 
 } // namespace generator
 
-} // namespace sight::modules::geometry
+} // namespace sight::module::geometry

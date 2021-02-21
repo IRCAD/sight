@@ -30,7 +30,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -39,7 +39,7 @@ namespace sight::modules::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::geometry::base::SPointListFromMatrices">
+        <service type="::sight::module::geometry::base::SPointListFromMatrices">
             <in group="matrices">
                 <key uid="matrix1" />
                 <key uid="matrix2" />
@@ -94,4 +94,4 @@ private:
     bool m_append;
 };
 
-} // namespace sight::modules::geometry::base.
+} // namespace sight::module::geometry::base.

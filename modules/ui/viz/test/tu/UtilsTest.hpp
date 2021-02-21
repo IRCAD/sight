@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 namespace ut
 {
@@ -46,4 +46,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::modules::ui::viz
+} //namespace sight::module::ui::viz

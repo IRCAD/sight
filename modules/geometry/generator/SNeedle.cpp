@@ -47,12 +47,12 @@
 #include <vtkTriangleFilter.h>
 #include <vtkUnsignedCharArray.h>
 
-namespace sight::modules::geometry
+namespace sight::module::geometry
 {
 namespace generator
 {
 
-fwServicesRegisterMacro( ::sight::service::IGenerator, ::sight::modules::geometry::generator::SNeedle,
+fwServicesRegisterMacro( ::sight::service::IGenerator, ::sight::module::geometry::generator::SNeedle,
                          ::sight::data::Mesh)
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
@@ -349,4 +349,4 @@ void SNeedle::updateHeight(double height)
 // ------------------------------------------------------------------------------
 
 } // namespace generator
-} // namespace sight::modules::geometry
+} // namespace sight::module::geometry

@@ -28,7 +28,7 @@
 
 #include <OGRE/OgreCompositionTechnique.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -36,7 +36,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo">
         <config layer="default  width="1280" height="720"/>
         <inout key="image" uid="..." />
         <inout key="depth" uid="..." />
@@ -77,8 +77,8 @@ public:
     /**
      * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
      *
-     * Call @ref modules::viz::scene3d::adaptor::destroyCompositor() and
-     *modules::viz::scene3d::adaptor::createCompositor(int,
+     * Call @ref module::viz::scene3d::adaptor::destroyCompositor() and
+     *module::viz::scene3d::adaptor::createCompositor(int,
      * int).
      *
      * @param _viewport related layer's viewport.
@@ -99,7 +99,7 @@ protected:
     /// Updates the service. Convert render target texture to data::Image.
     MODULE_VIZ_SCENE3D_API void updating() noexcept override;
 
-    /// Destroys adaptor, only calls modules::viz::scene3d::adaptor::destroyCompositor().
+    /// Destroys adaptor, only calls module::viz::scene3d::adaptor::destroyCompositor().
     MODULE_VIZ_SCENE3D_API void stopping() override;
 
 private:
@@ -142,4 +142,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

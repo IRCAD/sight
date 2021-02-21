@@ -3783,7 +3783,7 @@ in the unit tests.
 *Replace deprecated methods to register a service.*
 
 Replace the `::OSR::registerService(obj, srv)` by `srv->registerInOut(obj, key)`
-and use `::fwServices::add(srv)` helper instead of calling directly `ServiceFactory
+and use `::fwServices::add(srv)` helper instead of calling directly `Factory
 
 ### SVolumeRender
 

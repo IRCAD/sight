@@ -24,12 +24,12 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::filter::mesh
+namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::filter::mesh::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::filter::mesh::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::mesh
+} // namespace sight::module::filter::mesh

@@ -32,7 +32,7 @@
 
 #include <sstream>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 //-----------------------------------------------------------------------------
 
@@ -292,4 +292,4 @@ void SUpdateIntrinsicDialog::updateInfos()
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::modules::ui::qt::calibration
+} //namespace sight::module::ui::qt::calibration

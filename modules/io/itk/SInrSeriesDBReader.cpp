@@ -49,10 +49,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::itk::SInrSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::itk::SInrSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
@@ -220,4 +220,4 @@ void SInrSeriesDBReader::initSeries(data::Series::sptr series, const std::string
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

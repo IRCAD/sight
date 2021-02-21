@@ -28,7 +28,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 /**
  * @brief Gets centroids of shapes from a labeled image and adds them as a 'landmark' field to it.
@@ -42,7 +42,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::modules::filter::image::SLabelGeometryImage">
+       <service uid="..." type="::sight::module::filter::image::SLabelGeometryImage">
            <inout key="image" uid="..."/>
            <out key="pointList" uid"..."/>
            <clusters>
@@ -105,4 +105,4 @@ private:
     std::vector< data::PointList::sptr > m_lPointListCentroids;
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

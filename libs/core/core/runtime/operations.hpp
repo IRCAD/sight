@@ -114,32 +114,8 @@ CORE_API std::shared_ptr<Extension> findExtension( const std::string& identifier
  * @param   moduleIdentifier    a string containing a module identifier
  *
  * @return  a system valid path
- * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
- */
-[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
-CORE_API std::filesystem::path getBundleResourcePath(const std::string& moduleIdentifier) noexcept;
-
-/**
- * @brief   Retrieve the filesystem valid path of resources of a module.
- *
- * @param   moduleIdentifier    a string containing a module identifier
- *
- * @return  a system valid path
  */
 CORE_API std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier) noexcept;
-
-/**
- * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
- *
- * @param   moduleIdentifier    a string containing a module identifier
- * @param   path                a module relative path
- *
- * @return  a system valid path
- * @deprecated  Bundle has been renamed to Module, please use getModuleResourceFilePath() instead
- */
-[[deprecated("To be removed in Sight 22.0, use getModuleResourceFilePath() instead")]]
-CORE_API std::filesystem::path getBundleResourceFilePath(const std::string& moduleIdentifier,
-                                                         const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
@@ -151,19 +127,6 @@ CORE_API std::filesystem::path getBundleResourceFilePath(const std::string& modu
  */
 CORE_API std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentifier,
                                                          const std::filesystem::path& path) noexcept;
-
-/**
- * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
- * For instance for "module-0.2/dir/file.txt", the function returns
- * "/home/login/sight/build/share/module-0.2/dir/file.txt"
- *
- * @param   path                relative path whose first element is a module identifier
- *
- * @return  a system valid path
- * @deprecated  module has been renamed to Module, please use getModuleResourceFilePath() instead
- */
-[[deprecated("To be removed in Sight 22.0, use getModuleResourceFilePath() instead")]]
-CORE_API std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
@@ -214,35 +177,9 @@ CORE_API std::filesystem::path getResourceFilePath(const std::filesystem::path& 
  * @param   path    a path relative to the module
  *
  * @return  a system valid path
- * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
- */
-[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
-CORE_API std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> module,
-                                                      const std::filesystem::path& path) noexcept;
-
-/**
- * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
- *
- * @param   module  a pointer to a module instance
- * @param   path    a path relative to the module
- *
- * @return  a system valid path
  */
 CORE_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> module,
                                                       const std::filesystem::path& path) noexcept;
-
-/**
- * @brief   Retrieve a filesystem valid path for a path relative to the module of the specified configuration element.
- *
- * @param   element a shared pointer to a configuration element instance
- * @param   path    a path relative to the module
- *
- * @return  a system valid path
- * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
- */
-[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
-CORE_API std::filesystem::path getBundleResourcePath(     std::shared_ptr<ConfigurationElement> element,
-                                                          const std::filesystem::path& path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module of the specified configuration element.
@@ -262,19 +199,6 @@ CORE_API std::filesystem::path getModuleResourcePath( std::shared_ptr<Configurat
  * @param   path        a path relative to the module
  *
  * @return  a system valid path
- * @deprecated  Bundle has been renamed to Module, please use getModuleResourcePath() instead
- */
-[[deprecated("To be removed in Sight 22.0, use getModuleResourcePath() instead")]]
-CORE_API std::filesystem::path getBundleResourcePath(    const IExecutable* executable,
-                                                         const std::filesystem::path& path) noexcept;
-
-/**
- * @brief   Retrieve a filesystem valid path for a path relative to the specified executable instance.
- *
- * @param   executable  a pointer to an executable instance
- * @param   path        a path relative to the module
- *
- * @return  a system valid path
  */
 CORE_API std::filesystem::path getModuleResourcePath(const IExecutable* executable,
                                                      const std::filesystem::path& path) noexcept;
@@ -283,29 +207,8 @@ CORE_API std::filesystem::path getModuleResourcePath(const IExecutable* executab
  * @brief   Loads all modules that can be found in the specified directory.
  *
  * @param   directory   a path to the directory to explore for modules
- * @deprecated  module has been renamed to Module, please use addModules() instead
- */
-[[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
-CORE_API void addBundles( const std::filesystem::path& directory );
-
-/**
- * @brief   Loads all modules that can be found in the specified directory.
- *
- * @param   directory   a path to the directory to explore for modules
  */
 CORE_API void addModules( const std::filesystem::path& directory );
-
-/**
- * @brief   Load a module.
- *
- * @param   identifier  a string containing a module identifier
- * @param   version     a version (none by default)
- *
- * @return  a shared pointer to the found module, or empty when it is not found
- * @deprecated  module has been renamed to Module, please use loadModule() instead
- */
-[[deprecated("To be removed in Sight 22.0, use loadModule() instead")]]
-CORE_API std::shared_ptr<Module> loadBundle( const std::string& identifier, const Version& version = Version() );
 
 /**
  * @brief   Load a module.
@@ -343,29 +246,8 @@ CORE_API std::shared_ptr< core::runtime::Profile > startProfile( const std::file
  * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found module, or empty when none
- * @deprecated  module has been renamed to Module, please use findModule() instead
- */
-[[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
-CORE_API std::shared_ptr<Module> findBundle(const std::string& identifier, const Version& version = Version() );
-
-/**
- * @brief   Retrieves the module with the given identifier and version
- *
- * @param   identifier  a string containing a module identifier
- * @param   version     a version (none by default)
- *
- * @return  a shared pointer to the found module, or empty when none
  */
 CORE_API std::shared_ptr<Module> findModule( const std::string& identifier, const Version& version = Version() );
-
-/**
- * @brief   Starts the module specified by the given identifier.
- *
- * @param   identifier  a string containing a module identifier
- * @deprecated  Bundle has been renamed to Module, please use startModule() instead
- */
-[[deprecated("To be removed in Sight 22.0, use startModule() instead")]]
-CORE_API void startBundle(const std::string& identifier);
 
 /**
  * @brief   Starts the module specified by the given identifier.

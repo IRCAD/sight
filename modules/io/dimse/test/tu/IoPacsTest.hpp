@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 namespace ut
 {
@@ -47,4 +47,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::modules::io::dimse
+} //namespace sight::module::io::dimse

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>SliceBlendView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -26,7 +26,7 @@
 
         <object uid="identity" type="::sight::data::Matrix4" />
 
-        <service uid="blendSceneView" type="::sight::modules::ui::base::SView">
+        <service uid="blendSceneView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -95,7 +95,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="targetPlaneSlice" type="::sight::modules::filter::image::SPlaneSlicer" autoConnect="yes">
+        <service uid="targetPlaneSlice" type="::sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${targetImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
             <in key="axes" uid="identity" />
@@ -103,7 +103,7 @@
             <config orientation="${orientation}" />
         </service>
 
-        <service uid="transformedPlaneSlice" type="::sight::modules::filter::image::SPlaneSlicer" autoConnect="yes">
+        <service uid="transformedPlaneSlice" type="::sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${referenceImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
             <in key="axes" uid="${transformUid}" />
@@ -111,7 +111,7 @@
             <config orientation="${orientation}" />
         </service>
 
-        <service uid="negatoSliceSelector" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="negatoSliceSelector" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

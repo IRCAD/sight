@@ -36,9 +36,9 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::vision::SMarkerToPoint,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::vision::SMarkerToPoint,
                          ::sight::data::PointList)
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
@@ -152,4 +152,4 @@ void SMarkerToPoint::clear()
     }
 }
 
-} //namespace sight::modules::geometry::vision
+} //namespace sight::module::geometry::vision

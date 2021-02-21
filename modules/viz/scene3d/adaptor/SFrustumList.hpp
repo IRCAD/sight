@@ -30,7 +30,7 @@
 
 #include <boost/circular_buffer.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::viz::scene3d::adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::viz::scene3d::adaptor::SFrustumList">
+        <service type="::sight::module::viz::scene3d::adaptor::SFrustumList">
             <in key="camera" uid="..." />
             <in key="transform" uid="..." />
             <config layer="default" near="0.1" far="300" color="#f8e119" transform="..." />
@@ -138,7 +138,7 @@ private:
     size_t m_currentCamIndex {0};
 
     /// Contains the Ogre material adaptor.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
     /// Contains the material data.
     data::Material::sptr m_material {nullptr};
@@ -148,4 +148,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

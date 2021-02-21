@@ -62,27 +62,27 @@ namespace factory
 /**
  * @page Activity Activity configuration
  *
- * An activity is defined by the extension "::sight::activity::registry::Activity". It is used to launch an
+ * An activity is defined by the extension "::sight::activity::extension::Activity". It is used to launch an
  * AppConfig with the selected data, it will create a new data data::ActivitySeries that inherits from a
  * data::Series.
  *
  * The service activity::action::SLauncher allows to launch an activity. Its role is to create the specific
  * Activity associated with the selected data.
  *
- * This action should be followed by the service modules::ui::qt::editor::SDynamicView : this service listens the action
+ * This action should be followed by the service module::ui::qt::editor::SDynamicView : this service listens the action
  * signals
  * and launchs the activity in a new tab.
  *
  * - activity::action::SLauncher uses the selected data to generate the activity.
- * - modules::ui::qt::editor::SDynamicView  displays the activity in the application.
+ * - module::ui::qt::editor::SDynamicView  displays the activity in the application.
  * - data::Vector contains the set of selected data .
  *
  * @code{.xml}
-     <extension implements="::sight::activity::registry::Activity">
+     <extension implements="::sight::activity::extension::Activity">
          <id>myActivityId</id>
          <title>3D Visu</title>
          <desc>Activity description ...</desc>
-         <icon>module_ui_media-0.1/icons/icon-3D.png</icon>
+         <icon>sight_module_ui_icons-0.1/icon-3D.png</icon>
          <requirements>
             <requirement name="param1" type="data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="data::Mesh" maxOccurs="3" >
@@ -166,7 +166,7 @@ namespace factory
  *
  * @code {.cpp}
    ValidationType validate(
-           const activity::registry::ActivityInfo& activityInfo,
+           const activity::extension::ActivityInfo& activityInfo,
            SPTR(data::Vector) currentSelection ) const;
    @endcode
  *

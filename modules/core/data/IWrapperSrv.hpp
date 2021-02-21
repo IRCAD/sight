@@ -26,7 +26,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**

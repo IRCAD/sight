@@ -39,10 +39,10 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkListener, ::sight::modules::io::igtl::STDataListener,
+fwServicesRegisterMacro(::sight::module::io::igtl::INetworkListener, ::sight::module::io::igtl::STDataListener,
                         ::sight::data::MatrixTL)
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 static const std::string s_TIMELINE_KEY = "timeline";
@@ -242,4 +242,4 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

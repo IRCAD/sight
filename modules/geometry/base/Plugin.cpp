@@ -24,11 +24,11 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::geometry::base::Plugin");
+    "::sight::module::geometry::base::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -46,4 +46,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

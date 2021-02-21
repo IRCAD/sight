@@ -29,7 +29,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -48,7 +48,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="tf2" type="::sight::modules::viz::scene2d::adaptor::STransferFunction" autoConnect="yes">
+   <service uid="tf2" type="::sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="yes">
        <inout key="tf" uid="..." />
        <inout key="viewport" uid="..." />
        <config lineColor="lightGray" pointColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="0" />
@@ -104,13 +104,13 @@ protected:
      * @return A map of each proposed connection.
      *
      * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * modules::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
      * Connect data::TransferFunction::s_MODIFIED_SIG of s_TF_INOUT to
-     * modules::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
      * Connect data::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INOUT to
-     * modules::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
      * Connect data::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INOUT to
-     * modules::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
      */
     KeyConnectionsMap getAutoConnections() const override;
 
@@ -296,4 +296,4 @@ private:
 };
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

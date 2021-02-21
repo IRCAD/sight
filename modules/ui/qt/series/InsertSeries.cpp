@@ -25,9 +25,9 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( sight::modules::ui::qt::series::InsertSeries );
+fwDataRegisterMacro( sight::module::ui::qt::series::InsertSeries );
 
-namespace sight::modules::ui::qt::series
+namespace sight::module::ui::qt::series
 {
 
 InsertSeries::InsertSeries(data::Object::Key key) :
@@ -67,4 +67,4 @@ void InsertSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::series
+} // namespace sight::module::ui::qt::series

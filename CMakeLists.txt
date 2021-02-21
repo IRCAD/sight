@@ -23,6 +23,8 @@ endif()
 
 project (sight)
 
+set(SIGHT_REPOSITORY "sight")
+
 if(APPLE)
     message(FATAL_ERROR "macOS is no more supported.")
 endif()
@@ -191,69 +193,26 @@ if(NOT VCPKG_TARGET_TRIPLET)
 endif()
 
 ########################################################################################################################
-# Automatic detection of additional repositories using .sight files
-########################################################################################################################
-file(GLOB ADDITIONAL_REPOSITORIES_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../*/.sight)
-
-foreach(REPOSITORY ${ADDITIONAL_REPOSITORIES_FILES})
-    file(READ ${REPOSITORY} REPO_RAW_NAME)
-    string(STRIP ${REPO_RAW_NAME} REPO_RAW_NAME)
-    string(TOUPPER ${REPO_RAW_NAME} REPO_NAME)
-
-    if(NOT ${REPO_NAME} STREQUAL "SIGHT")
-      message(${REPO_NAME})
-
-        get_filename_component(REPO_DIR ${REPOSITORY} DIRECTORY)
-        get_filename_component(REPO_DIR ${REPO_DIR} ABSOLUTE)
-
-        option(BUILD_${REPO_NAME} "Enable ${REPO_NAME} repository" ON)
-        list(APPEND ADDITIONAL_REPOSITORIES_OPTION BUILD_${REPO_NAME})
-        list(APPEND ADDITIONAL_REPOSITORIES_NAME ${REPO_RAW_NAME})
-        list(APPEND ADDITIONAL_REPOSITORIES ${REPO_DIR})
-    endif()
-endforeach()
-
-# parse additional CMakeLists
-if(ADDITIONAL_REPOSITORIES)
-    list(LENGTH ADDITIONAL_REPOSITORIES ADDITIONAL_REPOSITORIES_LEN)
-
-    math(EXPR ADDITIONAL_REPOSITORIES_LEN ${ADDITIONAL_REPOSITORIES_LEN}-1)
-    foreach(REPO_INDEX RANGE ${ADDITIONAL_REPOSITORIES_LEN})
-        list(GET ADDITIONAL_REPOSITORIES ${REPO_INDEX} ADDITIONAL_REPO)
-        list(GET ADDITIONAL_REPOSITORIES_OPTION ${REPO_INDEX} ADDITIONAL_REPO_OPTION)
-
-        if(EXISTS ${ADDITIONAL_REPO}/CMakeLists.txt AND ${ADDITIONAL_REPO_OPTION})
-            get_filename_component(DIR_NAME ${ADDITIONAL_REPO} NAME)
-            add_subdirectory(${ADDITIONAL_REPO} ${DIR_NAME})
-        endif()
-    endforeach()
-endif()
-
-########################################################################################################################
 # Default paths settings for libraries, modules and resources
 ########################################################################################################################
 
+set(FW_INSTALL_PATH_SUFFIX "${SIGHT_REPOSITORY}")
+set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
 if(WIN32)
-    set(FW_INSTALL_PATH_SUFFIX )
     set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
-    set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}")
 else()
-    set(FW_INSTALL_PATH_SUFFIX "sight")
-    set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}")
-    set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
+    set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}")
 endif()
 
-set(LIBRARY_OUTPUT_DIR lib/${FW_INSTALL_PATH_SUFFIX})
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 # Fixed path for multi-config builds (e.g. msvc)
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
     set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/bin )
-    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIR} )
-    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIR} )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
 endforeach()
 
 ########################################################################################################################
@@ -261,26 +220,6 @@ endforeach()
 # We really start the configure process here
 ########################################################################################################################
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
-
-# Do the same in additional repositories
-if(ADDITIONAL_REPOSITORIES)
-
-    list(LENGTH ADDITIONAL_REPOSITORIES ADDITIONAL_REPOSITORIES_LEN)
-    math(EXPR ADDITIONAL_REPOSITORIES_LEN ${ADDITIONAL_REPOSITORIES_LEN}-1)
-
-    foreach(REPO_INDEX RANGE ${ADDITIONAL_REPOSITORIES_LEN})
-        list(GET ADDITIONAL_REPOSITORIES ${REPO_INDEX} ADDITIONAL_REPO)
-        list(GET ADDITIONAL_REPOSITORIES_OPTION ${REPO_INDEX} ADDITIONAL_REPO_OPTION)
-
-        if(${ADDITIONAL_REPO_OPTION})
-            list(GET ADDITIONAL_REPOSITORIES_NAME ${REPO_INDEX} ADDITIONAL_REPO_NAME)
-            message(STATUS "Configuring additional repository " ${ADDITIONAL_REPO_NAME} " found in: " ${ADDITIONAL_REPO})
-            file(GLOB_RECURSE ADDITIONAL_REPOSITORIES_PROPERTIES ${ADDITIONAL_REPO}/*/Properties.cmake)
-            list(APPEND PROJECTS_PROPERTIES ${ADDITIONAL_REPOSITORIES_PROPERTIES})
-            set(ADDITIONAL_REPOSITORIES_SOURCE_DIR "${ADDITIONAL_REPOSITORIES_SOURCE_DIR} ${ADDITIONAL_REPO}")
-        endif()
-    endforeach()
-endif()
 
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
@@ -352,9 +291,6 @@ if(PROJECTS_TO_BUILD)
     set(PROJECT_LIST ${PROJECTS_TO_BUILD})
     findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
 
-    set(REPOSITORIES_DIRECTORIES ${ADDITIONAL_REPOSITORIES})
-    list(APPEND REPOSITORIES_DIRECTORIES ${CMAKE_SOURCE_DIR})
-
     foreach(PROJECT ${PROJECT_LIST})
         set(${PROJECT}_INSTALL 1)
 
@@ -362,7 +298,7 @@ if(PROJECTS_TO_BUILD)
             message(FATAL_ERROR "Can not find any project for '${PROJECT}' set in PROJECTS_TO_BUILD variable")
         endif()
         # Configure cpack to package the project sources.
-        findProjectSubdirectory("${${PROJECT}_DIR}" "${REPOSITORIES_DIRECTORIES}" SOURCE_INSTALL_DIR)
+        findProjectSubdirectory("${${PROJECT}_DIR}" "${CMAKE_SOURCE_DIR}" SOURCE_INSTALL_DIR)
         # Add the project to CPack's list of source directories.
         list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
     endforeach()

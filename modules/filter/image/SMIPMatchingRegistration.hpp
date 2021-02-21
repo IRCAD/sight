@@ -26,7 +26,7 @@
 
 #include <service/IRegisterer.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 /**
  * @brief This service uses a fast registration algorithm to quickly register two images together if the transform
@@ -40,7 +40,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::modules::filter::image::SFastRegistration">
+   <service uid="..." type="::sight::module::filter::image::SFastRegistration">
        <in key="source" uid="..." />
        <in key="target" uid="..." />
        <in key="transform" uid="..." />
@@ -109,4 +109,4 @@ protected:
 private:
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

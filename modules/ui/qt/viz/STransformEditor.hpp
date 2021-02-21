@@ -33,7 +33,7 @@ class QSlider;
 class QLabel;
 class QLineEdit;
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 /**
  * @brief   This editor regulates the position and rotation defined in a transformation matrix.
@@ -41,7 +41,7 @@ namespace sight::modules::ui::qt::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::qt::viz::STransformEditor" autoConnect="no">
+    <service uid="..." type="::sight::module::ui::qt::viz::STransformEditor" autoConnect="no">
         <inout key="matrix" uid="..."/>
         <translation enabled="no" min="-300"/>
         <rotation enabled="yes" min="-180" max="180" />
@@ -142,4 +142,4 @@ private:
     int m_rotationRange[2];
 };
 
-} // namespace sight::modules::ui::qt::viz
+} // namespace sight::module::ui::qt::viz

@@ -44,7 +44,7 @@
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
@@ -123,7 +123,7 @@ void SVideo::starting()
         updatePL();
 
         m_pointListAdaptor = this->registerService< sight::viz::scene3d::IAdaptor >(
-            "::sight::modules::viz::scene3d::adaptor::SPointList");
+            "::sight::module::viz::scene3d::adaptor::SPointList");
 
         m_pointListAdaptor->registerInput(m_pointList, s_PL_INPUT, true);
 
@@ -422,4 +422,4 @@ void SVideo::clearEntity()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

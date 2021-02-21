@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::filter::point
+namespace sight::module::filter::point
 {
 
 /**
@@ -46,4 +46,4 @@ struct MODULE_FILTER_POINT_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::filter::point
+} // namespace sight::module::filter::point

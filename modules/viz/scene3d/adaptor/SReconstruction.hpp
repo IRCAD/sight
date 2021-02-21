@@ -36,7 +36,7 @@ namespace sight::data
 class Mesh;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 /**
  * @brief This adaptor displays a reconstruction.
@@ -51,7 +51,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SReconstruction">
+    <service type="::sight::module::viz::scene3d::adaptor::SReconstruction">
         <in key="reconstruction" uid="..." />
         <config layer="..." transform="..." autoresetcamera="yes" queryFlags="0x40000000" />
    </service>
@@ -105,7 +105,7 @@ public:
      * @brief Gets the mesh adaptor.
      * @return The mesh adaptor.
      */
-    MODULE_VIZ_SCENE3D_API modules::viz::scene3d::adaptor::SMesh::sptr getMeshAdaptor();
+    MODULE_VIZ_SCENE3D_API module::viz::scene3d::adaptor::SMesh::sptr getMeshAdaptor();
 
 protected:
 
@@ -189,4 +189,4 @@ inline void SReconstruction::setQueryFlags(uint32_t _queryFlags)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

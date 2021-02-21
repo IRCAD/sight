@@ -34,7 +34,7 @@
 #include <future>
 #include <string>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::io::igtl
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::sight::modules::io::igtl::SServerListener" autoConnect="yes" >
+ * <service uid="..." type="::sight::module::io::igtl::SServerListener" autoConnect="yes" >
  *      <port>...</port>
  *      <inout group="objects">
  *           <key uid="..." deviceName="device01" />
@@ -56,12 +56,12 @@ namespace sight::modules::io::igtl
  * - \b objects [sight::data::Object]: specified objects to listen.
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
-class MODULE_IO_IGTL_CLASS_API SServerListener : public modules::io::igtl::INetworkListener
+class MODULE_IO_IGTL_CLASS_API SServerListener : public module::io::igtl::INetworkListener
 {
 
 public:
 
-    fwCoreServiceMacro(SServerListener,  modules::io::igtl::INetworkListener )
+    fwCoreServiceMacro(SServerListener,  module::io::igtl::INetworkListener )
 
     /// Constructor
     MODULE_IO_IGTL_API SServerListener();
@@ -105,4 +105,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

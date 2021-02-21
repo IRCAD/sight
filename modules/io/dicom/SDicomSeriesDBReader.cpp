@@ -44,10 +44,10 @@
 #include <string>
 #include <vector>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::dicom::SDicomSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::dicom::SDicomSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -304,4 +304,4 @@ sight::io::base::service::IOPathType SDicomSeriesDBReader::getIOPathType() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

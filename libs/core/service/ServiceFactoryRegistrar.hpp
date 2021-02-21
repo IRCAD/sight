@@ -23,7 +23,7 @@
 #pragma once
 
 #include "service/factory/new.hpp"
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/Factory.hpp"
 
 namespace sight::service
 {
@@ -39,13 +39,13 @@ public:
 
     ServiceFactoryRegistrar(const std::string& simpl, const std::string& stype)
     {
-        auto factory = service::registry::ServiceFactory::getDefault();
+        auto factory = service::extension::Factory::getDefault();
         factory->addServiceFactory( &::sight::service::factory::New< SRV_IMPL >, simpl, stype);
     }
 
     ServiceFactoryRegistrar(const std::string& simpl, const std::string& stype, const std::string& oimpl)
     {
-        auto factory = service::registry::ServiceFactory::getDefault();
+        auto factory = service::extension::Factory::getDefault();
         factory->addServiceFactory( &::sight::service::factory::New< SRV_IMPL >, simpl, stype);
         factory->addObjectFactory( simpl, oimpl);
     }
@@ -60,7 +60,7 @@ public:
 
     ServiceObjectFactoryRegistrar(const std::string& simpl, const std::string& oimpl)
     {
-        auto factory = service::registry::ServiceFactory::getDefault();
+        auto factory = service::extension::Factory::getDefault();
         factory->addObjectFactory( simpl, oimpl);
     }
 };

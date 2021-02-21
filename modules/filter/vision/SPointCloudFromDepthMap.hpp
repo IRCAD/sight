@@ -33,7 +33,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="computePointCloud" type="::sight::modules::filter::vision::SPointCloudFromDepthMap">
+        <service uid="computePointCloud" type="::sight::module::filter::vision::SPointCloudFromDepthMap">
             <in  key="depthMap" uid="..." />
             <in  key="rgbMap" uid="..." />
             <in  key="calibration" uid="..." />
@@ -149,4 +149,4 @@ private:
 
 };
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

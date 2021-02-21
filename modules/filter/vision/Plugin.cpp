@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::filter::vision::Plugin");
+    "::sight::module::filter::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {

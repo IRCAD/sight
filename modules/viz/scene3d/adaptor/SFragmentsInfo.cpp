@@ -37,10 +37,10 @@
 
 #include <memory>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
-fwServicesRegisterMacro(::sight::viz::scene3d::IAdaptor, ::sight::modules::viz::scene3d::adaptor::SFragmentsInfo)
+fwServicesRegisterMacro(::sight::viz::scene3d::IAdaptor, ::sight::module::viz::scene3d::adaptor::SFragmentsInfo)
 
 struct FragmentsInfoMaterialListener final : public ::Ogre::MaterialManager::Listener
 {
@@ -391,4 +391,4 @@ void SFragmentsInfo::postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

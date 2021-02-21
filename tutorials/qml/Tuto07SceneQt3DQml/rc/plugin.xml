@@ -1,7 +1,5 @@
-<plugin id="Tuto07SceneQt3DQml" class="::Tuto07SceneQt3DQml::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="Tuto07SceneQt3DQml" library="true" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
-
-    <library name="Tuto07SceneQt3DQml" />
+    <requirement id="sight::module::service" />
 
 </plugin>

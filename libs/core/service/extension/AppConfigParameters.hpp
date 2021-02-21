@@ -23,7 +23,7 @@
 #pragma once
 
 #include "service/config.hpp"
-#include "service/registry/AppConfig.hpp"
+#include "service/extension/AppConfig.hpp"
 
 #include <core/mt/types.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
@@ -35,12 +35,12 @@
 namespace sight::service
 {
 
-namespace registry
+namespace extension
 {
 
 /**
  * @brief This class allows to register all the configuration parameters which has the point extension
- *        "::sight::service::registry::AppConfigParameters".
+ *        "::sight::service::extension::AppConfigParameters".
  */
 class SERVICE_CLASS_API AppConfigParameters : public core::BaseObject
 {
@@ -92,6 +92,6 @@ protected:
 
 };
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::service

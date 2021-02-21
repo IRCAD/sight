@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /**
@@ -38,7 +38,7 @@ namespace sight::modules::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::io::dimse::SPacsConfigurationInitializer">
+        <service type="::sight::module::io::dimse::SPacsConfigurationInitializer">
             <inout key="config" uid="..." />
             <config
                 localApplicationTitle="VRRender"
@@ -94,7 +94,7 @@ protected:
      * @return A map of each proposed connection.
      *
      * Connect sight::io::dimse::data::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
-     *::modules::io::dimse::SPacsConfigurationInitializer::s_UPDATE_SLOT.
+     *::module::io::dimse::SPacsConfigurationInitializer::s_UPDATE_SLOT.
      */
     MODULE_IO_DIMSE_API service::IService::KeyConnectionsMap getAutoConnections() const override final;
 
@@ -143,4 +143,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

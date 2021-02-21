@@ -59,7 +59,7 @@ namespace fwRuntime
 struct ConfigurationElement;
 }
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
 /**
@@ -72,10 +72,10 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::dicom::SSliceIndexDicomEditor">
+        <service type="::sight::module::ui::dicom::SSliceIndexDicomEditor">
            <in key="series" uid="..." />
            <out key="image" uid="..." />
-           <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" delay="500">
+           <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500">
                <dicomReaderConfig> <!-- optional -->
                    <!-- here goes the configuration for the dicom reader implementation -->
                </dicomReaderConfig>
@@ -194,4 +194,4 @@ private:
     SPTR(core::runtime::ConfigurationElement) m_readerConfig;
 };
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

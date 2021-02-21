@@ -39,7 +39,7 @@
 #include <glm/gtx/intersect.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 // -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::STargeting )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::STargeting )
 
 // -----------------------------------------------------------------------------
 
@@ -269,4 +269,4 @@ void STargeting::removePoint()
 
 // -----------------------------------------------------------------------------
 
-}// namespace sight::modules::geometry::base
+}// namespace sight::module::geometry::base

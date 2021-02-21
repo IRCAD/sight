@@ -35,7 +35,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 /**
@@ -58,7 +58,7 @@ namespace sight::modules::filter::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::filter::vision::SUltrasoundImage">
+   <service type="::sight::module::filter::vision::SUltrasoundImage">
        <in key="ultrasoundImage" uid="..." />
        <inout key="extractedUltrasoundBeam" uid="..." />
    </service>
@@ -257,4 +257,4 @@ private:
     ::cv::Mat m_extractionMap { 1, 1, CV_32FC2 };
 };
 
-} // namespace sight::modules::filter::vision.
+} // namespace sight::module::filter::vision.

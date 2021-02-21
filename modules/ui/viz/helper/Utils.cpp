@@ -22,7 +22,7 @@
 
 #include "Utils.hpp"
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 namespace helper
@@ -56,4 +56,4 @@ QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
 
 } // namespace helper
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

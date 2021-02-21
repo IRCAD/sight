@@ -24,7 +24,7 @@
 
 #include <data/Reconstruction.hpp>
 
-namespace sight::modules::ui::qml::model
+namespace sight::module::ui::qml::model
 {
 
 OrganListModel::OrganListModel() noexcept
@@ -113,4 +113,4 @@ QVariant OrganListModel::data(const QModelIndex& index, int role) const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qml::model
+} // namespace sight::module::ui::qml::model

@@ -41,11 +41,11 @@
 #include <functional>
 #include <numeric>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 fwServicesRegisterMacro( ::sight::service::IRegisterer,
-                         modules::filter::image::SMIPMatchingRegistration)
+                         module::filter::image::SMIPMatchingRegistration)
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
     service::IRegisterer()
@@ -113,4 +113,4 @@ void SMIPMatchingRegistration::computeRegistration(core::HiResClock::HiResClockT
     this->updating();
 }
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

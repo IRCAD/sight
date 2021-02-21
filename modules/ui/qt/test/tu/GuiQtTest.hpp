@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace ut
 {
@@ -48,4 +48,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

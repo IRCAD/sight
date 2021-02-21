@@ -41,7 +41,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 //------------------------------------------------------------------------------
@@ -348,4 +348,4 @@ void SQueryEditor::displayErrorMessage(const std::string& message) const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

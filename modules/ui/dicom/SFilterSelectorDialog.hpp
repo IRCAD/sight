@@ -26,7 +26,7 @@
 
 #include <ui/base/IDialogEditor.hpp>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
 /**
@@ -35,7 +35,7 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::ui::dicom::SFilterSelectorDialog">
+   <service type="::sight::module::ui::dicom::SFilterSelectorDialog">
        <inout key="filter" uid="..." />
        <selection mode="include" />
        <addSelection filter="::sight::filter::dicom::custom::NoFilter" />
@@ -105,4 +105,4 @@ private:
     std::vector< std::string > m_selectedFilters;
 };
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

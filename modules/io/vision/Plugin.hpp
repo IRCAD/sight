@@ -26,7 +26,7 @@
 
 #include <modules/io/vision/config.hpp>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 struct Plugin : public core::runtime::Plugin
 {
@@ -49,4 +49,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

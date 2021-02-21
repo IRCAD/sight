@@ -15,5 +15,5 @@ set( REQUIREMENTS
     module_viz_scene3d
     module_viz_scene3dQt
     module_viz_scene2d
-    module_ui_media
+    module_ui_icons
 )

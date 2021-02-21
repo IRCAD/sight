@@ -37,7 +37,7 @@ class QComboBox;
 class QPushButton;
 class QIcon;
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::image::TransferFunctionEditor">
+   <service type="::sight::module::ui::qt::image::TransferFunctionEditor">
        <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />

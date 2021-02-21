@@ -43,9 +43,9 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::vision::SReprojectionError)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::vision::SReprojectionError)
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 const core::com::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT = "compute";
@@ -384,4 +384,4 @@ service::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() co
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::modules::geometry::vision
+} //namespace sight::module::geometry::vision

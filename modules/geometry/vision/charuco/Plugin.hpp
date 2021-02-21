@@ -26,7 +26,7 @@
 
 #include <modules/geometry/vision/config.hpp>
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
 struct Plugin : public core::runtime::Plugin
@@ -50,4 +50,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

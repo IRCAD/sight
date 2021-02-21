@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::document
+namespace sight::module::io::document
 {
 
 struct Plugin : public core::runtime::Plugin
@@ -42,4 +42,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::io::document
+} // namespace sight::module::io::document

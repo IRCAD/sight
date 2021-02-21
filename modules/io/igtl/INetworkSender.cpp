@@ -26,7 +26,7 @@
 
 #include <data/Object.hpp>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 const core::com::Signals::SignalKeyType INetworkSender::s_CONNECTED_SIGNAL    = "connected";
@@ -79,4 +79,4 @@ service::IService::KeyConnectionsMap INetworkSender::getAutoConnections() const
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl.
+} // namespace sight::module::io::igtl.

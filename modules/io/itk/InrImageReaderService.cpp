@@ -40,10 +40,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::itk::InrImageReaderService,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::itk::InrImageReaderService,
                          ::sight::data::Image )
 
 //------------------------------------------------------------------------------
@@ -193,4 +193,4 @@ void InrImageReaderService::notificationOfDBUpdate()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

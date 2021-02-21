@@ -1,20 +1,18 @@
-<plugin id="Tuto04MeshGeneratorCpp" class="::Tuto04MeshGeneratorCpp::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="Tuto04MeshGeneratorCpp" library="true" version="@PROJECT_VERSION@" >
 
-    <library name="Tuto04MeshGeneratorCpp" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-
-    <extension implements="::sight::service::registry::ServiceFactory" >
+    <extension implements="::sight::service::extension::Factory" >
         <type>::sight::ui::base::IAction</type>
         <service>::Tuto04MeshGeneratorCpp::SMeshModifier</service>
         <object>::sight::data::Mesh</object>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>Tuto04MeshGeneratorCpp_AppCfg</id>
         <config>
 
@@ -24,7 +22,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto04MeshGeneratorCpp</name>
@@ -38,9 +36,9 @@
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="::sight::modules::ui::base::SJobBar" />
+            <service uid="progressBarView" type="::sight::module::ui::base::SJobBar" />
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -53,7 +51,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -69,7 +67,7 @@
                 </registry>
             </service>
 
-            <service uid="modifierFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="modifierFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Shake mesh point" shortcut="Q" />
@@ -110,26 +108,26 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="meshAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openMeshAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="saveMeshAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
             <service uid="shakeMeshPointAct" type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
@@ -173,12 +171,12 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="meshWriterSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="writer" />
             </service>

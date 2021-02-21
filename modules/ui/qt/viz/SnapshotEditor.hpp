@@ -35,7 +35,7 @@
 
 class QPushButton;
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 
 /**
@@ -85,7 +85,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="snapshotEditor" type="::sight::modules::ui::qt::viz::SnapshotEditor" autoConnect="no" />
+       <service uid="snapshotEditor" type="::sight::module::ui::qt::viz::SnapshotEditor" autoConnect="no" />
        @endcode
      */
     virtual void configuring() override;

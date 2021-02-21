@@ -127,15 +127,6 @@ public:
                                                                  const std::shared_ptr<Module> module);
 
     /**
-     * @brief   Processes a library XML node.
-     *
-     * @param   node    a pointer to the XML node that represents a library declaration
-     *
-     * @return  a pointer to the created library
-     */
-    static std::shared_ptr<dl::Library> processLibrary(xmlNodePtr node);
-
-    /**
      * Processes a node that is a plugin element.
      *
      * @param   node        a pointer to the xml document node that represents a module

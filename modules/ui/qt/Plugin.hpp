@@ -31,7 +31,7 @@ namespace sight::core::thread
 class Worker;
 } //namespace thread
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 /**
  * @brief   This class is called when the guiQt module is loaded.
@@ -64,4 +64,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

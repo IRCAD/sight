@@ -1,8 +1,8 @@
 <plugin id="tu_validator" version="@PROJECT_VERSION@">
 
-    <extension-point id="::sight::activity::registry::Activity" schema="activity-0.1/activity.xsd" />
+    <extension-point id="::sight::activity::extension::Activity" schema="activity-0.1/activity.xsd" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestValidator0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
@@ -23,7 +23,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestValidator1</id>
         <title>test 1</title>
         <desc>This is test 1.</desc>

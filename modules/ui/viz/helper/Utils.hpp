@@ -28,7 +28,7 @@
 
 #include <QColor>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 namespace helper
@@ -55,4 +55,4 @@ public:
 
 } // namespace helper
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

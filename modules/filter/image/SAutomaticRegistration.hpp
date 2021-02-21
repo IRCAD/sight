@@ -29,7 +29,7 @@
 #include <filter/image/AutomaticRegistration.hpp>
 #include <filter/image/Metric.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -145,4 +145,4 @@ private:
     sight::filter::image::AutomaticRegistration::RealType m_samplingPercentage;
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

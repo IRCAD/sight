@@ -35,7 +35,7 @@
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/Matrix.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 const service::IService::KeyType s_CALIBRATION_INPUT = "calibration";
@@ -164,4 +164,4 @@ void SSolvePnP::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

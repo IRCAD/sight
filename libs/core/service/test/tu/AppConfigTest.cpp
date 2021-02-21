@@ -22,8 +22,8 @@
 
 #include "AppConfigTest.hpp"
 
-#include "service/registry/ActiveWorkers.hpp"
-#include "service/registry/AppConfig.hpp"
+#include "core/thread/ActiveWorkers.hpp"
+#include "service/extension/AppConfig.hpp"
 #include "service/registry/ObjectService.hpp"
 
 #include "TestService.hpp"
@@ -62,7 +62,7 @@ void AppConfigTest::setUp()
 {
     // Set up context before running a test.
 
-    service::registry::ActiveWorkers::sptr activeWorkers = service::registry::ActiveWorkers::getDefault();
+    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
     // Set up context before running a test.
@@ -77,7 +77,7 @@ void AppConfigTest::setUp()
     core::runtime::loadModule("module_service");
     core::runtime::loadModule("AppConfigTest");
 
-    service::registry::AppConfig::sptr appConfig = service::registry::AppConfig::getDefault();
+    service::extension::AppConfig::sptr appConfig = service::extension::AppConfig::getDefault();
     appConfig->parseBundleInformation();
 }
 
@@ -96,11 +96,11 @@ void AppConfigTest::tearDown()
     }
 
     // Clean up after the test run.
-    service::registry::AppConfig::sptr appConfig;
-    appConfig = service::registry::AppConfig::getDefault();
+    service::extension::AppConfig::sptr appConfig;
+    appConfig = service::extension::AppConfig::getDefault();
     appConfig->clearRegistry();
 
-    service::registry::ActiveWorkers::sptr activeWorkers = service::registry::ActiveWorkers::getDefault();
+    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->clearRegistry();
 }
 
@@ -108,12 +108,12 @@ void AppConfigTest::tearDown()
 
 void AppConfigTest::addConfigTest()
 {
-    service::registry::AppConfig::sptr currentAppConfig = service::registry::AppConfig::getDefault();
+    service::extension::AppConfig::sptr currentAppConfig = service::extension::AppConfig::getDefault();
 
-    const std::string configId(service::registry::AppConfig::getUniqueIdentifier());
+    const std::string configId(service::extension::AppConfig::getUniqueIdentifier());
     const std::string group("TestGroup");
     const std::string desc("Description");
-    const std::string moduleId("::sight::modules::service");
+    const std::string moduleId("::sight::module::service");
     const std::string moduleVersion("0.1");
     service::registry::AppInfo::ParametersType parameters;
 
@@ -133,7 +133,7 @@ void AppConfigTest::addConfigTest()
     CPPUNIT_ASSERT_EQUAL(moduleId, module->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(moduleVersion, module->getVersion().string());
 
-    service::registry::FieldAdaptorType replaceFields;
+    service::FieldAdaptorType replaceFields;
 
     core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
     configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
@@ -156,12 +156,12 @@ void AppConfigTest::addConfigTest()
 
 void AppConfigTest::parametersConfigTest()
 {
-    service::registry::AppConfig::sptr currentAppConfig = service::registry::AppConfig::getDefault();
+    service::extension::AppConfig::sptr currentAppConfig = service::extension::AppConfig::getDefault();
 
     const std::string configId("parametersConfigTest1");
     const std::string group("parametersGroup");
 
-    service::registry::FieldAdaptorType replaceFields;
+    service::FieldAdaptorType replaceFields;
     replaceFields["TEST_IMAGE"] = "objectUUID";
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
@@ -197,7 +197,7 @@ service::AppConfigManager::sptr AppConfigTest::launchAppConfigMgr(
     auto appConfigMgr = service::AppConfigManager::New();
     appConfigMgr->setIsUnitTest(!autoPrefix);
 
-    const service::registry::FieldAdaptorType fields;
+    const service::FieldAdaptorType fields;
     appConfigMgr->setConfig( name, fields );
     appConfigMgr->launch();
 
@@ -1238,8 +1238,8 @@ void AppConfigTest::concurentAccessToAppConfigTest()
         future.get(); // Trigger exceptions
     }
 
-    service::registry::AppConfig::getDefault()->clearRegistry();
-    std::vector< std::string > allCconfigs = service::registry::AppConfig::getDefault()->getAllConfigs();
+    service::extension::AppConfig::getDefault()->clearRegistry();
+    std::vector< std::string > allCconfigs = service::extension::AppConfig::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT(allCconfigs.empty());
 
 }

@@ -28,7 +28,7 @@
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgrePrerequisites.h>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {

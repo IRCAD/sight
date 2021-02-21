@@ -25,7 +25,7 @@
 #include <viz/scene3d/compositor/Core.hpp>
 #include <viz/scene3d/SRender.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 static const core::com::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActive";

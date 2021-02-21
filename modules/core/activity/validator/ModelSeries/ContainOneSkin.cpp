@@ -29,12 +29,12 @@
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::ModelSeries::ContainOneSkin);
+fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSeries::ContainOneSkin);
 
 //-----------------------------------------------------------------------------
 
@@ -164,4 +164,4 @@ ContainOneSkin::~ContainOneSkin()
 //-----------------------------------------------------------------------------
 
 } // namespace ModelSeries
-} // namespace sight::modules::activity::validator
+} // namespace sight::module::activity::validator

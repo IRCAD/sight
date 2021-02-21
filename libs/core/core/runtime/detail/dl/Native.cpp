@@ -56,13 +56,12 @@ Native::~Native() noexcept
 
 const std::filesystem::path Native::getFullPath() const
 {
-    const std::string repoName = m_searchPath.filename().string() + "_";
 #if defined(linux) || defined(__linux)
-    const std::filesystem::path result = m_searchPath / ("lib" + repoName + this->getName() + ".so");
+    const std::filesystem::path result = m_searchPath / ("lib" + this->getName() + ".so");
 #elif defined(WIN32)
-    const std::filesystem::path result = m_searchPath / (repoName + this->getName() + ".dll");
+    const std::filesystem::path result = m_searchPath / ( this->getName() + ".dll");
 #elif defined (__APPLE__)
-    const std::filesystem::path result = m_searchPath / ("lib" + repoName + this->getName() + ".dylib");
+    const std::filesystem::path result = m_searchPath / ("lib" + this->getName() + ".dylib");
 #endif
 
     // Test that the result path exists.

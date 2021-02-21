@@ -22,7 +22,7 @@
 
 #include "ICamp.hpp"
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 //-----------------------------------------------------------------------------
@@ -40,4 +40,4 @@ ICamp::~ICamp()
 
 //-----------------------------------------------------------------------------
 
-}// namespace sight::modules::data
+}// namespace sight::module::data

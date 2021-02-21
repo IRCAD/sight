@@ -130,7 +130,6 @@ void signal_handler(int signal)
 int main(int argc, char* argv[])
 {
     PathListType modulePaths;
-    PathType rwd;
     PathType profileFile;
     sight::core::runtime::Profile::ParamsContainer profileArgs;
 
@@ -139,7 +138,6 @@ int main(int argc, char* argv[])
     options.add_options()
         ("help,h", "Show help message")
         ("module-path,B", "Adds a module path")
-        ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 
     // Log options
@@ -285,21 +283,15 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    SLM_INFO_IF( "Runtime working directory: " << rwd << " => " << ::absolute(rwd), vm.count("rwd") );
-
     SLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
     SLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
 
     // Check if path exist
-    SLM_FATAL_IF( "Runtime working directory doesn't exist: " << rwd.string() << " => " << ::absolute(
-                      rwd), !std::filesystem::exists(rwd.string()) );
-
     SLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
                       profileFile), !std::filesystem::exists(profileFile.string()));
 
     std::transform( modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
-    rwd         = ::absolute(rwd);
 
     // Automatically adds the module folders where the profile.xml is located if it was not already there
     const auto profileModulePath = profileFile.parent_path().parent_path();
@@ -327,13 +319,6 @@ int main(int argc, char* argv[])
         SLM_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
                           modulePath), !std::filesystem::exists(modulePath.string()) );
     }
-
-#ifdef _WIN32
-    const bool isChdirOk = static_cast<bool>(SetCurrentDirectory(rwd.string().c_str()) != 0);
-#else
-    const bool isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
-#endif // _WIN32
-    SLM_FATAL_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
     sight::core::runtime::init();
 

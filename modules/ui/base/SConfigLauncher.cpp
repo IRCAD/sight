@@ -28,12 +28,12 @@
 #include <service/macros.hpp>
 #include <service/registry/Proxy.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::SConfigLauncher )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SConfigLauncher )
 
 const core::com::Signals::SignalKeyType SConfigLauncher::s_LAUNCHED_SIG = "launched";
 
@@ -96,7 +96,7 @@ void SConfigLauncher::setIsActive(bool isActive)
         {
             service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
             proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
-            service::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+            service::FieldAdaptorType replaceMap;
             replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
             m_configLauncher->startConfig(this->getSptr(), replaceMap);
             m_sigLaunched->asyncEmit();

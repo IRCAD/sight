@@ -1,7 +1,5 @@
-<plugin id="Tuto01BasicQml" class="::Tuto01BasicQml::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="Tuto01BasicQml" library="true" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
-
-    <library name="Tuto01BasicQml" />
+    <requirement id="sight::module::service" />
 
 </plugin>

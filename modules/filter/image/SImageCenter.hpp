@@ -26,7 +26,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::filter::image::SImageCenter">
+   <service type="::sight::module::filter::image::SImageCenter">
        <in key="image" uid="..." />
        <inout key="transform" uid="..." />
    </service>
@@ -88,4 +88,4 @@ protected:
 
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

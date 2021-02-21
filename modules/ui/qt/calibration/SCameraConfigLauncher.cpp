@@ -49,11 +49,11 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor,
-                         ::sight::modules::ui::qt::calibration::SCameraConfigLauncher,
+                         ::sight::module::ui::qt::calibration::SCameraConfigLauncher,
                          ::sight::data::Composite)
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
@@ -104,20 +104,20 @@ void SCameraConfigLauncher::starting()
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("module_ui_media",
-                                                                                  "icons/Import.svg").string()));
+    QIcon addIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("sight::module::ui::icons",
+                                                                                  "Import.svg").string()));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon importIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("module_ui_media",
-                                                                                     "icons/CameraSeries.svg").string()));
+    QIcon importIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("sight::module::ui::icons",
+                                                                                     "CameraSeries.svg").string()));
     m_importButton = new QPushButton(importIcon, "");
     m_importButton->setToolTip("Import an intrinsic calibration.");
     layout->addWidget(m_importButton);
 
-    QIcon removeIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("module_ui_media",
-                                                                                     "icons/remove.svg").string()));
+    QIcon removeIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath("sight::module::ui::icons",
+                                                                                     "remove.svg").string()));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);
@@ -223,7 +223,7 @@ void SCameraConfigLauncher::onAddClicked()
 void SCameraConfigLauncher::onImportClicked()
 {
     auto sdb                              = data::SeriesDB::New();
-    service::IService::sptr readerService = service::add("::sight::modules::io::atoms::SReader");
+    service::IService::sptr readerService = service::add("::sight::module::io::atoms::SReader");
     readerService->registerInOut(sdb, io::base::service::s_DATA_KEY);
 
     try
@@ -375,7 +375,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 
 void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 {
-    service::helper::ConfigLauncher::FieldAdaptorType replaceMap;
+    service::FieldAdaptorType replaceMap;
 
     data::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
@@ -426,7 +426,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
             calibInfo2 = data::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
         }
 
-        service::registry::FieldAdaptorType replaceMap;
+        service::FieldAdaptorType replaceMap;
 
         replaceMap["camera1"]          = camera1->getID();
         replaceMap["camera2"]          = camera2->getID();
@@ -475,4 +475,4 @@ void SCameraConfigLauncher::addCamera()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

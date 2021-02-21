@@ -51,7 +51,7 @@ UI_BASE_API data::Composite::sptr getPreferences();
 
 /**
  * @brief Gets the preferences service and call 'update', it should save the preferences file (if the service is
- * modules::ui::base::preferences::SPreferences).
+ * module::ui::base::preferences::SPreferences).
  * @warning This method does nothing if the preferences service is not found or if the service is not started.
  */
 UI_BASE_API void savePreferences();

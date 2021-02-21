@@ -34,14 +34,14 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 static const service::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
 static const service::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
 static const service::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::STransformDepthMap2mm)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::STransformDepthMap2mm)
 
 //------------------------------------------------------------------------------
 
@@ -143,4 +143,4 @@ void STransformDepthMap2mm::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

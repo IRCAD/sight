@@ -40,7 +40,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ private:
 };
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::qt::SShowHelp,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::qt::SShowHelp,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -172,4 +172,4 @@ void SShowHelp::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

@@ -23,7 +23,7 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qml::activity contains helpers and services allowing to launch activities on
+ * @brief The namespace sight::module::ui::qml::activity contains helpers and services allowing to launch activities on
  * Qml Applications.
  *
  * This namespace represents a Qml module that contains Qml objects to manage activities
@@ -64,7 +64,7 @@
  * - \n activityIdsList: identifiers of the activities to launch
  * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  *
- * @see modules::ui::qml::activity::ActivityLauncherManager
+ * @see module::ui::qml::activity::ActivityLauncherManager
  *
  * @section Activity Activity
  *
@@ -93,7 +93,7 @@
    @endcode
  *
  **/
-namespace sight::modules::ui::qml::activity
+namespace sight::module::ui::qml::activity
 {
 
-} // namespace sight::modules::ui::qml::activity
+} // namespace sight::module::ui::qml::activity

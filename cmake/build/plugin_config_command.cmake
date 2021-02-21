@@ -5,7 +5,7 @@ if(PROJECT_REQUIREMENTS)
 
     # Add each requirements to the requirement list
     foreach(CURRENT_REQUIREMENT ${PROJECT_REQUIREMENTS})
-        list(APPEND REQUIREMENT_LIST "    <requirement id=\"${CURRENT_REQUIREMENT}\"/>")
+        list(APPEND REQUIREMENT_LIST "    <requirement id=\"sight_${CURRENT_REQUIREMENT}\"/>")
     endforeach()
 endif()
 
@@ -43,12 +43,12 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
 
         if(CMAKE_MATCH_3)
             string(STRIP ${CMAKE_MATCH_3} SRV_OBJECT)
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::registry::ServiceFactory\">"
+            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::extension::Factory\">"
                                        "         <type>${SRV_TYPE}</type>"
                                        "         <service>${SRV_IMPL}</service>"
                                        "         <object>${SRV_OBJECT}</object>")
         else()
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::registry::ServiceFactory\">"
+            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::sight::service::extension::Factory\">"
                                        "         <type>${SRV_TYPE}</type>"
                                        "         <service>${SRV_IMPL}</service>")
         endif()
@@ -91,7 +91,7 @@ foreach(CPP_FILE ${PRJ_CPP_FILES})
                 string(STRIP ${CMAKE_MATCH_2} SRV_IMPL)
                 file(STRINGS ${HPP_FILE} HPP_FILE_LINES_CONTENT)
 
-                list(APPEND EXTENSION_LIST "    <extension implements=\"::sight::service::registry::ServiceFactory\">"
+                list(APPEND EXTENSION_LIST "    <extension implements=\"::sight::service::extension::Factory\">"
                                            "         <type>${SRV_TYPE}</type>"
                                            "         <service>${SRV_IMPL}</service>")
                 list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${SRV_TYPE}, ${SRV_IMPL} )\n")
@@ -163,12 +163,11 @@ endif()
 # set variables used in the configure_file command
 string(REPLACE "module_" "" STRIPPED_MODULE_NAME ${PROJECT})
 string(REPLACE "_" "::" SPLIT_MODULE_NAME "${STRIPPED_MODULE_NAME}")
-set(PLUGIN_ID "::sight::modules::${SPLIT_MODULE_NAME}")
+set(PLUGIN_ID "${SIGHT_REPOSITORY}::module::${SPLIT_MODULE_NAME}")
 
 # retrieves the class representing the module executable part.
 if(PRJ_CPP_FILES)
-    set(PLUGIN_CLASS "class=\"::sight::modules::${SPLIT_MODULE_NAME}::Plugin\"")
-    set(PROJECT_LIBRARY "    <library name=\"${PROJECT}\" />")
+    set(PROJECT_LIBRARY "library=\"true\"")
 endif()
 
 configure_file( "${CMAKE_SCRIPTS_DIR}/plugin.xml.in"

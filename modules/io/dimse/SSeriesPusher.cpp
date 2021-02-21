@@ -40,10 +40,10 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dimse::SSeriesPusher,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dimse::SSeriesPusher,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void SSeriesPusher::updating()
         if(pushOK)
         {
             // Push series to the PACS
-            m_pushSeriesWorker->post(std::bind(&modules::io::dimse::SSeriesPusher::pushSeries, this));
+            m_pushSeriesWorker->post(std::bind(&module::io::dimse::SSeriesPusher::pushSeries, this));
         }
 
     }
@@ -355,4 +355,4 @@ void SSeriesPusher::displayMessage(const ::std::string& message, bool error) con
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dimse
+} // namespace sight::module::io::dimse

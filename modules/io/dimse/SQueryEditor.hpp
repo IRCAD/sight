@@ -39,7 +39,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::io::dimse::SQueryEditor">
+        <service type="::sight::module::io::dimse::SQueryEditor">
             <in key="pacsConfig" uid="..." />
             <inout key="seriesDB" uid="..." />
             <config icon="..." />
@@ -172,4 +172,4 @@ private Q_SLOTS:
 
 };
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

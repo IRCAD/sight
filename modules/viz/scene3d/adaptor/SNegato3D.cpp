@@ -47,7 +47,7 @@
 
 #include <algorithm>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT       = "newImage";
@@ -736,4 +736,4 @@ void SNegato3D::updateWindowing( double _dw, double _dl )
     }
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

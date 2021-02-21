@@ -24,11 +24,11 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::io::realsense
+namespace sight::module::io::realsense
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::io::realsense::Plugin");
+    "::sight::module::io::realsense::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::realsense
+} // namespace sight::module::io::realsense

@@ -24,10 +24,10 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::dimse::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::dimse::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -49,4 +49,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

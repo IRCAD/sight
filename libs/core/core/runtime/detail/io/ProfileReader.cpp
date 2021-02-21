@@ -143,13 +143,6 @@ std::shared_ptr< profile::Profile > ProfileReader::processProfile(xmlNodePtr nod
 
     auto profile = std::dynamic_pointer_cast< detail::profile::Profile>(core::runtime::getCurrentProfile());
 
-    // Kept for compatibility with Sight < 22.0, before core::runtime::init() was mandatory
-    if(profile == nullptr)
-    {
-        profile = std::make_shared<detail::profile::Profile>();
-        detail::profile::setCurrentProfile(profile);
-    }
-
     // Process child nodes.
     xmlNodePtr curChild = node->children;
     for(curChild = node->children; curChild != nullptr; curChild = curChild->next)

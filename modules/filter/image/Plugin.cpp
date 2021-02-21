@@ -24,13 +24,13 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::filter::image::Plugin");
+    "::sight::module::filter::image::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -52,4 +52,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

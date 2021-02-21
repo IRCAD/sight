@@ -32,7 +32,7 @@
 #include <future>
 #include <string>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 /**
@@ -40,7 +40,7 @@ namespace sight::modules::io::igtl
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service uid="..." type="::sight::modules::io::igtl::SClientListener" >
+ * <service uid="..." type="::sight::module::io::igtl::SClientListener" >
  *      <server>127.0.0.1:4242</server>
  *      <inout group="objects">
  *          <key uid="..." deviceName="device01" />
@@ -59,12 +59,12 @@ namespace sight::modules::io::igtl
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
-class MODULE_IO_IGTL_CLASS_API SClientListener : public modules::io::igtl::INetworkListener
+class MODULE_IO_IGTL_CLASS_API SClientListener : public module::io::igtl::INetworkListener
 {
 
 public:
 
-    fwCoreServiceMacro(SClientListener, modules::io::igtl::INetworkListener)
+    fwCoreServiceMacro(SClientListener, module::io::igtl::INetworkListener)
 
     /// Constructor
     MODULE_IO_IGTL_API SClientListener();
@@ -115,4 +115,4 @@ private:
     std::vector<std::string> m_deviceNames;
 };
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

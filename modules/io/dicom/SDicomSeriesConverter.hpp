@@ -35,7 +35,7 @@ namespace sight::core::jobs
 class IJob;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="..." impl="::sight::modules::io::dicom::SDicomSeriesConverter">
+   <service uid="..." impl="::sight::module::io::dicom::SDicomSeriesConverter">
      <in key="source" uid="..." />
      <inout key="target" uid="..." />
    </service>
@@ -99,4 +99,4 @@ protected:
     SPTR(JobCreatedSignal) m_sigJobCreated;
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

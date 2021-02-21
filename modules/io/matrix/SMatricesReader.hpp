@@ -32,7 +32,7 @@
 
 #include <array>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
 /**
@@ -57,7 +57,7 @@ namespace sight::modules::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::matrix::SMatricesReader">
+   <service type="::sight::module::io::matrix::SMatricesReader">
        <inout key="matrixTL" uid="..." />
        <oneShot>false</oneShot>
        <fps>30</fps>

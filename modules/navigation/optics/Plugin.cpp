@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::navigation::optics
+namespace sight::module::navigation::optics
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::navigation::optics::Plugin");
+    "::sight::module::navigation::optics::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::navigation::optics
+} // namespace sight::module::navigation::optics

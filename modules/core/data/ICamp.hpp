@@ -28,7 +28,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 /**
  * @brief This interface defines service API. It can be considered as a default type for services using fwCamp.
@@ -47,4 +47,4 @@ public:
 
 };
 
-}// namespace sight::modules::data
+}// namespace sight::module::data

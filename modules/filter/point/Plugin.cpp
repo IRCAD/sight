@@ -24,13 +24,13 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::filter::point
+namespace sight::module::filter::point
 {
 
 //-----------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::filter::point::Plugin");
+    "::sight::module::filter::point::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -52,4 +52,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::point
+} // namespace sight::module::filter::point

@@ -26,10 +26,10 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::ui::viz::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::ui::viz::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -49,4 +49,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

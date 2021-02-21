@@ -1,12 +1,12 @@
 <plugin id="ExFrameByFrame" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExFrameByFrame_AppCfg</id>
         <config>
 
@@ -20,7 +20,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
@@ -34,13 +34,13 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
                         <spacer/>
                         <menuItem name="Previous" />
                         <menuItem name="Next" />
@@ -58,31 +58,31 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="previousImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="previousImageAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/previousImage</slot>
                 </slots>
             </service>
 
-            <service uid="nextImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="nextImageAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/nextImage</slot>
                 </slots>
@@ -99,19 +99,19 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="default" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::sight::module::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
                 <oneShot>true</oneShot>
@@ -119,7 +119,7 @@
                 <createTimestamp>true</createTimestamp>
             </service>
 
-            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL" />
                 </in>

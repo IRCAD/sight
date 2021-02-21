@@ -1,12 +1,12 @@
 <plugin id="ExVideoTracking" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExVideoTracking_AppCfg</id>
         <config>
 
@@ -21,7 +21,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
@@ -36,15 +36,15 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -57,7 +57,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::modules::ui::base::SView" >
+            <service uid="cameraView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -74,7 +74,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -82,7 +82,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -92,7 +92,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -102,7 +102,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -116,7 +116,7 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
@@ -134,14 +134,14 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="parametersSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="parametersSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -195,17 +195,17 @@
                 </parameters>
             </service>
 
-            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SGrabberProxy" >
+            <service uid="videoGrabberSrv" type="::sight::module::io::video::SGrabberProxy" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL" />
                 </in>
@@ -215,7 +215,7 @@
                 <framerate>30</framerate>
             </service>
 
-            <service uid="trackerSrv" type="::sight::modules::navigation::optics::SArucoTracker" worker="tracking" >
+            <service uid="trackerSrv" type="::sight::module::navigation::optics::SArucoTracker" worker="tracking" >
                 <in key="timeline" uid="frameTL" autoConnect="yes" />
                 <in key="camera" uid="camera" />
                 <inout group="tagTL" >

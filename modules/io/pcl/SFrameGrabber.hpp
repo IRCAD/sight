@@ -37,7 +37,7 @@ namespace sight::data
 class Camera;
 }
 
-namespace sight::modules::io::pcl
+namespace sight::module::io::pcl
 {
 
 /**
@@ -61,7 +61,7 @@ namespace sight::modules::io::pcl
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::pcl::SFrameGrabber">
+        <service type="::sight::module::io::pcl::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>
@@ -150,4 +150,4 @@ private:
     mutable core::mt::Mutex m_mutex;
 };
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

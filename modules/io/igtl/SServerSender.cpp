@@ -33,9 +33,9 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkSender, ::sight::modules::io::igtl::SServerSender)
+fwServicesRegisterMacro(::sight::module::io::igtl::INetworkSender, ::sight::module::io::igtl::SServerSender)
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 const service::IService::KeyType s_OBJECTS_GROUP = "objects";
@@ -134,4 +134,4 @@ void SServerSender::sendObject(const data::Object::csptr& obj, const size_t inde
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

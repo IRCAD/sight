@@ -1,12 +1,12 @@
 <plugin id="ExRGBDImageMasking" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExRGBDImageMasking_AppCfg</id>
         <config>
 
@@ -36,7 +36,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- declaration of the views, menu and toolbar -->
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExRGBDImageMasking</name>
@@ -52,7 +52,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -63,7 +63,7 @@
                 </registry>
             </service>
 
-            <service uid="menuView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Load transformation" shortcut="Ctrl+T" />
@@ -80,21 +80,21 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor />
-                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
                         <separator/>
-                        <menuItem name="Learn background" icon="module_ui_flaticon-0.1/icons/Background.svg" />
+                        <menuItem name="Learn background" icon="sight_module_ui_flaticons-0.1/Background.svg" />
                         <separator/>
-                        <menuItem name="Manage organs" icon="module_ui_flaticon-0.1/icons/Stomach.svg" style="check" />
+                        <menuItem name="Manage organs" icon="sight_module_ui_flaticons-0.1/Stomach.svg" style="check" />
                         <spacer/>
-                        <menuItem name="Settings" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" style="check" />
+                        <menuItem name="Settings" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -110,7 +110,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::SView" >
+            <service uid="mainView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -124,7 +124,7 @@
                 </registry>
             </service>
 
-            <service uid="settingsView" type="::sight::modules::ui::base::SView" >
+            <service uid="settingsView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -142,22 +142,22 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
-            <service uid="loadTransformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loadTransformationAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>transformReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="loadMeshAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loadMeshAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>meshReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -165,7 +165,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -175,7 +175,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -185,7 +185,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -199,26 +199,26 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="learnBackgroundAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="learnBackgroundAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>maskerSrv/setBackground</slot>
                 </slots>
             </service>
 
-            <service uid="organManagerAct" type="::sight::modules::ui::base::SConfigLauncher" >
+            <service uid="organManagerAct" type="::sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
                 <parameter replace="ICON_PATH" by="ExRGBDImageMasking-0.1/app.ico" />
             </service>
 
-            <service uid="showSettingsAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showSettingsAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>settingsView/setVisible</slot>
                 </slots>
@@ -242,23 +242,23 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="video" />
             </service>
 
-            <service uid="cameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
+            <service uid="cameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
                 <in key="calibration" uid="RGBcamera" />
                 <config layer="default" />
             </service>
 
-            <service uid="meshAdp" type="::sight::modules::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
                 <in key="model" uid="modelSeries" />
                 <config layer="default" transform="id" autoresetcamera="no" />
             </service>
 
-            <service uid="videoARAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoARAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="foregroundImage" />
                 <config layer="ar" />
             </service>
@@ -277,13 +277,13 @@
                 </scene>
             </service>
 
-            <service uid="cameraOffscreenAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraOffscreenAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="inverseMatrix" autoConnect="yes" />
                 <in key="calibration" uid="RGBcamera" />
                 <config layer="default" />
             </service>
 
-            <service uid="meshOffscreenAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshOffscreenAdp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" shadingMode="ambient" />
                 <config layer="default" transform="id" autoresetcamera="no" />
             </service>
@@ -291,27 +291,27 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Parameter to enable/disable hole filling from the RealSense grabber -->
-            <service uid="enableHoleFillingFilterParamSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="enableHoleFillingFilterParamSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="true" />
                 </parameters>
             </service>
 
             <!-- Parameter to tune the threshold value from the SRGBDImageMasking service -->
-            <service uid="maskerThresholdParamSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="maskerThresholdParamSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Masking threshold" key="threshold" defaultValue="10" min="0" max="50" />
                 </parameters>
             </service>
 
-            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->
-            <service uid="videoGrabberSrv" type="::sight::modules::io::realsense::SScan" worker="grabber" >
+            <service uid="videoGrabberSrv" type="::sight::module::io::realsense::SScan" worker="grabber" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
@@ -319,7 +319,7 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
@@ -332,20 +332,20 @@
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="transformReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="registrationMatrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
-                <addSelection service="::sight::modules::io::matrix::Matrix4ReaderService" />
+                <addSelection service="::sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
             <!-- Reader to open seriesDB data (.jsonz format) -->
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="seriesDB" />
             </service>
 
             <!-- Extract the modelSeries from the loaded seriesDB -->
-            <service uid="extractModelSeriesSrv" type="::sight::modules::data::SExtractObj" >
+            <service uid="extractModelSeriesSrv" type="::sight::module::data::SExtractObj" >
                 <inout key="source" uid="seriesDB" >
                     <extract from="@values.0" />
                 </inout>
@@ -355,7 +355,7 @@
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
-            <service uid="extractSkinSrv" type="::sight::modules::data::SExtractMeshByType" >
+            <service uid="extractSkinSrv" type="::sight::module::data::SExtractMeshByType" >
                <inout key="source" uid="modelSeries" >
                    <extract type="Skin" />
                </inout>
@@ -365,7 +365,7 @@
             </service>
 
             <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::sight::data::CameraSeries -->
-            <service uid="extractCameraSrv" type="::sight::modules::data::SExtractObj" >
+            <service uid="extractCameraSrv" type="::sight::module::data::SExtractObj" >
                 <!-- Source -->
                 <inout key="source" uid="RGBDCameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries (Depth) -->
@@ -381,7 +381,7 @@
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
-            <service uid="concatenateSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
+            <service uid="concatenateSrv" type="::sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="registrationMatrix" autoConnect="yes" inverse="true" />
                     <key uid="extrinsic" autoConnect="yes" inverse="true" />
@@ -390,7 +390,7 @@
             </service>
 
             <!-- To extract the foreground image to display on top of meshes -->
-            <service uid="maskerSrv" type="::sight::modules::filter::vision::SDepthImageMasking" worker="masker" >
+            <service uid="maskerSrv" type="::sight::module::filter::vision::SDepthImageMasking" worker="masker" >
                 <in key="maskImage" uid="offscreenImage" />
                 <in key="videoImage" uid="videoImage" />
                 <in key="depthImage" uid="depthImage" autoConnect="yes" />

@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 /// This class is started when the module is loaded.
@@ -44,4 +44,4 @@ struct MODULE_VIZ_SCENE3DQT_CLASS_API Plugin final : public core::runtime::Plugi
 
 };
 
-} // namespace sight::modules::viz::scene3dQt.
+} // namespace sight::module::viz::scene3dQt.

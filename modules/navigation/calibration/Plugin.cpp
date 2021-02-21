@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::navigation::calibration
+namespace sight::module::navigation::calibration
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::navigation::calibration::Plugin");
+    "::sight::module::navigation::calibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::navigation::calibration
+} // namespace sight::module::navigation::calibration

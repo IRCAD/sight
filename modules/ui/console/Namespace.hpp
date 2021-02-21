@@ -22,7 +22,7 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace sight::modules::ui::console contains no service. It is only used to launch a main loop for
+ * @brief The namespace sight::module::ui::console contains no service. It is only used to launch a main loop for
  * console applications.
  *
  * This module is automatically started at the launch of the application if it is present in the REQUIREMENTS of the
@@ -30,7 +30,7 @@
  */
 #pragma once
 
-namespace sight::modules::ui::console
+namespace sight::module::ui::console
 {
 
 }

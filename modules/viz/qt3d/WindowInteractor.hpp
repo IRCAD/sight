@@ -46,7 +46,7 @@ namespace Qt3DExtras
 class Qt3DWindow;
 }
 
-namespace sight::modules::viz::qt3d
+namespace sight::module::viz::qt3d
 {
 
 /// Defines a class to manage a render window.
@@ -85,4 +85,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::qt3d.
+} // namespace sight::module::viz::qt3d.

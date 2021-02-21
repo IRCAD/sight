@@ -34,12 +34,12 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderQt3DRegisterMacro( ::sight::modules::viz::qt3d::WindowInteractor,
+fwRenderQt3DRegisterMacro( ::sight::module::viz::qt3d::WindowInteractor,
                            ::sight::viz::qt3d::IWindowInteractor::REGISTRY_KEY );
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::viz::qt3d
+namespace sight::module::viz::qt3d
 {
 
 //-----------------------------------------------------------------------------
@@ -78,4 +78,4 @@ void WindowInteractor::set3DView(Qt3DExtras::Qt3DWindow* _3dView)
     m_parentContainer->setLayout(layout);
 }
 
-} // namespace sight::modules::viz::qt3d
+} // namespace sight::module::viz::qt3d

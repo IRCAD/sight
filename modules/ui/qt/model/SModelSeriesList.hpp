@@ -44,7 +44,7 @@ class QCheckBox;
 class QListWidgetItem;
 class QTreeWidgetItem;
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace model
 {
@@ -56,10 +56,10 @@ class ValueView;
  *
  * It allows to show/hide a Reconstruction when it is associated to a render scene with a Model series adaptor
  * (for example fwRenderVTK::SRender with ::visuVTKAdaptor::SModelSeries).
- * It also allows to select a Reconstruction: associated to the modules::data::updater::SObjFromSlot, the
+ * It also allows to select a Reconstruction: associated to the module::data::updater::SObjFromSlot, the
  * reconstruction is available to be used by other services.
- * It is mostly associated to modules::ui::qt::reconstruction::SOrganMaterialEditor and
- * modules::ui::qt::reconstruction::RepresentationEditor to update the reconstrution color, transparency, ....
+ * It is mostly associated to module::ui::qt::reconstruction::SOrganMaterialEditor and
+ * module::ui::qt::reconstruction::RepresentationEditor to update the reconstrution color, transparency, ....
  *
  * @section Signals Signals
  * - \b reconstructionSelected(data::Object::sptr): this signal emits the selected reconstruction
@@ -70,7 +70,7 @@ class ValueView;
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service modules::ui::qt::editor::SModelSeriesList">
+   <service module::ui::qt::editor::SModelSeriesList">
        <inout key="modelSeries" uid="..." autoConnect="yes" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
@@ -233,4 +233,4 @@ private:
 };
 
 } // namespace model.
-} // namespace sight::modules::ui::qt.
+} // namespace sight::module::ui::qt.

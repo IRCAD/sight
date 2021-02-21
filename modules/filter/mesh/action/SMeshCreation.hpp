@@ -26,7 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::filter::mesh
+namespace sight::module::filter::mesh
 {
 
 namespace action
@@ -44,7 +44,7 @@ namespace action
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::filter::mesh::action::SMeshCreation">
+        <service type="::sight::module::filter::mesh::action::SMeshCreation">
             <in key="image" uid="..." />
             <inout key="mesh" uid="..." />
             <percentReduction value="0" />
@@ -87,4 +87,4 @@ private:
 };
 
 } // namespace action
-} // namespace sight::modules::filter::mesh
+} // namespace sight::module::filter::mesh

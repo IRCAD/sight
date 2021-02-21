@@ -35,14 +35,14 @@
 
 #include <list>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 /**
  * @brief   SCameraInformationEditor service is used to display the intrinsic calibration of a camera.
  *
  * @subsection Configuration XML
  * @code
-    <service uid="..." type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+    <service uid="..." type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
         <in key="camera" uid="..." />
     </service>
    @endcode

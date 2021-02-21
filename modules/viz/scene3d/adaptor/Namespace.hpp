@@ -22,7 +22,7 @@
 
 #pragma once
 
-/// The namespace sight::modules::viz::scene3d::adaptor contains the list of adaptors available for the generic scene.
-namespace sight::modules::viz::scene3d::adaptor
+/// The namespace sight::module::viz::scene3d::adaptor contains the list of adaptors available for the generic scene.
+namespace sight::module::viz::scene3d::adaptor
 {
 }

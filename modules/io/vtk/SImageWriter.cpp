@@ -47,10 +47,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SImageWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::vtk::SImageWriter,
                          ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";

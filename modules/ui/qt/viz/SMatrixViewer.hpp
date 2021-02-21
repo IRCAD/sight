@@ -32,7 +32,7 @@
 
 class QLabel;
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 namespace viz
@@ -44,7 +44,7 @@ namespace viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::modules::ui::qt::viz::SMatrixViewer">
+    <service type="::sight::module::ui::qt::viz::SMatrixViewer">
         <in key="matrix" uid="..." />
         <title>matrix name</title>
     </service>
@@ -106,4 +106,4 @@ private:
 
 } //namespace viz
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

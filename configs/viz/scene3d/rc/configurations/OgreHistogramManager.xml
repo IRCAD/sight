@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>OgreHistogramManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -17,7 +17,7 @@
         <!-- *********************************** End Objects declaration *********************************** -->
 
         <!-- *********************************** Begin layouts declaration *********************************** -->
-        <service uid="HistogramView" type="::sight::modules::ui::base::SView" >
+        <service uid="HistogramView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -46,21 +46,21 @@
             <parameter replace="WID_PARENT" by="TFScene"/>
         </service>
 
-        <service uid="WindowLevel" type="::sight::modules::ui::qt::image::WindowLevel" autoConnect="yes">
+        <service uid="WindowLevel" type="::sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${IMAGE}" />
             <inout key="tf" uid="${TF}" optional="yes" />
         </service>
 
-        <service uid="TransparencyEditor" type="::sight::modules::ui::qt::image::ImageTransparency" autoConnect="yes" >
+        <service uid="TransparencyEditor" type="::sight::module::ui::qt::image::ImageTransparency" autoConnect="yes" >
             <inout key="image" uid="${IMAGE}" />
         </service>
 
-        <service uid="TransferFunctionEditor" type="::sight::modules::ui::qt::image::STransferFunction" >
+        <service uid="TransferFunctionEditor" type="::sight::module::ui::qt::image::STransferFunction" >
             <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
             <out key="tf" uid="${TF}" />
         </service>
 
-        <service uid="computeHistogram" type="::sight::modules::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeHistogram" type="::sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${IMAGE}" />
             <inout key="histogram" uid="histogram" />
             <binsWidth>5.0</binsWidth>

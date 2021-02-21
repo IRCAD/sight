@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/registry/Activity.hpp>
-#include <activity/registry/ActivityMsg.hpp>
+#include <activity/extension/Activity.hpp>
+#include <activity/ActivityMsg.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
@@ -34,7 +34,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -45,7 +45,7 @@ namespace activity
  * This action works on a data::Vector. It proposes all the available activity according to the selected data and
  * the given configuration. And then, send a signal with all the activity information.
  *
- * This action should be followed by the service '::modules::ui::qt::editor::SDynamicView' : this service listens the
+ * This action should be followed by the service '::module::ui::qt::editor::SDynamicView' : this service listens the
  * action
  * signals and launchs the activity in a new tab.
  *
@@ -60,13 +60,13 @@ namespace activity
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
  *
  * @section Signal Signal
- * - \b activityLaunched(activity::registry::ActivityMsg) : This signal is emitted when the activity is created,
+ * - \b activityLaunched(activity::ActivityMsg) : This signal is emitted when the activity is created,
  *      it contains the activity information. It should be connected to the slot 'createTab' of the service
- *      '::modules::ui::qt::editor::SDynamicView'.
+ *      '::module::ui::qt::editor::SDynamicView'.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
+    <service uid="action_newActivity" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
         <in key="series" uid="..." />
         <config>
             <!-- SLauncher mode : immediate or message(default)
@@ -100,7 +100,7 @@ namespace activity
  * @subsection Configuration Configuration
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
- *      chosen activity. The service '::modules::ui::qt::editor::SDynamicView' allows to launch the activity in a new
+ *      chosen activity. The service '::module::ui::qt::editor::SDynamicView' allows to launch the activity in a new
  * tab. For
  *      that, it must listen the action signal.
  *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
@@ -155,7 +155,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal< void ( sight::activity::registry::ActivityMsg ) > ActivityLaunchedSignalType;
+    typedef core::com::Signal< void ( sight::activity::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
@@ -189,7 +189,7 @@ protected:
      */
     virtual void configuring() override;
 
-    typedef sight::activity::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef sight::activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
     typedef std::vector< std::string > KeysType;
 
@@ -233,7 +233,7 @@ private:
      *
      * @param info activity information
      */
-    void sendConfig( const sight::activity::registry::ActivityInfo& info );
+    void sendConfig( const sight::activity::extension::ActivityInfo& info );
 
     /**
      * @brief Builds and launch activity with the input data given in selection.
@@ -241,12 +241,12 @@ private:
      * @param info activity information
      * @param selection input data to launch the activity
      */
-    void buildActivity(const sight::activity::registry::ActivityInfo& info, const data::Vector::csptr& selection);
+    void buildActivity(const sight::activity::extension::ActivityInfo& info, const data::Vector::csptr& selection);
 
-    typedef sight::activity::registry::Activity::ActivitiesType ActivityInfoContainer;
+    typedef sight::activity::extension::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    sight::activity::registry::ActivityInfo show( const ActivityInfoContainer& infos );
+    sight::activity::extension::ActivityInfo show( const ActivityInfoContainer& infos );
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);

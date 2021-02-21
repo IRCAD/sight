@@ -24,10 +24,10 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::utest
+namespace sight::module::utest
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::utest::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::utest::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -61,4 +61,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::service
+} // namespace sight::module::service

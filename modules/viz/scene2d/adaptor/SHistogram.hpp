@@ -28,7 +28,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
 namespace adaptor
@@ -40,7 +40,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="::sight::modules::viz::scene2d::adaptor::SHistogram" autoConnect="yes">
+   <service uid="histogram" type="::sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="yes">
        <in key="histogram" uid="..." />
        <inout key="point" uid="..." optional="yes" />
        <config xAxis="xAxis" yAxis="axeHistogramY" color="gray" opacity="0.25" zValue="5"/>
@@ -110,4 +110,4 @@ private:
 
 }   // namespace adaptor
 
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

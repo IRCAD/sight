@@ -26,14 +26,14 @@
 
 #include <io/base/service/IWriter.hpp>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 /**
  * @brief SOpenCVWriter class exports data::CameraSeries in xml/yaml files using openCV
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::vision::SOpenCVWriter" >
+       <service uid="..." type="::sight::module::io::vision::SOpenCVWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
@@ -126,4 +126,4 @@ protected:
 
 };
 
-} //namespace sight::modules::io::vision
+} //namespace sight::module::io::vision

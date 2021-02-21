@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::io::vision contains services to export calibration
+ * @brief       The namespace sight::module::io::vision contains services to export calibration
  */
 #pragma once
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

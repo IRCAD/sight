@@ -47,10 +47,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SMaterialSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SMaterialSelector,
                          ::sight::data::Reconstruction)
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
@@ -223,4 +223,4 @@ void SMaterialSelector::onReloadMaterial()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

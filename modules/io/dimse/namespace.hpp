@@ -29,6 +29,6 @@
  * sight::io::dimse::data::PacsConfiguration objects in your application,
  * you require this module: add the requirement in your application plugin.xml.
  */
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 }

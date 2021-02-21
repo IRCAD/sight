@@ -44,7 +44,7 @@
 #include <filesystem>
 #include <regex>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
 static const service::IService::KeyType s_FRAMETL = "frameTL";
@@ -869,4 +869,4 @@ void SFrameGrabber::setStep(int step, std::string key)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

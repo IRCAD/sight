@@ -31,7 +31,7 @@
 #include <viz/scene3d/helper/Camera.hpp>
 #include <viz/scene3d/Utils.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT = "sliceType";
@@ -410,4 +410,4 @@ std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(con
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

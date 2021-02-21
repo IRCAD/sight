@@ -46,7 +46,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 //-----------------------------------------------------------------------------
@@ -637,7 +637,7 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 void SVolumeRender::toggleAmbientOcclusion(bool _ambientOcclusion)
 {
     m_ambientOcclusion = _ambientOcclusion;
-    this->toggleVREffect(modules::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION);
+    this->toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION);
 }
 
 //-----------------------------------------------------------------------------
@@ -645,7 +645,7 @@ void SVolumeRender::toggleAmbientOcclusion(bool _ambientOcclusion)
 void SVolumeRender::toggleColorBleeding(bool _colorBleeding)
 {
     m_colorBleeding = _colorBleeding;
-    this->toggleVREffect(modules::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING);
+    this->toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING);
 }
 
 //-----------------------------------------------------------------------------
@@ -653,7 +653,7 @@ void SVolumeRender::toggleColorBleeding(bool _colorBleeding)
 void SVolumeRender::toggleShadows(bool _shadows)
 {
     m_shadows = _shadows;
-    this->toggleVREffect(modules::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS);
+    this->toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS);
 }
 
 //-----------------------------------------------------------------------------
@@ -823,7 +823,7 @@ void SVolumeRender::updateVolumeIllumination()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleVREffect(modules::viz::scene3d::adaptor::SVolumeRender::VREffectType _vrEffect)
+void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender::VREffectType _vrEffect)
 {
     this->getRenderService()->makeCurrent();
 
@@ -852,11 +852,11 @@ void SVolumeRender::toggleVREffect(modules::viz::scene3d::adaptor::SVolumeRender
         {
             switch(_vrEffect)
             {
-                case modules::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
-                case modules::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
+                case module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
+                case module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
                     m_ambientOcclusionSAT->setAO(m_ambientOcclusion || m_colorBleeding);
                     break;
-                case modules::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
+                case module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
                     m_ambientOcclusionSAT->setShadows(m_shadows);
                     break;
             }
@@ -865,13 +865,13 @@ void SVolumeRender::toggleVREffect(modules::viz::scene3d::adaptor::SVolumeRender
 
         switch(_vrEffect)
         {
-            case modules::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
+            case module::viz::scene3d::adaptor::SVolumeRender::VR_AMBIENT_OCCLUSION:
                 m_volumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
                 break;
-            case modules::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
+            case module::viz::scene3d::adaptor::SVolumeRender::VR_COLOR_BLEEDING:
                 m_volumeRenderer->setColorBleeding(m_colorBleeding);
                 break;
-            case modules::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
+            case module::viz::scene3d::adaptor::SVolumeRender::VR_SHADOWS:
                 m_volumeRenderer->setShadows(m_shadows);
                 break;
         }
@@ -958,4 +958,4 @@ void SVolumeRender::setVisible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

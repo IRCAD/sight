@@ -30,7 +30,7 @@
 
 #include <filter/image/MatrixRegressor.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::filter::image::SMatrixRegressor">
+   <service type="::sight::module::filter::image::SMatrixRegressor">
        <in key="matrixList" uid="..." autoConnect="yes" />
        <in key="pointList" uid="..." />
        <inout key="optimalMatrix" uid="..." />
@@ -98,4 +98,4 @@ protected:
 
 };
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

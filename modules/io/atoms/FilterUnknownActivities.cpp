@@ -31,9 +31,9 @@
 #include <io/atoms/filter/registry/macros.hpp>
 #include <io/atoms/patch/helper/functions.hpp>
 
-fwAtomsFilterRegisterMacro( ::sight::modules::io::atoms::FilterUnknownActivities, "FilterUnknownActivities" );
+fwAtomsFilterRegisterMacro( ::sight::module::io::atoms::FilterUnknownActivities, "FilterUnknownActivities" );
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
 FilterUnknownActivities::FilterUnknownActivities(sight::io::atoms::filter::IFilter::Key key)
@@ -77,4 +77,4 @@ void FilterUnknownActivities::apply(const SPTR(sight::atoms::Object)& atom)
     }
 }
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

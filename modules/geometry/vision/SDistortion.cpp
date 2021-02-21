@@ -42,7 +42,7 @@
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 // Public slot
@@ -429,4 +429,4 @@ void SDistortion::calibrate()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

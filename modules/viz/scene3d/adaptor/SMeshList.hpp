@@ -30,7 +30,7 @@
 
 #include <queue>
 
-namespace sight::modules::viz::scene3d
+namespace sight::module::viz::scene3d
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sight::modules::viz::scene3d
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::SMeshList">
+    <service uid="..." type="::sight::module::viz::scene3d::SMeshList">
         <inout key="mesh" uid="..." />
         <in key="transform" uid="..." />
         <in key="texture" uid="..." />
@@ -152,4 +152,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d.
+} // namespace sight::module::viz::scene3d.

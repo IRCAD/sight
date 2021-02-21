@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/macros.hpp>
 #include <core/runtime/Module.hpp>
@@ -52,7 +52,7 @@ public:
 
 protected:
     SPTR( core::runtime::Module ) m_module;
-    SPTR( activity::registry::Activity ) m_activity;
+    SPTR( activity::extension::Activity ) m_activity;
 
 };
 

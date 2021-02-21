@@ -31,7 +31,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
@@ -70,7 +70,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::ui::base::IAction" impl="::sight::modules::ui::base::STimestampSlotCaller"
+        <service uid="..." type="::ui::base::IAction" impl="::sight::module::ui::base::STimestampSlotCaller"
      * autoConnect="no">
             <slots>
               <slot>hasSlotsId/slotKey</slot>
@@ -95,4 +95,4 @@ protected:
 };
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

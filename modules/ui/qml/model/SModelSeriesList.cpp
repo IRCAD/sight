@@ -29,7 +29,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/tools/helper/Field.hpp>
 
-namespace sight::modules::ui::qml::model
+namespace sight::module::ui::qml::model
 {
 
 const core::com::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
@@ -183,4 +183,4 @@ service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() cons
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qml::model
+} // namespace sight::module::ui::qml::model

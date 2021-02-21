@@ -27,7 +27,7 @@
 #include <core/com/Signals.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -36,7 +36,7 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -45,7 +45,7 @@ const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunc
 
 static const std::string s_BORDER_CONFIG = "border";
 
-fwServicesRegisterMacro( ::sight::ui::base::view::IActivityView, ::sight::modules::ui::qt::activity::SView )
+fwServicesRegisterMacro( ::sight::ui::base::view::IActivityView, ::sight::module::ui::qt::activity::SView )
 
 //------------------------------------------------------------------------------
 
@@ -145,15 +145,15 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
         {
             m_configManager->stopAndDestroy();
         }
-        sight::activity::registry::ActivityInfo info;
-        info = sight::activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        sight::activity::extension::ActivityInfo info;
+        info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         ReplaceMapType replaceMap;
         this->translateParameters(m_parameters, replaceMap);
         this->translateParameters(activitySeries->getData(), info.appConfig.parameters, replaceMap);
         replaceMap["AS_UID"]       = activitySeries->getID();
         replaceMap[ "WID_PARENT" ] = m_wid;
-        std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier(info.appConfig.id);
+        std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
         replaceMap["GENERIC_UID"] = genericUidAdaptor;
         try
         {
@@ -175,4 +175,4 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 //------------------------------------------------------------------------------
 
 }// namespace activity
-}// namespace sight::modules::ui::qt
+}// namespace sight::module::ui::qt

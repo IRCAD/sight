@@ -38,7 +38,7 @@ class CharucoBoard;
 } //namespace cv
 } //namespace aruco
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 /**
  * @brief   SOpenCVExtrinsic service that computes charuco extrinsic calibration with openCV.
@@ -49,7 +49,7 @@ namespace sight::modules::geometry::vision::charuco
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::geometry::vision::charuco::SOpenCVExtrinsic">
+        <service type="::sight::module::geometry::vision::charuco::SOpenCVExtrinsic">
             <in key="calibrationInfo1" uid="..." />
             <in key="calibrationInfo2" uid="..." />
             <inout key="cameraSeries" uid="..." />
@@ -145,4 +145,4 @@ private:
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
     size_t m_camIndex;
 };
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

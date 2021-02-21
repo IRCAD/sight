@@ -30,7 +30,7 @@
 
 #include <iomanip>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 static const core::com::Signals::SignalKeyType s_MATRIX_ADDED_SIG   = "matrixAdded";
 static const core::com::Signals::SignalKeyType s_MATRIX_REMOVED_SIG = "matrixRemoved";
@@ -44,7 +44,7 @@ const service::IService::KeyType s_SELECTED_INOUT = "selectedMatrix";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::SMatrixList )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::SMatrixList )
 
 //-----------------------------------------------------------------------------
 

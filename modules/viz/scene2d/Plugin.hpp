@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 /**
  * @brief   This class is started when the modules are loaded.
@@ -45,4 +45,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

@@ -34,7 +34,7 @@ namespace sight::data
 class Camera;
 }
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
 /**
@@ -65,15 +65,15 @@ namespace sight::modules::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::io::video::SGrabberProxy">
+        <service uid="..." type="::sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <inout key="depthTL" uid="..." />
             <config>
                 <camera type="RGBD" />
                 <selection mode="include" />
-                <addSelection service="::sight::modules::io::video::SFrameGrabber" />
-                <config id="cvGrabberConfig" service="::sight::modules::io::video::SFrameGrabber" />
+                <addSelection service="::sight::module::io::video::SFrameGrabber" />
+                <config id="cvGrabberConfig" service="::sight::module::io::video::SFrameGrabber" />
                 <gui title="Please select the camera to use" />
             </config>
         </service>
@@ -227,4 +227,4 @@ private:
     bool m_exclude { true };
 };
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

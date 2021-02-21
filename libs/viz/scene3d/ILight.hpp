@@ -34,7 +34,7 @@
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreLight.h>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 
 #include <ui/base/container/fwContainer.hpp>
 

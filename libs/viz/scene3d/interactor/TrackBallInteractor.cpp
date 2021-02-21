@@ -26,12 +26,12 @@
 
 #include <core/com/Signal.hxx>
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {
@@ -158,7 +158,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier, int _mouseX, int _mou
                 {
                     // We use a timer on the main thread instead of a separate thread.
                     // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                    const auto worker = service::registry::ActiveWorkers::getDefault()->getDefaultWorker();
+                    const auto worker = core::thread::ActiveWorkers::getDefault()->getDefaultWorker();
                     m_timer = worker->createTimer();
 
                     m_timer->setFunction([this, layer]()

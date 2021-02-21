@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::ui::qt::image contains several editors on image written with Qt.
+ * @brief       The namespace sight::module::ui::qt::image contains several editors on image written with Qt.
  */
 #pragma once
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 }

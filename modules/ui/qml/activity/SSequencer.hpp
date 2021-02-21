@@ -32,7 +32,7 @@
 
 #include <ui/qml/IQmlEditor.hpp>
 
-namespace sight::modules::ui::qml::activity
+namespace sight::module::ui::qml::activity
 {
 
 /**

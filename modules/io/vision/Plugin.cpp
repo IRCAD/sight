@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>
-registrar("::sight::modules::io::vision::Plugin");
+registrar("::sight::module::io::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

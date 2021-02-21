@@ -33,7 +33,7 @@ namespace sight::data
 class Image;
 }
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::itk::InrImageWriterService">
+   <service type="::sight::module::io::itk::InrImageWriterService">
        <in key="data" uid="..." />
        <file>...</file>
    </service>
@@ -97,4 +97,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

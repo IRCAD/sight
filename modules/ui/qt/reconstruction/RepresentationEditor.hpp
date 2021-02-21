@@ -40,7 +40,7 @@ class QCheckBox;
 class QButtonGroup;
 class QAbstractButton;
 
-namespace sight::modules::ui::qt::reconstruction
+namespace sight::module::ui::qt::reconstruction
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::ui::qt::reconstruction
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::reconstruction::RepresentationEditor">
+   <service type="::sight::module::ui::qt::reconstruction::RepresentationEditor">
        <inout key="reconstruction" uid="..." />
    </service>
    @endcode

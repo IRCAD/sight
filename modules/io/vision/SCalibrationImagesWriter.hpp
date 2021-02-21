@@ -28,7 +28,7 @@
 
 #include <string>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sight::modules::io::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::modules::io::vision::SCalibrationImagesWriter">
+   <service uid="..." type="::sight::module::io::vision::SCalibrationImagesWriter">
        <in key="data" uid="..." />
        <format>.tiff</format>
        <folder>...</folder>
@@ -96,4 +96,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

@@ -22,10 +22,10 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace sight::modules::viz::scene3d supplies a default plugin implementation for the visuOgre module.
+ * @brief The namespace sight::module::viz::scene3d supplies a default plugin implementation for the visuOgre module.
  */
 #pragma once
 
-namespace sight::modules::viz::scene3d
+namespace sight::module::viz::scene3d
 {
 }

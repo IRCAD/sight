@@ -31,7 +31,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace series
 {
@@ -51,7 +51,7 @@ namespace series
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
+        <service type="::sight::module::ui::base::series::SExport" autoConnect="yes">
             <inout key="series" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
@@ -123,4 +123,4 @@ private:
     std::string m_seriesId;
 };
 } // namespace series
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

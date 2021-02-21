@@ -50,7 +50,7 @@
 #include <ui/base/preferences/preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace video
 {
@@ -71,7 +71,7 @@ static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string s_LABEL_CONFIG                = "label";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::video::SCamera )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::video::SCamera )
 
 //------------------------------------------------------------------------------
 
@@ -375,7 +375,7 @@ void SCamera::onChooseDevice()
     size_t count = 0;
     for(auto& camera : cameras)
     {
-        modules::ui::qt::video::CameraDeviceDlg camDialog;
+        module::ui::qt::video::CameraDeviceDlg camDialog;
         camDialog.setWindowTitle(QString("Camera device selector for video source #%1").arg(count++));
 
         if(camDialog.exec() != QDialog::Accepted)
@@ -428,4 +428,4 @@ std::vector< data::Camera::sptr > SCamera::getCameras() const
 //------------------------------------------------------------------------------
 
 } //namespace video
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

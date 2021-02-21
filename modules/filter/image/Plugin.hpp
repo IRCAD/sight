@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -46,4 +46,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

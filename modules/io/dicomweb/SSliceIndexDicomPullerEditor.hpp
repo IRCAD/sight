@@ -57,7 +57,7 @@ struct ConfigurationElement;
 }
 }
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 class MODULE_IO_DICOMWEB_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
@@ -172,4 +172,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

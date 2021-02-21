@@ -23,9 +23,9 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qml::reconstruction contains several editors using Qml related on
+ * @brief The namespace sight::module::ui::qml::reconstruction contains several editors using Qml related on
  *reconstruction.
  */
-namespace sight::modules::ui::qml::reconstruction
+namespace sight::module::ui::qml::reconstruction
 {
 }

@@ -355,7 +355,7 @@ public:
     double getScale() const;
 
     /**
-     * @brief getIndex returns index of the device as Qt give us in modules::ui::qt::video::CameraDeviceDlg.
+     * @brief getIndex returns index of the device as Qt give us in module::ui::qt::video::CameraDeviceDlg.
      * The index is the first character of m_description. (ex: "1. Microsoft HD Camera")
      * @return an integer of the index, -1 if unvalid (if SourceType isn't DECVICE)
      */

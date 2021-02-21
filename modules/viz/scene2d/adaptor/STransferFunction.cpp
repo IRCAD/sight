@@ -38,9 +38,9 @@
 #include <QMenu>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::STransferFunction)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::STransferFunction)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -1219,4 +1219,4 @@ void STransferFunction::toggleLinearTF(bool _linear)
 }
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

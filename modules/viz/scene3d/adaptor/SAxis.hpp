@@ -38,7 +38,7 @@ namespace sight::data
 class Material;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -52,7 +52,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SAxis">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SAxis">
         <config layer="default" transform="transformUID" length="30" label="true" />
     </service>
    @endcode
@@ -156,4 +156,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

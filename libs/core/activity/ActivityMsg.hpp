@@ -23,14 +23,11 @@
 #pragma once
 
 #include "activity/config.hpp"
-#include "activity/registry/Activity.hpp"
+#include "activity/extension/Activity.hpp"
 
 #include <data/ActivitySeries.hpp>
 
 namespace sight::activity
-{
-
-namespace registry
 {
 
 /**
@@ -41,11 +38,11 @@ class ACTIVITY_CLASS_API ActivityMsg
 
 public:
 
-    typedef activity::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;
 
     ACTIVITY_API ActivityMsg(const data::ActivitySeries::sptr& series,
-                             const activity::registry::ActivityInfo& info,
+                             const activity::extension::ActivityInfo& info,
                              const ParametersType& parameters);
 
     ACTIVITY_API virtual ~ActivityMsg()
@@ -118,7 +115,5 @@ private:
     data::ActivitySeries::sptr m_series; ///< activity series
     ReplaceMapType m_replaceMap; ///< map containing string to replace in activity configuration.
 };
-
-} // namespace registry
 
 } // namespace sight::activity

@@ -1,5 +1,5 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
-<extension implements="::sight::service::registry::AppConfig" >
+<extension implements="::sight::service::extension::AppConfig" >
     <id>ExActivities_ImageReading_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager" >
                     <view align="center" />
@@ -28,10 +28,10 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import image" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
+                    <menuItem name="Import image" icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
                 </layout>
             </gui>
             <registry>
@@ -41,16 +41,16 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="::sight::modules::ui::base::io::SSelector" >
+        <service uid="importAct" type="::sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::vtk::SImageReader" />
+            <addSelection service="::sight::module::io::vtk::SImageReader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="::sight::modules::viz::sample::SImage" autoConnect="yes" >
+        <service uid="imageScene" type="::sight::module::viz::sample::SImage" autoConnect="yes" >
             <in key="image" uid="${image}" />
         </service>
 

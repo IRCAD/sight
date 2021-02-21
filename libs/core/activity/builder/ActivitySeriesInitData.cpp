@@ -51,13 +51,13 @@ ActivitySeriesInitData::~ActivitySeriesInitData()
 //-----------------------------------------------------------------------------
 
 data::ActivitySeries::sptr ActivitySeriesInitData::buildData(
-    const activity::registry::ActivityInfo& activityInfo,
+    const activity::extension::ActivityInfo& activityInfo,
     const data::Vector::csptr& currentSelection ) const
 {
     data::ActivitySeries::sptr actSeries = this->ActivitySeries::buildData(activityInfo, currentSelection);
     data::Composite::sptr data           = actSeries->getData();
 
-    namespace ActReg = activity::registry;
+    namespace ActReg = activity::extension;
 
     ActReg::ActivityInfo::RequirementsType reqVect = activityInfo.requirements;
     for(const ActReg::ActivityRequirement& req :  reqVect)

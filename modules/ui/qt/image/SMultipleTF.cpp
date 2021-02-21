@@ -42,7 +42,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 static const std::string s_USE_DEFAULT_PATH_CONFIG  = "useDefaultPath";
@@ -332,7 +332,7 @@ void SMultipleTF::initializePools()
             // Creates the TF atoms reader.
             const data::TransferFunction::sptr tf = data::TransferFunction::New();
             const auto tfReader                   = service::add<io::base::service::IReader>(
-                "::sight::modules::io::atoms::SReader");
+                "::sight::module::io::atoms::SReader");
             tfReader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
             // Parse all paths contained in m_path and read basic TF.
@@ -402,7 +402,7 @@ void SMultipleTF::initializePools()
             // Creates the multiple TF atoms reader.
             data::Composite::sptr tfPool                       = data::Composite::New();
             const io::base::service::IReader::sptr mulTFReader = service::add< io::base::service::IReader >(
-                "::sight::modules::io::atoms::SReader");
+                "::sight::module::io::atoms::SReader");
             mulTFReader->registerInOut(tfPool, io::base::service::s_DATA_KEY);
 
             // Parse all path contained in m_path and read multiple TF.
@@ -781,7 +781,7 @@ void SMultipleTF::importPool()
     const data::Composite::sptr tfPool = data::Composite::New();
 
     const io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-        "::sight::modules::io::atoms::SReader");
+        "::sight::module::io::atoms::SReader");
 
     reader->registerInOut(tfPool, io::base::service::s_DATA_KEY);
 
@@ -831,7 +831,7 @@ void SMultipleTF::importPool()
 void SMultipleTF::exportPool()
 {
     const io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
-        "::sight::modules::io::atoms::SWriter");
+        "::sight::module::io::atoms::SWriter");
     writer->registerInput(m_currentTFPool, io::base::service::s_DATA_KEY);
 
     service::IService::ConfigType config;

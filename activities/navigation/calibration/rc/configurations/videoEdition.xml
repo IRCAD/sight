@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>videoEdition</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::LineLayoutManager">
@@ -35,11 +35,11 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar">
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Edit" icon="module_ui_flaticon-0.1/icons/BlueParametersCamera.svg" />
+                    <menuItem name="Edit" icon="sight_module_ui_flaticons-0.1/BlueParametersCamera.svg" />
                 </layout>
             </gui>
             <registry>
@@ -50,7 +50,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="editionAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="editionAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>intrinsicEditionSrv/update</slot>
             </slots>
@@ -67,14 +67,14 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame" />
             <config layer="default" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="${videoGrabber}" type="::sight::modules::io::video::SGrabberProxy">
+        <service uid="${videoGrabber}" type="::sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="timeLine" />
             <config>
@@ -82,18 +82,18 @@
             </config>
         </service>
 
-        <service uid="frameSynchronizerSrv" type="::sight::modules::sync::SFrameUpdater">
+        <service uid="frameSynchronizerSrv" type="::sight::module::sync::SFrameUpdater">
             <in key="frameTL" uid="timeLine" autoConnect="yes" />
             <inout key="frame" uid="frame" />
         </service>
 
-        <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera">
+        <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>yes</videoSupport>
             <label></label>
         </service>
 
-        <service uid="intrinsicEditionSrv" type="::sight::modules::ui::qt::calibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="::sight::module::ui::qt::calibration::SIntrinsicEdition">
             <inout key="camera" uid="${camera}" />
         </service>
 

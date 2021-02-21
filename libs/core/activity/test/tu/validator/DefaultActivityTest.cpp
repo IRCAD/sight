@@ -24,7 +24,7 @@
 
 #include <activity/IActivityValidator.hpp>
 #include <activity/IValidator.hpp>
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
@@ -62,7 +62,7 @@ void DefaultActivityTest::setUp()
     core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity-0.0"));
     core::runtime::loadModule("tu_validator");
 
-    activity::registry::Activity::getDefault()->parseBundleInformation();
+    activity::extension::Activity::getDefault()->parseBundleInformation();
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ void DefaultActivityTest::setUp()
 void DefaultActivityTest::tearDown()
 {
     // Clean up after the test run.
-    activity::registry::Activity::getDefault()->clearRegistry();
+    activity::extension::Activity::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

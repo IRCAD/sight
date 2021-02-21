@@ -1,6 +1,6 @@
 <plugin id="AppConfigTest" version="@PROJECT_VERSION@" >
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>parametersConfigTest1</id>
         <parameters>
             <param name="TEST_IMAGE" />
@@ -29,7 +29,7 @@
     </extension>
 
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>startStopTest</id>
         <desc>Test configuration for start and stop</desc>
         <config>
@@ -74,7 +74,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>autoConnectTest</id>
         <desc>Test configuration for auto connect</desc>
         <config>
@@ -117,7 +117,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>connectionTest</id>
         <desc>Test configuration for connections</desc>
         <config>
@@ -189,7 +189,7 @@
     </extension>
 
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>optionalKeyTest</id>
         <desc>Test configuration for optional keys</desc>
         <config>
@@ -241,7 +241,7 @@
     </extension>
 
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>keyGroupTest</id>
         <desc>Test configuration for key groups</desc>
         <config>
@@ -291,7 +291,7 @@
     </extension>
 
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>parameterReplaceTest</id>
         <parameters>
             <param name="data1" default="data1Id" />
@@ -333,7 +333,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfig">
+    <extension implements="::sight::service::extension::AppConfig">
         <id>parameterReplaceTestSubConfig</id>
         <parameters>
             <param name="data1" />

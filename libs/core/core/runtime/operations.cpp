@@ -85,6 +85,7 @@ void init(const std::filesystem::path& directory)
     core::runtime::Runtime* rntm = core::runtime::Runtime::getDefault();
 
     const auto location = rntm->getWorkingPath() / MODULE_RC_PREFIX;
+    SLM_INFO("Launching Sight runtime in: " + location.string());
 
     auto profile = std::make_shared<detail::profile::Profile>();
     detail::profile::setCurrentProfile(profile);
@@ -122,13 +123,6 @@ std::shared_ptr< Extension > findExtension( const std::string& identifier )
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getBundleResourcePath(const std::string& moduleIdentifier) noexcept
-{
-    return getModuleResourcePath(moduleIdentifier);
-}
-
-//------------------------------------------------------------------------------
-
 std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier) noexcept
 {
     Runtime* rntm                  = Runtime::getDefault();
@@ -140,15 +134,6 @@ std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier)
         return std::filesystem::path();
     }
     return module->getResourcesLocation();
-}
-
-//------------------------------------------------------------------------------
-
-std::filesystem::path getBundleResourceFilePath(const std::string& bundleIdentifier,
-                                                const std::filesystem::path& path) noexcept
-{
-
-    return getModuleResourceFilePath(bundleIdentifier, path);
 }
 
 //------------------------------------------------------------------------------
@@ -165,13 +150,6 @@ std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentif
         return std::filesystem::path();
     }
     return getModuleResourcePath(module, path);
-}
-
-//------------------------------------------------------------------------------
-
-std::filesystem::path getBundleResourceFilePath(const std::filesystem::path& path) noexcept
-{
-    return getModuleResourceFilePath(path);
 }
 
 //------------------------------------------------------------------------------
@@ -236,26 +214,10 @@ std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noe
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getBundleResourcePath( std::shared_ptr<Module> bundle,
-                                             const std::filesystem::path& path) noexcept
-{
-    return getModuleResourcePath(bundle, path);
-}
-
-//------------------------------------------------------------------------------
-
 std::filesystem::path getModuleResourcePath( std::shared_ptr<Module> module,
                                              const std::filesystem::path& path) noexcept
 {
     return module->getResourcesLocation() / path;
-}
-
-//------------------------------------------------------------------------------
-
-std::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
-                                             const std::filesystem::path& path) noexcept
-{
-    return getModuleResourcePath(element, path);
 }
 
 //------------------------------------------------------------------------------
@@ -268,14 +230,6 @@ std::filesystem::path getModuleResourcePath( ConfigurationElement::sptr element,
 
 //------------------------------------------------------------------------------
 
-std::filesystem::path getBundleResourcePath(const IExecutable* executable,
-                                            const std::filesystem::path& path) noexcept
-{
-    return getModuleResourcePath(executable, path);
-}
-
-//------------------------------------------------------------------------------
-
 std::filesystem::path getModuleResourcePath(const IExecutable* executable,
                                             const std::filesystem::path& path) noexcept
 {
@@ -284,26 +238,12 @@ std::filesystem::path getModuleResourcePath(const IExecutable* executable,
 
 //------------------------------------------------------------------------------
 
-void addBundles( const std::filesystem::path& directory)
-{
-    addModules(directory);
-}
-
-//------------------------------------------------------------------------------
-
 void addModules( const std::filesystem::path& directory)
 {
-    Runtime* rntm = Runtime::getDefault();
-    SLM_ASSERT("Default runtime not found", rntm);
+    SLM_INFO("Loading modules from: " + directory.string());
 
-    rntm->addModules( directory );
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr<Module> loadBundle(const std::string& identifier, const Version& version)
-{
-    return loadModule(identifier, version);
+    Runtime& rntm = Runtime::get();
+    rntm.addModules( directory );
 }
 
 //------------------------------------------------------------------------------
@@ -379,13 +319,6 @@ core::runtime::Profile::sptr startProfile( const std::filesystem::path& path )
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Module > findBundle( const std::string& identifier, const Version& version )
-{
-    return findModule( identifier, version );
-}
-
-//------------------------------------------------------------------------------
-
 std::shared_ptr< Module > findModule( const std::string& identifier, const Version& version )
 {
     return Runtime::getDefault()->findModule( identifier, version );
@@ -396,13 +329,6 @@ std::shared_ptr< Module > findModule( const std::string& identifier, const Versi
 std::shared_ptr< detail::ExtensionPoint > findExtensionPoint(const std::string& identifier)
 {
     return detail::Runtime::get().findExtensionPoint( identifier );
-}
-
-//------------------------------------------------------------------------------
-
-void startBundle(const std::string& identifier)
-{
-    startModule(identifier);
 }
 
 //------------------------------------------------------------------------------

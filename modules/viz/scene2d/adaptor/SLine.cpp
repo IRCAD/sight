@@ -28,9 +28,9 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SLine)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SLine)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -126,4 +126,4 @@ void SLine::stopping()
 }
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

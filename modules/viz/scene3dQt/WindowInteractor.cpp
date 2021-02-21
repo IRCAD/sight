@@ -41,12 +41,12 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterMacro( sight::modules::viz::scene3dQt::WindowInteractor,
+fwRenderOgreRegisterMacro( sight::module::viz::scene3dQt::WindowInteractor,
                            sight::viz::scene3d::IWindowInteractor::REGISTRY_KEY );
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 //-----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ void WindowInteractor::createContainer( sight::ui::base::container::fwContainer:
     m_parentContainer->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    m_qOgreWidget = new modules::viz::scene3dQt::Window();
+    m_qOgreWidget = new module::viz::scene3dQt::Window();
     m_qOgreWidget->setAnimating(!_renderOnDemand);
 #ifdef __linux
     // When using qt on linux we need to allocate the window resources before being able to use openGL.
@@ -277,4 +277,4 @@ void WindowInteractor::disableFullscreen()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3dQt
+} // namespace sight::module::viz::scene3dQt

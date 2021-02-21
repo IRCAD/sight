@@ -41,7 +41,7 @@
 #include <string>
 #include <vector>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -56,7 +56,7 @@ namespace sight::modules::ui::viz
  *
  * @section XML XML Configuration
  * @code{.xml}
- *  <service uid="SLightSelectorUid" type="::sight::modules::ui::viz::SLightSelector" />
+ *  <service uid="SLightSelectorUid" type="::sight::module::ui::viz::SLightSelector" />
  */
 class MODULE_UI_VIZ_CLASS_API SLightSelector final :
     public QObject,
@@ -211,4 +211,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::viz.
+} // namespace sight::module::ui::viz.

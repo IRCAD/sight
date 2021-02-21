@@ -38,9 +38,9 @@
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkListener, ::sight::modules::io::igtl::SClientListener)
+fwServicesRegisterMacro(::sight::module::io::igtl::INetworkListener, ::sight::module::io::igtl::SClientListener)
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 const service::IService::KeyType s_OBJECTS_GROUP = "objects";
@@ -274,4 +274,4 @@ void SClientListener::manageTimeline(data::Object::sptr obj, size_t index)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

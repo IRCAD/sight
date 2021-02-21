@@ -56,7 +56,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
@@ -513,4 +513,4 @@ bool SOpenCVExtrinsic::checkDegeneratedConfiguration(const std::vector<cv::Point
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

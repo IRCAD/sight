@@ -27,7 +27,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
@@ -135,4 +135,4 @@ void STransform::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

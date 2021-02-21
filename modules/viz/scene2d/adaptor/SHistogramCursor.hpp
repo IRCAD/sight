@@ -29,7 +29,7 @@
 
 #include <QGraphicsTextItem>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -40,7 +40,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="::sight::modules::viz::scene2d::adaptor::SHistogramCursor" autoConnect="yes">
+   <service uid="histogram" type="::sight::module::viz::scene2d::adaptor::SHistogramCursor" autoConnect="yes">
        <in key="histogram" uid="..." />
        <in key="point"     uid="..." />
        <in key="viewport"  uid="..." />
@@ -107,4 +107,4 @@ protected:
 };
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

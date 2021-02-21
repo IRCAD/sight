@@ -27,7 +27,7 @@
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/Layer.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -39,7 +39,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SResizeViewport" >
+    <service type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
         <config layer="default" hOffset="0" vOffset="0" width="1" height="1" hAlign="left" vAlign="top"/>
     </service>
    @endcode
@@ -100,4 +100,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

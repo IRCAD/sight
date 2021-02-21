@@ -22,7 +22,7 @@
 
 #include "ActivityRegistryTest.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
@@ -47,7 +47,7 @@ namespace ut
 struct ActivityRegistryTestPimpl
 {
     public:
-        activity::registry::Activity::sptr activities;
+        activity::extension::Activity::sptr activities;
 };
 
 //------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ struct ActivityRegistryTestPimpl
 void ActivityRegistryTest::setUp()
 {
     m_pimpl             = std::make_shared< ActivityRegistryTestPimpl >();
-    m_pimpl->activities = activity::registry::Activity::New();
+    m_pimpl->activities = activity::extension::Activity::New();
 
     core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity-0.0"));
     core::runtime::loadModule("tu_registry");
@@ -79,8 +79,8 @@ struct activities_less_than_key
 {
     //------------------------------------------------------------------------------
 
-    inline bool operator() (const activity::registry::ActivityInfo& a,
-                            const activity::registry::ActivityInfo& b)
+    inline bool operator() (const activity::extension::ActivityInfo& a,
+                            const activity::extension::ActivityInfo& b)
     {
         return (a.id < b.id);
     }
@@ -92,7 +92,7 @@ void ActivityRegistryTest::registryTest()
 {
 
     data::Vector::sptr v = data::Vector::New();
-    activity::registry::Activity::ActivitiesType activities;
+    activity::extension::Activity::ActivitiesType activities;
 
     // 1 image
     v->getContainer().push_back( data::Image::New() );
@@ -204,7 +204,7 @@ void ActivityRegistryTest::registryTest()
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
-    const activity::registry::ActivityInfo& info = activities[0];
+    const activity::extension::ActivityInfo& info = activities[0];
     CPPUNIT_ASSERT_EQUAL( std::string("TestRegistry0"), info.id );
     CPPUNIT_ASSERT_EQUAL( size_t(3), info.appConfig.parameters.size() );
     CPPUNIT_ASSERT_EQUAL( std::string("refImageUid"), info.appConfig.parameters.at(0).replace );

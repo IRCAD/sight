@@ -35,7 +35,7 @@
 #include <opencv2/core/mat.hpp>
 #endif // OPENCV_CUDA_SUPPORT
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::modules::geometry::vision::SDistortion">
+    <service type="::sight::module::geometry::vision::SDistortion">
         <in key="camera" uid="..." />
         <in key="input" uid="..." />
         <inout key="output" uid="..." />
@@ -59,7 +59,7 @@ namespace sight::modules::geometry::vision
    @endcode
  * Or
  * @code{.xml}
-    <service type="::sight::modules::geometry::vision::SDistortion">
+    <service type="::sight::module::geometry::vision::SDistortion">
         <in key="camera" uid="..." />
         <inout key="map" uid="..." />
         <mode>distort</mode>

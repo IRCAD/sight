@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/STrackballCamera.hpp"
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const std::string s_PRIORITY_CONFIG              = "priority";
@@ -85,4 +85,4 @@ void STrackballCamera::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

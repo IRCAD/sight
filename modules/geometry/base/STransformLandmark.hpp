@@ -28,7 +28,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -45,7 +45,7 @@ namespace sight::modules::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::geometry::base::STransformLandmark">
+        <service type="::sight::module::geometry::base::STransformLandmark">
             <in key="matrix" uid="..." />
             <inout key="landmark" uid="..." />
             <label></label>
@@ -122,4 +122,4 @@ private:
     bool m_landmarkSelected{false};
 
 };
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

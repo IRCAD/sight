@@ -1,15 +1,15 @@
 <plugin id="volumeRenderingActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene2d" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene2d" />
 
     <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
-        <icon>module_ui_media-0.1/icons/icon-VR.png</icon>
+        <icon>sight_module_ui_icons-0.1/icon-VR.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to displayed in volumic rendering.</desc>

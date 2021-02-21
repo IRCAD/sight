@@ -15,8 +15,8 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    module_ui_flaticon
-    module_ui_media
+    module_ui_flaticons
+    module_ui_icons
 
     # Reader
     module_io_atoms

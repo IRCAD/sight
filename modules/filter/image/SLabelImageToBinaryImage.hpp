@@ -28,7 +28,7 @@
 
 #include <boost/optional.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sight::modules::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::filter::image::SLabelImageToBinaryImage">
+   <service type="::sight::module::filter::image::SLabelImageToBinaryImage">
        <in key="labelImage" uid="..." autoConnect="yes" />
        <inout key="binaryMask" uid="..." />
        <config labelsField="maskLabels" />
@@ -106,4 +106,4 @@ private:
 
 };
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

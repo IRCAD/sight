@@ -24,8 +24,8 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <service/registry/AppConfig.hpp>
-#include <service/registry/AppConfigParameters.hpp>
+#include <service/extension/AppConfig.hpp>
+#include <service/extension/AppConfigParameters.hpp>
 
 namespace sight::module::appXml
 {
@@ -69,13 +69,13 @@ void Plugin::initialize()
 
     if( m_parametersName.empty() )
     {
-        const service::registry::FieldAdaptorType fields;
+        const service::FieldAdaptorType fields;
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
     else
     {
-        const service::registry::FieldAdaptorType& fields =
-            service::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
+        const service::FieldAdaptorType& fields =
+            service::extension::AppConfigParameters::getDefault()->getParameters( m_parametersName );
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
 

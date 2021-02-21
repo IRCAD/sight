@@ -28,7 +28,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::geometry::base::SPointToLandmarkVector">
+        <service type="::sight::module::geometry::base::SPointToLandmarkVector">
             <in key="landmark" uid="..." />
             <inout key="transform" uid="..." />
             <inout key="computedLandmark" uid="..." />
@@ -131,4 +131,4 @@ private:
     /// Label to prefix the message sent in the sameSlice signal.
     std::string m_sameSliceLabel{"Same axial slice"};
 };
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

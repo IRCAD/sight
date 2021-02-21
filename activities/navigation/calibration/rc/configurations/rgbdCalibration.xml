@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>RGBDCalibration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -31,7 +31,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -46,17 +46,17 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="::sight::modules::ui::base::SToolBar">
+        <service uid="toolbar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="start" icon="module_ui_media-0.1/icons/start-cam.svg" />
-                    <menuItem name="stop" icon="module_ui_media-0.1/icons/stop-cam.svg" />
+                    <menuItem name="start" icon="sight_module_ui_icons-0.1/start-cam.svg" />
+                    <menuItem name="stop" icon="sight_module_ui_icons-0.1/stop-cam.svg" />
                     <separator/>
-                    <menuItem name="configure depth record" icon="module_ui_media-0.1/icons/configuration.svg" />
-                    <menuItem name="configure color record" icon="module_ui_media-0.1/icons/configuration.svg" />
-                    <menuItem name="configure infrared record" icon="module_ui_media-0.1/icons/configuration.svg" />
+                    <menuItem name="configure depth record" icon="sight_module_ui_icons-0.1/configuration.svg" />
+                    <menuItem name="configure color record" icon="sight_module_ui_icons-0.1/configuration.svg" />
+                    <menuItem name="configure infrared record" icon="sight_module_ui_icons-0.1/configuration.svg" />
                     <separator/>
-                    <menuItem name="start record" icon="module_ui_media-0.1/icons/camera-photo.svg" />
+                    <menuItem name="start record" icon="sight_module_ui_icons-0.1/camera-photo.svg" />
                 </layout>
             </gui>
             <registry>
@@ -70,7 +70,7 @@
         </service>
 
         <!-- Begin Scanning views -->
-        <service uid="scanningView" type="::sight::modules::ui::base::SView">
+        <service uid="scanningView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -84,7 +84,7 @@
             </registry>
         </service>
 
-        <service uid="RGBDView" type="::sight::modules::ui::base::SView">
+        <service uid="RGBDView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -98,7 +98,7 @@
             </registry>
         </service>
 
-        <service uid="snapshotView" type="::sight::modules::ui::base::SView">
+        <service uid="snapshotView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -116,7 +116,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="startVideo" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="startVideo" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>startVideo/setInexecutable</slot>
                 <slot>scanner/startCamera</slot>
@@ -125,7 +125,7 @@
             </slots>
         </service>
 
-        <service uid="stopVideo" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="stopVideo" type="::sight::module::ui::base::com::SSlotCaller">
             <state executable="false" />
             <slots>
                 <slot>stopVideo/setInexecutable</slot>
@@ -135,25 +135,25 @@
             </slots>
         </service>
 
-        <service uid="configureDepthRecord" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="configureDepthRecord" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>depthRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="configureColorRecord" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="configureColorRecord" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>rgbRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="configureIRRecord" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="configureIRRecord" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>irRecorder/openLocationDialog</slot>
             </slots>
         </service>
 
-        <service uid="takeSnapshot" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="takeSnapshot" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>scanner/takeSnapshot</slot>
                 <slot>actionRecord/update</slot>
@@ -171,7 +171,7 @@
             </scene>
         </service>
 
-        <service uid="videoDMAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoDMAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="imageDepth" />
             <in key="tf" uid="tfDepth" />
             <config layer="default" />
@@ -188,7 +188,7 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="imageVideo" />
             <config layer="default" />
         </service>
@@ -204,7 +204,7 @@
             </scene>
         </service>
 
-        <service uid="videoDAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoDAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotDepth" />
             <in key="tf" uid="tfDepth" />
             <config layer="default" />
@@ -221,7 +221,7 @@
             </scene>
         </service>
 
-        <service uid="videoCAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoCAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotColor" />
             <config layer="default" />
         </service>
@@ -237,14 +237,14 @@
             </scene>
         </service>
 
-        <service uid="videoIRAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoIRAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="snapshotIR" />
             <config layer="default" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="synchronizer" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="synchronizer" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="frameTLColor" />
                 <key uid="depthTL" />
@@ -255,7 +255,7 @@
             </inout>
         </service>
 
-        <service uid="snapshotSynchronizer" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="snapshotSynchronizer" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="exportTLDepth" />
                 <key uid="exportTLColor" />
@@ -277,7 +277,7 @@
             <inout key="snapshotTLIR" uid="exportTLIR" />
         </service>
 
-        <service uid="actionRecord" type="::sight::modules::ui::base::com::STimestampSlotCaller">
+        <service uid="actionRecord" type="::sight::module::ui::base::com::STimestampSlotCaller">
             <slots>
                 <slot>depthRecorder/saveFrame</slot>
                 <slot>rgbRecorder/saveFrame</slot>
@@ -286,17 +286,17 @@
         </service>
 
         <!-- Record Depth image -->
-        <service uid="depthRecorder" type="::sight::modules::io::video::SFrameWriter" worker="recorder">
+        <service uid="depthRecorder" type="::sight::module::io::video::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLDepth" />
         </service>
 
         <!-- Record RGB image -->
-        <service uid="rgbRecorder" type="::sight::modules::io::video::SFrameWriter" worker="recorder">
+        <service uid="rgbRecorder" type="::sight::module::io::video::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLColor" />
         </service>
 
         <!-- Record IR image -->
-        <service uid="irRecorder" type="::sight::modules::io::video::SFrameWriter" worker="recorder">
+        <service uid="irRecorder" type="::sight::module::io::video::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLIR" />
         </service>
 

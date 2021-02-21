@@ -54,7 +54,7 @@
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -70,12 +70,12 @@ const core::com::Signals::SignalKeyType SWizard::s_CANCELED_SIG            = "ca
 
 static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
-using sight::activity::registry::ActivityInfo;
-using sight::activity::registry::Activity;
+using sight::activity::extension::ActivityInfo;
+using sight::activity::extension::Activity;
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::activity::SWizard,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::activity::SWizard,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
@@ -525,4 +525,4 @@ void SWizard::onBuildActivity()
 //------------------------------------------------------------------------------
 
 } //namespace activity
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

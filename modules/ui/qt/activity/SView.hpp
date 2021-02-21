@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/tools/Failed.hpp>
 
@@ -34,7 +34,7 @@
 
 #include <ui/base/view/IActivityView.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -56,11 +56,11 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::activity::SView" autoConnect="yes" >
+   <service type="::sight::module::ui::qt::activity::SView" autoConnect="yes" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="module_ui_media-0.1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_icons-0.1/app.ico"  />
      </parameters>
    </service>
    @endcode

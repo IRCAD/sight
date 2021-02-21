@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
 struct Plugin : public core::runtime::Plugin
@@ -40,4 +40,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

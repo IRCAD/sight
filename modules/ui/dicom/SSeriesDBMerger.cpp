@@ -29,10 +29,10 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::dicom::SSeriesDBMerger,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::dicom::SSeriesDBMerger,
                          ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
@@ -139,4 +139,4 @@ void SSeriesDBMerger::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

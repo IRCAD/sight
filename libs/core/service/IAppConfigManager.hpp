@@ -23,7 +23,7 @@
 #pragma once
 
 #include "service/config.hpp"
-#include "service/registry/AppInfo.hpp"
+#include "service/extension/AppConfig.hpp"
 
 #include <core/tools/Object.hpp>
 
@@ -38,8 +38,6 @@ namespace sight::service
 class SERVICE_CLASS_API IAppConfigManager : public core::tools::Object
 {
 public:
-    typedef registry::FieldAdaptorType FieldAdaptorType;
-
     fwCoreClassMacro(IAppConfigManager, core::tools::Object)
 
     /// Constructor. Do nothing.

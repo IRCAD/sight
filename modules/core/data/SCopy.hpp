@@ -31,7 +31,7 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**
@@ -40,7 +40,7 @@ namespace sight::modules::data
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::modules::data::SCopy" >
+       <service uid="..." type="::sight::module::data::SCopy" >
            <in key="source" uid="..." >
              <extract from="@path.to.data.0" />
            </in>
@@ -48,13 +48,13 @@ namespace sight::modules::data
            <mode>copyOnStart</mode>
        </service>
 
-       <service uid="..." type="::sight::modules::data::SCopy" >
+       <service uid="..." type="::sight::module::data::SCopy" >
            <in key="source" uid="..." />
            <inout key="target" uid="..." />
            <mode>copyOnStart</mode>
        </service>
 
-       <service uid="..." type="::sight::modules::data::SCopy" >
+       <service uid="..." type="::sight::module::data::SCopy" >
            <in key="source" uid="..." >
              <extract from="@path.to.data.0" />
            </in>
@@ -62,7 +62,7 @@ namespace sight::modules::data
            <mode>copyOnStart</mode>
        </service>
 
-       <service uid="..." type="::sight::modules::data::SCopy" >
+       <service uid="..." type="::sight::module::data::SCopy" >
            <in key="source" uid="..." />
            <out key="target" uid="..." />
            <mode>copyOnStart</mode>
@@ -83,13 +83,13 @@ namespace sight::modules::data
  * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
  * updating ("copyOnUpdate" - default).
  */
-class MODULE_DATA_CLASS_API SCopy final : public modules::data::ICamp
+class MODULE_DATA_CLASS_API SCopy final : public module::data::ICamp
 {
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SCopy, ::sight::modules::data::ICamp)
+    fwCoreServiceMacro(SCopy, ::sight::module::data::ICamp)
 
     /// Creates the service.
     MODULE_DATA_API SCopy();
@@ -133,4 +133,4 @@ private:
 
 };
 
-} // namespace sight::modules::data.
+} // namespace sight::module::data.

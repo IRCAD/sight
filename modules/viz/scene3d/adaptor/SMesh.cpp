@@ -41,7 +41,7 @@
 
 #include <cstdint>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "modifyColors";
@@ -160,11 +160,11 @@ void SMesh::starting()
     if(!m_useNewMaterialAdaptor)
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = this->getRenderService()->getAdaptors< modules::viz::scene3d::adaptor::SMaterial>();
+        auto mtlAdaptors = this->getRenderService()->getAdaptors< module::viz::scene3d::adaptor::SMaterial>();
 
         auto result =
             std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),
-                         [this](const modules::viz::scene3d::adaptor::SMaterial::sptr& srv)
+                         [this](const module::viz::scene3d::adaptor::SMaterial::sptr& srv)
             {
                 return srv->getMaterialName() == m_materialName;
             });
@@ -239,7 +239,7 @@ void SMesh::stopping()
 
 //-----------------------------------------------------------------------------
 
-void modules::viz::scene3d::adaptor::SMesh::setVisible(bool _visible)
+void module::viz::scene3d::adaptor::SMesh::setVisible(bool _visible)
 {
     if(m_entity)
     {
@@ -327,17 +327,17 @@ void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
         {
             if(adaptor)
             {
-                auto r2vbMtlAdaptor = modules::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
+                auto r2vbMtlAdaptor = module::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
                 m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
                 // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
-                r2vbMtlAdaptor->slot(modules::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+                r2vbMtlAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
             }
             else
             {
                 // Instantiate a material adaptor for the r2vb process for this primitive type
                 adaptor = this->createMaterialService(_mesh, renderable->getName());
 
-                auto r2vbMtlAdaptor = modules::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
+                auto r2vbMtlAdaptor = module::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
                 r2vbMtlAdaptor->setR2VBObject(renderable);
                 r2vbMtlAdaptor->start();
                 m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
@@ -373,8 +373,8 @@ void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
 adaptor::SMaterial::sptr SMesh::createMaterialService(const data::Mesh::sptr& _mesh,
                                                       const std::string& _materialSuffix)
 {
-    auto materialAdaptor = this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-        "::sight::modules::viz::scene3d::adaptor::SMaterial");
+    auto materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+        "::sight::module::viz::scene3d::adaptor::SMaterial");
     materialAdaptor->registerInOut(m_material, "material", true);
 
     materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
@@ -422,7 +422,7 @@ void SMesh::updateNewMaterialAdaptor(const data::Mesh::sptr& _mesh)
     {
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->slot(modules::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
 }
 
@@ -444,7 +444,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
             m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
 
-            m_materialAdaptor->slot(modules::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+            m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
         }
     }
     else if(m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared() !=
@@ -475,7 +475,7 @@ void SMesh::modifyVertices()
                                m_materialAdaptor->getMaterialName(), m_materialAdaptor->hasDiffuseTexture());
 
     // Necessary to update the bounding box in the adaptor
-    //m_materialAdaptor->slot(modules::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+    //m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
 
     if (m_autoResetCamera)
     {
@@ -560,4 +560,4 @@ void SMesh::requestRender()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

@@ -27,7 +27,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>

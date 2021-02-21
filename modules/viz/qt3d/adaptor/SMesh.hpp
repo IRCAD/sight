@@ -27,7 +27,7 @@
 #include <viz/qt3d/data/Mesh.hpp>
 #include <viz/qt3d/IAdaptor.hpp>
 
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::viz::qt3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::qt3d::adaptor::SMesh" >
+    <service uid="..." type="::sight::module::viz::qt3d::adaptor::SMesh" >
         <in key="mesh" uid="..." />
         <config autoresetcamera="true" visible="true" materialName="..." />
     </service>
@@ -117,4 +117,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::qt3d::adaptor.
+} // namespace sight::module::viz::qt3d::adaptor.

@@ -33,7 +33,7 @@ namespace sight::atoms
 class Object;
 }
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
 class MODULE_IO_ATOMS_CLASS_API FilterUnknownActivities : public sight::io::atoms::filter::IFilter
@@ -50,4 +50,4 @@ public:
     MODULE_IO_ATOMS_API virtual void apply(const SPTR(sight::atoms::Object)& atom);
 };
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

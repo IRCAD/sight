@@ -32,7 +32,7 @@
 
 #include <sstream>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 namespace action
 {
@@ -42,7 +42,7 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::MemoryConsumption,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::debug::action::MemoryConsumption,
                          ::sight::data::Object )
 
 //-----------------------------------------------------------------------------

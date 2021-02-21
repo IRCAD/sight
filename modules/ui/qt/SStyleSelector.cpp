@@ -38,9 +38,9 @@
 #include <algorithm>
 #include <filesystem>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::SStyleSelector )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::SStyleSelector )
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";

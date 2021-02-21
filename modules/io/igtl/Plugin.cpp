@@ -24,12 +24,12 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::igtl::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::igtl::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

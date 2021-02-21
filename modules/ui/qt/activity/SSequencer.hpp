@@ -32,7 +32,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -66,7 +66,7 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service  type="::sight::modules::ui::qt::activity::SSequencer">
+    <service  type="::sight::module::ui::qt::activity::SSequencer">
         <inout key="seriesDB" uid=""  autoConnect="yes" />
         <in    key="requirementOverrides" uid="..." />
         <activity id="..." name="..." />
@@ -196,4 +196,4 @@ private:
 };
 
 } // namespace activity
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

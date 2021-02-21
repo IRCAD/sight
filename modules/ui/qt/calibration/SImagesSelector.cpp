@@ -40,10 +40,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::calibration::SImagesSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::calibration::SImagesSelector,
                          ::sight::data::Vector)
 
 const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
@@ -235,4 +235,4 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

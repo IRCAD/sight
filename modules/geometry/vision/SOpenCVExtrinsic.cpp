@@ -47,10 +47,10 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro(::sight::service::ICalibration, ::sight::modules::geometry::vision::SOpenCVExtrinsic,
+fwServicesRegisterMacro(::sight::service::ICalibration, ::sight::module::geometry::vision::SOpenCVExtrinsic,
                         ::sight::data::CameraSeries)
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
@@ -301,4 +301,4 @@ void SOpenCVExtrinsic::updateChessboardSize()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

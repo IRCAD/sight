@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 /**
@@ -46,4 +46,4 @@ struct MODULE_IO_IGTL_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

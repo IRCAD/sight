@@ -33,7 +33,7 @@
 
 #include <geometry/data/PointList.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 const core::com::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
@@ -41,13 +41,13 @@ const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoint
 
 const std::string s_POINTLIST_KEY = "pointList";
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::viz::SAddPoint, ::sight::data::PointList)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::viz::SAddPoint, ::sight::data::PointList)
 
 //------------------------------------------------------------------------------
 
 SAddPoint::SAddPoint() noexcept
 {
-    FW_DEPRECATED("::sight::modules::ui::viz::SAddPoint", "::sight::modules::geometry::base::SManagePointList", "21.0");
+    FW_DEPRECATED("::sight::module::ui::viz::SAddPoint", "::sight::module::geometry::base::SManagePointList", "21.0");
 
     newSlot(s_PICK_SLOT, &SAddPoint::pick, this );
     newSlot(s_CLEAR_POINTS_SLOT, &SAddPoint::clearPoints, this );
@@ -163,4 +163,4 @@ void SAddPoint::clearPoints()
     }
 }
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

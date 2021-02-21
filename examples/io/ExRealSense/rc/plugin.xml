@@ -1,12 +1,12 @@
 <plugin id="ExRealSense" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
     
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExRealSense_AppCgf</id>
         <config>
 
@@ -38,7 +38,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExRealSense</name>
@@ -55,7 +55,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -68,7 +68,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Recording Path..." shortcut="Ctrl+S" />
@@ -81,7 +81,7 @@
                 </registry>
             </service>
 
-            <service uid="menuOptionsView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuOptionsView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Filters settings..." style="check" />
@@ -96,16 +96,16 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor />
-                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
-                        <menuItem name="Record" icon="module_ui_flaticon-0.1/icons/RedCircle.svg" style="check" />
+                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                        <menuItem name="Record" icon="sight_module_ui_flaticons-0.1/RedCircle.svg" style="check" />
                         <separator/>
                         <editor />
                         <editor />
@@ -114,8 +114,8 @@
                         <separator/>
                         <editor />
                         <spacer />
-                        <menuItem name="Configure recording path" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
-                        <menuItem name="Show/hide filter Settings" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" style="check" />
+                        <menuItem name="Configure recording path" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
+                        <menuItem name="Show/hide filter Settings" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -136,7 +136,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::sight::modules::ui::base::SView" >
+            <service uid="containerView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -150,7 +150,7 @@
                 </registry>
             </service>
 
-            <service uid="scanningView" type="::sight::modules::ui::base::SView" >
+            <service uid="scanningView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -164,7 +164,7 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="::sight::modules::ui::base::SView" >
+            <service uid="RGBDView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -178,7 +178,7 @@
                 </registry>
             </service>
 
-            <service uid="pointcloudView" type="::sight::modules::ui::base::SView" >
+            <service uid="pointcloudView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -192,7 +192,7 @@
                 </registry>
             </service>
 
-            <service uid="filterSettingsView" type="::sight::modules::ui::base::SView" >
+            <service uid="filterSettingsView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -217,10 +217,10 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -228,7 +228,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -238,7 +238,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -248,7 +248,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -262,33 +262,33 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="recordAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="recordAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/record</slot>
                 </slots>
             </service>
 
-            <service uid="configureRecordingPathAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="configureRecordingPathAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/configureRecordingPath</slot>
                 </slots>
             </service>
 
-            <service uid="showPCDepthAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showPCDepthAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>DMPointAdp/updateVisibility</slot>
                 </slots>
                 <state active="false" />
             </service>
 
-            <service uid="showPCColorAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showPCColorAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>VPointAdp/updateVisibility</slot>
                 </slots>
@@ -297,7 +297,7 @@
 
             <!-- Show/hide the parameters view -->
 
-            <service uid="showfilterSettingsAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showfilterSettingsAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>filterSettingsView/setVisible</slot>
                 </slots>
@@ -318,18 +318,18 @@
                 </scene>
             </service>
 
-            <service uid="DMDepthAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="DMDepthAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="video" />
             </service>
 
-            <service uid="DMPointAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="DMPointAdp" type="::sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
 
-            <service uid="DMCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
+            <service uid="DMCameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="identity" />
                 <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
                 <config layer="AR" />
@@ -350,17 +350,17 @@
                 </scene>
             </service>
 
-            <service uid="VVideoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="VVideoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageVideo" />
                 <config layer="video" />
             </service>
 
-            <service uid="VPointAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="VPointAdp" type="::sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="AR" autoresetcamera="no" radius="1" visible="false" />
             </service>
 
-            <service uid="VCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
+            <service uid="VCameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="identity" />
                 <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
                 <config layer="AR" />
@@ -378,19 +378,19 @@
                 </scene>
             </service>
 
-            <service uid="RPointAdp" type="::sight::modules::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
+            <service uid="RPointAdp" type="::sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="yes" >
                 <in key="mesh" uid="pointcloud" />
                 <config layer="default" autoresetcamera="no" radius="1" />
             </service>
 
-            <service uid="RCameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" >
+            <service uid="RCameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" >
                 <inout key="transform" uid="3dCameraTrf" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="presetsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="presetsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
                     values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
@@ -399,51 +399,51 @@
                 </parameters>
             </service>
 
-            <service uid="alignmentSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="alignmentSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
                     values="None,Color,Depth,Infrared" />
                 </parameters>
             </service>
 
-            <service uid="infraredEmitterSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="infraredEmitterSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="IR Emitter" key="IREmitter" defaultValue="true" />
                 </parameters>
             </service>
 
-            <service uid="switchInfraToColorSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="switchInfraToColorSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Infra to Color" key="switchToIR" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="rangeEditorSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="rangeEditorSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="max range" key="maxRange" defaultValue="65535" min="0" max="65535" />
                     <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65534" />
                 </parameters>
             </service>
 
-            <service uid="enableSpacialFilterParamsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="enableSpacialFilterParamsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial"      defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="enableTemporalFilterParamsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="enableTemporalFilterParamsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable temporal filter"                key="enableTemporal"     defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="enableHoleFillingFilterParamsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="enableHoleFillingFilterParamsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Enable holes Filling filter"           key="enableHolesFilling" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="spacialFilterParamsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="spacialFilterParamsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="int"    name="Number of iterations"  key="spacialMagnitude"    defaultValue="2"   min="1" max="5" />
                     <param type="double" name="Smooth Alpha"          key="spacialSmoothAlpha"  defaultValue="0.5" min="0.25" max="1"  widget="slider" />
@@ -452,7 +452,7 @@
                 </parameters>
             </service>
 
-            <service uid="temporalFilterParamsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="temporalFilterParamsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="double" name="Smooth Alpha"        key="temporalSmoothAlpha"  defaultValue="0.4" min="0" max="1" widget="slider" />
                     <param type="int"    name="Smooth Delta"        key="temporalSmoothDelta"  defaultValue="20"  min="1" max="100" />
@@ -462,33 +462,33 @@
                 </parameters>
             </service>
 
-            <service uid="holeFillingFilterParamsSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="holeFillingFilterParamsSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="enum" name="Hole filling" key="holeFilling"  defaultValue="farest_from_around"   values="fill_from_left,farest_from_around,nearest_from_around" />
                 </parameters>
             </service>
 
-            <service uid="distanceSrv" type="::sight::modules::ui::qt::STextStatus" >
+            <service uid="distanceSrv" type="::sight::module::ui::qt::STextStatus" >
                 <label>Distance To Center (mm)</label>
                 <color>#D25252</color>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Manages Sense camera configuration -->
-            <service uid="videoGrabberSrv" type="::sight::modules::io::realsense::SScan" worker="grabber" >
+            <service uid="videoGrabberSrv" type="::sight::module::io::realsense::SScan" worker="grabber" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <out key="pointcloud" uid="pointcloud" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="synchronizer" >
+            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer" >
                 <in group="frameTL" >
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
@@ -500,7 +500,7 @@
             </service>
 
             <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
-             <service uid="extractCameraSrv" type="::sight::modules::data::SExtractObj" >
+             <service uid="extractCameraSrv" type="::sight::module::data::SExtractObj" >
                  <inout key="source" uid="RGBDCameraSeries" autoConnect="yes" >
                      <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
                      <extract from="@cameras.1" /> <!-- Camp path of the first camera in cameraSeries -->

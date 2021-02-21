@@ -24,10 +24,10 @@
 
 #include "service/helper/ProxyConnections.hpp"
 #include "service/op/Add.hpp"
-#include "service/registry/ActiveWorkers.hpp"
-#include "service/registry/AppConfig.hpp"
+#include "core/thread/ActiveWorkers.hpp"
+#include "service/extension/AppConfig.hpp"
 #include "service/registry/ObjectService.hpp"
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/Factory.hpp"
 
 #include "TestService.hpp"
 
@@ -53,7 +53,7 @@ void AppManagerTest::setUp()
 {
     // Set up context before running a test.
 
-    service::registry::ActiveWorkers::sptr activeWorkers = service::registry::ActiveWorkers::getDefault();
+    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 }
 
@@ -71,7 +71,7 @@ void AppManagerTest::tearDown()
         m_appMgr = nullptr;
     }
 
-    service::registry::ActiveWorkers::sptr activeWorkers = service::registry::ActiveWorkers::getDefault();
+    core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->clearRegistry();
 }
 
@@ -92,7 +92,7 @@ void AppManagerTest::managerCreationTest()
     auto service4 = m_appMgr->addService("::sight::service::ut::TestServiceImplementation");
 
     auto service5 =
-        service::registry::ServiceFactory::getDefault()->create("::sight::service::ut::TestServiceImplementation");
+        service::extension::Factory::getDefault()->create("::sight::service::ut::TestServiceImplementation");
     m_appMgr->addService(service5, true);
 
     CPPUNIT_ASSERT(service);

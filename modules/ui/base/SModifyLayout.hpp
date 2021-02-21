@@ -32,7 +32,7 @@
 
 #include <vector>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 /**
  * @brief This action is used to modify the layout configuration.
@@ -130,4 +130,4 @@ private:
     EnableSrvVectType m_enableSrv;
 };
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

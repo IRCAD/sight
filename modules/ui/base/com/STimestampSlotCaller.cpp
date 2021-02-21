@@ -32,12 +32,12 @@
 
 #include <regex>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
 
-fwServicesRegisterMacro(sight::ui::base::IAction, sight::modules::ui::base::com::STimestampSlotCaller,
+fwServicesRegisterMacro(sight::ui::base::IAction, sight::module::ui::base::com::STimestampSlotCaller,
                         sight::data::Object)
 
 //-----------------------------------------------------------------------------
@@ -125,4 +125,4 @@ void STimestampSlotCaller::stopping()
 //-----------------------------------------------------------------------------
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

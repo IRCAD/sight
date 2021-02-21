@@ -35,7 +35,7 @@ namespace sight::data
 class SeriesDB;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 /**
@@ -44,7 +44,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::dicom::SSeriesDBWriter" >
+       <service uid="..." type="::sight::module::io::dicom::SSeriesDBWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
@@ -112,4 +112,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

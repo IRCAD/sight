@@ -28,7 +28,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::base::metrics
+namespace sight::module::ui::base::metrics
 {
 
 /**
@@ -36,7 +36,7 @@ namespace sight::modules::ui::base::metrics
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::modules::ui::base::metrics::SAddDistance">
+   <service uid="..." type="::sight::module::ui::base::metrics::SAddDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
@@ -74,4 +74,4 @@ protected:
 
 };
 
-} // namespace sight::modules::ui::base::metrics
+} // namespace sight::module::ui::base::metrics

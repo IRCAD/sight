@@ -22,7 +22,7 @@
 
 #include "IWrapperSrv.hpp"
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 //-----------------------------------------------------------------------------

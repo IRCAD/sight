@@ -38,7 +38,7 @@
 #include <data/String.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -51,7 +51,7 @@
 
 #include <regex>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -61,10 +61,10 @@ static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-fwServicesRegisterMacro( ::sight::ui::base::view::IActivityView, ::sight::modules::ui::qt::activity::SDynamicView )
+fwServicesRegisterMacro( ::sight::ui::base::view::IActivityView, ::sight::module::ui::qt::activity::SDynamicView )
 
-using sight::activity::registry::Activity;
-using sight::activity::registry::ActivityInfo;
+using sight::activity::extension::Activity;
+using sight::activity::extension::ActivityInfo;
 
 //------------------------------------------------------------------------------
 
@@ -187,7 +187,7 @@ void SDynamicView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::createTab( sight::activity::registry::ActivityMsg info )
+void SDynamicView::createTab( sight::activity::ActivityMsg info )
 {
     SDynamicViewInfo viewInfo;
     viewInfo.title          = info.getTitle();
@@ -236,7 +236,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     ::sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
     info.replaceMap[ "WID_PARENT" ] = info.wid;
-    std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
+    std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
     service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
@@ -457,4 +457,4 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
 //------------------------------------------------------------------------------
 
 }// namespace activity
-}// namespace sight::modules::ui::qt
+}// namespace sight::module::ui::qt

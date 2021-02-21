@@ -37,7 +37,7 @@
 
 #include <OgreNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const std::string s_LENGTH_CONFIG       = "length";
@@ -69,7 +69,7 @@ void SAxis::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string transformId = config.get<std::string>(
-        modules::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
+        module::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
         this->getID() + "_transform");
 
     this->setTransformId(transformId);
@@ -119,10 +119,10 @@ void SAxis::starting()
     // set the material
     m_material = data::Material::New();
 
-    const modules::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
-        this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-            "::sight::modules::viz::scene3d::adaptor::SMaterial");
-    materialAdaptor->registerInOut(m_material, modules::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
+        this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+            "::sight::module::viz::scene3d::adaptor::SMaterial");
+    materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
     materialAdaptor->setRenderService( this->getRenderService() );
@@ -338,4 +338,4 @@ void SAxis::setVisible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

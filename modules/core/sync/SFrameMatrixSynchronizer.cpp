@@ -40,9 +40,9 @@
 #include <algorithm>
 #include <functional>
 
-fwServicesRegisterMacro(::sight::service::ISynchronizer, ::sight::modules::sync::SFrameMatrixSynchronizer)
+fwServicesRegisterMacro(::sight::service::ISynchronizer, ::sight::module::sync::SFrameMatrixSynchronizer)
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG    = "synchronizationDone";
@@ -503,4 +503,4 @@ void SFrameMatrixSynchronizer::resetTimeline()
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::modules::sync
+}  // namespace sight::module::sync

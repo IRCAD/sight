@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 namespace ut
 {
@@ -54,4 +54,4 @@ public:
 };
 
 } // namespace ut
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

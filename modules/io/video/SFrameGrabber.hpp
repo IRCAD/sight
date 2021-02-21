@@ -41,7 +41,7 @@ namespace sight::data
 class Camera;
 }
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
 /**
@@ -73,7 +73,7 @@ namespace sight::modules::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::video::SFrameGrabber">
+        <service type="::sight::module::io::video::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>
@@ -230,4 +230,4 @@ private:
     size_t m_videoFramesNb;
 };
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

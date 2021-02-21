@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "service/registry/AppConfigParameters.hpp"
+#include "service/extension/AppConfigParameters.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
@@ -33,7 +33,7 @@
 
 namespace sight::service
 {
-namespace registry
+namespace extension
 {
 
 AppConfigParameters::sptr AppConfigParameters::s_appConfigParameters = AppConfigParameters::New();
@@ -56,7 +56,7 @@ AppConfigParameters::~AppConfigParameters()
 void AppConfigParameters::parseBundleInformation()
 {
     std::vector< std::shared_ptr< core::runtime::Extension > >  extensions = core::runtime::getAllExtensionsForPoint(
-        "::sight::service::registry::AppConfigParameters");
+        "::sight::service::extension::AppConfigParameters");
     for( std::shared_ptr< core::runtime::Extension > ext :  extensions )
     {
         // Get id
@@ -111,6 +111,6 @@ const FieldAdaptorType& AppConfigParameters::getParameters( const std::string& e
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::service

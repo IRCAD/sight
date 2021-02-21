@@ -34,7 +34,7 @@
 
 #include <regex>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
@@ -43,7 +43,7 @@ static const service::IService::KeyType s_SLOT_KEY        = "slot";
 static const service::IService::KeyType s_SLOTS_KEY       = "slots";
 static const service::IService::KeyType s_SYNCED_CALL_KEY = "sync";
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::com::SSlotCaller )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::com::SSlotCaller )
 
 //-----------------------------------------------------------------------------
 
@@ -152,4 +152,4 @@ void SSlotCaller::configuring()
 //-----------------------------------------------------------------------------
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -32,12 +32,12 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::SImage )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::SImage )
 
 //-----------------------------------------------------------------------------
 
@@ -125,4 +125,4 @@ void SImage::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace image
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

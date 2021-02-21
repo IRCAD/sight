@@ -53,10 +53,10 @@
 #include <fstream>
 #include <iterator>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::dicom::SSliceIndexDicomEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::dicom::SSliceIndexDicomEditor,
                          ::sight::data::DicomSeries )
 
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
@@ -83,14 +83,14 @@ void SSliceIndexDicomEditor::configuring()
     sight::ui::base::IGuiContainer::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service modules::ui::dicom::SSliceIndexDicomEditor must have "
+    SLM_ASSERT("The service module::ui::dicom::SSliceIndexDicomEditor must have "
                "a \"config\" element.", config);
 
     bool success;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the modules::ui::dicom::SSliceIndexDicomEditor "
+    SLM_ASSERT("It should be a \"dicomReader\" tag in the module::ui::dicom::SSliceIndexDicomEditor "
                "config element.", success);
 
     // Reader configuration
@@ -147,12 +147,12 @@ void SSliceIndexDicomEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    service::registry::ServiceFactory::sptr srvFactory = service::registry::ServiceFactory::getDefault();
+    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
 
     sight::io::base::service::IReader::sptr dicomReader;
     dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-               "::sight::modules::ui::dicom::SSliceIndexDicomEditor.", dicomReader);
+               "::sight::module::ui::dicom::SSliceIndexDicomEditor.", dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
                                   service::IService::AccessType::INOUT, dicomReader);
 
@@ -359,4 +359,4 @@ void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) con
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

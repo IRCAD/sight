@@ -21,20 +21,20 @@
  ***********************************************************************/
 
 /**
- * @brief The namespace sight::modules::ui::base contains the basic services to build the application IHM.
+ * @brief The namespace sight::module::ui::base contains the basic services to build the application IHM.
  *
  */
 #pragma once
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 /**
- * @brief The namespace sight::modules::ui::base::action contains basic services managing action.
+ * @brief The namespace sight::module::ui::base::action contains basic services managing action.
  */
 namespace action
 {
 
 } // namespace action
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

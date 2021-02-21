@@ -44,7 +44,7 @@
 
 #include <thread>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 static const core::com::Slots::SlotKeyType s_RECORD_POINTS_SLOT          = "recordPoints";
@@ -266,4 +266,4 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
 
 // ----------------------------------------------------------------------------
 
-} //namespace sight::modules::geometry::vision
+} //namespace sight::module::geometry::vision

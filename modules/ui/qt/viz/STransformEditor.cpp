@@ -47,10 +47,10 @@
 
 #include <regex>
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::STransformEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::viz::STransformEditor,
                          ::sight::data::Matrix4)
 
 //------------------------------------------------------------------------------
@@ -332,4 +332,4 @@ void STransformEditor::updateFromMatrix()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::viz
+} // namespace sight::module::ui::qt::viz

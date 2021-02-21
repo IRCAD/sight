@@ -30,7 +30,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 /**
  * @brief Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.
@@ -47,7 +47,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::sight::modules::geometry::vision::SChessboardReprojection">
+     <service type="::sight::module::geometry::vision::SChessboardReprojection">
         <in key="transform" uid="..."/>
         <in key="camera" uid="..."/>
         <in key="detectedChessboard" uid="..." />
@@ -156,4 +156,4 @@ private:
     ErrorComputedSignalType::sptr m_errorComputedSig;
 };
 
-}//namespace sight::modules::geometry::vision
+}//namespace sight::module::geometry::vision

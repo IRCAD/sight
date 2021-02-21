@@ -21,12 +21,12 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::navigation::optics contains services to track objects in augmented reality
+ * @brief       The namespace sight::module::navigation::optics contains services to track objects in augmented reality
  * with Aruco.
  */
 #pragma once
 
-namespace sight::modules::navigation::optics
+namespace sight::module::navigation::optics
 {
 
-} // namespace sight::modules::navigation::optics
+} // namespace sight::module::navigation::optics

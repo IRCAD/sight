@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**
@@ -47,4 +47,4 @@ struct MODULE_DATA_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

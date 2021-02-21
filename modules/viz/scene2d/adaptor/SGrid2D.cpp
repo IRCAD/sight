@@ -31,14 +31,14 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
 
 //---------------------------------------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SGrid2D)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SGrid2D)
 
 const core::com::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
 
@@ -53,7 +53,7 @@ SGrid2D::SGrid2D() noexcept :
     m_ySpacing(10.f),
     m_layer(nullptr)
 {
-    newSlot(s_SET_GRID_SPACING_SLOT, &sight::modules::viz::scene2d::adaptor::SGrid2D::setGridSpacing, this);
+    newSlot(s_SET_GRID_SPACING_SLOT, &sight::module::viz::scene2d::adaptor::SGrid2D::setGridSpacing, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -251,4 +251,4 @@ void SGrid2D::stopping()
 }
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

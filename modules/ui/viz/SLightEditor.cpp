@@ -40,13 +40,13 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 using sight::viz::scene3d::ILight;
 using sight::viz::scene3d::Layer;
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SLightEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SLightEditor,
                          ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
@@ -495,13 +495,13 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 
-    QColor qColor = QColorDialog::getColor(modules::ui::viz::helper::Utils::converOgreColorToQColor(_currentColor),
+    QColor qColor = QColorDialog::getColor(module::ui::viz::helper::Utils::converOgreColorToQColor(_currentColor),
                                            container,
                                            _title.c_str());
 
-    return modules::ui::viz::helper::Utils::convertQColorToOgreColor(qColor);
+    return module::ui::viz::helper::Utils::convertQColorToOgreColor(qColor);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

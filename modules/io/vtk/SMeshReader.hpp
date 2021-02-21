@@ -36,7 +36,7 @@ namespace sight::core::jobs
 class IJob;
 }
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sight::modules::io::vtk
  *
  * @section XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::io::vtk::SMeshReader">
+    <service uid="..." type="::sight::module::io::vtk::SMeshReader">
         <inout key="data" uid="..." />
         <file>@path/to/file</file>
     </service>
@@ -164,4 +164,4 @@ private:
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
-} // namespace sight::modules::io::vtk
+} // namespace sight::module::io::vtk

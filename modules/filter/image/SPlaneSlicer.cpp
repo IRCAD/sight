@@ -40,9 +40,9 @@
 
 #include <algorithm>
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SPlaneSlicer )
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SPlaneSlicer )
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 static const service::IService::KeyType s_IMAGE_IN  = "image";
@@ -314,4 +314,4 @@ void SPlaneSlicer::updateDefaultValue()
 
 //------------------------------------------------------------------------------
 
-} //namespace sight::modules::filter::image
+} //namespace sight::module::filter::image

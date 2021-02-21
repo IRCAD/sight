@@ -40,12 +40,12 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 using sight::viz::scene3d::Layer;
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SCompositorSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SCompositorSelector,
                          ::sight::data::Composite)
 
 const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
@@ -295,4 +295,4 @@ bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

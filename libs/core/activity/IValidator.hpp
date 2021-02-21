@@ -23,7 +23,7 @@
 #pragma once
 
 #include "activity/config.hpp"
-#include "activity/registry/Activity.hpp"
+#include "activity/extension/Activity.hpp"
 #include "activity/validator/factory/new.hpp"
 #include "activity/validator/registry/detail.hpp"
 
@@ -84,7 +84,7 @@ public:
      * @see IValidator::ValidationType
      */
     ACTIVITY_API virtual ValidationType validate(
-        const activity::registry::ActivityInfo& activityInfo,
+        const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const = 0;
 
 };

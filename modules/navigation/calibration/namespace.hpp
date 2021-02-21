@@ -21,13 +21,13 @@
  ***********************************************************************/
 
 /**
- * @brief The namespace sight::modules::navigation::calibration contains base services to do calibration (Hand-Eye) with
+ * @brief The namespace sight::module::navigation::calibration contains base services to do calibration (Hand-Eye) with
  * tracked
  * object (camera, atracsys, ...)
  */
 #pragma once
 
-namespace sight::modules::navigation::calibration
+namespace sight::module::navigation::calibration
 {
 
-} // namespace sight::modules::navigation::calibration
+} // namespace sight::module::navigation::calibration

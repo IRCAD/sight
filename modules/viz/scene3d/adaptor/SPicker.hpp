@@ -28,7 +28,7 @@
 #include <viz/scene3d/interactor/MeshPickerInteractor.hpp>
 #include <viz/scene3d/picker/IPicker.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::viz::scene3d::adaptor::SPicker">
+        <service type="::sight::module::viz::scene3d::adaptor::SPicker">
             <config layer="..." priority="0" queryMask="0xFFFFFFFF" layerOrderDependant="true" />
        </service>
    @endcode
@@ -100,4 +100,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

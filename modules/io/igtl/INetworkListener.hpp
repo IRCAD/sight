@@ -28,7 +28,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 /// Interface providing behavior of network listeners, if you want create a new network listener you must be inherit.
 class MODULE_IO_IGTL_CLASS_API INetworkListener : public service::IController
@@ -66,4 +66,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::igtl.
+} // namespace sight::module::io::igtl.

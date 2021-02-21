@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 using namespace core::runtime::utils;
-static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::dicomweb::Plugin");
+static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::dicomweb::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

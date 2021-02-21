@@ -35,7 +35,7 @@
 #include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Text.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -59,7 +59,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SLandmarks">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SLandmarks">
         <inout key="landmarks" uid="..." />
         <in key="image" uid="..." />
         <config layer="default" transform="transformUID" visible="true" priority="2" />
@@ -344,7 +344,7 @@ private:
     data::Material::sptr m_material { nullptr };
 
     /// Contains the Ogre material adaptor.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Stores each landmarks points.
     std::vector< std::shared_ptr< Landmark > > m_manualObjects;
@@ -387,4 +387,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

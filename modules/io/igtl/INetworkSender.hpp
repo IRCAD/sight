@@ -28,7 +28,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 /// Interface providing behavior of network senders, if you want create a new network sender you must be inherit.
@@ -84,4 +84,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::igtl.
+} // namespace sight::module::io::igtl.

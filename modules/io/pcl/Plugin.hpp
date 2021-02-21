@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::pcl
+namespace sight::module::io::pcl
 {
 struct Plugin : public core::runtime::Plugin
 {
@@ -51,4 +51,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace sight::modules::io::pcl
+} // namespace sight::module::io::pcl

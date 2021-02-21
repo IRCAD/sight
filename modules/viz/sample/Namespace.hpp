@@ -22,7 +22,7 @@
 
 #pragma once
 
-/// The namespace sight::modules::viz::sample supplies simple rendering services for meshes and images.
-namespace sight::modules::viz::sample
+/// The namespace sight::module::viz::sample supplies simple rendering services for meshes and images.
+namespace sight::module::viz::sample
 {
 }

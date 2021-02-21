@@ -29,7 +29,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
 namespace processing
@@ -41,7 +41,7 @@ namespace processing
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="computeHistogram" type="::sight::modules::viz::scene2d::processing::SComputeHistogram"
+   <service uid="computeHistogram" type="::sight::module::viz::scene2d::processing::SComputeHistogram"
  * autoConnect="yes">
     <inout key="histogram" uid="..." />
     <in key="image" uid="..." />
@@ -103,4 +103,4 @@ private:
 
 };
 } // namespace processing
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

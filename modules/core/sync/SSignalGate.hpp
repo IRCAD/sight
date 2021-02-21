@@ -28,7 +28,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::sync::SSignalGate">
+        <service uid="..." type="::sight::module::sync::SSignalGate">
             <signal>data/modified</signal>
             <signal>object/changed</signal>
             <signal>service/computed</signal>
@@ -99,4 +99,4 @@ private:
     core::com::helper::SigSlotConnection m_connections;
 };
 
-} // namespace sight::modules::sync
+} // namespace sight::module::sync

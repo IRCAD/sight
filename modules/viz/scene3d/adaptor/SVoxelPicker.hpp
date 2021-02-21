@@ -28,14 +28,14 @@
 
 #include <viz/scene3d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
  * @brief This adaptor performs picking queries on an image voxel using slices.
  *
- * This picker has a different behaviour than modules::viz::scene3d::adaptor::SPicker, in fact,
- * modules::viz::scene3d::adaptor::SPicker performs
+ * This picker has a different behaviour than module::viz::scene3d::adaptor::SPicker, in fact,
+ * module::viz::scene3d::adaptor::SPicker performs
  * a picking on all scene meshes. This one picks only on an image and computes exactly the intersection between the
  * picking coordinates, and image slices.
  *
@@ -50,7 +50,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::viz::scene3d::adaptor::SVoxelPicker">
+        <service type="::sight::module::viz::scene3d::adaptor::SVoxelPicker">
             <in key="image" uid="..." />
             <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true" />
        </service>
@@ -159,4 +159,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

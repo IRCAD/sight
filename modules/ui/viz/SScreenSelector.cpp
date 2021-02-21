@@ -33,7 +33,7 @@
 #include <QPointer>
 #include <QScreen>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 static const core::com::Signals::SignalKeyType s_SCREEN_SELECTED_SIG = "screenSelected";
@@ -168,4 +168,4 @@ int SScreenSelector::selectScreen() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

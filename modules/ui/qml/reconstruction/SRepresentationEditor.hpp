@@ -33,7 +33,7 @@
 
 #include <ui/qml/IQmlEditor.hpp>
 
-namespace sight::modules::ui::qml::reconstruction
+namespace sight::module::ui::qml::reconstruction
 {
 
 /**

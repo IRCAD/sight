@@ -24,10 +24,10 @@
 
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
-#include "service/registry/ActiveWorkers.hpp"
+#include "core/thread/ActiveWorkers.hpp"
 #include "service/registry/Proxy.hpp"
-#include "service/registry/ServiceConfig.hpp"
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/Config.hpp"
+#include "service/extension/Factory.hpp"
 #include "service/registry/ObjectService.hpp"
 
 #include <core/com/Slots.hpp>
@@ -64,7 +64,7 @@ AppConfigManager::AppConfigManager() :
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
 
-    auto defaultWorker = service::registry::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
     core::com::HasSlots::m_slots.setWorker( defaultWorker );
 }
 
@@ -81,7 +81,7 @@ void AppConfigManager::setConfig(const std::string& _configId, const FieldAdapto
 {
     m_configId = _configId;
     m_cfgElem  =
-        registry::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
+        extension::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
 }
 
 // ------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void AppConfigManager::setConfig(const std::string& _configId, const data::Compo
 {
     m_configId = _configId;
     m_cfgElem  =
-        registry::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
+        extension::AppConfig::getDefault()->getAdaptedTemplateConfig( _configId, _replaceFields, !m_isUnitTest );
 }
 
 // ------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void AppConfigManager::startModule()
     SLM_ERROR_IF("Module is not specified, it can not be started.", m_configId.empty());
     if (!m_configId.empty() && !m_isUnitTest)
     {
-        std::shared_ptr< core::runtime::Module > module = registry::AppConfig::getDefault()->getModule(m_configId);
+        std::shared_ptr< core::runtime::Module > module = extension::AppConfig::getDefault()->getModule(m_configId);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
                     module->isStarted());
         if (!module->isStarted())
@@ -339,7 +339,7 @@ data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::
 
 service::IService::sptr AppConfigManager::getNewService(const std::string& uid, const std::string& implType) const
 {
-    service::registry::ServiceFactory::sptr srvFactory = service::registry::ServiceFactory::getDefault();
+    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
 
     service::IService::sptr srv = srvFactory->create(implType);
 
@@ -541,7 +541,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
                 }
 
                 // Get the object parser associated with the object type
-                const auto srvFactory = service::registry::ServiceFactory::getDefault();
+                const auto srvFactory = service::extension::Factory::getDefault();
 
                 std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
                     obj->getClassname(), "::sight::service::IXMLParser");
@@ -566,7 +566,7 @@ void AppConfigManager::createServices(core::runtime::ConfigurationElement::csptr
         if (elem->getName() == "service")
         {
             // Parse the service configuration
-            ServiceConfig srvConfig = service::helper::Config::parseService(elem, this->msgHead());
+            Config srvConfig = service::helper::Config::parseService(elem, this->msgHead());
 
             // Check if we can start the service now or if we must deferred its creation
             bool createService = true;
@@ -638,7 +638,7 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
 
     if (!srvConfig.m_worker.empty())
     {
-        service::registry::ActiveWorkers::sptr activeWorkers = service::registry::ActiveWorkers::getDefault();
+        core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
         core::thread::Worker::sptr worker;
         worker = activeWorkers->getWorker(srvConfig.m_worker);
         if (!worker)
@@ -857,11 +857,11 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
     FW_PROFILE("addObjects");
 
     // Local map used to process services only once
-    std::map< std::string, const ServiceConfig* > servicesMapCfg;
+    std::map< std::string, const Config* > servicesMapCfg;
 
     // Local vector used to store services and keep the declare order (we could use only this one but the map is used
     // to speedup the search
-    std::vector< const ServiceConfig* > servicesCfg;
+    std::vector< const Config* > servicesCfg;
 
     // Are there services that were waiting for this object ?
     auto itDeferredObj = m_deferredObjects.find(_id);

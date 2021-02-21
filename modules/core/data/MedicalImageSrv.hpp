@@ -27,7 +27,7 @@
 #include <service/IController.hpp>
 #include <service/IService.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**
@@ -36,7 +36,7 @@ namespace sight::modules::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::sight::modules::data::MedicalImageSrv">
+       <service type="::sight::module::data::MedicalImageSrv">
            <inout key="image" uid="..."/>
        </service>
    @endcode
@@ -93,4 +93,4 @@ private:
     std::vector< std::string > m_imageCompositeKeys;
 };
 
-} // sight::modules::data
+} // sight::module::data

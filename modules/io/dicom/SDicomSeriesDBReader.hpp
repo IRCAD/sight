@@ -42,7 +42,7 @@ class SeriesDB;
 class Patient;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 /**
@@ -54,7 +54,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::dicom::SDicomSeriesDBReader">
+        <service type="::sight::module::io::dicom::SDicomSeriesDBReader">
             <inout key="data" uid="..." />
             <dicomdirSupport>user_selection</dicomdirSupport>
        </service>
@@ -150,4 +150,4 @@ private:
     DicomDirSupport m_dicomDirSupport;
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

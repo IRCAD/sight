@@ -26,7 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -37,7 +37,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="scaleValues" class="::sight::modules::viz::scene2d::adaptor::SScaleValues" autoConnect="yes">
+   <service uid="scaleValues" class="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes">
         <in key="viewport"  uid="..." />
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
@@ -149,4 +149,4 @@ private:
 };
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

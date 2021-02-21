@@ -29,7 +29,7 @@ set( REQUIREMENTS
     activity_io_dicom
     activity_io_dicomweb
 
-    module_ui_media
+    module_ui_icons
 
     atoms
 

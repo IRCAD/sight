@@ -24,7 +24,7 @@
 
 #include "service/IService.hpp"
 #include "service/macros.hpp"
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/Factory.hpp"
 
 #include <core/tools/fwID.hpp>
 
@@ -40,7 +40,7 @@ namespace sight::service
 service::IService::sptr add( const std::string& _implType, const std::string& _uid)
 {
     service::IService::sptr srv;
-    srv = service::registry::ServiceFactory::getDefault()->create( _implType );
+    srv = service::extension::Factory::getDefault()->create( _implType );
     service::OSR::registerService( srv );
     FW_RAISE_IF("Failed to add " + _implType, !srv );
     if(!_uid.empty())

@@ -44,9 +44,9 @@
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::navigation::optics
+namespace sight::module::navigation::optics
 {
-fwServicesRegisterMacro(::sight::service::ITracker, ::sight::modules::navigation::optics::SArucoTracker)
+fwServicesRegisterMacro(::sight::service::ITracker, ::sight::module::navigation::optics::SArucoTracker)
 //-----------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
@@ -535,4 +535,4 @@ void SArucoTracker::setBoolParameter(bool _val, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::navigation::optics
+} // namespace sight::module::navigation::optics

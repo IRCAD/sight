@@ -26,10 +26,10 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IFrame, ::sight::modules::ui::base::SFrame )
+fwServicesRegisterMacro( ::sight::ui::base::IFrame, ::sight::module::ui::base::SFrame )
 
 SFrame::SFrame() noexcept
 {

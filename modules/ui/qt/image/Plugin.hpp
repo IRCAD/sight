@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 /**
@@ -48,4 +48,4 @@ public:
 
 };
 
-} // namespace sight::modules::ui::qt::image.
+} // namespace sight::module::ui::qt::image.

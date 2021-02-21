@@ -34,10 +34,10 @@
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SColourImageMasking)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SColourImageMasking)
 
 const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
 const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
@@ -381,4 +381,4 @@ void SColourImageMasking::clearMaskTL()
 
 // ------------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

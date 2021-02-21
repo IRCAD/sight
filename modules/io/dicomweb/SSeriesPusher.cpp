@@ -40,7 +40,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 //------------------------------------------------------------------------------
@@ -220,4 +220,4 @@ void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

@@ -39,10 +39,10 @@
 #include <itkCastImageFilter.h>
 #include <itkRescaleIntensityImageFilter.h>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SBitwiseAnd,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::filter::image::SBitwiseAnd,
                         ::sight::data::Image)
 
 static const service::IService::KeyType s_IMAGE_IN = "image";
@@ -184,4 +184,4 @@ void SBitwiseAnd::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

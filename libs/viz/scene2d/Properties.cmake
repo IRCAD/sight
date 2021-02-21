@@ -6,7 +6,7 @@ set( DEPENDENCIES
     core
     data
     ui_base
-    module_ui_qt
+    ui_qt
     viz_base
     service
 )

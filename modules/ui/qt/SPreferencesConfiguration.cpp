@@ -46,7 +46,7 @@
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
@@ -419,4 +419,4 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

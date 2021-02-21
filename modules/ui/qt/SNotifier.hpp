@@ -28,7 +28,7 @@
 
 #include <ui/base/dialog/NotificationDialog.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 /**
  * @brief SNotifier is a general service used to display notification in a centralized way.
@@ -44,7 +44,7 @@ namespace sight::modules::ui::qt
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::qt::SNotifier">
+        <service type="::sight::module::ui::qt::SNotifier">
             <message>Default Message</message>
             <maxNotifications>3</maxNotifications>
             <position>TOP_RIGHT</position>
@@ -168,4 +168,4 @@ private:
 
 };
 
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

@@ -41,7 +41,7 @@
 #include <geometry/data/Matrix4.hpp>
 #include <geometry/data/PointList.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 static const core::com::Slots::SlotKeyType s_PICK_SLOT         = "pick";
@@ -207,4 +207,4 @@ void SManagePointList::clearPoints() const
     }
 }
 
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

@@ -31,7 +31,7 @@
 
 #include <OGRE/OgreTexture.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 /**
  * @brief This adaptor renders a video frame from a 2D-image.
@@ -46,7 +46,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+    <service type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
         <in key="image" uid="..." />
         <in key="tf" uid="..." optional="yes" />
         <config layer="default" />
@@ -199,4 +199,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

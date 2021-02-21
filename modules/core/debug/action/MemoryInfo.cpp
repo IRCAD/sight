@@ -31,12 +31,12 @@
 
 #include <iostream>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::MemoryInfo,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::debug::action::MemoryInfo,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------

@@ -21,14 +21,14 @@
  ***********************************************************************/
 
 /**
- * @brief   The namespace sight::modules::memory contains services to lock objects to prevent dump.
+ * @brief   The namespace sight::module::memory contains services to lock objects to prevent dump.
  */
 #pragma once
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 /**
- * @brief     The namespace sight::modules::memory::manager contains contains tools to manage memory.
+ * @brief     The namespace sight::module::memory::manager contains contains tools to manage memory.
  *            It allows to define the buffer loading mode for the application (lazy and direct) at the start of this
  *            module. Add it in the application's \p \<requirement\> section.
  *

@@ -41,7 +41,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /**
@@ -50,11 +50,11 @@ namespace sight::modules::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::io::dimse::SSliceIndexDicomEditor">
+    <service type="::sight::module::io::dimse::SSliceIndexDicomEditor">
         <in key="pacsConfig" uid="..." />
         <inout key="series" uid="..." />
         <inout key="image" uid="..." />
-        <config delay="500" dicomReader="::sight::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
+        <config delay="500" dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
     </service>
    @endcode
  *
@@ -167,4 +167,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

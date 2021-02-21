@@ -28,9 +28,9 @@
 
 #include <QGraphicsItemGroup>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SSquare)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SSquare)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -195,4 +195,4 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     }
 }
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>TransferFunctionEditor</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -13,7 +13,7 @@
         <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
         <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato" align="center" />
@@ -27,7 +27,7 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="::sight::modules::ui::base::SView">
+        <service uid="sceneView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -41,7 +41,7 @@
             </registry>
         </service>
 
-        <service uid="sceneView_bottom" type="::sight::modules::ui::base::SView">
+        <service uid="sceneView_bottom" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -55,9 +55,9 @@
             </registry>
         </service>
 
-        <service uid="snapshotEditor" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshotEditor" type="::sight::module::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="tfView" type="::sight::modules::ui::base::SView">
+        <service uid="tfView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -126,29 +126,29 @@
             <parameter replace="WID_PARENT" by="tfWidget" />
         </service>
 
-        <service uid="LockImageSrv" type="::sight::modules::memory::LockDumpSrv">
+        <service uid="LockImageSrv" type="::sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${image}" />
         </service>
 
         <!-- Please use SManager -->
-        <service uid="fieldMgr" type="::sight::modules::ui::base::SPushField">
+        <service uid="fieldMgr" type="::sight::module::ui::base::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />
         </service>
 
-        <service uid="tfSelector" type="::sight::modules::ui::qt::image::TransferFunctionEditor" autoConnect="yes">
+        <service uid="tfSelector" type="::sight::module::ui::qt::image::TransferFunctionEditor" autoConnect="yes">
             <inout key="tfPool" uid="TFSet" />
             <out key="tf" uid="${transferFunction}" />
         </service>
 
         <!-- Editors for Negato2 -->
-        <service uid="slider" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="computeHistogram" type="::sight::modules::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeHistogram" type="::sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>

@@ -25,7 +25,7 @@
  */
 #pragma once
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 }

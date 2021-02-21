@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/MultiSelectorDialog.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -32,7 +32,7 @@ namespace dialog
 
 MultiSelectorDialog::MultiSelectorDialog()
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
                                                                                [this]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
@@ -44,7 +44,7 @@ MultiSelectorDialog::MultiSelectorDialog()
 
 void MultiSelectorDialog::setTitle(std::string title)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setTitle(title);
@@ -57,7 +57,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 {
     typedef IMultiSelectorDialog::Selections R;
     std::function< R() > func = std::bind( &IMultiSelectorDialog::show, m_implementation);
-    std::shared_future< R > f = service::registry::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
+    std::shared_future< R > f = core::thread::ActiveWorkers::getDefaultWorker()->postTask< R  >(func);
 
     f.wait();
     return f.get();
@@ -67,7 +67,7 @@ IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
 void MultiSelectorDialog::setSelections(Selections _selections)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setSelections( _selections );
@@ -78,7 +78,7 @@ void MultiSelectorDialog::setSelections(Selections _selections)
 
 void MultiSelectorDialog::setMessage(const std::string& msg)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&]
             {
                 m_implementation->setMessage( msg );

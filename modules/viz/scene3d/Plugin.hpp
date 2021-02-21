@@ -28,7 +28,7 @@
 
 #include <OgreLog.h>
 
-namespace sight::modules::viz::scene3d
+namespace sight::module::viz::scene3d
 {
 
 /**
@@ -82,4 +82,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d.
+} // namespace sight::module::viz::scene3d.

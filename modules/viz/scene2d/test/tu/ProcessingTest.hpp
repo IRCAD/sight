@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace ut
 {
@@ -46,4 +46,4 @@ public:
 };
 
 } // namespace ut
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

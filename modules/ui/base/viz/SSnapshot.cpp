@@ -34,12 +34,12 @@
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
-namespace sight::modules::ui::base::viz
+namespace sight::module::ui::base::viz
 {
 
 const core::com::Signals::SignalKeyType SSnapshot::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::viz::SSnapshot,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::viz::SSnapshot,
                          ::sight::data::Object )
 
 SSnapshot::SSnapshot() noexcept

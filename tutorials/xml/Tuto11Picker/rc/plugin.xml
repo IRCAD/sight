@@ -1,11 +1,11 @@
 <plugin id="Tuto11Picker" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>Tuto11Picker_AppCfg</id>
         <config>
 
@@ -17,7 +17,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto11Picker</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
@@ -59,7 +59,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::sight::modules::ui::base::SView" >
+            <service uid="containerView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -73,7 +73,7 @@
                 </registry>
             </service>
 
-            <service uid="sceneView" type="::sight::modules::ui::base::SView" >
+            <service uid="sceneView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="::sight::modules::ui::base::SView" >
+            <service uid="editorsView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -105,15 +105,15 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openImageAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openMeshAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -130,78 +130,78 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="pickerInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::SVoxelPicker" >
+            <service uid="pickerInteractorAdp" type="::sight::module::viz::scene3d::adaptor::SVoxelPicker" >
                 <in key="image" uid="image" />
                 <config layer="default" mode="3D" priority="1" />
             </service>
 
-            <service uid="meshAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="meshAdp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
-            <service uid="negatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="negatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="snapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
+            <service uid="snapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot" />
                 <config layer="default" flip="true" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+            <service uid="snapshotSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="showNegatoSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+            <service uid="showNegatoSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
-                    <icon>module_ui_flaticon-0.1/icons/RedCross.svg</icon>
-                    <icon2>module_ui_flaticon-0.1/icons/Layers.svg</icon2>
+                    <icon>sight_module_ui_flaticons-0.1/RedCross.svg</icon>
+                    <icon2>module_ui_flaticons-0.1/Layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
                 </config>
             </service>
 
-            <service uid="pointEditorSrv" type="::sight::modules::ui::qt::viz::PointEditor" />
+            <service uid="pointEditorSrv" type="::sight::module::ui::qt::viz::PointEditor" />
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="imageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="imageReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImageConverterSrv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="imageWriterSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot" />
                 <type mode="writer" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::modules::io::atoms::SWriter" />
+                <addSelection service="::sight::module::io::atoms::SWriter" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

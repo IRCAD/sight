@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>toolCalibration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,7 +14,7 @@
 
         <!-- *************************** Begin Layouts *************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -31,7 +31,7 @@
             </registry>
         </service>
 
-        <service uid="footer" type="::sight::modules::ui::base::SView">
+        <service uid="footer" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -43,15 +43,15 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
+        <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Start Tracker client" icon="module_ui_media-0.1/icons/Network-Receiving.svg" />
-                    <menuItem name="Stop Tracker client" icon="module_ui_media-0.1/icons/Network-Stop-Receiving.svg" />
-                    <menuItem name="Configure Tracker client" icon="module_ui_media-0.1/icons/Settings.svg" />
-                    <menuItem name="Add point" icon="module_ui_media-0.1/icons/Import.svg" />
-                    <menuItem name="Compute tool calibration" icon="module_ui_media-0.1/icons/CheckButton.svg" />
-                    <menuItem name="Save calibration matrix" icon="module_ui_media-0.1/icons/Export.svg" />
+                    <menuItem name="Start Tracker client" icon="sight_module_ui_icons-0.1/Network-Receiving.svg" />
+                    <menuItem name="Stop Tracker client" icon="sight_module_ui_icons-0.1/Network-Stop-Receiving.svg" />
+                    <menuItem name="Configure Tracker client" icon="sight_module_ui_icons-0.1/Settings.svg" />
+                    <menuItem name="Add point" icon="sight_module_ui_icons-0.1/Import.svg" />
+                    <menuItem name="Compute tool calibration" icon="sight_module_ui_icons-0.1/CheckButton.svg" />
+                    <menuItem name="Save calibration matrix" icon="sight_module_ui_icons-0.1/Export.svg" />
                 </layout>
             </gui>
             <registry>
@@ -68,30 +68,30 @@
 
         <!-- *************************** Begin Actions *************************** -->
 
-        <service uid="actionStartOpenIGTLinkClient" type="::sight::modules::ui::base::com::SStarter">
+        <service uid="actionStartOpenIGTLinkClient" type="::sight::module::ui::base::com::SStarter">
             <state active="true" visible="true" />
             <start uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionStopOpenIGTLinkClient" type="::sight::modules::ui::base::com::SStarter">
+        <service uid="actionStopOpenIGTLinkClient" type="::sight::module::ui::base::com::SStarter">
             <state active="true" visible="false" />
             <stop uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionAddPoint" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="actionAddPoint" type="::sight::module::ui::base::com::SSlotCaller" >
            <slots>
                <slot>markerToPoint/addPoint</slot>
                <slot>manageVector/addCopy</slot>
            </slots>
         </service>
 
-        <service uid="actionComputeCalibration" type="::sight::modules::ui::base::com::STimestampSlotCaller" >
+        <service uid="actionComputeCalibration" type="::sight::module::ui::base::com::STimestampSlotCaller" >
            <slots>
                <slot>toolCalibration/computeRegistration</slot>
            </slots>
         </service>
 
-        <service uid="actionExportMatrix" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="actionExportMatrix" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationMatrixWriter/update</slot>
             </slots>
@@ -101,12 +101,12 @@
 
         <!-- *************************** Begin Services *************************** -->
 
-        <service uid="markerToPoint" type="::sight::modules::geometry::vision::SMarkerToPoint">
+        <service uid="markerToPoint" type="::sight::module::geometry::vision::SMarkerToPoint">
             <in key="matrixTL" uid="matrixTL" />
             <inout key="pointList" uid="pointlist" />
         </service>
 
-        <service uid="trackerTLMatrixListener" type="::sight::modules::io::igtl::STDataListener">
+        <service uid="trackerTLMatrixListener" type="::sight::module::io::igtl::STDataListener">
             <inout key="timeline" uid="matrixTL" />
             <server>%TRACKER_HOSTNAME%:%TRACKER_PORT%</server>
             <deviceName>%TRACKER_NAME%</deviceName>
@@ -115,21 +115,21 @@
             </TData>
         </service>
 
-        <service uid="trackerTLMatrixSynchronizer" type="::sight::modules::sync::SMatrixTLSynchronizer">
+        <service uid="trackerTLMatrixSynchronizer" type="::sight::module::sync::SMatrixTLSynchronizer">
             <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
             <inout group="matrices">
                 <key uid="trackerMatrix0" />
             </inout>
         </service>
 
-        <service uid="status" type="::sight::modules::ui::base::editor::SStatus" >
+        <service uid="status" type="::sight::module::ui::base::editor::SStatus" >
             <form>circle</form>
             <labelStatus>Sensor status</labelStatus>
             <green>Sensor is tracked</green>
             <red>Sensor is not tracked</red>
         </service>
 
-        <service uid="configureClient" type="::sight::modules::ui::qt::SPreferencesConfiguration">
+        <service uid="configureClient" type="::sight::module::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Tracker hostname</name>
@@ -150,23 +150,23 @@
             </preference>
         </service>
 
-        <service uid="toolCalibration" type="::sight::modules::navigation::calibration::SToolCalibration" >
+        <service uid="toolCalibration" type="::sight::module::navigation::calibration::SToolCalibration" >
             <out key="matrixCenter" uid="toolMatrix" />
             <out key="matrixCalibration" uid="matrixCalibration" />
             <in key="matricesVector" uid="matricesVector" />
         </service>
 
 
-        <service uid="manageVector" type="::sight::modules::data::SManage">
+        <service uid="manageVector" type="::sight::module::data::SManage">
            <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matricesVector" />
         </service>
 
-        <service uid="calibrationMatrixWriter" type="::sight::modules::ui::base::io::SSelector" >
+        <service uid="calibrationMatrixWriter" type="::sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::matrix::Matrix4WriterService" />
+            <addSelection service="::sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
         <!-- *************************** End Services *************************** -->

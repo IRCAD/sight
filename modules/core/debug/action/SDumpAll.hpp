@@ -26,7 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 namespace action
 {
@@ -62,4 +62,4 @@ protected:
 };
 
 } // namespace action
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

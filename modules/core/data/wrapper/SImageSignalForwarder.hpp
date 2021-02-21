@@ -30,7 +30,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 namespace wrapper
@@ -44,7 +44,7 @@ namespace wrapper
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::data::wrapper::SImageSignalForwarder">
+   <service type="::sight::module::data::wrapper::SImageSignalForwarder">
        <in key="target" uid="..." />
        <in key="source" uid="..." />
        <forward>modified</forward>
@@ -57,12 +57,12 @@ namespace wrapper
  * @subsection Configuration Configuration
  * - \b forward : key of the image signal to forward
  */
-class MODULE_DATA_CLASS_API SImageSignalForwarder : public modules::data::IWrapperSrv
+class MODULE_DATA_CLASS_API SImageSignalForwarder : public module::data::IWrapperSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SImageSignalForwarder, ::sight::modules::data::IWrapperSrv)
+    fwCoreServiceMacro(SImageSignalForwarder, ::sight::module::data::IWrapperSrv)
 
     MODULE_DATA_API SImageSignalForwarder() noexcept;
 
@@ -133,4 +133,4 @@ private:
 };
 
 } // wrapper
-} // sight::modules::data
+} // sight::module::data

@@ -31,7 +31,7 @@
 #include <data/SeriesDB.hpp>
 
 #include <service/op/Add.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
@@ -43,9 +43,9 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::io::itk::ut::IoItkTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::io::itk::ut::IoItkTest );
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 namespace ut
 {
@@ -58,7 +58,7 @@ void IoItkTest::setUp()
 {
     // Set up context before running a test.
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    service::registry::ActiveWorkers::setDefaultWorker(worker);
+    core::thread::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ void IoItkTest::setUp()
 void IoItkTest::tearDown()
 {
     // Clean up after the test run.
-    service::registry::ActiveWorkers::getDefault()->clearRegistry();
+    core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void IoItkTest::testImageSeriesWriterJPG()
 
     // Create and execute service
     executeService(imageSeries,
-                   "::sight::modules::io::itk::SJpgImageSeriesWriter",
+                   "::sight::module::io::itk::SJpgImageSeriesWriter",
                    srvCfg,
                    service::IService::AccessType::INPUT);
 }
@@ -138,7 +138,7 @@ void IoItkTest::testImageWriterJPG()
     // Create and execute service
     executeService(
         image,
-        "::sight::modules::io::itk::JpgImageWriterService",
+        "::sight::module::io::itk::JpgImageWriterService",
         srvCfg,
         service::IService::AccessType::INPUT);
 }
@@ -174,7 +174,7 @@ void IoItkTest::testSaveLoadInr()
     // Create and execute service
     executeService(
         image,
-        "::sight::modules::io::itk::InrImageWriterService",
+        "::sight::module::io::itk::InrImageWriterService",
         srvCfg,
         service::IService::AccessType::INPUT);
 
@@ -182,7 +182,7 @@ void IoItkTest::testSaveLoadInr()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "::sight::modules::io::itk::InrImageReaderService",
+        "::sight::module::io::itk::InrImageReaderService",
         srvCfg,
         service::IService::AccessType::INOUT);
 
@@ -225,7 +225,7 @@ void IoItkTest::ImageSeriesInrTest()
     // Create and execute service
     executeService(
         imageSeries,
-        "::sight::modules::io::itk::SImageSeriesWriter",
+        "::sight::module::io::itk::SImageSeriesWriter",
         srvCfg,
         service::IService::AccessType::INPUT);
 
@@ -233,7 +233,7 @@ void IoItkTest::ImageSeriesInrTest()
     data::Image::sptr image2 = data::Image::New();
     executeService(
         image2,
-        "::sight::modules::io::itk::InrImageReaderService",
+        "::sight::module::io::itk::InrImageReaderService",
         srvCfg,
         service::IService::AccessType::INOUT);
 
@@ -280,7 +280,7 @@ void IoItkTest::SeriesDBInrTest()
     data::SeriesDB::sptr sdb = data::SeriesDB::New();
     executeService(
         sdb,
-        "::sight::modules::io::itk::SInrSeriesDBReader",
+        "::sight::module::io::itk::SInrSeriesDBReader",
         srvCfg,
         service::IService::AccessType::INOUT);
 
@@ -317,4 +317,4 @@ void IoItkTest::SeriesDBInrTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::modules::io::itk
+} //namespace sight::module::io::itk

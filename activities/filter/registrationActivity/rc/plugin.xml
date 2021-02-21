@@ -1,10 +1,10 @@
 <plugin id="registrationActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
-    <requirement id="module_ui_qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
     <requirement id="visuVTKQt" />
-    <requirement id="module_viz_scene2d" />
-    <requirement id="module_activity" />
+    <requirement id="sight::module::viz::scene2d" />
+    <requirement id="sight::module::activity" />
 
     <xi:include href="configurations/BlendEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/SliceBlendView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -12,11 +12,11 @@
     <xi:include href="configurations/ManualRegistrationView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/Registration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>registrationActivity</id>
         <title>Registration</title>
         <desc>Activity to register two images.</desc>
-        <icon>module_ui_media-0.1/icons/icon-blend.png</icon>
+        <icon>sight_module_ui_icons-0.1/icon-blend.png</icon>
         <requirements>
             <requirement name="referenceSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" >
                 <desc>The object that will be transformed in order to be superimposed to the Target.</desc>

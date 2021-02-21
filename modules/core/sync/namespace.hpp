@@ -23,9 +23,9 @@
 #pragma once
 
 /**
- * @brief   The namespace sight::modules::sync contains services that control the execution flow with signals and slots.
+ * @brief   The namespace sight::module::sync contains services that control the execution flow with signals and slots.
  */
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
-} // namespace sight::modules::sync
+} // namespace sight::module::sync

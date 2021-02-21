@@ -24,13 +24,13 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
 //-----------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::viz::qt3d::adaptor::Plugin");
+    "::sight::module::viz::qt3d::adaptor::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -50,4 +50,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::viz::qt3d::adaptor.
+} // namespace sight::module::viz::qt3d::adaptor.

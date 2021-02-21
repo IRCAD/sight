@@ -26,7 +26,7 @@
 
 #include <QOpenGLFunctions_4_1_Core>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 std::weak_ptr<QOpenGLContext> OpenGLContext::s_globalOgreOpenGLContext;

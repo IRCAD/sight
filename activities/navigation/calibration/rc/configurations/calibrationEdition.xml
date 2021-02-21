@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>calibrationEdition</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -18,7 +18,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::LineLayoutManager">
@@ -37,17 +37,17 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar">
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Export camera series" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="Export camera series" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
                     <separator/>
-                    <menuItem name="Export xml/yaml" icon="module_ui_flaticon-0.1/icons/BlueFile.svg" />
+                    <menuItem name="Export xml/yaml" icon="sight_module_ui_flaticons-0.1/BlueFile.svg" />
                     <separator/>
-                    <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                    <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                    <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                    <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                    <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -60,7 +60,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::sight::modules::ui::base::SView">
+        <service uid="camerasView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -74,7 +74,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::sight::modules::ui::base::SView">
+        <service uid="cameraInfoView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -92,43 +92,43 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>CalibrationXmlWriter/update</slot>
             </slots>
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
+        <service uid="exportAct" type="::sight::module::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="newCameraSeries" />
         </service>
 
-        <service uid="CalibrationXmlWriter" type="::sight::modules::io::vision::SOpenCVWriter">
+        <service uid="CalibrationXmlWriter" type="::sight::module::io::vision::SOpenCVWriter">
             <in key="data" uid="newCameraSeries"/>
         </service>
 
-        <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideoAct</slot>
                 <slot>videoGrabber2Srv/loopVideoAct</slot>
@@ -163,14 +163,14 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="videoSliderSrv" type="::sight::modules::ui::qt::video::SSlider" />
+        <service uid="videoSliderSrv" type="::sight::module::ui::qt::video::SSlider" />
 
-        <service uid="copyCameraSeriesSrv" type="::sight::modules::data::SCopy">
+        <service uid="copyCameraSeriesSrv" type="::sight::module::data::SCopy">
             <in key="source" uid="${cameraSeries}" />
             <out key="target" uid="newCameraSeries" />
         </service>
 
-        <service uid="extractCamerasSrv" type="::sight::modules::data::SExtractObj">
+        <service uid="extractCamerasSrv" type="::sight::module::data::SExtractObj">
             <inout key="source" uid="newCameraSeries">
                 <extract from="@cameras.0" />
                 <extract from="@cameras.1" />
@@ -181,17 +181,17 @@
             </out>
         </service>
 
-        <service uid="cameraSeriesInfoSrv" type="::sight::modules::ui::qt::calibration::SCameraSeriesEditor">
+        <service uid="cameraSeriesInfoSrv" type="::sight::module::ui::qt::calibration::SCameraSeriesEditor">
             <in key="cameraSeries" uid="${cameraSeries}" autoConnect="yes" />
             <in key="notUsed" uid="camera1" />
             <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>
 
-        <service uid="cameraInfo1Srv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo1Srv" type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="camera0" />
         </service>
 
-        <service uid="cameraInfo2Srv" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo2Srv" type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="camera1" />
         </service>
 

@@ -26,7 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
@@ -41,7 +41,7 @@ namespace com
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::base::com::SSignal" />
+        <service type="::sight::module::ui::base::com::SSignal" />
    @endcode
  *
  * See also sight::ui::base::IAction::initialize for more configuration parameters.
@@ -93,4 +93,4 @@ protected:
 };
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

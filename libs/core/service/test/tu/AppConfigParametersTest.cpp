@@ -26,8 +26,8 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Runtime.hpp>
 
-#include <service/registry/AppConfig.hpp>
-#include <service/registry/AppConfigParameters.hpp>
+#include <service/extension/AppConfig.hpp>
+#include <service/extension/AppConfigParameters.hpp>
 
 #include <filesystem>
 
@@ -56,8 +56,8 @@ void AppConfigParametersTest::setUp()
     core::runtime::loadModule("module_service");
     core::runtime::loadModule("AppConfigParametersTest");
 
-    service::registry::AppConfigParameters::sptr appConfigParam;
-    appConfigParam = service::registry::AppConfigParameters::getDefault();
+    service::extension::AppConfigParameters::sptr appConfigParam;
+    appConfigParam = service::extension::AppConfigParameters::getDefault();
     appConfigParam->parseBundleInformation();
 }
 
@@ -66,8 +66,8 @@ void AppConfigParametersTest::setUp()
 void AppConfigParametersTest::tearDown()
 {
     // Clean up after the test run.
-    service::registry::AppConfigParameters::sptr appConfigParameters;
-    appConfigParameters = service::registry::AppConfigParameters::getDefault();
+    service::extension::AppConfigParameters::sptr appConfigParameters;
+    appConfigParameters = service::extension::AppConfigParameters::getDefault();
     appConfigParameters->clearRegistry();
 }
 
@@ -75,14 +75,14 @@ void AppConfigParametersTest::tearDown()
 
 void AppConfigParametersTest::appConfigParametersTest()
 {
-    service::registry::AppConfigParameters::sptr appConfigParam;
-    appConfigParam = service::registry::AppConfigParameters::getDefault();
+    service::extension::AppConfigParameters::sptr appConfigParam;
+    appConfigParam = service::extension::AppConfigParameters::getDefault();
 
-    service::registry::FieldAdaptorType parameters = appConfigParam->getParameters("id1");
+    service::FieldAdaptorType parameters = appConfigParam->getParameters("id1");
     CPPUNIT_ASSERT(!parameters.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), parameters["param1"]);
 
-    service::registry::FieldAdaptorType parameters2 = appConfigParam->getParameters("id2");
+    service::FieldAdaptorType parameters2 = appConfigParam->getParameters("id2");
     CPPUNIT_ASSERT(!parameters2.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value3"), parameters2["param3"]);
 }

@@ -44,10 +44,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::dicom::SFilterSelectionEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::dicom::SFilterSelectionEditor,
                          ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
@@ -109,10 +109,10 @@ void SFilterSelectionEditor::starting()
     this->fillAvailableFilters();
     topLayout->addWidget(m_availableFilterListWidget);
 
-    auto path = core::runtime::getModuleResourcePath("module_ui_media");
+    auto path = core::runtime::getModuleResourcePath("sight::module::ui::icons");
 
     // Add filter button
-    m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Plus.svg").string())), "Add");
+    m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "Plus.svg").string())), "Add");
     m_addFilterButton->setSizePolicy(policy);
     topLayout->addWidget(m_addFilterButton);
 
@@ -150,26 +150,26 @@ void SFilterSelectionEditor::starting()
     buttonLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Apply filters button
-    m_applyFiltersButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Apply.svg").string())), "Apply");
+    m_applyFiltersButton = new QPushButton(QIcon(QString::fromStdString((path / "Apply.svg").string())), "Apply");
     m_applyFiltersButton->setSizePolicy(policy);
     buttonLayout->addWidget(m_applyFiltersButton);
 
     // Configure filter button
-    m_configureFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Settings.svg").string())),
+    m_configureFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "Settings.svg").string())),
                                               "Configure");
     m_configureFilterButton->setSizePolicy(policy);
     m_configureFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_configureFilterButton);
 
     // Split filter button
-    m_splitFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "icons/Split.svg").string())), "Split");
+    m_splitFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "Split.svg").string())), "Split");
     m_splitFilterButton->setSizePolicy(policy);
     m_splitFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_splitFilterButton);
 
     // Remove filter button
     m_removeFilterButton =
-        new QPushButton(QIcon(QString::fromStdString((path / "icons/Minus.svg").string())), "Remove");
+        new QPushButton(QIcon(QString::fromStdString((path / "Minus.svg").string())), "Remove");
     m_removeFilterButton->setSizePolicy(policy);
     m_removeFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_removeFilterButton);
@@ -572,13 +572,13 @@ bool SFilterSelectionEditor::sortFilters(const filter::dicom::IFilter::sptr& a,
 
 QIcon SFilterSelectionEditor::getFilterIcon(filter::dicom::IFilter::sptr filter)
 {
-    const std::filesystem::path path = core::runtime::getModuleResourcePath(std::string("module_ui_media"));
+    const std::filesystem::path path = core::runtime::getModuleResourcePath(std::string("sight::module::ui::icons"));
     QIcon icons[]                    = {
-        QIcon(QString::fromStdString((path / "icons/Modifier.svg").string())),
-        QIcon(QString::fromStdString((path / "icons/Sorter.svg").string())),
-        QIcon(QString::fromStdString((path / "icons/Splitter.svg").string())),
-        QIcon(QString::fromStdString((path / "icons/Composite.svg").string())),
-        QIcon(QString::fromStdString((path / "icons/Custom.svg").string()))
+        QIcon(QString::fromStdString((path / "Modifier.svg").string())),
+        QIcon(QString::fromStdString((path / "Sorter.svg").string())),
+        QIcon(QString::fromStdString((path / "Splitter.svg").string())),
+        QIcon(QString::fromStdString((path / "Composite.svg").string())),
+        QIcon(QString::fromStdString((path / "Custom.svg").string()))
     };
     return icons[filter->getFilterType()];
 }
@@ -598,4 +598,4 @@ std::string SFilterSelectionEditor::getFilterDescription(filter::dicom::IFilter:
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

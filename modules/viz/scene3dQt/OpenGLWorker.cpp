@@ -33,7 +33,7 @@
 #include <memory>
 #include <mutex>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 // Wraps around a function to set the OpenGL context before calling it.
@@ -119,4 +119,4 @@ void OpenGLWorker::pushTask(sight::viz::scene3d::IGraphicsWorker::TaskType _task
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3dQt
+} // namespace sight::module::viz::scene3dQt

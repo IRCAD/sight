@@ -27,15 +27,15 @@
 #include <service/AppConfigManager.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::io::dimse::ut::IoPacsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::io::dimse::ut::IoPacsTest );
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 namespace ut
 {
@@ -63,7 +63,7 @@ void IoPacsTest::pacsConfigurationInitializer()
         sight::io::dimse::data::PacsConfiguration::New();
 
     // Create service
-    service::IService::sptr srv = service::add( "::sight::modules::io::dimse::SPacsConfigurationInitializer" );
+    service::IService::sptr srv = service::add( "::sight::module::io::dimse::SPacsConfigurationInitializer" );
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
@@ -103,4 +103,4 @@ void IoPacsTest::pacsConfigurationInitializer()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::modules::io::dimse
+} //namespace sight::module::io::dimse

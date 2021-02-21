@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/registry/Activity.hpp>
-#include <activity/registry/ActivityMsg.hpp>
+#include <activity/extension/Activity.hpp>
+#include <activity/ActivityMsg.hpp>
 
 #include <QButtonGroup>
 #include <QObject>
@@ -33,7 +33,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -44,7 +44,7 @@ namespace activity
  * This editor proposes all the available activities according to the given configuration.
  * It sends a signal with the activity identifier when a button is pushed.
  *
- * It should work with the modules::ui::qt::editor::SWizard that creates or updates the activitySeries.
+ * It should work with the module::ui::qt::editor::SWizard that creates or updates the activitySeries.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
@@ -55,7 +55,7 @@ namespace activity
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="editor_newActivity" type="::sight::modules::ui::qt::activity::SSelector" >
+   <service uid="editor_newActivity" type="::sight::module::ui::qt::activity::SSelector" >
        <filter>
            <mode>include</mode>
            <id>2DVisualizationActivity</id>
@@ -124,7 +124,7 @@ private:
      */
     void launchActivity(data::ActivitySeries::sptr activitySeries);
 
-    typedef sight::activity::registry::Activity::ActivitiesType ActivityInfoContainer;
+    typedef sight::activity::extension::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
@@ -146,4 +146,4 @@ private:
 };
 
 } // namespace activity
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

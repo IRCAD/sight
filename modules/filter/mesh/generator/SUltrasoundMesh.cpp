@@ -33,7 +33,7 @@
 #include <geometry/data/Mesh.hpp>
 #include <geometry/data/VectorFunctions.hpp>
 
-namespace sight::modules::filter::mesh
+namespace sight::module::filter::mesh
 {
 namespace generator
 {
@@ -58,7 +58,7 @@ static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
 static const service::IService::KeyType s_MESH_INOUT = "mesh";
 
-fwServicesRegisterMacro(service::ISimulator, ::sight::modules::filter::mesh::generator::SUltrasoundMesh)
+fwServicesRegisterMacro(service::ISimulator, ::sight::module::filter::mesh::generator::SUltrasoundMesh)
 
 // -----------------------------------------------------------------------------
 
@@ -322,4 +322,4 @@ void SUltrasoundMesh::setBoolParameter(bool _val, std::string _key)
 
 // -----------------------------------------------------------------------------
 } // namespace generator
-} // namespace sight::modules::filter::mesh
+} // namespace sight::module::filter::mesh

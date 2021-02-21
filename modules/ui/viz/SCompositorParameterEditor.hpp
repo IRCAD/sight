@@ -32,7 +32,7 @@
 #include <ui/base/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::ui::viz::SCompositorParameterEditor" >
+       <service uid="..." type="::sight::module::ui::viz::SCompositorParameterEditor" >
 
        </service>
        @endcode

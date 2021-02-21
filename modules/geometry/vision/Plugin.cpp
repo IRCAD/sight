@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::geometry::vision::Plugin");
+    "::sight::module::geometry::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

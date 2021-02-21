@@ -30,7 +30,7 @@
 
 #include <filter/vision/Masker.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::filter::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="..." type="::sight::modules::filter::vision::SColourImageMasking" >
+        <service uid="..." type="::sight::module::filter::vision::SColourImageMasking" >
             <in key="videoTL" uid="..." autoConnect="yes" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
@@ -163,4 +163,4 @@ private:
     int m_foregroundComponents;
 };
 
-} // namespace sight::modules::filter::vision.
+} // namespace sight::module::filter::vision.

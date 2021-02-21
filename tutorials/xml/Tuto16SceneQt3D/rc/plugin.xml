@@ -2,11 +2,11 @@
 
 <plugin id="Tuto16SceneQt3D" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_viz_qt3d" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::qt3d" />
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>Tuto16SceneQt3D_jsonReader_SrvCfg</id>
         <desc>JSON</desc>
         <config>
@@ -15,7 +15,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>Tuto16SceneQt3D_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -23,7 +23,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>Tuto16SceneQt3D_AppCfg</id>
         <config>
 
@@ -34,7 +34,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainView" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto16SceneQt3D</name>
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -60,7 +60,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -85,26 +85,26 @@
                 </scene>
             </service>
 
-            <service uid="materialAdp" type="::sight::modules::viz::qt3d::adaptor::SMaterial" autoConnect="yes">
+            <service uid="materialAdp" type="::sight::module::viz::qt3d::adaptor::SMaterial" autoConnect="yes">
                 <inout key="material" uid="material" />
                 <config materialName="mat"/>
             </service>
 
-            <service uid="meshAdp" type="::sight::modules::viz::qt3d::adaptor::SMesh" autoConnect="yes">
+            <service uid="meshAdp" type="::sight::module::viz::qt3d::adaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="mesh" />
                 <config autoresetcamera="true" visible="true"  materialName="mat"/>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="meshReaderAct" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="meshReaderAct" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
-                <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::sight::modules::io::atoms::SReader" />
-                <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="::sight::modules::io::vtk::SMeshReader" />
+                <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::sight::module::io::atoms::SReader" />
+                <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="::sight::module::io::vtk::SMeshReader" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
             <!-- ******************************* Start services ***************************************** -->
 

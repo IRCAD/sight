@@ -55,10 +55,10 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SImageSeriesReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::vtk::SImageSeriesReader,
                          ::sight::data::ImageSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";

@@ -28,14 +28,14 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::com::SSignal )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::com::SSignal )
 
 static const core::com::Signals::SignalKeyType s_TRIGGERED_SIG = "triggered";
 static const core::com::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";
@@ -102,4 +102,4 @@ void SSignal::updating()
 //-----------------------------------------------------------------------------
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

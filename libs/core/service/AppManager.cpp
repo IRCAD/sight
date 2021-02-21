@@ -25,7 +25,7 @@
 #include <core/com/Slots.hxx>
 
 #include <service/op/Add.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 #include <service/registry/Proxy.hpp>
 
@@ -71,7 +71,7 @@ void AppManager::create()
     m_addObjectConnection    = service::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECT_SLOT) );
     m_removeObjectConnection = service::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECT_SLOT) );
 
-    auto defaultWorker = service::registry::ActiveWorkers::getDefaultWorker();
+    auto defaultWorker = core::thread::ActiveWorkers::getDefaultWorker();
     core::com::HasSlots::m_slots.setWorker( defaultWorker );
 }
 
@@ -208,7 +208,7 @@ void AppManager::AppManager::addService(const service::IService::sptr& srv, bool
     std::unique_lock<std::mutex> lock(m_serviceMutex);
 
     service::OSR::registerService(srv);
-    auto worker = service::registry::ActiveWorkers::getDefaultWorker();
+    auto worker = core::thread::ActiveWorkers::getDefaultWorker();
     srv->setWorker(worker);
 
     this->internalAddService(srv, autoStart, autoUpdate);

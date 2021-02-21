@@ -15,13 +15,13 @@
 -->
 <plugin id="Tuto17SimpleAR" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>Tuto17SimpleAR_AppCfg</id>
         <config>
 
@@ -49,7 +49,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- declaration of the views, menu and toolbar -->
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto17SimpleAR</name>
@@ -63,26 +63,26 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="sight_module_ui_flaticons-0.1/YellowCamera.svg" />
                         <editor/>
                         <separator/>
-                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Enable video image undistortion" icon="module_ui_flaticon-0.1/icons/YellowUndistortion.svg" />
-                        <menuItem name="Disable video image undistortion" icon="module_ui_flaticon-0.1/icons/YellowDistortion.svg" />
-                        <menuItem name="Enable 3D rendering distortion" icon="module_ui_flaticon-0.1/icons/YellowDistortion.svg" />
-                        <menuItem name="Disable 3D rendering distortion" icon="module_ui_flaticon-0.1/icons/YellowUndistortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="sight_module_ui_flaticons-0.1/YellowUndistortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="sight_module_ui_flaticons-0.1/YellowDistortion.svg" />
+                        <menuItem name="Enable 3D rendering distortion" icon="sight_module_ui_flaticons-0.1/YellowDistortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="sight_module_ui_flaticons-0.1/YellowUndistortion.svg" />
                         <separator/>
-                        <menuItem name="Show Mesh on tag" icon="module_ui_flaticon-0.1/icons/Mask.svg" style="check" />
+                        <menuItem name="Show Mesh on tag" icon="sight_module_ui_flaticons-0.1/Mask.svg" style="check" />
                         <separator/>
-                        <menuItem name="Settings" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" style="check" />
+                        <menuItem name="Settings" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -102,7 +102,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::modules::ui::base::SView" >
+            <service uid="cameraView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -116,7 +116,7 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="::sight::modules::ui::base::SView" >
+            <service uid="videoView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -130,7 +130,7 @@
                 </registry>
             </service>
 
-            <service uid="parametersView" type="::sight::modules::ui::base::SView" >
+            <service uid="parametersView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -148,20 +148,20 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="showParametersAct" type="::sight::modules::ui::base::SModifyLayout" >
+            <service uid="showParametersAct" type="::sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loadCalibAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -169,7 +169,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -179,7 +179,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -189,7 +189,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -203,14 +203,14 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state executable="false" />
             </service>
 
-            <service uid="startUndistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startUndistortAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>undistortAdp/show</slot>
                     <slot>startDistortAct/setInexecutable</slot>
@@ -219,7 +219,7 @@
                 </slots>
             </service>
 
-            <service uid="stopUndistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopUndistortAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>undistortAdp/hide</slot>
@@ -229,7 +229,7 @@
                 </slots>
             </service>
 
-            <service uid="startDistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startDistortAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>distortAdp/show</slot>
                     <slot>startUndistortAct/setInexecutable</slot>
@@ -238,7 +238,7 @@
                 </slots>
             </service>
 
-            <service uid="stopDistortAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopDistortAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>distortAdp/hide</slot>
@@ -248,7 +248,7 @@
                 </slots>
             </service>
 
-            <service uid="showMeshAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showMeshAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>cubeAdp/updateVisibility</slot>
                 </slots>
@@ -277,59 +277,59 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="sourceFrame" />
                 <config layer="video" />
             </service>
 
-            <service uid="undistortAdp" type="::sight::modules::viz::scene3d::adaptor::SCompositorParameter" autoConnect="yes" >
+            <service uid="undistortAdp" type="::sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="yes" >
                 <inout key="parameter" uid="undistortMap" />
                 <config layer="video" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
 
-            <service uid="axisAdp" type="::sight::modules::viz::scene3d::adaptor::SAxis" >
+            <service uid="axisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis" >
                 <config layer="default" length="30" origin="true" label="false" />
             </service>
 
             <!-- Camera for the 3D layer -->
-            <service uid="cameraAdp" type="::sight::modules::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="cameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="cameraToMarker" />
                 <in key="calibration" uid="camera" />
                 <config layer="default" />
             </service>
 
             <!-- Cube displayed on top of the marker plane -->
-            <service uid="cubeAdp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="cubeAdp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="cubeMesh" />
                 <config layer="default" autoresetcamera="no" />
             </service>
 
-            <service uid="distortAdp" type="::sight::modules::viz::scene3d::adaptor::SCompositorParameter" autoConnect="yes" >
+            <service uid="distortAdp" type="::sight::module::viz::scene3d::adaptor::SCompositorParameter" autoConnect="yes" >
                 <inout key="parameter" uid="distortMap" />
                 <config layer="default" compositorName="Remap" parameter="u_map" shaderType="fragment" visible="false" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="loadMeshSrv" type="::sight::modules::io::vtk::SMeshReader" >
+            <service uid="loadMeshSrv" type="::sight::module::io::vtk::SMeshReader" >
                 <inout key="data" uid="cubeMesh" />
                 <resource>Tuto17SimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
             </service>
 
             <!-- hide axis adaptor until a marker is found -->
-            <service uid="hideAxisSrv" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="hideAxisSrv" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>axisAdp/updateVisibility</slot>
                 </slots>
             </service>
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="::sight::modules::io::vision::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="::sight::module::io::vision::SOpenCVReader" >
                 <inout key="data" uid="cameraSeries" />
             </service>
 
             <!-- extract the first ::sight::data::Camera from the ::sight::data::CameraSeries -->
-            <service uid="extractCameraSrv" type="::sight::modules::data::SExtractObj" >
+            <service uid="extractCameraSrv" type="::sight::module::data::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
                 </inout>
@@ -339,7 +339,7 @@
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamametersSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="arucoParamametersSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -393,7 +393,7 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamametersSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="reprojectionParamametersSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#ffffff" />
@@ -401,26 +401,26 @@
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelSrv" type="::sight::modules::ui::qt::STextStatus" >
+            <service uid="errorLabelSrv" type="::sight::module::ui::qt::STextStatus" >
                 <label>Reprojection error (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="::sight::module::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
             <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
-            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" >
+            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" >
                 <in group="frameTL" >
                     <key uid="frameTL" autoConnect="yes" />
                 </in>
@@ -432,7 +432,7 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="trackerSrv" type="::sight::modules::navigation::optics::SArucoTracker" worker="tracking" >
+            <service uid="trackerSrv" type="::sight::module::navigation::optics::SArucoTracker" worker="tracking" >
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="sourceFrame" autoConnect="yes" />
                 <inout group="markerMap" >
@@ -446,7 +446,7 @@
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registrationSrv" type="::sight::modules::geometry::vision::SPoseFrom2d" worker="tracking" >
+            <service uid="registrationSrv" type="::sight::module::geometry::vision::SPoseFrom2d" worker="tracking" >
                 <in group="markerMap" autoConnect="yes" >
                     <key uid="markerMap" />
                 </in>
@@ -460,7 +460,7 @@
             </service>
 
             <!-- Computes the reprojection error -->
-            <service uid="errorSrv" type="::sight::modules::geometry::vision::SReprojectionError" worker="error" >
+            <service uid="errorSrv" type="::sight::module::geometry::vision::SReprojectionError" worker="error" >
                 <in group="matrix" autoConnect="yes" >
                     <key uid="markerToCamera" id="104" />
                 </in>
@@ -471,27 +471,27 @@
             </service>
 
             <!-- Multiply matrices (here only used to inverse "markerToCamera") -->
-            <service uid="matrixReverserSrv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
+            <service uid="matrixReverserSrv" type="::sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="markerToCamera" autoConnect="yes" inverse="true" />
                 </in>
                 <inout key="output" uid="cameraToMarker" />
             </service>
 
-            <service uid="undistorterSrv" type="::sight::modules::geometry::vision::SDistortion" >
+            <service uid="undistorterSrv" type="::sight::module::geometry::vision::SDistortion" >
                 <in key="camera" uid="camera" autoConnect="yes" />
                 <inout key="map" uid="undistortMap" />
                 <mode>undistort</mode>
             </service>
 
-            <service uid="distorterSrv" type="::sight::modules::geometry::vision::SDistortion" >
+            <service uid="distorterSrv" type="::sight::module::geometry::vision::SDistortion" >
                 <in key="camera" uid="camera" autoConnect="yes" />
                 <inout key="map" uid="distortMap" />
                 <mode>distort</mode>
             </service>
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrv" type="::sight::modules::sync::SSignalGate" >
+            <service uid="syncGenericSceneSrv" type="::sight::module::sync::SSignalGate" >
                 <signal>sourceFrame/bufferModified</signal>
                 <signal>cameraToMarker/modified</signal>
             </service>

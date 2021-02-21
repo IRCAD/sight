@@ -39,7 +39,7 @@
 #include <filesystem>
 #include <sstream>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 //------------------------------------------------------------------------------
@@ -177,4 +177,4 @@ void SCalibrationImagesWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

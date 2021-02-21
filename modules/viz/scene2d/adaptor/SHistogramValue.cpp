@@ -33,7 +33,7 @@
 #include <QFont>
 #include <QGraphicsEllipseItem>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -45,7 +45,7 @@ static const service::IService::KeyType s_VIEWPORT_INPUT  = "viewport";
 static const std::string s_COLOR_CONFIG     = "color";
 static const std::string s_FONT_SIZE_CONFIG = "fontSize";
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SHistogramValue)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SHistogramValue)
 
 //---------------------------------------------------------------------------------------------------------------
 SHistogramValue::SHistogramValue() noexcept :
@@ -211,4 +211,4 @@ void SHistogramValue::processInteraction( sight::viz::scene2d::data::Event& _eve
 //---------------------------------------------------------------------------------------------------------------
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

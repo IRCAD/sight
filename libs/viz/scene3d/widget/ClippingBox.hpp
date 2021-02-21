@@ -27,7 +27,7 @@
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d::widget
 {

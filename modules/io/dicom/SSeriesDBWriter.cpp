@@ -43,10 +43,10 @@
 #include <ui/base/dialog/ProgressDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::dicom::SSeriesDBWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::dicom::SSeriesDBWriter,
                          ::sight::data::Vector )
 
 //------------------------------------------------------------------------------
@@ -278,4 +278,4 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
     return true;
 }
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

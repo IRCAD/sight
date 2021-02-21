@@ -23,7 +23,7 @@ macro(linux_install PRJ_NAME)
         set(PROFILE_PATH "")
 
     elseif()
-        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
+        message(FATAL_ERROR "'${PRJ_NAME}' is not an installable (type : ${${PRJ_NAME}_TYPE})")
     endif()
 
     set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})

@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
 /**
@@ -40,7 +40,7 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::dicom::SSeriesDBMerger">
+        <service type="::sight::module::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>
@@ -80,4 +80,4 @@ protected:
     MODULE_UI_DICOM_API void info(std::ostream& _sstream ) override;
 };
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

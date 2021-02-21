@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>ARCalibration_Selector_AppCfg</id>
     <parameters>
         <param name="SERIESDB" />
@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainview" type="::sight::modules::ui::base::SView">
+        <service uid="mainview" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -29,12 +29,12 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="selectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="selectorSrv" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>
-                <icon series="::sight::data::CameraSeries" icon="module_ui_media-0.1/icons/calibrationActivity.svg" />
-            </icons>
+                <icon series="::sight::data::CameraSeries" icon="sight_module_ui_icons-0.1/calibrationActivity.svg" />
+            <>
         </service>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

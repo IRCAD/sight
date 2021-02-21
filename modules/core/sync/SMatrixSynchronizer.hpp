@@ -33,7 +33,7 @@
 
 #include <service/ISynchronizer.hpp>
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 /**
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a Matrix4.
@@ -66,7 +66,7 @@ protected:
      * @brief This method is used to configure the service.
      *
      * @code{.xml}
-       <service type="::sight::modules::sync::SMatrixSynchronizer">
+       <service type="::sight::module::sync::SMatrixSynchronizer">
             <inout>Matrix</inout>
             <in>MatrixTL</in>
        </service>
@@ -102,4 +102,4 @@ private:
 
 };
 
-} //namespace sight::modules::sync
+} //namespace sight::module::sync

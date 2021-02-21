@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/NotificationDialog.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -52,7 +52,7 @@ void NotificationDialog::showNotificationDialog( const std::string& _message,
 
 NotificationDialog::NotificationDialog()
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
@@ -64,7 +64,7 @@ NotificationDialog::NotificationDialog()
 NotificationDialog::NotificationDialog(
     const std::string& _message, INotificationDialog::Type _type, INotificationDialog::Position _pos)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
@@ -91,7 +91,7 @@ void NotificationDialog::show()
     if(m_implementation)
     {
         std::function<void()> func = std::bind(&INotificationDialog::show, m_implementation);
-        std::shared_future<void> f = service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
+        std::shared_future<void> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(func);
         f.wait();
     }
 }
@@ -100,7 +100,7 @@ void NotificationDialog::show()
 
 void NotificationDialog::setMessage(const std::string& _msg)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -113,7 +113,7 @@ void NotificationDialog::setMessage(const std::string& _msg)
 
 void NotificationDialog::setType(INotificationDialog::Type _type)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -127,7 +127,7 @@ void NotificationDialog::setType(INotificationDialog::Type _type)
 void NotificationDialog::setPosition(INotificationDialog::Position _position)
 {
 
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -141,7 +141,7 @@ void NotificationDialog::setPosition(INotificationDialog::Position _position)
 
 void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -154,7 +154,7 @@ void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 
 void NotificationDialog::setIndex(unsigned int _index)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -167,7 +167,7 @@ void NotificationDialog::setIndex(unsigned int _index)
 
 void NotificationDialog::setDuration(int _durationInMs)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -182,7 +182,7 @@ bool NotificationDialog::isVisible() const
 {
 
     bool visible = false;
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -197,7 +197,7 @@ bool NotificationDialog::isVisible() const
 
 void NotificationDialog::close() const
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -210,7 +210,7 @@ void NotificationDialog::close() const
 
 void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {

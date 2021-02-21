@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::data contains services using camp.
+ * @brief       The namespace sight::module::data contains services using camp.
  */
 #pragma once
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

@@ -36,7 +36,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 /**
@@ -83,7 +83,7 @@ namespace sight::modules::ui::qt
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::ui::qt::SParameters" >
+       <service uid="..." type="::sight::module::ui::qt::SParameters" >
         <parameters>
             <param type="bool" name="boolean parameter" key="boolParam" defaultValue="false" />
             <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42"
@@ -388,4 +388,4 @@ void SParameters::setLabelMinimumSize(QLabel* label, T min, T max, std::uint8_t 
 
 //------------------------------------------------------------------------------
 
-}   //namespace sight::modules::ui::qt
+}   //namespace sight::module::ui::qt

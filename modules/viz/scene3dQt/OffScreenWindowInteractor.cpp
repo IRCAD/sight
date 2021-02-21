@@ -38,10 +38,10 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterOffscreenMgrMacro(sight::modules::viz::scene3dQt::OffScreenWindowInteractor,
+fwRenderOgreRegisterOffscreenMgrMacro(sight::module::viz::scene3dQt::OffScreenWindowInteractor,
                                       sight::viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY);
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 int OffScreenWindowInteractor::m_counter = 0;
@@ -226,4 +226,4 @@ sight::viz::scene3d::IGraphicsWorker* OffScreenWindowInteractor::createGraphicsW
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3dQt
+} // namespace sight::module::viz::scene3dQt

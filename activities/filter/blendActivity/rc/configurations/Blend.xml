@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>Blend</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,7 +14,7 @@
         <object uid="tfBackgroundImage" type="::sight::data::TransferFunction" src="deferred" />
         <object uid="tfFrontImage" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="Blend" selected="yes" />
@@ -30,11 +30,11 @@
             </registry>
         </service>
 
-        <service uid="medicalImageFrontSrv" type="::sight::modules::data::MedicalImageSrv">
+        <service uid="medicalImageFrontSrv" type="::sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="medicalImageBgSrv" type="::sight::modules::data::MedicalImageSrv">
+        <service uid="medicalImageBgSrv" type="::sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
 

@@ -22,10 +22,10 @@
 
 #pragma once
 
-namespace sight::modules::ui::qt::metrics
+namespace sight::module::ui::qt::metrics
 {
 /**
- * @brief The namespace sight::modules::ui::qt::metrics::editor contains editors to add distances
+ * @brief The namespace sight::module::ui::qt::metrics::editor contains editors to add distances
  */
 namespace editor
 {

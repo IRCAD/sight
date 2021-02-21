@@ -28,7 +28,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**
@@ -57,7 +57,7 @@ namespace sight::modules::data
  *
  * For data::Composite:
  * @code{.xml}
-   <service type="::sight::modules::data::SManage">
+   <service type="::sight::module::data::SManage">
       <inout key="object" uid="..." />
       <inout key="composite" uid="..." />
       <compositeKey>...</compositeKey>
@@ -66,7 +66,7 @@ namespace sight::modules::data
  *
  * For data::Vector:
  * @code{.xml}
-   <service type="::sight::modules::data::SManage">
+   <service type="::sight::module::data::SManage">
       <inout key="object" uid="..." />
       <inout key="vector" uid="..." />
    </service>
@@ -74,7 +74,7 @@ namespace sight::modules::data
  *
  * For data::SeriesDB:
  * @code{.xml}
-   <service type="::sight::modules::data::SManage">
+   <service type="::sight::module::data::SManage">
       <inout key="object" uid="..." />
       <inout key="seriesDB" uid="..." />
    </service>
@@ -82,7 +82,7 @@ namespace sight::modules::data
  *
  * For data::Object:
  * @code{.xml}
-   <service type="::sight::modules::data::SManage">
+   <service type="::sight::module::data::SManage">
       <inout key="object" uid="..." />
       <inout key="fieldHolder" uid="..." />
       <field>...</field>
@@ -188,4 +188,4 @@ private:
 
 };
 
-} // sight::modules::data
+} // sight::module::data

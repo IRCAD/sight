@@ -28,7 +28,7 @@
 
 #include <service/IRegisterer.hpp>
 
-namespace sight::modules::filter::point
+namespace sight::module::filter::point
 {
 
 /**
@@ -43,7 +43,7 @@ namespace sight::modules::filter::point
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::modules::filter::point::SPointListRegistration">
+       <service uid="..." type="::sight::module::filter::point::SPointListRegistration">
            <inout key="registeredPL" uid="..." />
            <inout key="referencePL" uid="..." />
            <inout key="output" uid="..." />
@@ -131,4 +131,4 @@ private:
     RegistrationModeType m_registrationMode;
 };
 
-} // namespace sight::modules::filter::point
+} // namespace sight::module::filter::point

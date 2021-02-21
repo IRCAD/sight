@@ -30,7 +30,7 @@
 #include <future>
 #include <regex>
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 // Public signal
@@ -148,4 +148,4 @@ void SSignalGate::received(size_t _index)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::sync
+} // namespace sight::module::sync

@@ -30,12 +30,12 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::SDumpAll,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::debug::action::SDumpAll,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -106,4 +106,4 @@ void SDumpAll::stopping()
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

@@ -42,12 +42,12 @@
 #include <sstream>
 #include <string>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::modules::ui::dicom::SFilterSelectorDialog,
+fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::module::ui::dicom::SFilterSelectorDialog,
                          ::sight::data::String )
 
 static const service::IService::KeyType s_FILTER_INOUT = "filter";
@@ -215,4 +215,4 @@ void SFilterSelectorDialog::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

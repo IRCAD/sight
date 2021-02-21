@@ -27,7 +27,7 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::viz::sample
+namespace sight::module::viz::sample
 {
 
 static const std::string s_IMAGE_INPUT = "image";
@@ -98,7 +98,7 @@ void SImage::starting()
 
     service::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = service::add("::sight::modules::viz::scene3d::adaptor::STrackballCamera");
+    m_interactorSrv = service::add("::sight::module::viz::scene3d::adaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
@@ -106,7 +106,7 @@ void SImage::starting()
     service::IService::ConfigType negatoConfig;
     negatoConfig.put("config.<xmlattr>.layer", "default");
     negatoConfig.put("config.<xmlattr>.interactive", "true");
-    m_negatoSrv = service::add("::sight::modules::viz::scene3d::adaptor::SNegato3D");
+    m_negatoSrv = service::add("::sight::module::viz::scene3d::adaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
     m_negatoSrv->registerInOut( std::const_pointer_cast< data::Object >(image->getConstSptr()), "image", true );
     m_negatoSrv->setID(this->getID() + "negato3DAdaptor");
@@ -156,4 +156,4 @@ void SImage::stopping()
     this->destroy();
 }
 
-} // namespace sight::modules::viz::sample.
+} // namespace sight::module::viz::sample.

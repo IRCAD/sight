@@ -32,7 +32,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 /**
  * @brief   This action show the about frame.
@@ -58,7 +58,7 @@ protected:
      *
      * XML configuration sample:
        @code{.xml}
-       <service impl="::sight::modules::ui::qt::SShowAbout" type="::ui::base::IAction">
+       <service impl="::sight::module::ui::qt::SShowAbout" type="::ui::base::IAction">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />
@@ -105,4 +105,4 @@ private:
     QSize m_size;
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

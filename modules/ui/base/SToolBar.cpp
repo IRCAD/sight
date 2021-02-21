@@ -24,9 +24,9 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IToolBar, ::sight::modules::ui::base::SToolBar )
+fwServicesRegisterMacro( ::sight::ui::base::IToolBar, ::sight::module::ui::base::SToolBar )
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 SToolBar::SToolBar() noexcept

@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/LocationDialog.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -33,7 +33,7 @@ namespace dialog
 LocationDialog::LocationDialog()
 {
 
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
                                                                                [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILocationDialog::REGISTRY_KEY);
@@ -55,7 +55,7 @@ data::location::ILocation::sptr LocationDialog::show()
     typedef SPTR (data::location::ILocation) R;
 
     std::function< R() > func = std::bind(&ILocationDialog::show, m_implementation);
-    std::shared_future< R > f = service::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
+    std::shared_future< R > f = core::thread::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
 
     f.wait();
     return f.get();

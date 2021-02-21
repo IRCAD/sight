@@ -33,7 +33,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 namespace com
@@ -61,7 +61,7 @@ namespace com
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." type="::sight::modules::ui::qt::com::SSignalButton" >
+   <service uid="..." type="::sight::module::ui::qt::com::SSignalButton" >
        <config>
           <checkable>true|false</checkable>
           <text>...</text>
@@ -196,4 +196,4 @@ private:
 };
 
 } // namespace com.
-} // namespace sight::modules::ui::base.
+} // namespace sight::module::ui::base.

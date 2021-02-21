@@ -37,7 +37,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::metrics
+namespace sight::module::ui::qt::metrics
 {
 
 /**
@@ -61,7 +61,7 @@ namespace sight::modules::ui::qt::metrics
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::ui::qt::metrics::SLandmarks" >
+        <service uid="..." type="::sight::module::ui::qt::metrics::SLandmarks" >
            <inout key="landmarks" uid="..." />
            <in key="matrix" uid="..." />
            <text>Use 'Ctrl+Left Click' to add new landmarks</text>
@@ -112,25 +112,25 @@ public:
      * @return A map of each proposed connection.
      *
      * Connect data::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_UPDATE_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_UPDATE_SLOT
      * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_ADD_POINT_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_ADD_POINT_SLOT
      * Connect data::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_MODIFY_POINT_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_MODIFY_POINT_SLOT
      * Connect data::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_SELECT_POINT_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_SELECT_POINT_SLOT
      * Connect data::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_DESELECT_POINT_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_DESELECT_POINT_SLOT
      * Connect data::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_ADD_GROUP_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_ADD_GROUP_SLOT
      * Connect data::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_REMOVE_GROUP_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_REMOVE_GROUP_SLOT
      * Connect data::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_REMOVE_POINT_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_REMOVE_POINT_SLOT
      * Connect data::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_MODIFY_GROUP_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_MODIFY_GROUP_SLOT
      * Connect data::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
-     * modules::ui::qt::metrics::SLandmarks::s_RENAME_GROUP_SLOT
+     * module::ui::qt::metrics::SLandmarks::s_RENAME_GROUP_SLOT
      */
     KeyConnectionsMap getAutoConnections() const override;
 
@@ -354,4 +354,4 @@ public:
 
 };
 
-} // sight::modules::ui::qt::metrics
+} // sight::module::ui::qt::metrics

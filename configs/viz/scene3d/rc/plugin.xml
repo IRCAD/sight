@@ -1,8 +1,8 @@
 <plugin id="config_viz_scene3d" version="@PROJECT_VERSION@">
 
-    <requirement id="module_service" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_viz_scene2d" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene2d" />
 
     <xi:include href="configurations/OgreHistogramManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreLightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

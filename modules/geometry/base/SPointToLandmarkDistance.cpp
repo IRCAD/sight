@@ -33,12 +33,12 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::SPointToLandmarkDistance )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::SPointToLandmarkDistance )
 
 static const core::com::Signals::SignalKeyType DISTANCE_CHANGED_SIG = "distanceChanged";
 const core::com::Slots::SlotKeyType s_SELECTED_POINT_SLOT = "updateSelectedPoint";

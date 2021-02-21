@@ -29,12 +29,12 @@
 #include <data/Reconstruction.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace ModelSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::ModelSeries::ContainOneTool);
+fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::ModelSeries::ContainOneTool);
 
 //-----------------------------------------------------------------------------
 
@@ -164,4 +164,4 @@ ContainOneTool::~ContainOneTool()
 //-----------------------------------------------------------------------------
 
 } // namespace ModelSeries
-} // namespace sight::modules::activity::validator
+} // namespace sight::module::activity::validator

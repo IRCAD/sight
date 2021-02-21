@@ -29,7 +29,7 @@
 
 #include <QGraphicsTextItem>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -40,7 +40,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="::sight::modules::viz::scene2d::adaptor::SHistogramValue" autoConnect="yes">
+   <service uid="histogram" type="::sight::module::viz::scene2d::adaptor::SHistogramValue" autoConnect="yes">
        <in key="histogram" uid="..." />
        <in key="point" uid="..." />
        <in key="viewport"  uid="..." />
@@ -90,9 +90,9 @@ private:
      * @return A map of each proposed connection.
      *
      * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * modules::viz::scene2d::adaptor::SHistogramValue::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SHistogramValue::s_UPDATE_SLOT.
      * Connect data::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
-     * modules::viz::scene2d::adaptor::SHistogramValue::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SHistogramValue::s_UPDATE_SLOT.
      */
     virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
 
@@ -132,4 +132,4 @@ private:
 };
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

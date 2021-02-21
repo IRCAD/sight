@@ -36,9 +36,9 @@
 #include <OgreMatrix4.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <OgreVector3.h>
+#include <Ogre.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
@@ -391,4 +391,4 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries::csptr& _cs)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

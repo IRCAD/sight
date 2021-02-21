@@ -28,7 +28,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::viz::SScreenSelector" >
+    <service uid="..." type="::sight::module::ui::viz::SScreenSelector" >
         <config mode="select" />
     </service>
  *
@@ -94,4 +94,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

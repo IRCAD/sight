@@ -39,10 +39,10 @@ namespace sight::service
  * The Sight architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
- * The xml configuration for an application is defines with the extension ``::service::registry::AppConfig``.
+ * The xml configuration for an application is defines with the extension ``::service::extension::AppConfig``.
  *
  * @code{.xml}
-     <extension implements="::sight::service::registry::AppConfig">
+     <extension implements="::sight::service::extension::AppConfig">
          <id>myAppConfigId</id>
          <parameters>
              <param name="appName" default="my Application" />
@@ -55,11 +55,11 @@ namespace sight::service
 
                  <!--
                      Description service of the GUI:
-                     The modules::ui::base::frame::SFrame service automatically positions the various
+                     The module::ui::base::frame::SFrame service automatically positions the various
                      containers in the application main window.
                      Here, it declares a container for the 3D rendering service.
                  -->
-                 <service uid="myFrame" impl="::sight::modules::ui::base::SFrame">
+                 <service uid="myFrame" impl="::sight::module::ui::base::SFrame">
                      <gui>
                          <frame>
                              <name>${appName}</name>
@@ -80,7 +80,7 @@ namespace sight::service
                              The <file> tag defines the path of the image to load. Here, it is a relative
                              path from the repository in which you launch the application.
                          -->
-                         <service uid="myReaderPathFile" impl="::sight::modules::io::vtk::SImageReader">
+                         <service uid="myReaderPathFile" impl="::sight::module::io::vtk::SImageReader">
                             <file>./TutoData/patient1.vtk</file>
                          </service>
 
@@ -235,10 +235,10 @@ namespace sight::service
  * The Sight architecture provides a dynamic management of configurations to allow the use of multiple objects and
  * services.
  *
- * The xml configuration for an application is defines with the extension ``::service::registry::AppConfig``.
+ * The xml configuration for an application is defines with the extension ``::service::extension::AppConfig``.
  *
  * @code{.xml}
-     <extension implements="::sight::service::registry::AppConfig">
+     <extension implements="::sight::service::extension::AppConfig">
          <id>myAppConfigId</id>
          <parameters>
              <param name="appName" default="my Application" />
@@ -251,11 +251,11 @@ namespace sight::service
 
              <!--
                  Description service of the GUI:
-                 The modules::ui::base::frame::SFrame service automatically positions the various
+                 The module::ui::base::frame::SFrame service automatically positions the various
                  containers in the application main window.
                  Here, it declares a container for the 3D rendering service.
              -->
-             <service uid="myFrame" type="::sight::modules::ui::base::SFrame">
+             <service uid="myFrame" type="::sight::module::ui::base::SFrame">
                  <gui>
                      <frame>
                          <name>${appName}</name>
@@ -274,7 +274,7 @@ namespace sight::service
                  The <file> tag defines the path of the image to load. Here, it is a relative
                  path from the repository in which you launch the application.
              -->
-             <service uid="myReaderPathFile" type="::sight::modules::io::vtk::SImageReader">
+             <service uid="myReaderPathFile" type="::sight::module::io::vtk::SImageReader">
                 <inout key="target" uid="myImage" />
                 <file>./TutoData/patient1.vtk</file>
              </service>
@@ -387,7 +387,7 @@ namespace sight::service
  *   Some services needs a specific configuration, it is usually described in the doxygen of the method configuring().
  *     - \b uid (optional): unique identifier of the service. If it is not defined, it will be automatically
  *       generated.
- *     - \b type: service type (ex: modules::io::vtk::SImageReader)
+ *     - \b type: service type (ex: module::io::vtk::SImageReader)
  *     - \b autoConnect (optional, "no" by default): defines if the service listen the signals of the working objects
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *

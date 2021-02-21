@@ -36,10 +36,10 @@
 
 #include <numeric>
 
-namespace sight::modules::ui::history
+namespace sight::module::ui::history
 {
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::ui::history::SCommandHistory,
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::ui::history::SCommandHistory,
                          ::sight::data::Object)
 
 static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
@@ -153,4 +153,4 @@ void SCommandHistory::emitModifSig() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::history
+} // namespace sight::module::ui::history

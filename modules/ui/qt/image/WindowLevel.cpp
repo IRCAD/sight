@@ -57,10 +57,10 @@
 
 #include <functional>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::WindowLevel,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::WindowLevel,
                          ::sight::data::Image)
 
 static const service::IService::KeyType s_IMAGE_INOUT = "image";

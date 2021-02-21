@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>ImageMix</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -16,7 +16,7 @@
         <object uid="${tfBackgroundImage}" type="::sight::data::TransferFunction" src="deferred" />
         <object uid="${tfFrontImage}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Blend" align="center" />
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::modules::ui::base::SView">
+        <service uid="bottomView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="sliderView" type="::sight::modules::ui::base::SView">
+        <service uid="sliderView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -58,7 +58,7 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::sight::modules::ui::base::SView">
+        <service uid="editorsView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="bgBottomView" type="::sight::modules::ui::base::SView">
+        <service uid="bgBottomView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -85,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="frontBottomView" type="::sight::modules::ui::base::SView">
+        <service uid="frontBottomView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -100,40 +100,40 @@
             </registry>
         </service>
 
-        <service uid="snapshot" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshot" type="::sight::module::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="bgLockDump" type="::sight::modules::memory::LockDumpSrv">
+        <service uid="bgLockDump" type="::sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${backgroundImageUid}" />
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service uid="bg_medicalImageConverter" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes">
+        <service uid="bg_medicalImageConverter" type="::sight::module::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
-        <service uid="slider" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
-        <service uid="bg_windowLevel" type="::sight::modules::ui::qt::image::WindowLevel">
+        <service uid="bg_windowLevel" type="::sight::module::ui::qt::image::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
             <inout key="tf" uid="${tfBackgroundImage}" />
         </service>
 
-        <service uid="frontLockDump" type="::sight::modules::memory::LockDumpSrv">
+        <service uid="frontLockDump" type="::sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${frontImageUid}" />
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service uid="frontMedicalImageConverter" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes">
+        <service uid="frontMedicalImageConverter" type="::sight::module::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="front_imageTransparency" type="::sight::modules::ui::qt::image::ImageTransparency" autoConnect="yes">
+        <service uid="front_imageTransparency" type="::sight::module::ui::qt::image::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
             <shortcut value="V" />
         </service>
 
-        <service uid="front_windowLevel" type="::sight::modules::ui::qt::image::WindowLevel">
+        <service uid="front_windowLevel" type="::sight::module::ui::qt::image::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
             <inout key="tf" uid="${tfFrontImage}" />
         </service>

@@ -34,7 +34,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 /**
  * @brief   SCalibrationInfoEditor service is used to handle the calibration points acquisition.
@@ -46,7 +46,7 @@ namespace sight::modules::ui::qt::calibration
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo">
+   <service type="::sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
        <inout key="calInfo1" uid"..." />
        <inout key="calInfo2" uid="..." />
    </service>
@@ -148,4 +148,4 @@ private:
      */
     QPointer< QListWidget > m_capturesListWidget;
 };
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

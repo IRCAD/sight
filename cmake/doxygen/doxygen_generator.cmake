@@ -59,9 +59,6 @@ function(docsetGenerator)
     string(REGEX REPLACE "^[ ]*,[ ]*" "" BUNDLES_JSON "${BUNDLES_JSON}")
     string(REGEX REPLACE "^[ ]*,[ ]*" "" SRCLIBS_JSON "${SRCLIBS_JSON}")
     set(REPOSITORIES_JSON \"${CMAKE_SOURCE_DIR}\")
-    foreach(REPO ${ADDITIONAL_REPOSITORIES})
-        set(REPOSITORIES_JSON "${REPOSITORIES_JSON}, \"${REPO}\"")
-    endforeach()
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/doxygen/projects.json.in
                    ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json @ONLY)

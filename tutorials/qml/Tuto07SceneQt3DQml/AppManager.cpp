@@ -94,7 +94,7 @@ void AppManager::setScene(viz::qt3d::core::GenericScene* _scene)
 void AppManager::onOpenModel()
 {
     // Reads a mesh.
-    const auto meshReader = service::add("::sight::modules::ui::base::io::SSelector");
+    const auto meshReader = service::add("::sight::module::ui::base::io::SSelector");
     service::IService::ConfigType meshReaderConfig;
     meshReaderConfig.put("type.<xmlattr>.mode", "reader");
     meshReaderConfig.put("type.<xmlattr>.class", "::sight::data::Mesh");

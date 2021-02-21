@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>3DSimpleConfig2</id>
     <parameters>
         <param name="WID_PARENT" />

@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::ui::qt::calibration contains an calibration editor.
+ * @brief       The namespace sight::module::ui::qt::calibration contains an calibration editor.
  */
 #pragma once
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

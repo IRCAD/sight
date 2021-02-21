@@ -7,7 +7,7 @@ set( DEPENDENCIES
     data
     filter_dicom
     ui_base
-    module_ui_qt
+    ui_qt
 )
 set( REQUIREMENTS )
 set( USE_PCH_FROM_TARGET pchData )

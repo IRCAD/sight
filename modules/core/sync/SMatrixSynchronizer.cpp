@@ -39,12 +39,12 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro(::sight::service::ISynchronizer, sight::modules::sync::SMatrixSynchronizer,
+fwServicesRegisterMacro(::sight::service::ISynchronizer, sight::module::sync::SMatrixSynchronizer,
                         ::sight::data::Matrix4)
 
 // ----------------------------------------------------------------------------
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 const core::com::Slots::SlotKeyType SMatrixSynchronizer::s_UPDATE_MATRIX_SLOT = "updateMatrix";
@@ -110,4 +110,4 @@ void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestam
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::modules::sync
+}  // namespace sight::module::sync

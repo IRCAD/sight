@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::filter::image contains services for ITK image registration.
+ * @brief       The namespace sight::module::filter::image contains services for ITK image registration.
  */
 #pragma once
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

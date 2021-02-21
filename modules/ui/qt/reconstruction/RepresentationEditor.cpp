@@ -40,11 +40,11 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::reconstruction
+namespace sight::module::ui::qt::reconstruction
 {
 
 fwServicesRegisterMacro( sight::ui::base::IEditor,
-                         ::sight::modules::ui::qt::reconstruction::RepresentationEditor,
+                         ::sight::module::ui::qt::reconstruction::RepresentationEditor,
                          sight::data::Reconstruction )
 
 //------------------------------------------------------------------------------

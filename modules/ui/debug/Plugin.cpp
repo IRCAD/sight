@@ -24,10 +24,10 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::ui::debug
+namespace sight::module::ui::debug
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::ui::debug::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::ui::debug::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -49,4 +49,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::debug
+} // namespace sight::module::ui::debug

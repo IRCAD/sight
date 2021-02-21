@@ -247,7 +247,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                         {
                             // Creates an Ogre adaptor and associates it with the Sight object
                             auto srv = this->registerService(
-                                "::sight::modules::viz::scene3d::adaptor::SCompositorParameter", id);
+                                "::sight::module::viz::scene3d::adaptor::SCompositorParameter", id);
                             srv->registerInOut(obj, "parameter", true);
 
                             auto shaderParamService = viz::scene3d::IAdaptor::dynamicCast(srv);

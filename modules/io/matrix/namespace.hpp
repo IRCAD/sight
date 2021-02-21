@@ -21,10 +21,10 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::io::matrix supplies services related to read/writer from/to timelines.
+ * @brief       The namespace sight::module::io::matrix supplies services related to read/writer from/to timelines.
  */
 #pragma once
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 }

@@ -113,11 +113,11 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="myMenu" type="::ui::base::IMenu" impl="::sight::modules::ui::base::SMenu"
+       <service uid="myMenu" type="::ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
      * autoConnect="no" >
             <gui>
                 <layout>
-                    <menuItem name="My item 1" shortcut="1" style="check" icon="TutoGui-0.1/icons/system.png" />
+                    <menuItem name="My item 1" shortcut="1" style="check" icon="TutoGui-0.1/system.png" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
                     <menuItem name="My item 3" shortcut="3" style="radio" />

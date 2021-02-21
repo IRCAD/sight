@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <data/ActivitySeries.hpp>
 #include <data/Composite.hpp>
@@ -34,7 +34,7 @@
 #include <QTabWidget>
 #include <QTreeWidget>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -110,7 +110,7 @@ public:
      *
      * @param _info the struct containing the activity configuration.
      */
-    MODULE_UI_QT_API void fillInformation(const sight::activity::registry::ActivityInfo& _info);
+    MODULE_UI_QT_API void fillInformation(const sight::activity::extension::ActivityInfo& _info);
 
     /**
      * @brief Creates all tabs from an activity series.
@@ -190,7 +190,7 @@ private:
     void createNewObject();
 
     /**
-     * @brief Calls @ref modules::ui::base::editor::SSelector service to read the object. Return true if the object is
+     * @brief Calls @ref module::ui::base::editor::SSelector service to read the object. Return true if the object is
      * properly
      * read.
      * @param _classname the class name of the object to read.
@@ -219,7 +219,7 @@ private:
     void addObjectItem(size_t index, const data::Object::csptr& _obj);
 
     /// Sets the activity information
-    sight::activity::registry::ActivityInfo m_activityInfo;
+    sight::activity::extension::ActivityInfo m_activityInfo;
 
     /// Defines the IO selector config.
     std::string m_ioSelectorSrvConfig;
@@ -238,4 +238,4 @@ private:
 };
 
 } // namespace activity
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

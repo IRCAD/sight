@@ -31,9 +31,9 @@
 #include <data/SeriesDB.hpp>
 
 #include <service/op/Add.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -44,9 +44,9 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::io::atoms::ut::IoAtomsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::io::atoms::ut::IoAtomsTest );
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 namespace ut
 {
@@ -57,7 +57,7 @@ void IoAtomsTest::setUp()
 {
     // Set up context before running a test.
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    service::registry::ActiveWorkers::setDefaultWorker(worker);
+    core::thread::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void IoAtomsTest::setUp()
 void IoAtomsTest::tearDown()
 {
     // Clean up after the test run.
-    service::registry::ActiveWorkers::getDefault()->clearRegistry();
+    core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -173,15 +173,15 @@ void atomTest(const std::filesystem::path& filePath)
     workspace->getContainer()["planningDB"]   = data::Composite::New();
 
     std::filesystem::create_directories( filePath.parent_path() );
-    writeReadFile< data::Composite>( srvCfg, workspace, "::sight::modules::io::atoms::SWriter",
-                                     "::sight::modules::io::atoms::SReader" );
-    writeReadFile< data::SeriesDB >( srvCfg, seriesDB, "::sight::modules::io::atoms::SWriter",
-                                     "::sight::modules::io::atoms::SReader" );
+    writeReadFile< data::Composite>( srvCfg, workspace, "::sight::module::io::atoms::SWriter",
+                                     "::sight::module::io::atoms::SReader" );
+    writeReadFile< data::SeriesDB >( srvCfg, seriesDB, "::sight::module::io::atoms::SWriter",
+                                     "::sight::module::io::atoms::SReader" );
 
     data::SeriesDB::sptr readSeriesDB;
 
     // Default policy
-    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader");
+    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -190,7 +190,7 @@ void atomTest(const std::filesystem::path& filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
-    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader");
+    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -202,7 +202,7 @@ void atomTest(const std::filesystem::path& filePath)
     // 'Change' UUID policy
     srvCfg.add("uuidPolicy", "Change");
 
-    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader");
+    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -212,7 +212,7 @@ void atomTest(const std::filesystem::path& filePath)
     }
 
     // Output with 'Change' UUID policy
-    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader");
+    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -224,7 +224,7 @@ void atomTest(const std::filesystem::path& filePath)
     // 'Strict' UUID policy
     srvCfg.put("uuidPolicy", "Strict");
 
-    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader");
+    readSeriesDB = read< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         // DuplicatedDataUUID exception should have been thrown and catch by reader before any data/atom conversion.
@@ -236,7 +236,7 @@ void atomTest(const std::filesystem::path& filePath)
     // Output with 'Reuse' UUID policy
     srvCfg.put("uuidPolicy", "Reuse");
 
-    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::modules::io::atoms::SReader");
+    readSeriesDB = readOut< data::SeriesDB >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         CPPUNIT_ASSERT_MESSAGE("Failed to retrieve output SeriesDB", readSeriesDB);
@@ -274,9 +274,9 @@ void atomTestSimpleData(const std::filesystem::path& filePath)
 
     std::filesystem::create_directories( filePath.parent_path() );
 
-    write< data::Array >(srvCfg, array, "::sight::modules::io::atoms::SWriter");
+    write< data::Array >(srvCfg, array, "::sight::module::io::atoms::SWriter");
 
-    data::Array::sptr readArray = read< data::Array >(srvCfg, "::sight::modules::io::atoms::SReader");
+    data::Array::sptr readArray = read< data::Array >(srvCfg, "::sight::module::io::atoms::SReader");
 
     {
         data::reflection::visitor::CompareObjects visitor;
@@ -326,4 +326,4 @@ void IoAtomsTest::XMLZTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

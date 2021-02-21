@@ -115,8 +115,8 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
     bool isValid = true;
     std::string message;
     // Applies validator on activity series to check the data
-    activity::registry::ActivityInfo info;
-    info = activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    activity::extension::ActivityInfo info;
+    info = activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
@@ -153,14 +153,14 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
 data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
 {
-    activity::registry::ActivityInfo info;
-    info = activity::registry::Activity::getDefault()->getInfo(m_mainActivityId);
+    activity::extension::ActivityInfo info;
+    info = activity::extension::Activity::getDefault()->getInfo(m_mainActivityId);
 
     data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
     if (info.requirements.size() > 0)
     {
         data::Composite::sptr data = actSeries->getData();
-        for (activity::registry::ActivityRequirement req : info.requirements)
+        for (activity::extension::ActivityRequirement req : info.requirements)
         {
             if ((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {

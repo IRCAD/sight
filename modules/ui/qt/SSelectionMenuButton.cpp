@@ -49,10 +49,10 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::SSelectionMenuButton )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::SSelectionMenuButton )
 
 static const core::com::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 
@@ -221,4 +221,4 @@ void SSelectionMenuButton::disable()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

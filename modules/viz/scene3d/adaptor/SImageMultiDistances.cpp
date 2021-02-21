@@ -41,7 +41,7 @@
 #include <OgreNode.h>
 #include <OgreSceneNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const service::IService::KeyType s_IMAGE_INOUT = "image";
@@ -775,4 +775,4 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

@@ -23,7 +23,7 @@
 #pragma once
 
 #include "activity/config.hpp"
-#include "activity/registry/Activity.hpp"
+#include "activity/extension/Activity.hpp"
 
 #include <data/ActivitySeries.hpp>
 #include <data/mt/weak_ptr.hpp>
@@ -42,8 +42,8 @@ class ACTIVITY_CLASS_API IActivityLauncher
 public:
 
     typedef ::boost::property_tree::ptree ConfigurationType;
-    typedef activity::registry::ActivityAppConfigParam ParameterType;
-    typedef activity::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::ActivityAppConfigParam ParameterType;
+    typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map< std::string, std::string> ReplaceMapType;
     typedef std::map< std::string, data::mt::weak_ptr< data::Object > > InOutMapType;
 

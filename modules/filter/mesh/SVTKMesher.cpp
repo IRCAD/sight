@@ -44,7 +44,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkWindowedSincPolyDataFilter.h>
 
-namespace sight::modules::filter::mesh
+namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------

@@ -30,7 +30,7 @@
 
 #include <filter/image/ImageExtruder.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 static const std::string s_MESHES_INPUT = "meshes";
@@ -151,4 +151,4 @@ void SImageExtruder::extrudeMesh(const data::Mesh::csptr _mesh, const data::Imag
     m_sigComputed->asyncEmit();
 }
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

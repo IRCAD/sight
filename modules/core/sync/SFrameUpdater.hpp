@@ -32,7 +32,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::sync::SFrameUpdater">
+        <service type="::sight::module::sync::SFrameUpdater">
             <in key="frameTL" uid="..." autoConnect="yes" />
             <inout key="frame" uid="..." />
        </service>
@@ -129,4 +129,4 @@ private:
     bool m_imageInitialized;
 };
 
-} //namespace sight::modules::sync
+} //namespace sight::module::sync

@@ -29,7 +29,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::geometry::vision::SChessBoardDetector" >
+        <service uid="..." type="::sight::module::geometry::vision::SChessBoardDetector" >
             <in group="image">
                 <key uid="..." />
                 <key uid="..." />
@@ -149,4 +149,4 @@ private:
     std::vector< data::Image::sptr > m_images;
 };
 
-} //namespace sight::modules::geometry::vision
+} //namespace sight::module::geometry::vision

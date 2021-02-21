@@ -30,12 +30,12 @@
 
 #include <QQmlEngine>
 
-fwServicesRegisterMacro( ::sight::viz::qt3d::IAdaptor, ::sight::modules::viz::qt3d::adaptor::SMaterial,
+fwServicesRegisterMacro( ::sight::viz::qt3d::IAdaptor, ::sight::module::viz::qt3d::adaptor::SMaterial,
                          ::sight::data::Material )
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
 //-----------------------------------------------------------------------------
@@ -133,4 +133,4 @@ std::string SMaterial::getMaterialName()
     return m_materialName;
 }
 
-} // namespace sight::modules::viz::qt3d::adaptor.
+} // namespace sight::module::viz::qt3d::adaptor.

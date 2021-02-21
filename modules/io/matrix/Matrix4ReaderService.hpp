@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
 /**
@@ -39,7 +39,7 @@ namespace sight::modules::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::matrix::Matrix4ReaderService">
+   <service type="::sight::module::io::matrix::Matrix4ReaderService">
        <inout key="data" uid="..." />
    </service>
    @endcode
@@ -133,4 +133,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::matrix
+} // namespace sight::module::io::matrix

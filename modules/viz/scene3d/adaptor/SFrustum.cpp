@@ -40,7 +40,7 @@
 #include <OgreMaterial.h>
 #include <OgreMeshManager.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const std::string s_CAMERA_INPUT = "camera";
@@ -87,10 +87,10 @@ void SFrustum::starting()
     m_material = data::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
-    modules::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
-        this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-            "::sight::modules::viz::scene3d::adaptor::SMaterial");
-    materialAdaptor->registerInOut(m_material, modules::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
+        this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+            "::sight::module::viz::scene3d::adaptor::SMaterial");
+    materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->setID(this->getID() + materialAdaptor->getID());
     materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
     materialAdaptor->setRenderService( this->getRenderService() );
@@ -196,4 +196,4 @@ void SFrustum::setVisible(bool _isVisible)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

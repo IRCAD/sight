@@ -39,7 +39,7 @@ namespace sight::core::jobs
 class IJob;
 }
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
 /**
@@ -54,7 +54,7 @@ namespace sight::modules::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::vtk::SImageWriter">
+   <service type="::sight::module::io::vtk::SImageWriter">
        <in key="data" uid="..." />
        <file>...</file>
    </service>
@@ -171,4 +171,4 @@ private:
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
-} // namespace sight::modules::io::vtk
+} // namespace sight::module::io::vtk

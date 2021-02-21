@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>calExtrinsicCharucoView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -26,7 +26,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="extrinsicView" type="::sight::modules::ui::base::SView">
+        <service uid="extrinsicView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="::sight::modules::ui::base::SView">
+        <service uid="extrinsicCameraView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -55,13 +55,13 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar">
+        <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Start camera" icon="module_ui_media-0.1/icons/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="module_ui_media-0.1/icons/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="module_ui_media-0.1/icons/pause-cam.svg" />
-                    <menuItem name="Loop video" icon="module_ui_media-0.1/icons/loop-cam.svg" style="check" />
+                    <menuItem name="Start camera" icon="sight_module_ui_icons-0.1/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="sight_module_ui_icons-0.1/stop-cam.svg" />
+                    <menuItem name="Pause video" icon="sight_module_ui_icons-0.1/pause-cam.svg" />
+                    <menuItem name="Loop video" icon="sight_module_ui_icons-0.1/loop-cam.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="calibrationInfoView" type="::sight::modules::ui::base::SView">
+        <service uid="calibrationInfoView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -87,7 +87,7 @@
             </registry>
         </service>
 
-        <service uid="videoView" type="::sight::modules::ui::base::SView">
+        <service uid="videoView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -101,7 +101,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="::sight::modules::ui::base::SView">
+        <service uid="camerasView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -115,15 +115,15 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCamera" type="::sight::modules::ui::base::SToolBar">
+        <service uid="extrinsicCamera" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Add" icon="module_ui_media-0.1/icons/Import.svg" />
-                    <menuItem name="Remove" icon="module_ui_media-0.1/icons/remove.svg" />
-                    <menuItem name="Reset" icon="module_ui_media-0.1/icons/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="module_ui_media-0.1/icons/CheckButton.svg" />
-                    <menuItem name="Draw" icon="module_ui_media-0.1/icons/Preview.svg" />
+                    <menuItem name="Add" icon="sight_module_ui_icons-0.1/Import.svg" />
+                    <menuItem name="Remove" icon="sight_module_ui_icons-0.1/remove.svg" />
+                    <menuItem name="Reset" icon="sight_module_ui_icons-0.1/reset.svg" />
+                    <menuItem name="Calibrate with openCV" icon="sight_module_ui_icons-0.1/CheckButton.svg" />
+                    <menuItem name="Draw" icon="sight_module_ui_icons-0.1/Preview.svg" />
                 </layout>
             </gui>
             <registry>
@@ -136,7 +136,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="::sight::modules::ui::base::SView">
+        <service uid="cameraInfoView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -156,59 +156,59 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="ActionAdd" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionAdd" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>CharucoBoardDetector/detectPoints</slot>
             </slots>
         </service>
 
-        <service uid="ActionReset" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionReset" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/reset</slot>
             </slots>
         </service>
 
-        <service uid="ActionRemove" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionRemove" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/remove</slot>
             </slots>
         </service>
 
-        <service uid="ActionGoOpenCV" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionGoOpenCV" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCal/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="ActionDisplayImage" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionDisplayImage" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>ExtrinsicCalibrationInfoEditor/getSelection</slot>
             </slots>
         </service>
 
-        <service uid="ActionStartCamera" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionStartCamera" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/startCamera</slot>
                 <slot>VideoGrabber2/startCamera</slot>
             </slots>
         </service>
 
-        <service uid="ActionStopCamera" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="ActionStopCamera" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/stopCamera</slot>
                 <slot>VideoGrabber2/stopCamera</slot>
             </slots>
         </service>
 
-        <service uid="PauseVideo" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="PauseVideo" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/pauseCamera</slot>
                 <slot>VideoGrabber2/pauseCamera</slot>
             </slots>
         </service>
 
-        <service uid="LoopVideo" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="LoopVideo" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>VideoGrabber1/loopVideo</slot>
                 <slot>VideoGrabber2/loopVideo</slot>
@@ -226,7 +226,7 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="video1Adp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="Frame1" />
             <config layer="default" />
         </service>
@@ -242,16 +242,16 @@
             </scene>
         </service>
 
-        <service uid="video2Adp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="video2Adp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="Frame2" />
             <config layer="default" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="VideoSlider" type="::sight::modules::ui::qt::video::SSlider" />
+        <service uid="VideoSlider" type="::sight::module::ui::qt::video::SSlider" />
 
-        <service uid="synchronizer" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="synchronizer">
+        <service uid="synchronizer" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer">
             <in group="frameTL">
                 <key uid="Frame1TL" />
                 <key uid="Frame2TL" />
@@ -263,22 +263,22 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="ExtrinsicCalibrationInfoEditor" type="::sight::modules::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="yes">
+        <service uid="ExtrinsicCalibrationInfoEditor" type="::sight::module::ui::qt::calibration::SCalibrationInfoEditor" autoConnect="yes">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="Status" type="::sight::modules::ui::base::editor::SStatus">
+        <service uid="Status" type="::sight::module::ui::base::editor::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabel" type="::sight::modules::ui::qt::STextStatus">
+        <service uid="errorLabel" type="::sight::module::ui::qt::STextStatus">
             <label>Reprojection error (RMSE)</label>
         </service>
 
-        <service uid="CharucoBoardDetector" type="::sight::modules::geometry::vision::charuco::SCharucoBoardDetector" worker="extr_chess_checker">
+        <service uid="CharucoBoardDetector" type="::sight::module::geometry::vision::charuco::SCharucoBoardDetector" worker="extr_chess_checker">
             <in group="timeline">
                 <key uid="Frame1TL" />
                 <key uid="Frame2TL" />
@@ -290,12 +290,12 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE" markerSizeInBits="CHARUCO_MARKER_SIZE_IN_BITS" />
         </service>
 
-        <service uid="DisplayCalibrationInfo" type="::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo">
+        <service uid="DisplayCalibrationInfo" type="::sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo1}" />
             <in key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="VideoGrabber1" type="::sight::modules::io::video::SGrabberProxy">
+        <service uid="VideoGrabber1" type="::sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="${camera1}" />
             <inout key="frameTL" uid="Frame1TL" />
             <config>
@@ -303,7 +303,7 @@
             </config>
         </service>
 
-        <service uid="VideoGrabber2" type="::sight::modules::io::video::SGrabberProxy">
+        <service uid="VideoGrabber2" type="::sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="${camera2}" />
             <inout key="frameTL" uid="Frame2TL" />
             <config>
@@ -311,7 +311,7 @@
             </config>
         </service>
 
-        <service uid="openCVExtrinsicCal" type="::sight::modules::geometry::vision::charuco::SOpenCVExtrinsic" worker="extr_chess_checker">
+        <service uid="openCVExtrinsicCal" type="::sight::module::geometry::vision::charuco::SOpenCVExtrinsic" worker="extr_chess_checker">
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
             <inout key="cameraSeries" uid="${cameraSeries}" />
@@ -319,16 +319,16 @@
             <board width="CHARUCO_WIDTH" height="CHARUCO_HEIGHT" squareSize="CHARUCO_SQUARE_SIZE" markerSize="CHARUCO_MARKER_SIZE"/>
         </service>
 
-        <service uid="cameraSeriesInfo" type="::sight::modules::ui::qt::calibration::SCameraSeriesEditor" autoConnect="yes">
+        <service uid="cameraSeriesInfo" type="::sight::module::ui::qt::calibration::SCameraSeriesEditor" autoConnect="yes">
             <in key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 
-        <service uid="cameraInfo1" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo1" type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera1}" />
         </service>
 
-        <service uid="cameraInfo2" type="::sight::modules::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo2" type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera2}" />
         </service>
 

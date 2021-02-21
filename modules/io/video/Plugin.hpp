@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 struct Plugin : public core::runtime::Plugin
 {
@@ -51,4 +51,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

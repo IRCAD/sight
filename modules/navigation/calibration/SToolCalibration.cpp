@@ -30,7 +30,7 @@
 
 #include <geometry/vision/helper.hpp>
 
-namespace sight::modules::navigation::calibration
+namespace sight::module::navigation::calibration
 {
 
 static const service::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";

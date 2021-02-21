@@ -55,7 +55,7 @@ public:
      * @see activity::builder::ActivitySeries::buildData
      */
     ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
-        const activity::registry::ActivityInfo& activityInfo,
+        const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const override;
 };
 

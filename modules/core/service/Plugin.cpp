@@ -25,16 +25,16 @@
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/thread/Pool.hpp>
 
-#include <service/registry/ActiveWorkers.hpp>
-#include <service/registry/AppConfig.hpp>
-#include <service/registry/AppConfigParameters.hpp>
-#include <service/registry/ServiceConfig.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <core/thread/ActiveWorkers.hpp>
+#include <service/extension/AppConfig.hpp>
+#include <service/extension/AppConfigParameters.hpp>
+#include <service/extension/Config.hpp>
+#include <service/extension/Factory.hpp>
 
-namespace sight::modules::service
+namespace sight::module::service
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::service::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::service::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -46,10 +46,10 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    sight::service::registry::ServiceFactory::getDefault()->parseBundleInformation();
-    sight::service::registry::ServiceConfig::getDefault()->parseBundleInformation();
-    sight::service::registry::AppConfig::getDefault()->parseBundleInformation();
-    sight::service::registry::AppConfigParameters::getDefault()->parseBundleInformation();
+    sight::service::extension::Factory::getDefault()->parseBundleInformation();
+    sight::service::extension::Config::getDefault()->parseBundleInformation();
+    sight::service::extension::AppConfig::getDefault()->parseBundleInformation();
+    sight::service::extension::AppConfigParameters::getDefault()->parseBundleInformation();
 }
 
 //-----------------------------------------------------------------------------
@@ -63,19 +63,19 @@ void Plugin::initialize()
 void Plugin::uninitialize()
 {
     // Clear all service configs
-    sight::service::registry::ServiceConfig::getDefault()->clearRegistry();
+    sight::service::extension::Config::getDefault()->clearRegistry();
 
     // Clear all app configuration
-    sight::service::registry::AppConfig::getDefault()->clearRegistry();
+    sight::service::extension::AppConfig::getDefault()->clearRegistry();
 
     // Clear all app configuration parameters
-    sight::service::registry::AppConfigParameters::getDefault()->clearRegistry();
+    sight::service::extension::AppConfigParameters::getDefault()->clearRegistry();
 
     // Clear all service factories
-    sight::service::registry::ServiceFactory::getDefault()->clearFactory();
+    sight::service::extension::Factory::getDefault()->clearFactory();
 
     // Clear all active Workers
-    sight::service::registry::ActiveWorkers::getDefault()->clearRegistry();
+    sight::core::thread::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,4 +86,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::service
+} // namespace sight::module::service

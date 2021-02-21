@@ -39,10 +39,10 @@
 #include <bitset>
 #include <functional>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SLabelImageToBinaryImage)
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::filter::image::SLabelImageToBinaryImage)
 
 static const service::IService::KeyType s_LABEL_IMAGE_INPUT = "labelImage";
 static const service::IService::KeyType s_BINARY_MASK_INOUT = "binaryMask";
@@ -198,4 +198,4 @@ service::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnection
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

@@ -1,32 +1,32 @@
 <plugin id="ARCalibration" version="@PROJECT_VERSION@">
 
-    <requirement id="module_service" />
-    <requirement id="module_memory" />
-    <requirement id="module_ui_base" />
-    <requirement id="module_activity" />
-    <requirement id="module_io_atoms" />
-    <requirement id="module_ui_qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::memory" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::ui::qt" />
 
     <xi:include href="configurations/ARCalibrationActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>ARCalibrationActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for ARCalibration</desc>
-        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
         <requirements />
         <appConfig id="ARCalibration_ActivitySelector_AppCfg">
             <parameters />
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfigParameters">
+    <extension implements="::sight::service::extension::AppConfigParameters">
         <id>ARCalibration_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="ARCalibration @PROJECT_VERSION@" />
-            <param name="ICON_PATH" value="module_ui_flaticon-0.1/icons/YellowCamera.svg" />
+            <param name="ICON_PATH" value="module_ui_flaticons-0.1/YellowCamera.svg" />
         </parameters>
     </extension>
 

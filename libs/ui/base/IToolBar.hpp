@@ -69,16 +69,16 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="::ui::base::IToolBar" impl="::sight::modules::ui::base::SToolBar"
+       <service uid="toolbar2" type="::ui::base::IToolBar" impl="::sight::module::ui::base::SToolBar"
      * autoConnect="no"
      *>
            <gui>
                <layout hideActions="false" style="ToolButtonIconOnly">
-                   <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/>
-                   <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/icons/system.png"/>
+                   <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/system.png"/>
+                   <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />

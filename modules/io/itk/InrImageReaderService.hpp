@@ -35,7 +35,7 @@ namespace sight::data
 class Image;
 }
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 /**
  * @brief Reader for .inr.gz image
@@ -43,7 +43,7 @@ namespace sight::modules::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::itk::InrImageReaderService">
+   <service type="::sight::module::io::itk::InrImageReaderService">
        <inout key="data" uid="..." />
        <file>...</file>
    </service>
@@ -105,4 +105,4 @@ private:
     bool createImage( const std::filesystem::path& inrFileDir, const SPTR(data::Image)& _pImg );
 };
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

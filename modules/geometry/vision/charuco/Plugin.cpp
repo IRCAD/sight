@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::geometry::vision::charuco::Plugin");
+    "::sight::module::geometry::vision::charuco::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

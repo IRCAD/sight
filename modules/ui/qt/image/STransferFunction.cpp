@@ -54,7 +54,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 static const std::string s_USE_DEFAULT_PATH_CONFIG  = "useDefaultPath";
@@ -78,7 +78,7 @@ static const std::string s_VERSION_TF = "V1";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::STransferFunction)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::STransferFunction)
 
 //------------------------------------------------------------------------------
 
@@ -467,7 +467,7 @@ void STransferFunction::importTF()
 {
     const data::TransferFunction::sptr tf         = data::TransferFunction::New();
     const io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-        "::sight::modules::io::atoms::SReader");
+        "::sight::module::io::atoms::SReader");
 
     reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
@@ -506,7 +506,7 @@ void STransferFunction::importTF()
 void STransferFunction::exportTF()
 {
     const io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
-        "::sight::modules::io::atoms::SWriter");
+        "::sight::module::io::atoms::SWriter");
 
     writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
@@ -565,7 +565,7 @@ void STransferFunction::initTransferFunctions()
 
             const data::TransferFunction::sptr tf         = data::TransferFunction::New();
             const io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-                "::sight::modules::io::atoms::SReader");
+                "::sight::module::io::atoms::SReader");
             reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
             const core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New(
@@ -698,4 +698,4 @@ void STransferFunction::updateTransferFunction()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::image.
+} // namespace sight::module::ui::qt::image.

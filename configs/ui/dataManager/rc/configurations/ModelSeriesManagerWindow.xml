@@ -14,7 +14,7 @@ With:
 - ICON_PATH (mandatory): icon of the window
 - WindowTitle(optional): title of the window
 -->
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>ModelSeriesManagerWindow</id>
     <parameters>
         <param name="ORGAN_MANAGER_MODELSERIES" />
@@ -28,7 +28,7 @@ With:
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::sight::data::ModelSeries" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="::sight::modules::ui::base::SFrame">
+        <service uid="organManagerFrame" type="::sight::module::ui::base::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>

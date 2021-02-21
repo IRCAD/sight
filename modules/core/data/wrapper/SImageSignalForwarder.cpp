@@ -37,7 +37,7 @@
 
 #include <regex>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 namespace wrapper
 {
@@ -65,7 +65,7 @@ SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_avail
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::modules::data::IWrapperSrv, ::sight::modules::data::wrapper::SImageSignalForwarder,
+fwServicesRegisterMacro( ::sight::module::data::IWrapperSrv, ::sight::module::data::wrapper::SImageSignalForwarder,
                          ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
@@ -319,4 +319,4 @@ void SImageSignalForwarder::forwardRemovedFields(sight::data::Object::FieldsCont
 //-----------------------------------------------------------------------------
 
 } // wrapper
-} // sight::modules::data
+} // sight::module::data

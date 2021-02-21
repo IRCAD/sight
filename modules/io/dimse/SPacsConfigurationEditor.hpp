@@ -41,7 +41,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::io::dimse::SPacsConfigurationEditor">
+    <service type="::sight::module::io::dimse::SPacsConfigurationEditor">
         <inout key="config" uid="..." />
         <config showDialog="true" />
     </service>
@@ -185,4 +185,4 @@ private Q_SLOTS:
 
 };
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

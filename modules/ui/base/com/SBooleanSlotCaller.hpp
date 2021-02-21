@@ -33,7 +33,7 @@
 
 #include <vector>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
@@ -46,7 +46,7 @@ namespace com
  * @warning This action should be configured with style="check".
  */
 
-class MODULE_UI_BASE_CLASS_API SBooleanSlotCaller : public modules::ui::base::com::SSlotCaller
+class MODULE_UI_BASE_CLASS_API SBooleanSlotCaller : public module::ui::base::com::SSlotCaller
 {
 
 public:
@@ -73,4 +73,4 @@ protected:
 };
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

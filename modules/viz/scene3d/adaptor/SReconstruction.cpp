@@ -32,7 +32,7 @@
 
 #include <viz/scene3d/Material.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
@@ -93,7 +93,7 @@ void SReconstruction::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap modules::viz::scene3d::adaptor::SReconstruction::getAutoConnections() const
+service::IService::KeyConnectionsMap module::viz::scene3d::adaptor::SReconstruction::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
     connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT );
@@ -109,7 +109,7 @@ void SReconstruction::updating()
     {
         const auto reconstruction = this->getLockedInput< data::Reconstruction >(s_RECONSTRUCTION_INPUT);
 
-        modules::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
+        module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
         auto mesh = service::OSR::getRegistered("mesh", service::IService::AccessType::INOUT, meshAdaptor);
@@ -144,8 +144,8 @@ void SReconstruction::createMeshService()
     if(mesh)
     {
         // Creates an Ogre adaptor and associates it with the Sight mesh object
-        auto meshAdaptor = this->registerService< modules::viz::scene3d::adaptor::SMesh >(
-            "::sight::modules::viz::scene3d::adaptor::SMesh");
+        auto meshAdaptor = this->registerService< module::viz::scene3d::adaptor::SMesh >(
+            "::sight::module::viz::scene3d::adaptor::SMesh");
         meshAdaptor->registerInOut(mesh, "mesh", true);
 
         meshAdaptor->setID(this->getID() + meshAdaptor->getID());
@@ -175,7 +175,7 @@ void SReconstruction::setVisible(bool _hide)
 {
     if (!m_meshAdaptor.expired())
     {
-        modules::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
+        module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         if (meshAdaptor)
         {
@@ -209,12 +209,12 @@ adaptor::SMesh::sptr SReconstruction::getMeshAdaptor()
 {
     // Retrieves the associated mesh adaptor
     sight::viz::scene3d::IAdaptor::sptr adaptor             = m_meshAdaptor.lock();
-    modules::viz::scene3d::adaptor::SMesh::sptr meshAdaptor =
-        modules::viz::scene3d::adaptor::SMesh::dynamicCast(adaptor);
+    module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor =
+        module::viz::scene3d::adaptor::SMesh::dynamicCast(adaptor);
 
     return meshAdaptor;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

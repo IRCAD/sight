@@ -39,7 +39,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDiaog";
@@ -375,4 +375,4 @@ void SPacsConfigurationEditor::showDialog(const std::string _title, const std::s
     messageBox.show();
 }
 
-} // namespace sight::modules::io::dimse
+} // namespace sight::module::io::dimse

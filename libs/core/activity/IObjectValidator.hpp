@@ -52,7 +52,7 @@ public:
 
     /// Does nothing.
     ACTIVITY_API virtual ValidationType validate(
-        const activity::registry::ActivityInfo&,
+        const activity::extension::ActivityInfo&,
         const CSPTR(data::Vector)& ) const override
     {
         ValidationType validation;

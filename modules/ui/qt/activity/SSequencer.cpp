@@ -39,7 +39,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -177,7 +177,7 @@ void SSequencer::starting()
 
     QStringList activitiesName;
 
-    auto activityReg = sight::activity::registry::Activity::getDefault();
+    auto activityReg = sight::activity::extension::Activity::getDefault();
     for (size_t i = 0; i < m_activityIds.size(); ++i)
     {
         std::string name = m_activityNames[i];

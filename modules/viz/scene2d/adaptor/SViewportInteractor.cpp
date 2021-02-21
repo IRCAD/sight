@@ -26,9 +26,9 @@
 
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SViewportInteractor)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SViewportInteractor)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -165,4 +165,4 @@ void SViewportInteractor::zoom( bool zoomIn )
 //-----------------------------------------------------------------------------
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

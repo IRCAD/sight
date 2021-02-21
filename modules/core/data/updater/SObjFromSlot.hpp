@@ -25,7 +25,7 @@
 #include "modules/core/data/IUpdaterSrv.hpp"
 #include "modules/data/config.hpp"
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 namespace updater
@@ -41,19 +41,19 @@ namespace updater
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::sight::modules::data::updater::SObjFromSlot">
+     <service type="::sight::module::data::updater::SObjFromSlot">
          <out key="object" uid="..." />
      </service>
      @endcode
  * @subsection Output Output
  * - \b object [sight::data::Object]: Object used to register/unregister the object given by the slots.
  */
-class MODULE_DATA_CLASS_API SObjFromSlot : public modules::data::IUpdaterSrv
+class MODULE_DATA_CLASS_API SObjFromSlot : public module::data::IUpdaterSrv
 {
 
 public:
 
-    fwCoreServiceMacro(SObjFromSlot, ::sight::modules::data::IUpdaterSrv)
+    fwCoreServiceMacro(SObjFromSlot, ::sight::module::data::IUpdaterSrv)
 
     /// Constructor.  Do nothing.
     MODULE_DATA_API SObjFromSlot() noexcept;
@@ -103,4 +103,4 @@ protected:
 };
 
 } // updater
-} // sight::modules::data
+} // sight::module::data

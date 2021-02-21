@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activity/registry/ActivityMsg.hpp"
+#include "activity/ActivityMsg.hpp"
 
 #include <core/tools/UUID.hpp>
 
@@ -34,13 +34,11 @@
 
 namespace sight::activity
 {
-namespace registry
-{
 
 //-----------------------------------------------------------------------------
 
 ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
-                         const activity::registry::ActivityInfo& info,
+                         const activity::extension::ActivityInfo& info,
                          const ParametersType& parameters)
 {
     SLM_ASSERT("ActivitySeries instantiation failed", series);
@@ -93,7 +91,7 @@ ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
     m_tooltip  = m_tabInfo;
     m_series   = series;
 
-    namespace ActiReg = activity::registry;
+    namespace ActiReg = activity::extension;
     ActiReg::ActivityAppConfig::ActivityAppConfigParamsType params = info.appConfig.parameters;
     params.reserve(params.size() + parameters.size() + 1);
     params.insert(params.end(), parameters.begin(), parameters.end());
@@ -132,7 +130,5 @@ ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
 }
 
 //-----------------------------------------------------------------------------
-
-} // namespace registry
 
 } // namespace sight::activity

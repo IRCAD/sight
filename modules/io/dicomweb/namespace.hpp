@@ -26,6 +26,6 @@
  * @ingroup apprequirement
  * @brief ioDicomWeb contains services use to deal with PACS through HTTP.
  */
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 }

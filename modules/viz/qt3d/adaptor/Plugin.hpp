@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
 /**
@@ -44,4 +44,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::viz::qt3d::adaptor.
+} // namespace sight::module::viz::qt3d::adaptor.

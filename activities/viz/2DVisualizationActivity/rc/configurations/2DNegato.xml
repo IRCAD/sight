@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>2DNegato</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,7 +14,7 @@
     <config>
         <object uid="${image}" type="::sight::data::Image" src="ref" />
         <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::sight::modules::ui::base::SView">
+        <service uid="multiView_negato_bottom" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="snapshotNegatoEditor" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshotNegatoEditor" type="::sight::module::ui::qt::viz::SnapshotEditor" />
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
@@ -113,16 +113,16 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="LockImageSrv" type="::sight::modules::memory::LockDumpSrv">
+        <service uid="LockImageSrv" type="::sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="slider_negato" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="slider_negato" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
-        <service uid="distanceNegatoEditor" type="::sight::modules::ui::qt::metrics::Distance">
+        <service uid="distanceNegatoEditor" type="::sight::module::ui::qt::metrics::Distance">
             <inout key="image" uid="${image}" />
         </service>
 

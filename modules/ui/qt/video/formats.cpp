@@ -24,7 +24,7 @@
 
 #include <boost/assign.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace video
 {
@@ -101,4 +101,4 @@ PixelFormatTranslatorType pixelFormatTranslator = ::boost::assign::list_of< Pixe
                                                       data::Camera::PixelFormat::USER                  );
 
 } // video
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

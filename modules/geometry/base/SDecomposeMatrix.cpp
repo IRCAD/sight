@@ -33,7 +33,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 const service::IService::KeyType s_SOURCE_INPUT      = "source";
@@ -143,4 +143,4 @@ void SDecomposeMatrix::updating()
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::modules::geometry::base
+}  // namespace sight::module::geometry::base

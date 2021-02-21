@@ -34,7 +34,7 @@
 
 #include <sstream>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 class PostWindowRenderListener : public ::Ogre::RenderTargetListener
@@ -135,7 +135,7 @@ void SRenderStats::starting()
 
     auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();
 
-    m_listener = std::make_unique<modules::viz::scene3d::adaptor::PostWindowRenderListener>(*this);
+    m_listener = std::make_unique<module::viz::scene3d::adaptor::PostWindowRenderListener>(*this);
     renderWindow->addListener(m_listener.get());
 }
 
@@ -166,4 +166,4 @@ void SRenderStats::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

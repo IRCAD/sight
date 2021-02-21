@@ -15,7 +15,7 @@ set( REQUIREMENTS
     module_ui_dicom
     module_io_dicom
     module_io_dimse
-    module_ui_media
+    module_ui_icons
     module_service
     module_viz_scene3d
     module_viz_scene3dQt

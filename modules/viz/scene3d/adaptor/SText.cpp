@@ -31,7 +31,7 @@
 #include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/SRender.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const service::IService::KeyType s_OBJECT_INPUT = "object";
@@ -222,4 +222,4 @@ void SText::updateText()
     this->setText(textString);
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

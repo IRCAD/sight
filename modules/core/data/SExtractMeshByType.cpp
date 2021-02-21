@@ -34,10 +34,10 @@
 
 #include <regex>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
-fwServicesRegisterMacro(sight::modules::data::ICamp, ::sight::modules::data::SExtractMeshByType)
+fwServicesRegisterMacro(sight::module::data::ICamp, ::sight::module::data::SExtractMeshByType)
 
 //-----------------------------------------------------------------------------
 
@@ -153,4 +153,4 @@ void SExtractMeshByType::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

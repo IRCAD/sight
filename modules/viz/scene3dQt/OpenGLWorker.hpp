@@ -31,7 +31,7 @@
 #include <QSurface>
 #include <QThreadPool>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 struct OpenGLRunner;
@@ -72,4 +72,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3dQt.
+} // namespace sight::module::viz::scene3dQt.

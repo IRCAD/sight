@@ -30,7 +30,7 @@
 
 #include <opencv2/videoio.hpp>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
 /**
@@ -43,7 +43,7 @@ namespace sight::modules::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::video::SVideoWriter">
+   <service type="::sight::module::io::video::SVideoWriter">
        <in key="data" uid="..." />
    </service>
    @endcode

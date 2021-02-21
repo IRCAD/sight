@@ -24,10 +24,10 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::SDefaultAction )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SDefaultAction )
 
 SDefaultAction::SDefaultAction() noexcept
 {

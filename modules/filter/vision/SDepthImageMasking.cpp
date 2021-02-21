@@ -34,7 +34,7 @@
 
 #include <librealsense2/rs.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
@@ -45,7 +45,7 @@ static const service::IService::KeyType s_VIDEO_IMAGE_KEY      = "videoImage";
 static const service::IService::KeyType s_DEPTH_IMAGE_KEY      = "depthImage";
 static const service::IService::KeyType s_FOREGROUND_IMAGE_KEY = "foregroundImage";
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SDepthImageMasking)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SDepthImageMasking)
 
 // ------------------------------------------------------------------------------
 
@@ -176,4 +176,4 @@ void SDepthImageMasking::setThreshold(int _threshold)
 
 // ------------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

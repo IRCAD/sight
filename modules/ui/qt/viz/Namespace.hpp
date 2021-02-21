@@ -21,10 +21,10 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::ui::qt::viz supplies user interface editors done with Qt.
+ * @brief       The namespace sight::module::ui::qt::viz supplies user interface editors done with Qt.
  */
 #pragma once
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 }

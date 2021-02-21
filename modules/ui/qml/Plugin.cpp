@@ -52,11 +52,11 @@
 
 #include <functional>
 
-namespace sight::modules::ui::qml
+namespace sight::module::ui::qml
 {
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::ui::qml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::ui::qml::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -142,4 +142,4 @@ int Plugin::run() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

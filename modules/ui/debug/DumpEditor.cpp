@@ -33,7 +33,7 @@
 #include <core/tools/Stringizer.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <QComboBox>
 #include <QFuture>
@@ -50,12 +50,12 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::debug
+namespace sight::module::ui::debug
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::debug::DumpEditor )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::debug::DumpEditor )
 
 core::memory::BufferManager::BufferInfoMapType m_bufferInfos;
 core::memory::BufferManager::BufferStats m_bufferStats = {0, 0};
@@ -507,8 +507,8 @@ void DumpEditor::starting()
     if (buffManager)
     {
         m_updateSlot = core::com::newSlot( &DumpEditor::onUpdate, this );
-        service::registry::ActiveWorkers::sptr workers = service::registry::ActiveWorkers::getDefault();
-        m_updateSlot->setWorker( workers->getWorker( service::registry::ActiveWorkers::s_DEFAULT_WORKER ));
+        core::thread::ActiveWorkers::sptr workers = core::thread::ActiveWorkers::getDefault();
+        m_updateSlot->setWorker( workers->getWorker( core::thread::ActiveWorkers::s_DEFAULT_WORKER ));
         m_connection = buffManager->getUpdatedSignal()->connect( m_updateSlot );
     }
 

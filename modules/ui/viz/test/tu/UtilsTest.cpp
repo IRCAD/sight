@@ -28,9 +28,9 @@
 #include "../../../../../modules/ui/viz/helper/Utils.cpp"
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::ui::viz::ut::UtilsTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::ui::viz::ut::UtilsTest );
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 namespace ut
 {
@@ -53,7 +53,7 @@ void UtilsTest::convertOgreColorToQColor()
 {
     QColor refColor(255, 255, 255);
 
-    QColor resultColor = modules::ui::viz::helper::Utils::converOgreColorToQColor(::Ogre::ColourValue());
+    QColor resultColor = module::ui::viz::helper::Utils::converOgreColorToQColor(::Ogre::ColourValue());
     CPPUNIT_ASSERT(resultColor.red() == refColor.red());
     CPPUNIT_ASSERT(resultColor.green() == refColor.green());
     CPPUNIT_ASSERT(resultColor.blue() == refColor.blue());
@@ -66,7 +66,7 @@ void UtilsTest::convertQColorToOgreColor()
 {
     ::Ogre::ColourValue refColor;
 
-    ::Ogre::ColourValue resultColor = modules::ui::viz::helper::Utils::convertQColorToOgreColor(QColor(255, 255, 255));
+    ::Ogre::ColourValue resultColor = module::ui::viz::helper::Utils::convertQColorToOgreColor(QColor(255, 255, 255));
     CPPUNIT_ASSERT(static_cast<int>(resultColor.r) == static_cast<int>(refColor.r));
     CPPUNIT_ASSERT(static_cast<int>(resultColor.g) == static_cast<int>(refColor.g));
     CPPUNIT_ASSERT(static_cast<int>(resultColor.b) == static_cast<int>(refColor.b));
@@ -76,4 +76,4 @@ void UtilsTest::convertQColorToOgreColor()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::modules::ui::viz
+} //namespace sight::module::ui::viz

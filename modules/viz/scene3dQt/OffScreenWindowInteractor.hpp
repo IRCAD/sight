@@ -31,7 +31,7 @@
 
 #include <memory>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 /// Defines a class to manage an offscreen render window that renders in an Ogre texture.
@@ -62,7 +62,7 @@ public:
     /// Renders immediately the frame in the render window.
     MODULE_VIZ_SCENE3DQT_API virtual void requestRender() override;
 
-    /// Creates the render window in the global OpenGL context, @see modules::viz::scene3dQt::OpenGLContext.
+    /// Creates the render window in the global OpenGL context, @see module::viz::scene3dQt::OpenGLContext.
     MODULE_VIZ_SCENE3DQT_API virtual void createContainer(ui::base::container::fwContainer::sptr, bool, bool) override;
 
     /// Does nothing.
@@ -166,4 +166,4 @@ inline ::Ogre::TexturePtr OffScreenWindowInteractor::getRenderTexture()
     return m_ogreTexture;
 }
 
-} // namespace sight::modules::viz::scene3dQt.
+} // namespace sight::module::viz::scene3dQt.

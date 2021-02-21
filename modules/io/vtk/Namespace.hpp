@@ -21,12 +21,12 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::io::vtk contains reader, writer and helper using the fwVtkIO lib for
+ * @brief       The namespace sight::module::io::vtk contains reader, writer and helper using the fwVtkIO lib for
  * output and input actions between data and the frameWork.
  */
 #pragma once
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
 }

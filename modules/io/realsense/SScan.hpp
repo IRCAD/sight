@@ -35,7 +35,7 @@
 
 namespace fs = std::filesystem;
 
-namespace sight::modules::io::realsense
+namespace sight::module::io::realsense
 {
 
 /**
@@ -103,7 +103,7 @@ namespace sight::modules::io::realsense
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="videoGrabber" type ="::sight::modules::io::realsense::SScan" autoConnect="no">
+   <service uid="videoGrabber" type ="::sight::module::io::realsense::SScan" autoConnect="no">
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
@@ -330,8 +330,8 @@ private:
     /**
      * @brief selectDevice is a private function called on start of the service, it will detect if realsense cameras
      * are plugged in, and show a dialog to user if several realsense cameras are detected.
-     * @note This function may erase previous choice made in modules::io::qt::SCamera.
-     * @todo This function should be merged in modules::io::qt::SCamera, or in a more generic "camera selector".
+     * @note This function may erase previous choice made in module::io::qt::SCamera.
+     * @todo This function should be merged in module::io::qt::SCamera, or in a more generic "camera selector".
      * @return a string containing the serial number of selected camera.
      */
     std::string selectDevice();
@@ -472,4 +472,4 @@ private:
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
 };
-} //namespace sight::modules::io::realsense
+} //namespace sight::module::io::realsense

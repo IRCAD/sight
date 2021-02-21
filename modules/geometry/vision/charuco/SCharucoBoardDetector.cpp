@@ -47,7 +47,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
 const core::com::Slots::SlotKeyType SCharucoBoardDetector::s_CHECK_POINTS_SLOT             = "checkPoints";
@@ -409,4 +409,4 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(const data::Fram
 
 // ----------------------------------------------------------------------------
 
-} //namespace sight::modules::geometry::vision::charuco
+} //namespace sight::module::geometry::vision::charuco

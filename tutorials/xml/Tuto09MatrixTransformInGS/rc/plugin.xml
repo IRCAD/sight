@@ -5,12 +5,12 @@
 -->
 <plugin id="Tuto09MatrixTransformInGS" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>Tuto09MatrixTransformInGS_AppCfg</id>
         <config>
 
@@ -72,7 +72,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto09MatrixTransformInGS</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -112,7 +112,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::SView" >
+            <service uid="mainView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -148,67 +148,67 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="trackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="mesh0Adp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh0Adp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" />
             </service>
 
-            <service uid="transform1Adp" type="::sight::modules::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transform1Adp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="rotation1" />
                 <config layer="default" transform="rotationTransform1" />
             </service>
 
-            <service uid="mesh1Adp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh1Adp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform1" />
             </service>
 
-            <service uid="transform2Adp" type="::sight::modules::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transform2Adp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="rotation2" />
                 <config layer="default" transform="rotationTransform2" />
             </service>
 
-            <service uid="mesh2Adp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh2Adp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform2" />
             </service>
 
-            <service uid="transform3Adp" type="::sight::modules::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <service uid="transform3Adp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
                 <inout key="transform" uid="rotation3" />
                 <config layer="default" transform="rotationTransform3" />
             </service>
 
-            <service uid="mesh3Adp" type="::sight::modules::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+            <service uid="mesh3Adp" type="::sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
                 <inout key="mesh" uid="mesh" />
                 <config layer="default" transform="rotationTransform3" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openMeshAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="matrixEditorSrv" type="::sight::modules::ui::qt::viz::STransformEditor" >
+            <service uid="matrixEditorSrv" type="::sight::module::ui::qt::viz::STransformEditor" >
                 <inout key="matrix" uid="matrixE" />
                 <translation enabled="no" />
                 <rotation enabled="y" min="0" max="360" />
             </service>
 
-            <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="rotation1Srv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
+            <service uid="rotation1Srv" type="::sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixE" autoConnect="yes" />
                     <key uid="matrixA" />
@@ -217,7 +217,7 @@
                 <inout key="output" uid="rotation1" />
             </service>
 
-            <service uid="rotation2Srv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
+            <service uid="rotation2Srv" type="::sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixB" />
                     <key uid="matrixE" autoConnect="yes" />
@@ -229,7 +229,7 @@
                 <inout key="output" uid="rotation2" />
             </service>
 
-            <service uid="rotation3Srv" type="::sight::modules::geometry::base::SConcatenateMatrices" >
+            <service uid="rotation3Srv" type="::sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrixC" />
                     <key uid="matrixE" autoConnect="yes" />

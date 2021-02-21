@@ -34,10 +34,10 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::ui::base::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::ui::base::Plugin");
 
 const std::string Plugin::s_PREF_SERVICE_UID = "PREF_SERVICE_UID";
 
@@ -54,7 +54,7 @@ void Plugin::start()
     m_preferences = data::Composite::New();
 
     service::IService::sptr prefSrv;
-    prefSrv = service::add("::sight::modules::ui::base::SPreferences", s_PREF_SERVICE_UID);
+    prefSrv = service::add("::sight::module::ui::base::SPreferences", s_PREF_SERVICE_UID);
     prefSrv->registerInOut(m_preferences, sight::ui::base::preferences::s_PREFERENCES_KEY);
 
     try
@@ -92,4 +92,4 @@ void Plugin::stop() noexcept
     m_preferences.reset();
 }
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -25,7 +25,7 @@
 #include "modules/ui/qt/activity/DataView.hpp"
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -44,7 +44,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -72,7 +72,7 @@ namespace activity
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service impl="::sight::modules::ui::qt::activity::SWizard">
+   <service impl="::sight::module::ui::qt::activity::SWizard">
      <inout key="seriesDB" uid="..." />
      <ioSelectorConfig>config</ioSelectorConfig>
      <sdbIoSelectorConfig>config</sdbIoSelectorConfig>
@@ -80,9 +80,9 @@ namespace activity
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="data::ImageSeries" icon="module_ui_media-0.1/icons/ImageSeries.svg" />
-         <icon type="data::ModelSeries" icon="module_ui_media-0.1/icons/ModelSeries.svg" />
-     </icons>
+         <icon type="data::ImageSeries" icon="sight_module_ui_icons-0.1/ImageSeries.svg" />
+         <icon type="data::ModelSeries" icon="sight_module_ui_icons-0.1/ModelSeries.svg" />
+     <>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -218,4 +218,4 @@ private:
 };
 
 } // editor
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

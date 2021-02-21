@@ -22,7 +22,7 @@
 
 #include "ActiveWorkersTest.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::service::ut::ActiveWorkersTest );

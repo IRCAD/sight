@@ -44,7 +44,7 @@
 
 #include <string>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 const core::com::Slots::SlotKeyType SMaterial::s_UPDATE_FIELD_SLOT   = "updateField";
@@ -162,9 +162,9 @@ void SMaterial::starting()
             m_texAdaptor->setLayerID(m_layerID);
         }
 
-        m_textureConnection.connect(m_texAdaptor, modules::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG,
+        m_textureConnection.connect(m_texAdaptor, module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG,
                                     this->getSptr(),
-                                    modules::viz::scene3d::adaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+                                    module::viz::scene3d::adaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         if(m_texAdaptor->isStarted())
         {
@@ -261,8 +261,8 @@ void SMaterial::createShaderParameterAdaptors()
 
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
-                this->registerService< sight::modules::viz::scene3d::adaptor::SShaderParameter>(
-                    "::sight::modules::viz::scene3d::adaptor::SShaderParameter", id);
+                this->registerService< sight::module::viz::scene3d::adaptor::SShaderParameter>(
+                    "::sight::module::viz::scene3d::adaptor::SShaderParameter", id);
             srv->registerInOut(obj, "parameter", true);
 
             // Naming convention for shader parameters
@@ -299,10 +299,10 @@ void SMaterial::setTextureName(const std::string& _textureName)
     else
     {
         auto textureAdaptors =
-            this->getRenderService()->getAdaptors< ::sight::modules::viz::scene3d::adaptor::STexture>();
+            this->getRenderService()->getAdaptors< ::sight::module::viz::scene3d::adaptor::STexture>();
         auto result =
             std::find_if(textureAdaptors.begin(), textureAdaptors.end(),
-                         [_textureName](const modules::viz::scene3d::adaptor::STexture::sptr& srv)
+                         [_textureName](const module::viz::scene3d::adaptor::STexture::sptr& srv)
             {
                 return srv->getTextureName() == _textureName;
             });
@@ -323,7 +323,7 @@ void SMaterial::updateField( data::Object::FieldsContainerType _fields)
     {
         if (elt.first == "ogreMaterial")
         {
-            this->unregisterServices("::sight::modules::viz::scene3d::adaptor::SShaderParameter");
+            this->unregisterServices("::sight::module::viz::scene3d::adaptor::SShaderParameter");
             {
                 const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
@@ -376,8 +376,8 @@ void SMaterial::createTextureAdaptor()
     {
         // Creates an Ogre adaptor and associates it with the Sight texture object
         auto texture = material->getDiffuseTexture();
-        m_texAdaptor = this->registerService< modules::viz::scene3d::adaptor::STexture >(
-            "::sight::modules::viz::scene3d::adaptor::STexture");
+        m_texAdaptor = this->registerService< module::viz::scene3d::adaptor::STexture >(
+            "::sight::module::viz::scene3d::adaptor::STexture");
         m_texAdaptor->registerInput(texture, "image", true);
 
         m_texAdaptor->setID(this->getID() + "_" + m_texAdaptor->getID());
@@ -387,9 +387,9 @@ void SMaterial::createTextureAdaptor()
         const std::string materialName = material->getID();
         m_texAdaptor->setTextureName(materialName + "_Texture");
 
-        m_textureConnection.connect(m_texAdaptor, modules::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG,
+        m_textureConnection.connect(m_texAdaptor, module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG,
                                     this->getSptr(),
-                                    modules::viz::scene3d::adaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+                                    module::viz::scene3d::adaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         m_texAdaptor->start();
     }
@@ -407,7 +407,7 @@ void SMaterial::removeTextureAdaptor()
     m_materialFw->setDiffuseTexture(::Ogre::TexturePtr());
 
     m_textureConnection.disconnect();
-    this->unregisterServices("::sight::modules::viz::scene3d::adaptor::STexture");
+    this->unregisterServices("::sight::module::viz::scene3d::adaptor::STexture");
     m_texAdaptor.reset();
 
     // Update the shaders
@@ -421,4 +421,4 @@ void SMaterial::removeTextureAdaptor()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

@@ -44,11 +44,11 @@
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::io::vtk::ut::SeriesDBReaderTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::io::vtk::ut::SeriesDBReaderTest );
 
 static const double epsilon = 0.00001;
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 namespace ut
 {
@@ -105,7 +105,7 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
 
-    service::IService::sptr srv = service::add( "::sight::modules::io::vtk::SSeriesDBReader" );
+    service::IService::sptr srv = service::add( "::sight::module::io::vtk::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
@@ -182,7 +182,7 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     data::SeriesDB::sptr seriesDB       = data::SeriesDB::New();
     seriesDB->getContainer().push_back(imageSeries);
 
-    service::IService::sptr srv = service::add( "::sight::modules::io::vtk::SSeriesDBReader" );
+    service::IService::sptr srv = service::add( "::sight::module::io::vtk::SSeriesDBReader" );
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesDBReader failed", srv);
 
@@ -200,4 +200,4 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::modules::io::vtk
+} //namespace sight::module::io::vtk

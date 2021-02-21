@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig" >
+<extension implements="::sight::service::extension::AppConfig" >
     <id>ExDicomSegmentation_Threshold_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -37,11 +37,11 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Threshold" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
-                    <menuItem name="Export ImageSeries Mask" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="Threshold" icon="sight_module_ui_flaticons-0.1/YellowMenu.svg" />
+                    <menuItem name="Export ImageSeries Mask" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
                 </layout>
             </gui>
             <registry>
@@ -52,7 +52,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="thresholdAct" type="::sight::modules::filter::image::SThreshold" >
+        <service uid="thresholdAct" type="::sight::module::filter::image::SThreshold" >
             <in key="source" uid="${imageSeries}" />
             <out key="target" uid="imageSeriesMask" />
             <config>
@@ -60,7 +60,7 @@
             </config>
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::base::series::SExport" autoConnect="yes" >
+        <service uid="exportAct" type="::sight::module::ui::base::series::SExport" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="series" uid="imageSeriesMask" />
         </service>
@@ -83,7 +83,7 @@
             <parameter replace="patient_name" by="Mask Image" />
         </service>
 
-        <service uid="extractImage1Srv" type="::sight::modules::data::SExtractObj" >
+        <service uid="extractImage1Srv" type="::sight::module::data::SExtractObj" >
            <inout key="source" uid="${imageSeries}" >
                <extract from="@image" />
            </inout>
@@ -92,7 +92,7 @@
            </out>
         </service>
 
-        <service uid="extractImage2Srv" type="::sight::modules::data::SExtractObj" >
+        <service uid="extractImage2Srv" type="::sight::module::data::SExtractObj" >
            <inout key="source" uid="imageSeriesMask" >
                <extract from="@image" />
            </inout>

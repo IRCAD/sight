@@ -27,7 +27,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 namespace updater
@@ -40,7 +40,7 @@ static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::modules::data::IUpdaterSrv, ::sight::modules::data::updater::SObjFromSlot,
+fwServicesRegisterMacro( ::sight::module::data::IUpdaterSrv, ::sight::module::data::updater::SObjFromSlot,
                          ::sight::data::Composite )
 
 //-----------------------------------------------------------------------------
@@ -104,4 +104,4 @@ void SObjFromSlot::remove()
 //-----------------------------------------------------------------------------
 
 } // updater
-} // sight::modules::data
+} // sight::module::data

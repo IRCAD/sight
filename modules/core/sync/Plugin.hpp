@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 /**
@@ -45,4 +45,4 @@ public:
     MODULE_SYNC_API void stop() noexcept;
 };
 
-} // namespace sight::modules::sync
+} // namespace sight::module::sync

@@ -38,10 +38,10 @@
 
 #include <ui/history/ImageDiffCommand.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SPropagator,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::filter::image::SPropagator,
                         ::sight::data::Image)
 
 static const core::com::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
@@ -371,4 +371,4 @@ service::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
     return connections;
 }
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

@@ -37,7 +37,7 @@
 
 #include <sstream>
 
-namespace sight::modules::ui::base::metrics
+namespace sight::module::ui::base::metrics
 {
 
 static const core::com::Slots::SlotKeyType s_REMOVE_LAST_DISTANCE_SLOT = "removeLastDistance";
@@ -221,4 +221,4 @@ void SRemoveDistance::removeLastDistance()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::base::metrics.
+} // namespace sight::module::ui::base::metrics.

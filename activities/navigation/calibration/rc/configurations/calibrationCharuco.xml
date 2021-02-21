@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>calibrationCharuco</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView">
+        <service uid="mainView" type="::sight::module::ui::base::SView">
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
@@ -34,18 +34,18 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar">
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="module_ui_media-0.1/icons/Back.svg" />
-                    <menuItem name="Next" icon="module_ui_media-0.1/icons/Next.svg" />
-                    <menuItem name="Export camera series" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="Previous" icon="sight_module_ui_icons-0.1/Back.svg" />
+                    <menuItem name="Next" icon="sight_module_ui_icons-0.1/Next.svg" />
+                    <menuItem name="Export camera series" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
                     <separator/>
-                    <menuItem name="Export xml/yaml" icon="module_ui_flaticon-0.1/icons/BlueFile.svg" />
+                    <menuItem name="Export xml/yaml" icon="sight_module_ui_flaticons-0.1/BlueFile.svg" />
                     <separator/>
                     <editor/>
                     <separator/>
-                    <menuItem name="Chessboard size" icon="module_ui_flaticon-0.1/icons/GreyChessboard.svg" />
+                    <menuItem name="Chessboard size" icon="sight_module_ui_flaticons-0.1/GreyChessboard.svg" />
                 </layout>
             </gui>
             <registry>
@@ -60,13 +60,13 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::modules::ui::base::com::SSlotCaller">
+        <service uid="writeCalibrationAct" type="::sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationWriterSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="cameraLauncherAct" type="::sight::modules::ui::qt::calibration::SCameraConfigLauncher">
+        <service uid="cameraLauncherAct" type="::sight::module::ui::qt::calibration::SCameraConfigLauncher">
             <inout key="cameraSeries" uid="${cameraSeries}" />
             <inout key="activitySeries" uid="${AS_UID}" />
             <config>
@@ -84,7 +84,7 @@
             </config>
         </service>
 
-        <service uid="chessboardSizeAct" type="::sight::modules::ui::qt::SPreferencesConfiguration">
+        <service uid="chessboardSizeAct" type="::sight::module::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>int</type>
                 <name>Chessboard width</name>
@@ -117,24 +117,24 @@
             </preference>
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::base::series::SExport" autoConnect="yes">
+        <service uid="exportAct" type="::sight::module::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="::sight::modules::ui::base::com::SSignal">
+        <service uid="previousAct" type="::sight::module::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="::sight::modules::ui::base::com::SSignal">
+        <service uid="nextAct" type="::sight::module::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="calibrationWriterSrv" type="::sight::modules::io::vision::SOpenCVWriter">
+        <service uid="calibrationWriterSrv" type="::sight::module::io::vision::SOpenCVWriter">
             <in key="data" uid="${cameraSeries}" />
         </service>
 

@@ -40,10 +40,10 @@
 
 #include <vector>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dicom::SDicomSeriesAnonymizer)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dicom::SDicomSeriesAnonymizer)
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -170,4 +170,4 @@ void SDicomSeriesAnonymizer::anonymize()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

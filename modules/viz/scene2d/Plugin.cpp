@@ -24,13 +24,13 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
 //-----------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::viz::scene2d::Plugin");
+    "::sight::module::viz::scene2d::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -52,4 +52,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

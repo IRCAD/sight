@@ -29,7 +29,7 @@
 #include <core/thread/Worker.hpp>
 #include <core/tools/Os.hpp>
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <QDir>
 #include <QEvent>

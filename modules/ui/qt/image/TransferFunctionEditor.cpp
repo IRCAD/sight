@@ -51,7 +51,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 static const service::IService::KeyType s_TF_POOL_INOUT    = "tfPool";
@@ -60,14 +60,14 @@ static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::TransferFunctionEditor)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::TransferFunctionEditor)
 
 //------------------------------------------------------------------------------
 
 TransferFunctionEditor::TransferFunctionEditor()
 {
     FW_DEPRECATED_MSG(
-        "`modules::ui::qt::image::TransferFunctionEditor` is deprecated, please use `modules::ui::qt::image::STransferFunction` instead.",
+        "`module::ui::qt::image::TransferFunctionEditor` is deprecated, please use `module::ui::qt::image::STransferFunction` instead.",
         "22.0");
 }
 
@@ -410,7 +410,7 @@ void TransferFunctionEditor::importTF()
 
     data::TransferFunction::sptr tf         = data::TransferFunction::New();
     io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-        "::sight::modules::io::atoms::SReader");
+        "::sight::module::io::atoms::SReader");
 
     reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
@@ -440,7 +440,7 @@ void TransferFunctionEditor::importTF()
 void TransferFunctionEditor::exportTF()
 {
     io::base::service::IWriter::sptr writer = service::add< io::base::service::IWriter >(
-        "::sight::modules::io::atoms::SWriter");
+        "::sight::module::io::atoms::SWriter");
 
     writer->registerInput(m_selectedTF, io::base::service::s_DATA_KEY);
 
@@ -490,7 +490,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
         data::TransferFunction::sptr tf         = data::TransferFunction::New();
         io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
-            "::sight::modules::io::atoms::SReader");
+            "::sight::module::io::atoms::SReader");
         reader->registerInOut(tf, io::base::service::s_DATA_KEY);
 
         core::runtime::EConfigurationElement::sptr srvCfg  = core::runtime::EConfigurationElement::New("service");

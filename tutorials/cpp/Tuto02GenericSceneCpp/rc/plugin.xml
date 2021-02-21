@@ -1,11 +1,9 @@
-<plugin id="Tuto02GenericSceneCpp" class="::Tuto02GenericSceneCpp::Plugin"  version="@PROJECT_VERSION@" >
+<plugin id="Tuto02GenericSceneCpp" library="true" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
 
-    <library name="Tuto02GenericSceneCpp" />
-    
 </plugin>

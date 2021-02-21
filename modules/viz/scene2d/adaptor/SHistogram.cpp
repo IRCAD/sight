@@ -33,9 +33,9 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SHistogram)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SHistogram)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
 namespace adaptor
@@ -230,4 +230,4 @@ service::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
 
 }   // namespace adaptor
 
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

@@ -20,11 +20,11 @@
  *
  ***********************************************************************/
 /**
- * @brief The namespace sight::modules::geometry::vision::charuco contains services to calibrate cameras.
+ * @brief The namespace sight::module::geometry::vision::charuco contains services to calibrate cameras.
  */
 #pragma once
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

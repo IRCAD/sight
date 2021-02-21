@@ -37,12 +37,12 @@
 
 #include <boost/foreach.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::data::SSeriesSignal, ::sight::data::SeriesDB )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::data::SSeriesSignal, ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
 
@@ -149,4 +149,4 @@ service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

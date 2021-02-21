@@ -28,7 +28,7 @@
 
 #include <io/base/service/IWriter.hpp>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::video::SFrameWriter">
+   <service type="::sight::module::io::video::SFrameWriter">
        <in key="data" uid="..." autoConnect="yes" />
        <windowTitle>Select the image file to load</windowTitle>
        <format>.tiff</format>

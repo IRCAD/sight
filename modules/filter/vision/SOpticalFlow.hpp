@@ -28,7 +28,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sight::modules::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::sight::modules::filter::vision::SOpticalFlow" worker="ofWorker  >
+     <service uid="..." type="::sight::module::filter::vision::SOpticalFlow" worker="ofWorker  >
         <in key="timeline" uid="..." autoConnect="yes" />
         <config latency="333" scaleFactor="3.6" />
      </service>
@@ -117,4 +117,4 @@ private:
     core::HiResClock::HiResClockType m_lastTimestamp;
 };
 
-} //namespace sight::modules::filter::vision
+} //namespace sight::module::filter::vision

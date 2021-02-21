@@ -40,7 +40,7 @@
 #include <QMenu>
 #include <QTimer>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -1926,4 +1926,4 @@ void SMultipleTF::addTrapeze(const sight::viz::scene2d::data::Event& _event)
 }
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

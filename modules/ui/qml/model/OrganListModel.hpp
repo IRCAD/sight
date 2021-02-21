@@ -29,7 +29,7 @@
 #include <QAbstractListModel>
 #include <QObject>
 
-namespace sight::modules::ui::qml::model
+namespace sight::module::ui::qml::model
 {
 
 /**

@@ -32,7 +32,7 @@
 
 #include <memory>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -44,7 +44,7 @@ namespace sight::modules::viz::scene3d::adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SText">
+    <service type="::sight::module::viz::scene3d::adaptor::SText">
         <in key="object" uid="..." />
         <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32"
                 hAlign="right" vAlign="bottom" color="#ff3396" />
@@ -54,7 +54,7 @@ namespace sight::modules::viz::scene3d::adaptor
  * Alternatively, you can set the text in the service's configuration :
  *
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SText">
+    <service type="::sight::module::viz::scene3d::adaptor::SText">
         <text>Hello World!</text>
         <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32"
                 hAlign="right" vAlign="bottom" color="#ff3396" />
@@ -148,4 +148,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

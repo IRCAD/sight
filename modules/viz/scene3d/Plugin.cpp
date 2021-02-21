@@ -26,13 +26,13 @@
 
 #include <OgreLogManager.h>
 
-namespace sight::modules::viz::scene3d
+namespace sight::module::viz::scene3d
 {
 
 //------------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::viz::scene3d::Plugin");
+    "::sight::module::viz::scene3d::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -91,4 +91,4 @@ void SightOgreListener::messageLogged(const ::Ogre::String& _message,
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d.
+} // namespace sight::module::viz::scene3d.

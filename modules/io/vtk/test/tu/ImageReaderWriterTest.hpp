@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 namespace ut
 {
@@ -66,4 +66,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::modules::io::vtk
+} //namespace sight::module::io::vtk

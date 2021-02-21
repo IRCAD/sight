@@ -35,7 +35,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace video
 {
@@ -100,7 +100,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="::ui::base::editor::IEditor" impl="::sight::modules::ui::qt::video::SSlider"
+        <service uid="..." type="::ui::base::editor::IEditor" impl="::sight::module::ui::qt::video::SSlider"
      * autoConnect="no"/>
        @endcode
      */
@@ -135,4 +135,4 @@ private:
 };
 
 } // video
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

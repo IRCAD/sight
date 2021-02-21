@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig" >
+<extension implements="::sight::service::extension::AppConfig" >
     <id>ExDicomSegmentation_Base_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -27,7 +27,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::ui::base::SView" >
+        <service uid="containerView" type="::sight::module::ui::base::SView" >
             <gui>
                 <toolBar/>
                 <layout type="::sight::ui::base::LineLayoutManager" >
@@ -44,13 +44,13 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
-                    <menuItem name="Export" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
-                    <menuItem name="Threshold" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
-                    <menuItem name="Mesher" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
+                    <menuItem name="Import" icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
+                    <menuItem name="Export" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
+                    <menuItem name="Threshold" icon="sight_module_ui_flaticons-0.1/YellowMenu.svg" />
+                    <menuItem name="Mesher" icon="sight_module_ui_flaticons-0.1/YellowMenu.svg" />
                 </layout>
             </gui>
             <registry>
@@ -63,12 +63,12 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="::sight::modules::ui::base::series::SDBMerger" >
+        <service uid="importAct" type="::sight::module::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
+        <service uid="exportAct" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -83,7 +83,7 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
+        <service uid="mesherAct" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -96,7 +96,7 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="::sight::modules::ui::qt::activity::SLauncher" autoConnect="yes" >
+        <service uid="thresholdAct" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -111,12 +111,12 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selectorSrv" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes" >
+        <service uid="selectorSrv" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="selection" uid="selection" />
         </service>
 
-        <service uid="seriesViewerSrv" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes" >
+        <service uid="seriesViewerSrv" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes" >
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>

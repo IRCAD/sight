@@ -47,9 +47,9 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::vision::SChessboardReprojection)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::vision::SChessboardReprojection)
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
@@ -327,4 +327,4 @@ service::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::modules::geometry::vision
+} //namespace sight::module::geometry::vision

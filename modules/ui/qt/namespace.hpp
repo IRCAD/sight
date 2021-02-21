@@ -23,10 +23,10 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qt contains helpers and services allowing to launch activities.
+ * @brief The namespace sight::module::ui::qt contains helpers and services allowing to launch activities.
  *
  **/
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

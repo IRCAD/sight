@@ -25,7 +25,7 @@
 #include <core/com/Slot.hxx>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/Proxy.hpp>
 
 using namespace sight;
@@ -73,76 +73,76 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
     // GUI
-    auto frameSrv = m_appManager->addService("::sight::modules::ui::base::SFrame", true, false);
-    auto menuBar  = m_appManager->addService("::sight::modules::ui::base::SMenuBar", "menuBar", true,
+    auto frameSrv = m_appManager->addService("::sight::module::ui::base::SFrame", true, false);
+    auto menuBar  = m_appManager->addService("::sight::module::ui::base::SMenuBar", "menuBar", true,
                                              false);
     auto menuFile =
-        m_appManager->addService("::sight::modules::ui::base::SMenu", "menuFile", true, false);
-    auto menuMesher = m_appManager->addService("::sight::modules::ui::base::SMenu", "menuMesher", true,
+        m_appManager->addService("::sight::module::ui::base::SMenu", "menuFile", true, false);
+    auto menuMesher = m_appManager->addService("::sight::module::ui::base::SMenu", "menuMesher", true,
                                                false);
-    auto mainView = m_appManager->addService("::sight::modules::ui::base::SView", "mainView", true,
+    auto mainView = m_appManager->addService("::sight::module::ui::base::SView", "mainView", true,
                                              false);
-    auto multiViewOrgans = m_appManager->addService("::sight::modules::ui::base::SView", "multiViewOrgans",
+    auto multiViewOrgans = m_appManager->addService("::sight::module::ui::base::SView", "multiViewOrgans",
                                                     true,
                                                     false);
-    auto sceneEditorsView = m_appManager->addService("::sight::modules::ui::base::SView",
+    auto sceneEditorsView = m_appManager->addService("::sight::module::ui::base::SView",
                                                      "scenesceneEditorsView",
                                                      true, false);
 
     // actions
-    auto actionOpenImage = m_appManager->addService("::sight::modules::ui::base::com::SStarter", "actionOpenImage",
+    auto actionOpenImage = m_appManager->addService("::sight::module::ui::base::com::SStarter", "actionOpenImage",
                                                     true,
                                                     false);
-    auto actionSaveModelSeries = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
+    auto actionSaveModelSeries = m_appManager->addService("::sight::module::ui::base::com::SStarter",
                                                           "actionSaveModelSeries",
                                                           false,
                                                           false);
-    auto actionCreateMesh50 = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
+    auto actionCreateMesh50 = m_appManager->addService("::sight::module::ui::base::com::SStarter",
                                                        "actionCreateMesh50",
                                                        true,
                                                        false);
-    auto actionCreateMesh80 = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
+    auto actionCreateMesh80 = m_appManager->addService("::sight::module::ui::base::com::SStarter",
                                                        "actionCreateMesh80",
                                                        true,
                                                        false);
-    auto actionQuit = m_appManager->addService("::sight::modules::ui::base::SQuit", "actionQuit", true, false);
+    auto actionQuit = m_appManager->addService("::sight::module::ui::base::SQuit", "actionQuit", true, false);
 
     //readers/writers
-    auto imageSeriesReader = m_appManager->addService("::sight::modules::ui::base::io::SSelector",
+    auto imageSeriesReader = m_appManager->addService("::sight::module::ui::base::io::SSelector",
                                                       "imageSeriesReader",
                                                       true, false);
-    auto modelSeriesWriter = m_appManager->addService("::sight::modules::ui::base::io::SSelector",
+    auto modelSeriesWriter = m_appManager->addService("::sight::module::ui::base::io::SSelector",
                                                       "modelSeriesWriter",
                                                       true, false);
 
     // extrator/converter
-    auto extractImage         = m_appManager->addService("::sight::modules::data::SExtractObj", true, true);
-    auto medicaImageConverter = m_appManager->addService("::sight::modules::data::MedicalImageSrv", true);
+    auto extractImage         = m_appManager->addService("::sight::module::data::SExtractObj", true, true);
+    auto medicaImageConverter = m_appManager->addService("::sight::module::data::MedicalImageSrv", true);
 
     //editors
-    auto snapshotEditor = m_appManager->addService("::sight::modules::ui::qt::viz::SnapshotEditor", "snapshotEditor",
+    auto snapshotEditor = m_appManager->addService("::sight::module::ui::qt::viz::SnapshotEditor", "snapshotEditor",
                                                    true,
                                                    false);
-    auto sliceListEditor = m_appManager->addService("::sight::modules::ui::qt::SSelectionMenuButton",
+    auto sliceListEditor = m_appManager->addService("::sight::module::ui::qt::SSelectionMenuButton",
                                                     "sliceListEditor", true, false);
-    auto showScanEditor = m_appManager->addService("::sight::modules::ui::qt::com::SSignalButton", "showScanEditor",
+    auto showScanEditor = m_appManager->addService("::sight::module::ui::qt::com::SSignalButton", "showScanEditor",
                                                    true,
                                                    false);
-    auto sliderIndexEditor = m_appManager->addService("::sight::modules::ui::qt::image::SliceIndexPositionEditor",
+    auto sliderIndexEditor = m_appManager->addService("::sight::module::ui::qt::image::SliceIndexPositionEditor",
                                                       "sliderIndexEditor", true, false);
-    auto listOrganEditor = m_appManager->addService("::sight::modules::ui::qt::model::SModelSeriesList",
+    auto listOrganEditor = m_appManager->addService("::sight::module::ui::qt::model::SModelSeriesList",
                                                     "listOrganEditor", true, false);
     auto organMaterialEditor = m_appManager->addService(
-        "::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor",
+        "::sight::module::ui::qt::reconstruction::SOrganMaterialEditor",
         "organMaterialEditor", true, false);
     auto representationEditor = m_appManager->addService(
-        "::sight::modules::ui::qt::reconstruction::RepresentationEditor",
+        "::sight::module::ui::qt::reconstruction::RepresentationEditor",
         "representationEditor", true, false);
-    auto progressBar = m_appManager->addService("::sight::modules::ui::base::SJobBar", true, false);
+    auto progressBar = m_appManager->addService("::sight::module::ui::base::SJobBar", true, false);
 
     // meshers
-    auto mesher50 = m_appManager->addService("::sight::modules::filter::mesh::SVTKMesher", "mesher50", true, false);
-    auto mesher80 = m_appManager->addService("::sight::modules::filter::mesh::SVTKMesher", "mesher80", true, false);
+    auto mesher50 = m_appManager->addService("::sight::module::filter::mesh::SVTKMesher", "mesher50", true, false);
+    auto mesher80 = m_appManager->addService("::sight::module::filter::mesh::SVTKMesher", "mesher80", true, false);
 
     // generic scene
     auto renderSrv          = m_appManager->addService("::fwRenderVTK::SRender", "genericScene", true, false);
@@ -380,8 +380,8 @@ void Plugin::initialize()
 
     service::IService::ConfigType showScanEditorConfig;
     showScanEditorConfig.add("config.checkable", true);
-    showScanEditorConfig.add("config.icon", "module_ui_media-0.1/icons/sliceHide.png");
-    showScanEditorConfig.add("config.icon2", "module_ui_media-0.1/icons/sliceShow.png");
+    showScanEditorConfig.add("config.icon", "module_ui_icons-0.1/sliceHide.png");
+    showScanEditorConfig.add("config.icon2", "module_ui_icons-0.1/sliceShow.png");
     showScanEditorConfig.add("config.iconWidth", "40");
     showScanEditorConfig.add("config.iconHeight", "16");
     showScanEditorConfig.add("config.checked", true);
@@ -463,7 +463,7 @@ void Plugin::initialize()
     ****************************************************************************************/
 
     auto worker         = core::thread::Worker::New();
-    auto workerRegistry = service::registry::ActiveWorkers::getDefault();
+    auto workerRegistry = core::thread::ActiveWorkers::getDefault();
     workerRegistry->addWorker("Tuto09", worker);
 
     auto proxy = service::registry::Proxy::getDefault();
@@ -551,7 +551,7 @@ void Plugin::uninitialize() noexcept
     proxy->disconnect(s_REC_SELECTED_CHANNEL, m_slotRecSelected);
     proxy->disconnect(s_EMPTY_SELECTION_CHANNEL, m_slotEmptySelection);
 
-    auto workerRegistry = service::registry::ActiveWorkers::getDefault();
+    auto workerRegistry = core::thread::ActiveWorkers::getDefault();
     auto worker         = workerRegistry->getWorker("Tuto09");
     worker->stop();
 

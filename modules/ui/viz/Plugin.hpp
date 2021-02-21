@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 /**
  * @brief   This class is started when the module is loaded.
@@ -46,4 +46,4 @@ struct MODULE_UI_VIZ_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

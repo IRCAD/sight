@@ -28,7 +28,7 @@
 #include <core/tools/fwID.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -84,7 +84,7 @@ void IMenuBar::create()
     ui::base::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
 
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
         {
             m_layoutManager->createLayout(menuBar);
         }) ).wait();
@@ -98,7 +98,7 @@ void IMenuBar::destroy()
 {
     m_registrar->unmanage();
 
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
         })).wait();
@@ -112,14 +112,14 @@ void IMenuBar::menuServiceStopping(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 m_layoutManager->menuIsVisible(menu, false);
             }) ).wait();
     }
     else
     {
-        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >(
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >(
                                                                                  [&]
             {
                 m_layoutManager->menuIsEnabled(menu, false);
@@ -135,14 +135,14 @@ void IMenuBar::menuServiceStarting(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuIsVisible(menu, true);
             })).wait();
     }
     else
     {
-        service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_layoutManager->menuIsEnabled(menu, true);
             }) ).wait();

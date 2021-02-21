@@ -21,10 +21,10 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::io::video supplies services related on video.
+ * @brief       The namespace sight::module::io::video supplies services related on video.
  */
 #pragma once
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 }

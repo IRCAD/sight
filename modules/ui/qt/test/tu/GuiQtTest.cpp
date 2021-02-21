@@ -29,16 +29,16 @@
 #include <service/AppConfigManager.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <QApplication>
 #include <QMainWindow>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::ui::qt::ut::GuiQtTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::ui::qt::ut::GuiQtTest );
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace ut
 {
@@ -69,7 +69,7 @@ void GuiQtTest::testDefaultFrame()
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
-    service::IService::sptr srv = service::add( "::sight::modules::ui::base::SFrame" );
+    service::IService::sptr srv = service::add( "::sight::module::ui::base::SFrame" );
     CPPUNIT_ASSERT(srv);
 
     srv->setConfiguration( frameConfig );
@@ -90,4 +90,4 @@ void GuiQtTest::testDefaultFrame()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

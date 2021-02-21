@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 using namespace core::runtime::utils;
-static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::dicom::Plugin");
+static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::dicom::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -48,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

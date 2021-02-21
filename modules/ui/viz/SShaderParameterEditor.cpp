@@ -40,10 +40,10 @@
 
 #include <ui/base/GuiRegistry.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SShaderParameterEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SShaderParameterEditor,
                          ::sight::data::Reconstruction)
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
@@ -146,12 +146,12 @@ void SShaderParameterEditor::updateGuiInfo()
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
 
     service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
-        "::sight::modules::viz::scene3d::adaptor::SMaterial");
+        "::sight::module::viz::scene3d::adaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
     if(srvVec.empty())
     {
-        SLM_WARN("No modules::viz::scene3d::adaptor::SMaterial found in the application");
+        SLM_WARN("No module::viz::scene3d::adaptor::SMaterial found in the application");
         return;
     }
 
@@ -175,7 +175,7 @@ void SShaderParameterEditor::updateGuiInfo()
     for (const auto& wParamSrv : matService->getRegisteredServices())
     {
         const auto paramSrv = wParamSrv.lock();
-        if (paramSrv->getClassname() == "::sight::modules::viz::scene3d::adaptor::SShaderParameter")
+        if (paramSrv->getClassname() == "::sight::module::viz::scene3d::adaptor::SShaderParameter")
         {
             /// Filter object types
             const data::Object::csptr shaderObj =
@@ -209,7 +209,7 @@ void SShaderParameterEditor::updateGuiInfo()
 
     ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-    auto editorService = service::add("::sight::modules::ui::qt::SParameters", m_editorInfo.uuid );
+    auto editorService = service::add("::sight::module::ui::qt::SParameters", m_editorInfo.uuid );
     m_editorInfo.service = editorService;
 
     service::IService::ConfigType editorConfig;
@@ -218,10 +218,10 @@ void SShaderParameterEditor::updateGuiInfo()
     for (auto wAdaptor : matService->getRegisteredServices())
     {
         const auto adaptor = wAdaptor.lock();
-        if (adaptor->getClassname() == "::sight::modules::viz::scene3d::adaptor::SShaderParameter")
+        if (adaptor->getClassname() == "::sight::module::viz::scene3d::adaptor::SShaderParameter")
         {
             auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicCast(adaptor);
-            auto paramConfig  = modules::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
+            auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                         m_editorInfo.service.lock(),
                                                                                         m_editorInfo.connections);
 
@@ -251,4 +251,4 @@ void SShaderParameterEditor::fillGui()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

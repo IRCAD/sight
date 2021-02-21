@@ -25,7 +25,7 @@
 /**
  * @brief ioIGTL namespace contain network listener/sender using OpenIGTLink library
  **/
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

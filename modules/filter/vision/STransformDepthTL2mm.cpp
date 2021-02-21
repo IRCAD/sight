@@ -30,7 +30,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
@@ -39,7 +39,7 @@ static const service::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries"
 static const service::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
 static const service::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::STransformDepthTL2mm)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::STransformDepthTL2mm)
 
 //------------------------------------------------------------------------------
 
@@ -147,4 +147,4 @@ service::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() 
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

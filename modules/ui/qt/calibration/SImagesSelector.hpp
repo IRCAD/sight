@@ -37,7 +37,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 /**
@@ -51,7 +51,7 @@ namespace sight::modules::ui::qt::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="SImagesSelectorInstance" type="::sight::modules::ui::qt::calibration::SImagesSelector">
+        <service uid="SImagesSelectorInstance" type="::sight::module::ui::qt::calibration::SImagesSelector">
             <in key="frameTL" uid="..." />
             <inout key="selection" uid="..." />
        </service>

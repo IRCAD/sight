@@ -33,8 +33,8 @@
 #include <data/Vector.hpp>
 
 #include <service/registry/ObjectService.hpp>
-#include <service/registry/ServiceConfig.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Config.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <io/http/exceptions/Base.hpp>
 #include <io/http/helper/Series.hpp>
@@ -46,7 +46,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 //------------------------------------------------------------------------------
@@ -68,13 +68,13 @@ SSeriesPuller::~SSeriesPuller() noexcept
 void SSeriesPuller::configuring()
 {
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service modules::io::dicomweb::SSeriesPuller must have a \"config\" element.", config);
+    SLM_ASSERT("The service module::io::dicomweb::SSeriesPuller must have a \"config\" element.", config);
 
     bool success;
 
     // Dicom Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" in the modules::io::dicomweb::SSeriesPuller config element.", success);
+    SLM_ASSERT("It should be a \"dicomReader\" in the module::io::dicomweb::SSeriesPuller config element.", success);
 
     // Dicom Reader Config
     std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
@@ -109,11 +109,11 @@ void SSeriesPuller::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    service::registry::ServiceFactory::sptr srvFactory = service::registry::ServiceFactory::getDefault();
+    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
     m_dicomReader =
         sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT(
-        "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in modules::io::dicomweb::SSeriesPuller.",
+        "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::SSeriesPuller.",
         m_dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
                                   service::IService::AccessType::INOUT, m_dicomReader);
@@ -122,7 +122,7 @@ void SSeriesPuller::starting()
     {
         // Get the config
         core::runtime::ConfigurationElement::csptr readerConfig =
-            service::registry::ServiceConfig::getDefault()->getServiceConfig(
+            service::extension::Config::getDefault()->getServiceConfig(
                 m_dicomReaderSrvConfig, "::io::base::service::IReader");
 
         SLM_ASSERT("Sorry, there is no service configuration "
@@ -394,4 +394,4 @@ void SSeriesPuller::displayErrorMessage(const std::string& message) const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

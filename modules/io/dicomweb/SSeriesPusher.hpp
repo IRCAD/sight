@@ -38,7 +38,7 @@ namespace sight::data
 class Series;
 }
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::io::dicomweb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::dicomweb::SSeriesPusher">
+        <service type="::sight::module::io::dicomweb::SSeriesPusher">
             <in key="selectedSeries" uid="..." />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
        </service>
@@ -125,4 +125,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

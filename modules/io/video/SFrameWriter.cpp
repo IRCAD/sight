@@ -44,10 +44,10 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::video::SFrameWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::video::SFrameWriter,
                          ::sight::data::FrameTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
@@ -318,4 +318,4 @@ service::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

@@ -41,10 +41,10 @@
 
 #include "SShowAbout.hpp"
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::qt::SShowAbout,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::qt::SShowAbout,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -178,4 +178,4 @@ void SShowAbout::onUrlClicked(const QUrl& url )
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

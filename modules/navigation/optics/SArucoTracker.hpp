@@ -33,7 +33,7 @@
 
 #include <opencv2/aruco.hpp>
 
-namespace sight::modules::navigation::optics
+namespace sight::module::navigation::optics
 {
 
 /**
@@ -53,7 +53,7 @@ namespace sight::modules::navigation::optics
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::navigation::optics::SArucoTracker" >
+        <service uid="..." type="::sight::module::navigation::optics::SArucoTracker" >
             <in key="timeline" uid="..." autoConnect="yes"/>
             <in key="camera" uid="..." />
             <inout group="tagTL" >
@@ -72,7 +72,7 @@ namespace sight::modules::navigation::optics
 
         or
 
-        <service uid="..." type="::sight::modules::navigation::optics::SArucoTracker" >
+        <service uid="..." type="::sight::module::navigation::optics::SArucoTracker" >
             <in key="camera" uid="..." />
             <inout key="frame" uid="..." autoConnect="yes" />
             <inout group="markerMap">
@@ -211,4 +211,4 @@ private:
     DetectionDoneSignalType::sptr m_sigDetectionDone;
 };
 
-} // namespace sight::modules::navigation::optics
+} // namespace sight::module::navigation::optics

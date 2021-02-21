@@ -39,4 +39,4 @@ ICalibration::~ICalibration() noexcept
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

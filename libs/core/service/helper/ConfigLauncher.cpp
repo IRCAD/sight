@@ -138,7 +138,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
     SLM_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1 );
 
     const service::IService::ConfigType& appConfigCfg = srvconfig.get_child("appConfig");
-    m_appConfig = activity::registry::ActivityAppConfig(appConfigCfg);
+    m_appConfig = activity::extension::ActivityAppConfig(appConfigCfg);
 }
 
 //------------------------------------------------------------------------------
@@ -146,11 +146,11 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
 void ConfigLauncher::startConfig(service::IService::sptr _srv,
                                  const FieldAdaptorType& _optReplaceMap )
 {
-    typedef activity::registry::ActivityAppConfig AppConfig;
+    typedef activity::extension::ActivityAppConfig AppConfig;
     FieldAdaptorType replaceMap(_optReplaceMap);
 
     // Generate generic UID
-    const std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier( _srv->getID() );
+    const std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier( _srv->getID() );
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
     for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)

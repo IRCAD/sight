@@ -31,7 +31,7 @@ namespace sight::core::thread
 class Worker;
 } //namespace thread
 
-namespace sight::modules::ui::console
+namespace sight::module::ui::console
 {
 /**
  * @brief   This class is called when the console module is loaded.
@@ -59,4 +59,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::console
+} // namespace sight::module::ui::console

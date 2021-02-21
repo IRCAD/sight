@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/MessageDialog.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -53,7 +53,7 @@ IMessageDialog::Buttons MessageDialog::showMessageDialog(
 
 MessageDialog::MessageDialog()
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMessageDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::IMessageDialog::dynamicCast(guiObj);
@@ -65,7 +65,7 @@ MessageDialog::MessageDialog()
 MessageDialog::MessageDialog(
     const std::string& title, const std::string& message, ui::base::dialog::IMessageDialog::Icons icon)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IMessageDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::IMessageDialog::dynamicCast(guiObj);
@@ -89,7 +89,7 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle( const std::string& title )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -102,7 +102,7 @@ void MessageDialog::setTitle( const std::string& title )
 
 void MessageDialog::setMessage( const std::string& msg )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -115,7 +115,7 @@ void MessageDialog::setMessage( const std::string& msg )
 
 void MessageDialog::setIcon( ui::base::dialog::IMessageDialog::Icons icon )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -128,7 +128,7 @@ void MessageDialog::setIcon( ui::base::dialog::IMessageDialog::Icons icon )
 
 void MessageDialog::addButton( ui::base::dialog::IMessageDialog::Buttons button )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -141,7 +141,7 @@ void MessageDialog::addButton( ui::base::dialog::IMessageDialog::Buttons button 
 
 void MessageDialog::setDefaultButton( ui::base::dialog::IMessageDialog::Buttons button )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -154,7 +154,7 @@ void MessageDialog::setDefaultButton( ui::base::dialog::IMessageDialog::Buttons 
 
 void MessageDialog::addCustomButton(const std::string& label, std::function<void()> clickedFn)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>( std::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -172,7 +172,7 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
         typedef ui::base::dialog::IMessageDialog::Buttons R;
 
         std::function<R()> func = std::bind(&IMessageDialog::show, m_implementation);
-        std::shared_future<R> f = service::registry::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
+        std::shared_future<R> f = core::thread::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
         f.wait();
 
         return f.get();

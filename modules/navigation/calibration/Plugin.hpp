@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::navigation::calibration
+namespace sight::module::navigation::calibration
 {
 
 struct Plugin : public core::runtime::Plugin
@@ -52,4 +52,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace sight::modules::navigation::calibration
+} // namespace sight::module::navigation::calibration

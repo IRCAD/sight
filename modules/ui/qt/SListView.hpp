@@ -29,14 +29,14 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 /**
  * @brief   This editor allows to draw a list.
  * The currently selected item can be deleted by pressing on "del" key
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::qt::SListView"/>
+    <service uid="..." type="::sight::module::ui::qt::SListView"/>
     </service>
    @endcode
  *
@@ -127,4 +127,4 @@ private Q_SLOTS:
     void onItemDoubleClicked(QListWidgetItem* item);
 };
 
-}//namespace sight::modules::ui::qt
+}//namespace sight::module::ui::qt

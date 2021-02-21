@@ -32,10 +32,10 @@
 #include <data/tools/helper/Composite.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 #include <service/registry/ObjectService.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
@@ -45,7 +45,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::SPushObject,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SPushObject,
                          ::sight::data::Composite )
 
 //------------------------------------------------------------------------------
@@ -139,4 +139,4 @@ service::IService::KeyConnectionsMap SPushObject::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

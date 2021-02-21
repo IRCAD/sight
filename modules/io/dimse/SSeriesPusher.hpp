@@ -39,7 +39,7 @@ namespace sight::data
 class Series;
 }
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /**
@@ -53,7 +53,7 @@ namespace sight::modules::io::dimse
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::dimse::SSeriesPusher">
+        <service type="::sight::module::io::dimse::SSeriesPusher">
             <in key="pacsConfig" uid="..." />
             <in key="selectedSeries" uid="..." />
        </service>
@@ -174,4 +174,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::dimse
+} // namespace sight::module::io::dimse

@@ -34,7 +34,7 @@
 #include <vtkMatrix4x4.h>
 #include <vtkSmartPointer.h>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::filter::image::SPlaneSlicer" autoConnect="yes">
+   <service type="::sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
        <in key="image" uid="..." />
        <in key="imageExtent" uid="..." />
        <in key="axes" uid="..." />
@@ -125,4 +125,4 @@ private:
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 };
 
-} //namespace sight::modules::filter::image
+} //namespace sight::module::filter::image

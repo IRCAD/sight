@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 #include "service/helper/Config.hpp"
-#include "service/registry/ServiceConfig.hpp"
+#include "service/extension/Config.hpp"
 
 #include "service/registry/Proxy.hpp"
 
@@ -327,7 +327,7 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
     core::runtime::ConfigurationElement::csptr cfgElem = srvElem;
     if (!config.empty())
     {
-        const auto srvCfgFactory = service::registry::ServiceConfig::getDefault();
+        const auto srvCfgFactory = service::extension::Config::getDefault();
         cfgElem = srvCfgFactory->getServiceConfig(config, srvConfig.m_type);
     }
     srvConfig.m_config = cfgElem;

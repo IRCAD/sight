@@ -23,7 +23,7 @@
 #pragma once
 
 #include "service/config.hpp"
-#include "service/registry/AppInfo.hpp"
+#include "service/extension/AppConfig.hpp"
 
 #include <core/mt/types.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
@@ -39,12 +39,42 @@
 namespace sight::service
 {
 
-namespace registry
+/// Associations of <pattern, value>.
+typedef std::map< std::string, std::string > FieldAdaptorType;
+
+namespace extension
 {
 
 /**
+ */
+class SERVICE_CLASS_API AppInfo : public core::BaseObject
+{
+public:
+
+    fwCoreClassMacro(AppInfo, core::BaseObject, new AppInfo)
+
+    /// Constructor, do nothing.
+    AppInfo()
+    {
+    }
+
+    /// Destructor, do nothing.
+    ~AppInfo() override
+    {
+    }
+
+    std::string group;
+    std::string desc;
+    typedef std::map< std::string, std::string > ParametersType;
+    ParametersType parameters;
+    core::runtime::ConfigurationElement::csptr config;
+    std::string moduleId; ///< Module identifier (used to start the module when the appConfig is launched)
+    std::string moduleVersion; ///< Module version (used to start the module when the appConfig is launched)
+};
+
+/**
  * @brief This class allows to register all the configuration which has the point extension
- *        "::sight::service::registry::AppConfig".
+ *        "::sight::service::extension::AppConfig".
  */
 class SERVICE_CLASS_API AppConfig : public core::BaseObject
 {
@@ -192,6 +222,6 @@ private:
     static UidDefinitionType s_uidDefinitionDictionary;
 };
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::service

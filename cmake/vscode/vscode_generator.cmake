@@ -3,23 +3,6 @@
 function(vscodeGenerator)
 
     unset(REPO_FOLDERS)
-    foreach(REPOSITORY ${ADDITIONAL_REPOSITORIES_FILES})
-        file(READ ${REPOSITORY} REPO_RAW_NAME)
-        string(STRIP ${REPO_RAW_NAME} REPO_RAW_NAME)
-        string(TOUPPER ${REPO_RAW_NAME} REPO_NAME)
-        get_filename_component(REPO_DIR ${REPOSITORY} DIRECTORY)
-        get_filename_component(REPO_DIR ${REPO_DIR} ABSOLUTE)
-
-        if(${REPO_NAME} STREQUAL "SIGHT" OR BUILD_${REPO_NAME})
-            string(CONCAT REPO_FOLDER
-                "{\n"
-                "    \"name\": \"${REPO_RAW_NAME}\",\n"
-                "    \"path\": \"${REPO_DIR}\"\n"
-                "},\n"
-            )
-        endif()
-        string(APPEND REPO_FOLDERS ${REPO_FOLDER})
-    endforeach()
 
     if(WIN32)
         set(DBG_TYPE "cppvsdbg")

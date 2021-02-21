@@ -41,12 +41,12 @@ const
     validation.first  = true;
     validation.second = "";
 
-    activity::registry::ActivityInfo info;
-    info = activity::registry::Activity::getDefault()->getInfo(activity->getActivityConfigId());
+    activity::extension::ActivityInfo info;
+    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     data::Composite::sptr composite = activity->getData();
 
-    for (activity::registry::ActivityRequirement req: info.requirements)
+    for (activity::extension::ActivityRequirement req: info.requirements)
     {
         if ((req.minOccurs == 1 && req.maxOccurs == 1) ||
             (req.minOccurs == 0 && req.maxOccurs == 0) ||
@@ -160,9 +160,9 @@ const
                     {
                         std::string key        = elt.first;
                         data::Object::sptr obj = elt.second;
-                        activity::registry::ActivityRequirementKey reqKey;
+                        activity::extension::ActivityRequirementKey reqKey;
                         bool keyIsFound = false;
-                        for (activity::registry::ActivityRequirementKey keyElt: req.keys)
+                        for (activity::extension::ActivityRequirementKey keyElt: req.keys)
                         {
                             if (key == keyElt.key)
                             {
@@ -221,13 +221,13 @@ IValidator::ValidationType IActivityValidator::checkParameters(const data::Activ
     validation.first  = true;
     validation.second = "";
 
-    activity::registry::ActivityInfo info;
-    info = activity::registry::Activity::getDefault()->getInfo(activity->getActivityConfigId());
+    activity::extension::ActivityInfo info;
+    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     data::Composite::sptr composite = activity->getData();
 
     // Check if all the activity config parameters are present
-    activity::registry::ActivityAppConfig appConfigInfo = info.appConfig;
+    activity::extension::ActivityAppConfig appConfigInfo = info.appConfig;
     for (auto param : appConfigInfo.parameters)
     {
         if (param.isSeshat())

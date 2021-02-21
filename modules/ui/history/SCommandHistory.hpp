@@ -32,7 +32,7 @@
 #include <ui/history/ICommand.hpp>
 #include <ui/history/UndoRedoManager.hpp>
 
-namespace sight::modules::ui::history
+namespace sight::module::ui::history
 {
 
 /**
@@ -52,7 +52,7 @@ namespace sight::modules::ui::history
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::ui::history::SControlHistory" >
+        <service uid="..." type="::sight::module::ui::history::SControlHistory" >
             <maxCommands>10</maxCommands>
             <maxMemory>100000000</maxMemory>
         </service>
@@ -115,4 +115,4 @@ private:
     sight::ui::history::UndoRedoManager m_undoRedoManager;
 };
 
-} // namespace sight::modules::ui::history
+} // namespace sight::module::ui::history

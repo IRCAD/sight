@@ -45,10 +45,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SMeshWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::vtk::SMeshWriter,
                          ::sight::data::Mesh )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -194,7 +194,7 @@ void SMeshWriter::updating()
         else
         {
             FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ fileToWrite.extension().string() +
-                                                   "' is not managed by modules::io::vtk::SMeshWriter."));
+                                                   "' is not managed by module::io::vtk::SMeshWriter."));
         }
 
         m_sigJobCreated->emit(meshWriter->getJob());

@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::viz::sample
+namespace sight::module::viz::sample
 {
 
 /// This class is started when the module is loaded.
@@ -46,4 +46,4 @@ public:
 
 };
 
-} // namespace sight::modules::viz::sample.
+} // namespace sight::module::viz::sample.

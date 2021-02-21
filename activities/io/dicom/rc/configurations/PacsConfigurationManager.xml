@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>PacsConfigurationManager</id>
     <parameters>
         <param name="PACS_CONFIGURATION" />
@@ -9,7 +9,7 @@
         <object uid="${PACS_CONFIGURATION}" type="::sight::io::dimse::data::PacsConfiguration" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="pacsConfigurationManagerFrame" type="::sight::modules::ui::base::SFrame" >
+        <service uid="pacsConfigurationManagerFrame" type="::sight::module::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -24,7 +24,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="pacsConfigurationEditor" type="::sight::modules::io::dimse::SPacsConfigurationEditor">
+        <service uid="pacsConfigurationEditor" type="::sight::module::io::dimse::SPacsConfigurationEditor">
             <inout key="config" uid="${PACS_CONFIGURATION}" />
         </service>
 

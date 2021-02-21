@@ -26,14 +26,14 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 /**
  * @brief Implements the AND bitwise operator pixel-wise between two images.
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::modules::filter::image::SBitwiseAnd">
+       <service uid="..." type="::sight::module::filter::image::SBitwiseAnd">
            <in key="image" uid="..."/>
            <in key="mask" uid="..."/>
            <out key="outputImage" uid="..." />
@@ -76,4 +76,4 @@ protected:
 
 };
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

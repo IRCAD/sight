@@ -34,7 +34,7 @@
 
 #include <set>
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sight::modules::io::atoms
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::io::atoms::SWriter">
+    <service type="::sight::module::io::atoms::SWriter">
         <in key="data" uid="..." />
         <patcher context="..." version="..." />
 
@@ -169,4 +169,4 @@ protected:
     std::string m_selectedExtension;
 };
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

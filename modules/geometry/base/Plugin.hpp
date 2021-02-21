@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -45,4 +45,4 @@ struct MODULE_GEOMETRY_BASE_CLASS_API Plugin final : public core::runtime::Plugi
 
 };
 
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

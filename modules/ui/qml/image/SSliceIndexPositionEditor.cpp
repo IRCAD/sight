@@ -33,7 +33,7 @@
 
 #include <functional>
 
-namespace sight::modules::ui::qml::image
+namespace sight::module::ui::qml::image
 {
 
 const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =

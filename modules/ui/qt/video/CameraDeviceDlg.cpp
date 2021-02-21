@@ -42,7 +42,7 @@
 
 Q_DECLARE_METATYPE(QCameraInfo)
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace video
 {
@@ -274,4 +274,4 @@ void CameraDeviceDlg::onSelectDevice(int index)
 //-----------------------------------------------------------------------------
 
 } // video
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

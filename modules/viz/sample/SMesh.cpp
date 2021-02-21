@@ -29,7 +29,7 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::viz::sample
+namespace sight::module::viz::sample
 {
 
 const core::com::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
@@ -112,14 +112,14 @@ void SMesh::starting()
 
     service::IService::ConfigType interactorConfig;
     interactorConfig.put("config.<xmlattr>.layer", "default");
-    m_interactorSrv = service::add("::sight::modules::viz::scene3d::adaptor::STrackballCamera");
+    m_interactorSrv = service::add("::sight::module::viz::scene3d::adaptor::STrackballCamera");
     m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
     service::IService::ConfigType meshConfig;
     meshConfig.put("config.<xmlattr>.layer", "default");
-    m_meshSrv = service::add("::sight::modules::viz::scene3d::adaptor::SMesh");
+    m_meshSrv = service::add("::sight::module::viz::scene3d::adaptor::SMesh");
     m_meshSrv->setConfiguration(meshConfig);
     m_meshSrv->registerInOut(std::const_pointer_cast< data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
@@ -131,7 +131,7 @@ void SMesh::starting()
 
     service::IService::ConfigType cameraConfig;
     cameraConfig.put("config.<xmlattr>.layer", "default");
-    m_cameraSrv = service::add("::sight::modules::viz::scene3d::adaptor::SCamera");
+    m_cameraSrv = service::add("::sight::module::viz::scene3d::adaptor::SCamera");
     m_cameraSrv->setConfiguration(cameraConfig);
     m_cameraSrv->registerInOut(m_cameraTransform->getSptr(), "transform", true);
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");
@@ -208,4 +208,4 @@ void SMesh::updateCamTransform()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::sample.
+} // namespace sight::module::viz::sample.

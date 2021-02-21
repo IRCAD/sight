@@ -35,7 +35,7 @@
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
@@ -92,9 +92,9 @@ void SFrustumList::starting()
     m_material = data::Material::New();
     m_material->diffuse()->setRGBA(m_color);
 
-    m_materialAdaptor = this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-        "::sight::modules::viz::scene3d::adaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, modules::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
@@ -231,4 +231,4 @@ void SFrustumList::clear()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

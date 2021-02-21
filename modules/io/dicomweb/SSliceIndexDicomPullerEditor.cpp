@@ -43,7 +43,7 @@
 #include <data/tools/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -62,7 +62,7 @@
 #include <fstream>
 #include <iterator>
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 //------------------------------------------------------------------------------
@@ -85,14 +85,14 @@ void SSliceIndexDicomPullerEditor::configuring()
     sight::ui::base::IGuiContainer::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service modules::io::dicomweb::SPacsConfigurationInitializer must have "
+    SLM_ASSERT("The service module::io::dicomweb::SPacsConfigurationInitializer must have "
                "a \"config\" element.", config);
 
     bool success;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the modules::io::dicomweb::SSliceIndexDicomPullerEditor "
+    SLM_ASSERT("It should be a \"dicomReader\" tag in the module::io::dicomweb::SSliceIndexDicomPullerEditor "
                "config element.", success);
 
     // Reader configuration
@@ -161,12 +161,12 @@ void SSliceIndexDicomPullerEditor::starting()
     m_tempSeriesDB = data::SeriesDB::New();
 
     // Create reader
-    service::registry::ServiceFactory::sptr srvFactory = service::registry::ServiceFactory::getDefault();
+    service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
 
     sight::io::base::service::IReader::sptr dicomReader;
     dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
     SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-               "::sight::modules::io::dicomweb::SSliceIndexDicomPullerEditor.", dicomReader);
+               "::sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.", dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
                                   service::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
@@ -485,4 +485,4 @@ void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& messag
     messageBox.show();
 }
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

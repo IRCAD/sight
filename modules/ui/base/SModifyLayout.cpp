@@ -31,10 +31,10 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/base/IGuiContainer.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::SModifyLayout )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SModifyLayout )
 
 //-----------------------------------------------------------------------------
 
@@ -231,4 +231,4 @@ void SModifyLayout::configuring()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -47,7 +47,7 @@
 
 #include <cstdint>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 //-----------------------------------------------------------------------------
@@ -441,8 +441,8 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
 scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _materialSuffix)
 {
-    auto materialAdaptor = this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-        "::sight::modules::viz::scene3d::adaptor::SMaterial");
+    auto materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+        "::sight::module::viz::scene3d::adaptor::SMaterial");
     materialAdaptor->registerInOut(m_material, "material", true);
 
     materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
@@ -522,7 +522,7 @@ void SPointList::updateMaterialAdaptor()
 
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
 
-        m_materialAdaptor->slot(modules::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
     }
 }
 
@@ -555,4 +555,4 @@ void SPointList::detachAndDestroyEntity()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

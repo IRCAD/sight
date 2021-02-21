@@ -37,7 +37,7 @@ namespace sight::core::memory
 class IPolicy;
 }
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::io::atoms
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::atoms::SReader">
+   <service type="::sight::module::io::atoms::SReader">
        <inout key="data" uid="..." />
        <out key="data" uid="..." />
        <uuidPolicy>Strict|Change</uuidPolicy>
@@ -189,4 +189,4 @@ private:
     JobCreatedSignalType::sptr m_sigJobCreated;
 };
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

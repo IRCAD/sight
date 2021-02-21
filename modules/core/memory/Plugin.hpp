@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 
 class Plugin : public core::runtime::Plugin

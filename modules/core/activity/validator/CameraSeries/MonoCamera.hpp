@@ -26,7 +26,7 @@
 
 #include <activity/IObjectValidator.hpp>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace CameraSeries
 {
@@ -48,10 +48,10 @@ public:
 
     /**
      * @brief Checks if the current CameraSeries contains one and only one Camera and is calibrated.
-     * @see modules::activity::IValidator::validate
+     * @see module::activity::IValidator::validate
      */
     MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
 };
 
 } // namespace CameraSeries
-} // namespace sight::modules::activity::validator
+} // namespace sight::module::activity::validator

@@ -29,7 +29,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -53,7 +53,7 @@ namespace sight::modules::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::geometry::base::SMatrixList">
+        <service type="::sight::module::geometry::base::SMatrixList">
             <inout group="matrices">
                 <key uid="..." />
                 <key uid="..." />
@@ -127,4 +127,4 @@ private:
     typedef core::com::Signal< void (int, std::string) > MatrixAddedSignalType;
     typedef core::com::Signal< void (int) > MatrixRemovedSignalType;
 };
-} // namespace sight::modules::geometry::base.
+} // namespace sight::module::geometry::base.

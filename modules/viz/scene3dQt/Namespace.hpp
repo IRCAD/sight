@@ -23,13 +23,13 @@
 /**
  * @ingroup apprequirement
  *
- * @brief The namespace sight::modules::viz::scene3dQt contains a Ogre Renderer window interactor manager using Qt.
+ * @brief The namespace sight::module::viz::scene3dQt contains a Ogre Renderer window interactor manager using Qt.
  *
  * It must be set in the application (or activity) \p \<requirement\> in order to use a Ogre scene in an application
  * using Qt.
  */
 #pragma once
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 }

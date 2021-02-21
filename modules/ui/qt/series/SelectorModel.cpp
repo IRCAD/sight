@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/series/InsertSeries.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
@@ -48,7 +48,7 @@
 
 #include <regex>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace series
 {
@@ -446,21 +446,21 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(_series);
         if(imageSeries)
         {
-            const auto path = core::runtime::getModuleResourceFilePath("module_ui_media", "icons/ImageSeries.svg");
+            const auto path = core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "ImageSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (modelSeries)
         {
-            const auto path = core::runtime::getModuleResourceFilePath("module_ui_media", "icons/ModelSeries.svg");
+            const auto path = core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "ModelSeries.svg");
             _item->setIcon(QIcon(QString::fromStdString(path.string())));
         }
         else if (activitySeries)
         {
-            activity::registry::Activity::sptr registry = activity::registry::Activity::getDefault();
+            activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
             std::string id                              = activitySeries->getActivityConfigId();
             SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
-            activity::registry::ActivityInfo activityInfo;
+            activity::extension::ActivityInfo activityInfo;
             activityInfo = registry->getInfo(id);
             _item->setIcon(QIcon(QString::fromStdString(activityInfo.icon)));
         }
@@ -603,4 +603,4 @@ void SelectorModel::setSeriesIcons(const SeriesIconType& _seriesIcons)
 //-----------------------------------------------------------------------------
 
 } // namespace series
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

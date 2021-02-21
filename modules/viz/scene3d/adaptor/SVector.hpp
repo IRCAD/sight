@@ -37,7 +37,7 @@ namespace sight::data
 class Material;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -52,7 +52,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SVector">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SVector">
         <config layer="..." transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode
@@ -134,8 +134,8 @@ private:
     ::Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Contains the material used to draw the vector.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor {nullptr};
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

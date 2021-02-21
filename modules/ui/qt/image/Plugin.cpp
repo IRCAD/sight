@@ -25,13 +25,13 @@
 #include <core/base.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 //-----------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::ui::qt::image::Plugin");
+    "::sight::module::ui::qt::image::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -53,4 +53,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::image.
+} // namespace sight::module::ui::qt::image.

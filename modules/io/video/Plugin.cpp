@@ -26,9 +26,9 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::io::video::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::io::video::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -45,4 +45,4 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

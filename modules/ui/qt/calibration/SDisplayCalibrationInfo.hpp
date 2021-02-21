@@ -31,7 +31,7 @@
 #include <service/AppConfigManager.hpp>
 #include <service/IController.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 /**
@@ -51,7 +51,7 @@ namespace sight::modules::ui::qt::calibration
  *
  * @section XML XML Configuration
  * @code{.xml}
-     <service type="::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo">
+     <service type="::sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
          <in key="calInfo1" uid="..." />
          <in key="calInfo2" uid="..." />
      </service>

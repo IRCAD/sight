@@ -64,7 +64,7 @@
 
 #endif
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 
 #ifndef WIN32
@@ -334,4 +334,4 @@ void installSIGSEVBacktrace()
 
 #endif
 
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

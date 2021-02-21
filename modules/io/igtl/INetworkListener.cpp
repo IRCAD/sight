@@ -26,7 +26,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 const core::com::Signals::SignalKeyType INetworkListener::s_CONNECTED_SIGNAL    = "connected";
@@ -54,4 +54,4 @@ void INetworkListener::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl.
+} // namespace sight::module::io::igtl.

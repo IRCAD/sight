@@ -1,10 +1,10 @@
 <plugin id="Tuto14Gui" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
     <id>Tuto14Gui_AppCfg</id>
         <config>
 
@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+        <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
             <gui>
                 <menuBar />
                 <toolBar >
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+        <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="My Menu" />
@@ -53,7 +53,7 @@
             </registry>
         </service>
 
-        <service uid="menu1View" type="::sight::modules::ui::base::SMenu" >
+        <service uid="menu1View" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" shortcut="1" style="check" />
@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <service uid="menu2View" type="::sight::modules::ui::base::SMenu" >
+        <service uid="menu2View" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" style="check" />
@@ -93,27 +93,27 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
-                    <menuItem name="start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" />
-                    <menuItem name="pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" />
-                    <menuItem name="stop"  icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                    <menuItem name="start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" />
+                    <menuItem name="pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" />
+                    <menuItem name="stop"  icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
                     <separator />
-                    <menuItem name="Item 1" style="check" icon="Tuto14Gui-0.1/icons/important.png" />
+                    <menuItem name="Item 1" style="check" icon="Tuto14Gui-0.1/important.png" />
                     <separator />
-                    <menuItem name="Item 2" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
-                    <menuItem name="Item 3" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
+                    <menuItem name="Item 2" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
+                    <menuItem name="Item 3" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
                     <separator />
-                    <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
-                    <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
+                    <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
+                    <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
                     <separator />
-                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="Tuto14Gui-0.1/icons/important.png" />
-                    <menuItem name="start A-B / stop 2-3" style="radio" icon="Tuto14Gui-0.1/icons/important.png" />
-                    <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui-0.1/icons/monkey.png" />
+                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="Tuto14Gui-0.1/important.png" />
+                    <menuItem name="start A-B / stop 2-3" style="radio" icon="Tuto14Gui-0.1/important.png" />
+                    <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui-0.1/monkey.png" />
                     <spacer/>
                     <menu name="Test Hide/Show" start="yes" />
-                    <menuItem name="Quit" icon="module_ui_flaticon-0.1/icons/RedCross.svg" />
+                    <menuItem name="Quit" icon="sight_module_ui_flaticons-0.1/RedCross.svg" />
                 </layout>
             </gui>
             <registry>
@@ -133,12 +133,12 @@
             </registry>
         </service>
 
-        <service uid="testHideShowView" type="::sight::modules::ui::base::SMenu" >
+        <service uid="testHideShowView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
-                    <menuItem name="start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" />
-                    <menuItem name="pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" />
-                    <menuItem name="stop"  icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
+                    <menuItem name="start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" />
+                    <menuItem name="pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" />
+                    <menuItem name="stop"  icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
                 </layout>
             </gui>
             <registry>
@@ -148,7 +148,7 @@
             </registry>
         </service>
 
-        <service uid="backgroundView" type="::sight::modules::ui::base::SView" >
+        <service uid="backgroundView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -160,7 +160,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::ui::base::SView" >
+        <service uid="containerView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -174,7 +174,7 @@
             </registry>
         </service>
 
-        <service uid="sub1View" type="::sight::modules::ui::base::SView" >
+        <service uid="sub1View" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -191,7 +191,7 @@
             </registry>
         </service>
 
-        <service uid="sub2View" type="::sight::modules::ui::base::SView" >
+        <service uid="sub2View" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager" >
                     <view align="center" backgroundColor="#36393E" />
@@ -204,7 +204,7 @@
             </registry>
         </service>
 
-        <service uid="sub3View" type="::sight::modules::ui::base::SView" >
+        <service uid="sub3View" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::TabLayoutManager" >
                     <view caption="TabView1"  />
@@ -215,7 +215,7 @@
             <registry/>
         </service>
 
-        <service uid="sub4View" type="::sight::modules::ui::base::SView" >
+        <service uid="sub4View" type="::sight::module::ui::base::SView" >
         <gui>
             <layout type="::sight::ui::base::LineLayoutManager" >
                 <orientation value="horizontal" />
@@ -229,7 +229,7 @@
         </registry>
         </service>
 
-        <service uid="sub5View" type="::sight::modules::ui::base::SView" >
+        <service uid="sub5View" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -243,7 +243,7 @@
             </registry>
         </service>
 
-        <service uid="view12" type="::sight::modules::ui::base::SView" >
+        <service uid="view12" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -261,14 +261,14 @@
             </registry>
         </service>
 
-        <service uid="toolbar2View" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolbar2View" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Item 2" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
-                    <menuItem name="Item 3" style="radio" icon="module_ui_flaticon-0.1/icons/BlueParameters.svg" />
+                    <menuItem name="Item 2" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
+                    <menuItem name="Item 3" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
                     <separator />
-                    <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
-                    <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/icons/monkey.png" />
+                    <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
+                    <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
                 </layout>
             </gui>
             <registry>
@@ -281,25 +281,25 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="item1Act" type="::sight::modules::ui::base::SDefaultAction" >
+        <service uid="item1Act" type="::sight::module::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="item2Act" type="::sight::modules::ui::base::SDefaultAction" >
+        <service uid="item2Act" type="::sight::module::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="item3Act" type="::sight::modules::ui::base::SDefaultAction" />
+        <service uid="item3Act" type="::sight::module::ui::base::SDefaultAction" />
 
-        <service uid="item4Act" type="::sight::modules::ui::base::SDefaultAction" >
+        <service uid="item4Act" type="::sight::module::ui::base::SDefaultAction" >
             <state active="false" />
         </service>
 
-        <service uid="item5Act" type="::sight::modules::ui::base::SDefaultAction" >
+        <service uid="item5Act" type="::sight::module::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="startAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="startAct" type="::sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>startAct/hide</slot>
                 <slot>stopAct/setExecutable</slot>
@@ -307,7 +307,7 @@
             </slots>
         </service>
 
-        <service uid="stopAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="stopAct" type="::sight::module::ui::base::com::SSlotCaller" >
             <state executable="false" />
             <slots>
                 <slot>startAct/show</slot>
@@ -316,7 +316,7 @@
             </slots>
         </service>
 
-        <service uid="pauseAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="pauseAct" type="::sight::module::ui::base::com::SSlotCaller" >
             <state active="true" visible="false" />
             <slots>
                 <slot>startAct/show</slot>
@@ -324,14 +324,14 @@
             </slots>
         </service>
 
-        <service uid="view5VisibilityAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+        <service uid="view5VisibilityAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
             <state active="true" inverse="true" />
             <slots>
                 <slot>sub5View/setVisible</slot>
             </slots>
         </service>
 
-        <service uid="item16Act" type="::sight::modules::ui::base::com::SStarter" >
+        <service uid="item16Act" type="::sight::module::ui::base::com::SStarter" >
             <state active="true" />
             <start uid="item2Act" />
             <start uid="item3Act" />
@@ -339,7 +339,7 @@
             <stop uid="item5Act" />
         </service>
 
-        <service uid="item17Act" type="::sight::modules::ui::base::com::SStarter" >
+        <service uid="item17Act" type="::sight::module::ui::base::com::SStarter" >
             <stop uid="item2Act" />
             <stop uid="item3Act" />
             <start uid="item4Act" />
@@ -348,39 +348,39 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="clickSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+        <service uid="clickSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <text>Click</text>
             </config>
         </service>
 
-        <service uid="meSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+        <service uid="meSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <text>Me</text>
             </config>
         </service>
 
-        <service uid="checkableSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+        <service uid="checkableSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
-                <icon>module_ui_flaticon-0.1/icons/GreenStart.svg</icon>
-                <icon2>module_ui_flaticon-0.1/icons/RedStop.svg</icon2>
+                <icon>sight_module_ui_flaticons-0.1/GreenStart.svg</icon>
+                <icon2>module_ui_flaticons-0.1/RedStop.svg</icon2>
                 <text>Check</text>
             </config>
         </service>
 
-        <service uid="ircadIHULogoSrv" type="::sight::modules::ui::qt::image::SImage" >
-            <path>flatIcon-0.1/icons/IrcadIHU.svg</path>
+        <service uid="ircadIHULogoSrv" type="::sight::module::ui::qt::image::SImage" >
+            <path>flaticons-0.1/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 
-        <service uid="textStatusSrv" type="::sight::modules::ui::qt::STextStatus" >
+        <service uid="textStatusSrv" type="::sight::module::ui::qt::STextStatus" >
              <in key="string" uid="text" />
              <label>Text status</label>
              <color>#6997BB</color>
          </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+        <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
         <!-- ******************************* Connections ***************************************** -->
 

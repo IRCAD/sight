@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::ui::qt::reconstruction contains several editors using Qt related on
+ * @brief       The namespace sight::module::ui::qt::reconstruction contains several editors using Qt related on
  * reconstruction.
  */
 #pragma once
 
-namespace sight::modules::ui::qt::reconstruction
+namespace sight::module::ui::qt::reconstruction
 {
 }

@@ -21,10 +21,10 @@
  ***********************************************************************/
 
 /**
- * @brief The namespace sight::modules::filter::vision contains services for the simulation of ultrasound images
+ * @brief The namespace sight::module::filter::vision contains services for the simulation of ultrasound images
  */
 #pragma once
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

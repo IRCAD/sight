@@ -36,7 +36,7 @@ namespace sight::data
 class SeriesDB;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::dicom::SDicomSeriesAnonymizer">
+        <service type="::sight::module::io::dicom::SDicomSeriesAnonymizer">
             <inout key="seriesDB" uid="..." />
             <inout key="selectedSeries" uid="..." />
        </service>
@@ -98,4 +98,4 @@ protected:
     bool m_cancelled;
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

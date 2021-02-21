@@ -39,7 +39,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 const core::com::Slots::SlotKeyType SManage::s_ADD_SLOT               = "add";
@@ -431,4 +431,4 @@ void SManage::internalAdd(bool _copy)
 
 //-----------------------------------------------------------------------------
 
-} // sight::modules::data
+} // sight::module::data

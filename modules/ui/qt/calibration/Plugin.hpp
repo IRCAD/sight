@@ -29,7 +29,7 @@
 
 #include <modules/ui/qt/config.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 struct Plugin : public core::runtime::Plugin
 {
@@ -53,6 +53,6 @@ struct Plugin : public core::runtime::Plugin
      */
     void stop() noexcept;
 };
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration
 
 #endif // _UICALIBRATION_PLUGIN_HPP_

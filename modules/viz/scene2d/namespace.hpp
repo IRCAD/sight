@@ -28,7 +28,7 @@
  */
 #pragma once
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

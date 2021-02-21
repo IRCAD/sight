@@ -29,7 +29,7 @@
 #include <filesystem>
 #include <string>
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::itk::SJpgImageSeriesWriter">
+   <service type="::sight::module::io::itk::SJpgImageSeriesWriter">
        <in key="data" uid="..." />
        <folder>...</folder>
    </service>
@@ -95,4 +95,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

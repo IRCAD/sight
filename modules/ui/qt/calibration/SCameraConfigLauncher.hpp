@@ -36,7 +36,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::ui::qt::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="cameraLauncher" type="::sight::modules::ui::qt::calibration::SCameraConfigLauncher">
+   <service uid="cameraLauncher" type="::sight::module::ui::qt::calibration::SCameraConfigLauncher">
        <inout key="cameraSeries" uid="..." />
        <inout key="activitySeries" uid="..." />
        <config>
@@ -76,9 +76,9 @@ namespace sight::modules::ui::qt::calibration
  * @subsection Configuration Configuration:
  * - \b config: contains the appConfigs to launch for intrinsic and extrinsic calibration.
  *   - \b intrinsic: configuration to launch the intrinsic calibration config. @see
- * modules::ui::base::action::SConfigLauncher
+ * module::ui::base::action::SConfigLauncher
  *   - \b extrinsic: configuration to launch the extrinsic calibration config. @see
- * modules::ui::base::action::SConfigLauncher
+ * module::ui::base::action::SConfigLauncher
  *
  */
 class MODULE_UI_QT_CLASS_API SCameraConfigLauncher : public QObject,
@@ -141,4 +141,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

@@ -25,9 +25,9 @@
 #include "service/AppConfigManager.hpp"
 #include "service/config.hpp"
 #include "service/IService.hpp"
-#include "service/registry/AppConfig.hpp"
+#include "service/extension/AppConfig.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
@@ -58,7 +58,6 @@ class SERVICE_CLASS_API ConfigLauncher
 public:
 
     typedef std::unique_ptr<ConfigLauncher> uptr;
-    typedef service::registry::FieldAdaptorType FieldAdaptorType;
 
     /// Initializes member.
     SERVICE_API ConfigLauncher();
@@ -97,7 +96,7 @@ public:
 private:
 
     /// Stores the app config.
-    activity::registry::ActivityAppConfig m_appConfig;
+    activity::extension::ActivityAppConfig m_appConfig;
 
     /// Sets the configuration running state.
     bool m_configIsRunning;

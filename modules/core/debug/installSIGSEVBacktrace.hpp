@@ -24,7 +24,7 @@
 
 #include "modules/debug/config.hpp"
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 
 /**
@@ -33,4 +33,4 @@ namespace sight::modules::debug
  */
 MODULE_DEBUG_API void installSIGSEVBacktrace();
 
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

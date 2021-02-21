@@ -51,7 +51,7 @@ public:
      * @see activity::IValidator::validate
      */
     ACTIVITY_API virtual IValidator::ValidationType validate(
-        const activity::registry::ActivityInfo& activityInfo,
+        const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const override;
 };
 

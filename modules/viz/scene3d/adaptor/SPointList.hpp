@@ -45,7 +45,7 @@ namespace sight::data
 class Mesh;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -62,7 +62,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SPointList" >
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SPointList" >
         <in key="pointList" uid="..." />
         <config layer="..." transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
@@ -167,7 +167,7 @@ private:
      * @brief Instantiates a new material adaptor.
      * @param _materialSuffix suffix use for the material name.
      */
-    modules::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
+    module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
 
     /// Associates a new SMaterial to the managed SPointList.
     /// With this method, SPointList is responsible for creating a SMaterial.
@@ -201,7 +201,7 @@ private:
     ::Ogre::Entity* m_entity { nullptr };
 
     /// Contains the material attached to the mesh.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Contains the Ogre material related to the mesh.
     data::Material::sptr m_material { nullptr };
@@ -251,4 +251,4 @@ inline bool SPointList::getVisibility() const
     return m_entity ? m_entity->getVisible() : m_isVisible;
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

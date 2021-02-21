@@ -42,7 +42,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 //-----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ static const core::com::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "se
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::SParameters )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::SParameters )
 
 //-----------------------------------------------------------------------------
 
@@ -1709,4 +1709,4 @@ QWidget* SParameters::getParamWidget(const std::string& key)
 
 //-----------------------------------------------------------------------------
 
-}   //namespace sight::modules::ui::qt
+}   //namespace sight::module::ui::qt

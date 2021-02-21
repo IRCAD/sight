@@ -24,12 +24,12 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 using namespace core::runtime::utils;
 
-static GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::viz::scene3d::adaptor::Plugin");
+static GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::viz::scene3d::adaptor::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -47,4 +47,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor
+} // namespace sight::module::viz::scene3d::adaptor

@@ -33,10 +33,10 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::base::SConcatenateMatrices,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::base::SConcatenateMatrices,
                          ::sight::data::Matrix4)
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 static const service::IService::KeyType s_MATRIX_GROUP_INOUT = "matrix";
@@ -135,4 +135,4 @@ service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() 
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

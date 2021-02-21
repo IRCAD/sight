@@ -33,7 +33,7 @@
 
 #include <QGraphicsRectItem>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -45,7 +45,7 @@ static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
 static const std::string s_COLOR_CONFIG         = "color";
 
 fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor,
-                         ::sight::modules::viz::scene2d::adaptor::SViewportRangeSelector)
+                         ::sight::module::viz::scene2d::adaptor::SViewportRangeSelector)
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -389,4 +389,4 @@ bool SViewportRangeSelector::mouseOnShutterRight( sight::viz::scene2d::data::Coo
 //---------------------------------------------------------------------------------------------------------------
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig" >
+<extension implements="::sight::service::extension::AppConfig" >
     <id>ExDicomSegmentation_VTKMesher_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -37,11 +37,11 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="VTK Mesher" icon="module_ui_flaticon-0.1/icons/YellowMenu.svg" />
-                    <menuItem name="Export ModelSeries" icon="module_ui_flaticon-0.1/icons/BlueSave.svg" />
+                    <menuItem name="VTK Mesher" icon="sight_module_ui_flaticons-0.1/YellowMenu.svg" />
+                    <menuItem name="Export ModelSeries" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
                 </layout>
             </gui>
             <registry>
@@ -50,7 +50,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::ui::base::SView" >
+        <service uid="containerView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
@@ -64,7 +64,7 @@
             </registry>
         </service>
 
-        <service uid="parametersView" type="::sight::modules::ui::base::SView" >
+        <service uid="parametersView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -80,7 +80,7 @@
             </registry>
         </service>
 
-        <service uid="materialView" type="::sight::modules::ui::base::SView" >
+        <service uid="materialView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
@@ -98,7 +98,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="mesherAct" type="::sight::modules::filter::mesh::SVTKMesher" >
+        <service uid="mesherAct" type="::sight::module::filter::mesh::SVTKMesher" >
             <in key="imageSeries" uid="${imageSeries}" />
             <out key="modelSeries" uid="modelSeries" />
             <config>
@@ -106,7 +106,7 @@
             </config>
         </service>
 
-        <service uid="exportAct" type="::sight::modules::ui::base::series::SExport" autoConnect="yes" >
+        <service uid="exportAct" type="::sight::module::ui::base::series::SExport" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="series" uid="modelSeries" />
         </service>
@@ -124,74 +124,74 @@
             </scene>
         </service>
 
-        <service uid="modelSeriesAdp" type="::sight::modules::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modelSeriesAdp" type="::sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="modelSeries" />
             <config layer="default" picker="" />
         </service>
 
-        <service uid="negatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+        <service uid="negatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="default" sliceIndex="axial" />
         </service>
 
-        <service uid="snapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
+        <service uid="snapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
             <inout key="image" uid="snapshot" />
             <config layer="default" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showHideNegatoSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+        <service uid="showHideNegatoSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
-                <icon>module_ui_flaticon-0.1/icons/Layers.svg</icon>
+                <icon>sight_module_ui_flaticons-0.1/Layers.svg</icon>
                 <iconWidth>40</iconWidth>
                 <iconHeight>16</iconHeight>
                 <checked>true</checked>
             </config>
         </service>
 
-        <service uid="snapshotSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+        <service uid="snapshotSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
+               <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
             </config>
         </service>
 
-        <service uid="MedicalImageSrv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
+        <service uid="MedicalImageSrv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="sliceIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sliceIndexEditorSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="modelSeriesListSrv" type="::sight::modules::ui::qt::model::SModelSeriesList" autoConnect="yes" >
+        <service uid="modelSeriesListSrv" type="::sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="modelSeries" />
             <columns>
                 <organ_name>@organ_name</organ_name>
             </columns>
         </service>
 
-        <service uid="reconstructionUpdaterSrv" type="::sight::modules::data::updater::SObjFromSlot" >
+        <service uid="reconstructionUpdaterSrv" type="::sight::module::data::updater::SObjFromSlot" >
             <out key="object" uid="reconstructionUID" />
         </service>
 
-        <service uid="materialEditorSrv" type="::sight::modules::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="yes" >
+        <service uid="materialEditorSrv" type="::sight::module::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="yes" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
-        <service uid="representationSrv" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
+        <service uid="representationSrv" type="::sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
+        <service uid="imageWriterSrv" type="::sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
-            <addSelection service="::sight::modules::io::atoms::SWriter" />
+            <addSelection service="::sight::module::io::atoms::SWriter" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

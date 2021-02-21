@@ -23,9 +23,9 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::io::itk contains services for reader, writer and helper for itk image.
+ * @brief The namespace sight::module::io::itk contains services for reader, writer and helper for itk image.
  **/
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

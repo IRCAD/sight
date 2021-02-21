@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-namespace sight::modules::viz::scene3d
+namespace sight::module::viz::scene3d
 {
 
 static const core::com::Slots::SlotKeyType s_ADD_SLOT   = "add";
@@ -99,7 +99,7 @@ void SMeshList::starting()
         // Create the transform adaptor.
         const sight::viz::scene3d::IAdaptor::sptr transformAdaptor
             = this->registerService< sight::viz::scene3d::IAdaptor >(
-                  "::sight::modules::viz::scene3d::adaptor::STransform");
+                  "::sight::module::viz::scene3d::adaptor::STransform");
 
         transformAdaptor->setLayerID(m_layerID);
         transformAdaptor->setRenderService(this->getRenderService());
@@ -113,7 +113,7 @@ void SMeshList::starting()
 
         // Create the texture adaptor
         const sight::viz::scene3d::IAdaptor::sptr textureAdaptor =
-            this->registerService< sight::viz::scene3d::IAdaptor >("::sight::modules::viz::scene3d::adaptor::STexture");
+            this->registerService< sight::viz::scene3d::IAdaptor >("::sight::module::viz::scene3d::adaptor::STexture");
 
         service::IService::ConfigType textureConfig = config;
         textureConfig.add("config.<xmlattr>.textureName", image->getID());
@@ -130,7 +130,7 @@ void SMeshList::starting()
 
         // Creates the mesh adaptor.
         const sight::viz::scene3d::IAdaptor::sptr meshAdaptor =
-            this->registerService< sight::viz::scene3d::IAdaptor >("::sight::modules::viz::scene3d::adaptor::SMesh");
+            this->registerService< sight::viz::scene3d::IAdaptor >("::sight::module::viz::scene3d::adaptor::SMesh");
 
         service::IService::ConfigType meshConfig = config;
         meshConfig.add("config.<xmlattr>.textureName", image->getID());
@@ -312,4 +312,4 @@ void SMeshList::clear()
     m_meshCount = 0;
 }
 
-} // namespace sight::modules::viz::scene3d.
+} // namespace sight::module::viz::scene3d.

@@ -62,27 +62,27 @@ void Plugin::initialize()
     *              create and register the services in the OSR
     ****************************************************************************************/
 
-    const auto frameSrv = m_appManager->addService("::sight::modules::ui::base::SFrame", true, false);
-    const auto menuBar  = m_appManager->addService("::sight::modules::ui::base::SMenuBar", "menuBar",
+    const auto frameSrv = m_appManager->addService("::sight::module::ui::base::SFrame", true, false);
+    const auto menuBar  = m_appManager->addService("::sight::module::ui::base::SMenuBar", "menuBar",
                                                    true,
                                                    false);
     const auto menu =
-        m_appManager->addService("::sight::modules::ui::base::SMenu", "menuFile", true, false);
-    const auto actionOpenMesh = m_appManager->addService("::sight::modules::ui::base::com::SStarter",
+        m_appManager->addService("::sight::module::ui::base::SMenu", "menuFile", true, false);
+    const auto actionOpenMesh = m_appManager->addService("::sight::module::ui::base::com::SStarter",
                                                          "actionOpenMesh",
                                                          true,
                                                          false);
-    const auto actionQuit = m_appManager->addService("::sight::modules::ui::base::SQuit", "actionQuit", true,
+    const auto actionQuit = m_appManager->addService("::sight::module::ui::base::SQuit", "actionQuit", true,
                                                      false);
     const auto mainView =
-        m_appManager->addService("::sight::modules::ui::base::SView", "mainView", true, false);
+        m_appManager->addService("::sight::module::ui::base::SView", "mainView", true, false);
 
-    const auto meshReaderSrv = m_appManager->addService("::sight::modules::ui::base::io::SSelector", "meshReader",
+    const auto meshReaderSrv = m_appManager->addService("::sight::module::ui::base::io::SSelector", "meshReader",
                                                         true,
                                                         false);
     const auto renderSrv   = m_appManager->addService("::sight::viz::qt3d::SRender", "genericScene", true, false);
     const auto meshAdaptor =
-        m_appManager->addService("::sight::modules::viz::qt3d::adaptor::SMesh", "meshAdaptor", true, false);
+        m_appManager->addService("::sight::module::viz::qt3d::adaptor::SMesh", "meshAdaptor", true, false);
 
     /* **************************************************************************************
     *              GUI configuration

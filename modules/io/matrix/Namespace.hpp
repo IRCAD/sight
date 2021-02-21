@@ -21,14 +21,14 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::io::matrix contains reader and writer services for basic data::Object
+ * @brief       The namespace sight::module::io::matrix contains reader and writer services for basic data::Object
  * which
  * doesn't need
  * external library.
  */
 #pragma once
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
 }

@@ -36,7 +36,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::viz::SMaterialSelector">
+        <service type="::sight::module::ui::viz::SMaterialSelector">
             <inout key="reconstruction" uid="..." />
        </service>
    @endcode
@@ -87,7 +87,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SMaterialSelectorInstance" type="::sight::modules::ui::viz::SMaterialSelector">
+        <service uid="SMaterialSelectorInstance" type="::sight::module::ui::viz::SMaterialSelector">
         </service>
        @endcode
      */

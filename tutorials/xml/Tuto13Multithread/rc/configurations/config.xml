@@ -1,4 +1,4 @@
-﻿<extension implements="::sight::service::registry::AppConfig" >
+﻿<extension implements="::sight::service::extension::AppConfig" >
     <id>Tuto13Multithread_AppCfg</id>
     <parameters>
     </parameters>
@@ -10,7 +10,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+        <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
             <gui>
                 <frame>
                     <name>Tuto13Multithread</name>
@@ -25,7 +25,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+        <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::modules::ui::base::SView" >
+        <service uid="containerView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -52,7 +52,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+        <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -66,7 +66,7 @@
             </registry>
         </service>
 
-        <service uid="deformationMenuView" type="::sight::modules::ui::base::SMenu" >
+        <service uid="deformationMenuView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Start deformation" shortcut="Ctrl+D" />
@@ -81,19 +81,19 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="openMeshAct" type="::sight::modules::ui::base::com::SStarter" >
+        <service uid="openMeshAct" type="::sight::module::ui::base::com::SStarter" >
             <start uid="meshReaderSrv" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+        <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
-        <service uid="startDeformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="startDeformationAct" type="::sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>meshDeformationSrv/startDeformation</slot>
             </slots>
         </service>
 
-        <service uid="stopDeformationAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="stopDeformationAct" type="::sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>meshDeformationSrv/stopDeformation</slot>
             </slots>
@@ -101,18 +101,18 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="meshReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+        <service uid="meshReaderSrv" type="::sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="mesh" />
             <type mode="reader" />
         </service>
 
         <!-- Visualization service for the first window. -->
-        <service uid="rendering1Srv" type="::sight::modules::viz::sample::SMesh" autoConnect="yes" >
+        <service uid="rendering1Srv" type="::sight::module::viz::sample::SMesh" autoConnect="yes" >
             <in key="mesh" uid="mesh" autoresetcamera="no" />
         </service>
 
         <!-- Visualization service for the second window -->
-        <service uid="rendering2Srv" type="::sight::modules::viz::sample::SMesh" autoConnect="yes" >
+        <service uid="rendering2Srv" type="::sight::module::viz::sample::SMesh" autoConnect="yes" >
             <in key="mesh" uid="mesh" autoresetcamera="no" />
         </service>
 

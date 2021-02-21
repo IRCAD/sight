@@ -35,7 +35,7 @@
 #include <array>
 #include <list>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::ui::qt::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::calibration::SIntrinsicEdition">
+   <service type="::sight::module::ui::qt::calibration::SIntrinsicEdition">
        <inout key="camera" uid="..." />
    </service>
    @endcode
@@ -123,4 +123,4 @@ private:
     SUpdateIntrinsicDialog* m_dialog;
 };
 
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

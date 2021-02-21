@@ -27,9 +27,9 @@
 #include <viz/scene2d/data/Viewport.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SViewportUpdater)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SViewportUpdater)
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -105,4 +105,4 @@ service::IService::KeyConnectionsMap SViewportUpdater::getAutoConnections() cons
 }
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

@@ -40,10 +40,10 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::document::SPdfWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::document::SPdfWriter,
                          ::sight::data::Object )
 
-namespace sight::modules::io::document
+namespace sight::module::io::document
 {
 
 const service::IService::KeyType s_IMAGE_INPUT     = "image";
@@ -285,4 +285,4 @@ QImage SPdfWriter::convertFwImageToQImage(data::Image::sptr fwImage)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::document
+} // namespace sight::module::io::document

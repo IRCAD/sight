@@ -44,7 +44,7 @@ namespace sight::data
 class Mesh;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -75,7 +75,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SMesh" >
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SMesh" >
         <inout key="mesh" uid="..." />
         <config layer="..." transform="..." visible="true" materialName="..." shadingMode="gouraud" textureName="..."
         queryFlags="0x40000000" />
@@ -96,7 +96,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
  *       Either of the following (whether a material is configured in the XML scene or not) :
  *  - \b materialName (optional, string, default=""): name of the Ogre material, as defined in the
- *       modules::viz::scene3d::adaptor::SMaterial you want to be bound to.
+ *       module::viz::scene3d::adaptor::SMaterial you want to be bound to.
  *       Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
  *       template, the texture adaptor and the shading mode) :
  *  - \b materialTemplate (optional, string, default=""): the name of the base Ogre material for the internally created
@@ -240,7 +240,7 @@ private:
      * @param _materialSuffix used for the material name.
      * @param _mesh used to create an unique material name.
      */
-    modules::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const data::Mesh::sptr& _mesh,
+    module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const data::Mesh::sptr& _mesh,
                                                                           const std::string& _materialSuffix = "");
 
     /**
@@ -267,7 +267,7 @@ private:
     ::Ogre::Entity* m_entity { nullptr };
 
     /// Contains the Ogre material adaptor.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Defines the attached material name (when configured by XML).
     std::string m_materialName;
@@ -300,7 +300,7 @@ private:
     sight::viz::scene3d::Mesh::sptr m_meshGeometry { nullptr };
 
     /// Stores material adaptors attached to the r2vb objects.
-    std::map< data::Mesh::CellTypes, modules::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
+    std::map< data::Mesh::CellTypes, module::viz::scene3d::adaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
@@ -386,4 +386,4 @@ inline void SMesh::setIsReconstructionManaged(bool _isReconstructionManaged)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

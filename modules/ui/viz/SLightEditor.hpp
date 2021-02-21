@@ -38,7 +38,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
- *  <service uid=SLightEditorUid" type="modules::ui::viz::SLightEditor" />
+ *  <service uid=SLightEditorUid" type="module::ui::viz::SLightEditor" />
  */
 class MODULE_UI_VIZ_CLASS_API SLightEditor : public QObject,
                                              public sight::ui::base::IEditor
@@ -222,4 +222,4 @@ private Q_SLOTS:
 
 };
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

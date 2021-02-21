@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>2DSimpleConfig2</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -9,7 +9,7 @@
     <config>
         <object uid="${objectID}" type="::sight::data::ImageSeries" src="ref" />
         <object uid="${imageID}" type="::sight::data::Image" src="ref" />
-        <service uid="mainview" type="::sight::modules::ui::base::SView">
+        <service uid="mainview" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -67,14 +67,14 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="imageDumpLocker" type="::sight::modules::memory::LockDumpSrv">
+        <service uid="imageDumpLocker" type="::sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${imageID}" />
         </service>
 
-        <service uid="medicalImgConverter" type="::sight::modules::data::MedicalImageSrv">
+        <service uid="medicalImgConverter" type="::sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
-        <service uid="sliderIndexEditor" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderIndexEditor" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

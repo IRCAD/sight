@@ -36,7 +36,7 @@
 #include <ui/base/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -45,7 +45,7 @@ namespace sight::modules::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::ui::viz::SShaderParameterEditor" >
+        <service uid="..." type="::sight::module::ui::viz::SShaderParameterEditor" >
             <inout key="reconstruction" uid="..." />
         </service>
    @endcode

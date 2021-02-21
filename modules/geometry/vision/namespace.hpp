@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::geometry::vision contains services to calibrate cameras.
+ * @brief       The namespace sight::module::geometry::vision contains services to calibrate cameras.
  */
 #pragma once
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 /// The namespace helper contains helpers used to calibrate cameras.
@@ -34,4 +34,4 @@ namespace helper
 
 } // namespace helper
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

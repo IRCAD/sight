@@ -31,10 +31,10 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::geometry::base::SSwitchMatrices,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::geometry::base::SSwitchMatrices,
                          ::sight::data::Matrix4)
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_SLOT    = "switchMatrix";
@@ -128,4 +128,4 @@ void SSwitchMatrices::switchToMatrix(size_t index)
 
 // ----------------------------------------------------------------------------
 
-}  // namespace sight::modules::geometry::base
+}  // namespace sight::module::geometry::base

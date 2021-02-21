@@ -1,13 +1,13 @@
 <plugin id="ExOgreRGBDStream" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_viz_scene2d" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::viz::scene2d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExOgreRGBDStream_AppCfg</id>
         <config>
 
@@ -33,7 +33,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExOgreRGBDStream</name>
@@ -48,15 +48,15 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="module_ui_flaticon-0.1/icons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="module_ui_flaticon-0.1/icons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="module_ui_flaticon-0.1/icons/RedStop.svg" />
-                        <menuItem name="Loop" icon="module_ui_flaticon-0.1/icons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -70,7 +70,7 @@
             </service>
 
             <!-- Begin Scanning views -->
-            <service uid="scanningView" type="::sight::modules::ui::base::SView" >
+            <service uid="scanningView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -84,7 +84,7 @@
                 </registry>
             </service>
 
-            <service uid="TFView" type="::sight::modules::ui::base::SView" >
+            <service uid="TFView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="::sight::modules::ui::base::SView" >
+            <service uid="RGBDView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -115,7 +115,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -123,7 +123,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -133,7 +133,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -143,7 +143,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -157,7 +157,7 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
@@ -173,7 +173,7 @@
                 </scene>
             </service>
 
-            <service uid="depthAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="depthAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
                 <config layer="default" />
@@ -188,7 +188,7 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="imageVideo" />
                 <config layer="default" />
             </service>
@@ -217,50 +217,50 @@
                 </scene>
             </service>
 
-            <service uid="TFGridAdp" type="::sight::modules::viz::scene2d::adaptor::SGrid2D" >
+            <service uid="TFGridAdp" type="::sight::module::viz::scene2d::adaptor::SGrid2D" >
                 <config xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
 
-            <service uid="TFAbscissaAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
+            <service uid="TFAbscissaAdp" type="::sight::module::viz::scene2d::adaptor::SLine" >
                 <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="TFOrdinateAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
+            <service uid="TFOrdinateAdp" type="::sight::module::viz::scene2d::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="TFMaxOpacityAdp" type="::sight::modules::viz::scene2d::adaptor::SLine" >
+            <service uid="TFMaxOpacityAdp" type="::sight::module::viz::scene2d::adaptor::SLine" >
                 <config x1="-20" x2="5020" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
             </service>
 
-            <service uid="TFTransferFunctionAdp" type="::sight::modules::viz::scene2d::adaptor::STransferFunction" autoConnect="yes" >
+            <service uid="TFTransferFunctionAdp" type="::sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="yes" >
                 <inout key="image" uid="imageDepth" />
                 <inout key="tf" uid="tfDepth" />
                 <inout key="viewport" uid="viewport" />
                 <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
-            <service uid="TFViewportRangeUpdaterAdp" type="::sight::modules::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes" >
+            <service uid="TFViewportRangeUpdaterAdp" type="::sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
             </service>
 
-            <service uid="TFScaleValuesLeftAdp" type="::sight::modules::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
+            <service uid="TFScaleValuesLeftAdp" type="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFAxisLeftAdp" type="::sight::modules::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
+            <service uid="TFAxisLeftAdp" type="::sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFScaleValuesBottomAdp" type="::sight::modules::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
+            <service uid="TFScaleValuesBottomAdp" type="::sight::module::viz::scene2d::adaptor::SScaleValues" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
 
-            <service uid="TFAxisBottomAdp" type="::sight::modules::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
+            <service uid="TFAxisBottomAdp" type="::sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes" >
                 <in key="viewport" uid="viewport" />
                 <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" />
             </service>
@@ -282,15 +282,15 @@
                 </scene>
             </service>
 
-            <service uid="shutterAbscissa" type="::sight::modules::viz::scene2d::adaptor::SLine" >
+            <service uid="shutterAbscissa" type="::sight::module::viz::scene2d::adaptor::SLine" >
                 <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="shutterOrdinate" type="::sight::modules::viz::scene2d::adaptor::SLine" >
+            <service uid="shutterOrdinate" type="::sight::module::viz::scene2d::adaptor::SLine" >
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="VSRangeSelectorAdp" type="::sight::modules::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="yes" >
+            <service uid="VSRangeSelectorAdp" type="::sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="yes" >
                 <inout key="viewport" uid="viewport" />
                 <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
             </service>
@@ -298,24 +298,24 @@
             <!-- ************************************* Services ************************************ -->
 
             <!-- The videoSelectorSrv creates 2 empty ::sight::data::Camera so we can use it without any prior calibration -->
-            <service uid="videoSelectorSrv" type="::sight::modules::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
                 <inout key="cameraSeries" uid="RGBDCameraSeries" />
                 <videoSupport>yes</videoSupport>
                 <createCameraNumber>2</createCameraNumber>
             </service>
 
-            <service uid="videoGrabberSrv" type="::sight::modules::io::video::SGrabberProxy" >
+            <service uid="videoGrabberSrv" type="::sight::module::io::video::SGrabberProxy" >
                 <in key="camera" uid="RGBDCameraSeries" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <config>
                     <camera type="RGBD" />
                     <selection mode="exclude" />
-                    <addSelection service="::sight::modules::io::video::SFrameGrabber" />
+                    <addSelection service="::sight::module::io::video::SFrameGrabber" />
                 </config>
             </service>
 
-            <service uid="frameUpdaterSrv" type="::sight::modules::sync::SFrameMatrixSynchronizer" worker="synchronizer" >
+            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer" >
                 <in group="frameTL" >
                 <key uid="frameTLVideo" autoConnect="yes" />
                 <key uid="frameTLDepth" autoConnect="yes" />

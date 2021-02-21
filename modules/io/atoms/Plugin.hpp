@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
 class Plugin : public core::runtime::Plugin
@@ -51,4 +51,4 @@ public:
 
 };
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

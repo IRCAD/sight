@@ -52,10 +52,10 @@
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::navigation::openvslam
+namespace sight::module::navigation::openvslam
 {
 
-fwServicesRegisterMacro( service::ITracker, ::sight::modules::navigation::openvslam::SOpenvslam)
+fwServicesRegisterMacro( service::ITracker, ::sight::module::navigation::openvslam::SOpenvslam)
 
 static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
@@ -897,4 +897,4 @@ void SOpenvslam::updatePointCloud()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::navigation::openvslam
+} // namespace sight::module::navigation::openvslam

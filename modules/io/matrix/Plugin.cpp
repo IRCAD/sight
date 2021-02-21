@@ -24,10 +24,10 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::io::matrix::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::io::matrix::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -45,4 +45,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::matrix
+} // namespace sight::module::io::matrix

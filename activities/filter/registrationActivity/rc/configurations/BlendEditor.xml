@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>BlendEditor</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -8,7 +8,7 @@
     </parameters>
     <config>
 
-        <service uid="blendEditor" type="::sight::modules::ui::base::SView">
+        <service uid="blendEditor" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -23,7 +23,7 @@
             </registry>
         </service>
 
-        <service uid="blendTransparencyAndModeEditor" type="::sight::modules::ui::base::SView">
+        <service uid="blendTransparencyAndModeEditor" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -37,19 +37,19 @@
             </registry>
         </service>
 
-        <service uid="transparencySlider" type="::sight::modules::ui::qt::SParameters">
+        <service uid="transparencySlider" type="::sight::module::ui::qt::SParameters">
             <parameters>
                 <param type="int" name="Transparency" key="transparency" defaultValue="128" min="0" max="255" />
             </parameters>
         </service>
 
-        <service uid="blendMode" type="::sight::modules::ui::qt::SParameters">
+        <service uid="blendMode" type="::sight::module::ui::qt::SParameters">
             <parameters>
                 <param type="enum" name="Blend mode:" key="ImageSource" defaultValue="BLEND" values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" />
             </parameters>
         </service>
 
-        <service uid="checkerBoardCellSlider" type="::sight::modules::ui::qt::SParameters">
+        <service uid="checkerBoardCellSlider" type="::sight::module::ui::qt::SParameters">
             <parameters>
                 <param type="int" name="Checkerboard # of cells" key="checkerBoardSlider" defaultValue="10" min="0" max="100" />
             </parameters>

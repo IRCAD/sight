@@ -30,7 +30,7 @@
 
 #include <ui/qml/IQmlEditor.hpp>
 
-namespace sight::modules::ui::qml::image
+namespace sight::module::ui::qml::image
 {
 
 /**

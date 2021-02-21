@@ -33,10 +33,10 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::sync::SFrameUpdater,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::sync::SFrameUpdater,
                          ::sight::data::Composite )
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 //-----------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ service::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
     KeyConnectionsMap connections;
 
     connections.push( "frameTL", data::TimeLine::s_OBJECT_PUSHED_SIG,
-                      modules::sync::SFrameUpdater::s_UPDATE_FRAME_SLOT );
+                      module::sync::SFrameUpdater::s_UPDATE_FRAME_SLOT );
     connections.push( "frameTL", data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT );
 
     return connections;
@@ -216,4 +216,4 @@ void SFrameUpdater::resetTimeline()
 
 //-----------------------------------------------------------------------------
 
-} //namespace sight::modules::sync
+} //namespace sight::module::sync

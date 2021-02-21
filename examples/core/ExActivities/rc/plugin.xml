@@ -1,18 +1,18 @@
 <plugin id="ExActivities" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_ui_base" />
-    <requirement id="module_activity" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::activity" />
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity" >
+    <extension implements="::sight::activity::extension::Activity" >
         <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
-        <icon>module_ui_flaticon-0.1/icons/BlueFile.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/BlueFile.svg</icon>
         <requirements>
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be read by this activity.</desc>
@@ -25,11 +25,11 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity" >
+    <extension implements="::sight::activity::extension::Activity" >
         <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
-        <icon>module_ui_flaticon-0.1/icons/Layers.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/Layers.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
@@ -47,11 +47,11 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity" >
+    <extension implements="::sight::activity::extension::Activity" >
         <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>
-        <icon>module_ui_flaticon-0.1/icons/Volume.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/Volume.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
@@ -69,9 +69,9 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>ExActivities_Sequencer_SrvCfg</id>
-        <service>::sight::modules::ui::qt::activity::SSequencer</service>
+        <service>::sight::module::ui::qt::activity::SSequencer</service>
         <desc>Configuration for sequencer</desc>
         <config>
             <activity id="ExImage_Import_Activity" name="Import" />
@@ -86,21 +86,21 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>ExActivities_Wizard_SrvCfg</id>
-        <service>::sight::modules::ui::qt::activity::SWizard</service>
+        <service>::sight::module::ui::qt::activity::SWizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
         <config>
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::sight::data::Image" icon="module_ui_flaticon-0.1/icons/Volume.svg" />
-            </icons>
+                <icon type="::sight::data::Image" icon="sight_module_ui_flaticons-0.1/Volume.svg" />
+            <>
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfigParameters" >
+    <extension implements="::sight::service::extension::AppConfigParameters" >
         <id>ExActivities_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="Ex Activity @PROJECT_VERSION@" />

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>OgreLightManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -10,7 +10,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="LightView" type="::sight::modules::ui::base::SView" >
+        <service uid="LightView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
@@ -27,8 +27,8 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="LightSelector" type="::sight::modules::ui::viz::SLightSelector"  />
-        <service uid="LightEditor" type="::sight::modules::ui::viz::SLightEditor" />
+        <service uid="LightSelector" type="::sight::module::ui::viz::SLightSelector"  />
+        <service uid="LightEditor" type="::sight::module::ui::viz::SLightEditor" />
 
         <!-- ************************************* Actions ************************************* -->
 

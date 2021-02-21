@@ -36,7 +36,7 @@
 #include <OgreManualObject.h>
 #include <OgreSceneNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -60,7 +60,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SShapeExtruder">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SShapeExtruder">
         <inout key="extrudedMeshes" uid="..." />
         <config layer="..." priority="2" extrude="true" />
     </service>
@@ -300,7 +300,7 @@ private:
     data::Material::sptr m_material { nullptr };
 
     /// Contains the adaptor used to create the Ogre material from the material data.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Defines the color of the lasso's line.
     ::Ogre::ColourValue m_lineColor { ::Ogre::ColourValue::White };
@@ -388,4 +388,4 @@ bool SShapeExtruder::Edge::operator==(const Edge& _edge) const
     return (a == _edge.a && b == _edge.b) || (a == _edge.b && b == _edge.a);
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

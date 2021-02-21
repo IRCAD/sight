@@ -21,15 +21,15 @@
  ***********************************************************************/
 
 /**
- * @brief      The namespace sight::modules::data contains several interfaces for manager, updater and wrapper.
+ * @brief      The namespace sight::module::data contains several interfaces for manager, updater and wrapper.
  */
 #pragma once
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**
- * @brief      The namespace sight::modules::data::manager contains the manager services.
+ * @brief      The namespace sight::module::data::manager contains the manager services.
  */
 namespace manager
 {
@@ -37,7 +37,7 @@ namespace manager
 }
 
 /**
- * @brief      The namespace sight::modules::data::updater contains the updater services.
+ * @brief      The namespace sight::module::data::updater contains the updater services.
  */
 namespace updater
 {
@@ -45,7 +45,7 @@ namespace updater
 }
 
 /**
- * @brief      The namespace sight::modules::data::wrapper contains the wrapper services.
+ * @brief      The namespace sight::module::data::wrapper contains the wrapper services.
  */
 namespace wrapper
 {

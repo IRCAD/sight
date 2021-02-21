@@ -34,7 +34,7 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 // -----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ static const core::com::Signals::SignalKeyType SAME_SLICE_SIG         = "sameSli
 
 // -----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::geometry::base::SPointToLandmarkVector )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::geometry::base::SPointToLandmarkVector )
 
 // -----------------------------------------------------------------------------
 

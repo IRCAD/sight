@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::activity
+namespace sight::module::activity
 {
 /**
  *
@@ -46,4 +46,4 @@ struct MODULE_ACTIVITY_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::activity
+} // namespace sight::module::activity

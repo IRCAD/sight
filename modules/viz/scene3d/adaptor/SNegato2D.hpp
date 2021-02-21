@@ -33,7 +33,7 @@
 #include <viz/scene3d/Plane.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -52,7 +52,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::SNegato2D">
+    <service type="::sight::module::viz::scene3d::adaptor::SNegato2D">
         <inout key="image" uid="..." />
         <inout key="tf" uid="..." optional="yes" />
         <config layer="default" sliceIndex="axial" filtering="none" tfalpha="true" visible="true" />
@@ -202,4 +202,4 @@ inline void SNegato2D::setFiltering( sight::viz::scene3d::Plane::FilteringEnumTy
     m_filtering = _filtering;
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

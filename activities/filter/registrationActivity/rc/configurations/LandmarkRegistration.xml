@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>LandmarkRegistration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -22,7 +22,7 @@
         <object uid="transformedImage" type="::sight::data::Image" />
         <object uid="emptyImage" type="::sight::data::Image" />
 
-        <service uid="landmarkRegistrationView" type="::sight::modules::ui::base::SView">
+        <service uid="landmarkRegistrationView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="editors" type="::sight::modules::ui::base::SView">
+        <service uid="editors" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -51,7 +51,7 @@
             </registry>
         </service>
 
-        <service uid="landmarkRegEditor" type="::sight::modules::ui::base::SView">
+        <service uid="landmarkRegEditor" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -68,21 +68,21 @@
             </registry>
         </service>
 
-        <service uid="applyLandmarkRegistration" type="::sight::modules::ui::qt::com::SSignalButton">
+        <service uid="applyLandmarkRegistration" type="::sight::module::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
             </config>
         </service>
 
-        <service uid="resetLandmarks" type="::sight::modules::ui::qt::com::SSignalButton">
+        <service uid="resetLandmarks" type="::sight::module::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Reset</text>
             </config>
         </service>
 
-        <service uid="registrationScenes" type="::sight::modules::ui::base::SView">
+        <service uid="registrationScenes" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -96,7 +96,7 @@
             </registry>
         </service>
 
-        <service uid="referenceSceneView" type="::sight::modules::ui::base::SView">
+        <service uid="referenceSceneView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -110,12 +110,12 @@
             </registry>
         </service>
 
-        <service uid="referenceSliceSelector" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="referenceSliceSelector" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="mixedSceneView" type="::sight::modules::ui::base::SView">
+        <service uid="mixedSceneView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -129,7 +129,7 @@
             </registry>
         </service>
 
-        <service uid="targetSliceSelector" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="targetSliceSelector" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
@@ -143,30 +143,30 @@
         </service>
 
         <!-- Landmark handling services -->
-        <service uid="referenceLandmarkManager" type="::sight::modules::geometry::base::SManagePointList">
+        <service uid="referenceLandmarkManager" type="::sight::module::geometry::base::SManagePointList">
             <inout key="pointList" uid="referencePL" />
             <config label="true" />
         </service>
 
-        <service uid="targetLandmarkManager" type="::sight::modules::geometry::base::SManagePointList">
+        <service uid="targetLandmarkManager" type="::sight::module::geometry::base::SManagePointList">
             <inout key="pointList" uid="targetPL" />
             <config label="true" />
         </service>
 
-        <service uid="landmarkRegistration" type="::sight::modules::filter::point::SPointListRegistration">
+        <service uid="landmarkRegistration" type="::sight::module::filter::point::SPointListRegistration">
             <inout key="registeredPL" uid="targetPL" />
             <inout key="referencePL" uid="referencePL" />
             <inout key="output" uid="${transformUid}" />
         </service>
 
-        <service uid="resampler" type="::sight::modules::filter::image::SResampler">
+        <service uid="resampler" type="::sight::module::filter::image::SResampler">
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
             <in key="target" uid="${targetImageUid}" />
             <inout key="imageOut" uid="transformedImage" />
         </service>
 
-        <service uid="resetTransformedImage" type="::sight::modules::data::SCopy">
+        <service uid="resetTransformedImage" type="::sight::module::data::SCopy">
             <in key="source" uid="emptyImage" />
             <inout key="target" uid="transformedImage" />
         </service>

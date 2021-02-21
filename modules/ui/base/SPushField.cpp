@@ -29,10 +29,10 @@
 #include <core/tools/fwID.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 #include <service/registry/ObjectService.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 //------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::SPushField )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::SPushField )
 
 //------------------------------------------------------------------------------
 
@@ -126,4 +126,4 @@ service::IService::KeyConnectionsMap SPushField::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

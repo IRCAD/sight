@@ -51,7 +51,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::metrics
+namespace sight::module::ui::qt::metrics
 {
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::metrics::SLandmarks )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::metrics::SLandmarks )
 
 //------------------------------------------------------------------------------
 
@@ -662,7 +662,7 @@ void SLandmarks::onRemoveSelection()
 void SLandmarks::addPickedPoint(data::tools::PickingInfo _pickingInfo)
 {
     FW_DEPRECATED_MSG(
-        "::sight::modules::ui::qt::metrics::addPickedPoint is no longer supported, the methods have been moved to modules::ui::qt::metrics::pick",
+        "::sight::module::ui::qt::metrics::addPickedPoint is no longer supported, the methods have been moved to module::ui::qt::metrics::pick",
         "22.0")
     this->pick(_pickingInfo);
 }
@@ -1152,4 +1152,4 @@ QTreeWidgetItem* SLandmarks::getGroupItem(const std::string& _groupName) const
     return itemList.at(0);
 }
 
-} // namespace sight::modules::ui::qt::metrics
+} // namespace sight::module::ui::qt::metrics

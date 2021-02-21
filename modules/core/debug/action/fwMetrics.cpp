@@ -27,18 +27,18 @@
 #include <data/registry/detail.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
 #include <iostream>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::debug::action::fwMetrics,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::debug::action::fwMetrics,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void fwMetrics::updating()
     stream << std::endl;
 
     stream << "IService: ";
-    stream << service::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
+    stream << service::extension::Factory::getDefault()->getFactoryKeys().size();
 
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("FactoryRegistry Information");
@@ -101,4 +101,4 @@ void fwMetrics::stopping()
 //------------------------------------------------------------------------------
 
 } // namespace action
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

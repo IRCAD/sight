@@ -29,10 +29,10 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::base::SImagePicker,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::base::SImagePicker,
                          ::sight::data::PointList)
 
 //-----------------------------------------------------------------------------
@@ -224,4 +224,4 @@ void SImagePicker::removeLastPoint()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -29,7 +29,7 @@
 #include <viz/qt3d/data/Material.hpp>
 #include <viz/qt3d/IAdaptor.hpp>
 
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::viz::qt3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::qt3d::adaptor::SMaterial" >
+    <service uid="..." type="::sight::module::viz::qt3d::adaptor::SMaterial" >
         <inout key="material" uid="..." />
         <config materialName="..." />
     </service>
@@ -108,4 +108,4 @@ private:
     std::string m_materialName;
 };
 
-} // namespace sight::modules::viz::qt3d::adaptor
+} // namespace sight::module::viz::qt3d::adaptor

@@ -29,7 +29,7 @@
 
 #include <memory>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -38,12 +38,12 @@ namespace sight::modules::viz::scene3d::adaptor
  * See @see sight::viz::scene3d::interactor::TrackballInteractor to learn more about the interactions provided by this
  * service.
  *
- * @warning may not work as intended when used at the same time as `modules::viz::scene3d::adaptor::Camera` on the same
+ * @warning may not work as intended when used at the same time as `module::viz::scene3d::adaptor::Camera` on the same
  * layer.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::STrackballCamera">
+    <service type="::sight::module::viz::scene3d::adaptor::STrackballCamera">
         <config layer="..." priority="0" layerOrderDependant="true" />
    </service>
    @endcode
@@ -94,4 +94,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

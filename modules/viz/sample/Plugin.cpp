@@ -25,12 +25,12 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::viz::sample
+namespace sight::module::viz::sample
 {
 
 //------------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::viz::sample::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::viz::sample::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ void Plugin::start()
     // Thus we load the adaptors model here instead in the .xml of the
     // application to hide the complexity.
     auto module = core::runtime::loadModule("module_viz_scene3d");
-    SLM_FATAL_IF("'sight::modules::viz::scene3d' module failed to load.", !module);
+    SLM_FATAL_IF("'sight::module::viz::scene3d' module failed to load.", !module);
 }
 
 //------------------------------------------------------------------------------
@@ -57,4 +57,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::sample.
+} // namespace sight::module::viz::sample.

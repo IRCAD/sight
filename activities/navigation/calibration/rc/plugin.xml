@@ -1,10 +1,9 @@
-<plugin id="::sight::activity::navigation::calibration" class="::sight::activity::navigation::calibration::Plugin" version="@PROJECT_VERSION@" >
+<plugin id="::sight::activity::navigation::calibration" library="true" version="@PROJECT_VERSION@" >
 
-    <library name="activity_navigation_calibration" />
-    <requirement id="module_service" />
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_activity" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::activity" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -18,11 +17,11 @@
     <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -34,7 +33,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>calibrationEdition</id>
         <title>Calibration Edition</title>
         <desc>
@@ -44,7 +43,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>module_ui_flaticon-0.1/icons/BlueParametersCamera.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/BlueParametersCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -57,11 +56,11 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="RGBDCalibration">
@@ -70,11 +69,11 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
-        <icon>module_ui_flaticon-0.1/icons/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -87,9 +86,9 @@
     </extension>
 
     <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>InfraredRealsenseGrabberConfig</id>
-        <service>::sight::modules::io::realsense::SScan</service>
+        <service>::sight::module::io::realsense::SScan</service>
         <desc>Infrared grabber without IR emitter </desc>
         <config>
             <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />

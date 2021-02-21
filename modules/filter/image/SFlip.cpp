@@ -30,7 +30,7 @@
 
 #include <filter/image/Flipper.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 static const service::IService::KeyType s_IMAGE_IN  = "source";
@@ -138,4 +138,4 @@ service::IService::KeyConnectionsMap SFlip::getAutoConnections() const
     return connections;
 }
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

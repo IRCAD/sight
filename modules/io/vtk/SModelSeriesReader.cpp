@@ -56,10 +56,10 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::vtk::SModelSeriesReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::vtk::SModelSeriesReader,
                          ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -229,7 +229,7 @@ void SModelSeriesReader::loadMesh( const std::filesystem::path& _file, data::Mes
     else
     {
         FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ _file.extension().string() +
-                                               "' is not managed by modules::io::vtk::SMeshReader."));
+                                               "' is not managed by module::io::vtk::SMeshReader."));
     }
 
     m_sigJobCreated->emit(meshReader->getJob());

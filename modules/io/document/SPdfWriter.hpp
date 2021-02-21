@@ -33,7 +33,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::io::document
+namespace sight::module::io::document
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::io::document
  *
  * @section XML XML configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::io::document::SPdfWriter">
+    <service uid="..." type="::sight::module::io::document::SPdfWriter">
         <in group="image">
             <key uid="..."/>
             <key uid="..."/>

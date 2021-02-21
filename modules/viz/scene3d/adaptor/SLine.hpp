@@ -35,7 +35,7 @@ namespace sight::data
 class Material;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -50,7 +50,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SLine">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SLine">
         <config layer="default" transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
@@ -122,7 +122,7 @@ private:
     void updateLength(float _length);
 
     /// Contains the Ogre material adaptor.
-    modules::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
+    module::viz::scene3d::adaptor::SMaterial::sptr m_materialAdaptor { nullptr };
 
     /// Contains the material data.
     data::Material::sptr m_material { nullptr };
@@ -144,4 +144,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

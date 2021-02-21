@@ -28,10 +28,10 @@
 
 #include <io/itk/inr2itk/itkInrImageIO.hpp>
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::io::itk::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::io::itk::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

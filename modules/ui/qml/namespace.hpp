@@ -23,10 +23,10 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qml contains the basic Qml types to uniformize the
+ * @brief The namespace sight::module::ui::qml contains the basic Qml types to uniformize the
  * style of all the applications using Qml.
  */
-namespace sight::modules::ui::qml
+namespace sight::module::ui::qml
 {
 /**
  * @page  styleQml Qml style

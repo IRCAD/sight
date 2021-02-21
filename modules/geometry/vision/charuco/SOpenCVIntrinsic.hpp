@@ -29,7 +29,7 @@
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::geometry::vision::charuco
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::geometry::vision::charuco::SOpenCVIntrinsic">
+        <service type="::sight::module::geometry::vision::charuco::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />
@@ -134,4 +134,4 @@ private:
     ::cv::Ptr< ::cv::aruco::CharucoBoard > m_board;
 };
 
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

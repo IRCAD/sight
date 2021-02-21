@@ -1,18 +1,18 @@
 <plugin id="blendActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_viz_scene2d" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene2d" />
 
     <xi:include href="configurations/Blend.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ImageMix.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>Blend</id>
         <title>Blend</title>
         <desc>Activity to superimpose two images.</desc>
-        <icon>module_ui_media-0.1/icons/icon-blend.png</icon>
+        <icon>sight_module_ui_icons-0.1/icon-blend.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>

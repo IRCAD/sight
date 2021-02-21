@@ -1,10 +1,10 @@
 <profile name="GuiQtTest" version="0.1">
 
-    <activate id="module_service" version="0.1" />
+    <activate id="sight::module::service" version="0.1" />
 
-    <activate id="module_ui_base" version="0.1" />
-    <activate id="module_ui_qt" version="0.1" />
+    <activate id="sight::module::ui::base" version="0.1" />
+    <activate id="sight::module::ui::qt" version="0.1" />
 
-    <start id="module_ui_qt" />
+    <start id="sight::module::ui::qt" />
 
 </profile>

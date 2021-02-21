@@ -52,7 +52,7 @@ RelatedStudy::~RelatedStudy()
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType RelatedStudy::validate(
-    const activity::registry::ActivityInfo& activityInfo,
+    const activity::extension::ActivityInfo& activityInfo,
     const data::Vector::csptr& currentSelection ) const
 {
     IValidator::ValidationType validation;

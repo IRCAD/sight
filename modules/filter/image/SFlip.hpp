@@ -29,7 +29,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -43,7 +43,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::sight::modules::filter::image::SFlip">
+       <service type="::sight::module::filter::image::SFlip">
            <in key="source" uid="..." autoConnect="yes" />
            <out key="target" uid="..." />
        </service>
@@ -104,4 +104,4 @@ private:
     std::array<bool, 3> m_flipAxes {{false, false, false}};
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

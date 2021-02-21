@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::viz::qt3d
+namespace sight::module::viz::qt3d
 {
 
 /// This class is started when the module is loaded.
@@ -44,4 +44,4 @@ struct MODULE_VIZ_QT3D_CLASS_API Plugin final : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::viz::qt3d.
+} // namespace sight::module::viz::qt3d.

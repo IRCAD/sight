@@ -36,11 +36,11 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SCurvedHistogram)
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SCurvedHistogram)
 
 #define PI 3.14159265
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 
 namespace adaptor
@@ -546,4 +546,4 @@ service::IService::KeyConnectionsMap SCurvedHistogram::getAutoConnections() cons
 }
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

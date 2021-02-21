@@ -26,7 +26,7 @@
 #include "ui/base/IGuiContainer.hpp"
 
 #include <activity/IActivityLauncher.hpp>
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/com/Slots.hpp>
 
@@ -49,11 +49,11 @@ namespace view
  *
  *  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::activity::SDynamicView" autoConnect="yes" >
+   <service type="::sight::module::ui::qt::activity::SDynamicView" autoConnect="yes" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="module_ui_media-0.1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_icons-0.1/app.ico"  />
      </parameters>
    </service>
    @endcode
@@ -79,8 +79,8 @@ public:
 
 protected:
 
-    typedef activity::registry::ActivityAppConfigParam ParameterType;
-    typedef activity::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::ActivityAppConfigParam ParameterType;
+    typedef activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
     typedef std::map< std::string, std::string> ReplaceMapType;
 
     /// Constructor. Do nothing.

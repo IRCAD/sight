@@ -28,7 +28,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 /**
@@ -52,7 +52,7 @@ protected:
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="::ui::base::IAction" impl="::sight::modules::ui::qt::SLaunchBrowser"
+       <service type="::ui::base::IAction" impl="::sight::module::ui::qt::SLaunchBrowser"
      * autoConnect="no">
         <url>http://www.ircad.fr</url>
        </service>
@@ -79,4 +79,4 @@ private:
 
 };
 
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

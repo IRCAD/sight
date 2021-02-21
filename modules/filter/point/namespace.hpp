@@ -23,11 +23,11 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::filter::point contains services to perfom a basic registration between images
+ * @brief The namespace sight::module::filter::point contains services to perfom a basic registration between images
  *and meshes.
  **/
 
-namespace sight::modules::filter::point
+namespace sight::module::filter::point
 {
 
-} // namespace sight::modules::filter::point
+} // namespace sight::module::filter::point

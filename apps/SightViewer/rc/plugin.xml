@@ -2,19 +2,19 @@
 
 <plugin id="SightViewer" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_base" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene2d" />
-    <requirement id="module_io_atoms" />
-    <requirement id="module_io_dimse" />
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene2d" />
+    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::io::dimse" />
 
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/PACSSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/TransferFunctionManagerWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>SightViewer_jsonReader_SrvCfg</id>
         <desc>JSON</desc>
         <config>
@@ -23,7 +23,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>SightViewer_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -31,7 +31,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig" >
+    <extension implements="::sight::service::extension::Config" >
         <id>SightViewer_gdcm_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
@@ -39,7 +39,7 @@
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>SightViewer_AppCfg</id>
         <config>
 
@@ -64,11 +64,11 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainView" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Sight Viewer</name>
-                        <icon>SightViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg</icon>
+                        <icon>SightViewer-@PROJECT_VERSION@/Ogre_logo.svg</icon>
                         <minSize width="1150" height="700" />
                     </frame>
                 </gui>
@@ -77,7 +77,7 @@
                 </registry>
             </service>
 
-            <service uid="mainContainerView" type="::sight::modules::ui::base::SView" >
+            <service uid="mainContainerView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -89,7 +89,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::sight::modules::ui::base::SView" >
+            <service uid="containerView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <toolBar align="left" />
                     <layout type="::sight::ui::base::LineLayoutManager" >
@@ -119,7 +119,7 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarSliderView" type="::sight::modules::ui::base::SView">
+            <service uid="rightToolbarSliderView" type="::sight::module::ui::base::SView">
                 <gui>
                     <toolBar backgroundColor="#3E4453" />
                     <layout type="::sight::ui::base::LineLayoutManager">
@@ -131,11 +131,11 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarView" type="::sight::modules::ui::base::SToolBar">
+            <service uid="rightToolbarView" type="::sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
                         <spacer />
-                        <menuItem name="Show parameters" icon="module_ui_flaticon-0.1/icons/YellowLeftChevron.svg" />
+                        <menuItem name="Show parameters" icon="sight_module_ui_flaticons-0.1/YellowLeftChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -143,7 +143,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterView" type="::sight::modules::ui::base::SView" >
+            <service uid="parameterView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <toolBar/>
                     <layout type="::sight::ui::base::LineLayoutManager" >
@@ -165,16 +165,16 @@
                 </registry>
             </service>
 
-            <service uid="parameterToolBarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="parameterToolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Show volume parameters" icon="module_ui_flaticon-0.1/icons/Volume.svg" style="check" />
-                        <menuItem name="Show organs manager" icon="module_ui_flaticon-0.1/icons/Stomach.svg" style="check" />
-                        <menuItem name="Show landmarks manager" icon="module_ui_flaticon-0.1/icons/YellowLandmarks.svg" style="check" />
-                        <menuItem name="Show light manager" icon="module_ui_flaticon-0.1/icons/Light.svg" style="check" />
-                        <menuItem name="Show extruded meshes manager" icon="module_ui_flaticon-0.1/icons/Extrude.svg" style="check" />
+                        <menuItem name="Show volume parameters" icon="sight_module_ui_flaticons-0.1/Volume.svg" style="check" />
+                        <menuItem name="Show organs manager" icon="sight_module_ui_flaticons-0.1/Stomach.svg" style="check" />
+                        <menuItem name="Show landmarks manager" icon="sight_module_ui_flaticons-0.1/YellowLandmarks.svg" style="check" />
+                        <menuItem name="Show light manager" icon="sight_module_ui_flaticons-0.1/Light.svg" style="check" />
+                        <menuItem name="Show extruded meshes manager" icon="sight_module_ui_flaticons-0.1/Extrude.svg" style="check" />
                         <spacer/>
-                        <menuItem name="Close parameters" icon="module_ui_flaticon-0.1/icons/YellowRightChevron.svg" />
+                        <menuItem name="Close parameters" icon="sight_module_ui_flaticons-0.1/YellowRightChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -187,7 +187,7 @@
                 </registry>
             </service>
 
-            <service uid="volumeParameterView" type="::sight::modules::ui::base::SView" >
+            <service uid="volumeParameterView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -200,7 +200,7 @@
                 </registry>
             </service>
 
-            <service uid="landmarksParameterView" type="::sight::modules::ui::base::SView" >
+            <service uid="landmarksParameterView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -213,7 +213,7 @@
                 </registry>
             </service>
 
-            <service uid="lightParameterView" type="::sight::modules::ui::base::SView" >
+            <service uid="lightParameterView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -229,31 +229,31 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load series" icon="module_ui_flaticon-0.1/icons/BlueLoad.svg" />
-                        <menuItem name="Open PACS" icon="module_ui_flaticon-0.1/icons/GreenServerConnected.svg" style="check" />
+                        <menuItem name="Load series" icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
+                        <menuItem name="Open PACS" icon="sight_module_ui_flaticons-0.1/GreenServerConnected.svg" style="check" />
                         <separator/>
-                        <menuItem name="Negato view" icon="module_ui_flaticon-0.1/icons/Layers.svg" />
-                        <menuItem name="Volume view" icon="module_ui_flaticon-0.1/icons/Volume.svg" />
+                        <menuItem name="Negato view" icon="sight_module_ui_flaticons-0.1/Layers.svg" />
+                        <menuItem name="Volume view" icon="sight_module_ui_flaticons-0.1/Volume.svg" />
                         <separator/>
-                        <menuItem name="Show/Hide volume TF editor" icon="module_ui_flaticon-0.1/icons/TF1.svg" style="check" />
+                        <menuItem name="Show/Hide volume TF editor" icon="sight_module_ui_flaticons-0.1/TF1.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide mesh" icon="module_ui_flaticon-0.1/icons/Stomach.svg" style="check" />
-                        <menuItem name="Show/hide volume" icon="module_ui_flaticon-0.1/icons/Volume.svg" style="check" />
-                        <menuItem name="Show/hide negato" icon="module_ui_flaticon-0.1/icons/Layers.svg" style="check" />
+                        <menuItem name="Show/hide mesh" icon="sight_module_ui_flaticons-0.1/Stomach.svg" style="check" />
+                        <menuItem name="Show/hide volume" icon="sight_module_ui_flaticons-0.1/Volume.svg" style="check" />
+                        <menuItem name="Show/hide negato" icon="sight_module_ui_flaticons-0.1/Layers.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide cropping box" icon="module_ui_flaticon-0.1/icons/CroppingBox.svg" style="check" />
-                        <menuItem name="Reset cropping box" icon="module_ui_flaticon-0.1/icons/ResetCroppingBox.svg" />
-                        <menuItem name="Shape extruder" icon="module_ui_flaticon-0.1/icons/Extrude.svg" style="check" />
-                        <menuItem name="Revert shape extruder" icon="module_ui_flaticon-0.1/icons/ExtrudeRevert.svg" />
+                        <menuItem name="Show/hide cropping box" icon="sight_module_ui_flaticons-0.1/CroppingBox.svg" style="check" />
+                        <menuItem name="Reset cropping box" icon="sight_module_ui_flaticons-0.1/ResetCroppingBox.svg" />
+                        <menuItem name="Shape extruder" icon="sight_module_ui_flaticons-0.1/Extrude.svg" style="check" />
+                        <menuItem name="Revert shape extruder" icon="sight_module_ui_flaticons-0.1/ExtrudeRevert.svg" />
                         <separator/>
-                        <menuItem name="Add distance" icon="module_ui_flaticon-0.1/icons/AddDistance.svg" />
-                        <menuItem name="Remove distance" icon="module_ui_flaticon-0.1/icons/RemoveDistance.svg" />
-                        <menuItem name="Hide/show distance" icon="module_ui_flaticon-0.1/icons/Distance.svg" style="check" />
+                        <menuItem name="Add distance" icon="sight_module_ui_flaticons-0.1/AddDistance.svg" />
+                        <menuItem name="Remove distance" icon="sight_module_ui_flaticons-0.1/RemoveDistance.svg" />
+                        <menuItem name="Hide/show distance" icon="sight_module_ui_flaticons-0.1/Distance.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide axis" icon="module_ui_flaticon-0.1/icons/Axis.svg" style="check" />
+                        <menuItem name="Show/hide axis" icon="sight_module_ui_flaticons-0.1/Axis.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -279,24 +279,24 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesDBAct" type="::sight::modules::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
+            <service uid="openSeriesDBAct" type="::sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
-                <addSelection service="::sight::modules::io::dicom::SDicomSeriesDBReader" />
-                <config id="SightViewer_jsonReader_SrvCfg" service="::sight::modules::io::atoms::SReader" />
-                <config id="SightViewer_vtk_SrvCfg" service="::sight::modules::io::vtk::SSeriesDBReader" />
-                <config id="SightViewer_gdcm_SrvCfg" service="::sight::modules::io::dicom::SSeriesDBReader" />
+                <addSelection service="::sight::module::io::dicom::SDicomSeriesDBReader" />
+                <config id="SightViewer_jsonReader_SrvCfg" service="::sight::module::io::atoms::SReader" />
+                <config id="SightViewer_vtk_SrvCfg" service="::sight::module::io::vtk::SSeriesDBReader" />
+                <config id="SightViewer_gdcm_SrvCfg" service="::sight::module::io::dicom::SSeriesDBReader" />
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="::sight::modules::ui::base::com::SSignal" />
+            <service uid="negatoViewAct" type="::sight::module::ui::base::com::SSignal" />
 
-            <service uid="volumeViewAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="volumeViewAct" type="::sight::module::ui::base::com::SSignal" >
                 <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
-            <service uid="volumeManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
+            <service uid="volumeManagerAct" type="::sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -306,7 +306,7 @@
                 </config>
             </service>
 
-            <service uid="organsManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
+            <service uid="organsManagerAct" type="::sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <show wid="organsParameterView" />
@@ -316,7 +316,7 @@
                 </config>
             </service>
 
-            <service uid="landmarksManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
+            <service uid="landmarksManagerAct" type="::sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -326,7 +326,7 @@
                 </config>
             </service>
 
-            <service uid="lightManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
+            <service uid="lightManagerAct" type="::sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -336,7 +336,7 @@
                 </config>
             </service>
 
-            <service uid="extrudedMeshesManagerAct" type="::sight::modules::ui::base::SModifyLayout" >
+            <service uid="extrudedMeshesManagerAct" type="::sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -347,7 +347,7 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="hideParameterAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <sync>true</sync>
                 <slots>
                     <slot>parameterView/hide</slot>
@@ -355,7 +355,7 @@
                 </slots>
              </service>
 
-            <service uid="showParameterAct" type="::sight::modules::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showParameterAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>parameterView/show</slot>
                     <slot>rightToolbarSliderView/hide</slot>
@@ -364,10 +364,10 @@
             </service>
 
             <!-- TF manager -->
-            <service uid="volumeTFAct" type="::sight::modules::ui::base::SConfigLauncher" >
+            <service uid="volumeTFAct" type="::sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="SightViewer_TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
-                <parameter replace="WINDOW_ICON" by="SightViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
+                <parameter replace="WINDOW_ICON" by="SightViewer-@PROJECT_VERSION@/Ogre_logo.svg" />
                 <inout key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <inout key="tfPools" uid="volumeTFPools" />
@@ -378,58 +378,58 @@
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="::sight::modules::ui::base::SConfigLauncher" >
+            <service uid="pacsAct" type="::sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="SightViewer_PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
-                <parameter replace="WINDOW_ICON" by="SightViewer-@PROJECT_VERSION@/icons/Ogre_logo.svg" />
+                <parameter replace="WINDOW_ICON" by="SightViewer-@PROJECT_VERSION@/Ogre_logo.svg" />
                 <inout key="previewSeriesDB" uid="previewSeriesDB" />
                 <inout key="localSeriesDB" uid="localSeriesDB" />
                 <inout key="image" uid="image" />
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="volumeVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="negato3DVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="meshVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="boxWidgetVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="boxWidgetResetAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="shapeExtruderAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="::sight::modules::ui::base::com::SSignal" >
+            <service uid="shapeExtruderRevertAct" type="::sight::module::ui::base::com::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="::sight::modules::ui::base::com::SSignal" />
+            <service uid="axisVisibilityAct" type="::sight::module::ui::base::com::SSignal" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="::sight::modules::ui::base::metrics::SAddDistance">
+            <service uid="addDistanceAct" type="::sight::module::ui::base::metrics::SAddDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="removeDistanceAct" type="::sight::modules::ui::base::metrics::SRemoveDistance">
+            <service uid="removeDistanceAct" type="::sight::module::ui::base::metrics::SRemoveDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="hideDistanceAct" type="::sight::modules::ui::base::metrics::SShowDistance" autoConnect="yes" >
+            <service uid="hideDistanceAct" type="::sight::module::ui::base::metrics::SShowDistance" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
@@ -478,14 +478,14 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Extract the model or the image from the series -->
-            <service uid="extractImageSrv" type="::sight::modules::data::SCopy" >
+            <service uid="extractImageSrv" type="::sight::module::data::SCopy" >
                 <in key="source" uid="seriesDB" >
                     <extract from="@values.0.image" />
                 </in>
                 <inout key="target" uid="image" />
             </service>
 
-            <service uid="extractMeshSrv" type="::sight::modules::data::SCopy" >
+            <service uid="extractMeshSrv" type="::sight::module::data::SCopy" >
                 <in key="source" uid="seriesDB" >
                     <extract from="@values.0" />
                 </in>
@@ -493,14 +493,14 @@
             </service>
 
             <!-- Compute the image histogram -->
-            <service uid="computeHistogramSrv" type="::sight::modules::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+            <service uid="computeHistogramSrv" type="::sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
                 <in key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volumeParameterSrv" type="::sight::modules::ui::qt::SParameters" >
+            <service uid="volumeParameterSrv" type="::sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
@@ -516,15 +516,15 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="::sight::modules::ui::qt::metrics::SLandmarks" autoConnect="yes" >
+            <service uid="landmarksParameterSrv" type="::sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes" >
                 <inout key="landmarks" uid="landmarks" />
                 <advanced>yes</advanced>
             </service>
 
             <!-- Light editor -->
-            <service uid="lightSelectorSrv" type="::sight::modules::ui::viz::SLightSelector"  />
+            <service uid="lightSelectorSrv" type="::sight::module::ui::viz::SLightSelector"  />
 
-            <service uid="lightEditorSrv" type="::sight::modules::ui::viz::SLightEditor" />
+            <service uid="lightEditorSrv" type="::sight::module::ui::viz::SLightEditor" />
 
             <!-- ******************************* Connections ***************************************** -->
 

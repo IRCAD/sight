@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
 class Plugin : public core::runtime::Plugin
@@ -51,4 +51,4 @@ public:
 
 };
 
-} // namespace sight::modules::io::vtk
+} // namespace sight::module::io::vtk

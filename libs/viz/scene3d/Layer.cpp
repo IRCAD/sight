@@ -54,7 +54,7 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>

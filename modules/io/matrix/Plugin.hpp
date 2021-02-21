@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
 struct Plugin : public core::runtime::Plugin
@@ -51,4 +51,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::io::matrix
+} // namespace sight::module::io::matrix

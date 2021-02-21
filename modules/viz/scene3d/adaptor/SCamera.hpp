@@ -44,7 +44,7 @@ namespace sight::data
 class Camera;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -57,7 +57,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="cameraAdaptor" type="::sight::modules::viz::scene3d::adaptor::SCamera">
+    <service uid="cameraAdaptor" type="::sight::module::viz::scene3d::adaptor::SCamera">
         <inout key="transform" uid="..." />
         <in key="calibration" uid="..." />
         <config layer="..." />
@@ -158,4 +158,4 @@ private:
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

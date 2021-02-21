@@ -29,7 +29,7 @@
 
 #include <modules/ui/viz/config.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::viz::SAddPoint">
+        <service type="::sight::module::ui::viz::SAddPoint">
             <inout key="pointList" uid="..." />
        </service>
    @endcode

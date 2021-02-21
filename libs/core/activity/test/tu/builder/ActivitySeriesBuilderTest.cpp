@@ -23,7 +23,7 @@
 #include "ActivitySeriesBuilderTest.hpp"
 
 #include <activity/IBuilder.hpp>
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
@@ -47,7 +47,7 @@ namespace ut
 
 void ActivitySeriesBuilderTest::setUp()
 {
-    m_activity = activity::registry::Activity::New();
+    m_activity = activity::extension::Activity::New();
 
     // Set up context before running a test.
     core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity-0.0"));
@@ -60,7 +60,7 @@ void ActivitySeriesBuilderTest::setUp()
 
 void ActivitySeriesBuilderTest::tearDown()
 {
-    activity::registry::Activity::getDefault()->clearRegistry();
+    activity::extension::Activity::getDefault()->clearRegistry();
 
     // Clean up after the test run.
     m_module.reset();
@@ -76,11 +76,11 @@ void ActivitySeriesBuilderTest::buildDataTest()
     selection->getContainer().push_back(imgSeriesSelected);
     selection->getContainer().push_back(modelSeriesSelected);
 
-    activity::registry::Activity::ActivitiesType activities;
+    activity::extension::Activity::ActivitiesType activities;
     activities = m_activity->getInfos(selection);
     CPPUNIT_ASSERT_EQUAL(size_t(1), activities.size());
 
-    activity::registry::ActivityInfo activityInfo = activities[0];
+    activity::extension::ActivityInfo activityInfo = activities[0];
     data::ActivitySeries::sptr actSeries;
     activity::IBuilder::sptr builder;
     builder = activity::builder::factory::New(activityInfo.builderImpl);

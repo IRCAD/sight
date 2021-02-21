@@ -26,7 +26,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sight::modules::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::filter::image::SThreshold">
+        <service type="::sight::module::filter::image::SThreshold">
             <in key="source" uid="..." />
             <out key="target" uid="..." />
             <config>
@@ -86,4 +86,4 @@ private:
     double m_threshold;
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

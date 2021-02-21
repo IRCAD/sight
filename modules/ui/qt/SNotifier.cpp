@@ -29,9 +29,9 @@
 
 #include <ui/base/GuiRegistry.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::SNotifier )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::SNotifier )
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 static const core::com::Slots::SlotKeyType s_POP_INFO_SLOT    = "popInfo";

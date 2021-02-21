@@ -42,7 +42,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
@@ -260,4 +260,4 @@ void SCalibrationInfoReader::updateChessboardSize()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

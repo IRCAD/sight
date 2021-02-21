@@ -48,11 +48,11 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::reconstruction
+namespace sight::module::ui::qt::reconstruction
 {
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor,
-                         ::sight::modules::ui::qt::reconstruction::SOrganMaterialEditor, data::Reconstruction )
+                         ::sight::module::ui::qt::reconstruction::SOrganMaterialEditor, data::Reconstruction )
 
 static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 

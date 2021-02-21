@@ -45,7 +45,7 @@ class Image;
 class Matrix4;
 }
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 /**
  * @brief   SMatrixTLSynchronizer service synchronizes tracking matrices.
@@ -57,7 +57,7 @@ namespace sight::modules::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="matrixToolsSynchronizer" type="::sight::modules::sync::SMatrixTLSynchronizer">
+     <service uid="matrixToolsSynchronizer" type="::sight::module::sync::SMatrixTLSynchronizer">
          <in key="matrixTL" uid="matrixToolsTL" autoConnect="yes" />
          <inout group="matrices">
              <key uid="markerEndoMX" />
@@ -122,4 +122,4 @@ private:
     MatrixIndexNameType m_matrixIndexName;
 };
 
-} //namespace sight::modules::sync
+} //namespace sight::module::sync

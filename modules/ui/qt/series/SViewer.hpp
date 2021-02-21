@@ -29,7 +29,7 @@
 
 #include <map>
 
-namespace sight::modules::ui::qt::series
+namespace sight::module::ui::qt::series
 {
 
 /**
@@ -39,7 +39,7 @@ namespace sight::modules::ui::qt::series
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::modules::ui::qt::series::SViewer">
+    <service type="::sight::module::ui::qt::series::SViewer">
         <in key="series" uid="..." autoConnect="yes" />
         <parentView>preview</parentView>
         <configs>
@@ -138,4 +138,4 @@ private:
     /// Stores the association between data type and associated configuration.
     SeriesConfigMapType m_seriesConfigs;
 };
-} // namespace sight::modules::ui::qt::series
+} // namespace sight::module::ui::qt::series

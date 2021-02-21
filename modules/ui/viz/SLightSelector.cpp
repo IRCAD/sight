@@ -47,10 +47,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SLightSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SLightSelector,
                          ::sight::data::Composite )
 
 using sight::viz::scene3d::ILight;
@@ -197,7 +197,7 @@ void SLightSelector::onAddLight(bool)
         this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 
-    modules::ui::viz::NewLightDialog* lightDialog = new modules::ui::viz::NewLightDialog(container);
+    module::ui::viz::NewLightDialog* lightDialog = new module::ui::viz::NewLightDialog(container);
 
     if(lightDialog->exec() == QDialog::Accepted)
     {
@@ -269,11 +269,11 @@ void SLightSelector::onEditAmbientColor(bool)
     Layer::sptr layer = m_currentLayer.lock();
     ::Ogre::ColourValue ogreColor = layer->getSceneManager()->getAmbientLight();
 
-    QColor qColor = QColorDialog::getColor(modules::ui::viz::helper::Utils::converOgreColorToQColor(ogreColor),
+    QColor qColor = QColorDialog::getColor(module::ui::viz::helper::Utils::converOgreColorToQColor(ogreColor),
                                            container,
                                            "Scene ambient color");
 
-    ogreColor = modules::ui::viz::helper::Utils::convertQColorToOgreColor(qColor);
+    ogreColor = module::ui::viz::helper::Utils::convertQColorToOgreColor(qColor);
 
     layer->getSceneManager()->setAmbientLight(ogreColor);
     layer->requestRender();
@@ -372,7 +372,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         this->updateLightsList();
 
         service::registry::ObjectService::ServiceVectorType materialServices =
-            service::OSR::getServices("::sight::modules::viz::scene3d::adaptor::SMaterial");
+            service::OSR::getServices("::sight::module::viz::scene3d::adaptor::SMaterial");
 
         for(auto srv : materialServices)
         {
@@ -470,4 +470,4 @@ void NewLightDialog::onOkBtn(bool)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

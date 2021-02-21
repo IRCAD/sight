@@ -26,9 +26,9 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::io::pcl
+namespace sight::module::io::pcl
 {
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::pcl::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::pcl::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -45,4 +45,4 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
-} // namespace sight::modules::io::pcl
+} // namespace sight::module::io::pcl

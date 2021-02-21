@@ -43,12 +43,12 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt::metrics
+namespace sight::module::ui::qt::metrics
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::metrics::Distance,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::metrics::Distance,
                          ::sight::data::Image )
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
@@ -129,4 +129,4 @@ void Distance::onDistanceButton()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::metrics
+} // namespace sight::module::ui::qt::metrics

@@ -31,7 +31,7 @@
 
 #include <memory>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 class PostWindowRenderListener;
@@ -43,7 +43,7 @@ class PostWindowRenderListener;
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="renderStatsAdaptor" type="::sight::modules::viz::scene3d::adaptor::SRenderStats">
+    <service uid="renderStatsAdaptor" type="::sight::module::viz::scene3d::adaptor::SRenderStats">
         <config layer="default" color="#ff0000" fontSize="12"/>
     </service>
    @endcode
@@ -102,4 +102,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

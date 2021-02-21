@@ -34,7 +34,7 @@ namespace sight::core::jobs
 class IJob;
 }
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace series
 {
@@ -43,7 +43,7 @@ namespace series
  * @brief   This action allows to export the current series using a temporary seriesDB.
  *
  * This service must work on a series.
- * It creates a new SeriesDB containing this series, and then launchs an modules::ui::base::editor::SSelector service
+ * It creates a new SeriesDB containing this series, and then launchs an module::ui::base::editor::SSelector service
  * on the created SeriesDB with the given configuration.
  *
  * @section Signal Signal
@@ -58,7 +58,7 @@ namespace series
  *
  * The available reader can be configured
  * @code{.xml}
-    <service uid="action_seriesExporter" impl="::sight::modules::ui::base::series::SExportWithSeriesDB">
+    <service uid="action_seriesExporter" impl="::sight::module::ui::base::series::SExportWithSeriesDB">
         <inout key="series" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
     </service>
@@ -72,14 +72,14 @@ namespace series
  *  - \b IOSelectorSrvConfig : the id of a configuration for SSelector
  *  for example
  *  @code{.xml}
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>seriesDBExporterConfig</id>
-        <service>::modules::ui::base::editor::SSelector</service>
+        <service>::module::ui::base::editor::SSelector</service>
         <desc>IOSelector config to export SeriesDB</desc>
         <config>
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::atoms::SWriter" />
+            <addSelection service="::sight::module::io::atoms::SWriter" />
         </config>
     </extension>
     @endcode
@@ -132,4 +132,4 @@ private:
 };
 
 } // namespace series
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

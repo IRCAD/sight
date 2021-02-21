@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="markerToPoint" type="::sight::modules::geometry::vision::SMarkerToPoint">
+     <service uid="markerToPoint" type="::sight::module::geometry::vision::SMarkerToPoint">
          <in key="matrixTL" uid="matrixTL" />
          <inout key="pointList" uid="markersPL" />
      </service>
@@ -106,4 +106,4 @@ protected:
     MODULE_GEOMETRY_VISION_API void clear();
 };
 
-} //namespace sight::modules::geometry::vision
+} //namespace sight::module::geometry::vision

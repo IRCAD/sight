@@ -34,7 +34,7 @@
 #include <viz/scene3d/factory/new.hpp>
 
 #include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {

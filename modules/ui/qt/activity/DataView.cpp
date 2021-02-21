@@ -46,7 +46,7 @@
 #include <service/IService.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 
@@ -67,15 +67,15 @@
 #include <algorithm>
 #include <iomanip>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
 
 const int DataView::s_UID_ROLE = Qt::UserRole + 1;
 
-using sight::activity::registry::ActivityInfo;
-using sight::activity::registry::ActivityRequirement;
+using sight::activity::extension::ActivityInfo;
+using sight::activity::extension::ActivityRequirement;
 
 //-----------------------------------------------------------------------------
 
@@ -351,7 +351,7 @@ void DataView::fillInformation(const ActivityInfo& _info)
 
 void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries)
 {
-    ActivityInfo info = sight::activity::registry::Activity::getDefault()->getInfo(
+    ActivityInfo info = sight::activity::extension::Activity::getDefault()->getInfo(
         _activitySeries->getActivityConfigId());
     m_activityInfo = info;
 
@@ -755,11 +755,11 @@ data::Object::sptr DataView::readObject(const std::string& _classname,
 {
     data::Object::sptr obj;
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("::sight::modules::ui::base::io::SSelector");
+    ioSelectorSrv = service::add("::sight::module::ui::base::io::SSelector");
 
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::registry::ServiceConfig::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
-                                                                             "::sight::modules::ui::base::io::SSelector");
+    ioCfg = service::extension::Config::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
+                                                                             "::sight::module::ui::base::io::SSelector");
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
@@ -1112,4 +1112,4 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
 //-----------------------------------------------------------------------------
 
 } // namespace activity
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

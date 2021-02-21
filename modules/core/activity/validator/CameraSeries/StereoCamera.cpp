@@ -28,12 +28,12 @@
 #include <data/CameraSeries.hpp>
 #include <data/Matrix4.hpp>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace CameraSeries
 {
 
-fwActivitiesValidatorRegisterMacro(::sight::modules::activity::validator::CameraSeries::StereoCamera);
+fwActivitiesValidatorRegisterMacro(::sight::module::activity::validator::CameraSeries::StereoCamera);
 
 //-----------------------------------------------------------------------------
 
@@ -102,4 +102,4 @@ StereoCamera::~StereoCamera()
 //-----------------------------------------------------------------------------
 
 } // namespace CameraSeries
-} // namespace sight::modules::activity::validator
+} // namespace sight::module::activity::validator

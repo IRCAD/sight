@@ -31,7 +31,7 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 /**
  * @brief This service get objects from a source object and expose them as new objects.
@@ -41,7 +41,7 @@ namespace sight::modules::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::data::SExtractObj" >
+        <service uid="..." type="::sight::module::data::SExtractObj" >
            <inout key="source" uid="...">
                <extract from="@values.myobject1" />
                <extract from="@values.myobject2" />
@@ -63,11 +63,11 @@ namespace sight::modules::data
  * - \b from (mandatory) : key to extract from the source object. The number of \b from tags must match
  * the number of \b target keys.
  */
-class MODULE_DATA_CLASS_API SExtractObj : public modules::data::ICamp
+class MODULE_DATA_CLASS_API SExtractObj : public module::data::ICamp
 {
 public:
 
-    fwCoreServiceMacro(SExtractObj, ::sight::modules::data::ICamp)
+    fwCoreServiceMacro(SExtractObj, ::sight::module::data::ICamp)
 
     typedef std::map<std::string, std::string> ExtractMapType;
 
@@ -100,4 +100,4 @@ private:
     std::vector<std::string> m_sourcePaths;
 };
 
-} // namespace sight::modules::data
+} // namespace sight::module::data

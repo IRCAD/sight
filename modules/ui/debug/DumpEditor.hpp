@@ -47,7 +47,7 @@ template< typename F >
 struct Slot;
 }
 
-namespace sight::modules::ui::debug
+namespace sight::module::ui::debug
 {
 
 /**

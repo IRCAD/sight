@@ -31,7 +31,7 @@
 
 #include <array>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 /**
  * @brief The SUpdateIntrinsicDialog class displays a QDialog. The user can change the calibration resolution which
@@ -159,4 +159,4 @@ private:
 
 };
 
-} //namespace sight::modules::ui::qt::calibration
+} //namespace sight::module::ui::qt::calibration

@@ -33,7 +33,7 @@
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
@@ -100,4 +100,4 @@ void SShaderParameter::swapping()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

@@ -38,12 +38,12 @@
 
 #include <memory>
 
-namespace sight::modules::ui::qt::com
+namespace sight::module::ui::qt::com
 {
 
 static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::modules::ui::qt::com::SSignalShortcut )
+fwServicesRegisterMacro( ::sight::service::IService, ::sight::module::ui::qt::com::SSignalShortcut )
 
 //-----------------------------------------------------------------------------
 
@@ -158,4 +158,4 @@ void SSignalShortcut::onActivation()
     this->signal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG)->asyncEmit();
 }
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

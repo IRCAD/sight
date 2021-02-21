@@ -28,7 +28,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sight::modules::memory
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::memory::LockDumpSrv">
+   <service type="::sight::module::memory::LockDumpSrv">
        <inout key="target" uid="..." />
    </service>
    @endcode
@@ -83,4 +83,4 @@ private:
 
 };
 
-} // sight::modules::memory
+} // sight::module::memory

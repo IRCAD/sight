@@ -26,7 +26,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 /**
@@ -89,4 +89,4 @@ protected:
 
 };
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

@@ -24,8 +24,8 @@
 
 #include <data/String.hpp>
 
-#include <service/registry/AppConfig.hpp>
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/AppConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <functional>
 
@@ -55,10 +55,10 @@ void ServiceConfigTest::tearDown()
 
 void ServiceConfigTest::serviceConfigTest()
 {
-    service::registry::ServiceConfig::sptr currentServiceConfig;
-    currentServiceConfig = service::registry::ServiceConfig::getDefault();
+    service::extension::Config::sptr currentServiceConfig;
+    currentServiceConfig = service::extension::Config::getDefault();
 
-    const std::string configId(service::registry::AppConfig::getUniqueIdentifier());
+    const std::string configId(service::extension::AppConfig::getUniqueIdentifier());
     const std::string service("::sight::service::ut::TestService");
     const std::string desc("Description of config");
     core::runtime::ConfigurationElement::csptr config = this->buildConfig();
@@ -94,8 +94,8 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
         future.get(); // Trigger exceptions
     }
 
-    service::registry::ServiceConfig::sptr currentServiceConfig;
-    currentServiceConfig = service::registry::ServiceConfig::getDefault();
+    service::extension::Config::sptr currentServiceConfig;
+    currentServiceConfig = service::extension::Config::getDefault();
     currentServiceConfig->clearRegistry();
     std::vector< std::string > allCconfigs = currentServiceConfig->getAllConfigForService(
         "::sight::service::ut::TestService");
@@ -106,8 +106,8 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 
 void ServiceConfigTest::getAllConfigsTest()
 {
-    service::registry::ServiceConfig::sptr currentServiceConfig;
-    currentServiceConfig = service::registry::ServiceConfig::getDefault();
+    service::extension::Config::sptr currentServiceConfig;
+    currentServiceConfig = service::extension::Config::getDefault();
 
     const std::string serviceName0    = "::wow::MuchService";
     const std::string serviceName1    = "::no::BadService";

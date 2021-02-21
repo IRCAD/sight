@@ -32,7 +32,7 @@
 
 #include <string>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::viz::scene3d::adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::modules::viz::scene3d::adaptor::SFrustum">
+    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SFrustum">
         <in key="camera" uid="..." />
         <config layer="..." transform="..." near="..." far="..."/>
     </service>
@@ -131,4 +131,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

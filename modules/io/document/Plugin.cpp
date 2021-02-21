@@ -24,11 +24,11 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::io::document
+namespace sight::module::io::document
 {
 
 using namespace core::runtime::utils;
-static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::modules::io::document::Plugin");
+static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::document::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -50,4 +50,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::document
+} // namespace sight::module::io::document

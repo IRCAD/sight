@@ -59,7 +59,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace model
 {
@@ -143,7 +143,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::model::SModelSeriesList,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::model::SModelSeriesList,
                          ::sight::data::ModelSeries)
 
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
@@ -557,4 +557,4 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
 //------------------------------------------------------------------------------
 
 } // namespace model.
-} // namespace sight::modules::ui::qt.
+} // namespace sight::module::ui::qt.

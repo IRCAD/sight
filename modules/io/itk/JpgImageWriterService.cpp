@@ -37,10 +37,10 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::itk::JpgImageWriterService,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::itk::JpgImageWriterService,
                          ::sight::data::Image )
 
 //------------------------------------------------------------------------------
@@ -179,4 +179,4 @@ void JpgImageWriterService::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

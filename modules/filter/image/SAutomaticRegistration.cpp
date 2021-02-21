@@ -38,10 +38,10 @@
 #include <fstream>
 #include <iomanip>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SAutomaticRegistration,
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SAutomaticRegistration,
                          ::sight::data::Image)
 
 static const service::IService::KeyType s_TARGET_IN = "target";
@@ -383,4 +383,4 @@ void SAutomaticRegistration::setMetric(const std::string& metricName)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

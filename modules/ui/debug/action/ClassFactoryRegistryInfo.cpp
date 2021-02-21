@@ -25,16 +25,16 @@
 #include <core/base.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <QHBoxLayout>
 
-namespace sight::modules::ui::debug
+namespace sight::module::ui::debug
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::debug::action::ClassFactoryRegistryInfo,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::debug::action::ClassFactoryRegistryInfo,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ void ClassFactoryRegistryInfo::updating( )
     m_tree->clearSelection();
     m_tree->clear();
 
-    typedef service::registry::ServiceFactory ServiceRegistry;
+    typedef service::extension::Factory ServiceRegistry;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
     for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )
@@ -117,4 +117,4 @@ void ClassFactoryRegistryInfo::stopping()
 
 } // namespace action
 
-} // namespace sight::modules::ui::debug
+} // namespace sight::module::ui::debug

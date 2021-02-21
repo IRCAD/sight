@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::sight::modules::ui::qt::calibration::Plugin");
+    "::sight::module::ui::qt::calibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -47,4 +47,4 @@ void Plugin::start()
 void Plugin::stop() noexcept
 {
 }
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

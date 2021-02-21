@@ -52,10 +52,10 @@
 
 #include <functional>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::SliceIndexPositionEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::SliceIndexPositionEditor,
                          ::sight::data::Image )
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =

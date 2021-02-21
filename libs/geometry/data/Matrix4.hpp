@@ -24,9 +24,8 @@
 
 #include "geometry/data/config.hpp"
 
-#include <core/base.hpp>
-#include <core/data/Matrix4.hpp>
-#include <core/data/Point.hpp>
+#include <data/Matrix4.hpp>
+#include <data/Point.hpp>
 
 #include <glm/mat4x4.hpp>
 

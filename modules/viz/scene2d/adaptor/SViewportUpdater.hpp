@@ -26,7 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -40,7 +40,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="viewportUpdater" type="::sight::modules::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes">
+   <service uid="viewportUpdater" type="::sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="yes">
        <in key="viewport" uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="7" />
    </service>
@@ -55,7 +55,7 @@ namespace adaptor
  *    - \b yAxis (optional): y axis associated to the adaptor
  *    - \b zValue (optional, default=0): z value of the layer
  *
- * This adaptor is intended to be used with a modules::viz::scene2d::adaptor::SViewportRangeSelector adaptor.
+ * This adaptor is intended to be used with a module::viz::scene2d::adaptor::SViewportRangeSelector adaptor.
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SViewportUpdater : public sight::viz::scene2d::IAdaptor
 {
@@ -76,4 +76,4 @@ protected:
 };
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

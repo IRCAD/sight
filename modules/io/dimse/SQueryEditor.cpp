@@ -45,7 +45,7 @@
 #include <algorithm>
 #include <vector>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 static const std::string s_ADVANCED_CONFIG    = "advanced";
@@ -264,7 +264,7 @@ void SQueryEditor::executeQueryAsync()
 {
     if(!m_isQuerying)
     {
-        m_requestWorker->post(std::bind(&modules::io::dimse::SQueryEditor::executeQuery, this));
+        m_requestWorker->post(std::bind(&module::io::dimse::SQueryEditor::executeQuery, this));
     }
     else
     {
@@ -564,4 +564,4 @@ void SQueryEditor::enableBirthDateEdit(int _enable)
     m_birthDateEdit->setEnabled(_enable);
 }
 
-} // namespace sight::modules::io::dimse
+} // namespace sight::module::io::dimse

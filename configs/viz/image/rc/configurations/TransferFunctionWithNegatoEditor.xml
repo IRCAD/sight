@@ -10,7 +10,7 @@ Example:
     <parameter replace="WID_PARENT" by="..." />
 </service>
 -->
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -32,7 +32,7 @@ Example:
         <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
         <object uid="${transferFunctionOutput}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="tfEditor" type="::sight::modules::ui::base::SView">
+        <service uid="tfEditor" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -48,13 +48,13 @@ Example:
         </service>
 
         <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
-        <service uid="fieldMgr" type="::sight::modules::ui::base::SPushField">
+        <service uid="fieldMgr" type="::sight::module::ui::base::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />
         </service>
 
-        <service uid="tfm" type="::sight::modules::ui::qt::image::TransferFunctionEditor">
+        <service uid="tfm" type="::sight::module::ui::qt::image::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
             <in key="currentTF" uid="${transferFunctionOutput}" optional="yes"/>
             <out key="tf" uid="${transferFunctionOutput}" />
@@ -63,7 +63,7 @@ Example:
             </config>
         </service>
 
-        <service uid="tfmTab" type="::sight::modules::ui::base::SView">
+        <service uid="tfmTab" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::TabLayoutManager">
                     <view caption="TF-Negato" />

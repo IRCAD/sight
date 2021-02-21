@@ -23,13 +23,13 @@
 /**
  * @ingroup apprequirement
  *
- * @brief The namespace sight::modules::viz::qt3d contains a Qt3D Render window interactor manager using Qt.
+ * @brief The namespace sight::module::viz::qt3d contains a Qt3D Render window interactor manager using Qt.
  *
  * It must be set in the application (or activity) \p \<requirement\> in order to use a Qt3D scene in an application
  * using Qt.
  */
 #pragma once
 
-namespace sight::modules::viz::qt3d
+namespace sight::module::viz::qt3d
 {
 }

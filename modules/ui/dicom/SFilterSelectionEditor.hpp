@@ -39,7 +39,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::ui::dicom::SFilterSelectionEditor">
+        <service type="::sight::module::ui::dicom::SFilterSelectionEditor">
             <in key="selection" uid="..." />
             <inout key="target" uid="..." />
        </service>
@@ -183,4 +183,4 @@ protected:
 
 };
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

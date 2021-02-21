@@ -38,10 +38,10 @@
 
 #include <geometry/data/Matrix4.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SPointCloudFromDepthMap)
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SPointCloudFromDepthMap)
 
 const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 
@@ -389,4 +389,4 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

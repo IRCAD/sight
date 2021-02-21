@@ -30,10 +30,10 @@
 
 #include <vector>
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 
-fwServicesRegisterMacro( ::sight::service::IController, sight::modules::memory::SDumpPolicy, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::service::IController, sight::module::memory::SDumpPolicy, ::sight::data::Object )
 
 SDumpPolicy::SDumpPolicy()
 {
@@ -125,4 +125,4 @@ void SDumpPolicy::swapping()
     this->starting();
 }
 
-} // namespace sight::modules::memory
+} // namespace sight::module::memory

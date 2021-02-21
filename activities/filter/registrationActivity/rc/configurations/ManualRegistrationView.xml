@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>ManualRegistrationView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -17,7 +17,7 @@
         <object uid="${targetTransferFunction}" type="::sight::data::TransferFunction" src="ref" />
         <object uid="${referenceTransferFunction}" type="::sight::data::TransferFunction" src="deferred" />
 
-        <service uid="manualRegistrationView" type="::sight::modules::ui::base::SView">
+        <service uid="manualRegistrationView" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
@@ -32,7 +32,7 @@
             </registry>
         </service>
 
-        <service uid="blendNegatoViews" type="::sight::modules::ui::base::SView">
+        <service uid="blendNegatoViews" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -46,7 +46,7 @@
             </registry>
         </service>
 
-        <service uid="secondaryBlendViews" type="::sight::modules::ui::base::SView">
+        <service uid="secondaryBlendViews" type="::sight::module::ui::base::SView">
             <gui>
                 <layout type="::sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />

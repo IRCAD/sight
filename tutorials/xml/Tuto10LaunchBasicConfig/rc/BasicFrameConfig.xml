@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig" >
+<extension implements="::sight::service::extension::AppConfig" >
     <id>Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg</id>
     <parameters><!-- Declared the required parameters -->
         <!--
@@ -19,7 +19,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+        <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -34,7 +34,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="imageRendereSrv" type="::sight::modules::viz::sample::SImage" >
+        <service uid="imageRendereSrv" type="::sight::module::viz::sample::SImage" >
             <in key="image" uid="${imageUid}" />
         </service>
 

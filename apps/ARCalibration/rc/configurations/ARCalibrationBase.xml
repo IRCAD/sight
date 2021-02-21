@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>ARCalibration_AppCfg</id>
     <parameters>
         <param name="APP_NAME" />
@@ -15,7 +15,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+        <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+        <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+        <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Open Series..." shortcut="Ctrl+O" />
@@ -64,7 +64,7 @@
             </registry>
         </service>
 
-        <service uid="menuToolsView" type="::sight::modules::ui::base::SMenu" >
+        <service uid="menuToolsView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Show selector" style="check"/>
@@ -75,7 +75,7 @@
             </registry>
         </service>
 
-        <service uid="menuPreferencesView" type="::sight::modules::ui::base::SMenu" >
+        <service uid="menuPreferencesView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Video directory" />
@@ -87,7 +87,7 @@
         </service>
 
 
-        <service uid="mainview" type="::sight::modules::ui::base::SView" >
+        <service uid="mainview" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
@@ -100,7 +100,7 @@
             </registry>
         </service>
 
-        <service uid="dynamicView" type="::sight::modules::ui::qt::activity::SDynamicView" >
+        <service uid="dynamicView" type="::sight::module::ui::qt::activity::SDynamicView" >
             <mainActivity id="ARCalibrationActivitySelector_Activity" closable="false" />
             <inout key="SERIESDB" uid="seriesDB" />
             <inout key="LOADING_SERIESDB" uid="loadingSeriesDB" />
@@ -117,7 +117,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="videoDirectoryAct" type="::sight::modules::ui::qt::SPreferencesConfiguration" >
+        <service uid="videoDirectoryAct" type="::sight::module::ui::qt::SPreferencesConfiguration" >
             <preference>
                 <type>path</type>
                 <name>Video directory</name>
@@ -126,30 +126,30 @@
             </preference>
         </service>
 
-        <service uid="openSeriesAct" type="::sight::modules::ui::base::series::SDBMerger" >
+        <service uid="openSeriesAct" type="::sight::module::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
 
-        <service uid="openActivityAct" type="::sight::modules::ui::base::series::SDBMerger">
+        <service uid="openActivityAct" type="::sight::module::ui::base::series::SDBMerger">
             <inout key="seriesDB" uid="loadingSeriesDB" />
             <IOSelectorSrvConfig name="ActivityReaderConfig" />
         </service>
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
-        <service uid="saveAct" type="::sight::modules::ui::base::com::SStarter">
+        <service uid="saveAct" type="::sight::module::ui::base::com::SStarter">
             <start uid="seriesDBWriterSrv" />
         </service>
 
         <!-- Save current activity. -->
-        <service uid="saveActivityAct" type="::sight::modules::ui::base::series::SExportWithSeriesDB" >
+        <service uid="saveActivityAct" type="::sight::module::ui::base::series::SExportWithSeriesDB" >
             <inout key="series" uid="currentActivity" />
             <IOSelectorSrvConfig name="ActivityWriterConfig" />
         </service>
 
-        <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+        <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
-        <service uid="selectorAct" type="::sight::modules::ui::base::SConfigLauncher" >
+        <service uid="selectorAct" type="::sight::module::ui::base::SConfigLauncher" >
             <appConfig id="ARCalibration_Selector_AppCfg" />
             <inout key="SERIESDB" uid="seriesDB" />
             <parameter replace="WID_PARENT" uid="selectorView" />
@@ -158,12 +158,12 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="seriesDBWriterSrv" type="::sight::modules::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
+        <service uid="seriesDBWriterSrv" type="::sight::module::ui::base::io::SSelector" config="SDBAtomsWriterIOSelectorConfig" >
             <inout key="data" uid="seriesDB" />
         </service>
 
         <!-- Service to select the current activity into the composite. -->
-        <service uid="activitySeriesUpdaterSrv" type="::sight::modules::data::updater::SObjFromSlot">
+        <service uid="activitySeriesUpdaterSrv" type="::sight::module::data::updater::SObjFromSlot">
             <out key="object" uid="currentActivity" />
         </service>
 

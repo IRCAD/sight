@@ -31,7 +31,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 /**
  * @brief   SCameraSeriesEditor service is used to display the extrinsic calibration of a camera series.
@@ -39,7 +39,7 @@ namespace sight::modules::ui::qt::calibration
  * @subsection Configuration XML
 
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::qt::calibration::SCameraSeriesEditor" >
+    <service uid="..." type="::sight::module::ui::qt::calibration::SCameraSeriesEditor" >
         <in key="cameraSeries" uid="..." />
         <index>...</index>
     </service>
@@ -130,4 +130,4 @@ protected:
     size_t m_camIndex;
 
 };
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

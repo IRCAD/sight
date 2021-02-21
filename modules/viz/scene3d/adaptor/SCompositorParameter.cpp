@@ -39,7 +39,7 @@
 
 #include <algorithm>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 class CompositorListener : public ::Ogre::CompositorInstance::Listener
@@ -75,7 +75,7 @@ public:
 
 private:
     /// Associated Sight adaptor
-    modules::viz::scene3d::adaptor::SCompositorParameter::wptr m_adaptor;
+    module::viz::scene3d::adaptor::SCompositorParameter::wptr m_adaptor;
 };
 
 static const std::string s_COMPOSITOR_NAME_CONFIG = "compositorName";
@@ -173,4 +173,4 @@ void SCompositorParameter::updateValue(::Ogre::MaterialPtr& _mat)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

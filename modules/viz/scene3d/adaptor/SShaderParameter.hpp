@@ -26,7 +26,7 @@
 
 #include <viz/scene3d/IParameter.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="paramAdaptor" type="::sight::modules::viz::scene3d::adaptor::SShaderParameter">
+    <service uid="paramAdaptor" type="::sight::module::viz::scene3d::adaptor::SShaderParameter">
         <inout key="parameter" uid="collimation" />
         <config materialName="mat" parameter="u_value" shaderType="fragment" />
     </service>
@@ -99,4 +99,4 @@ private:
     std::string m_materialName;
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

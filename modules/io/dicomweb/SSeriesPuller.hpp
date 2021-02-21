@@ -38,7 +38,7 @@ namespace sight::data
 class DicomSeries;
 }
 
-namespace sight::modules::io::dicomweb
+namespace sight::module::io::dicomweb
 {
 
 /**
@@ -51,10 +51,10 @@ namespace sight::modules::io::dicomweb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::io::dicomweb::SSeriesPuller">
+        <service type="::sight::module::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
-            <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
+            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
             <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
        </service>
    @endcode
@@ -170,4 +170,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dicomweb
+} // namespace sight::module::io::dicomweb

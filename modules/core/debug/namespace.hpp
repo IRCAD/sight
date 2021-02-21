@@ -21,15 +21,15 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::debug contains tools for monitoring an application built with sight.
+ * @brief       The namespace sight::module::debug contains tools for monitoring an application built with sight.
  */
 #pragma once
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 
 /**
- * @brief       The namespace sight::modules::debug::action contains tools for monitoring an application built with
+ * @brief       The namespace sight::module::debug::action contains tools for monitoring an application built with
  * sight.
  */
 namespace action

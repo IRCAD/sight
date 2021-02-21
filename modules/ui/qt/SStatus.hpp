@@ -33,7 +33,7 @@
 
 class QPushButton;
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 /**
@@ -46,7 +46,7 @@ namespace sight::modules::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::modules::ui::qt::SStatus">
+   <service uid="..." type="::sight::module::ui::qt::SStatus">
        <form>square|circle</form>
        <count>2</count>
        <layout>horizontal|vertical</layout>
@@ -188,4 +188,4 @@ private:
     size_t m_height; ///< height of idicator
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

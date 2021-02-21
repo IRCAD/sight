@@ -31,7 +31,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <unordered_set>
 
@@ -110,7 +110,7 @@ fwServicesRegisterObjectMacro(  ::sight::service::ut::TestSrvThreeData, ::sight:
 
 void ServiceFactoryTest::factoryTest()
 {
-    const auto serviceFactory = service::registry::ServiceFactory::getDefault();
+    const auto serviceFactory = service::extension::Factory::getDefault();
     {
         const auto servicesImpl = serviceFactory->getImplementationIdFromObjectAndType("::sight::data::Object",
                                                                                        "::sight::service::ut::TestService");

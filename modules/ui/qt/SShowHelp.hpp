@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 /**
  * @brief   This action show the help contents.
@@ -48,7 +48,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="::sight::modules::ui::qt::ui::action::SShowHelp" type="::ui::base::IAction">
+       <service impl="::sight::module::ui::qt::ui::action::SShowHelp" type="::ui::base::IAction">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode
@@ -80,4 +80,4 @@ private:
     std::filesystem::path m_fsHelpPath;
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

@@ -35,7 +35,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 namespace viz
@@ -43,7 +43,7 @@ namespace viz
 
 static const service::IService::KeyType s_MATRIX_INPUT = "matrix";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::SMatrixViewer)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::viz::SMatrixViewer)
 
 // ------------------------------------------------------------------------------
 
@@ -153,4 +153,4 @@ service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 
 }// namespace viz
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

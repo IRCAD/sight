@@ -22,7 +22,7 @@
 
 #include "io/atoms/filter/functions.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <atoms/Object.hpp>
 #include <atoms/Object.hxx>
@@ -44,7 +44,7 @@ bool isSeriesKnown(const SPTR(sight::atoms::Object)& series)
 {
     bool isKnown = false;
 
-    namespace reg = activity::registry;
+    namespace reg = activity::extension;
     reg::Activity::sptr registry                  = reg::Activity::getDefault();
     const std::vector< reg::ActivityInfo >& infos = registry->getInfos();
 

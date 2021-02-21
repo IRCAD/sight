@@ -26,7 +26,7 @@
 
 #include <io/base/service/IReader.hpp>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 /**
@@ -34,7 +34,7 @@ namespace sight::modules::io::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::vision::SOpenCVReader" >
+       <service uid="..." type="::sight::module::io::vision::SOpenCVReader" >
            <inout key="data" uid="..." />
        </service>
  * @endcode
@@ -92,4 +92,4 @@ protected:
 
 };
 
-} //namespace sight::modules::io::vision
+} //namespace sight::module::io::vision

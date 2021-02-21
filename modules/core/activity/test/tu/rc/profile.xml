@@ -1,10 +1,10 @@
 <profile name="validatorsTest" version="0.1">
 
-    <activate id="module_service" version="0.1" />
+    <activate id="sight::module::service" version="0.1" />
 
-    <activate id="module_activity" version="0.1" />
+    <activate id="sight::module::activity" version="0.1" />
 
-    <start id="module_activity" />
+    <start id="sight::module::activity" />
 
 </profile>
 

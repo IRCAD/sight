@@ -32,12 +32,12 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::qt::SLaunchBrowser,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::qt::SLaunchBrowser,
                          ::sight::data::Object )
 
 //------------------------------------------------------------------------------
@@ -110,4 +110,4 @@ void SLaunchBrowser::stopping()
 }
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

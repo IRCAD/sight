@@ -30,9 +30,9 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::geometry::base::SPointListFromMatrices)
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::geometry::base::SPointListFromMatrices)
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 const service::IService::KeyType s_MATRICES_INPUT  = "matrices";

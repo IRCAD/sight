@@ -37,7 +37,7 @@
 
 #include <ui/qml/IQmlAppManager.hpp>
 
-namespace sight::modules::ui::qml::activity
+namespace sight::module::ui::qml::activity
 {
 /**
  * @brief Manager to lauch activities with a sequencer
@@ -95,4 +95,4 @@ private:
     service::IService::ConfigType m_sequencerConfig;
 };
 
-} //namespace sight::modules::ui::qml::activity
+} //namespace sight::module::ui::qml::activity

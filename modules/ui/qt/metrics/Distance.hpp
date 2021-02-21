@@ -32,7 +32,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::metrics
+namespace sight::module::ui::qt::metrics
 {
 /**
  * @brief   Distance service is represented by a button. It allows to show distances in a generic scene.
@@ -47,7 +47,7 @@ namespace sight::modules::ui::qt::metrics
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::modules::ui::qt::metrics::Distance" >
+   <service uid="..." type="::sight::module::ui::qt::metrics::Distance" >
        <inout key="image" uid="..." />
    </service>
    @endcode

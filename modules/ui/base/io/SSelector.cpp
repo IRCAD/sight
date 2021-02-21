@@ -33,8 +33,8 @@
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ServiceConfig.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Config.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
@@ -46,7 +46,7 @@
 #include <sstream>
 #include <string>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 namespace io
@@ -56,7 +56,7 @@ using namespace sight::io;
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::modules::ui::base::io::SSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IDialogEditor, ::sight::module::ui::base::io::SSelector,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -181,7 +181,7 @@ void SSelector::updating()
         }
         createOutput          = (!obj && !m_dataClassname.empty());
         availableExtensionsId =
-            service::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+            service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
                 classname, "::sight::io::base::service::IReader");
     }
     else // m_mode == WRITER_MODE
@@ -189,7 +189,7 @@ void SSelector::updating()
         SLM_ASSERT("The inout key '" + io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
 
         availableExtensionsId =
-            service::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+            service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
                 obj->getClassname(), "::sight::io::base::service::IWriter");
     }
 
@@ -211,12 +211,12 @@ void SSelector::updating()
         {
             // Add this service
             std::string infoUser =
-                service::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+                service::extension::Factory::getDefault()->getServiceDescription(serviceId);
 
             std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
             if ( iter != m_serviceToConfig.end() )
             {
-                infoUser = service::registry::ServiceConfig::getDefault()->getConfigDesc(iter->second);
+                infoUser = service::extension::Config::getDefault()->getConfigDesc(iter->second);
             }
 
             if (infoUser != "")
@@ -290,10 +290,10 @@ void SSelector::updating()
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
-                srvCfg              = service::registry::ServiceConfig::getDefault()->getServiceConfig(
+                srvCfg              = service::extension::Config::getDefault()->getServiceConfig(
                     m_serviceToConfig[extensionId], extensionId );
                 SLM_ASSERT(
-                    "No service configuration of type service::registry::ServiceConfig was found",
+                    "No service configuration of type service::extension::Config was found",
                     srvCfg );
             }
 
@@ -362,7 +362,7 @@ void SSelector::updating()
                 // extensionId );
                 //      writer->registerInput(this->getObject(), io::base::service::s_DATA_KEY);
 
-                auto factory                            = service::registry::ServiceFactory::getDefault();
+                auto factory                            = service::extension::Factory::getDefault();
                 io::base::service::IWriter::sptr writer =
                     io::base::service::IWriter::dynamicCast(factory->create( "::sight::io::base::service::IWriter",
                                                                              extensionId));
@@ -468,4 +468,4 @@ void SSelector::forwardJob(core::jobs::IJob::sptr iJob)
 //------------------------------------------------------------------------------
 } // namespace io
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::utest
+namespace sight::module::utest
 {
 
 /**
@@ -51,4 +51,4 @@ struct MODULE_UTEST_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::service
+} // namespace sight::module::service

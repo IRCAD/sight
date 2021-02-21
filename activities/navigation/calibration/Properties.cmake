@@ -20,7 +20,7 @@ set( REQUIREMENTS
 
     # UI declaration/Actions
     module_ui_base
-    module_ui_media
+    module_ui_icons
     module_ui_qt
 
     # Reader

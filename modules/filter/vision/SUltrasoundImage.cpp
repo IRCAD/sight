@@ -37,7 +37,7 @@
 #include <glm/gtx/vector_angle.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 static const std::string s_THRESHOLD_MIN       = "threshold.min";
@@ -62,7 +62,7 @@ static const std::string s_US_DEPTH_CONFIG      = "USDepth";
 static const std::string s_DEBUG_CONFIG         = "debug";
 static const std::string s_CONVEX_SHAPE         = "convex";
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::vision::SUltrasoundImage )
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::vision::SUltrasoundImage )
 
 // -----------------------------------------------------------------------------
 

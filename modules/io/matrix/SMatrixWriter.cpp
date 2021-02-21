@@ -39,10 +39,10 @@
 #include <fstream>
 #include <iomanip>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::matrix::SMatrixWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::matrix::SMatrixWriter,
                          ::sight::data::MatrixTL)
 
 static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
@@ -242,4 +242,4 @@ service::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::matrix
+} // namespace sight::module::io::matrix

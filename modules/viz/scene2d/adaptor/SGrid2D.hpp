@@ -26,7 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -40,7 +40,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="grid1" type="::sight::modules::viz::scene2d::adaptor::SGrid2D">
+   <service uid="grid1" type="::sight::module::viz::scene2d::adaptor::SGrid2D">
     <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
         color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
    </service>
@@ -131,4 +131,4 @@ private:
 };
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

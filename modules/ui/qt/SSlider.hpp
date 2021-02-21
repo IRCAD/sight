@@ -37,7 +37,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::qt::SSlider" autoConnect="no"/>
+    <service uid="..." type="::sight::module::ui::qt::SSlider" autoConnect="no"/>
         <editBox>false</editBox>
         <resetButton>false</resetButton>
         <defaultValue>200</defaultValue>
@@ -172,4 +172,4 @@ private:
     bool m_sliderPressed;                           ///< Set to true when the slider is pressed.
 };
 
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

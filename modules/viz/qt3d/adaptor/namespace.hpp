@@ -23,7 +23,7 @@
 #pragma once
 
 /// The namespace viduQt3D contains a list of Qt3D rendering services.
-namespace sight::modules::viz::qt3d::adaptor
+namespace sight::module::viz::qt3d::adaptor
 {
 
-} // namespace sight::modules::viz::qt3d::adaptor.
+} // namespace sight::module::viz::qt3d::adaptor.

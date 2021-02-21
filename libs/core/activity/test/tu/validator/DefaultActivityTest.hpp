@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/macros.hpp>
 #include <core/runtime/Module.hpp>

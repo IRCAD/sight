@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/registry/Activity.hpp>
-#include <activity/registry/ActivityMsg.hpp>
+#include <activity/extension/Activity.hpp>
+#include <activity/ActivityMsg.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -51,7 +51,7 @@ namespace sight::data
 {
 class Composite;
 }
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -75,16 +75,16 @@ namespace activity
  *   series.
  * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a tab with the given activity
  *   series.
- * - \b createTab( activity::registry::ActivityMsg ): this slot allows to create a tab with the given activity
+ * - \b createTab( activity::ActivityMsg ): this slot allows to create a tab with the given activity
  *   information.
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::ui::qt::activity::SDynamicView" autoConnect="yes" >
+   <service type="::sight::module::ui::qt::activity::SDynamicView" autoConnect="yes" >
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="module_ui_media-0.1/icons/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_icons-0.1/app.ico"  />
      </parameters>
      <config document="true" />
    </service>
@@ -189,7 +189,7 @@ private:
     virtual void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// launch a new tab according to the receiving msg
-    void createTab(sight::activity::registry::ActivityMsg info);
+    void createTab(sight::activity::ActivityMsg info);
 
     /// Create the main activitySeries and launch the activity
     virtual void buildMainActivity();

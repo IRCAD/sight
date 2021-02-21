@@ -28,7 +28,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 /**
@@ -75,4 +75,4 @@ protected:
 
 };
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

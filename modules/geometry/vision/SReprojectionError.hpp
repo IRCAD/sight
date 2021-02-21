@@ -30,7 +30,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 /**
  * @brief   SReprojectionError Class used to compute the mean error of reprojection between 3d object points
@@ -40,7 +40,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::sight::modules::geometry::vision::SReprojectionError">
+     <service uid="..." type="::sight::module::geometry::vision::SReprojectionError">
         <in key="matrixTL" uid="..."/>
         <in key="markerTL" uid="..."/>
         <in key="camera" uid="..."/>
@@ -52,7 +52,7 @@ namespace sight::modules::geometry::vision
 
      or
 
-     <service uid="..." type="::sight::modules::geometry::vision::SReprojectionError">
+     <service uid="..." type="::sight::module::geometry::vision::SReprojectionError">
          <in group="matrix">
              <key uid="..." />
              <key uid="..." />
@@ -157,4 +157,4 @@ private:
     std::vector< data::MarkerMap::KeyType> m_matricesTag;
 };
 
-}//namespace sight::modules::geometry::vision
+}//namespace sight::module::geometry::vision

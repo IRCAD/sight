@@ -34,7 +34,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 /**
  * @brief   This action starts/stops a template configuration.
@@ -116,7 +116,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::sight::modules::ui::base::SConfigLauncher" type="::ui::base::IAction">
+       <service impl="::sight::module::ui::base::SConfigLauncher" type="::ui::base::IAction">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>

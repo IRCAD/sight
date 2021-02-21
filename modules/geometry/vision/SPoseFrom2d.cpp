@@ -40,11 +40,11 @@
 
 #include <io/opencv/Camera.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IRegisterer, ::sight::modules::geometry::vision::SPoseFrom2d)
+fwServicesRegisterMacro( ::sight::service::IRegisterer, ::sight::module::geometry::vision::SPoseFrom2d)
 
 //-----------------------------------------------------------------------------
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 //-----------------------------------------------------------------------------
@@ -472,4 +472,4 @@ service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

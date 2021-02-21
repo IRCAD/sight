@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>displayImageConfig</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
@@ -15,7 +15,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::modules::ui::base::SFrame">
+        <service uid="mainFrame" type="::sight::module::ui::base::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -39,7 +39,7 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::sight::modules::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
             <config layer="video" radius="0.75" color="#6997BB" fixedSize="true" textureName="circle.dds"/>

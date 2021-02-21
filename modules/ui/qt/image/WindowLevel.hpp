@@ -51,7 +51,7 @@ class QRangeSlider;
 }
 }
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
 /**
@@ -62,7 +62,7 @@ namespace sight::modules::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::qt::image::WindowLevel" autoConnect="yes">
+    <service uid="..." type="::sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
         <inout key="image" uid="..."/>
         <inout key="tf" uid="..." optional="yes" />
         <config autoWindowing="yes" enableSquareTF="no" />
@@ -117,8 +117,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG to modules::ui::qt::image::WindowLevel::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to modules::ui::qt::image::WindowLevel::s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::WindowLevel::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::WindowLevel::s_UPDATE_SLOT
      */
     MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override final;
 

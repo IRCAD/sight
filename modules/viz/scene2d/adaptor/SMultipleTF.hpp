@@ -31,7 +31,7 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -51,7 +51,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::modules::viz::scene2d::adaptor::SMultipleTF" >
+   <service uid="..." type="::sight::module::viz::scene2d::adaptor::SMultipleTF" >
        <in key="viewport" uid="..." />
        <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />
@@ -116,13 +116,13 @@ protected:
      * @return A map of each proposed connection.
      *
      * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * modules::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
      * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INOUT to
-     * modules::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
      * Connect data::Composite::s_ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
-     * modules::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
      * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
-     * modules::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SMultipleTF::s_UPDATE_SLOT.
      */
     KeyConnectionsMap getAutoConnections() const override;
 
@@ -444,4 +444,4 @@ private:
 };
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

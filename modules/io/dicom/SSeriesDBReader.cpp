@@ -36,7 +36,7 @@
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
@@ -48,10 +48,10 @@
 #include <ui/base/dialog/ProgressDialog.hpp>
 #include <ui/base/dialog/PulseProgressDialog.hpp>
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::dicom::SSeriesDBReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::dicom::SSeriesDBReader,
                          ::sight::data::SeriesDB )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -116,17 +116,17 @@ void SSeriesDBReader::openLocationDialog()
     {
         // Get the config
         core::runtime::ConfigurationElement::csptr filterSelectorConfig;
-        filterSelectorConfig = service::registry::ServiceConfig::getDefault()->getServiceConfig(
-            m_filterConfig, "::sight::modules::ui::dicom::SFilterSelectorDialog");
+        filterSelectorConfig = service::extension::Config::getDefault()->getServiceConfig(
+            m_filterConfig, "::sight::module::ui::dicom::SFilterSelectorDialog");
 
         SLM_ASSERT("Sorry, there is no service configuration "
                    << m_filterConfig
-                   << " for modules::ui::dicom::SFilterSelectorDialog", filterSelectorConfig);
+                   << " for module::ui::dicom::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
         service::IService::sptr filterSelectorSrv;
         data::String::sptr key = data::String::New();
-        filterSelectorSrv = service::add("::sight::modules::ui::dicom::SFilterSelectorDialog");
+        filterSelectorSrv = service::add("::sight::module::ui::dicom::SFilterSelectorDialog");
         filterSelectorSrv->registerInOut(key, "filter");
         filterSelectorSrv->setConfiguration( core::runtime::ConfigurationElement::constCast(filterSelectorConfig) );
         filterSelectorSrv->configure();
@@ -365,4 +365,4 @@ void SSeriesDBReader::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

@@ -16,7 +16,7 @@ set( REQUIREMENTS
     module_service             # fwService
 
     # UI declaration/Actions
-    module_ui_flaticon
+    module_ui_flaticons
 
     # Grabber
     module_io_video

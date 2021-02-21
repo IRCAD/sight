@@ -25,7 +25,7 @@
  */
 #pragma once
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
 }

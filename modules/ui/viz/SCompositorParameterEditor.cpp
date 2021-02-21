@@ -41,10 +41,10 @@
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SCompositorParameterEditor)
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SCompositorParameterEditor)
 
 const core::com::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
 
@@ -118,7 +118,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::sight::modules::viz::scene3d::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
                 /// Filter object types
                 const data::Object::csptr shaderObj =
@@ -152,7 +152,7 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
 
         ::sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = service::add( "::sight::modules::ui::qt::SParameters", m_editorInfo.uuid );
+        auto editorService = service::add( "::sight::module::ui::qt::SParameters", m_editorInfo.uuid );
         m_editorInfo.service = editorService;
 
         service::IService::ConfigType editorConfig;
@@ -161,10 +161,10 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::sight::modules::viz::scene3d::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "::sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
                 auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicConstCast(adaptor);
-                auto paramConfig  = modules::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
+                auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
                                                                                             m_editorInfo.service.lock(),
                                                                                             m_editorInfo.connections);
 
@@ -217,4 +217,4 @@ void SCompositorParameterEditor::fillGui()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

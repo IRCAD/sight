@@ -23,9 +23,9 @@
 #pragma once
 
 /**
- * @brief       The namespace sight::modules::filter::image contains several operators on image.
+ * @brief       The namespace sight::module::filter::image contains several operators on image.
  */
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 }

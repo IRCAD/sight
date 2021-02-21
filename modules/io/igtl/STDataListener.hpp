@@ -39,7 +39,7 @@ namespace sight::data
 class Composite;
 }
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::io::igtl
  *
  * @section XML XML Configuration
  * @code{.xml}
- * <service type="::sight::modules::io::igtl::STDataListener">
+ * <service type="::sight::module::io::igtl::STDataListener">
  *      <inout key="timeline" uid="..." />
  *      <server>127.0.0.1:4242</server>
  *      <deviceName>Name1</deviceName>
@@ -68,12 +68,12 @@ namespace sight::modules::io::igtl
  * @note : hostname, port and deviceName of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>, <deviceName>%DEVICE_NAME%</deviceName>)
  */
-class MODULE_IO_IGTL_CLASS_API STDataListener : public modules::io::igtl::INetworkListener
+class MODULE_IO_IGTL_CLASS_API STDataListener : public module::io::igtl::INetworkListener
 {
 
 public:
 
-    fwCoreServiceMacro(STDataListener, modules::io::igtl::INetworkListener)
+    fwCoreServiceMacro(STDataListener, module::io::igtl::INetworkListener)
 
     /// Constructor
     MODULE_IO_IGTL_API STDataListener();
@@ -123,4 +123,4 @@ private:
     MatrixNameIndexType m_matrixNameIndex;
 };
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

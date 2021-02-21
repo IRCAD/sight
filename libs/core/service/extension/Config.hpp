@@ -32,7 +32,7 @@
 namespace sight::service
 {
 
-namespace registry
+namespace extension
 {
 
 /**
@@ -60,35 +60,35 @@ public:
 
 /**
  * @brief This class allows to register all the service configuration which has the point extension
- *        "::sight::service::registry::ServiceConfig".
+ *        "::sight::service::extension::Config".
  *
  * Registry config like :
  * @code{.xml}
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>SDBOpenIOSelectorConfig</id>
-        <service>::modules::ui::base::editor::SSelector</service>
+        <service>::module::ui::base::editor::SSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::atoms::SReader" />
-            <config id="MDAtomsConfig" service="::sight::modules::io::atoms::SReader" />
+            <addSelection service="::sight::module::io::atoms::SReader" />
+            <config id="MDAtomsConfig" service="::sight::module::io::atoms::SReader" />
         </config>
     </extension>
    @endcode
  */
-class SERVICE_CLASS_API ServiceConfig : public core::BaseObject
+class SERVICE_CLASS_API Config : public core::BaseObject
 {
 
 public:
 
-    fwCoreClassMacro(ServiceConfig, core::BaseObject, new ServiceConfig)
+    fwCoreClassMacro(Config, core::BaseObject, new Config)
 
-    /// Return the default global instance of ServiceConfig
-    SERVICE_API static ServiceConfig::sptr getDefault();
+    /// Return the default global instance of Config
+    SERVICE_API static Config::sptr getDefault();
 
     /// Destructor
-    SERVICE_API virtual ~ServiceConfig();
+    SERVICE_API virtual ~Config();
 
     /**
      * @brief Parses module information to retrieve service declaration.
@@ -146,7 +146,7 @@ protected:
     Registry m_reg;
 
     /// Constructor
-    SERVICE_API ServiceConfig();
+    SERVICE_API Config();
 
     const static std::string CONFIG_EXT_POINT;
 
@@ -154,9 +154,9 @@ protected:
     mutable core::mt::ReadWriteMutex m_registryMutex;
 
     /// The global instance of the service config.
-    static ServiceConfig::sptr s_currentServiceConfig;
+    static Config::sptr s_currentServiceConfig;
 };
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::service

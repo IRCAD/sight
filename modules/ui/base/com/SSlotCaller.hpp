@@ -32,7 +32,7 @@
 
 #include <vector>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
@@ -42,7 +42,7 @@ namespace com
  *
  * This action works on a data::Object. It does the action specify by the specify config.
  * @code{.xml}
-   <service uid="..." type="::sight::modules::ui::base::com::SSlotCaller" >
+   <service uid="..." type="::sight::module::ui::base::com::SSlotCaller" >
       <sync>true</sync>
       <slots>
           <slot>hasSlotsId/slotKey</slot>
@@ -93,4 +93,4 @@ protected:
 };
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

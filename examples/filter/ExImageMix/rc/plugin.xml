@@ -1,12 +1,12 @@
 <plugin id="ExImageMix" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExImageMix_AppCfg</id>
         <config>
 
@@ -19,7 +19,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExImageMix</name>
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::modules::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::modules::ui::base::SMenu" >
+            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open background image" shortcut="Ctrl+O" />
@@ -61,7 +61,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::SView" >
+            <service uid="mainView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -77,7 +77,7 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="::sight::modules::ui::base::SView" >
+            <service uid="editorsView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="blendSceneView" type="::sight::modules::ui::base::SView" >
+            <service uid="blendSceneView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -112,7 +112,7 @@
                 </registry>
             </service>
 
-            <service uid="blendSceneBottomView" type="::sight::modules::ui::base::SView" >
+            <service uid="blendSceneBottomView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -126,7 +126,7 @@
                 </registry>
             </service>
 
-            <service uid="imagesView" type="::sight::modules::ui::base::SView" >
+            <service uid="imagesView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -142,15 +142,15 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="openBackgroundFileAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openBackgroundFileAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="backgroundImageReaderSrv" />
             </service>
 
-            <service uid="openFrontFileAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openFrontFileAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="foregroundImageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="::sight::modules::ui::base::SQuit" />
+            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -267,58 +267,58 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotBlendSceneEditorSrv" type="::sight::modules::ui::qt::viz::SnapshotEditor" />
+            <service uid="snapshotBlendSceneEditorSrv" type="::sight::module::ui::qt::viz::SnapshotEditor" />
 
-            <service uid="backgroundImageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="backgroundImageReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="backgroundImage" />
                 <type mode="reader" class="::sight::data::Image" />
             </service>
 
-            <service uid="foregroundImageReaderSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="foregroundImageReaderSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="frontImage" />
                 <type mode="reader" class="::sight::data::Image" />
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv" type="::sight::modules::data::MedicalImageSrv" >
+            <service uid="medicalImageConverterSrv" type="::sight::module::data::MedicalImageSrv" >
                 <inout key="image" uid="backgroundImage" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderIndexEditorSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="backgroundImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <!-- Editors of background image -->
-            <service uid="imageInfoSrv" type="::sight::modules::ui::qt::image::ImageInfo" >
+            <service uid="imageInfoSrv" type="::sight::module::ui::qt::image::ImageInfo" >
                 <in key="image" uid="backgroundImage" autoConnect="yes" />
             </service>
 
-            <service uid="windowLevelSrv" type="::sight::modules::ui::qt::image::WindowLevel" >
+            <service uid="windowLevelSrv" type="::sight::module::ui::qt::image::WindowLevel" >
                 <inout key="image" uid="backgroundImage" autoConnect="yes" />
             </service>
 
             <!-- This service convert a simple fwData::Image to medical Image -->
-            <service uid="medicalImageConverterSrv2" type="::sight::modules::data::MedicalImageSrv" >
+            <service uid="medicalImageConverterSrv2" type="::sight::module::data::MedicalImageSrv" >
                 <inout key="image" uid="frontImage" />
             </service>
 
             <!-- Editors of front image -->
-            <service uid="imageInfo2Srv" type="::sight::modules::ui::qt::image::ImageInfo" >
+            <service uid="imageInfo2Srv" type="::sight::module::ui::qt::image::ImageInfo" >
                 <in key="image" uid="frontImage" autoConnect="yes" />
             </service>
 
-            <service uid="imageTransparencySrv" type="::sight::modules::ui::qt::image::ImageTransparency" autoConnect="yes" >
+            <service uid="imageTransparencySrv" type="::sight::module::ui::qt::image::ImageTransparency" autoConnect="yes" >
                 <inout key="image" uid="frontImage" autoConnect="yes" />
                 <shortcut value="V" />
             </service>
 
-            <service uid="windowLevel2Srv" type="::sight::modules::ui::qt::image::WindowLevel" >
+            <service uid="windowLevel2Srv" type="::sight::module::ui::qt::image::WindowLevel" >
                 <inout key="image" uid="frontImage" autoConnect="yes" />
             </service>
 
             <!-- Service to forward signal from backgroundImage to front image -->
-            <service uid="forwarderMsgSrv" type="::sight::modules::data::wrapper::SImageSignalForwarder" >
+            <service uid="forwarderMsgSrv" type="::sight::module::data::wrapper::SImageSignalForwarder" >
                 <in key="target" uid="frontImage" />
                 <in key="source" uid="backgroundImage" />
                 <forward>sliceIndexModified</forward>

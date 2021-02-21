@@ -24,14 +24,14 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 
 static const service::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::memory::LockDumpSrv, ::sight::data::Object )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::memory::LockDumpSrv, ::sight::data::Object )
 
 //-----------------------------------------------------------------------------
 

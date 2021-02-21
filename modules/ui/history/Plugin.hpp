@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::ui::history
+namespace sight::module::ui::history
 {
 
 /**
@@ -45,4 +45,4 @@ struct MODULE_UI_HISTORY_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::ui::history
+} // namespace sight::module::ui::history

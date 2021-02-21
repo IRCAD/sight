@@ -17,7 +17,7 @@ set( REQUIREMENTS
     module_service
 
     # UI declaration/Actions
-    module_ui_flaticon
+    module_ui_flaticons
 
     # Reader
     module_io_matrix

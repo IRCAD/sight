@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::realsense
+namespace sight::module::io::realsense
 {
 /**
  * @brief   This class is started when the modules are loaded.
@@ -46,4 +46,4 @@ struct MODULE_IO_REALSENSE_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::io::realsense
+} // namespace sight::module::io::realsense

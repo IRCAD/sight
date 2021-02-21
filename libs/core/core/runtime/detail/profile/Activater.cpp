@@ -27,6 +27,8 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/Runtime.hpp"
 
+#include <boost/algorithm/string/replace.hpp>
+
 namespace sight::core::runtime
 {
 
@@ -71,6 +73,13 @@ void Activater::apply()
 {
     auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(m_identifier, m_version));
 
+    // TEMP_FB: until I refactor the profile.xml
+    if(module == nullptr)
+    {
+        const auto identifier = boost::algorithm::replace_first_copy(m_identifier, "sight_", "");
+        module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier, m_version));
+    SLM_FATAL_IF("Unable to activate Module " + identifier + "-" + m_version.string() + ". Not found.", module == 0);
+    }
     SLM_FATAL_IF("Unable to activate Module " + m_identifier + "-" + m_version.string() + ". Not found.", module == 0);
     module->setEnable( true );
 

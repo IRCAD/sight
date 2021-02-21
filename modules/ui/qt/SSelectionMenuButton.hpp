@@ -36,7 +36,7 @@ class QMenu;
 class QActionGroup;
 class QPushButton;
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 /**
@@ -49,7 +49,7 @@ namespace sight::modules::ui::qt
  *
  * @section XML Example of configuration
  * @code{.xml}
-    <service uid="sliceListNegato3DEditor" type="::sight::modules::ui::qt::image::SSelectionMenuButton">
+    <service uid="sliceListNegato3DEditor" type="::sight::module::ui::qt::image::SSelectionMenuButton">
         <text>...</text>
         <toolTip>...</toolTip>
         <items>
@@ -166,4 +166,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

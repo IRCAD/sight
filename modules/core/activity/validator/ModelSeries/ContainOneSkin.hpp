@@ -26,7 +26,7 @@
 
 #include <activity/IObjectValidator.hpp>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace ModelSeries
 {
@@ -50,10 +50,10 @@ public:
     /**
      * @brief Checks that the ModelSeries contains one only one Skin.
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
-     * @see modules::activity::IValidator::validate
+     * @see module::activity::IValidator::validate
      */
     MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject ) const override;
 };
 
 } // namespace ModelSeries
-} // namespace sight::modules::activity::validator
+} // namespace sight::module::activity::validator

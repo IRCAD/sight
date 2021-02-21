@@ -26,7 +26,7 @@
 
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace processing
 {
@@ -77,4 +77,4 @@ struct ComputeHistogramFunctor
 };
 
 }   // namespace processing
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

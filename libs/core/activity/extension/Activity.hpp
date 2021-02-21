@@ -49,7 +49,7 @@ struct Extension;
 namespace activity
 {
 
-namespace registry
+namespace extension
 {
 
 typedef ::boost::property_tree::ptree ConfigType;
@@ -152,12 +152,12 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  *
  * Example of activity configuration:
  * @code{.xml}
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>3DVisualization</id>
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
-        <icon>module_ui_media-0.1/icons/icon-3D.png</icon>
+        <icon>sight_module_ui_icons-0.1/icon-3D.png</icon>
         <requirements>
             <requirement name="param1" type="data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="data::Mesh" maxOccurs="3" >
@@ -226,9 +226,9 @@ struct ACTIVITY_CLASS_API ActivityInfo
 
 /**
  * @brief This class allows to register all the configuration parameters which has the point extension
- *        "::activityReg::registry::Activity".
+ *        "::activityReg::extension::Activity".
  *
- * @see activity::registry::ActivityInfo
+ * @see activity::extension::ActivityInfo
  */
 class ACTIVITY_CLASS_API Activity : public core::BaseObject
 {
@@ -248,7 +248,6 @@ public:
      * @brief Parse module information to retrieve config parameters declaration
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
-     * @{
      **/
     ACTIVITY_API void parseBundleInformation();
     ///@}
@@ -312,7 +311,7 @@ protected:
 
 };
 
-} // namespace registry
+} // namespace extension
 
 } // namespace activity
 

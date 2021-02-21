@@ -32,7 +32,7 @@
 #include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::modules::ui::base::metrics
+namespace sight::module::ui::base::metrics
 {
 
 static const service::IService::KeyType s_IMAGE_INOUT = "image";
@@ -111,4 +111,4 @@ void SAddDistance::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::base::metrics
+} // namespace sight::module::ui::base::metrics

@@ -22,7 +22,7 @@
 
 #include "SView.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -34,10 +34,10 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::ui::qml::activity
+namespace sight::module::ui::qml::activity
 {
 
-fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::modules::ui::qml::activity::SView )
+fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::module::ui::qml::activity::SView )
 
 static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
@@ -106,8 +106,8 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
     if (isValid)
     {
-        sight::activity::registry::ActivityInfo info;
-        info = sight::activity::registry::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+        sight::activity::extension::ActivityInfo info;
+        info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
@@ -157,4 +157,4 @@ void SView::launchActivitySeries(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-}// namespace sight::modules::ui::qml::activity
+}// namespace sight::module::ui::qml::activity

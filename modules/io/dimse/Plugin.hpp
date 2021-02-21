@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /// This class is started when the bundle is loaded.
@@ -44,4 +44,4 @@ struct MODULE_IO_DIMSE_CLASS_API Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

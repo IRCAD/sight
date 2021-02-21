@@ -52,10 +52,10 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::modules::io::vtk::SModelSeriesWriter,
+fwServicesRegisterMacro( ::sight::io::base::service::IWriter, ::sight::module::io::vtk::SModelSeriesWriter,
                          ::sight::data::ModelSeries )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -183,7 +183,7 @@ void SModelSeriesWriter::configuring()
 
         if(ext != "vtk" && ext != "vtp" && ext != "stl" && ext != "ply" && ext != "obj")
         {
-            SLM_ERROR("Extensions '" + ext + "' isn't managed by modules::io::vtk::SModelSeriesWriter");
+            SLM_ERROR("Extensions '" + ext + "' isn't managed by module::io::vtk::SModelSeriesWriter");
         }
         else
         {
@@ -238,7 +238,7 @@ void SModelSeriesWriter::writeMesh(const std::filesystem::path& _filename, const
     else
     {
         FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ ext.string() +
-                                               "' is not managed by modules::io::vtk::SModelSeriesWriter."));
+                                               "' is not managed by module::io::vtk::SModelSeriesWriter."));
     }
 
     m_sigJobCreated->emit(meshWriter->getJob());

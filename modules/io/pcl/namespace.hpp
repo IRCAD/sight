@@ -21,10 +21,10 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::io::pcl supplies services related on video unsing PCL.
+ * @brief       The namespace sight::module::io::pcl supplies services related on video unsing PCL.
  */
 #pragma once
 
-namespace sight::modules::io::pcl
+namespace sight::module::io::pcl
 {
 }

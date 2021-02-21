@@ -26,12 +26,12 @@
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <core/spyLog.hpp>
 
-namespace sight::modules::memory
+namespace sight::module::memory
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::memory::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::memory::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -76,4 +76,4 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::memory
+} // namespace sight::module::memory

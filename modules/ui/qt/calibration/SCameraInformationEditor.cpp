@@ -35,12 +35,12 @@
 
 #include <sstream>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 // -------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor,
-                         sight::modules::ui::qt::calibration::SCameraInformationEditor,
+                         sight::module::ui::qt::calibration::SCameraInformationEditor,
                          ::sight::data::Camera)
 
 const core::com::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";

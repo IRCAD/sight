@@ -30,7 +30,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::data::SMergeTF">
+   <service type="::sight::module::data::SMergeTF">
        <in key="tfPool" uid="..." />
        <inout key="tf" uid="..." />
    </service>
@@ -79,9 +79,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INPUT to modules::data::SMergeTF::s_UPDATE_SLOT.
-     * Connect data::Composite::s_ADDED_OBJECTS_SIG of s_TF_POOL_INPUT to modules::data::SMergeTF::s_UPDATE_SLOT.
-     * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INPUT to modules::data::SMergeTF::s_UPDATE_SLOT.
+     * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INPUT to module::data::SMergeTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_ADDED_OBJECTS_SIG of s_TF_POOL_INPUT to module::data::SMergeTF::s_UPDATE_SLOT.
+     * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INPUT to module::data::SMergeTF::s_UPDATE_SLOT.
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 
@@ -108,4 +108,4 @@ private:
 
 };
 
-} // namespace sight::modules::data.
+} // namespace sight::module::data.

@@ -53,13 +53,13 @@
 -->
 <plugin id="ExImageSubstraction" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_ui_qt" />
-    <requirement id="module_service" />
-    <requirement id="module_viz_scene3d" />
-    <requirement id="module_viz_scene3dQt" />
-    <requirement id="module_ui_base" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>ExImageSubstraction_AppCfg</id>
         <config>
 
@@ -74,7 +74,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExImageSubstraction</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="::sight::modules::ui::base::SView" >
+            <service uid="mainView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::CardinalLayoutManager" >
                         <view align="center" />
@@ -101,15 +101,15 @@
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="::sight::modules::ui::base::SToolBar" >
+            <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load image 1" icon="ExImageSubstraction-0.1/icons/icon-load1.png" />
+                        <menuItem name="Load image 1" icon="ExImageSubstraction-0.1/icon-load1.png" />
                         <separator/>
-                        <menuItem name="Load image 2" icon="ExImageSubstraction-0.1/icons/icon-load2.png" />
+                        <menuItem name="Load image 2" icon="ExImageSubstraction-0.1/icon-load2.png" />
                         <separator/>
-                        <menuItem name="Save image" icon="ExImageSubstraction-0.1/icons/save.png" />
-                        <menuItem name="Substract image" icon="module_ui_media-0.1/icons/Minus.svg" />
+                        <menuItem name="Save image" icon="ExImageSubstraction-0.1/save.png" />
+                        <menuItem name="Substract image" icon="sight_module_ui_icons-0.1/Minus.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -121,7 +121,7 @@
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::sight::modules::ui::base::SView" >
+            <service uid="multiView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::TabLayoutManager" >
                         <view caption="Image 1" selected="yes" border="5" backgroundColor="#2E3034" />
@@ -137,7 +137,7 @@
             </service>
 
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-            <service uid="image1View" type="::sight::modules::ui::base::SView" >
+            <service uid="image1View" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -151,7 +151,7 @@
                 </registry>
             </service>
 
-            <service uid="image1BottomView" type="::sight::modules::ui::base::SView" >
+            <service uid="image1BottomView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -166,7 +166,7 @@
             </service>
 
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-            <service uid="image2View" type="::sight::modules::ui::base::SView" >
+            <service uid="image2View" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -180,7 +180,7 @@
                 </registry>
             </service>
 
-            <service uid="image2BottomView" type="::sight::modules::ui::base::SView" >
+            <service uid="image2BottomView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -195,7 +195,7 @@
             </service>
 
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-            <service uid="substractionView" type="::sight::modules::ui::base::SView" >
+            <service uid="substractionView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -209,7 +209,7 @@
                 </registry>
             </service>
 
-            <service uid="substractionBottomView" type="::sight::modules::ui::base::SView" >
+            <service uid="substractionBottomView" type="::sight::module::ui::base::SView" >
                 <gui>
                     <layout type="::sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -226,22 +226,22 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Action to load an image in the Tab 1 -->
-            <service uid="openImage1Act" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openImage1Act" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="readerFile1Srv" />
             </service>
 
             <!-- Action to load an image in the Tab 2 -->
-            <service uid="openImage2Act" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="openImage2Act" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="readerFile2Srv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="saveImageAct" type="::sight::modules::ui::base::com::SStarter" >
+            <service uid="saveImageAct" type="::sight::module::ui::base::com::SStarter" >
                 <start uid="imageWriterSrv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="computeImageAct" type="::sight::modules::ui::base::com::SSlotCaller" >
+            <service uid="computeImageAct" type="::sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>imageSubstractSrv/update</slot>
                 </slots>
@@ -260,16 +260,16 @@
                 </scene>
             </service>
 
-            <service uid="N1TrackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="N1TrackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N1SnapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
+            <service uid="N1SnapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot1" />
                 <config layer="default" />
             </service>
 
-            <service uid="N1NegatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N1NegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image1" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -287,16 +287,16 @@
                 </scene>
             </service>
 
-            <service uid="N2TrackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="N2TrackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N2SnapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
+            <service uid="N2SnapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot2" />
                 <config layer="default" />
             </service>
 
-            <service uid="N2NegatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N2NegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="image2" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
@@ -314,105 +314,105 @@
                 </scene>
             </service>
 
-            <service uid="N3TrackballInteractorAdp" type="::sight::modules::viz::scene3d::adaptor::STrackballCamera" >
+            <service uid="N3TrackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
                 <config layer="default" priority="0" />
             </service>
 
-            <service uid="N3SnapshotAdp" type="::sight::modules::viz::scene3d::adaptor::SFragmentsInfo" >
+            <service uid="N3SnapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
                 <inout key="image" uid="snapshot3" />
                 <config layer="default" />
             </service>
 
-            <service uid="N3NegatoAdp" type="::sight::modules::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+            <service uid="N3NegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
                 <inout key="image" uid="imageResult" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotNegato1EditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+            <service uid="snapshotNegato1EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="snapshotNegato2EditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+            <service uid="snapshotNegato2EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="snapshotNegato3EditorSrv" type="::sight::modules::ui::qt::com::SSignalButton" >
+            <service uid="snapshotNegato3EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>module_ui_flaticon-0.1/icons/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="medicalImage1Srv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImage1Srv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image1" />
             </service>
 
-            <service uid="readerFile1Srv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="readerFile1Srv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="image1" />
                 <type mode="reader" />
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegato1Srv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato1Srv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image1" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="medicalImage2Srv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImage2Srv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="image2" />
             </service>
 
-            <service uid="readerFile2Srv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="readerFile2Srv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="image2" />
                 <type mode="reader" />
             </service>
 
             <!-- Editors for Negato2 -->
-            <service uid="sliderNegato2Srv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato2Srv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="image2" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="imageSubstractSrv" type="::sight::modules::filter::image::SImagesSubstract" >
+            <service uid="imageSubstractSrv" type="::sight::module::filter::image::SImagesSubstract" >
                 <in key="image1" uid="image1" />
                 <in key="image2" uid="image2" />
                 <inout key="result" uid="imageResult" />
             </service>
 
-            <service uid="medicalImage3Srv" type="::sight::modules::data::MedicalImageSrv" autoConnect="yes" >
+            <service uid="medicalImage3Srv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
                 <inout key="image" uid="imageResult" />
             </service>
 
             <!-- Editors for Negato3 -->
-            <service uid="sliderNegato3Srv" type="::sight::modules::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+            <service uid="sliderNegato3Srv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
                 <inout key="image" uid="imageResult" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="imageWriterSrv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="imageWriterSrv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="imageResult" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter1Srv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="imageWriter1Srv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot1" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter2Srv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="imageWriter2Srv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot2" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter3Srv" type="::sight::modules::ui::base::io::SSelector" >
+            <service uid="imageWriter3Srv" type="::sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="snapshot3" />
                 <type mode="writer" />
             </service>

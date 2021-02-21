@@ -27,11 +27,11 @@
 #include <data/factory/new.hpp>
 #include <data/Series.hpp>
 
-namespace sight::modules::ui::qt::series
+namespace sight::module::ui::qt::series
 {
 
 /**
- * @brief Used as a placeholder in modules::ui::qt::editor::SSelector UI to insert create and insert new series in a
+ * @brief Used as a placeholder in module::ui::qt::editor::SSelector UI to insert create and insert new series in a
  * series
  * DB.
  */
@@ -58,4 +58,4 @@ public:
 
 };
 
-}   //end namespace sight::modules::ui::qt::series
+}   //end namespace sight::module::ui::qt::series

@@ -42,7 +42,7 @@
 
 #include <string>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace com
 {
@@ -336,4 +336,4 @@ void SSignalButton::hide()
 //-----------------------------------------------------------------------------
 
 } // namespace com.
-} // namespace sight::modules::ui::base.
+} // namespace sight::module::ui::base.

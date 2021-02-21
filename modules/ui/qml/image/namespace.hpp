@@ -23,9 +23,9 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qml::image contains several editors on image written with Qml.
+ * @brief The namespace sight::module::ui::qml::image contains several editors on image written with Qml.
  */
-namespace sight::modules::ui::qml::image
+namespace sight::module::ui::qml::image
 {
 
 }

@@ -28,7 +28,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -41,7 +41,7 @@ namespace sight::modules::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::geometry::base::STargeting">
+        <service type="::sight::module::geometry::base::STargeting">
             <in key="landmark" uid="..." />
             <in key="matrix" uid="..." />
             <inout key="pointList" uid="..." />
@@ -123,4 +123,4 @@ private:
     int m_width{400};
 
 };
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

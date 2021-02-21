@@ -1,8 +1,8 @@
 <plugin id="tu_registry"  version="@PROJECT_VERSION@" >
 
-    <extension-point id="::sight::activity::registry::Activity" schema="activity-0.1/activity.xsd"/>
+    <extension-point id="::sight::activity::extension::Activity" schema="activity-0.1/activity.xsd"/>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
@@ -49,7 +49,7 @@
     </extension>
 
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry1</id>
         <title>Title Test1</title>
         <desc>1 image</desc>
@@ -63,7 +63,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry2</id>
         <title>Title Test2</title>
         <desc>1 image, 1 mesh</desc>
@@ -78,7 +78,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry3</id>
         <title>Title Test3</title>
         <desc>1-2 image</desc>
@@ -95,7 +95,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry4</id>
         <title>Title Test4</title>
         <desc>* image</desc>
@@ -120,7 +120,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry5</id>
         <title>Title Test5</title>
         <desc>4-8 image</desc>
@@ -143,7 +143,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry6</id>
         <title>Title Test6</title>
         <desc>2 image</desc>
@@ -159,7 +159,7 @@
     </extension>
 
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>TestRegistry7</id>
         <title>Title Test7</title>
         <desc>1 image, 0-1 mesh</desc>

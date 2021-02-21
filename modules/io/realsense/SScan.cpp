@@ -48,7 +48,7 @@
 #include <algorithm>
 #include <fstream>
 
-namespace sight::modules::io::realsense
+namespace sight::module::io::realsense
 {
 namespace fwClock = core::HiResClock;
 
@@ -161,7 +161,7 @@ void SScan::configuring()
 
     }
 
-    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("videoRealSense"));
+    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("sight_module_io_realSense"));
     // Parse presets files
     this->loadPresets(s_modulePath / "presets");
 }
@@ -1278,4 +1278,4 @@ void SScan::onPointCloud(const ::rs2::points& _pc, const ::rs2::video_frame& _te
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::realsense
+} // namespace sight::module::io::realsense

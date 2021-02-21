@@ -30,7 +30,7 @@
 #include <data/Integer.hpp>
 #include <data/tools/fieldHelper/Image.hpp>
 
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
@@ -40,7 +40,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 static const std::string s_DELAY_CONFIG        = "delay";
@@ -98,7 +98,7 @@ void SSliceIndexDicomEditor::starting()
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
-            service::registry::ServiceConfig::getDefault()->getServiceConfig(
+            service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig, "::io::base::service::IReader");
 
         SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
@@ -138,7 +138,7 @@ void SSliceIndexDicomEditor::starting()
 
     // Connect the slider to the slot.
     QObject::connect(m_slider, &QSlider::valueChanged, this,
-                     &modules::io::dimse::SSliceIndexDicomEditor::changeSliceIndex);
+                     &module::io::dimse::SSliceIndexDicomEditor::changeSliceIndex);
 
     // Update informations.
     this->updating();
@@ -396,4 +396,4 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     }
 }
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

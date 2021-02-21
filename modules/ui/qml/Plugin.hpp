@@ -31,7 +31,7 @@ namespace sight::core::thread
 class Worker;
 } //namespace thread
 
-namespace sight::modules::ui::qml
+namespace sight::module::ui::qml
 {
 
 /**
@@ -61,4 +61,4 @@ private:
 
 };
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>DicomPreview</id>
     <parameters>
         <param name="ICON_PATH" />
@@ -12,7 +12,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="dicomPreviewFrame" type="::sight::modules::ui::base::SFrame" >
+        <service uid="dicomPreviewFrame" type="::sight::module::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -26,7 +26,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager" >
                     <view caption="DICOM Information" align="center" minWidth="200" />
@@ -40,12 +40,12 @@
         </service>
 
         <!-- DICOM SELECTION -->
-        <service uid="dicomSelector" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="dicomSelector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="selection" uid="dicomSelection" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>
 
-        <service uid="dicomViewer" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="dicomViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="dicomSelection" />
             <parentView wid="dicomPreview" />
             <configs>

@@ -30,7 +30,7 @@
 
 #include <array>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 /**
  * @brief This service estimates the object pose given a set of object points, their corresponding image projections,
@@ -41,7 +41,7 @@ namespace sight::modules::geometry::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::modules::geometry::vision::SSolvePnP">
+        <service type="::sight::module::geometry::vision::SSolvePnP">
             <in key="pointList2d" uid="..." />
             <in key="pointList3d" uid="..." />
             <in key="calibration" uid="..." />
@@ -116,4 +116,4 @@ private:
 
 };
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

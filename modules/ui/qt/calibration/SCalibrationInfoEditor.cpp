@@ -39,9 +39,9 @@
 
 #include <map>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
-fwServicesRegisterMacro(sight::ui::base::IEditor, ::sight::modules::ui::qt::calibration::SCalibrationInfoEditor)
+fwServicesRegisterMacro(sight::ui::base::IEditor, ::sight::module::ui::qt::calibration::SCalibrationInfoEditor)
 
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";

@@ -28,7 +28,7 @@
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <QFile>
 #include <QResource>
@@ -41,11 +41,11 @@
 
 #include <functional>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::ui::qt::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::ui::qt::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@ void Plugin::start()
 
     m_workerQt = ::sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
 
-    service::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
+    core::thread::ActiveWorkers::setDefaultWorker(m_workerQt);
 
     m_workerQt->post( std::bind( &Plugin::loadStyleSheet, this ) );
 
@@ -105,7 +105,7 @@ int Plugin::run() noexcept
     core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(m_workerQt->getFuture().get());
 
-    service::registry::ActiveWorkers::getDefault()->clearRegistry();
+    core::thread::ActiveWorkers::getDefault()->clearRegistry();
     m_workerQt.reset();
 
     return result;
@@ -149,4 +149,4 @@ void Plugin::loadStyleSheet()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

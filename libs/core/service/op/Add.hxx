@@ -24,7 +24,7 @@
 
 #include "service/IService.hpp"
 #include "service/registry/ObjectService.hpp"
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/Factory.hpp"
 
 namespace sight::service
 {

@@ -34,7 +34,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Factory.hpp>
 
 #include <unordered_set>
 
@@ -74,9 +74,9 @@ void ObjectServiceTest::registerKeyTest()
     data::Integer::sptr obj2 = data::Integer::New();
     data::Integer::sptr obj3 = data::Integer::New();
 
-    auto service1 = service::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
-    auto service2 = service::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation2 );
-    auto service3 = service::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
+    auto service1 = service::extension::Factory::getDefault()->create( srvType, srvImplementation1 );
+    auto service2 = service::extension::Factory::getDefault()->create( srvType, srvImplementation2 );
+    auto service3 = service::extension::Factory::getDefault()->create( srvType, srvImplementation1 );
 
     service::registry::ObjectService osr;
     CPPUNIT_ASSERT_EQUAL(false, service1->hasObjectId("key1"));
@@ -202,7 +202,7 @@ void ObjectServiceTest::registerConnectionTest()
     data::Integer::sptr obj1 = data::Integer::New();
     data::Integer::sptr obj2 = data::Integer::New();
 
-    auto service1 = service::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation1 );
+    auto service1 = service::extension::Factory::getDefault()->create( srvType, srvImplementation1 );
 
     auto worker         = core::thread::Worker::New();
     auto slotRegister   = core::com::newSlot( &ObjectServiceTest::registerService, this);

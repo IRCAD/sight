@@ -22,7 +22,7 @@
 
 #include "SExport.hpp"
 
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/base.hpp>
 #include <core/com/Slot.hpp>
@@ -39,14 +39,14 @@
 
 #include <ui/base/dialog/InputDialog.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 namespace series
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::series::SExport,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::series::SExport,
                          ::sight::data::SeriesDB )
 
 const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
@@ -121,11 +121,11 @@ void SExport::updating()
     data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series);
     if (activitySeries)
     {
-        activity::registry::Activity::sptr registry = activity::registry::Activity::getDefault();
+        activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
         std::string id                              = activitySeries->getActivityConfigId();
         SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
-        activity::registry::ActivityInfo activityInfo;
+        activity::extension::ActivityInfo activityInfo;
         activityInfo = registry->getInfo(id);
 
         description = activitySeries->getDescription();
@@ -202,4 +202,4 @@ void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
 //------------------------------------------------------------------------------
 
 } // namespace series
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

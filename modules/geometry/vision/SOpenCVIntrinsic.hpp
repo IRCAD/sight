@@ -26,7 +26,7 @@
 
 #include <service/ICalibration.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 /**
@@ -38,7 +38,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::modules::geometry::vision::SOpenCVIntrinsic">
+        <service type="::sight::module::geometry::vision::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />
@@ -111,4 +111,4 @@ private:
     float m_squareSize;
 };
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

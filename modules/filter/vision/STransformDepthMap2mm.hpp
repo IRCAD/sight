@@ -26,7 +26,7 @@
 
 #include <service/IOperator.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 /**
@@ -40,7 +40,7 @@ namespace sight::modules::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::filter::vision::STransformDepthMap2mm">
+   <service type="::sight::module::filter::vision::STransformDepthMap2mm">
        <in key="cameraSeries" uid="..." />
        <in key="originDepth" uid="..." />
        <inout key="scaledDepth" uid="..." />
@@ -82,4 +82,4 @@ protected:
     MODULE_FILTER_VISION_API virtual void updating() override;
 };
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

@@ -31,9 +31,9 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::sight::modules::io::igtl::INetworkListener, ::sight::modules::io::igtl::SServerListener)
+fwServicesRegisterMacro(::sight::module::io::igtl::INetworkListener, ::sight::module::io::igtl::SServerListener)
 
-namespace sight::modules::io::igtl
+namespace sight::module::io::igtl
 {
 
 const service::IService::KeyType s_OBJECTS_GROUP = "objects";
@@ -179,4 +179,4 @@ void SServerListener::receiveObject()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::igtl
+} // namespace sight::module::io::igtl

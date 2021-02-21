@@ -37,10 +37,10 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Signals::SignalKeyType modules::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG =
+const core::com::Signals::SignalKeyType module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG =
     "textureSwapped";
 
 static const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
@@ -158,4 +158,4 @@ bool STexture::isValid() const
 }
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

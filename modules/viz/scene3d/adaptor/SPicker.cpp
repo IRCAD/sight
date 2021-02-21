@@ -24,7 +24,7 @@
 
 #include <core/com/Signals.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
@@ -105,4 +105,4 @@ void SPicker::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

@@ -1,8 +1,8 @@
 <plugin id="activity_io_dicom" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_activity" />
-    <requirement id="module_ui_qt" />
-    <requirement id="module_viz_scene3dQt" />
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene3dQt" />
 
     <xi:include href="configurations/DicomPacsReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/DicomPacsWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -12,11 +12,11 @@
     <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/DicomPreview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>DicomPacsReader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
-        <icon>module_ui_media-0.1/icons/Pull.svg</icon>
+        <icon>sight_module_ui_icons-0.1/Pull.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -24,11 +24,11 @@
         </appConfig>
         </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>DicomPacsWriter</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
-        <icon>module_ui_media-0.1/icons/Push.svg</icon>
+        <icon>sight_module_ui_icons-0.1/Push.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -36,7 +36,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>DicomPacsReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -44,11 +44,11 @@
         </config>
     </extension>
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
-        <icon>module_ui_media-0.1/icons/icon-DICOM-Filtering.svg</icon>
+        <icon>sight_module_ui_icons-0.1/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -56,19 +56,19 @@
         </appConfig>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader</id>
-        <service>::sight::modules::ui::base::io::SSelector</service>
+        <service>::sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="::sight::modules::io::dicom::SDicomSeriesDBReader" />
-            <config id="DicomReaderConfig" service="::sight::modules::io::dicom::SDicomSeriesDBReader" />
+            <addSelection service="::sight::module::io::dicom::SDicomSeriesDBReader" />
+            <config id="DicomReaderConfig" service="::sight::module::io::dicom::SDicomSeriesDBReader" />
         </config>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
          <id>DicomReaderConfig</id>
          <desc>DICOM Reader Config</desc>
          <config>

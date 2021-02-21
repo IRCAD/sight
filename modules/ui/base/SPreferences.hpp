@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 /**
@@ -37,7 +37,7 @@ namespace sight::modules::ui::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::ui::base::SPreferences">
+   <service type="::sight::module::ui::base::SPreferences">
        <inout key="preferences" uid="..." />
        <filename>path/to/my/preferences.json</filename>
    </service>
@@ -85,4 +85,4 @@ private:
     void save();
 };
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

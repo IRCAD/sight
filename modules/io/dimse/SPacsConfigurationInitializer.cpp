@@ -32,7 +32,7 @@
 
 #include <utility>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 template<typename T, typename CAST_T = T>
@@ -56,7 +56,7 @@ struct SetFromConfig
 
 static const service::IService::KeyType s_CONFIG_INOUT = "config";
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dimse::SPacsConfigurationInitializer)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dimse::SPacsConfigurationInitializer)
 
 //------------------------------------------------------------------------------
 
@@ -217,4 +217,4 @@ void SPacsConfigurationInitializer::stopping()
     this->updating();
 }
 
-} // namespace sight::modules::io::dimse
+} // namespace sight::module::io::dimse

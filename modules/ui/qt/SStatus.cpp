@@ -42,10 +42,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::SStatus )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::SStatus )
 
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
@@ -334,4 +334,4 @@ void SStatus::toggleNthGreenRed(const int index, const bool green)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt
+} // namespace sight::module::ui::qt

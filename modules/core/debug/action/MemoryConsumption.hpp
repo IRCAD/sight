@@ -26,7 +26,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 namespace action
 {
@@ -54,7 +54,7 @@ protected:
      *
      * @code{.xml}
          <service uid="myIncMemConsum"  type="::ui::base::IAction"
-            implementation="::sight::modules::core::debug::action::MemoryConsumption" autoComChannel="no" >
+            implementation="::sight::module::core::debug::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>
        @endcode
@@ -87,4 +87,4 @@ private:
 };
 
 } // namespace action
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

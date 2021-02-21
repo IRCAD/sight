@@ -30,15 +30,15 @@
 #include <service/IController.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::viz::scene2d::ut::ProcessingTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::viz::scene2d::ut::ProcessingTest );
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace ut
 {
@@ -67,7 +67,7 @@ void ProcessingTest::histogramTest()
     const int sizeZ     = 50;
     const int imageSize = sizeX * sizeY * sizeZ;
 
-    std::string implementation = "::sight::modules::viz::scene2d::processing::SComputeHistogram";
+    std::string implementation = "::sight::module::viz::scene2d::processing::SComputeHistogram";
 
     // Configure data hirearchy
     data::Image::sptr image         = data::Image::New();
@@ -134,4 +134,4 @@ void ProcessingTest::histogramTest()
 //------------------------------------------------------------------------------
 
 } // namespace ut
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

@@ -28,7 +28,7 @@
 
 #include <ui/base/IGuiContainer.hpp>
 
-namespace sight::modules::viz::sample
+namespace sight::module::viz::sample
 {
 
 /**
@@ -43,7 +43,7 @@ namespace sight::modules::viz::sample
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::modules::viz::sample::SMesh" >
+   <service uid="..." type="::sight::module::viz::sample::SMesh" >
       <in key="mesh" uid="..." />
    </service>
  *
@@ -128,4 +128,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::sample.
+} // namespace sight::module::viz::sample.

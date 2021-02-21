@@ -31,7 +31,7 @@
 #include <map>
 #include <set>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 /**
  * @brief   To add or remove an object in composite with specific key.
@@ -39,7 +39,7 @@ namespace sight::modules::ui::base
  * @section XML Configuration
  *
  * @code{.xml}
-       <service impl="::sight::modules::ui::base::SPushField">
+       <service impl="::sight::module::ui::base::SPushField">
            <inout key="source" uid="compositeId" />
            <out key="destination" uid="objectId" />
            <push field="item" />
@@ -94,4 +94,4 @@ private:
     std::string m_field;
 };
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

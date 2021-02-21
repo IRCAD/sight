@@ -37,10 +37,10 @@
 
 #include <chrono>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::SSlider )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
@@ -352,4 +352,4 @@ void SSlider::setMaxValue(int value)
 
 //------------------------------------------------------------------------------
 
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

@@ -31,10 +31,10 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::ui::qml::activity
+namespace sight::module::ui::qml::activity
 {
 
-fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::modules::ui::qml::activity::SSequencer )
+fwServicesRegisterMacro( ::sight::ui::qml::IQmlEditor, ::sight::module::ui::qml::activity::SSequencer )
 
 const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
@@ -210,4 +210,4 @@ service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-}// namespace sight::modules::ui::qml::activity
+}// namespace sight::module::ui::qml::activity

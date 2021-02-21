@@ -65,10 +65,10 @@ void RuntimeTest::tearDown()
 
 void RuntimeTest::testLibrary()
 {
-    bool success = core::runtime::loadLibrary(std::string("utest"));
+    bool success = core::runtime::loadLibrary(std::string("sight_utest"));
     CPPUNIT_ASSERT_EQUAL(true, success);
 
-    success = core::runtime::loadLibrary(std::string("utest"));
+    success = core::runtime::loadLibrary(std::string("sight_utest"));
     CPPUNIT_ASSERT_EQUAL(true, success);
 
     success = core::runtime::loadLibrary(std::string("foo"));
@@ -79,10 +79,10 @@ void RuntimeTest::testLibrary()
 
 void RuntimeTest::testModule()
 {
-    auto module = core::runtime::loadModule(std::string("::sight::modules::utest"));
+    auto module = core::runtime::loadModule(std::string("::sight::module::utest"));
 
     CPPUNIT_ASSERT_MESSAGE("Module not found", module);
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::modules::utest"),  module->getIdentifier());
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::module::utest"),  module->getIdentifier());
     CPPUNIT_ASSERT_EQUAL(Version("0.1"),  module->getVersion());
     // No good parameter test for now, but at least test without any parameter
     CPPUNIT_ASSERT_EQUAL(false,  module->hasParameter("test"));
@@ -94,7 +94,7 @@ void RuntimeTest::testModule()
     const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
     CPPUNIT_ASSERT_EQUAL(rcLocation / "module_utest-0.1",  module->getResourcesLocation());
 
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::modules::utest::Plugin"), module->getClass());
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::module::utest::Plugin"), module->getClass());
     auto plugin = module->getPlugin();
     CPPUNIT_ASSERT_MESSAGE("Plugin is null", nullptr != plugin);
 
@@ -112,17 +112,17 @@ void RuntimeTest::testOperations()
     const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
 
     // module location prototype
-    auto path = core::runtime::getModuleResourcePath(std::string("::sight::modules::utest"));
+    auto path = core::runtime::getModuleResourcePath(std::string("::sight::module::utest"));
     CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1", path);
 
     path = core::runtime::getModuleResourcePath("notExistingBundle");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
-    path = core::runtime::getModuleResourceFilePath("module_utest-0.1/plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("sight_module_utest-0.1/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("module_utest-0.1/not_existing.file");
+    path = core::runtime::getModuleResourceFilePath("sight_module_utest-0.1/not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle-0.1/plugin.xml");
@@ -141,10 +141,10 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
 
     // (module, path) prototype
-    path = core::runtime::getModuleResourceFilePath("::sight::modules::utest", "plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("::sight::module::utest", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("::sight::modules::utest", "not_existing.file");
+    path = core::runtime::getModuleResourceFilePath("::sight::module::utest", "not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle", "plugin.xml");

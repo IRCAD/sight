@@ -45,7 +45,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 
 namespace series
@@ -53,7 +53,7 @@ namespace series
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::series::SSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::series::SSelector,
                          ::sight::data::SeriesDB )
 
 //------------------------------------------------------------------------------
@@ -389,4 +389,4 @@ void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 //------------------------------------------------------------------------------
 
 } // namespace series.
-} // namespace sight::modules::ui::qt.
+} // namespace sight::module::ui::qt.

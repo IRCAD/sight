@@ -30,14 +30,14 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 
 static const std::string s_IMAGE_INOUT = "image";
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::data::MedicalImageSrv, ::sight::data::Image )
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::data::MedicalImageSrv, ::sight::data::Image )
 
 //-----------------------------------------------------------------------------
 
@@ -131,4 +131,4 @@ service::IService::KeyConnectionsMap MedicalImageSrv::getAutoConnections() const
 
 //-----------------------------------------------------------------------------
 
-} // sight::modules::data
+} // sight::module::data

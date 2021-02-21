@@ -17,6 +17,6 @@ set( REQUIREMENTS
     module_filter_mesh
     module_viz_scene3d
     module_viz_scene3dQt
-    module_ui_media
+    module_ui_icons
     fwlauncher
 )

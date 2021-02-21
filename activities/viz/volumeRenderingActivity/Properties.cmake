@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_memory
     module_viz_scene3d
     module_viz_scene2d
-    module_ui_media
+    module_ui_icons
     config_viz_image
     config_ui_datamanager
     module_service

@@ -41,10 +41,10 @@
 
 #include <filter/image/Labeling.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro(::sight::service::IOperator, ::sight::modules::filter::image::SLabelGeometryImage,
+fwServicesRegisterMacro(::sight::service::IOperator, ::sight::module::filter::image::SLabelGeometryImage,
                         ::sight::data::Image)
 
 const core::com::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
@@ -168,4 +168,4 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image.
+} // namespace sight::module::filter::image.

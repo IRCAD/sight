@@ -24,7 +24,7 @@
 
 #include "SlotsSignalsStuff.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>

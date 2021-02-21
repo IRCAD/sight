@@ -32,7 +32,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -47,7 +47,7 @@ namespace sight::modules::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::geometry::base::SSwitchMatrices" autoConnect="yes">
+        <service uid="..." type="::sight::module::geometry::base::SSwitchMatrices" autoConnect="yes">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." />
@@ -113,4 +113,4 @@ private:
     size_t m_indexOfDesiredMatrix;
 };
 
-} //namespace sight::modules::geometry::base
+} //namespace sight::module::geometry::base

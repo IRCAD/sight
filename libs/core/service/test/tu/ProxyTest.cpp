@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/Proxy.hpp>
 
 // Registers the fixture into the 'registry'

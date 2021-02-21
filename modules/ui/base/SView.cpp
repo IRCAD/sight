@@ -26,10 +26,10 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::view::IView, ::sight::modules::ui::base::SView)
+fwServicesRegisterMacro( ::sight::ui::base::view::IView, ::sight::module::ui::base::SView)
 
 SView::SView() noexcept
 {

@@ -28,7 +28,7 @@
 
 #include <memory>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 /// Defines a static class to manage the OpenGL context shared by all render windows.
@@ -55,4 +55,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3dQt.
+} // namespace sight::module::viz::scene3dQt.

@@ -28,14 +28,14 @@
 
 #include <ui/qt/dialog/ProgressDialog.hpp>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 static const core::com::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
 static const core::com::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
 static const core::com::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::io::dimse::SProgressBarController)
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::io::dimse::SProgressBarController)
 
 //------------------------------------------------------------------------------
 
@@ -109,4 +109,4 @@ void SProgressBarController::stopProgress(std::string _id)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

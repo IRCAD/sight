@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "service/registry/AppConfig.hpp"
+#include "service/extension/AppConfig.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
@@ -34,7 +34,7 @@
 
 namespace sight::service
 {
-namespace registry
+namespace extension
 {
 
 AppConfig::sptr AppConfig::s_currentAppConfig = AppConfig::New();
@@ -66,7 +66,7 @@ AppConfig::~AppConfig()
 
 void AppConfig::parseBundleInformation()
 {
-    auto extensions = core::runtime::getAllExtensionsForPoint("::sight::service::registry::AppConfig");
+    auto extensions = core::runtime::getAllExtensionsForPoint("::sight::service::extension::AppConfig");
     for( const auto& ext : extensions )
     {
         // Get id
@@ -431,6 +431,6 @@ std::string AppConfig::adaptField( const std::string& _str, const FieldAdaptorTy
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::service

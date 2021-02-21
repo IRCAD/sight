@@ -28,7 +28,7 @@
 
 #include <opencv2/opencv.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 /**
@@ -44,7 +44,7 @@ namespace sight::modules::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::modules::filter::vision::SDepthImageMasking" worker="...">
+    <service uid="..." type="::sight::module::filter::vision::SDepthImageMasking" worker="...">
         <in key="maskImage" uid="..." />
         <in key="videoImage" uid="..." />
         <in key="depthImage" uid="..." autoConnect="yes" />
@@ -112,4 +112,4 @@ private:
     int m_threshold{10};
 };
 
-} // namespace sight::modules::filter::vision
+} // namespace sight::module::filter::vision

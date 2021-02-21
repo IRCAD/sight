@@ -32,7 +32,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/video/tracking.hpp>
 
-namespace sight::modules::filter::vision
+namespace sight::module::filter::vision
 {
 
 const service::IService::KeyType s_FRAME_TIMELINE_INPUT = "timeline";
@@ -241,4 +241,4 @@ service::IService::KeyConnectionsMap SOpticalFlow::getAutoConnections() const
     return connections;
 }
 
-} //namespace sight::modules::filter::vision
+} //namespace sight::module::filter::vision

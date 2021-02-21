@@ -28,14 +28,14 @@
 
 #include <QShortcut>
 
-namespace sight::modules::ui::qt::com
+namespace sight::module::ui::qt::com
 {
 
 /**
  * @brief   This service sends a signal when the associated shortcut is activated.
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." impl="::sight::modules::ui::qt::com::SSignalShortcut" >
+   <service uid="..." impl="::sight::module::ui::qt::com::SSignalShortcut" >
         <config shortcut="..." sid="..." />
    </service>
    @endcode

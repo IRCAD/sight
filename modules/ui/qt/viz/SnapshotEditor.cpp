@@ -45,14 +45,14 @@
 
 #include <filesystem>
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 
 //------------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::SnapshotEditor )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::viz::SnapshotEditor )
 
 //------------------------------------------------------------------------------
 
@@ -180,4 +180,4 @@ std::string SnapshotEditor::requestFileName()
 }
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::viz
+} // namespace sight::module::ui::qt::viz

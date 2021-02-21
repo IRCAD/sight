@@ -40,7 +40,7 @@
 
 #include <sstream>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 // ----------------------------------------------------------------------------
@@ -279,4 +279,4 @@ sight::io::base::service::IOPathType SOpenCVReader::getIOPathType() const
 }
 
 // ----------------------------------------------------------------------------
-} //namespace sight::modules::io::vision
+} //namespace sight::module::io::vision

@@ -1,4 +1,4 @@
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>DicomWebWriterActivity</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -12,7 +12,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::modules::ui::base::SView" >
+        <service uid="mainView" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -28,12 +28,12 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::modules::ui::base::SToolBar" >
+        <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="module_ui_media-0.1/icons/Import.svg" />
-                    <menuItem name="Anonymize selected series" icon="module_ui_media-0.1/icons/icon-Anonymization.svg" />
-                    <menuItem name="Push selected series to Pacs" icon="module_ui_media-0.1/icons/Push.svg" />
+                    <menuItem name="Import" icon="sight_module_ui_icons-0.1/Import.svg" />
+                    <menuItem name="Anonymize selected series" icon="sight_module_ui_icons-0.1/icon-Anonymization.svg" />
+                    <menuItem name="Push selected series to Pacs" icon="sight_module_ui_icons-0.1/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -45,40 +45,40 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="::sight::modules::ui::base::series::SDBMerger" >
+        <service uid="action_import" type="::sight::module::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="action_anonymize" type="::sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>anonymizeController/update</slot>
             </slots>
         </service>
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="::sight::modules::ui::base::com::SSlotCaller" >
+        <service uid="action_pushSeriesToPacs" type="::sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
                 <slot>action_pushSeriesToPacs/setInexecutable</slot>
             </slots>
         </service>
 
-        <service uid="pushSeriesController" type="::sight::modules::io::dicomweb::SSeriesPusher">
+        <service uid="pushSeriesController" type="::sight::module::io::dicomweb::SSeriesPusher">
             <in key="selectedSeries" uid="selections" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selector" type="::sight::modules::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="selector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="::sight::modules::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="viewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
@@ -86,7 +86,7 @@
             </configs>
         </service>
 
-        <service uid="anonymizeController" type="::sight::modules::io::dicom::SDicomSeriesAnonymizer">
+        <service uid="anonymizeController" type="::sight::module::io::dicom::SDicomSeriesAnonymizer">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selectedSeries" uid="selections" />
         </service>

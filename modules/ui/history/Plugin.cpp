@@ -24,11 +24,11 @@
 
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-namespace sight::modules::ui::history
+namespace sight::module::ui::history
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::ui::history::Plugin");
+    "::sight::module::ui::history::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -46,4 +46,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::ui::history
+} // namespace sight::module::ui::history

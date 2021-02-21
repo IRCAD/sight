@@ -34,7 +34,7 @@
 
 #include <data/tools/helper/SeriesDB.hpp>
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>

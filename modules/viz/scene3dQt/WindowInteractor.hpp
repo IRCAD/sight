@@ -42,7 +42,7 @@ class QtContainer;
 }
 }
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 /// Defines a class to manage a render window.
@@ -127,7 +127,7 @@ private:
     void disableFullscreen();
 
     /// Contains Qt element of the Widget.
-    QPointer< modules::viz::scene3dQt::Window > m_qOgreWidget;
+    QPointer< module::viz::scene3dQt::Window > m_qOgreWidget;
 
     /// Contains the parent of the widget.
     SPTR(ui::qt::container::QtContainer) m_parentContainer;
@@ -145,4 +145,4 @@ inline ::Ogre::TexturePtr WindowInteractor::getRenderTexture()
     return ::Ogre::TexturePtr();
 }
 
-} // namespace sight::modules::viz::scene3dQt.
+} // namespace sight::module::viz::scene3dQt.

@@ -36,11 +36,11 @@
 #include <functional>
 #include <sstream>
 
-namespace sight::modules::sync
+namespace sight::module::sync
 {
 
 // -----------------------------------------------------------------------------
-fwServicesRegisterMacro(::sight::service::ISynchronizer, modules::sync::SMatrixTLSynchronizer,
+fwServicesRegisterMacro(::sight::service::ISynchronizer, module::sync::SMatrixTLSynchronizer,
                         ::sight::data::MatrixTL)
 
 static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
@@ -148,4 +148,4 @@ service::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections()
 }
 
 // ----------------------------------------------------------------------------
-}  // namespace sight::modules::sync
+}  // namespace sight::module::sync

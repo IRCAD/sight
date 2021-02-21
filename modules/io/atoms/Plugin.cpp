@@ -26,10 +26,10 @@
 
 #include <io/patch/semantic/PatchLoader.hpp>
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::io::atoms::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::io::atoms::Plugin");
 
 Plugin::~Plugin() noexcept
 {
@@ -49,4 +49,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

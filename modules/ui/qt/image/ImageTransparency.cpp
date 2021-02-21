@@ -42,10 +42,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::image
+namespace sight::module::ui::qt::image
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::image::ImageTransparency,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::image::ImageTransparency,
                          ::sight::data::Image )
 
 static const service::IService::KeyType s_IMAGE_INOUT = "image";

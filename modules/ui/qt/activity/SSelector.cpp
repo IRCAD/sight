@@ -53,9 +53,9 @@
 #include <ui/base/dialog/SelectorDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
-Q_DECLARE_METATYPE(sight::activity::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -124,14 +124,14 @@ void SSelector::starting()
 
     m_buttonGroup = new QButtonGroup(groupBox);
 
-    auto infos = sight::activity::registry::Activity::getDefault()->getInfos();
+    auto infos = sight::activity::extension::Activity::getDefault()->getInfos();
     m_activitiesInfo = this->getEnabledActivities(infos);
 
     // Add the load button
-    sight::activity::registry::ActivityInfo infoLoad;
+    sight::activity::extension::ActivityInfo infoLoad;
     infoLoad.title = "Load activity";
     infoLoad.icon  =
-        core::runtime::getModuleResourceFilePath("module_ui_media", "icons/LoadActivity.svg").string();
+        core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);

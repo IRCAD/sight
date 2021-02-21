@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::io::itk
+namespace sight::module::io::itk
 {
 
 /**
@@ -45,4 +45,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::io::itk
+} // namespace sight::module::io::itk

@@ -22,7 +22,7 @@
 
 #include "ui/base/dialog/InputDialog.hpp"
 
-#include <service/registry/ActiveWorkers.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -40,7 +40,7 @@ std::string InputDialog::showInputDialog(const std::string& title, const std::st
 
 InputDialog::InputDialog()
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IInputDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::IInputDialog::dynamicCast(guiObj);
@@ -51,7 +51,7 @@ InputDialog::InputDialog()
 
 InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string& text)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IInputDialog::REGISTRY_KEY);
                 m_implementation = ui::base::dialog::IInputDialog::dynamicCast(guiObj);
@@ -71,7 +71,7 @@ InputDialog::~InputDialog()
 
 void InputDialog::setTitle( const std::string& title )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setTitle(title);
             })).wait();
@@ -81,7 +81,7 @@ void InputDialog::setTitle( const std::string& title )
 
 void InputDialog::setMessage( const std::string& msg )
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
             {
                 m_implementation->setMessage(msg);
             })).wait();
@@ -91,7 +91,7 @@ void InputDialog::setMessage( const std::string& msg )
 
 void InputDialog::setInput(const std::string& text)
 {
-    service::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
+    core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
                 m_implementation->setInput(text);
             })).wait();
@@ -103,7 +103,7 @@ std::string InputDialog::getInput()
 {
     std::function< std::string() > func = std::bind(&IInputDialog::getInput, m_implementation);
     std::shared_future< std::string > f =
-        service::registry::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
+        core::thread::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
     f.wait();
     return f.get();
 }

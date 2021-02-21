@@ -32,7 +32,7 @@
 #include <data/registry/macros.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ServiceFactory.hpp>
+#include <service/extension/Factory.hpp>
 
 namespace sight::service
 {

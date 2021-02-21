@@ -14,7 +14,7 @@ set( REQUIREMENTS
     module_data
     module_viz_scene3d
     module_viz_scene2d
-    module_ui_media
+    module_ui_icons
     module_geometry_base
     module_viz_scene3dQt
     config_viz_scene2d

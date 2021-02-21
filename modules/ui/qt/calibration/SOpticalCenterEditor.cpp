@@ -36,14 +36,14 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 static const service::IService::KeyType s_CAMERA_INPUT = "camera";
 static const service::IService::KeyType s_MATRIX_INOUT = "matrix";
 
 fwServicesRegisterMacro( ::sight::ui::base::IEditor,
-                         ::sight::modules::ui::qt::calibration::SOpticalCenterEditor,
+                         ::sight::module::ui::qt::calibration::SOpticalCenterEditor,
                          ::sight::data::Camera)
 
 //------------------------------------------------------------------------------
@@ -247,4 +247,4 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::calibration
+} // namespace sight::module::ui::qt::calibration

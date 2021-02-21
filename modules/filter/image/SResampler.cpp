@@ -32,10 +32,10 @@
 
 #include <filter/image/Resampler.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
-fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::modules::filter::image::SResampler,
+fwServicesRegisterMacro( ::sight::service::IOperator, ::sight::module::filter::image::SResampler,
                          ::sight::data::Image)
 
 static const service::IService::KeyType s_IMAGE_IN = "imageIn";
@@ -130,4 +130,4 @@ service::IService::KeyConnectionsMap SResampler::getAutoConnections() const
     return connections;
 }
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

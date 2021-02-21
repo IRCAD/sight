@@ -143,8 +143,8 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
         if(overrides)
         {
             const std::string activityId                 = m_activityIds[index];
-            const activity::registry::ActivityInfo& info =
-                activity::registry::Activity::getDefault()->getInfo(activityId);
+            const activity::extension::ActivityInfo& info =
+                activity::extension::Activity::getDefault()->getInfo(activityId);
 
             auto overridesContainer = overrides->getContainer();
 
@@ -161,8 +161,8 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
         else
         {
             const std::string activityId                 = m_activityIds[index];
-            const activity::registry::ActivityInfo& info =
-                activity::registry::Activity::getDefault()->getInfo(activityId);
+            const activity::extension::ActivityInfo& info =
+                activity::extension::Activity::getDefault()->getInfo(activityId);
 
             for(const auto& req : info.requirements)
             {
@@ -182,8 +182,8 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
         }
 
         const std::string activityId                 = m_activityIds[index];
-        const activity::registry::ActivityInfo& info =
-            activity::registry::Activity::getDefault()->getInfo(activityId);
+        const activity::extension::ActivityInfo& info =
+            activity::extension::Activity::getDefault()->getInfo(activityId);
 
         activity = data::ActivitySeries::New();
 

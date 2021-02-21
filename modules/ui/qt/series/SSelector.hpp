@@ -38,7 +38,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace series
 {
@@ -48,13 +48,13 @@ namespace series
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::modules::ui::qt::series::SSelector">
+    <service uid="..." type="::sight::module::ui::qt::series::SSelector">
         <inout key="seriesDB" uid="..." />
         <inout key="selection" uid="..." />
         <icons>
             <icon series="..." icon="..." />
             <icon series="..." icon="..." />
-        </icons>
+        <>
         <config removeStudyIcon="..." removeSerieIcon="..." selectionMode="extended"
             allowedRemove="true" insertMode="false" />
     </service>
@@ -68,7 +68,7 @@ namespace series
  * - \b selectionMode (optional, single/extended, default=extended): defines the selection mode for the series, where
  *                    extended means "multiple".
  * - \b allowedRemove (optional, bool, default=true): allows user to remove series.
- * - \b insertMode (optional, bool, default=false): only allows selection of modules::ui::qt::InsertSeries.
+ * - \b insertMode (optional, bool, default=false): only allows selection of module::ui::qt::InsertSeries.
  * - \b removeStudyIcon (optional, string, default=""): remove study button icon.
  * - \b removeSerieIcon (optional, string, default=""): remove serie button icon.
  * - \b icons (optional): defines the icon to associate for a series.
@@ -169,7 +169,7 @@ private:
     /// Defines the behaviour of the treeview selection mode.
     QAbstractItemView::SelectionMode m_selectionMode { QAbstractItemView::ExtendedSelection };
 
-    /// Allows selection of modules::ui::qt::InsertSeries only.
+    /// Allows selection of module::ui::qt::InsertSeries only.
     bool m_insertMode { false };
 
     /// Defines the path of the remove study button icon.
@@ -180,4 +180,4 @@ private:
 
 };
 } // namespace series.
-} // namespace sight::modules::ui::qt.
+} // namespace sight::module::ui::qt.

@@ -2,10 +2,10 @@
 
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
-    <requirement id="module_service" />
-    <requirement id="module_ui_qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
 
-    <extension implements="::sight::service::registry::AppConfig" >
+    <extension implements="::sight::service::extension::AppConfig" >
         <id>TutoDataServiceBasic_AppCfg</id>
         <config>
 
@@ -18,11 +18,11 @@
 
             <!--
                 Description service of the GUI:
-                The ::sight::modules::ui::base::SFrame service automatically positions the various
+                The ::sight::module::ui::base::SFrame service automatically positions the various
                 containers in the application main window.
                 Here, it declares a container for the 3D rendering service.
             -->
-            <service uid="mainFrame" type="::sight::modules::ui::base::SFrame" >
+            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto02DataServiceBasic</name>
@@ -43,7 +43,7 @@
                 The <file> tag defines the path of the image to load. Here, it is a relative
                 path from the repository in which you launch the application.
             -->
-            <service uid="imageReaderSrv" type="::sight::modules::io::vtk::SImageReader" >
+            <service uid="imageReaderSrv" type="::sight::module::io::vtk::SImageReader" >
                 <inout key="data" uid="imageData" />
                 <file>../../data/patient1.vtk</file>
             </service>
@@ -52,7 +52,7 @@
                 Visualization service of a 3D medical image:
                 This service will render the 3D image.
             -->
-            <service uid="imageRendereSrv" type="::sight::modules::viz::sample::SImage" >
+            <service uid="imageRendereSrv" type="::sight::module::viz::sample::SImage" >
                 <in key="image" uid="imageData" />
             </service>
 

@@ -35,7 +35,7 @@
 #include <QStandardItem>
 #include <QString>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace series
 {
@@ -303,4 +303,4 @@ void Selector::setSeriesIcons(const SeriesIconType& _seriesIcons)
 //-----------------------------------------------------------------------------
 
 } // namespace series.
-} // namespace sight::modules::ui::qt.
+} // namespace sight::module::ui::qt.

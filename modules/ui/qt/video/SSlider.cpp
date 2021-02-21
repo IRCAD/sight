@@ -38,12 +38,12 @@
 
 #include <chrono>
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace video
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::video::SSlider )
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::video::SSlider )
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 
@@ -206,4 +206,4 @@ void SSlider::setDuration(int64_t duration)
 //------------------------------------------------------------------------------
 
 } //namespace video
-} //namespace sight::modules::ui::qt
+} //namespace sight::module::ui::qt

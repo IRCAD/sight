@@ -24,12 +24,12 @@
 
 /**
  * @ingroup apprequirement
- * @brief The namespace sight::modules::activity contains helpers and services allowing to launch activities.
+ * @brief The namespace sight::module::activity contains helpers and services allowing to launch activities.
  *
  * This module allows to register the activities available for an application. It is required for application using
  * Activity.
  **/
-namespace sight::modules::activity
+namespace sight::module::activity
 {
 
-} // namespace sight::modules::activity
+} // namespace sight::module::activity

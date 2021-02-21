@@ -39,7 +39,7 @@ namespace sight::data
 class SeriesDB;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 /**
@@ -48,7 +48,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::dicom::SSurfaceSegmentationWriter" >
+       <service uid="..." type="::sight::module::io::dicom::SSurfaceSegmentationWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
@@ -110,4 +110,4 @@ private:
                                   const data::ModelSeries::csptr& model);
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

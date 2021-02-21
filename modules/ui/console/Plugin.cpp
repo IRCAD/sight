@@ -28,12 +28,12 @@
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
-namespace sight::modules::ui::console
+namespace sight::module::ui::console
 {
 //-----------------------------------------------------------------------------
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::ui::console::Plugin");
+    "::sight::module::ui::console::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -79,4 +79,4 @@ int Plugin::run() noexcept
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::console
+} // namespace sight::module::ui::console

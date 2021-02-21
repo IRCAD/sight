@@ -31,7 +31,7 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-namespace sight::modules::data
+namespace sight::module::data
 {
 /**
  * @brief This service extract meshes of a specific structure type from data::ModelSeries.
@@ -43,7 +43,7 @@ namespace sight::modules::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::modules::data::SExtractMeshByType" >
+        <service uid="..." type="::sight::module::data::SExtractMeshByType" >
            <inout key="source" uid="...">
                <extract type="organ1" />
                <extract type="organ2" matching="(.*)surface(.*)"/>
@@ -68,11 +68,11 @@ namespace sight::modules::data
  * - \b matching (optional) : regex to match the organ name, that can be used for instance when you have several
  * organs with the same structure type.
  */
-class MODULE_DATA_CLASS_API SExtractMeshByType : public modules::data::ICamp
+class MODULE_DATA_CLASS_API SExtractMeshByType : public module::data::ICamp
 {
 public:
 
-    fwCoreServiceMacro(SExtractMeshByType, ::sight::modules::data::ICamp)
+    fwCoreServiceMacro(SExtractMeshByType, ::sight::module::data::ICamp)
 
     typedef std::map<std::string, std::tuple< std::string, std::string, std::string > > ExtractMapType;
     typedef std::vector<std::pair< std::string, std::string > > ExtractVectorType;
@@ -107,4 +107,4 @@ private:
     ExtractVectorType m_extract;
 };
 
-}// namespace sight::modules::data
+}// namespace sight::module::data

@@ -33,7 +33,7 @@
 
 #include <opencv2/core.hpp>
 
-namespace sight::modules::geometry::vision
+namespace sight::module::geometry::vision
 {
 
 /**
@@ -45,7 +45,7 @@ namespace sight::modules::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::sight::modules::geometry::vision::SPoseFrom2d">
+     <service uid="..." type="::sight::module::geometry::vision::SPoseFrom2d">
          <in group="markerTL" autoConnect="yes">
              <key uid="..." />
              <key uid="..." />
@@ -62,7 +62,7 @@ namespace sight::modules::geometry::vision
 
      or
 
-     <service uid="..." type="::sight::modules::geometry::vision::SPoseFrom2d">
+     <service uid="..." type="::sight::module::geometry::vision::SPoseFrom2d">
          <in group="markerMap" autoConnect="yes">
              <key uid="..." />
              <key uid="..." />
@@ -206,4 +206,4 @@ private:
     std::vector< data::MarkerMap::KeyType> m_matricesTag;
 };
 
-} // namespace sight::modules::geometry::vision
+} // namespace sight::module::geometry::vision

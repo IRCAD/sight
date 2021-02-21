@@ -24,7 +24,7 @@
 
 #include <activity/IObjectValidator.hpp>
 #include <activity/IValidator.hpp>
-#include <activity/registry/Activity.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>

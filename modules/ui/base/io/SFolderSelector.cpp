@@ -30,12 +30,12 @@
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace io
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::io::SFolderSelector,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::io::SFolderSelector,
                          ::sight::data::Object )
 
 const core::com::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
@@ -96,4 +96,4 @@ void SFolderSelector::stopping()
 //------------------------------------------------------------------------------
 //
 } // namespace io
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -25,6 +25,6 @@
  */
 #pragma once
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 }

@@ -28,7 +28,7 @@
 
 #include <string>
 
-namespace sight::modules::io::vision
+namespace sight::module::io::vision
 {
 
 /**
@@ -39,7 +39,7 @@ namespace sight::modules::io::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::modules::io::vision::SCalibrationInfoReader">
+   <service uid="..." type="::sight::module::io::vision::SCalibrationInfoReader">
         <inout key="data" uid="..." />
         <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
    </service>
@@ -115,4 +115,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::vision
+} // namespace sight::module::io::vision

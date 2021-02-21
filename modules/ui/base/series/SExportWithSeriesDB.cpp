@@ -32,18 +32,18 @@
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 
 #include <ui/base/Cursor.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace series
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::series::SExportWithSeriesDB,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::series::SExportWithSeriesDB,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -104,15 +104,15 @@ void SExportWithSeriesDB::updating( )
 
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                             "::sight::modules::ui::base::io::SSelector");
+    ioCfg = service::extension::Config::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
+                                                                             "::sight::module::ui::base::io::SSelector");
     SLM_ASSERT("There is no service configuration "
                << m_ioSelectorSrvConfig
-               << " for modules::ui::base::editor::SSelector", ioCfg);
+               << " for module::ui::base::editor::SSelector", ioCfg);
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add( "::sight::modules::ui::base::io::SSelector");
+    ioSelectorSrv = service::add( "::sight::module::ui::base::io::SSelector");
     ioSelectorSrv->registerInOut(localSeriesDB, io::base::service::s_DATA_KEY);
 
     ioSelectorSrv->setWorker(m_associatedWorker);
@@ -158,4 +158,4 @@ void SExportWithSeriesDB::forwardJob(core::jobs::IJob::sptr iJob)
 //------------------------------------------------------------------------------
 //
 } // namespace series
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

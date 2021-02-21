@@ -1,19 +1,19 @@
 <plugin id="3DVisualizationActivity" version="@PROJECT_VERSION@" >
 
-    <requirement id="module_service" />
+    <requirement id="sight::module::service" />
     <requirement id="visuVTKQt" />
-    <requirement id="module_activity" />
-    <requirement id="module_service" />
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::service" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DNegatoWithAcq.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/3DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="::sight::activity::registry::Activity">
+    <extension implements="::sight::activity::extension::Activity">
         <id>3DVisualization</id>
         <title>3D visualization</title>
         <desc>Activity to display a 3D model, and optionally its associated image.</desc>
-        <icon>module_ui_media-0.1/icons/icon-3D.png</icon>
+        <icon>sight_module_ui_icons-0.1/icon-3D.png</icon>
         <requirements>
             <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1">
                 <desc>3D model.</desc>

@@ -35,7 +35,7 @@
 
 #include <ui/base/IEditor.hpp>
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 
 /**

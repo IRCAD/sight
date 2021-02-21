@@ -42,7 +42,7 @@ namespace sight::data
 class SeriesDB;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 /**
  * @brief GDCM Reader (ImageSeries/ModelSeries)
@@ -57,7 +57,7 @@ namespace sight::modules::io::dicom
  * It is also possible to define a filter that must be applied prior to the reading process.
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::dicom::SSeriesDBReader" >
+       <service uid="..." type="::sight::module::io::dicom::SSeriesDBReader" >
            <inout key="data" uid="..." />
            <config>
                <filterType>::filter::dicom::custom::NoFilter<filterType/>
@@ -74,7 +74,7 @@ namespace sight::modules::io::dicom
  * On the other hand, you can specify a service configuration using the filterConfig element:
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::dicom::SSeriesDBReader" >
+       <service uid="..." type="::sight::module::io::dicom::SSeriesDBReader" >
            <inout key="data" uid="..." />
            <config>
                <filterConfig>MyFilterSelectorConfig<filterConfig/>
@@ -89,9 +89,9 @@ namespace sight::modules::io::dicom
    @endcode
  *
  * @code{.xml}
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>MyFilterSelectorConfig</id>
-        <service>::modules::ui::dicom::SFilterSelectorDialog</service>
+        <service>::module::ui::dicom::SFilterSelectorDialog</service>
         <desc>"Open" action's filter selector config</desc>
         <config>
             <selection mode="include" />
@@ -206,4 +206,4 @@ private:
     DicomDirSupport m_dicomDirSupport;
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

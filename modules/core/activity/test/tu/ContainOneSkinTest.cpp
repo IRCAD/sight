@@ -31,9 +31,9 @@
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::modules::activity::validator::ut::ContainOneSkinTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::module::activity::validator::ut::ContainOneSkinTest );
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace ut
 {
@@ -60,7 +60,7 @@ void ContainOneSkinTest::tearDown()
 
 void ContainOneSkinTest::testValidator()
 {
-    auto validator = factory::New("::sight::modules::activity::validator::ModelSeries::ContainOneSkin");
+    auto validator = factory::New("::sight::module::activity::validator::ModelSeries::ContainOneSkin");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -134,7 +134,7 @@ void ContainOneSkinTest::testValidator()
 
 void ContainOneSkinTest::testValidatorWithVector()
 {
-    auto validator = factory::New("::sight::modules::activity::validator::ModelSeries::ContainOneSkin");
+    auto validator = factory::New("::sight::module::activity::validator::ModelSeries::ContainOneSkin");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -235,7 +235,7 @@ void ContainOneSkinTest::testValidatorWithVector()
 
 void ContainOneSkinTest::testValidatorWithComposite()
 {
-    auto validator = factory::New("::sight::modules::activity::validator::ModelSeries::ContainOneSkin");
+    auto validator = factory::New("::sight::module::activity::validator::ModelSeries::ContainOneSkin");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -334,4 +334,4 @@ void ContainOneSkinTest::testValidatorWithComposite()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace sight::modules::activity::validator
+} //namespace sight::module::activity::validator

@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 /**
  * @brief This service write a data::Matrix4 into a .trf file.
@@ -38,7 +38,7 @@ namespace sight::modules::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::matrix::Matrix4WriterService">
+   <service type="::sight::module::io::matrix::Matrix4WriterService">
        <in key="data" uid="..." />
    </service>
    @endcode
@@ -129,4 +129,4 @@ protected:
 
 };
 
-} // namespace sight::modules::io::matrix
+} // namespace sight::module::io::matrix

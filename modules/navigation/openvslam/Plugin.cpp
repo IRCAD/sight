@@ -26,11 +26,11 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::navigation::openvslam
+namespace sight::module::navigation::openvslam
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar(
-    "::sight::modules::navigation::openvslam::Plugin");
+    "::sight::module::navigation::openvslam::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -52,4 +52,4 @@ void Plugin::stop() noexcept
 
 //------------------------------------------------------------------------------
 
-}  //namespace sight::modules::navigation::openvslam
+}  //namespace sight::module::navigation::openvslam

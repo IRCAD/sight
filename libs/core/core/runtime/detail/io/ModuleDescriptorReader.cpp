@@ -38,6 +38,9 @@
 #include <sstream>
 #include <string>
 
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
 namespace sight::core::runtime
 {
 
@@ -344,27 +347,6 @@ std::shared_ptr<ExtensionPoint> ModuleDescriptorReader::processExtensionPoint(xm
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<dl::Library> ModuleDescriptorReader::processLibrary(xmlNodePtr node)
-{
-    // Processes all plugin attributes.
-    xmlAttrPtr curAttr;
-    std::string name;
-    for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
-    {
-        if(xmlStrcmp(curAttr->name, (const xmlChar*) NAME.c_str()) == 0)
-        {
-            name = (const char*) curAttr->children->content;
-            continue;
-        }
-    }
-
-    // Creates the library
-    auto library = std::make_shared<dl::Library>(name);
-    return library;
-}
-
-//------------------------------------------------------------------------------
-
 std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr node,
                                                                       const std::filesystem::path& location)
 {
@@ -380,12 +362,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
         {
             moduleIdentifier = (const char*) curAttr->children->content;
-            continue;
-        }
-
-        if(xmlStrcmp(curAttr->name, (const xmlChar*) CLASS.c_str()) == 0)
-        {
-            pluginClass = (const char*) curAttr->children->content;
+            boost::algorithm::trim_left_if(moduleIdentifier, [](auto x) { return x == ':'; } );
             continue;
         }
 
@@ -401,13 +378,36 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
     {
         return module;
     }
-    if(pluginClass.empty() == true)
+    
+    for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
+    {
+        if(xmlStrcmp(curAttr->name, (const xmlChar*) LIBRARY.c_str()) == 0)
+        {
+            if(xmlStrcmp(curAttr->children->content, (const xmlChar*)"true") == 0)
+            {
+                // Deduce the library name from the plugin name
+                std::string libname = boost::algorithm::replace_all_copy(moduleIdentifier, "::", "_");
+                boost::algorithm::trim_left_if(libname, [](auto x) { return x == '_'; } );
+    
+                SLM_INFO("Plugin " + moduleIdentifier + " holds library " + libname);
+
+                // Creates the library
+                // If we have a library, deduce the plugin name
+                pluginClass = moduleIdentifier + "::Plugin";
+                
+                module = std::make_shared<Module>(location, moduleIdentifier, version, pluginClass);
+
+                auto library = std::make_shared<dl::Library>(libname);
+                module->setLibrary(library);
+
+                break;
+            }
+        }
+    }
+
+    if(module == nullptr)
     {
         module = std::make_shared<Module>(location, moduleIdentifier, version);
-    }
-    else
-    {
-        module = std::make_shared<Module>(location, moduleIdentifier, version, pluginClass);
     }
 
     // Processes all child nodes.
@@ -433,14 +433,6 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
         {
             std::shared_ptr<ExtensionPoint> point(processExtensionPoint(curChild, module));
             module->addExtensionPoint(point);
-            continue;
-        }
-
-        // Library declaration.
-        if(xmlStrcmp(curChild->name, (const xmlChar*) LIBRARY.c_str()) == 0)
-        {
-            std::shared_ptr<dl::Library> library(processLibrary(curChild));
-            module->setLibrary(library);
             continue;
         }
 

@@ -33,7 +33,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::modules::filter::image
+namespace sight::module::filter::image
 {
 
 //-----------------------------------------------------------------------------
@@ -196,4 +196,4 @@ void SThreshold::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::filter::image
+} // namespace sight::module::filter::image

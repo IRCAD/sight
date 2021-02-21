@@ -36,7 +36,7 @@ namespace sight::core::jobs
 class IJob;
 }
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace series
 {
@@ -53,7 +53,7 @@ namespace series
  * The available reader can be configured
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="action" type="::sight::modules::ui::base::series::SDBMerger">
+   <service uid="action" type="::sight::module::ui::base::series::SDBMerger">
         <inout key="seriesDB" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
    </service>
@@ -62,14 +62,14 @@ namespace series
  * - \b seriesDBImporterConfig : the id of a configuration for SSelector
  * for example
  * @code{.xml}
-    <extension implements="::sight::service::registry::ServiceConfig">
+    <extension implements="::sight::service::extension::Config">
         <id>seriesDBImporterConfig</id>
-        <service>::modules::ui::base::editor::SSelector</service>
+        <service>::module::ui::base::editor::SSelector</service>
         <desc>IOSelector config to import SeriesDB</desc>
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
-            <addSelection service="::sight::modules::io::atoms::SReader" />
+            <addSelection service="::sight::module::io::atoms::SReader" />
         </config>
     </extension>
    @endcode
@@ -95,11 +95,11 @@ protected:
      * @brief Configure action. Retrieves the IOSelector config.
      *
      * @code{.xml}
-        <service impl="::sight::modules::ui::base::series::SDBMerger">
+        <service impl="::sight::module::ui::base::series::SDBMerger">
             <IOSelectorSrvConfig name="myConfig" />
         </service>
        @endcode
-     * - \b IOSelectorSrvConfig: identifier of the ServiceConfig used for SSelector
+     * - \b IOSelectorSrvConfig: identifier of the Config used for SSelector
      */
     void configuring() override;
 
@@ -124,4 +124,4 @@ private:
 };
 
 } // namespace series
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

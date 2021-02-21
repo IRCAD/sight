@@ -39,7 +39,7 @@ namespace Ogre
 class Light;
 }
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -51,7 +51,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="lightAdaptor" type="::sight::modules::viz::scene3d::adaptor::SLight">
+    <service uid="lightAdaptor" type="::sight::module::viz::scene3d::adaptor::SLight">
         <inout key="diffuseColor" uid="diffuseColorUid" />
         <inout key="specularColor" uid="specularColorUid" />
         <config name="sceneLight" transform="..." switchedOn="yes" thetaOffset="30.5" phiOffset="45" />
@@ -313,4 +313,4 @@ inline bool SLight::isVisualFeedbackOn() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

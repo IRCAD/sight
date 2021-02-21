@@ -25,7 +25,7 @@
 #include <data/Material.hpp>
 #include <data/Reconstruction.hpp>
 
-namespace sight::modules::ui::qml::reconstruction
+namespace sight::module::ui::qml::reconstruction
 {
 
 static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";

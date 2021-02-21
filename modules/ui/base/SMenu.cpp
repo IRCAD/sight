@@ -24,9 +24,9 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::ui::base::IMenu, ::sight::modules::ui::base::SMenu )
+fwServicesRegisterMacro( ::sight::ui::base::IMenu, ::sight::module::ui::base::SMenu )
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 //-----------------------------------------------------------------------------

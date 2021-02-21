@@ -20,10 +20,10 @@
  *
  ***********************************************************************/
 
-#include "service/registry/ServiceFactory.hpp"
+#include "service/extension/Factory.hpp"
 
 #include "service/IService.hpp"
-#include "service/registry/ActiveWorkers.hpp"
+#include "core/thread/ActiveWorkers.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
@@ -38,18 +38,18 @@
 
 namespace sight::service
 {
-namespace registry
+namespace extension
 {
 
 //-----------------------------------------------------------------------------
 
-ServiceFactory::sptr ServiceFactory::getDefault()
+Factory::sptr Factory::getDefault()
 {
-    return core::util::LazyInstantiator< ServiceFactory >::getInstance();
+    return core::util::LazyInstantiator< Factory >::getInstance();
 }
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::parseBundleInformation()
+void Factory::parseBundleInformation()
 {
     SrvRegContainer moduleInfoMap;
 
@@ -57,7 +57,7 @@ void ServiceFactory::parseBundleInformation()
     typedef std::shared_ptr< core::runtime::Extension > ExtensionType;
 
     std::vector< ExtensionType >  extElements;
-    extElements = core::runtime::getAllExtensionsForPoint("::sight::service::registry::ServiceFactory");
+    extElements = core::runtime::getAllExtensionsForPoint("::sight::service::extension::Factory");
     for(ExtensionType extElt :  extElements)
     {
         std::vector< ConfigurationType > cfgEltVec = extElt->getElements();
@@ -152,14 +152,14 @@ void ServiceFactory::parseBundleInformation()
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
+IService::sptr Factory::create( const std::string& _srvImpl ) const
 {
     IService::sptr service;
 
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
 
-    SLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the ServiceFactory ",
+    SLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the Factory ",
                iter != m_srvImplTosrvInfo.end() );
 
     const ServiceInfo& info = iter->second;
@@ -198,20 +198,20 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
     // Setup worker here, this is a better place than the constructor
     // because here, the service slots are also set up
     // This allows to setup
-    service->setWorker( service::registry::ActiveWorkers::getDefaultWorker() );
+    service->setWorker( core::thread::ActiveWorkers::getDefaultWorker() );
 
     return service;
 }
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactory::create( const std::string& _srvType, const std::string& _srvImpl ) const
+IService::sptr Factory::create( const std::string& _srvType, const std::string& _srvImpl ) const
 {
 #ifdef _DEBUG
     {
         core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
 
-        SLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory.",
+        SLM_ASSERT("The service called " << _srvImpl << " does not exist in the Factory.",
                    m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
 
         SLM_ASSERT(
@@ -229,7 +229,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvType, const std::s
 
 //------------------------------------------------------------------------------
 
-void ServiceFactory::addServiceFactory( FactoryType _factory,
+void Factory::addServiceFactory( FactoryType _factory,
                                         const std::string& simpl,
                                         const std::string& stype)
 {
@@ -265,7 +265,7 @@ void ServiceFactory::addServiceFactory( FactoryType _factory,
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::addObjectFactory(const std::string& simpl, const std::string& oimpl)
+void Factory::addObjectFactory(const std::string& simpl, const std::string& oimpl)
 {
     SLM_DEBUG("New object oimpl=" + oimpl + "registering to service: simpl =" + simpl);
     SLM_ASSERT("Empty oimpl", !oimpl.empty());
@@ -300,7 +300,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
+void Factory::printInfoMap( const SrvRegContainer& src ) const
 {
     // not thread-safe
 
@@ -329,7 +329,7 @@ void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
+void Factory::checkServicesNotDeclaredInPluginXml() const
 {
     // not thread-safe
     //Print information
@@ -344,7 +344,7 @@ void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::clearFactory()
+void Factory::clearFactory()
 {
     core::mt::WriteLock lock(m_srvImplTosrvInfoMutex);
     m_srvImplTosrvInfo.clear();
@@ -352,7 +352,7 @@ void ServiceFactory::clearFactory()
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType( const std::string& object,
+std::vector< std::string > Factory::getImplementationIdFromObjectAndType( const std::string& object,
                                                                                  const std::string& type ) const
 {
     std::vector< std::string > serviceImpl;
@@ -376,7 +376,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
 
 //-----------------------------------------------------------------------------
 
-std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const std::string& object,
+std::string Factory::getDefaultImplementationIdFromObjectAndType( const std::string& object,
                                                                          const std::string& type ) const
 {
     SLM_ASSERT("This case is not managed ", object != "::sight::data::Object" );
@@ -431,7 +431,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
 
 //-----------------------------------------------------------------------------
 
-const std::vector<std::string>& ServiceFactory::getServiceObjects(const std::string& srvImpl) const
+const std::vector<std::string>& Factory::getServiceObjects(const std::string& srvImpl) const
 {
     std::string objImpl;
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -442,7 +442,7 @@ const std::vector<std::string>& ServiceFactory::getServiceObjects(const std::str
 
 //-----------------------------------------------------------------------------
 
-std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) const
+std::string Factory::getServiceDescription(const std::string& srvImpl) const
 {
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
@@ -452,7 +452,7 @@ std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) co
 
 //-----------------------------------------------------------------------------
 
-std::string ServiceFactory::getServiceTags(const std::string& srvImpl) const
+std::string Factory::getServiceTags(const std::string& srvImpl) const
 {
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
@@ -462,7 +462,7 @@ std::string ServiceFactory::getServiceTags(const std::string& srvImpl) const
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::checkServiceValidity(const std::string& objectClassName, const std::string& srvImpl) const
+bool Factory::checkServiceValidity(const std::string& objectClassName, const std::string& srvImpl) const
 {
     bool isValid = true;
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -487,7 +487,7 @@ bool ServiceFactory::checkServiceValidity(const std::string& objectClassName, co
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::support(const std::string& object, const std::string& srvType, const std::string& srvImpl) const
+bool Factory::support(const std::string& object, const std::string& srvType, const std::string& srvImpl) const
 {
     bool isSupported = true;
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -515,7 +515,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::support(const std::string& object, const std::string& srvType)
+bool Factory::support(const std::string& object, const std::string& srvType)
 {
     bool isSupported = false;
     SupportMapType::key_type key(object, srvType);
@@ -552,7 +552,7 @@ bool ServiceFactory::support(const std::string& object, const std::string& srvTy
 
 //-----------------------------------------------------------------------------
 
-ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
+Factory::KeyVectorType Factory::getFactoryKeys() const
 {
     core::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     KeyVectorType vectKeys;
@@ -564,5 +564,5 @@ ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
+} // namespace extension
 } // namespace sight::service

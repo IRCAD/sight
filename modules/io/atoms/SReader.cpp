@@ -54,10 +54,10 @@
 
 #include <filesystem>
 
-namespace sight::modules::io::atoms
+namespace sight::module::io::atoms
 {
 
-fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::modules::io::atoms::SReader,
+fwServicesRegisterMacro( ::sight::io::base::service::IReader, ::sight::module::io::atoms::SReader,
                          ::sight::data::Object )
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
@@ -495,4 +495,4 @@ void SReader::openLocationDialog()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::atoms
+} // namespace sight::module::io::atoms

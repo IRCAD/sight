@@ -51,7 +51,7 @@
 
 #include <ui/base/preferences/helper.hpp>
 
-namespace sight::modules::geometry::vision::charuco
+namespace sight::module::geometry::vision::charuco
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_CHARUCOBOARD_SIZE_SLOT = "updateCharucoBoardSize";
@@ -254,4 +254,4 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::geometry::vision::charuco
+} // namespace sight::module::geometry::vision::charuco

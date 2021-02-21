@@ -30,7 +30,7 @@
 
 #include <ui/base/IDialogEditor.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace io
 {
@@ -50,23 +50,23 @@ namespace io
  *
  * Sample of configuration :
  * @code{.xml}
-          <service uid="..." type="::sight::modules::ui::base::io::SSelector">
+          <service uid="..." type="::sight::module::ui::base::io::SSelector">
               <inout key="data" uid="${selection}" />
               <type mode="writer" />
               <selection mode="include" />
-              <addSelection service="::sight::modules::io::atoms::SWriter" />
-              <config id="ioAtomsConfig" service="::sight::modules::io::atoms::SWriter" />
+              <addSelection service="::sight::module::io::atoms::SWriter" />
+              <config id="ioAtomsConfig" service="::sight::module::io::atoms::SWriter" />
           </service>
  * @endcode
  *
  * Readers can generate output data. In this case, you must define the type of the output data.
  *
  * @code{.xml}
-          <service uid="..." type="::sight::modules::ui::base::io::SSelector">
+          <service uid="..." type="::sight::module::ui::base::io::SSelector">
               <out key="data" uid="image" />
               <type mode="reader" class="data::Image" />
               <selection mode="include" />
-              <addSelection service="::sight::modules::io::atoms::SReader" />
+              <addSelection service="::sight::module::io::atoms::SReader" />
           </service>
  * @endcode
  *
@@ -180,4 +180,4 @@ private:
 
 } // namespace io
 
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

@@ -31,12 +31,12 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 namespace com
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::com::SStarter )
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::com::SStarter )
 
 //-----------------------------------------------------------------------------
 
@@ -274,4 +274,4 @@ void SStarter::configuring()
 //-----------------------------------------------------------------------------
 
 } // namespace com
-} // namespace sight::modules::ui::base
+} // namespace sight::module::ui::base

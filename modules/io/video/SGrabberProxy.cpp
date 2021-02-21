@@ -31,7 +31,7 @@
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
@@ -39,7 +39,7 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
-namespace sight::modules::io::video
+namespace sight::module::io::video
 {
 
 //-----------------------------------------------------------------------------
@@ -54,7 +54,7 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
-fwServicesRegisterMacro( service::IGrabber, ::sight::modules::io::video::SGrabberProxy, ::sight::data::FrameTL)
+fwServicesRegisterMacro( service::IGrabber, ::sight::module::io::video::SGrabberProxy, ::sight::data::FrameTL)
 
 //-----------------------------------------------------------------------------
 
@@ -166,8 +166,8 @@ void SGrabberProxy::startCamera()
     {
         if(m_grabberImpl.empty())
         {
-            const auto srvFactory       = service::registry::ServiceFactory::getDefault();
-            const auto srvConfigFactory = service::registry::ServiceConfig::getDefault();
+            const auto srvFactory       = service::extension::Factory::getDefault();
+            const auto srvConfigFactory = service::extension::Config::getDefault();
 
             // We select all RGBD grabbers. They should be capable to output a single color frame
             auto grabbersImpl = srvFactory->getImplementationIdFromObjectAndType("::sight::data::FrameTL",
@@ -206,7 +206,7 @@ void SGrabberProxy::startCamera()
 
             for(const auto& srvImpl : grabbersImpl)
             {
-                if(srvImpl != "::sight::modules::io::video::SGrabberProxy")
+                if(srvImpl != "::sight::module::io::video::SGrabberProxy")
                 {
                     SLM_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);
@@ -299,7 +299,7 @@ void SGrabberProxy::startCamera()
                 std::map<std::string, std::pair<std::string, std::string> > descToExtension;
                 std::vector<std::string> descriptions;
 
-                const auto& srvConfigRegistry = service::registry::ServiceConfig::getDefault();
+                const auto& srvConfigRegistry = service::extension::Config::getDefault();
                 for(const auto& extension : availableExtensionsSelector)
                 {
                     // We need to test first if extension have specific configurations to include/exclude.
@@ -439,7 +439,7 @@ void SGrabberProxy::startCamera()
 
                 if(!m_grabberConfig.empty())
                 {
-                    const auto& srvConfigRegistry = service::registry::ServiceConfig::getDefault();
+                    const auto& srvConfigRegistry = service::extension::Config::getDefault();
 
                     core::runtime::ConfigurationElement::csptr srvCfg =
                         srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
@@ -626,4 +626,4 @@ void SGrabberProxy::fwdPresentFrame()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::modules::io::video
+} // namespace sight::module::io::video

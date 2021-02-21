@@ -26,7 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -37,7 +37,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="interactor" type="::sight::modules::viz::scene2d::adaptor::SViewportInteractor">
+   <service uid="interactor" type="::sight::module::viz::scene2d::adaptor::SViewportInteractor">
    </service>
    @endcode
  *
@@ -74,4 +74,4 @@ private:
 };
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

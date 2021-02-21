@@ -116,17 +116,17 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="::ui::base::IToolBar" impl="::sight::modules::ui::base::SToolBar"
+       <service uid="toolbar2" type="::ui::base::IToolBar" impl="::sight::module::ui::base::SToolBar"
      * autoConnect="no"
      *>
            <gui>
                <layout style="ToolButtonIconOnly">
-                   <menuItem name="My item 2" style="check" icon="TutoGui-0.1/icons/system.png"
-     * icon2="TutoGui-0.1/icons/monkey.png" />
-                   <menuItem name="My item 3" style="check" icon="TutoGui-0.1/icons/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="TutoGui-0.1/system.png"
+     * icon2="TutoGui-0.1/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="TutoGui-0.1/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -149,7 +149,7 @@ public:
      *   - \b style : (optional, default=ToolButtonIconOnly) describe the style of the tool button
      * (possible values: ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon
      * /ToolButtonFollowStyle )
-     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/icons/system.png"/\> :
+     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file

@@ -25,7 +25,7 @@
 #include "activity/builder/factory/new.hpp"
 #include "activity/builder/registry/detail.hpp"
 #include "activity/config.hpp"
-#include "activity/registry/Activity.hpp"
+#include "activity/extension/Activity.hpp"
 
 #include <core/base.hpp>
 
@@ -76,7 +76,7 @@ public:
      * @return specific data ActivitySeries for the specified Activity.
      */
     ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
-        const activity::registry::ActivityInfo& activityInfo,
+        const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection ) const = 0;
 
 protected:

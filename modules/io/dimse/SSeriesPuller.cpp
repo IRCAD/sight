@@ -29,7 +29,7 @@
 #include <data/tools/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ServiceConfig.hpp>
+#include <service/extension/Config.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
@@ -39,7 +39,7 @@
 #include <filesystem>
 #include <sstream>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 static const core::com::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
@@ -104,7 +104,7 @@ void SSeriesPuller::starting()
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
-            service::registry::ServiceConfig::getDefault()->getServiceConfig(
+            service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig, "::io::base::service::IReader");
 
         SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
@@ -429,4 +429,4 @@ service::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

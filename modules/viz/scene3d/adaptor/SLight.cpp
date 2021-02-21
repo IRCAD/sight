@@ -39,7 +39,7 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
@@ -54,7 +54,7 @@ static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
 static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
 static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
 
-fwRenderOgreRegisterLightMacro(::sight::modules::viz::scene3d::adaptor::SLight,
+fwRenderOgreRegisterLightMacro(::sight::module::viz::scene3d::adaptor::SLight,
                                ::sight::viz::scene3d::ILight::REGISTRY_KEY)
 
 //------------------------------------------------------------------------------
@@ -131,10 +131,10 @@ void SLight::starting()
         // Creates the material
         m_material = data::Material::New();
 
-        const modules::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
-            this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-                "::sight::modules::viz::scene3d::adaptor::SMaterial");
-        materialAdaptor->registerInOut(m_material, modules::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+        const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
+            this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+                "::sight::module::viz::scene3d::adaptor::SMaterial");
+        materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
         materialAdaptor->setID(this->getID() + materialAdaptor->getID());
         materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
         materialAdaptor->setRenderService( this->getRenderService() );
@@ -360,4 +360,4 @@ void SLight::setType(::Ogre::Light::LightTypes _type)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

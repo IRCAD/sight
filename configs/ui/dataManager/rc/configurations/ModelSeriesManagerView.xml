@@ -8,7 +8,7 @@ Example
     <parameter replace="WID_PARENT" by="modelManagerView" />
 </service>
 -->
-<extension implements="::sight::service::registry::AppConfig">
+<extension implements="::sight::service::extension::AppConfig">
     <id>ModelSeriesManagerView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -19,7 +19,7 @@ Example
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::sight::data::ModelSeries" src="ref" />
         <object uid="reconstruction" type="::sight::data::Reconstruction" src="deferred" />
 
-        <service uid="multiViewOrgans" type="::sight::modules::ui::base::SView" >
+        <service uid="multiViewOrgans" type="::sight::module::ui::base::SView" >
             <gui>
                 <layout type="::sight::ui::base::ToolboxLayoutManager">
                     <view caption="Organs" expanded="true" />
@@ -35,19 +35,19 @@ Example
             </registry>
         </service>
 
-        <service uid="updaterReconst" type="::sight::modules::data::updater::SObjFromSlot">
+        <service uid="updaterReconst" type="::sight::module::data::updater::SObjFromSlot">
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="::sight::modules::ui::qt::reconstruction::OrganMaterialEditor" >
+        <service uid="organMaterialEditor" type="::sight::module::ui::qt::reconstruction::OrganMaterialEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="representationEditor" type="::sight::modules::ui::qt::reconstruction::RepresentationEditor" >
+        <service uid="representationEditor" type="::sight::module::ui::qt::reconstruction::RepresentationEditor" >
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditor" type="::sight::modules::ui::qt::model::SModelSeriesList" autoConnect="yes">
+        <service uid="listOrganEditor" type="::sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes">
             <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
             <columns>
                 <organ_name>@organ_name</organ_name>

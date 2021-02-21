@@ -47,10 +47,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::qt::viz
+namespace sight::module::ui::qt::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::qt::viz::PointEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::qt::viz::PointEditor,
                          ::sight::data::Composite )
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
@@ -151,4 +151,4 @@ void PointEditor::info( std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::viz
+} // namespace sight::module::ui::qt::viz

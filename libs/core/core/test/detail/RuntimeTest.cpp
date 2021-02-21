@@ -114,7 +114,7 @@ void RuntimeTest::testRuntime()
     core::runtime::init();
 
     core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
-    const auto moduleStr                    = "::sight::modules::utest";
+    const auto moduleStr                    = "::sight::module::utest";
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
     auto bundle = std::dynamic_pointer_cast< core::runtime::detail::Module >(runtime.findModule(moduleStr));

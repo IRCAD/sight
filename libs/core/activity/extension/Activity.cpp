@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "activity/registry/Activity.hpp"
+#include "activity/extension/Activity.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/Convert.hpp>
@@ -37,7 +37,7 @@
 
 namespace sight::activity
 {
-namespace registry
+namespace extension
 {
 
 ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType& config) :
@@ -254,7 +254,7 @@ Activity::~Activity()
 void Activity::parseBundleInformation()
 {
     std::vector< SPTR( core::runtime::Extension ) >  extensions
-        = core::runtime::getAllExtensionsForPoint("::sight::activity::registry::Activity");
+        = core::runtime::getAllExtensionsForPoint("::sight::activity::extension::Activity");
 
     for( const SPTR( core::runtime::Extension ) &ext :  extensions )
     {
@@ -371,6 +371,6 @@ const ActivityInfo Activity::getInfo( const std::string& extensionId ) const
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
+} // namespace extension
 
 } // namespace sight::activity

@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::navigation::openvslam
+namespace sight::module::navigation::openvslam
 {
 /**
  * @brief   This class is started when the modules are loaded.

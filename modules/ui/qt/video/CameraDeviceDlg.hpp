@@ -38,7 +38,7 @@ namespace sight::data
 class Camera;
 }
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace video
 {
@@ -71,4 +71,4 @@ private:
 };
 
 } // video
-} // sight::modules::ui::qt
+} // sight::module::ui::qt

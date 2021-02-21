@@ -6,5 +6,4 @@ set( DEPENDENCIES
     viz_scene3d
 )
 set( REQUIREMENTS )
-set( REQUIREMENTS )
 set( WARNINGS_AS_ERRORS ON )

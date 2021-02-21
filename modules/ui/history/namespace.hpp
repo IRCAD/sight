@@ -21,11 +21,11 @@
  ***********************************************************************/
 
 /**
- * @brief The namespace sight::modules::ui::history contains services handling command histories.
+ * @brief The namespace sight::module::ui::history contains services handling command histories.
  */
 #pragma once
 
-namespace sight::modules::ui::history
+namespace sight::module::ui::history
 {
 
-} // namespace sight::modules::ui::history
+} // namespace sight::module::ui::history

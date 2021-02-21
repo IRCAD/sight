@@ -23,12 +23,12 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::filter::mesh contains services for working with Meshes.
+ * @brief The namespace sight::module::filter::mesh contains services for working with Meshes.
  */
-namespace sight::modules::filter::mesh
+namespace sight::module::filter::mesh
 {
 namespace generator
 {
 
 } // namespace generator.
-} // namespace sight::modules::filter::mesh.
+} // namespace sight::module::filter::mesh.

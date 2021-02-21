@@ -27,7 +27,7 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
 namespace helper
@@ -227,4 +227,4 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
 
 } // namespace helper
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

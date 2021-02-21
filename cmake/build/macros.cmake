@@ -32,7 +32,7 @@ if(NOT FW_BUILD_EXTERNAL)
     include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 endif()
 
-file(REMOVE "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake")
+file(REMOVE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -489,12 +489,11 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-
     # Set interface properties
     set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${API_VERSION})
     set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
 
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME sight_${FWPROJECT_NAME})
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
@@ -527,28 +526,28 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${FWPROJECT_NAME_OBJECT_LIB})
         endif()
         install(
-            TARGETS ${TARGETS_TO_EXPORT} EXPORT sight_${FWPROJECT_NAME}_Targets
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}
+            TARGETS ${TARGETS_TO_EXPORT} EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
             INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}
         )
 
         if(WIN32)
             install(
-                FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX} OPTIONAL
+                FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL
             )
         endif()
 
         # Add all targets to the build-tree export set
-        export( EXPORT sight_${FWPROJECT_NAME}_Targets
-                FILE "${CMAKE_BINARY_DIR}/cmake/sight_${FWPROJECT_NAME}_Targets.cmake"
+        export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
                 NAMESPACE sight::)
 
-        # Install the sight_ProjectTargets.cmake
-        install(EXPORT sight_${FWPROJECT_NAME}_Targets
+        # Install sight_Project_Targets.cmake
+        install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
                 FILE
-                  sight_${FWPROJECT_NAME}_Targets.cmake
+                ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
                 NAMESPACE
                   sight::
                 DESTINATION
@@ -572,7 +571,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         install(FILES
                     "${CMAKE_CURRENT_BINARY_DIR}/Dependencies.cmake"
                 RENAME
-                    sight_${FWPROJECT_NAME}_Dependencies.cmake
+                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Dependencies.cmake
                 DESTINATION
                     ${FWCONFIG_PACKAGE_LOCATION}
         )
@@ -580,14 +579,14 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         if(${FWPROJECT_NAME}_INSTALL)
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
-                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FW_INSTALL_PATH_SUFFIX}
+                RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
                 OPTIONAL NAMELINK_SKIP
             )
 
             if(WIN32)
                 install(
-                    FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}/${FW_INSTALL_PATH_SUFFIX}
+                    FILES $<TARGET_PDB_FILE:${FWPROJECT_NAME}> DESTINATION ${CMAKE_INSTALL_BINDIR}
                     OPTIONAL
                 )
             endif()
@@ -657,13 +656,13 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME sight_${FWPROJECT_NAME})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
         
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
-                LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}
+                RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
+                LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
                 OPTIONAL NAMELINK_SKIP
                 )
         endif()
@@ -1098,18 +1097,18 @@ macro(addProject PROJECT)
 
         if(BUILD_SDK)
             # Store requirements for the SDK
-            file(APPEND "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
+            file(APPEND "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake"
                 "set(${PROJECT}_EXTERNAL 1)\n"
                 "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
                 "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
                 "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
                 "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
             if(${PROJECT}_START)
-                file(APPEND "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake"
                     "set(${PROJECT}_START ${${PROJECT}_START})\n")
             endif()
             if(${PROJECT}_PLUGINS)
-                file(APPEND "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
+                file(APPEND "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake"
                     "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
             endif()
         endif()

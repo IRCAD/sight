@@ -35,9 +35,9 @@ namespace sight::service
 /**
  * @brief   This interface defines a basic slots to receive parameter values from signals.
  *
- * It is designed to be used in conjunction with modules::ui::base::editor::SParameters, to help the user to receive
+ * It is designed to be used in conjunction with module::ui::base::editor::SParameters, to help the user to receive
  * parameters. Instead of redefining all slots, thus you can simply inherit from this interface and override the virtual
- * function you need. Then connect the modules::ui::base::editor::SParameters signal(s) with the slot(s) of this
+ * function you need. Then connect the module::ui::base::editor::SParameters signal(s) with the slot(s) of this
  * interface in
  * the
  * configuration.

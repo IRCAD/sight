@@ -21,12 +21,12 @@
  ***********************************************************************/
 
 /**
- * @brief       The namespace sight::modules::geometry::base contains services to compute common mathematical operations
+ * @brief       The namespace sight::module::geometry::base contains services to compute common mathematical operations
  * and transformations
  */
 #pragma once
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

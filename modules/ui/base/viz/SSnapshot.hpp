@@ -33,7 +33,7 @@
 #include <map>
 #include <string>
 
-namespace sight::modules::ui::base::viz
+namespace sight::module::ui::base::viz
 {
 
 /**

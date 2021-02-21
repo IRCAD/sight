@@ -26,7 +26,7 @@
 
 #include <service/IRegisterer.hpp>
 
-namespace sight::modules::navigation::calibration
+namespace sight::module::navigation::calibration
 {
 /**
  * @brief Service that computes a pivot calibration
@@ -34,7 +34,7 @@ namespace sight::modules::navigation::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::modules::navigation::calibration::SToolCalibration" >
+    <service uid="..." type="::sight::module::navigation::calibration::SToolCalibration" >
         <in key="matricesVector" uid="..." />
         <out key="matrixCalibration" uid="..." />
         <out key="matrixCenter" uid="..." />

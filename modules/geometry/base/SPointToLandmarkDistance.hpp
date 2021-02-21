@@ -33,7 +33,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -52,7 +52,7 @@ namespace sight::modules::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::modules::geometry::base::SPointToLandmarkDistance">
+   <service type="::sight::module::geometry::base::SPointToLandmarkDistance">
        <in key="pointMatrix" uid="..." />
        <in key="landmark" uid="..." />
        <inout key="pointToLandmarkMatrix" uid="..." />
@@ -128,4 +128,4 @@ private:
     int m_precision{6};
 };
 
-} // namespace sight::modules::geometry::base
+} // namespace sight::module::geometry::base

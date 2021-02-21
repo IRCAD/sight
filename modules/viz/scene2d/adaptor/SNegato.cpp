@@ -46,9 +46,9 @@
 #include <QPixmap>
 #include <QPoint>
 
-fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::modules::viz::scene2d::adaptor::SNegato )
+fwServicesRegisterMacro( ::sight::viz::scene2d::IAdaptor, ::sight::module::viz::scene2d::adaptor::SNegato )
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -588,4 +588,4 @@ service::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 //-----------------------------------------------------------------------------
 
 } // namespace adaptor
-} // namespace sight::modules::viz::scene2d
+} // namespace sight::module::viz::scene2d

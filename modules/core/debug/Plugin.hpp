@@ -24,7 +24,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::debug
+namespace sight::module::debug
 {
 
 /// Class called when the module is loaded and stopped.
@@ -42,4 +42,4 @@ struct Plugin : public core::runtime::Plugin
 
 };
 
-} // namespace sight::modules::debug
+} // namespace sight::module::debug

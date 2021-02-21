@@ -39,7 +39,7 @@ namespace sight::data
 class DicomSeries;
 }
 
-namespace sight::modules::io::dicom
+namespace sight::module::io::dicom
 {
 
 /**
@@ -51,7 +51,7 @@ namespace sight::modules::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::modules::io::dicom::SDicomSeriesWriter" >
+       <service uid="..." type="::sight::module::io::dicom::SDicomSeriesWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode
@@ -116,4 +116,4 @@ private:
     bool m_cancelled;
 };
 
-} // namespace sight::modules::io::dicom
+} // namespace sight::module::io::dicom

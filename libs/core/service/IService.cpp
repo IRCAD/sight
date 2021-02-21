@@ -22,7 +22,7 @@
 
 #include "service/IService.hpp"
 
-#include "service/registry/ActiveWorkers.hpp"
+#include "core/thread/ActiveWorkers.hpp"
 #include "service/registry/ObjectService.hpp"
 #include "service/registry/Proxy.hpp"
 
@@ -357,7 +357,7 @@ IService::ConfigType IService::getConfigTree() const
 {
     const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
 
-    // This is in case we get the configuration from a service::registry::ServiceConfig
+    // This is in case we get the configuration from a service::extension::Config
     auto srvConfig = configTree.get_child_optional("config");
 
     if(srvConfig.is_initialized())

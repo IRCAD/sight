@@ -38,7 +38,7 @@
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreVector2.h>
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 

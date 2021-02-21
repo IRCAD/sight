@@ -30,7 +30,7 @@
 
 #include <tuple>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_REVERT_SLOT = "revert";
@@ -149,4 +149,4 @@ void SResizeViewport::revert()
     this->resizeViewport(false);
 }
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

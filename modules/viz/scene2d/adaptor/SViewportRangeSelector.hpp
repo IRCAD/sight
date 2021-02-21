@@ -26,7 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::modules::viz::scene2d
+namespace sight::module::viz::scene2d
 {
 namespace adaptor
 {
@@ -49,7 +49,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="viewportRange" type="::sight::modules::viz::scene2d::adaptor::SViewportRangeSelector"
+   <service uid="viewportRange" type="::sight::module::viz::scene2d::adaptor::SViewportRangeSelector"
  * autoConnect="yes">
        <inout key="viewport"  uid="..." />
        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1000" initialPos="-100" />
@@ -69,7 +69,7 @@ namespace adaptor
  *    - \b color (optional, default="#FFFFFF"): inner color.
  *    - \b opacity (optional, default="1.0"): opacity of the gradient.
  *
- * @pre This adaptor is intended to be used with a modules::viz::scene2d::adaptor::ViewportUpdater adaptor.
+ * @pre This adaptor is intended to be used with a module::viz::scene2d::adaptor::ViewportUpdater adaptor.
  */
 class MODULE_VIZ_SCENE2D_CLASS_API SViewportRangeSelector : public sight::viz::scene2d::IAdaptor
 {
@@ -97,7 +97,7 @@ private:
      * @return A map of each proposed connection.
      *
      * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * modules::viz::scene2d::adaptor::SViewportRangeSelector::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::SViewportRangeSelector::s_UPDATE_SLOT.
      */
     KeyConnectionsMap getAutoConnections() const override;
 
@@ -166,4 +166,4 @@ private:
 };
 
 }   // namespace adaptor
-}   // namespace sight::modules::viz::scene2d
+}   // namespace sight::module::viz::scene2d

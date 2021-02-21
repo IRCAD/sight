@@ -13,7 +13,7 @@ set( REQUIREMENTS
     module_service
     module_viz_scene3dQt
     module_viz_scene3d
-    module_ui_media
+    module_ui_icons
     config_ui_datamanager
     2DVisualizationActivity
 )

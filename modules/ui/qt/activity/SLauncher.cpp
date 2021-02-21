@@ -44,8 +44,8 @@
 
 #include <service/IAppConfigManager.hpp>
 #include <service/macros.hpp>
-#include <service/registry/ActiveWorkers.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <core/thread/ActiveWorkers.hpp>
+#include <service/extension/AppConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -60,9 +60,9 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
-Q_DECLARE_METATYPE(sight::activity::registry::ActivityInfo)
+Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
-namespace sight::modules::ui::qt
+namespace sight::module::ui::qt
 {
 namespace activity
 {
@@ -76,9 +76,9 @@ const core::com::Signals::SignalKeyType SLauncher::s_ACTIVITY_LAUNCHED_SIG   = "
 
 static const service::IService::KeyType s_SERIES_INPUT = "series";
 
-using sight::activity::registry::Activity;
-using sight::activity::registry::ActivityInfo;
-using sight::activity::registry::ActivityMsg;
+using sight::activity::extension::Activity;
+using sight::activity::extension::ActivityInfo;
+using sight::activity::ActivityMsg;
 using sight::activity::IValidator;
 using sight::activity::IValidator;
 
@@ -442,7 +442,7 @@ void SLauncher::buildActivity(const ActivityInfo& info,
 
         const std::string viewConfigID         = msg.getAppConfigID();
         ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
-        replaceMap["GENERIC_UID"] = service::registry::AppConfig::getUniqueIdentifier();
+        replaceMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
         service::IAppConfigManager::sptr helper = service::IAppConfigManager::New();
         helper->setConfig( viewConfigID, replaceMap );

@@ -30,7 +30,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::modules::ui::debug
+namespace sight::module::ui::debug
 {
 namespace action
 {
@@ -75,4 +75,4 @@ private:
 };
 
 } // namespace action
-} // namespace sight::modules::ui::debug
+} // namespace sight::module::ui::debug

@@ -31,7 +31,7 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 
-namespace sight::modules::viz::scene3dQt
+namespace sight::module::viz::scene3dQt
 {
 
 // ----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ void Window::initialize()
     }
 #endif
 
-    m_glContext = modules::viz::scene3dQt::OpenGLContext::getGlobalOgreOpenGLContext();
+    m_glContext = module::viz::scene3dQt::OpenGLContext::getGlobalOgreOpenGLContext();
     this->makeCurrent();
 
     m_ogreRenderWindow = m_ogreRoot->createRenderWindow("Widget-RenderWindow_" + std::to_string(m_id),
@@ -591,4 +591,4 @@ void Window::onScreenChanged(QScreen*)
 
 // ----------------------------------------------------------------------------
 
-} // namespace sight::modules::viz::scene3dQt
+} // namespace sight::module::viz::scene3dQt

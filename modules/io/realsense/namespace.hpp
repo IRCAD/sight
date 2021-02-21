@@ -23,10 +23,10 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::io::realsense contains services related to video grabbing with Intel RealSense
+ * @brief The namespace sight::module::io::realsense contains services related to video grabbing with Intel RealSense
  *cameras
  */
-namespace sight::modules::io::realsense
+namespace sight::module::io::realsense
 {
 
 }

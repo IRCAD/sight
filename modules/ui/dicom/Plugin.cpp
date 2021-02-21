@@ -28,10 +28,10 @@
 
 #include <ui/dicom/sorter/TagValueConfigurableSorter.hpp>
 
-namespace sight::modules::ui::dicom
+namespace sight::module::ui::dicom
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::modules::ui::dicom::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::ui::dicom::Plugin");
 
 Plugin::Plugin()
 {
@@ -51,4 +51,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace sight::modules::ui::dicom
+} // namespace sight::module::ui::dicom

@@ -22,13 +22,18 @@ endif()
 
 setExternalLibrariesDir()
 
-set(SIGHT_MODULE_LIB_PREFIX @SIGHT_MODULE_LIB_PREFIX@)
-set(SIGHT_MODULE_RC_PREFIX @SIGHT_MODULE_RC_PREFIX@)
+set(FW_INSTALL_PATH_SUFFIX "${SIGHT_REPOSITORY}")
+set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
+if(WIN32)
+    set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
+else()
+    set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_LIBDIR}")
+endif()
 
-file(TO_CMAKE_PATH "${sight_DIR}/../../../bin" sight_BINARY_DIR)
-file(TO_CMAKE_PATH "${sight_DIR}/../../../${SIGHT_MODULE_LIB_PREFIX}" sight_LIBRARY_DIR)
-file(TO_CMAKE_PATH "${sight_DIR}/../../../${SIGHT_MODULE_RC_PREFIX}" sight_MODULES_DIR)
-file(TO_CMAKE_PATH "${sight_DIR}/../../../" sight_DEFINE_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../bin" Sight_BINARY_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_LIB_PREFIX@" Sight_LIBRARY_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_RC_PREFIX@" Sight_MODULES_DIR)
+file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
 
 foreach(sight_comp ${_SUPPORTED_COMPONENTS})
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
@@ -46,7 +51,7 @@ foreach(sight_comp ${sight_FIND_COMPONENTS})
         endif()
 
         # For now I do not know how to unroll this loop when configuring the file... so for now just use the default log level
-        set_property( TARGET sight::${sight_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SIGHT_DIR="${sight_DEFINE_DIR}")
+        set_property( TARGET sight::${sight_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SIGHT_DIR="${Sight_DEFINE_DIR}")
         set(${sight_comp}_FOUND 1)
     endif()
 endforeach()

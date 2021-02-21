@@ -30,14 +30,14 @@
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 
-namespace sight::modules::ui::qt::series
+namespace sight::module::ui::qt::series
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::series::SViewer,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::series::SViewer,
                          ::sight::data::Vector)
 
 static const service::IService::KeyType s_SERIES_INPUT = "series";
@@ -106,7 +106,7 @@ void SViewer::updating()
 
             std::map< std::string, std::string > replaceMap;
             // Generate generic UID
-            std::string genericUidAdaptor = service::registry::AppConfig::getUniqueIdentifier( this->getID() );
+            std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier( this->getID() );
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
@@ -202,4 +202,4 @@ service::IService::KeyConnectionsMap SViewer::getAutoConnections() const
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::qt::series
+} // namespace sight::module::ui::qt::series

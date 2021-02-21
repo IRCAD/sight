@@ -40,13 +40,13 @@
 #include <fstream>
 #include <iostream>
 
-namespace sight::modules::io::matrix
+namespace sight::module::io::matrix
 {
 
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::sight::io::base::service::IWriter,
-                         ::sight::modules::io::matrix::Matrix4WriterService,
+                         ::sight::module::io::matrix::Matrix4WriterService,
                          data::Matrix4 )
 
 //-----------------------------------------------------------------------------

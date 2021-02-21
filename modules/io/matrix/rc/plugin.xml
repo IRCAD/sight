@@ -1,16 +1,15 @@
-<plugin id="::sight::modules::io::matrix" class="::sight::modules::io::matrix::Plugin"  version="@PROJECT_VERSION@" >
-    <library name="module_io_matrix" />
+<plugin id="::sight::module::io::matrix" library="true" version="@PROJECT_VERSION@" >
 
-    <extension implements="::sight::service::registry::ServiceFactory">
+    <extension implements="::sight::service::extension::Factory">
         <type>::sight::io::base::service::IReader</type>
-        <service>::sight::modules::io::matrix::Matrix4ReaderService</service>
+        <service>::sight::module::io::matrix::Matrix4ReaderService</service>
         <object>::sight::data::Matrix4</object>
         <desc>Matrix4 Reader</desc>
     </extension>
 
-    <extension implements="::sight::service::registry::ServiceFactory">
+    <extension implements="::sight::service::extension::Factory">
         <type>::sight::io::base::service::IWriter</type>
-        <service>::sight::modules::io::matrix::Matrix4WriterService</service>
+        <service>::sight::module::io::matrix::Matrix4WriterService</service>
         <object>::sight::data::Matrix4</object>
         <desc>Matrix4 Writer</desc>
     </extension>

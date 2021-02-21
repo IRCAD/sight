@@ -32,7 +32,7 @@
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const std::string s_LANDMARKS_INPUT = "landmarks";
@@ -165,9 +165,9 @@ void SLandmarks::starting()
     m_material = data::Material::New();
 
     // Register the material adaptor.
-    m_materialAdaptor = this->registerService< modules::viz::scene3d::adaptor::SMaterial >(
-        "::sight::modules::viz::scene3d::adaptor::SMaterial");
-    m_materialAdaptor->registerInOut(m_material, modules::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor = this->registerService< module::viz::scene3d::adaptor::SMaterial >(
+        "::sight::module::viz::scene3d::adaptor::SMaterial");
+    m_materialAdaptor->registerInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
     m_materialAdaptor->setRenderService( this->getRenderService() );
@@ -945,4 +945,4 @@ void SLandmarks::buttonReleaseEvent(MouseButton, Modifier, int, int)
 }
 
 //------------------------------------------------------------------------------
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

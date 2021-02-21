@@ -30,7 +30,7 @@
 
 #include <OGRE/OgreSceneNode.h>
 
-namespace sight::modules::viz::scene3d::adaptor
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -38,7 +38,7 @@ namespace sight::modules::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::viz::scene3d::adaptor::STransform">
+    <service type="::sight::module::viz::scene3d::adaptor::STransform">
         <inout key="transform" uid="..." />
         <config layer="default" transform="meshTFAdaptor" />
    </service>
@@ -106,4 +106,4 @@ private:
 
 };
 
-} // namespace sight::modules::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3d::adaptor.

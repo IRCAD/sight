@@ -31,17 +31,17 @@
 #include <data/String.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/AppConfig.hpp>
+#include <service/extension/AppConfig.hpp>
 #include <service/registry/Proxy.hpp>
 
 #include <sstream>
 
-namespace sight::modules::ui::qt::calibration
+namespace sight::module::ui::qt::calibration
 {
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::modules::ui::qt::calibration::SDisplayCalibrationInfo,
+fwServicesRegisterMacro( ::sight::service::IController, ::sight::module::ui::qt::calibration::SDisplayCalibrationInfo,
                          data::Object)
 
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
@@ -123,7 +123,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         std::string strConfig = "displayImageConfig";
 
         // Prepare configuration
-        service::registry::FieldAdaptorType replaceMap;
+        service::FieldAdaptorType replaceMap;
 
         data::Image::sptr img1 = calInfo1->getImage(idx);
         replaceMap["imageId1"] = img1->getID();
@@ -144,7 +144,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
         config =
-            service::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
+            service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
         m_configMgr = service::IAppConfigManager::New();

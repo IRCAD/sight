@@ -35,7 +35,7 @@
 
 #include <vector>
 
-namespace sight::modules::io::dimse
+namespace sight::module::io::dimse
 {
 
 /**
@@ -48,11 +48,11 @@ namespace sight::modules::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::modules::io::dimse::SSeriesPuller">
+    <service type="::sight::module::io::dimse::SSeriesPuller">
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
         <inout key="seriesDB" uid="..." />
-        <config dicomReader="::sight::modules::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
+        <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />
     </service>
    @endcode
  *
@@ -174,4 +174,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::dimse.
+} // namespace sight::module::io::dimse.

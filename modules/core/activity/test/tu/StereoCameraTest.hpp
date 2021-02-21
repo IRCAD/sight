@@ -24,7 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::modules::activity::validator
+namespace sight::module::activity::validator
 {
 namespace ut
 {
@@ -46,4 +46,4 @@ public:
 };
 
 } //namespace ut
-} //namespace sight::modules::activity::validator
+} //namespace sight::module::activity::validator

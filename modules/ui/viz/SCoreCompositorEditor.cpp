@@ -47,10 +47,10 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
-namespace sight::modules::ui::viz
+namespace sight::module::ui::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::modules::ui::viz::SCoreCompositorEditor,
+fwServicesRegisterMacro( ::sight::ui::base::IEditor, ::sight::module::ui::viz::SCoreCompositorEditor,
                          ::sight::data::Composite)
 
 //------------------------------------------------------------------------------
@@ -332,4 +332,4 @@ void SCoreCompositorEditor::onEditTransparency(int index)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::modules::ui::viz
+} // namespace sight::module::ui::viz

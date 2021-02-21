@@ -29,7 +29,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::modules::geometry::base
+namespace sight::module::geometry::base
 {
 
 /**
@@ -42,7 +42,7 @@ namespace sight::modules::geometry::base
 
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="..." type="::sight::modules::geometry::base::SManagePointList">
+        <service uid="..." type="::sight::module::geometry::base::SManagePointList">
             <inout key="pointList" uid="..." />
             <in key="matrix" uid="..." />
             <config max="0" removable="true" label="false" tolerance="10.0" />

@@ -23,9 +23,9 @@
 #pragma once
 
 /**
- * @brief The namespace sight::modules::ui::qml::model contains several editors on medical data written with Qml.
+ * @brief The namespace sight::module::ui::qml::model contains several editors on medical data written with Qml.
  */
-namespace sight::modules::ui::qml::model
+namespace sight::module::ui::qml::model
 {
 
 }

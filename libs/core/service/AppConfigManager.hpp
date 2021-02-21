@@ -28,7 +28,7 @@
 #include "service/IAppConfigManager.hpp"
 #include "service/IService.hpp"
 #include "service/IXMLParser.hpp"
-#include "service/registry/AppConfig.hpp"
+#include "service/extension/AppConfig.hpp"
 
 #include <core/com/HasSlots.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
@@ -135,7 +135,7 @@ private:
 
     typedef ::std::pair< std::string, bool > ConfigAttribute;
     typedef service::helper::ProxyConnections ProxyConnections;
-    typedef service::IService::Config ServiceConfig;
+    typedef service::IService::Config Config;
 
     /**
      * @brief Starts the module associated to the config
@@ -172,7 +172,7 @@ private:
     void createServices(core::runtime::ConfigurationElement::csptr cfgElem);
 
     /// Creates a single service from its configuration.
-    service::IService::sptr createService(const ServiceConfig& srvConfig);
+    service::IService::sptr createService(const Config& srvConfig);
 
     /// Parses connection sections and creates them.
     void createConnections();
@@ -211,7 +211,7 @@ private:
 
     struct DeferredObjectType
     {
-        std::vector< ServiceConfig > m_servicesCfg;
+        std::vector< Config > m_servicesCfg;
         std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
         /// Copy of the object pointer necessary to access signals/slots when destroying proxy.
         data::Object::sptr m_object;

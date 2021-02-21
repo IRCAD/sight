@@ -43,7 +43,7 @@ namespace sight::core::jobs
 class IJob;
 }
 
-namespace sight::modules::io::vtk
+namespace sight::module::io::vtk
 {
 
 /**
@@ -58,7 +58,7 @@ namespace sight::modules::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::modules::io::vtk::SModelSeriesWriter">
+   <service type="::sight::module::io::vtk::SModelSeriesWriter">
        <in key="data" uid="..." />
        <folder>...</folder>
        <extension>vtk</extension>
@@ -163,4 +163,4 @@ private:
 
 };
 
-} // namespace sight::modules::io::vtk
+} // namespace sight::module::io::vtk

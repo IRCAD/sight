@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-namespace sight::modules::navigation::optics
+namespace sight::module::navigation::optics
 {
 
 struct Plugin : public core::runtime::Plugin
@@ -52,4 +52,4 @@ struct Plugin : public core::runtime::Plugin
     void stop() noexcept;
 };
 
-} // namespace sight::modules::navigation::optics
+} // namespace sight::module::navigation::optics

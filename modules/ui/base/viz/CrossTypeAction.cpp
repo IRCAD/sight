@@ -39,10 +39,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-namespace sight::modules::ui::base::viz
+namespace sight::module::ui::base::viz
 {
 
-fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::modules::ui::base::viz::CrossTypeAction,
+fwServicesRegisterMacro( ::sight::ui::base::IAction, ::sight::module::ui::base::viz::CrossTypeAction,
                          ::sight::data::Image )
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";

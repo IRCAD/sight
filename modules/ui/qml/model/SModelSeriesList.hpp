@@ -29,7 +29,7 @@
 
 #include <ui/qml/IQmlEditor.hpp>
 
-namespace sight::modules::ui::qml::model
+namespace sight::module::ui::qml::model
 {
 
 /**

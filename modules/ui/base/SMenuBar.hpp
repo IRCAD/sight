@@ -26,7 +26,7 @@
 
 #include <ui/base/IMenuBar.hpp>
 
-namespace sight::modules::ui::base
+namespace sight::module::ui::base
 {
 
 /**
@@ -55,7 +55,7 @@ protected:
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="::ui::base::IMenuBar" impl="::sight::modules::ui::base::SMenuBar"
+       <service uid="menuBar" type="::ui::base::IMenuBar" impl="::sight::module::ui::base::SMenuBar"
      * autoConnect="no"
      *>
           <gui>
