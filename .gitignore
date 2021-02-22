@@ -24,6 +24,7 @@ CMakeSettings\.json
 # VSCode
 *.code-workspace
 .vscode/
+build/
 
 # JetBrains IDEs
 .idea/
