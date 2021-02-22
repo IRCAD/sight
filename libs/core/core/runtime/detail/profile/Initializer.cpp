@@ -40,9 +40,8 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Initializer::Initializer( const std::string& identifier, const Version& version) :
-    m_identifier( identifier ),
-    m_version( version )
+Initializer::Initializer( const std::string& identifier) :
+    m_identifier( identifier )
 {
 }
 
@@ -50,20 +49,20 @@ Initializer::Initializer( const std::string& identifier, const Version& version)
 
 void Initializer::apply()
 {
-    auto module = detail::Runtime::get().findEnabledModule(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to initialize module " + Module::getModuleStr(m_identifier, m_version) + ". Not found.",
+    auto module = detail::Runtime::get().findEnabledModule(m_identifier);
+    SLM_FATAL_IF("Unable to initialize module " + m_identifier + ". Not found.",
                  module == nullptr);
     try
     {
         if (!module->isInitialized())
         {
             module->initialize();
-            getCurrentProfile()->add( SPTR(Uninitializer) (new Uninitializer(m_identifier, m_version)));
+            getCurrentProfile()->add( SPTR(Uninitializer) (new Uninitializer(m_identifier)));
         }
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to initialize module " + Module::getModuleStr(m_identifier, m_version) + ". " + e.what());
+        SLM_FATAL("Unable to initialize module " + m_identifier + ". " + e.what());
     }
 }
 

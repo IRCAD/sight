@@ -77,7 +77,7 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        core::runtime::getLibraryResourceFilePath("fwGuiQml-" UI_QML_VER "/dialog/MultiSelectorDialog.qml");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/MultiSelectorDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("multiSelectorModel", &model);
     // set the context for the new component

@@ -69,14 +69,6 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
-    [[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
-    void addBundles( const std::filesystem::path& repository ) override;
-
-    /**
-     * @brief       Adds all module found in the given path.
-     *
-     * @param[in]   repository  a path that may containing modules
-     */
     void addModules( const std::filesystem::path& repository ) override;
 
     /**
@@ -86,22 +78,8 @@ public:
      * @param[in]   version     the version of the module (undefined by default)
      *
      * @return      a shared pointer to the found module or null if none
-     * @deprecated  Module has been renamed to Module, please use findModule() instead
      */
-    [[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
-    SPTR( core::runtime::Module ) findBundle( const std::string& identifier,
-                                              const Version& version = Version() ) const final;
-
-    /**
-     * @brief       Retrieves the module for the specified idenfier.
-     *
-     * @param[in]   identifier  a string containing a module identifier
-     * @param[in]   version     the version of the module (undefined by default)
-     *
-     * @return      a shared pointer to the found module or null if none
-     */
-    SPTR( core::runtime::Module ) findModule( const std::string& identifier,
-                                              const Version& version = Version() ) const final;
+    SPTR( core::runtime::Module ) findModule( const std::string& identifier ) const final;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -191,8 +169,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    std::shared_ptr< Module > findEnabledModule( const std::string& identifier,
-                                                 const Version& version = Version() ) const;
+    std::shared_ptr< Module > findEnabledModule( const std::string& identifier ) const;
 
     //@}
 

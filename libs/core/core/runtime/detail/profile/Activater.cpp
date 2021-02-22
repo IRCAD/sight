@@ -41,8 +41,7 @@ namespace profile
 //------------------------------------------------------------------------------
 
 Activater::Activater( const std::string& identifier, const std::string& version ) :
-    m_identifier( identifier ),
-    m_version( version )
+    m_identifier( identifier )
 {
 }
 
@@ -71,16 +70,16 @@ void Activater::addDisableExtension( const std::string& identifier )
 
 void Activater::apply()
 {
-    auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(m_identifier, m_version));
+    auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(m_identifier));
 
     // TEMP_FB: until I refactor the profile.xml
     if(module == nullptr)
     {
         const auto identifier = boost::algorithm::replace_first_copy(m_identifier, "sight_", "");
-        module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier, m_version));
-    SLM_FATAL_IF("Unable to activate Module " + identifier + "-" + m_version.string() + ". Not found.", module == 0);
+        module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier));
+        SLM_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == 0);
     }
-    SLM_FATAL_IF("Unable to activate Module " + m_identifier + "-" + m_version.string() + ". Not found.", module == 0);
+    SLM_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == 0);
     module->setEnable( true );
 
     // Managment of parameter configuration

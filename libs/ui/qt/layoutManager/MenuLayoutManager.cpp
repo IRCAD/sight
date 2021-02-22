@@ -76,6 +76,7 @@ void MenuLayoutManager::createLayout( ui::base::container::fwMenu::sptr parent )
 
         if (!actionInfo.m_icon.empty())
         {
+            SLM_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + actionInfo.m_icon.string());
             QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
             action->setIcon(icon);
         }

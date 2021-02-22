@@ -1,4 +1,4 @@
-<plugin id="config_ui_datamanager" version="@PROJECT_VERSION@" >
+<plugin id="sight::config::ui::datamanager" >
 
     <requirement id="sight::module::service" />
 

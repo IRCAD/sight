@@ -83,11 +83,11 @@ public:
      * autoConnect="no" >
                <gui>
                    <layout>
-                       <menuItem name="My item 2" style="radio" icon="TutoGui-0.1/system.png"/>
-                       <menuItem name="My item 3" style="radio" icon="TutoGui-0.1/system.png"/>
+                       <menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/>
+                       <menuItem name="My item 3" style="radio" icon="TutoGui/system.png"/>
                        <separator />
-                       <menuItem name="My item A" style="radio" icon="TutoGui-0.1/monkey.png"/>
-                       <menuItem name="My item B" style="radio" icon="TutoGui-0.1/monkey.png"/>
+                       <menuItem name="My item A" style="radio" icon="TutoGui/monkey.png"/>
+                       <menuItem name="My item B" style="radio" icon="TutoGui/monkey.png"/>
                        <separator />
                        <menu name="My menu" />
                        <separator />

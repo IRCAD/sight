@@ -41,22 +41,22 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="sight_module_ui_icons-0.1/Back.svg" />
-                    <menuItem name="Next" icon="sight_module_ui_icons-0.1/Next.svg" />
-                    <menuItem name="Load landmark" icon="sight_module_ui_icons-0.1/Load-landmark.png" />
-                    <menuItem name="Save landmark" icon="sight_module_ui_icons-0.1/Save-landmark.png" />
-                    <menuItem name="Focus landmark" icon="sight_module_ui_icons-0.1/Find-landmark.png" />
-                    <menuItem name="Display Landmarks editor" icon="sight_module_ui_icons-0.1/View-landmark.png" style="check" />
+                    <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
+                    <menuItem name="Load landmark" icon="sight::module::ui::icons/Load-landmark.png" />
+                    <menuItem name="Save landmark" icon="sight::module::ui::icons/Save-landmark.png" />
+                    <menuItem name="Focus landmark" icon="sight::module::ui::icons/Find-landmark.png" />
+                    <menuItem name="Display Landmarks editor" icon="sight::module::ui::icons/View-landmark.png" style="check" />
                     <separator />
-                    <menuItem name="Add distance" icon="sight_module_ui_icons-0.1/distance.png" />
-                    <menuItem name="Remove distance" icon="sight_module_ui_icons-0.1/RemoveDistance.png" />
-                    <menuItem name="Hide distance" icon="sight_module_ui_icons-0.1/HideDistance.png" style="check" />
+                    <menuItem name="Add distance" icon="sight::module::ui::icons/distance.png" />
+                    <menuItem name="Remove distance" icon="sight::module::ui::icons/RemoveDistance.png" />
+                    <menuItem name="Hide distance" icon="sight::module::ui::icons/HideDistance.png" style="check" />
                     <separator />
-                    <menuItem name="Hide cross" icon="sight_module_ui_icons-0.1/HideCross.png" style="radio" />
-                    <menuItem name="Show normal cross" icon="sight_module_ui_icons-0.1/NormalCross.png" style="radio" />
-                    <menuItem name="Show full cross" icon="sight_module_ui_icons-0.1/FullCross.png" style="radio" />
+                    <menuItem name="Hide cross" icon="sight::module::ui::icons/HideCross.png" style="radio" />
+                    <menuItem name="Show normal cross" icon="sight::module::ui::icons/NormalCross.png" style="radio" />
+                    <menuItem name="Show full cross" icon="sight::module::ui::icons/FullCross.png" style="radio" />
                     <separator />
-                    <menuItem name="Export Activity" icon="sight_module_ui_icons-0.1/Export.svg" />
+                    <menuItem name="Export Activity" icon="sight::module::ui::icons/Export.svg" />
                 </layout>
             </gui>
             <registry>

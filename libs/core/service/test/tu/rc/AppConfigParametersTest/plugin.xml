@@ -1,4 +1,4 @@
-<plugin id="AppConfigParametersTest" version="@PROJECT_VERSION@" >
+<plugin id="AppConfigParametersTest" >
 
     <requirement id="sight::module::service" />
 

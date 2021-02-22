@@ -4,7 +4,7 @@ This example shows the possibilities of SParameters:
 - The two lower SParameters allow to set the minimum/maximum values of the upper SParameters (with the same name).
    - The minimum of a parameter is connected to the minimum of the maximum parameter (and vice versa)
 -->
-<plugin id="ExSParameters" version="@PROJECT_VERSION@" >
+<plugin id="ExSParameters" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::base" />
@@ -20,7 +20,7 @@ This example shows the possibilities of SParameters:
                 <gui>
                     <frame>
                         <name>ExSParameters</name>
-                        <icon>ExSParameters-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExSParameters/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>

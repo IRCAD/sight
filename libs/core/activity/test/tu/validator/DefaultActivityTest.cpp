@@ -22,9 +22,9 @@
 
 #include "DefaultActivityTest.hpp"
 
+#include <activity/extension/Activity.hpp>
 #include <activity/IActivityValidator.hpp>
 #include <activity/IValidator.hpp>
-#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
@@ -59,7 +59,7 @@ namespace ut
 void DefaultActivityTest::setUp()
 {
     // Set up context before running a test.
-    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity-0.0"));
+    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity"));
     core::runtime::loadModule("tu_validator");
 
     activity::extension::Activity::getDefault()->parseBundleInformation();

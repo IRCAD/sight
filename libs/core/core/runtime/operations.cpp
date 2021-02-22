@@ -156,11 +156,10 @@ std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentif
 
 std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& path) noexcept
 {
+    SLM_ASSERT("Path should not be empty", !path.empty());
     SLM_ASSERT("Path should be relative", path.is_relative());
-    const std::string moduleIdentifierAndVersion = path.begin()->string();
 
-    auto itVersionDelimiter = moduleIdentifierAndVersion.find(detail::Module::s_VERSION_DELIMITER);
-    auto moduleFolder       = moduleIdentifierAndVersion.substr(0, itVersionDelimiter);
+    const std::string moduleFolder = path.begin()->string();
 
     // Strip the module name
     std::filesystem::path pathWithoutModule;
@@ -176,14 +175,14 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
         if(module == nullptr)
         {
-            SLM_ERROR("Could not find module '" + moduleFolder);
+            SLM_ERROR("Could not find module '" + moduleFolder + "'");
             return std::filesystem::path();
         }
         return getModuleResourcePath(module, pathWithoutModule );
     }
     catch(...)
     {
-        SLM_ERROR("Error looking for module '" + moduleFolder);
+        SLM_ERROR("Error looking for module '" + moduleFolder + "'");
         return std::filesystem::path();
     }
 }
@@ -248,9 +247,9 @@ void addModules( const std::filesystem::path& directory)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> loadModule(const std::string& identifier, const Version& version)
+std::shared_ptr<Module> loadModule(const std::string& identifier)
 {
-    auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier, version));
+    auto module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier));
 
     if(module)
     {
@@ -315,9 +314,9 @@ core::runtime::Profile::sptr startProfile( const std::filesystem::path& path )
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Module > findModule( const std::string& identifier, const Version& version )
+std::shared_ptr< Module > findModule( const std::string& identifier )
 {
-    return Runtime::getDefault()->findModule( identifier, version );
+    return Runtime::getDefault()->findModule( identifier );
 }
 
 //------------------------------------------------------------------------------

@@ -28,8 +28,6 @@
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::List, ::sight::data::List )
-
 namespace sight::service
 {
 namespace parser

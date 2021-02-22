@@ -119,7 +119,6 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     icon(core::runtime::getModuleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
     tabInfo(title),
     bundleId(ext->getModule()->getIdentifier()),
-    bundleVersion(ext->getModule()->getVersion().string()),
     appConfig(core::runtime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
     if(ext->findConfigurationElement("tabinfo"))

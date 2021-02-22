@@ -1,4 +1,4 @@
-<plugin id="dicomxplorer" version="@PROJECT_VERSION@">
+<plugin id="dicomxplorer">
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::atoms" />
@@ -12,7 +12,7 @@
         <id>VRRenderAppBase</id>
         <parameters>
             <param name="appName" value="DicomXplorer 0.9.7" />
-            <param name="appIconPath" value="dicomxplorer-@PROJECT_VERSION@/vrrender.ico" />
+            <param name="appIconPath" value="dicomxplorer/vrrender.ico" />
             <param name="appVersion" value="@PROJECT_VERSION@" />
         </parameters>
     </extension>
@@ -21,7 +21,7 @@
         <id>SDBVRRender</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>sight_module_ui_icons-0.1/selector.svg</icon>
+        <icon>sight_module_ui_icons/selector.svg</icon>
         <requirements />
         <appConfig id="SDBVRRender">
             <parameters />

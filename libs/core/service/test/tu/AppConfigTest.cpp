@@ -23,6 +23,7 @@
 #include "AppConfigTest.hpp"
 
 #include "core/thread/ActiveWorkers.hpp"
+
 #include "service/extension/AppConfig.hpp"
 #include "service/registry/ObjectService.hpp"
 
@@ -70,7 +71,7 @@ void AppConfigTest::setUp()
     core::runtime::init();
     core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
-    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service-0.0");
+    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     runtime->addModules(location);
@@ -114,12 +115,11 @@ void AppConfigTest::addConfigTest()
     const std::string group("TestGroup");
     const std::string desc("Description");
     const std::string moduleId("sight::module::service");
-    const std::string moduleVersion("0.1");
     service::extension::AppInfo::ParametersType parameters;
 
     core::runtime::ConfigurationElement::csptr config = this->buildConfig();
 
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId, moduleVersion);
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT_EQUAL(false, allCconfigs.empty());
@@ -131,7 +131,6 @@ void AppConfigTest::addConfigTest()
     auto module = currentAppConfig->getModule(configId);
     CPPUNIT_ASSERT(module );
     CPPUNIT_ASSERT_EQUAL(moduleId, module->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(moduleVersion, module->getVersion().string());
 
     service::FieldAdaptorType replaceFields;
 

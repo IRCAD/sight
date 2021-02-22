@@ -61,14 +61,6 @@ Runtime& Runtime::get()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addDefaultBundles()
-{
-    // Now done in core::runtime::init()
-    core::runtime::init();
-}
-
-//------------------------------------------------------------------------------
-
 std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
 {
     std::shared_ptr<Extension> resExtension;

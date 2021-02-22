@@ -9,7 +9,7 @@
     <xs:element name="start" type="StartType" minOccurs="0" maxOccurs="unbounded" />
   </xs:sequence>
   <xs:attribute name="name" type="xs:string" use="required"/>
-  <xs:attribute name="version" type="xs:string" use="required"/>
+  <xs:attribute name="version" type="xs:string" use="optional"/>
   <xs:attribute name="check-single-instance" type="xs:boolean" use="optional"/>
 </xs:complexType>
 

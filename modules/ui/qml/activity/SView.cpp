@@ -37,7 +37,6 @@
 namespace sight::module::ui::qml::activity
 {
 
-
 static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
@@ -108,7 +107,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
         sight::activity::extension::ActivityInfo info;
         info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
-        std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
+        std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
         SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
                     "started !", module->isStarted())
         if (!module->isStarted())

@@ -29,9 +29,8 @@
 
 #include <service/macros.hpp>
 
-namespace sight::module::ui::base
+namespace sight::module::ui::base::video
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -222,4 +221,4 @@ void SImagePicker::removeLastPoint()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::video

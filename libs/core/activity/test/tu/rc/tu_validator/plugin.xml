@@ -1,6 +1,6 @@
-<plugin id="tu_validator" version="@PROJECT_VERSION@">
+<plugin id="tu_validator">
 
-    <extension-point id="::sight::activity::extension::Activity" schema="activity-0.1/activity.xsd" />
+    <extension-point id="::sight::activity::extension::Activity" schema="activity/activity.xsd" />
 
     <extension implements="::sight::activity::extension::Activity">
         <id>TestValidator0</id>

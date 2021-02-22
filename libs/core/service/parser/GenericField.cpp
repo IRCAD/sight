@@ -30,16 +30,6 @@
 #include <data/Integer.hpp>
 #include <data/String.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::BooleanParser,
-                         ::sight::data::Boolean )
-
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::IntegerParser,
-                         ::sight::data::Integer )
-
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::FloatParser, ::sight::data::Float )
-
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::StringParser, ::sight::data::String )
-
 namespace sight::service
 {
 namespace parser

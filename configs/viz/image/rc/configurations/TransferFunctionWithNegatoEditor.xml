@@ -17,7 +17,7 @@ Example:
         <param name="image" />
         <param name="histogram" />
         <param name="landmarks" />
-        <param name="TFPath" default="uiTF-0.1/tf"/>
+        <param name="TFPath" default="uiTF/tf"/>
         <param name="transferFunctionOutput" />
     </parameters>
     <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>

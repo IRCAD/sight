@@ -1,4 +1,4 @@
-<plugin id="AppConfigTest" version="@PROJECT_VERSION@" >
+<plugin id="AppConfigTest" >
 
     <extension implements="::sight::service::extension::AppConfig">
         <id>parametersConfigTest1</id>

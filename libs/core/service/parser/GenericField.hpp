@@ -69,41 +69,5 @@ protected:
 
 };
 
-/**
- * @brief Specialisation of GenericField parser for boolean
- */
-class BooleanParser : public GenericField
-{
-public:
-    fwCoreServiceMacro(BooleanParser, service::IXMLParser)
-};
-
-/**
- * @brief Specialisation of GenericField parser for integer
- */
-class IntegerParser : public GenericField
-{
-public:
-    fwCoreServiceMacro(IntegerParser, service::IXMLParser)
-};
-
-/**
- * @brief Specialisation of GenericField parser for float
- */
-class FloatParser : public GenericField
-{
-public:
-    fwCoreServiceMacro(FloatParser, service::IXMLParser)
-};
-
-/**
- * @brief Specialisation of GenericField parser for string
- */
-class StringParser : public GenericField
-{
-public:
-    fwCoreServiceMacro(StringParser, service::IXMLParser)
-};
-
 } //namespace parser
 } //namespace sight::service

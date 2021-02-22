@@ -77,7 +77,7 @@ void PulseProgressDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath =
-        core::runtime::getLibraryResourceFilePath("fwGuiQml-" UI_QML_VER "/dialog/PulseProgressDialog.qml");
+        core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/PulseProgressDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("pulseProgressDialog", this);

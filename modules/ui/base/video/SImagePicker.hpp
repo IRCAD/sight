@@ -34,7 +34,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::module::ui::base
+namespace sight::module::ui::base::video
 {
 /**
  * @brief This service listens to a picking interaction and fills the clicked point list.
@@ -43,7 +43,7 @@ namespace sight::module::ui::base
  * - \b getInteraction(data::tools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
  *
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::base::SImagePicker" >
+   <service uid="..." type="::sight::module::ui::base::video::SImagePicker" >
         <inout key="pointList" uid="..." />
         <inout key="pixelPointList" uid="..." />
         <config videoReference="center" />
@@ -131,4 +131,4 @@ private:
 
 };
 
-} //namespace sight::module::ui::base
+} //namespace sight::module::ui::base::video

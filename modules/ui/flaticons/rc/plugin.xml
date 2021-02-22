@@ -13,5 +13,5 @@
     - Green : 97/150/71
     - Grey : 54/57/62
 -->
-<plugin id="::sight::module::ui::flaticons" version="@PROJECT_VERSION@" >
+<plugin id="::sight::module::ui::flaticons" >
 </plugin>

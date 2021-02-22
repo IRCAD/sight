@@ -28,9 +28,6 @@
 
 #include <data/Color.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::Color)
-fwServicesRegisterObjectMacro( ::sight::service::parser::Color, ::sight::data::Color)
-
 namespace sight::service
 {
 namespace parser

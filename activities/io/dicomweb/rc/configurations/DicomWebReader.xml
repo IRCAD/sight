@@ -38,8 +38,8 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Pull selected series from Pacs" icon="sight_module_ui_icons-0.1/Pull.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="sight_module_ui_icons-0.1/Push.svg" />
+                    <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="sight::module::ui::icons/Push.svg" />
                 </layout>
             </gui>
             <registry>

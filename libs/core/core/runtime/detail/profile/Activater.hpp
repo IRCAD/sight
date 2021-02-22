@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <boost/utility.hpp>
 
@@ -91,7 +90,6 @@ private:
     typedef std::vector< std::string >              DisableExtensionContainer;
 
     const std::string m_identifier;                             ///< a module identifier
-    const Version m_version;                                    ///< a module version
 
     ParameterContainer m_parameters;                            ///< all parameters
     DisableExtensionPointContainer m_disableExtensionPoints;    ///< all disable extension points

@@ -1,4 +1,4 @@
-<plugin id="toolCalibrationActivity" version="@PROJECT_VERSION@">
+<plugin id="toolCalibrationActivity">
 
     <requirement id="visuVTKQt"/>
 
@@ -8,7 +8,7 @@
         <id>toolCalibrationActivity</id>
         <title>Tool calibration</title>
         <desc>Tool Calibration Activity using a tracking system</desc>
-        <icon>sight_module_ui_icons-0.1/calibrationActivity.svg</icon>
+        <icon>sight_module_ui_icons/calibrationActivity.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="toolCalibration">

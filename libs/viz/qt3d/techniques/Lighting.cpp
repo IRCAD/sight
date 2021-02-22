@@ -62,11 +62,11 @@ Lighting::Lighting()
 
     // Point normals visualisation shader program & render pass : render normals if specified.
     const auto vertexShaderNormalPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/normalVisu_VP.glsl");
+        "viz_qt3d/glsl/normalVisu_VP.glsl");
     const auto geometryShaderNormalPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/normalVisu_GP.glsl");
+        "viz_qt3d/glsl/normalVisu_GP.glsl");
     const auto fragmentShaderNormalPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/normalVisu_FP.glsl");
+        "viz_qt3d/glsl/normalVisu_FP.glsl");
     Qt3DRender::QShaderProgram* const normalShaderProgram = new Qt3DRender::QShaderProgram();
     normalShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
                                                                                                         fromStdString(
@@ -87,11 +87,11 @@ Lighting::Lighting()
 
     // Cell normals visualisation shader program & render pass : render normals if specified.
     const auto vertexShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/normalVisu_VP.glsl");
+        "viz_qt3d/glsl/normalVisu_VP.glsl");
     const auto geometryShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/cellsNormalVisu_GP.glsl");
+        "viz_qt3d/glsl/cellsNormalVisu_GP.glsl");
     const auto fragmentShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/normalVisu_FP.glsl");
+        "viz_qt3d/glsl/normalVisu_FP.glsl");
     Qt3DRender::QShaderProgram* const cellNormalShaderProgram = new Qt3DRender::QShaderProgram();
     cellNormalShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
                                                                                                             fromStdString(
@@ -114,9 +114,9 @@ Lighting::Lighting()
 
     // Lighting shader program & render pass : renders the mesh using selected illumination algorithm.
     const auto vertexShaderPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/defaultRender_VP.glsl");
+        "viz_qt3d/glsl/defaultRender_VP.glsl");
     const auto fragmentShaderPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/defaultRender_FP.glsl");
+        "viz_qt3d/glsl/defaultRender_FP.glsl");
     Qt3DRender::QShaderProgram* const renderShaderProgram = new Qt3DRender::QShaderProgram();
     renderShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
                                                                                                         fromStdString(
@@ -133,9 +133,9 @@ Lighting::Lighting()
 
     // Adds a render pass needed with "EDGE" polygon mode.
     const auto edgeVertexShaderPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/defaultRender_VP.glsl");
+        "viz_qt3d/glsl/defaultRender_VP.glsl");
     const auto edgeFragmentShaderPath = core::runtime::getLibraryResourceFilePath(
-        "viz_qt3d-" VIZ_QT3D_VER "/glsl/edgeRender_FP.glsl");
+        "viz_qt3d/glsl/edgeRender_FP.glsl");
     Qt3DRender::QShaderProgram* const edgeShaderProgram = new Qt3DRender::QShaderProgram();
     edgeShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl::fromLocalFile(QString::
                                                                                                       fromStdString(

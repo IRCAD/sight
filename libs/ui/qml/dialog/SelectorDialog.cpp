@@ -77,7 +77,7 @@ std::string SelectorDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml-" UI_QML_VER "/dialog/SelectorDialog.qml");
+        "fwGuiQml/dialog/SelectorDialog.qml");
     // set the root context for the model
     engine->getRootContext()->setContextProperty("selectorModel", &model);
     // set the context for the new component

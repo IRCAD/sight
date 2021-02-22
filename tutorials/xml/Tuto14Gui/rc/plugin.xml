@@ -1,4 +1,4 @@
-<plugin id="Tuto14Gui" version="@PROJECT_VERSION@" >
+<plugin id="Tuto14Gui" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::ui::qt" />
@@ -28,7 +28,7 @@
                 </toolBar>
                 <frame>
                     <name>Tuto14Gui</name>
-                    <icon>Tuto14Gui-@PROJECT_VERSION@/tuto.ico</icon>
+                    <icon>Tuto14Gui/tuto.ico</icon>
                     <minSize width="800" height="600" />
                 </frame>
             </gui>
@@ -96,24 +96,24 @@
         <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
-                    <menuItem name="start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" />
-                    <menuItem name="pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" />
-                    <menuItem name="stop"  icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                    <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
+                    <menuItem name="pause" icon="sight::module::ui::flaticons/OrangePause.svg" />
+                    <menuItem name="stop"  icon="sight::module::ui::flaticons/RedStop.svg" />
                     <separator />
-                    <menuItem name="Item 1" style="check" icon="Tuto14Gui-0.1/important.png" />
+                    <menuItem name="Item 1" style="check" icon="Tuto14Gui/icons/important.png" />
                     <separator />
-                    <menuItem name="Item 2" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
-                    <menuItem name="Item 3" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
+                    <menuItem name="Item 2" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
+                    <menuItem name="Item 3" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
                     <separator />
-                    <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
-                    <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
+                    <menuItem name="Item A" style="radio" icon="Tuto14Gui/icons/monkey.png" />
+                    <menuItem name="Item B" style="radio" icon="Tuto14Gui/icons/monkey.png" />
                     <separator />
-                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="Tuto14Gui-0.1/important.png" />
-                    <menuItem name="start A-B / stop 2-3" style="radio" icon="Tuto14Gui-0.1/important.png" />
-                    <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui-0.1/monkey.png" />
+                    <menuItem name="start 2-3 / stop A-B" style="radio" icon="Tuto14Gui/icons/important.png" />
+                    <menuItem name="start A-B / stop 2-3" style="radio" icon="Tuto14Gui/icons/important.png" />
+                    <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
                     <spacer/>
                     <menu name="Test Hide/Show" start="yes" />
-                    <menuItem name="Quit" icon="sight_module_ui_flaticons-0.1/RedCross.svg" />
+                    <menuItem name="Quit" icon="sight::module::ui::flaticons/RedCross.svg" />
                 </layout>
             </gui>
             <registry>
@@ -136,9 +136,9 @@
         <service uid="testHideShowView" type="::sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
-                    <menuItem name="start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" />
-                    <menuItem name="pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" />
-                    <menuItem name="stop"  icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                    <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
+                    <menuItem name="pause" icon="sight::module::ui::flaticons/OrangePause.svg" />
+                    <menuItem name="stop"  icon="sight::module::ui::flaticons/RedStop.svg" />
                 </layout>
             </gui>
             <registry>
@@ -264,11 +264,11 @@
         <service uid="toolbar2View" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Item 2" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
-                    <menuItem name="Item 3" style="radio" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" />
+                    <menuItem name="Item 2" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
+                    <menuItem name="Item 3" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
                     <separator />
-                    <menuItem name="Item A" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
-                    <menuItem name="Item B" style="radio" icon="Tuto14Gui-0.1/monkey.png" />
+                    <menuItem name="Item A" style="radio" icon="Tuto14Gui/icons/monkey.png" />
+                    <menuItem name="Item B" style="radio" icon="Tuto14Gui/icons/monkey.png" />
                 </layout>
             </gui>
             <registry>
@@ -363,14 +363,14 @@
         <service uid="checkableSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
-                <icon>sight_module_ui_flaticons-0.1/GreenStart.svg</icon>
-                <icon2>module_ui_flaticons-0.1/RedStop.svg</icon2>
+                <icon>sight_module_ui_flaticons/GreenStart.svg</icon>
+                <icon2>sight_module_ui_flaticons/RedStop.svg</icon2>
                 <text>Check</text>
             </config>
         </service>
 
         <service uid="ircadIHULogoSrv" type="::sight::module::ui::qt::image::SImage" >
-            <path>flaticons-0.1/IrcadIHU.svg</path>
+            <path>flaticons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 

@@ -36,7 +36,7 @@ std::string PatchLoader::s_currentVersion = "V17AR";
 void PatchLoader::loadPatches()
 {
     SPTR(io::atoms::patch::VersionsManager) versionManager = io::atoms::patch::VersionsManager::getDefault();
-    auto path = core::runtime::getLibraryResourceFilePath("io_patch-" IO_PATCH_VER "/");
+    auto path = core::runtime::getLibraryResourceFilePath("io_patch");
     versionManager->buildVersionTable(path.string());
     versionManager->buildLinkTable(path.string());
 

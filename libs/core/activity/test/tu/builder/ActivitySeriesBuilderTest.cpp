@@ -22,8 +22,8 @@
 
 #include "ActivitySeriesBuilderTest.hpp"
 
-#include <activity/IBuilder.hpp>
 #include <activity/extension/Activity.hpp>
+#include <activity/IBuilder.hpp>
 
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
@@ -50,7 +50,7 @@ void ActivitySeriesBuilderTest::setUp()
     m_activity = activity::extension::Activity::New();
 
     // Set up context before running a test.
-    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity-0.0"));
+    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity"));
     core::runtime::loadModule("tu_builder");
 
     m_activity->parseBundleInformation();

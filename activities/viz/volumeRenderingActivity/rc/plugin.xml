@@ -1,4 +1,4 @@
-<plugin id="volumeRenderingActivity" version="@PROJECT_VERSION@" >
+<plugin id="volumeRenderingActivity" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene2d" />
@@ -9,7 +9,7 @@
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
-        <icon>sight_module_ui_icons-0.1/icon-VR.png</icon>
+        <icon>sight_module_ui_icons/icon-VR.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to displayed in volumic rendering.</desc>

@@ -3,7 +3,7 @@
 
         To use this application, you need to load a mesh.
 -->
-<plugin id="Tuto09MatrixTransformInGS" version="@PROJECT_VERSION@" >
+<plugin id="Tuto09MatrixTransformInGS" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -76,7 +76,7 @@
                 <gui>
                     <frame>
                         <name>Tuto09MatrixTransformInGS</name>
-                        <icon>Tuto09MatrixTransformInGS-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto09MatrixTransformInGS/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar/>

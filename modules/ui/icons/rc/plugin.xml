@@ -1,2 +1,2 @@
-<plugin id="sight::module::ui::media" version="@PROJECT_VERSION@" >
+<plugin id="sight::module::ui::icons" >
 </plugin>

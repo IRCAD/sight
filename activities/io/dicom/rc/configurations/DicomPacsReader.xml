@@ -39,9 +39,9 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Edit pacs configuration" icon="sight_module_ui_icons-0.1/Settings.svg" style="check" />
-                    <menuItem name="Pull selected series from Pacs" icon="sight_module_ui_icons-0.1/Pull.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="sight_module_ui_icons-0.1/Push.svg" />
+                    <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/Settings.svg" style="check" />
+                    <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="sight::module::ui::icons/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -108,7 +108,7 @@
         <service uid="action_editPacsConfiguration" type="::sight::module::ui::base::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
             <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
-            <parameter replace="ICON_PATH" by="module_ui_icons-0.1/Settings.svg"  />
+            <parameter replace="ICON_PATH" by="module_ui_icons/Settings.svg"  />
         </service>
 
         <service uid="action_pullSeries" type="::sight::module::ui::base::com::SSlotCaller" >

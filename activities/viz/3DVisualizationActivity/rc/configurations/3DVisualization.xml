@@ -62,26 +62,26 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="3D MPR Axial view" icon="sight_module_ui_icons-0.1/icon-axial.png" />
-                    <menuItem name="3D MPR Frontal view" icon="sight_module_ui_icons-0.1/icon-frontal.png" />
-                    <menuItem name="3D MPR Sagittal view" icon="sight_module_ui_icons-0.1/icon-sagittal.png" />
+                    <menuItem name="3D MPR Axial view" icon="sight::module::ui::icons/icon-axial.png" />
+                    <menuItem name="3D MPR Frontal view" icon="sight::module::ui::icons/icon-frontal.png" />
+                    <menuItem name="3D MPR Sagittal view" icon="sight::module::ui::icons/icon-sagittal.png" />
                     <separator />
-                    <menuItem name="Load landmark" icon="sight_module_ui_icons-0.1/Load-landmark.png" />
-                    <menuItem name="Save landmark" icon="sight_module_ui_icons-0.1/Save-landmark.png" />
-                    <menuItem name="Focus landmark" icon="sight_module_ui_icons-0.1/Find-landmark.png" />
-                    <menuItem name="Display Landmarks editor" icon="sight_module_ui_icons-0.1/View-landmark.png" style="check" />
+                    <menuItem name="Load landmark" icon="sight::module::ui::icons/Load-landmark.png" />
+                    <menuItem name="Save landmark" icon="sight::module::ui::icons/Save-landmark.png" />
+                    <menuItem name="Focus landmark" icon="sight::module::ui::icons/Find-landmark.png" />
+                    <menuItem name="Display Landmarks editor" icon="sight::module::ui::icons/View-landmark.png" style="check" />
                     <separator />
-                    <menuItem name="Add distance" icon="sight_module_ui_icons-0.1/distance.png" />
-                    <menuItem name="Remove distance" icon="sight_module_ui_icons-0.1/RemoveDistance.png" />
-                    <menuItem name="Hide distance" icon="sight_module_ui_icons-0.1/HideDistance.png" style="check" />
+                    <menuItem name="Add distance" icon="sight::module::ui::icons/distance.png" />
+                    <menuItem name="Remove distance" icon="sight::module::ui::icons/RemoveDistance.png" />
+                    <menuItem name="Hide distance" icon="sight::module::ui::icons/HideDistance.png" style="check" />
                     <separator />
-                    <menuItem name="Hide cross" icon="sight_module_ui_icons-0.1/HideCross.png" style="radio" />
-                    <menuItem name="Show normal cross" icon="sight_module_ui_icons-0.1/NormalCross.png" style="radio" />
-                    <menuItem name="Show full cross" icon="sight_module_ui_icons-0.1/FullCross.png" style="radio" />
+                    <menuItem name="Hide cross" icon="sight::module::ui::icons/HideCross.png" style="radio" />
+                    <menuItem name="Show normal cross" icon="sight::module::ui::icons/NormalCross.png" style="radio" />
+                    <menuItem name="Show full cross" icon="sight::module::ui::icons/FullCross.png" style="radio" />
                     <separator />
-                    <menuItem name="Manage organs color" icon="sight_module_ui_icons-0.1/ManageOrgan.png" style="check" />
+                    <menuItem name="Manage organs color" icon="sight::module::ui::icons/ManageOrgan.png" style="check" />
                     <separator />
-                    <menuItem name="Export Activity" icon="sight_module_ui_icons-0.1/Export.svg" />
+                    <menuItem name="Export Activity" icon="sight::module::ui::icons/Export.svg" />
                     <spacer />
                     <menu name="Visu 3D" />
                 </layout>
@@ -110,11 +110,11 @@
         <service uid="menu" type="::sight::module::ui::base::SMenu">
             <gui>
                 <layout>
-                    <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="sight_module_ui_icons-0.1/ManageOrgan.png" />
+                    <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="sight::module::ui::icons/ManageOrgan.png" />
                     <separator />
-                    <menuItem name="Axial view" icon="sight_module_ui_icons-0.1/icon-axial.png" />
-                    <menuItem name="Frontal view" icon="sight_module_ui_icons-0.1/icon-frontal.png" />
-                    <menuItem name="Sagittal view" icon="sight_module_ui_icons-0.1/icon-sagittal.png" />
+                    <menuItem name="Axial view" icon="sight::module::ui::icons/icon-axial.png" />
+                    <menuItem name="Frontal view" icon="sight::module::ui::icons/icon-frontal.png" />
+                    <menuItem name="Sagittal view" icon="sight::module::ui::icons/icon-sagittal.png" />
                 </layout>
             </gui>
             <registry>

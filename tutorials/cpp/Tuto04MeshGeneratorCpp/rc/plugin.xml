@@ -1,4 +1,4 @@
-<plugin id="Tuto04MeshGeneratorCpp" library="true" version="@PROJECT_VERSION@" >
+<plugin id="Tuto04MeshGeneratorCpp" library="true" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -26,7 +26,7 @@
                 <gui>
                     <frame>
                         <name>Tuto04MeshGeneratorCpp</name>
-                        <icon>Tuto04MeshGeneratorCpp-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto04MeshGeneratorCpp/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>

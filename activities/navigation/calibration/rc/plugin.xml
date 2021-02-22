@@ -1,4 +1,4 @@
-<plugin id="::sight::activity::navigation::calibration" library="true" version="@PROJECT_VERSION@" >
+<plugin id="::sight::activity::navigation::calibration" library="true" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::base" />
@@ -21,7 +21,7 @@
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -43,7 +43,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>sight_module_ui_flaticons-0.1/BlueParametersCamera.svg</icon>
+        <icon>sight_module_ui_flaticons/BlueParametersCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -60,7 +60,7 @@
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="RGBDCalibration">
@@ -73,7 +73,7 @@
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
-        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>

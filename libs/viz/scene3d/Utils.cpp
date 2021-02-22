@@ -147,7 +147,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
     if(root == nullptr)
     {
-        const auto& confPath = core::runtime::getLibraryResourceFilePath("viz_scene3d-0.1/" PLUGIN_PATH);
+        const auto& confPath = core::runtime::getLibraryResourceFilePath("viz_scene3d/" PLUGIN_PATH);
 
         // Check file existence
         if(!std::filesystem::exists(confPath))
@@ -222,7 +222,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
         root->initialise(false);
 
-        auto resourcePath = core::runtime::getLibraryResourceFilePath("viz_scene3d-0.1/resources.cfg" );
+        auto resourcePath = core::runtime::getLibraryResourceFilePath("viz_scene3d/resources.cfg" );
         viz::scene3d::Utils::addResourcesPath( resourcePath );
 
         loadResources();

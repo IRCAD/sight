@@ -1,6 +1,6 @@
 <!-- Application name and version (the version is automatically replaced by CMake
      using the version defined in the Properties.cmake) -->
-<plugin id="Tuto01Basic" version="@PROJECT_VERSION@" >
+<plugin id="Tuto01Basic" >
 
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->
@@ -18,7 +18,7 @@
                 <gui>
                     <frame>
                         <name>Tuto01Basic</name>
-                        <icon>Tuto01Basic-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto01Basic/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>

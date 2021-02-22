@@ -1,4 +1,4 @@
-<plugin id="Tuto11Picker" version="@PROJECT_VERSION@" >
+<plugin id="Tuto11Picker" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -21,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>Tuto11Picker</name>
-                        <icon>Tuto11Picker-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto11Picker/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar/>
@@ -159,15 +159,15 @@
             <service uid="snapshotSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
             <service uid="showNegatoSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
-                    <icon>sight_module_ui_flaticons-0.1/RedCross.svg</icon>
-                    <icon2>module_ui_flaticons-0.1/Layers.svg</icon2>
+                    <icon>sight_module_ui_flaticons/RedCross.svg</icon>
+                    <icon2>sight_module_ui_flaticons/Layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

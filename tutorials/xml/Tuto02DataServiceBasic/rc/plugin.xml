@@ -1,4 +1,4 @@
-<plugin id="Tuto02DataServiceBasic" version="@PROJECT_VERSION@" >
+<plugin id="Tuto02DataServiceBasic" >
 
     <!-- The modules in requirements are automatically started when this 
          Application is launched. -->

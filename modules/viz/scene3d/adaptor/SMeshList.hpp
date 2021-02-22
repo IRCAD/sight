@@ -30,7 +30,7 @@
 
 #include <queue>
 
-namespace sight::module::viz::scene3d
+namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
@@ -152,4 +152,4 @@ private:
 
 };
 
-} // namespace sight::module::viz::scene3d.
+} // namespace sight::module::viz::scene3d::adaptor

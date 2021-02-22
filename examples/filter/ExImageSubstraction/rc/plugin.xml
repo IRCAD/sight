@@ -51,7 +51,7 @@
     Step 2 : The user loads an image in the second Tab by using the button (openImage2Act).
     Step 3 : The user goes to the third tab and click on compute to see the result of the subtract between the two images.
 -->
-<plugin id="ExImageSubstraction" version="@PROJECT_VERSION@" >
+<plugin id="ExImageSubstraction" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -78,7 +78,7 @@
                 <gui>
                     <frame>
                         <name>ExImageSubstraction</name>
-                        <icon>ExImageSubstraction-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExImageSubstraction/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -104,12 +104,12 @@
             <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load image 1" icon="ExImageSubstraction-0.1/icon-load1.png" />
+                        <menuItem name="Load image 1" icon="ExImageSubstraction/icons/icon-load1.png" />
                         <separator/>
-                        <menuItem name="Load image 2" icon="ExImageSubstraction-0.1/icon-load2.png" />
+                        <menuItem name="Load image 2" icon="ExImageSubstraction/icons/icon-load2.png" />
                         <separator/>
-                        <menuItem name="Save image" icon="ExImageSubstraction-0.1/save.png" />
-                        <menuItem name="Substract image" icon="sight_module_ui_icons-0.1/Minus.svg" />
+                        <menuItem name="Save image" icon="ExImageSubstraction/icons/save.png" />
+                        <menuItem name="Substract image" icon="sight::module::ui::icons/Minus.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -333,21 +333,21 @@
             <service uid="snapshotNegato1EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
             <service uid="snapshotNegato2EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
             <service uid="snapshotNegato3EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 

@@ -67,7 +67,7 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialogPath =
-            core::runtime::getLibraryResourceFilePath("fwGuiQml-" UI_QML_VER "/dialog/Progress.qml");
+            core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/Progress.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
         SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
@@ -83,7 +83,7 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialogPath =
-            core::runtime::getLibraryResourceFilePath("fwGuiQml-" UI_QML_VER "/dialog/ProgressDialog.qml");
+            core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/ProgressDialog.qml");
         // load the qml ui component
         m_window = engine->createComponent(dialogPath);
         SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_window);

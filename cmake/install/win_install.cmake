@@ -12,7 +12,7 @@ macro(win_install PRJ_NAME)
         set(LAUNCHER "fwlauncher.exe")
         set(LAUNCHER_PATH "bin/${LAUNCHER}") # For windows_fixup.cmake.in
         set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
-        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${${FWPROJECT_NAME}_FULLNAME}\\\\profile.xml")
+        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${FWPROJECT_NAME}\\\\profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher

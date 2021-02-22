@@ -1,6 +1,5 @@
-<profile name="fwServicesTest" version="0.1">
+<profile name="serviceTest" version="0.1">
 
     <activate id="sight::module::service" version="0.1" />
-
 
 </profile>

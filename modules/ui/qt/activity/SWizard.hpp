@@ -80,8 +80,8 @@ namespace activity
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="data::ImageSeries" icon="sight_module_ui_icons-0.1/ImageSeries.svg" />
-         <icon type="data::ModelSeries" icon="sight_module_ui_icons-0.1/ModelSeries.svg" />
+         <icon type="data::ImageSeries" icon="sight::module::ui::icons/ImageSeries.svg" />
+         <icon type="data::ModelSeries" icon="sight::module::ui::icons/ModelSeries.svg" />
      </icons>
    </service>
    @endcode

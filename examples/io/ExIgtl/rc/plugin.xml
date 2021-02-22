@@ -1,4 +1,4 @@
-<plugin id="ExIgtl" version="@PROJECT_VERSION@" >
+<plugin id="ExIgtl" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -32,7 +32,7 @@
                     <toolBar/>
                     <frame>
                         <name>ExIgtl</name>
-                        <icon>ExIgtl-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>ExIgtl/tuto.ico</icon>
                     </frame>
                 </gui>
                 <registry>
@@ -45,15 +45,15 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Load mesh" icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
+                        <menuItem name="Load mesh" icon="sight::module::ui::flaticons/BlueLoad.svg" />
                         <separator/>
-                        <menuItem name="start sender" icon="sight_module_ui_flaticons-0.1/GreenServerConnected.svg" />
-                        <menuItem name="stop sender" icon="sight_module_ui_flaticons-0.1/RedServerDisconnected.svg" />
-                        <menuItem name="configure sender" icon="sight_module_ui_flaticons-0.1/BlueParametersConnected.svg" />
+                        <menuItem name="start sender" icon="sight::module::ui::flaticons/GreenServerConnected.svg" />
+                        <menuItem name="stop sender" icon="sight::module::ui::flaticons/RedServerDisconnected.svg" />
+                        <menuItem name="configure sender" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
                         <separator/>
-                        <menuItem name="start listener" icon="sight_module_ui_flaticons-0.1/GreenServerConnected.svg" />
-                        <menuItem name="stop listener" icon="sight_module_ui_flaticons-0.1/RedServerDisconnected.svg" />
-                        <menuItem name="configure listener" icon="sight_module_ui_flaticons-0.1/BlueParametersConnected.svg" />
+                        <menuItem name="start listener" icon="sight::module::ui::flaticons/GreenServerConnected.svg" />
+                        <menuItem name="stop listener" icon="sight::module::ui::flaticons/RedServerDisconnected.svg" />
+                        <menuItem name="configure listener" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
                         <separator/>
                     </layout>
                 </gui>

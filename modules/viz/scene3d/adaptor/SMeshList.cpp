@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-namespace sight::module::viz::scene3d
+namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_ADD_SLOT   = "add";
@@ -312,4 +312,4 @@ void SMeshList::clear()
     m_meshCount = 0;
 }
 
-} // namespace sight::module::viz::scene3d.
+} // namespace sight::module::viz::scene3d::adaptor

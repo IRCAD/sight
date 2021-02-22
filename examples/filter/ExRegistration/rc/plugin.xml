@@ -54,7 +54,7 @@ Detail of the ToolBar
  Step 5 : The user clicks on the register button (Yin_Yang symbol) to do the registration and visualize the result on the
           third tab (registerAct).
  -->
-<plugin id="ExRegistration" version="@PROJECT_VERSION@" >
+<plugin id="ExRegistration" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -85,7 +85,7 @@ Detail of the ToolBar
                 <gui>
                     <frame>
                         <name>ExRegistration</name>
-                        <icon>ExRegistration-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExRegistration/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>
@@ -111,12 +111,12 @@ Detail of the ToolBar
             <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load image" icon="ExRegistration-0.1/icon-load1.png" />
-                        <menuItem name="Load mesh 1" icon="ExRegistration-0.1/icon-load1.png" />
+                        <menuItem name="Load image" icon="ExRegistration/icons/icon-load1.png" />
+                        <menuItem name="Load mesh 1" icon="ExRegistration/icons/icon-load1.png" />
                         <separator/>
-                        <menuItem name="Load mesh 2" icon="ExRegistration-0.1/icon-load2.png" />
+                        <menuItem name="Load mesh 2" icon="ExRegistration/icons/icon-load2.png" />
                         <separator/>
-                        <menuItem name="Register" icon="ExRegistration-0.1/Fusion-tmp.png" />
+                        <menuItem name="Register" icon="ExRegistration/icons/Fusion-tmp.png" />
                     </layout>
                 </gui>
                 <registry>

@@ -1,4 +1,4 @@
-<plugin id="ExSolvePnP" version="@PROJECT_VERSION@" >
+<plugin id="ExSolvePnP" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -31,7 +31,7 @@
                 <gui>
                     <frame>
                         <name>ExSolvePnP</name>
-                        <icon>ExSolvePnP-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExSolvePnP/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
@@ -81,15 +81,15 @@
             <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="sight_module_ui_flaticons-0.1/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
                         <editor/>
-                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <editor />
-                        <menuItem name="Register" icon="sight_module_ui_flaticons-0.1/RegistrationPoints.svg" />
+                        <menuItem name="Register" icon="sight::module::ui::flaticons/RegistrationPoints.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -307,7 +307,7 @@
 
             <service uid="meshReaderSrv" type="::sight::module::io::vtk::SMeshReader" >
                 <inout key="data" uid="cube" />
-                <resource>ExSolvePnP-@PROJECT_VERSION@/plane.vtk</resource>
+                <resource>ExSolvePnP/plane.vtk</resource>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
@@ -335,7 +335,7 @@
                 <config inverse="true" />
             </service>
 
-            <service uid="imagePickerSrv" type="::sight::module::ui::base::SImagePicker" >
+            <service uid="imagePickerSrv" type="::sight::module::ui::base::video::SImagePicker" >
                 <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
                 <inout key="pixelPointList" uid="2dPixels" />

@@ -205,14 +205,14 @@ protected:
      * Sample configuration for a resource (file stored in a module or a library):
      * @code{.xml}
      *  <service ... >
-     *      <resource>module-0.1/myFile.jpg</resource>
+     *      <resource>module/myFile.jpg</resource>
      *  </service>
      * Sample configuration for many resources (files stored in a module or a library):
      * @code{.xml}
      *  <service ... >
-     *      <resource>module-0.1/myFile01.jpg</resource>
-     *      <resource>module-0.1/myFile02.jpg</resource>
-     *      <resource>library-0.1/myFile03.jpg</resource>
+     *      <resource>module/myFile01.jpg</resource>
+     *      <resource>module/myFile02.jpg</resource>
+     *      <resource>library/myFile03.jpg</resource>
      *  </service>
      * Sample configuration for a resource folder (module or library path):
      * @code{.xml}

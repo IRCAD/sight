@@ -1,4 +1,4 @@
-<plugin id="Tuto15Matrix" version="@PROJECT_VERSION@" >
+<plugin id="Tuto15Matrix" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -28,7 +28,7 @@
             <gui>
                 <frame>
                     <name>Tuto15Matrix</name>
-                    <icon>Tuto15Matrix-@PROJECT_VERSION@/tuto.ico</icon>
+                    <icon>Tuto15Matrix/tuto.ico</icon>
                     <minSize width="800" height="600" />
                 </frame>
                 <menuBar/>

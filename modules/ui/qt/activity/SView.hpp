@@ -60,7 +60,7 @@ namespace activity
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="module_ui_icons-0.1/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_icons/app.ico"  />
      </parameters>
    </service>
    @endcode

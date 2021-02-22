@@ -1,4 +1,4 @@
-<plugin id="ExVideoRecorder" version="@PROJECT_VERSION@" >
+<plugin id="ExVideoRecorder" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -24,7 +24,7 @@
                 <gui>
                     <frame>
                         <name>ExVideoRecorder</name>
-                        <icon>ExVideoRecorder-0.1/app.ico</icon>
+                        <icon>ExVideoRecorder/app.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -38,14 +38,14 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Frame recording" icon="sight_module_ui_flaticons-0.1/RedCircle.svg" style="check" />
-                        <menuItem name="Video recording" icon="sight_module_ui_flaticons-0.1/RedCircle.svg"  style="check"  />
+                        <menuItem name="Frame recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
+                        <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg"  style="check"  />
                         <editor/>
                     </layout>
                 </gui>

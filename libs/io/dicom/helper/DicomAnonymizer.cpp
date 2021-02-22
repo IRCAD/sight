@@ -65,7 +65,7 @@ DicomAnonymizer::DicomAnonymizer() :
     m_referenceDate(::boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
     const std::filesystem::path tagsPathStr = core::runtime::getLibraryResourceFilePath(
-        "io_dicom-" IO_DICOM_VER "/tags.csv");
+        "io_dicom/tags.csv");
     std::filesystem::path tagsPath = tagsPathStr;
     SLM_ASSERT("File '" + tagsPath.string() + "' must exists",
                std::filesystem::is_regular_file(tagsPath));

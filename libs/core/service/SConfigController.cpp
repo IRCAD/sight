@@ -29,10 +29,6 @@ namespace sight::service
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::sight::service::IController, ::sight::service::SConfigController )
-
-//------------------------------------------------------------------------------
-
 SConfigController::SConfigController() noexcept
 {
     m_configLauncher = std::make_unique< service::helper::ConfigLauncher>();

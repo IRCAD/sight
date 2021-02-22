@@ -1,4 +1,4 @@
-<plugin id="::sight::module::io::document" library="true" version="@PROJECT_VERSION@" >
+<plugin id="::sight::module::io::document" library="true" >
 
     <requirement id="sight::module::service" />
 

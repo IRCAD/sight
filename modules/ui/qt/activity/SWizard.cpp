@@ -75,7 +75,6 @@ using sight::activity::extension::Activity;
 
 //------------------------------------------------------------------------------
 
-
 //------------------------------------------------------------------------------
 
 SWizard::SWizard() noexcept :
@@ -244,7 +243,7 @@ void SWizard::createActivity(std::string activityID)
     info = Activity::getDefault()->getInfo(activityID);
 
     // load activity module
-    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
     if (!module->isStarted())
     {
         module->start();
@@ -314,8 +313,7 @@ void SWizard::updateActivity(data::ActivitySeries::sptr activitySeries)
     info = Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId,
-                                                                                info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
     if (!module->isStarted())
     {
         module->start();

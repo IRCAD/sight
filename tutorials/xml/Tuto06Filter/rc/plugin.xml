@@ -1,4 +1,4 @@
-<plugin id="Tuto06Filter" version="@PROJECT_VERSION@" >
+<plugin id="Tuto06Filter" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -22,7 +22,7 @@
                 <gui>
                     <frame>
                         <name>Tuto06Filter</name>
-                        <icon>Tuto06Filter-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto06Filter/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar />

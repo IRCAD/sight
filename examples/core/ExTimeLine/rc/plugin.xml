@@ -1,4 +1,4 @@
-﻿<plugin id="ExTimeLine" library="true" version="@PROJECT_VERSION@" >
+﻿<plugin id="ExTimeLine" library="true" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::console" />

@@ -1,4 +1,4 @@
-<plugin id="ExStereoARCV" version="@PROJECT_VERSION@" >
+<plugin id="ExStereoARCV" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -33,7 +33,7 @@
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
-                        <icon>ExStereoARCV-0.1/app.ico</icon>
+                        <icon>ExStereoARCV/app.ico</icon>
                     </frame>
                     <menuBar/>
                     <toolBar/>
@@ -85,15 +85,15 @@
             <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="sight_module_ui_flaticons-0.1/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
                         <editor/>
                         <editor/>
-                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <separator/>
-                        <menuItem name="Start camera pose recording" icon="sight_module_ui_flaticons-0.1/RedCircle.svg" />
-                        <menuItem name="Stop camera pose recording" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
+                        <menuItem name="Start camera pose recording" icon="sight::module::ui::flaticons/RedCircle.svg" />
+                        <menuItem name="Stop camera pose recording" icon="sight::module::ui::flaticons/RedStop.svg" />
                     </layout>
                 </gui>
                 <registry>

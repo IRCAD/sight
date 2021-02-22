@@ -1,4 +1,4 @@
-<plugin id="Tuto05Mesher" version="@PROJECT_VERSION@" >
+<plugin id="Tuto05Mesher" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -21,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>Tuto05Mesher</name>
-                        <icon>Tuto05Mesher-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto05Mesher/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

@@ -13,7 +13,7 @@
       - calibration.xml
       - aruco_tag.m4v
 -->
-<plugin id="Tuto17SimpleAR" version="@PROJECT_VERSION@" >
+<plugin id="Tuto17SimpleAR" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -53,7 +53,7 @@
                 <gui>
                     <frame>
                         <name>Tuto17SimpleAR</name>
-                        <icon>Tuto17SimpleAR-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>Tuto17SimpleAR/app.ico</icon>
                     </frame>
                     <toolBar/>
                 </gui>
@@ -66,23 +66,23 @@
             <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="sight_module_ui_flaticons-0.1/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
                         <editor/>
                         <separator/>
-                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <separator />
-                        <menuItem name="Enable video image undistortion" icon="sight_module_ui_flaticons-0.1/YellowUndistortion.svg" />
-                        <menuItem name="Disable video image undistortion" icon="sight_module_ui_flaticons-0.1/YellowDistortion.svg" />
-                        <menuItem name="Enable 3D rendering distortion" icon="sight_module_ui_flaticons-0.1/YellowDistortion.svg" />
-                        <menuItem name="Disable 3D rendering distortion" icon="sight_module_ui_flaticons-0.1/YellowUndistortion.svg" />
+                        <menuItem name="Enable video image undistortion" icon="sight::module::ui::flaticons/YellowUndistortion.svg" />
+                        <menuItem name="Disable video image undistortion" icon="sight::module::ui::flaticons/YellowDistortion.svg" />
+                        <menuItem name="Enable 3D rendering distortion" icon="sight::module::ui::flaticons/YellowDistortion.svg" />
+                        <menuItem name="Disable 3D rendering distortion" icon="sight::module::ui::flaticons/YellowUndistortion.svg" />
                         <separator/>
-                        <menuItem name="Show Mesh on tag" icon="sight_module_ui_flaticons-0.1/Mask.svg" style="check" />
+                        <menuItem name="Show Mesh on tag" icon="sight::module::ui::flaticons/Mask.svg" style="check" />
                         <separator/>
-                        <menuItem name="Settings" icon="sight_module_ui_flaticons-0.1/BlueParameters.svg" style="check" />
+                        <menuItem name="Settings" icon="sight::module::ui::flaticons/BlueParameters.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -313,7 +313,7 @@
 
             <service uid="loadMeshSrv" type="::sight::module::io::vtk::SMeshReader" >
                 <inout key="data" uid="cubeMesh" />
-                <resource>Tuto17SimpleAR-@PROJECT_VERSION@/cube_60.vtk</resource>
+                <resource>Tuto17SimpleAR/cube_60.vtk</resource>
             </service>
 
             <!-- hide axis adaptor until a marker is found -->

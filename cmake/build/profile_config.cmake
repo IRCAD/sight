@@ -52,12 +52,18 @@ macro(profile_setup ${PROJECT})
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             # check if a moduleParam macro had been use in the properties.cmake
             # if yes, get and set module param and values
+            string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
+            string(REGEX REPLACE "^module" "${SIGHT_REPOSITORY}::module" REQ ${REQ})
+            string(REGEX REPLACE "^config" "${SIGHT_REPOSITORY}::config" REQ ${REQ})
+            string(REGEX REPLACE "^activity" "${SIGHT_REPOSITORY}::activity" REQ ${REQ})
+
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
                 set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
 
+
                 #set activate tag with parameters
-                list(APPEND XML_ACTIVATE "    <activate id=\"sight_${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
+                list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" >")
                 foreach(CURRENT_PARAM ${CURRENT_PARAM_LIST})
                     list(FIND CURRENT_PARAM_LIST "${CURRENT_PARAM}" CURRENT_INDEX)
                     list(GET CURRENT_PARAM_VALUES "${CURRENT_INDEX}" CURRENT_VALUE)
@@ -67,18 +73,22 @@ macro(profile_setup ${PROJECT})
                 list(APPEND XML_ACTIVATE "    </activate>")
             # else simply set the activate tag
             else()
-                 list(APPEND XML_ACTIVATE "    <activate id=\"sight_${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
+                 list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" />")
             endif()
         endif()
     endforeach()
     string(REPLACE ";" "\n" XML_ACTIVATE "${XML_ACTIVATE}")
 
     foreach(CURRENT_MODULE ${START_MODULES})
-        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"sight_${CURRENT_MODULE}\" />")
+        string(REPLACE "_" "::" MODULE ${CURRENT_MODULE})
+        string(REGEX REPLACE "^module" "${SIGHT_REPOSITORY}::module" MODULE ${MODULE})
+        string(REGEX REPLACE "^config" "${SIGHT_REPOSITORY}::config" MODULE ${MODULE})
+        string(REGEX REPLACE "^activity" "${SIGHT_REPOSITORY}::activity" MODULE ${MODULE})
+        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE}\" />")
     endforeach()
 
     configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
-                    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/profile.xml")
+                    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}/profile.xml")
 endmacro()
 
 function(findRequirements FWPROJECT_NAME)

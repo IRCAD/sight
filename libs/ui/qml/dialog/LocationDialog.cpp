@@ -83,7 +83,7 @@ data::location::ILocation::sptr LocationDialog::show()
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml-" UI_QML_VER "/dialog/LocationDialog.qml");
+        "fwGuiQml/dialog/LocationDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("locationDialog", this);

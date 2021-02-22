@@ -24,7 +24,6 @@
 
 #include "core/config.hpp"
 #include "core/runtime/RuntimeException.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <core/macros.hpp>
 
@@ -99,42 +98,10 @@ public:
      * @brief       Adds all modules found in the given path.
      *
      * @param[in]   repository  a path that may containing modules
-     * @deprecated  Bundle has been renamed to Module, please use addModules() instead
-     */
-    [[deprecated("To be removed in Sight 22.0, use addModules() instead")]]
-    CORE_API virtual void addBundles( const std::filesystem::path& repository ) = 0;
-
-    /**
-     * @brief       Adds all modules found in the given path.
-     *
-     * @param[in]   repository  a path that may containing modules
      */
     CORE_API virtual void addModules( const std::filesystem::path& repository ) = 0;
 
     /**
-     * @brief       Adds all modules found at the default location.
-     *
-     * @remark      The given module state will be altered according to the current configuration rules.
-     * @deprecated  This is now done automatically when initializing Sight.
-     */
-    [[deprecated("To be removed in Sight 22.0, now done internally when initializing Sight with core::runtime::init().")
-     ]]
-    CORE_API virtual void addDefaultBundles();
-
-    /**
-     * @brief       Retrieves the module for the specified idenfier.
-     *
-     * @param[in]   identifier  a string containing a module identifier
-     * @param[in]   version     the version of the module (undefined by default)
-     *
-     * @return      a shared pointer to the found module or null if none
-     * @deprecated  Bundle has been renamed to Module, please use findModule() instead
-     */
-    [[deprecated("To be removed in Sight 22.0, use findModule() instead")]]
-    CORE_API virtual std::shared_ptr< Module > findBundle(const std::string& identifier,
-                                                          const Version& version = Version() ) const = 0;
-
-    /**
      * @brief       Retrieves the module for the specified idenfier.
      *
      * @param[in]   identifier  a string containing a module identifier
@@ -142,8 +109,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    CORE_API virtual std::shared_ptr< Module > findModule( const std::string& identifier,
-                                                           const Version& version = Version() ) const = 0;
+    CORE_API virtual std::shared_ptr< Module > findModule( const std::string& identifier ) const = 0;
 
     /**
      * @name    Extensions

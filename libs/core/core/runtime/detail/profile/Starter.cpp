@@ -41,9 +41,8 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Starter::Starter( const std::string& identifier, const Version& version) :
-    m_identifier( identifier ),
-    m_version( version )
+Starter::Starter( const std::string& identifier ) :
+    m_identifier( identifier )
 {
 }
 
@@ -51,9 +50,8 @@ Starter::Starter( const std::string& identifier, const Version& version) :
 
 void Starter::apply()
 {
-    auto module = detail::Runtime::get().findEnabledModule(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to start module " + Module::getModuleStr(m_identifier, m_version) + ": not found.",
-                 module == nullptr);
+    auto module = detail::Runtime::get().findEnabledModule(m_identifier);
+    SLM_FATAL_IF("Unable to start module " + m_identifier + ": not found.", module == nullptr);
     try
     {
         if(!module->isStarted())
@@ -62,13 +60,12 @@ void Starter::apply()
         }
         else
         {
-            SLM_WARN("module " + Module::getModuleStr(m_identifier, m_version) + " already started");
+            SLM_WARN("module " + m_identifier + " already started");
         }
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to start module " + Module::getModuleStr(m_identifier, m_version) + ". " +
-                  e.what());
+        SLM_FATAL("Unable to start module " + m_identifier + ". " + e.what());
     }
 }
 

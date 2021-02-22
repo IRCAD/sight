@@ -9,7 +9,7 @@ this mode is not recommanded since each service can pop notification without any
 are already displayed and where they are displayed on screen.
 
 -->
-<plugin id="ExNotifications" version="@PROJECT_VERSION@" >
+<plugin id="ExNotifications" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -31,7 +31,7 @@ are already displayed and where they are displayed on screen.
                 <gui>
                     <frame>
                         <name>ExNotifications</name>
-                        <icon>ExNotifications-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExNotifications/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>

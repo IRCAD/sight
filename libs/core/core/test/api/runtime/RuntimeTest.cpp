@@ -83,7 +83,6 @@ void RuntimeTest::testModule()
 
     CPPUNIT_ASSERT_MESSAGE("Module not found", module);
     CPPUNIT_ASSERT_EQUAL(std::string("sight::module::utest"),  module->getIdentifier());
-    CPPUNIT_ASSERT_EQUAL(Version("0.1"),  module->getVersion());
     // No good parameter test for now, but at least test without any parameter
     CPPUNIT_ASSERT_EQUAL(false,  module->hasParameter("test"));
     CPPUNIT_ASSERT_EQUAL(std::string(),  module->getParameterValue("test"));
@@ -92,7 +91,7 @@ void RuntimeTest::testModule()
     const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
     CPPUNIT_ASSERT_EQUAL(libLocation,  module->getLibraryLocation());
     const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
-    CPPUNIT_ASSERT_EQUAL(rcLocation / "module_utest-0.1",  module->getResourcesLocation());
+    CPPUNIT_ASSERT_EQUAL(rcLocation / "module_utest",  module->getResourcesLocation());
 
     CPPUNIT_ASSERT_EQUAL(std::string("sight::module::utest::Plugin"), module->getClass());
     auto plugin = module->getPlugin();
@@ -113,39 +112,39 @@ void RuntimeTest::testOperations()
 
     // module location prototype
     auto path = core::runtime::getModuleResourcePath(std::string("::sight::module::utest"));
-    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1", path);
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest", path);
 
     path = core::runtime::getModuleResourcePath("notExistingBundle");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
-    path = core::runtime::getModuleResourceFilePath("sight_module_utest-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
+    path = core::runtime::getModuleResourceFilePath("sight_module_utest/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("sight_module_utest-0.1/not_existing.file");
-    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/not_existing.file", path);
+    path = core::runtime::getModuleResourceFilePath("sight_module_utest/not_existing.file");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest/not_existing.file", path);
 
-    path = core::runtime::getModuleResourceFilePath("notExistingBundle-0.1/plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("notExistingBundle/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
-    path = core::runtime::getModuleResourceFilePath("wrong_version_format-0.1/plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("wrong_version_format/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
-    path = core::runtime::getLibraryResourceFilePath("fwLibrary-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
+    path = core::runtime::getLibraryResourceFilePath("fwLibrary/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary/plugin.xml", path);
 
-    path = core::runtime::getResourceFilePath("fwLibrary-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary-0.1/plugin.xml", path);
+    path = core::runtime::getResourceFilePath("fwLibrary/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "fwLibrary/plugin.xml", path);
 
-    path = core::runtime::getResourceFilePath("module_utest-0.1/plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
+    path = core::runtime::getResourceFilePath("module_utest/plugin.xml");
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
     // (module, path) prototype
     path = core::runtime::getModuleResourceFilePath("::sight::module::utest", "plugin.xml");
-    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/plugin.xml", path);
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
     path = core::runtime::getModuleResourceFilePath("::sight::module::utest", "not_existing.file");
-    CPPUNIT_ASSERT_EQUAL(location / "module_utest-0.1/not_existing.file", path);
+    CPPUNIT_ASSERT_EQUAL(location / "module_utest/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);

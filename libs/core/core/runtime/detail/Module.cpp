@@ -61,11 +61,9 @@ SPTR( Module ) Module::getLoadingModule()
 
 Module::Module( const std::filesystem::path& location,
                 const std::string& id,
-                const std::string& version,
                 const std::string& c ) :
     m_resourcesLocation( location.lexically_normal() ),
     m_identifier( id ),
-    m_version( version ),
     m_class( c )
 {
     // Post-condition.
@@ -297,19 +295,12 @@ SPTR( IPlugin ) Module::getPlugin() const
 
 //------------------------------------------------------------------------------
 
-const Version& Module::getVersion() const
-{
-    return m_version;
-}
-
-//------------------------------------------------------------------------------
-
 void Module::loadLibraries()
 {
     // Ensure the module is enabled.
     if( m_enabled == false )
     {
-        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": module is not enabled." );
+        throw RuntimeException( getModuleStr(m_identifier) + ": module is not enabled." );
     }
 
     // Pre-condition
@@ -381,7 +372,7 @@ void Module::loadRequirements()
     {
         std::string message;
 
-        message += "Module " + getModuleStr(m_identifier, m_version) + " was not able to load requirements. ";
+        message += "Module " + getModuleStr(m_identifier) + " was not able to load requirements. ";
         message += e.what();
         throw RuntimeException( message );
     }
@@ -391,10 +382,10 @@ void Module::loadRequirements()
 
 void Module::start()
 {
-    SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " already started.", !m_started );
+    SLM_ASSERT("Module " + getModuleStr(m_identifier) + " already started.", !m_started );
     if( m_enabled == false )
     {
-        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": module is not enabled." );
+        throw RuntimeException( getModuleStr(m_identifier) + ": module is not enabled." );
     }
 
     if( m_plugin == nullptr )
@@ -407,9 +398,10 @@ void Module::start()
         }
         catch( std::exception& e )
         {
-            throw RuntimeException( getModuleStr(m_identifier, m_version) +
+            throw RuntimeException( getModuleStr(m_identifier) +
                                     ": start plugin error (after load requirement) " + e.what() );
         }
+        SLM_INFO("Loaded module '" + m_identifier + "' successfully");
     }
 }
 
@@ -417,7 +409,7 @@ void Module::start()
 
 void Module::startPlugin()
 {
-    SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " plugin is already started.",
+    SLM_ASSERT("Module " + getModuleStr(m_identifier) + " plugin is already started.",
                !m_started );
     // Retrieves the type of the plugin.
     std::string pluginType( getClass() );
@@ -443,7 +435,7 @@ void Module::startPlugin()
     // Ensures that a plugin has been created.
     if( plugin == 0 )
     {
-        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": unable to create a plugin instance." );
+        throw RuntimeException( getModuleStr(m_identifier) + ": unable to create a plugin instance." );
     }
 
     if(core::runtime::getCurrentProfile())
@@ -452,18 +444,18 @@ void Module::startPlugin()
         try
         {
             auto prof = std::dynamic_pointer_cast< detail::profile::Profile>(core::runtime::getCurrentProfile());
-            prof->add(std::make_shared<profile::Stopper>(this->getIdentifier(), this->getVersion()));
+            prof->add(std::make_shared<profile::Stopper>(this->getIdentifier()));
 
             m_plugin = plugin;
             m_plugin->start();
 
-            prof->add(std::make_shared<profile::Initializer>(this->getIdentifier(), this->getVersion()));
+            prof->add(std::make_shared<profile::Initializer>(this->getIdentifier()));
 
             m_started = true;
         }
         catch( std::exception& e )
         {
-            throw RuntimeException( getModuleStr(m_identifier, m_version) + ": start plugin error : " + e.what() );
+            throw RuntimeException( getModuleStr(m_identifier) + ": start plugin error : " + e.what() );
         }
     }
 }
@@ -472,9 +464,9 @@ void Module::startPlugin()
 
 void Module::stop()
 {
-    SLM_ASSERT("Module "+ getModuleStr(m_identifier, m_version) + " not started.", m_started );
-    SLM_ASSERT(getModuleStr(m_identifier, m_version) + " : m_plugin not an intance.", m_plugin != nullptr );
-    SLM_ASSERT("Module " + getModuleStr(m_identifier, m_version) + " not uninitialized.", !m_initialized );
+    SLM_ASSERT("Module "+ getModuleStr(m_identifier) + " not started.", m_started );
+    SLM_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an intance.", m_plugin != nullptr );
+    SLM_ASSERT("Module " + getModuleStr(m_identifier) + " not uninitialized.", !m_initialized );
 
     try
     {
@@ -483,7 +475,7 @@ void Module::stop()
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": stop plugin error : " + e.what() );
+        throw RuntimeException( getModuleStr(m_identifier) + ": stop plugin error : " + e.what() );
     }
 
     detail::Runtime& runtime = detail::Runtime::get();
@@ -505,8 +497,8 @@ void Module::stop()
 //------------------------------------------------------------------------------
 void Module::initialize()
 {
-    SLM_ASSERT("Module '" + getModuleStr(m_identifier, m_version) + "' not started.", m_started );
-    SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' already initialized.", !m_initialized );
+    SLM_ASSERT("Module '" + getModuleStr(m_identifier) + "' not started.", m_started );
+    SLM_ASSERT("Module '"+ getModuleStr(m_identifier) + "' already initialized.", !m_initialized );
     try
     {
         m_initialized = true;
@@ -514,7 +506,7 @@ void Module::initialize()
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
+        throw RuntimeException( getModuleStr(m_identifier) + ": initialize plugin error : " + e.what() );
     }
 }
 
@@ -522,9 +514,9 @@ void Module::initialize()
 
 void Module::uninitialize()
 {
-    SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' has not been started.",
+    SLM_ASSERT("Module '"+ getModuleStr(m_identifier) + "' has not been started.",
                m_plugin != nullptr);
-    SLM_ASSERT("Module '"+ getModuleStr(m_identifier, m_version) + "' not initialized.", m_initialized );
+    SLM_ASSERT("Module '"+ getModuleStr(m_identifier) + "' not initialized.", m_initialized );
     try
     {
         m_plugin->uninitialize();
@@ -532,7 +524,7 @@ void Module::uninitialize()
     }
     catch( std::exception& e )
     {
-        throw RuntimeException( getModuleStr(m_identifier, m_version) + ": initialize plugin error : " + e.what() );
+        throw RuntimeException( getModuleStr(m_identifier) + ": initialize plugin error : " + e.what() );
     }
 }
 
@@ -582,9 +574,9 @@ core::runtime::Module::ExtensionContainer core::runtime::detail::Module::getExte
 
 //------------------------------------------------------------------------------
 
-std::string Module::getModuleStr(const std::string& identifier, const core::runtime::Version& version)
+std::string Module::getModuleStr(const std::string& identifier)
 {
-    return identifier + s_VERSION_DELIMITER + version.string();
+    return identifier;
 }
 
 //------------------------------------------------------------------------------

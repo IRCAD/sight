@@ -1,4 +1,4 @@
-<plugin id="ExImageMix" version="@PROJECT_VERSION@" >
+<plugin id="ExImageMix" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -23,7 +23,7 @@
                 <gui>
                     <frame>
                         <name>ExImageMix</name>
-                        <icon>ExImageMix-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>ExImageMix/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar/>

@@ -75,7 +75,7 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
     }
 
     // Validation
-    auto profileXSDLocation = core::runtime::getLibraryResourceFilePath("core-" CORE_VER "/profile.xsd");
+    auto profileXSDLocation = core::runtime::getLibraryResourceFilePath("core/profile.xsd");
 
     Validator validator(profileXSDLocation);
 
@@ -187,7 +187,7 @@ std::shared_ptr< profile::Starter > ProfileReader::processStarter(xmlNodePtr nod
 
     // Creates the activater object.
     using detail::profile::Starter;
-    std::shared_ptr< Starter > starter( new Starter(identifier, Version(version)) );
+    std::shared_ptr< Starter > starter( new Starter(identifier) );
     return starter;
 }
 

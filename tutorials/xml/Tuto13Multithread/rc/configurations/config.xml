@@ -14,7 +14,7 @@
             <gui>
                 <frame>
                     <name>Tuto13Multithread</name>
-                    <icon>Tuto13Multithread-@PROJECT_VERSION@/tuto.ico</icon>
+                    <icon>Tuto13Multithread/tuto.ico</icon>
                     <minSize width="720" height="600" />
                 </frame>
                 <menuBar />

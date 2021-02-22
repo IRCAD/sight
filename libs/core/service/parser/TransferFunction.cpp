@@ -29,9 +29,6 @@
 #include <data/Color.hpp>
 #include <data/TransferFunction.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::TransferFunction,
-                         ::sight::data::TransferFunction )
-
 namespace sight::service
 {
 namespace parser

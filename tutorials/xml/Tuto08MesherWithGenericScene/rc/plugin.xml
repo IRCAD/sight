@@ -3,7 +3,7 @@
     To use this application, you should open a 3D image mask of an organ. An used the mesher actions to creates a
     reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
  -->
-<plugin id="Tuto08MesherWithGenericScene" version="@PROJECT_VERSION@" >
+<plugin id="Tuto08MesherWithGenericScene" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -28,7 +28,7 @@
                 <gui>
                     <frame>
                         <name>Tuto08MesherWithGenericScene</name>
-                        <icon>Tuto08MesherWithGenericScene-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto08MesherWithGenericScene/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>
@@ -199,15 +199,15 @@
             <service uid="snapshotSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons-0.1/YellowPhoto.svg</icon>
+                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
             <service uid="showNegatoSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                     <checkable>true</checkable>
-                    <icon>sight_module_ui_flaticons-0.1/RedCross.svg</icon>
-                    <icon2>module_ui_flaticons-0.1/Layers.svg</icon2>
+                    <icon>sight_module_ui_flaticons/RedCross.svg</icon>
+                    <icon2>sight_module_ui_flaticons/Layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

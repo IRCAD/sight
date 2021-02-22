@@ -47,10 +47,10 @@
         <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
-                    <menuItem name="Export" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
-                    <menuItem name="Threshold" icon="sight_module_ui_flaticons-0.1/YellowMenu.svg" />
-                    <menuItem name="Mesher" icon="sight_module_ui_flaticons-0.1/YellowMenu.svg" />
+                    <menuItem name="Import" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                    <menuItem name="Export" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <menuItem name="Threshold" icon="sight::module::ui::flaticons/YellowMenu.svg" />
+                    <menuItem name="Mesher" icon="sight::module::ui::flaticons/YellowMenu.svg" />
                 </layout>
             </gui>
             <registry>

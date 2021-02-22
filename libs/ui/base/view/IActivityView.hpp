@@ -25,8 +25,8 @@
 #include "ui/base/config.hpp"
 #include "ui/base/IGuiContainer.hpp"
 
-#include <activity/IActivityLauncher.hpp>
 #include <activity/extension/Activity.hpp>
+#include <activity/IActivityLauncher.hpp>
 
 #include <core/com/Slots.hpp>
 
@@ -53,7 +53,7 @@ namespace view
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="module_ui_icons-0.1/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_icons/app.ico"  />
      </parameters>
    </service>
    @endcode

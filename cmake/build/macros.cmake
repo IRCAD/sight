@@ -146,8 +146,6 @@ endmacro()
 macro(setVersion FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION})
     set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION} PARENT_SCOPE)
-    set(${FWPROJECT_NAME}_FULLNAME ${FWPROJECT_NAME}-${PROJECT_VERSION})
-    set(${FWPROJECT_NAME}_FULLNAME ${FWPROJECT_NAME}-${PROJECT_VERSION} PARENT_SCOPE)
 endmacro()
 
 macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
@@ -169,7 +167,6 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     endif()
 
     target_compile_definitions(${TARGET_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_EXPORTS)
-    target_compile_definitions(${TARGET_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_VER="${PROJECT_VERSION}")
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
 
@@ -257,12 +254,12 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}" )
         endif()
     endif()
 
@@ -270,7 +267,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
     if(UNIX)
 
         string(TOLOWER ${FWPROJECT_NAME} ${FWPROJECT_NAME}_SCRIPT)
-        set(PROJECT_EXECUTABLE "${FWPROJECT_NAME}.bin-${PROJECT_VERSION}")
+        set(PROJECT_EXECUTABLE "${FWPROJECT_NAME}.bin")
 
         # Use the right path separator on unix
         if(EXTERNAL_LIBRARIES)
@@ -345,7 +342,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
     initProject( ${FWPROJECT_NAME} tu "${CMAKE_CURRENT_SOURCE_DIR}")
 
     string(REGEX REPLACE "Test$" "" DIRNAME "${FWPROJECT_NAME}")
-    set(TU_NAME "tu_exec_${DIRNAME}-0.0")
+    set(TU_NAME "tu_exec_${DIRNAME}")
 
     add_executable(${FWPROJECT_NAME}
         ${fwCppunitTest_UNPARSED_ARGUMENTS}
@@ -496,12 +493,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+        set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}" )
         endif()
 
     endif()
@@ -631,7 +628,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    set(MODULE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(MODULE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${FWPROJECT_NAME}")
     
     if( ${FWPROJECT_NAME}_SOURCES )
 
@@ -704,7 +701,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         if(MSVC_IDE)
             # create the launch config for the current app
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            set(PROFILE "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
             if(CMAKE_CL_64)
@@ -721,8 +718,8 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
-            set(LAUNCHER "fwlauncher.bin-${fwlauncher_VERSION}")
-            set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            set(LAUNCHER "fwlauncher.bin")
+            set(PROFILE_PATH "${FWPROJECT_NAME}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}")
             else()
@@ -747,7 +744,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
             set(LAUNCHER "fwlauncher.exe")
-            set(PROFILE_PATH "${${FWPROJECT_NAME}_FULLNAME}/profile.xml")
+            set(PROFILE_PATH "${FWPROJECT_NAME}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}\\${LAUNCHER}")
             else()
@@ -762,14 +759,14 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
 
-    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}")
+    set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
     endif()
 
     if(${FWPROJECT_NAME}_INSTALL OR BUILD_SDK)
-        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}" )
+        createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}" )
     endif()
 
     if(${FWPROJECT_NAME}_MODULE_DEPENDENCIES)

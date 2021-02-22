@@ -1,4 +1,4 @@
-<plugin id="::sight::module::service" library="true" version="@PROJECT_VERSION@" >
+<plugin id="::sight::module::service" library="true" >
 
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::sight::service::extension::AppConfig" schema="appConfig.xsd"/>
@@ -45,25 +45,25 @@
 
     <extension implements="::sight::service::extension::Factory">
         <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::BooleanParser</service>
+        <service>::sight::service::parser::Boolean</service>
         <object>::sight::data::Boolean</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
         <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::FloatParser</service>
+        <service>::sight::service::parser::Float</service>
         <object>::sight::data::Float</object>
     </extension>
 
      <extension implements="::sight::service::extension::Factory">
         <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::IntegerParser</service>
+        <service>::sight::service::parser::Integer</service>
         <object>::sight::data::Integer</object>
     </extension>
 
      <extension implements="::sight::service::extension::Factory">
         <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::StringParser</service>
+        <service>::sight::service::parser::String</service>
         <object>::sight::data::String</object>
     </extension>
 

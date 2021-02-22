@@ -50,16 +50,16 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Show 3d slice cursor" icon="sight_module_ui_icons-0.1/icon-landmark.png" style="check" />
-                    <menuItem name="Show mesh" icon="sight_module_ui_icons-0.1/icon-3D.png" style="check" />
-                    <menuItem name="Manage organs color" icon="sight_module_ui_icons-0.1/ManageOrgan.png" style="check" />
+                    <menuItem name="Show 3d slice cursor" icon="sight::module::ui::icons/icon-landmark.png" style="check" />
+                    <menuItem name="Show mesh" icon="sight::module::ui::icons/icon-3D.png" style="check" />
+                    <menuItem name="Manage organs color" icon="sight::module::ui::icons/ManageOrgan.png" style="check" />
                     <separator/>
-                    <menuItem name="Show/hide box cropping" icon="sight_module_ui_icons-0.1/icon-box.png" style="check" />
-                    <menuItem name="Reset box cropping" icon="sight_module_ui_icons-0.1/icon-box-reset.png" />
+                    <menuItem name="Show/hide box cropping" icon="sight::module::ui::icons/icon-box.png" style="check" />
+                    <menuItem name="Reset box cropping" icon="sight::module::ui::icons/icon-box-reset.png" />
                     <separator/>
-                    <menuItem name="Snapshot VR" icon="sight_module_ui_icons-0.1/camera-photo.png" />
+                    <menuItem name="Snapshot VR" icon="sight::module::ui::icons/camera-photo.png" />
                     <separator/>
-                    <menuItem name="Export Activity" icon="sight_module_ui_icons-0.1/Export.svg" />
+                    <menuItem name="Export Activity" icon="sight::module::ui::icons/Export.svg" />
                 </layout>
             </gui>
             <registry>

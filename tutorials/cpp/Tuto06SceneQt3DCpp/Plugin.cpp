@@ -91,7 +91,7 @@ void Plugin::initialize()
     // Creates the frame configuration.
     service::IService::ConfigType frameConfig;
     frameConfig.put("gui.frame.name", "Tuto06SceneQt3DCpp");
-    frameConfig.put("gui.frame.icon", "Tuto06SceneQt3DCpp-0.2/tuto.ico");
+    frameConfig.put("gui.frame.icon", "Tuto06SceneQt3DCpp/tuto.ico");
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");

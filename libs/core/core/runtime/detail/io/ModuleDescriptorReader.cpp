@@ -30,6 +30,9 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/operations.hpp"
 
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
 #include <libxml/parser.h>
 #include <libxml/xinclude.h>
 
@@ -37,9 +40,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace sight::core::runtime
 {
@@ -60,7 +60,6 @@ std::string ModuleDescriptorReader::NAME("name");
 std::string ModuleDescriptorReader::PLUGIN("plugin");
 std::string ModuleDescriptorReader::REQUIREMENT("requirement");
 std::string ModuleDescriptorReader::SCHEMA("schema");
-std::string ModuleDescriptorReader::VERSION("version");
 std::string ModuleDescriptorReader::POINT("point");
 
 //------------------------------------------------------------------------------
@@ -84,7 +83,7 @@ const ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModu
     std::filesystem::directory_iterator endEntry;
     for(; currentEntry != endEntry; ++currentEntry)
     {
-        std::filesystem::path entryPath = *currentEntry;
+        const std::filesystem::path entryPath = *currentEntry;
 
         if(std::filesystem::is_directory(entryPath))
         {
@@ -106,6 +105,7 @@ const ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModu
             }
         }
     }
+
     return modules;
 }
 
@@ -122,7 +122,7 @@ std::shared_ptr< Module> ModuleDescriptorReader::createModule(const std::filesys
     }
 
     // Validation
-    auto pluginXSDLocation = core::runtime::getLibraryResourceFilePath("core-" CORE_VER "/plugin.xsd");
+    auto pluginXSDLocation = core::runtime::getLibraryResourceFilePath("core/plugin.xsd");
 
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
@@ -355,7 +355,6 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
     // Processes all plugin attributes.
     xmlAttrPtr curAttr;
     std::string moduleIdentifier;
-    std::string version;
     std::string pluginClass;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
@@ -365,20 +364,14 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
             boost::algorithm::trim_left_if(moduleIdentifier, [](auto x) { return x == ':'; } );
             continue;
         }
-
-        if(xmlStrcmp(curAttr->name, (const xmlChar*) VERSION.c_str()) == 0)
-        {
-            version = (const char*) curAttr->children->content;
-            continue;
-        }
     }
     SLM_ASSERT("module identifier is empty", !moduleIdentifier.empty());
 
-    if( core::runtime::Runtime::getDefault()->findModule(moduleIdentifier, Version(version)))
+    if( core::runtime::Runtime::getDefault()->findModule(moduleIdentifier))
     {
         return module;
     }
-    
+
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) LIBRARY.c_str()) == 0)
@@ -388,14 +381,14 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
                 // Deduce the library name from the plugin name
                 std::string libname = boost::algorithm::replace_all_copy(moduleIdentifier, "::", "_");
                 boost::algorithm::trim_left_if(libname, [](auto x) { return x == '_'; } );
-    
+
                 SLM_INFO("Plugin " + moduleIdentifier + " holds library " + libname);
 
                 // Creates the library
                 // If we have a library, deduce the plugin name
                 pluginClass = moduleIdentifier + "::Plugin";
-                
-                module = std::make_shared<Module>(location, moduleIdentifier, version, pluginClass);
+
+                module = std::make_shared<Module>(location, moduleIdentifier, pluginClass);
 
                 auto library = std::make_shared<dl::Library>(libname);
                 module->setLibrary(library);
@@ -407,7 +400,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
 
     if(module == nullptr)
     {
-        module = std::make_shared<Module>(location, moduleIdentifier, version);
+        module = std::make_shared<Module>(location, moduleIdentifier);
     }
 
     // Processes all child nodes.

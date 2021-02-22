@@ -1,4 +1,4 @@
-<plugin id="registrationActivity" version="@PROJECT_VERSION@" >
+<plugin id="registrationActivity" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -16,7 +16,7 @@
         <id>registrationActivity</id>
         <title>Registration</title>
         <desc>Activity to register two images.</desc>
-        <icon>sight_module_ui_icons-0.1/icon-blend.png</icon>
+        <icon>sight_module_ui_icons/icon-blend.png</icon>
         <requirements>
             <requirement name="referenceSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" >
                 <desc>The object that will be transformed in order to be superimposed to the Target.</desc>

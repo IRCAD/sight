@@ -1,4 +1,4 @@
-<plugin id="blendActivity" version="@PROJECT_VERSION@" >
+<plugin id="blendActivity" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -12,7 +12,7 @@
         <id>Blend</id>
         <title>Blend</title>
         <desc>Activity to superimpose two images.</desc>
-        <icon>sight_module_ui_icons-0.1/icon-blend.png</icon>
+        <icon>sight_module_ui_icons/icon-blend.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>

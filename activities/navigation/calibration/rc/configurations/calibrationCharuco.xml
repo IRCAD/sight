@@ -37,15 +37,15 @@
         <service uid="toolBarView" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="sight_module_ui_icons-0.1/Back.svg" />
-                    <menuItem name="Next" icon="sight_module_ui_icons-0.1/Next.svg" />
-                    <menuItem name="Export camera series" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
+                    <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
+                    <menuItem name="Export camera series" icon="sight::module::ui::flaticons/BlueSave.svg" />
                     <separator/>
-                    <menuItem name="Export xml/yaml" icon="sight_module_ui_flaticons-0.1/BlueFile.svg" />
+                    <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />
                     <separator/>
                     <editor/>
                     <separator/>
-                    <menuItem name="Chessboard size" icon="sight_module_ui_flaticons-0.1/GreyChessboard.svg" />
+                    <menuItem name="Chessboard size" icon="sight::module::ui::flaticons/GreyChessboard.svg" />
                 </layout>
             </gui>
             <registry>

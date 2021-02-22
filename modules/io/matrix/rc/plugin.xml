@@ -1,4 +1,4 @@
-<plugin id="::sight::module::io::matrix" library="true" version="@PROJECT_VERSION@" >
+<plugin id="::sight::module::io::matrix" library="true" >
 
     <extension implements="::sight::service::extension::Factory">
         <type>::sight::io::base::service::IReader</type>

@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <boost/utility.hpp>
 
@@ -51,7 +50,7 @@ public:
      *
      * @param[in]   _identifier  a string containing a module identifier
      */
-    Stopper( const std::string& _identifier, const Version& version = Version() );
+    Stopper( const std::string& _identifier );
 
     /**
      * @brief   Applies the Stopper on the system.
@@ -63,7 +62,6 @@ public:
 private:
 
     const std::string m_identifier;     ///< the module identifier
-    const Version m_version;            ///< the module version
 };
 
 } // namespace profile

@@ -59,7 +59,7 @@ void Plugin::initialize()
     {
         service::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto01DataServiceBasicCpp");
-        config.put("gui.frame.icon", "Tuto01DataServiceBasicCpp-0.2/tuto.ico");
+        config.put("gui.frame.icon", "Tuto01DataServiceBasicCpp/tuto.ico");
         config.put("gui.frame.minSize.<xmlattr>.width", "800");
         config.put("gui.frame.minSize.<xmlattr>.height", "600");
         config.put("registry.view.<xmlattr>.sid", "imageRendereSrv");

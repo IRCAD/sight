@@ -38,9 +38,8 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Uninitializer::Uninitializer( const std::string& identifier, const Version& version ) :
-    m_identifier( identifier ),
-    m_version( version )
+Uninitializer::Uninitializer( const std::string& identifier ) :
+    m_identifier( identifier )
 {
 }
 
@@ -48,8 +47,8 @@ Uninitializer::Uninitializer( const std::string& identifier, const Version& vers
 
 void Uninitializer::apply()
 {
-    auto module = detail::Runtime::get().findEnabledModule(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to start module " + Module::getModuleStr(m_identifier, m_version) + ": not found.",
+    auto module = detail::Runtime::get().findEnabledModule(m_identifier);
+    SLM_FATAL_IF("Unable to start module " + m_identifier + ": not found.",
                  module == nullptr);
     try
     {
@@ -57,8 +56,7 @@ void Uninitializer::apply()
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to uninitialize module " + detail::Module::getModuleStr(m_identifier,
-                                                                                  m_version) + ". " + e.what());
+        SLM_FATAL("Unable to uninitialize module " + m_identifier + " : " + e.what());
     }
 }
 

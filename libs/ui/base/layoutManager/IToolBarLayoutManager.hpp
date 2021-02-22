@@ -121,12 +121,12 @@ public:
      *>
            <gui>
                <layout style="ToolButtonIconOnly">
-                   <menuItem name="My item 2" style="check" icon="TutoGui-0.1/system.png"
-     * icon2="TutoGui-0.1/monkey.png" />
-                   <menuItem name="My item 3" style="check" icon="TutoGui-0.1/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="TutoGui/system.png"
+     * icon2="TutoGui/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="TutoGui/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="TutoGui-0.1/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="TutoGui-0.1/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="TutoGui/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="TutoGui/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -149,7 +149,7 @@ public:
      *   - \b style : (optional, default=ToolButtonIconOnly) describe the style of the tool button
      * (possible values: ToolButtonIconOnly/ToolButtonTextOnly/ToolButtonTextBesideIcon/ToolButtonTextUnderIcon
      * /ToolButtonFollowStyle )
-     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui-0.1/system.png"/\> :
+     *  - \<menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file

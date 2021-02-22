@@ -1,4 +1,4 @@
-<plugin id="ExDicomSegmentation" version="@PROJECT_VERSION@" >
+<plugin id="ExDicomSegmentation" >
 
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
@@ -15,7 +15,7 @@
         <id>ExDicomSegmentation_VTKMesher_Activity</id>
         <title>VTK mesher</title>
         <desc>Mesher activity using VTK</desc>
-        <icon>sight_module_ui_flaticons-0.1/GreenMedicine.svg</icon>
+        <icon>sight_module_ui_flaticons/GreenMedicine.svg</icon>
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -32,7 +32,7 @@
         <id>ExDicomSegmentation_Threshold_Activity</id>
         <title>Threshold</title>
         <desc>Simple threshold activity</desc>
-        <icon>sight_module_ui_flaticons-0.1/GreenMedicine.svg</icon>
+        <icon>sight_module_ui_flaticons/GreenMedicine.svg</icon>
         <requirements>
             <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -48,7 +48,7 @@
         <id>ExDicomSegmentation_Base_Activity</id>
         <title>ExDicomSegmentation</title>
         <desc>ExDicomSegmentation main activity</desc>
-        <icon>sight_module_ui_flaticons-0.1/GreenMedicine.svg</icon>
+        <icon>sight_module_ui_flaticons/GreenMedicine.svg</icon>
         <requirements />
         <appConfig id="ExDicomSegmentation_Base_AppCfg" >
             <parameters />
@@ -69,7 +69,7 @@
                 <gui>
                     <frame>
                         <name>ExDicomSegmentation</name>
-                        <icon>ExDicomSegmentation-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExDicomSegmentation/app.ico</icon>
                     </frame>
                 </gui>
                 <registry>
@@ -83,7 +83,7 @@
                 <inout key="seriesDB" uid="seriesDB" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>
-                    <parameter replace="ICON_PATH" by="ExDicomSegmentation-@PROJECT_VERSION@/tuto.ico" />
+                    <parameter replace="ICON_PATH" by="ExDicomSegmentation/tuto.ico" />
                     <parameter replace="DYNAMICVIEW_SENDER_CHANNEL" by="DYNAMICVIEW_RECIEVER_CHANNEL" />
                 </parameters>
                 <config document="false" />

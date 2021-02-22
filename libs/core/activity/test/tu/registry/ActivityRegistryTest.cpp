@@ -57,7 +57,7 @@ void ActivityRegistryTest::setUp()
     m_pimpl             = std::make_shared< ActivityRegistryTestPimpl >();
     m_pimpl->activities = activity::extension::Activity::New();
 
-    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity-0.0"));
+    core::runtime::addModules(core::runtime::getResourceFilePath("tu_exec_activity"));
     core::runtime::loadModule("tu_registry");
 
     m_pimpl->activities->parseBundleInformation();

@@ -1,4 +1,4 @@
-<plugin id="ExDump" version="@PROJECT_VERSION@" >
+<plugin id="ExDump" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::atoms" />
@@ -22,7 +22,7 @@
                 <gui>
                     <frame>
                         <name>ExDump</name>
-                        <icon>ExDump-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExDump/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />
@@ -91,10 +91,10 @@
             <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Open..." icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
-                        <menuItem name="Save..." icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
+                        <menuItem name="Open..." icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                        <menuItem name="Save..." icon="sight::module::ui::flaticons/BlueSave.svg" />
                         <separator />
-                        <menuItem name="Dump all" icon="monitorQt-0.1/icon-dump.svg" />
+                        <menuItem name="Dump all" icon="monitorQt/icon-dump.svg" />
                     </layout>
                 </gui>
                 <registry>

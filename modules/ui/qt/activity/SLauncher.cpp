@@ -34,6 +34,7 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <data/ActivitySeries.hpp>
@@ -42,10 +43,9 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
+#include <service/extension/AppConfig.hpp>
 #include <service/IAppConfigManager.hpp>
 #include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
-#include <service/extension/AppConfig.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -456,7 +456,7 @@ void SLauncher::buildActivity(const ActivityInfo& info,
 void SLauncher::sendConfig( const ActivityInfo& info )
 {
     // Start module containing the activity if it is not started
-    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
     SLM_WARN_IF("Module '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
                 module->isStarted());
     if (!module->isStarted())

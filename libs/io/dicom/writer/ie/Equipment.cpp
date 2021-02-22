@@ -90,7 +90,7 @@ void Equipment::writeEnhancedGeneralEquipmentModule()
     io::dicom::helper::DicomDataWriter::setTagValue< 0x0008, 0x1090 >("Sight_FWGDCMIO", dataset);
 
     // Device Serial Number - Type 1
-    std::string deviceSerialNumber = std::string(IO_DICOM_VER);
+    std::string deviceSerialNumber = std::string("0.1");
     io::dicom::helper::DicomDataWriter::setTagValue< 0x0018, 0x1000 >(deviceSerialNumber, dataset);
 }
 

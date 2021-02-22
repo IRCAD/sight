@@ -227,13 +227,13 @@
             <in key="currentTFPool" uid="${currentTFPool}" optional="yes" />
             <inout key="tfPools" uid="${tfPools}" autoConnect="yes" />
             <out key="tfPool" uid="${currentTFPool}" />
-            <config deleteicon="sight_module_ui_flaticons-0.1/RedDeleteFile.svg"
-            newicon="sight_module_ui_flaticons-0.1/GreenNewFile.svg"
-            copyicon="sight_module_ui_flaticons-0.1/GreenCopyFile.svg"
-            reinitializeicon="sight_module_ui_flaticons-0.1/RedResetFile.svg"
-            renameicon="sight_module_ui_flaticons-0.1/YellowRenameFile.svg"
-            importicon="sight_module_ui_flaticons-0.1/BlueLoad.svg"
-            exporticon="sight_module_ui_flaticons-0.1/BlueSave.svg"/>
+            <config deleteicon="sight::module::ui::flaticons/RedDeleteFile.svg"
+            newicon="sight::module::ui::flaticons/GreenNewFile.svg"
+            copyicon="sight::module::ui::flaticons/GreenCopyFile.svg"
+            reinitializeicon="sight::module::ui::flaticons/RedResetFile.svg"
+            renameicon="sight::module::ui::flaticons/YellowRenameFile.svg"
+            importicon="sight::module::ui::flaticons/BlueLoad.svg"
+            exporticon="sight::module::ui::flaticons/BlueSave.svg"/>
         </service>
 
         <service uid="tfMergerSvr" type="::sight::module::data::SMergeTF" autoConnect="yes" >

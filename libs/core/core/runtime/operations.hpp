@@ -28,7 +28,6 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/Runtime.hpp"
 #include "core/runtime/RuntimeException.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <core/base.hpp>
 
@@ -130,8 +129,8 @@ CORE_API std::filesystem::path getModuleResourceFilePath(const std::string& modu
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a module identifier.
- * For instance for "module-0.2/dir/file.txt", the function returns
- * "/home/login/sight/build/share/module-0.2/dir/file.txt"
+ * For instance for "module/dir/file.txt", the function returns
+ * "/home/login/sight/build/share/module/dir/file.txt"
  *
  * @param   path                relative path whose first element is a module identifier
  *
@@ -141,8 +140,8 @@ CORE_API std::filesystem::path getModuleResourceFilePath(const std::filesystem::
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
- * For instance for "fwLib-0.2/dir/file.txt", the function returns
- * "/home/login/sight/build/share/fwLib-0.2/dir/file.txt"
+ * For instance for "fwLib/dir/file.txt", the function returns
+ * "/home/login/sight/build/share/fwLib/dir/file.txt"
  *
  * @param   path                relative path whose first element is a library identifier
  *
@@ -155,14 +154,14 @@ CORE_API std::filesystem::path getLibraryResourceFilePath(const std::filesystem:
  *  whose first element is a library or a module identifier.
  *
  * For instance for a library:
- *  - "fwLib-0.2/dir/file.txt"
+ *  - "fwLib/dir/file.txt"
  * the function returns:
- *  - "/home/login/sight/build/share/fwLib-0.2/dir/file.txt"
+ *  - "/home/login/sight/build/share/fwLib/dir/file.txt"
  *
  * For instance for a module:
- *  - "module-0.2/dir/file.txt"
+ *  - "module/dir/file.txt"
  *  the function returns:
- * - "/home/login/sight/build/share/module-0.2/dir/file.txt"
+ * - "/home/login/sight/build/share/module/dir/file.txt"
  *
  * @param   path   relative path whose first element is a module or library identifier
  *
@@ -218,7 +217,7 @@ CORE_API void addModules( const std::filesystem::path& directory );
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
-CORE_API std::shared_ptr<Module> loadModule( const std::string& identifier, const Version& version = Version() );
+CORE_API std::shared_ptr<Module> loadModule( const std::string& identifier );
 
 /**
  * @brief   Load a library.
@@ -247,7 +246,7 @@ CORE_API std::shared_ptr< core::runtime::Profile > startProfile( const std::file
  *
  * @return  a shared pointer to the found module, or empty when none
  */
-CORE_API std::shared_ptr<Module> findModule( const std::string& identifier, const Version& version = Version() );
+CORE_API std::shared_ptr<Module> findModule( const std::string& identifier );
 
 /**
  * @brief   Starts the module specified by the given identifier.

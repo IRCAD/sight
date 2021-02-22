@@ -48,7 +48,6 @@ class Module :  public core::runtime::Module,
                 public std::enable_shared_from_this< Module >
 {
 public:
-    static const char s_VERSION_DELIMITER = '-';
     /**
      * @name    Type definitions
      */
@@ -81,7 +80,6 @@ public:
      */
     Module( const std::filesystem::path& location,
             const std::string& id,
-            const std::string& version,
             const std::string& pluginClass = "");
 
     /**
@@ -130,13 +128,6 @@ public:
      * @return  a string containing the module's plugin class
      */
     const std::string getClass() const final;
-
-    /**
-     * @brief   Retrieves the version of the module.
-     *
-     * @return  the module version
-     */
-    const Version& getVersion() const final;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.
@@ -391,7 +382,7 @@ public:
         return m_initialized;
     }
 
-    static std::string getModuleStr(const std::string& identifier, const Version& version);
+    static std::string getModuleStr(const std::string& identifier);
 
 private:
 
@@ -405,7 +396,6 @@ private:
     std::filesystem::path m_libraryLocation;            ///< the path to the module libraries
     const std::filesystem::path m_resourcesLocation;    ///< the path to the module resources
     const std::string m_identifier;                     ///< a string containing the module identifier
-    const Version m_version;                            ///< defines the version of the module
     const std::string m_class;                          ///< a string containing the module's plugin class name
     ExtensionContainer m_extensions;                    ///< all extensions
     ExtensionPointContainer m_extensionPoints;          ///< all extension points

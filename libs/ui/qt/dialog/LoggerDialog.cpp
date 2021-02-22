@@ -110,17 +110,17 @@ bool LoggerDialog::show()
     QLabel* iconLabel = new QLabel();
     if(m_logger->count(core::log::Log::CRITICAL) > 0)
     {
-        const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/critical.png");
+        const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/critical.png");
         iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     else if(m_logger->count(core::log::Log::WARNING) > 0)
     {
-        const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/warning.png");
+        const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/warning.png");
         iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     else
     {
-        const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/information.png");
+        const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/information.png");
         iconLabel->setPixmap(QIcon(QString::fromStdString(path.string())).pixmap(48, 48));
     }
     messageLayout->addWidget(iconLabel);
@@ -153,8 +153,8 @@ bool LoggerDialog::show()
 
     // Create a checkbox to display the logs
     QCheckBox* checkbox      = new QCheckBox("Details");
-    const auto detailshidden = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/details-hidden.png").string();
-    const auto detailsshown  = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/details-shown.png").string();
+    const auto detailshidden = core::runtime::getLibraryResourceFilePath("fwGuiQt/details-hidden.png").string();
+    const auto detailsshown  = core::runtime::getLibraryResourceFilePath("fwGuiQt/details-shown.png").string();
     std::string styleSheet;
     styleSheet += "QCheckBox::indicator:unchecked { image: url(" + detailshidden + "); }";
     styleSheet += "QCheckBox::indicator:checked { image: url(" + detailsshown + "); }";
@@ -178,19 +178,19 @@ bool LoggerDialog::show()
         if (level == core::log::Log::INFORMATION)
         {
             levelString = "Information";
-            const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/information.png");
+            const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/information.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
         else if (level == core::log::Log::WARNING)
         {
             levelString = "Warning";
-            const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/warning.png");
+            const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/warning.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
         else if (level == core::log::Log::CRITICAL)
         {
             levelString = "Critical";
-            const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt-0.1/critical.png");
+            const auto path = core::runtime::getLibraryResourceFilePath("fwGuiQt/critical.png");
             levelIcon = QIcon(QString::fromStdString(path.string()));
         }
 

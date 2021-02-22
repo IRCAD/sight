@@ -34,8 +34,8 @@
 
 #include <core/tools/Os.hpp>
 
-#include <boost/dll.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/dll.hpp>
 
 #include <filesystem>
 #include <functional>
@@ -67,6 +67,7 @@ Runtime::~Runtime()
 
 void Runtime::addModule( std::shared_ptr< Module > module )
 {
+    SLM_DEBUG("Module " + module->getIdentifier() + " added.")
     m_modules.insert( module );
     std::for_each( module->extensionsBegin(), module->extensionsEnd(),
                    std::bind(&Runtime::addExtension, this, std::placeholders::_1));
@@ -87,13 +88,6 @@ void Runtime::unregisterModule( std::shared_ptr< Module > module )
     std::for_each( module->extensionsBegin(), module->extensionsEnd(),
                    std::bind(&Runtime::unregisterExtension, this, std::placeholders::_1));
     m_modules.erase( module );
-}
-
-//------------------------------------------------------------------------------
-
-void Runtime::addBundles( const std::filesystem::path& repository )
-{
-    this->addModules(repository);
 }
 
 //------------------------------------------------------------------------------
@@ -228,24 +222,16 @@ void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 //------------------------------------------------------------------------------
 
 std::shared_ptr< core::runtime::Module >
-Runtime::findBundle( const std::string& identifier, const Version& version ) const
+Runtime::findModule( const std::string& identifier ) const
 {
-    FW_DEPRECATED_MSG("findBundle", "22.0");
+    SLM_ASSERT("Module identifier should not be empty", !identifier.empty());
 
-    return findModule(identifier, version);
-}
-
-//------------------------------------------------------------------------------
-
-std::shared_ptr< core::runtime::Module >
-Runtime::findModule( const std::string& identifier, const Version& version ) const
-{
     const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
-    
+
     std::shared_ptr<Module> resModule;
     for(const std::shared_ptr<Module>& module :  m_modules)
     {
-        if(module->getIdentifier() == id && module->getVersion() == version)
+        if(module->getIdentifier() == id)
         {
             resModule = module;
             break;
@@ -268,12 +254,16 @@ Runtime::findModule( const std::string& identifier, const Version& version ) con
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identifier, const Version& version ) const
+std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identifier ) const
 {
+    SLM_ASSERT("Module identifier should not be empty", !identifier.empty());
+
+    const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
+
     std::shared_ptr<Module> resModule;
     for(const std::shared_ptr<Module>& module :  m_modules)
     {
-        if(module->getIdentifier() == identifier && module->getVersion() == version && module->isEnabled())
+        if(module->getIdentifier() == id && module->isEnabled())
         {
             resModule = module;
             break;
@@ -317,7 +307,7 @@ Runtime& Runtime::get()
 std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
 {
     std::shared_ptr<Extension> resExtension;
-    for(const ExtensionContainer::value_type& extension :  m_extensions)
+    for(const ExtensionContainer::value_type& extension : m_extensions)
     {
         if(extension->getIdentifier() == identifier && extension->isEnabled())
         {

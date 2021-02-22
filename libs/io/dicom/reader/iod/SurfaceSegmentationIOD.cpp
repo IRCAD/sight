@@ -107,7 +107,7 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
 
     // Load Segmented Property Registry
     const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
-        "io_dicom-" IO_DICOM_VER "/SegmentedPropertyRegistry.csv");
+        "io_dicom/SegmentedPropertyRegistry.csv");
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {
         throw io::dicom::exception::Failed("Unable to load segmented property registry: '" +

@@ -1,4 +1,4 @@
-<plugin id="ARCalibration" version="@PROJECT_VERSION@">
+<plugin id="ARCalibration">
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::memory" />
@@ -15,7 +15,7 @@
         <id>ARCalibrationActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for ARCalibration</desc>
-        <icon>sight_module_ui_flaticons-0.1/YellowCamera.svg</icon>
+        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
         <requirements />
         <appConfig id="ARCalibration_ActivitySelector_AppCfg">
             <parameters />
@@ -26,7 +26,7 @@
         <id>ARCalibration_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="ARCalibration @PROJECT_VERSION@" />
-            <param name="ICON_PATH" value="module_ui_flaticons-0.1/YellowCamera.svg" />
+            <param name="ICON_PATH" value="sight_module_ui_flaticons/YellowCamera.svg" />
         </parameters>
     </extension>
 

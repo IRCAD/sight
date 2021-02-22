@@ -1,4 +1,4 @@
-<plugin id="::sight::module::ui::dicom" library="true" version="@PROJECT_VERSION@" >
+<plugin id="::sight::module::ui::dicom" library="true" >
     
     <extension implements="::sight::service::extension::Factory">
         <type>::sight::ui::base::IEditor</type>

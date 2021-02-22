@@ -24,8 +24,8 @@
 
 #include <core/com/Slot.hxx>
 #include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
-
 #include <core/thread/ActiveWorkers.hpp>
+
 #include <service/registry/Proxy.hpp>
 
 using namespace sight;
@@ -157,7 +157,7 @@ void Plugin::initialize()
     // create the frame configuration
     service::IService::ConfigType frameConfig;
     frameConfig.put("gui.frame.name", "Tuto03MesherWithGenericSceneCpp");
-    frameConfig.put("gui.frame.icon", "Tuto03MesherWithGenericSceneCpp-0.2/tuto.ico");
+    frameConfig.put("gui.frame.icon", "Tuto03MesherWithGenericSceneCpp/tuto.ico");
     frameConfig.put("gui.menuBar", "");
     frameConfig.put("registry.menuBar.<xmlattr>.sid", "menuBar");
     frameConfig.put("registry.view.<xmlattr>.sid", "mainView");
@@ -380,8 +380,8 @@ void Plugin::initialize()
 
     service::IService::ConfigType showScanEditorConfig;
     showScanEditorConfig.add("config.checkable", true);
-    showScanEditorConfig.add("config.icon", "module_ui_icons-0.1/sliceHide.png");
-    showScanEditorConfig.add("config.icon2", "module_ui_icons-0.1/sliceShow.png");
+    showScanEditorConfig.add("config.icon", "module_ui_icons/sliceHide.png");
+    showScanEditorConfig.add("config.icon2", "module_ui_icons/sliceShow.png");
     showScanEditorConfig.add("config.iconWidth", "40");
     showScanEditorConfig.add("config.iconHeight", "16");
     showScanEditorConfig.add("config.checked", true);

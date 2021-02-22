@@ -38,10 +38,10 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Read DICOM files" icon="sight_module_ui_icons-0.1/Import.svg" />
-                    <menuItem name="Preview filtered DICOM series" icon="sight_module_ui_icons-0.1/Preview.svg" style="check" />
-                    <menuItem name="Read filtered DICOM series" icon="sight_module_ui_icons-0.1/Apply.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="sight_module_ui_icons-0.1/Push.svg" />
+                    <menuItem name="Read DICOM files" icon="sight::module::ui::icons/Import.svg" />
+                    <menuItem name="Preview filtered DICOM series" icon="sight::module::ui::icons/Preview.svg" style="check" />
+                    <menuItem name="Read filtered DICOM series" icon="sight::module::ui::icons/Apply.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="sight::module::ui::icons/Push.svg" />
 
                     <spacer />
 
@@ -114,7 +114,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="activityHelp" type="::sight::module::ui::qt::SLaunchBrowser" >
-            <url>dicomFilteringActivity-0.1/quickstart.pdf</url>
+            <url>dicomFilteringActivity/quickstart.pdf</url>
         </service>
 
         <!-- READING SELECTION -->
@@ -145,7 +145,7 @@
         <service uid="action_previewFilteredDicomSeries" type="::sight::module::ui::base::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout key="SERIESDB" uid="filteredSeriesDB" />
-            <parameter replace="ICON_PATH" by="module_ui_icons-0.1/Preview.svg" />
+            <parameter replace="ICON_PATH" by="module_ui_icons/Preview.svg" />
         </service>
 
         <service uid="action_convertSeries" type="::sight::module::io::dicom::SDicomSeriesConverter">

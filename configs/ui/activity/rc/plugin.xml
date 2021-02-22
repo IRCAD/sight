@@ -1,4 +1,4 @@
-<plugin id="activitiesConfig" version="@PROJECT_VERSION@">
+<plugin id="sight::config::ui::activity">
 
     <requirement id="sight::module::io::atoms" />
     <requirement id="sight::module::activity" />
@@ -15,8 +15,8 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::sight::data::ImageSeries" icon="sight_module_ui_icons-0.1/ImageSeries.svg" />
-                <icon type="::sight::data::ModelSeries" icon="sight_module_ui_icons-0.1/ModelSeries.svg" />
+                <icon type="::sight::data::ImageSeries" icon="sight::module::ui::icons/ImageSeries.svg" />
+                <icon type="::sight::data::ModelSeries" icon="sight::module::ui::icons/ModelSeries.svg" />
             </icons>
         </config>
     </extension>

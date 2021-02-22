@@ -1,4 +1,4 @@
-<plugin id="ExActivities" version="@PROJECT_VERSION@" >
+<plugin id="ExActivities" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -12,7 +12,7 @@
         <id>ExImage_Import_Activity</id>
         <title>Image reading</title>
         <desc>Activity to read an image</desc>
-        <icon>sight_module_ui_flaticons-0.1/BlueFile.svg</icon>
+        <icon>sight_module_ui_flaticons/BlueFile.svg</icon>
         <requirements>
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be read by this activity.</desc>
@@ -29,7 +29,7 @@
         <id>ExImage_Negatoscope_Activity</id>
         <title>Image displaying</title>
         <desc>Activity to display an image</desc>
-        <icon>sight_module_ui_flaticons-0.1/Layers.svg</icon>
+        <icon>sight_module_ui_flaticons/Layers.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
@@ -51,7 +51,7 @@
         <id>ExImage_VolumeRendering_Activity</id>
         <title>Image displaying Volume</title>
         <desc>Activity to display an image in a volume rendering</desc>
-        <icon>sight_module_ui_flaticons-0.1/Volume.svg</icon>
+        <icon>sight_module_ui_flaticons/Volume.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
             <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
@@ -95,7 +95,7 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::sight::data::Image" icon="sight_module_ui_flaticons-0.1/Volume.svg" />
+                <icon type="::sight::data::Image" icon="sight::module::ui::flaticons/Volume.svg" />
             </icons>
         </config>
     </extension>
@@ -104,7 +104,7 @@
         <id>ExActivities_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="Ex Activity @PROJECT_VERSION@" />
-            <param name="ICON_PATH" value="ExActivities-@PROJECT_VERSION@/app.ico" />
+            <param name="ICON_PATH" value="ExActivities/app.ico" />
             <param name="SEQUENCER_CONFIG" value="ExActivities_Sequencer_SrvCfg" />
             <param name="WIZARD_CONFIG" value="ExActivities_Wizard_SrvCfg" />
         </parameters>

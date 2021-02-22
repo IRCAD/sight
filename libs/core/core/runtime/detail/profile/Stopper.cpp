@@ -41,9 +41,8 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Stopper::Stopper( const std::string& identifier, const Version& version) :
-    m_identifier( identifier ),
-    m_version( version )
+Stopper::Stopper( const std::string& identifier ) :
+    m_identifier( identifier )
 {
 }
 
@@ -51,17 +50,17 @@ Stopper::Stopper( const std::string& identifier, const Version& version) :
 
 void Stopper::apply()
 {
-    auto module = detail::Runtime::get().findEnabledModule(m_identifier, m_version);
-    SLM_FATAL_IF("Unable to stop module " + Module::getModuleStr(m_identifier, m_version) + ". Not found.",
+    auto module = detail::Runtime::get().findEnabledModule(m_identifier);
+    SLM_FATAL_IF("Unable to stop module " + m_identifier + ". Not found.",
                  module == nullptr);
     try
     {
-        SLM_INFO("Stopping module : " + Module::getModuleStr(m_identifier, m_version));
+        SLM_INFO("Stopping module : " + m_identifier);
         module->stop();
     }
     catch( const std::exception& e )
     {
-        SLM_ERROR("Unable to stop module " + Module::getModuleStr(m_identifier, m_version) + ". " + e.what());
+        SLM_ERROR("Unable to stop module " + m_identifier + ". " + e.what());
     }
 }
 

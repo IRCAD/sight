@@ -46,10 +46,10 @@ typedef const std::map< ui::base::dialog::IMessageDialog::Icons, std::string> Me
 MessageDialogQmlIconsType messageDialogQmlIcons =
 {
     {ui::base::dialog::IMessageDialog::NONE, ""},
-    {ui::base::dialog::IMessageDialog::QUESTION, "fwGuiQml-" UI_QML_VER "/question.svg"},
-    {ui::base::dialog::IMessageDialog::INFO, "fwGuiQml-" UI_QML_VER "/information.svg"},
-    {ui::base::dialog::IMessageDialog::WARNING, "fwGuiQml-" UI_QML_VER "/warning.svg"},
-    {ui::base::dialog::IMessageDialog::CRITICAL, "fwGuiQml-" UI_QML_VER "/critical.svg"}
+    {ui::base::dialog::IMessageDialog::QUESTION, "fwGuiQml/question.svg"},
+    {ui::base::dialog::IMessageDialog::INFO, "fwGuiQml/information.svg"},
+    {ui::base::dialog::IMessageDialog::WARNING, "fwGuiQml/warning.svg"},
+    {ui::base::dialog::IMessageDialog::CRITICAL, "fwGuiQml/critical.svg"}
 };
 
 // value of the enum in int value of Dialog
@@ -128,7 +128,7 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 
     // get the path of the qml ui file in the 'rc' directory
     const auto& dialogPath = core::runtime::getLibraryResourceFilePath(
-        "fwGuiQml-" UI_QML_VER "/dialog/MessageDialog.qml");
+        "fwGuiQml/dialog/MessageDialog.qml");
     // set the context for the new component
     QSharedPointer<QQmlContext> context = QSharedPointer<QQmlContext>(new QQmlContext(engine->getRootContext()));
     context->setContextProperty("messageDialog", this);

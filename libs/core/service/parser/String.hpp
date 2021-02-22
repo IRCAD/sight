@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,50 +21,23 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include "service/config.hpp"
 
-#include <boost/utility.hpp>
+#include <service/parser/GenericField.hpp>
 
-#include <string>
-
-namespace sight::core::runtime
+namespace sight::service
 {
-
-namespace detail
-{
-
-namespace profile
+namespace parser
 {
 
 /**
- * @brief   Starts a given module.
+ * @brief Specialisation of GenericField parser for string
  */
-class Starter : public boost::noncopyable
+class String : public GenericField
 {
 public:
-
-    friend class Stopper;
-    /**
-     * @brief       Constructor
-     *
-     * @param[in]   identifier  a string containing a module identifier
-     */
-    Starter( const std::string& identifier );
-
-    /**
-     * @brief   Applies the starter on the system.
-     *
-     * @remark  This method should be called directly.
-     */
-    void apply();
-
-protected:
-
-    const std::string m_identifier;     ///< the module identifier
+    fwCoreServiceMacro(String, service::IXMLParser)
 };
 
-} // namespace detail
-
-} // namespace profile
-
-} // namespace sight::core::runtime
+} //namespace parser
+} //namespace sight::service

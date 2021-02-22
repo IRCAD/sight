@@ -1,4 +1,4 @@
-<plugin id="Tuto02GenericSceneCpp" library="true" version="@PROJECT_VERSION@" >
+<plugin id="Tuto02GenericSceneCpp" library="true" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />

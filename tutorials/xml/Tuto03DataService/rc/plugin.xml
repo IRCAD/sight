@@ -1,5 +1,5 @@
 
-<plugin id="Tuto03DataService" version="@PROJECT_VERSION@" >
+<plugin id="Tuto03DataService" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -24,7 +24,7 @@
                 <gui>
                     <frame>
                         <name>Tuto03DataService</name>
-                        <icon>Tuto03DataService-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto03DataService/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />
@@ -43,7 +43,7 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="menuBarView" type="::disrumpere::module::nav::ultrasound" >
+            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />

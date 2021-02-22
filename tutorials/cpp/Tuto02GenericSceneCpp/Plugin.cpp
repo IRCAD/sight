@@ -69,7 +69,7 @@ void Plugin::initialize()
     {
         service::IService::ConfigType config;
         config.put("gui.frame.name", "Tuto02GenericSceneCpp");
-        config.put("gui.frame.icon", "Tuto02GenericSceneCpp-0.2/tuto.ico");
+        config.put("gui.frame.icon", "Tuto02GenericSceneCpp/tuto.ico");
         config.put("gui.frame.minSize.<xmlattr>.width", "720");
         config.put("gui.frame.minSize.<xmlattr>.height", "480");
         config.put("gui.menuBar", "");
@@ -79,10 +79,7 @@ void Plugin::initialize()
     }
 
     auto progressBarView = m_appManager->addService("::sight::module::ui::base::SJobBar", true, false);
-
-    auto menuBarView = m_appManager->addService("::sight::module::ui::base::SMenuBar", "menuBarView",
-                                                true,
-                                                false);
+    auto menuBarView = m_appManager->addService("::sight::module::ui::base::SMenuBar", "menuBarView", true, false);
     {
         service::IService::ConfigType config;
         config.put("gui.layout.menu.<xmlattr>.name", "File");
@@ -90,9 +87,7 @@ void Plugin::initialize()
         menuBarView->configure(config);
     }
 
-    auto menuFileView = m_appManager->addService("::sight::module::ui::base::SMenu", "menuFileView",
-                                                 true,
-                                                 false);
+    auto menuFileView = m_appManager->addService("::sight::module::ui::base::SMenu", "menuFileView", true, false);
     {
         service::IService::ConfigType config;
         {
@@ -389,8 +384,8 @@ void Plugin::initialize()
     {
         service::IService::ConfigType config;
         config.add("config.checkable", true);
-        config.add("config.icon", "module_ui_flaticons-0.1/RedCross.svg");
-        config.add("config.icon2", "module_ui_flaticons-0.1/Layers.svg");
+        config.add("config.icon", "sight_module_ui_flaticons/RedCross.svg");
+        config.add("config.icon2", "sight_module_ui_flaticons/Layers.svg");
         config.add("config.iconWidth", "40");
         config.add("config.iconHeight", "16");
         config.add("config.checked", true);
@@ -411,7 +406,7 @@ void Plugin::initialize()
     {
         service::IService::ConfigType config;
         config.add("config.checkable", false);
-        config.add("config.icon", "module_ui_flaticons-0.1/YellowPhoto.svg");
+        config.add("config.icon", "sight_module_ui_flaticons/YellowPhoto.svg");
         snapshotSrv->configure(config);
     }
 

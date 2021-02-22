@@ -38,8 +38,8 @@ moduleParam(module_ui_qt
         resource
         stylesheet
     PARAM_VALUES
-        module_ui_qt-0.1/flatdark.rcc
-        module_ui_qt-0.1/flatdark.qss
+        sight_sight_module_ui_qt/flatdark.rcc
+        sight_sight_module_ui_qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
 moduleParam(

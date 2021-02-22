@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2021 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,29 +21,24 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "service/config.hpp"
 
-namespace sight::core::thread
+#include <service/parser/GenericField.hpp>
+
+namespace sight::service
 {
-namespace ut
+namespace parser
 {
 
-/// Test ActiveWorkers API
-class ActiveWorkersTest : public CPPUNIT_NS::TestFixture
+/**
+ * @brief Specialisation of GenericField parser for integer
+ */
+class Integer : public GenericField
 {
-CPPUNIT_TEST_SUITE( ActiveWorkersTest );
-CPPUNIT_TEST( basicTest );
-CPPUNIT_TEST_SUITE_END();
-
 public:
-
-    void setUp();
-    void tearDown();
-
-    /// Test using ActiveWorkers API
-    void basicTest();
-
+    fwCoreServiceMacro(Integer, service::IXMLParser)
 };
 
-} //namespace ut
-} //namespace sight::core::thread
+} //namespace parser
+} //namespace sight::service
+

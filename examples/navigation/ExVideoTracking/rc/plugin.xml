@@ -1,4 +1,4 @@
-<plugin id="ExVideoTracking" version="@PROJECT_VERSION@" >
+<plugin id="ExVideoTracking" >
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -25,7 +25,7 @@
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
-                        <icon>ExVideoTracking-@PROJECT_VERSION@/app.ico</icon>
+                        <icon>ExVideoTracking/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <toolBar/>
@@ -40,11 +40,11 @@
                 <gui>
                     <layout>
                         <editor/>
-                        <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

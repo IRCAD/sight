@@ -39,7 +39,7 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Edit" icon="sight_module_ui_flaticons-0.1/BlueParametersCamera.svg" />
+                    <menuItem name="Edit" icon="sight::module::ui::flaticons/BlueParametersCamera.svg" />
                 </layout>
             </gui>
             <registry>

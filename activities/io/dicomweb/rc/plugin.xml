@@ -1,4 +1,4 @@
-<plugin id="activity_io_dicomweb" version="@PROJECT_VERSION@" >
+<plugin id="sight::activity::io::dicomweb" >
 
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
@@ -12,7 +12,7 @@
         <id>activity_io_dicomweb</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
-        <icon>sight_module_ui_icons-0.1/Pull.svg</icon>
+        <icon>sight_module_ui_icons/Pull.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -32,7 +32,7 @@
         <id>DicomWebWriterActivity</id>
         <title>DicomWeb Writer</title>
         <desc>DicomWeb Writer activity</desc>
-        <icon>sight_module_ui_icons-0.1/Push.svg</icon>
+        <icon>sight_module_ui_icons/Push.svg</icon>
         <requirements>
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>

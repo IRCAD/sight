@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin id="SightViewer" version="@PROJECT_VERSION@" >
+<plugin id="SightViewer" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -68,7 +68,7 @@
                 <gui>
                     <frame>
                         <name>Sight Viewer</name>
-                        <icon>SightViewer-@PROJECT_VERSION@/Ogre_logo.svg</icon>
+                        <icon>SightViewer/Ogre_logo.svg</icon>
                         <minSize width="1150" height="700" />
                     </frame>
                 </gui>
@@ -135,7 +135,7 @@
                 <gui>
                     <layout>
                         <spacer />
-                        <menuItem name="Show parameters" icon="sight_module_ui_flaticons-0.1/YellowLeftChevron.svg" />
+                        <menuItem name="Show parameters" icon="sight::module::ui::flaticons/YellowLeftChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -168,13 +168,13 @@
             <service uid="parameterToolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Show volume parameters" icon="sight_module_ui_flaticons-0.1/Volume.svg" style="check" />
-                        <menuItem name="Show organs manager" icon="sight_module_ui_flaticons-0.1/Stomach.svg" style="check" />
-                        <menuItem name="Show landmarks manager" icon="sight_module_ui_flaticons-0.1/YellowLandmarks.svg" style="check" />
-                        <menuItem name="Show light manager" icon="sight_module_ui_flaticons-0.1/Light.svg" style="check" />
-                        <menuItem name="Show extruded meshes manager" icon="sight_module_ui_flaticons-0.1/Extrude.svg" style="check" />
+                        <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
+                        <menuItem name="Show organs manager" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
+                        <menuItem name="Show landmarks manager" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
+                        <menuItem name="Show light manager" icon="sight::module::ui::flaticons/Light.svg" style="check" />
+                        <menuItem name="Show extruded meshes manager" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
                         <spacer/>
-                        <menuItem name="Close parameters" icon="sight_module_ui_flaticons-0.1/YellowRightChevron.svg" />
+                        <menuItem name="Close parameters" icon="sight::module::ui::flaticons/YellowRightChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -232,28 +232,28 @@
             <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load series" icon="sight_module_ui_flaticons-0.1/BlueLoad.svg" />
-                        <menuItem name="Open PACS" icon="sight_module_ui_flaticons-0.1/GreenServerConnected.svg" style="check" />
+                        <menuItem name="Load series" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                        <menuItem name="Open PACS" icon="sight::module::ui::flaticons/GreenServerConnected.svg" style="check" />
                         <separator/>
-                        <menuItem name="Negato view" icon="sight_module_ui_flaticons-0.1/Layers.svg" />
-                        <menuItem name="Volume view" icon="sight_module_ui_flaticons-0.1/Volume.svg" />
+                        <menuItem name="Negato view" icon="sight::module::ui::flaticons/Layers.svg" />
+                        <menuItem name="Volume view" icon="sight::module::ui::flaticons/Volume.svg" />
                         <separator/>
-                        <menuItem name="Show/Hide volume TF editor" icon="sight_module_ui_flaticons-0.1/TF1.svg" style="check" />
+                        <menuItem name="Show/Hide volume TF editor" icon="sight::module::ui::flaticons/TF1.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide mesh" icon="sight_module_ui_flaticons-0.1/Stomach.svg" style="check" />
-                        <menuItem name="Show/hide volume" icon="sight_module_ui_flaticons-0.1/Volume.svg" style="check" />
-                        <menuItem name="Show/hide negato" icon="sight_module_ui_flaticons-0.1/Layers.svg" style="check" />
+                        <menuItem name="Show/hide mesh" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
+                        <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
+                        <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/Layers.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide cropping box" icon="sight_module_ui_flaticons-0.1/CroppingBox.svg" style="check" />
-                        <menuItem name="Reset cropping box" icon="sight_module_ui_flaticons-0.1/ResetCroppingBox.svg" />
-                        <menuItem name="Shape extruder" icon="sight_module_ui_flaticons-0.1/Extrude.svg" style="check" />
-                        <menuItem name="Revert shape extruder" icon="sight_module_ui_flaticons-0.1/ExtrudeRevert.svg" />
+                        <menuItem name="Show/hide cropping box" icon="sight::module::ui::flaticons/CroppingBox.svg" style="check" />
+                        <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
+                        <menuItem name="Shape extruder" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
+                        <menuItem name="Revert shape extruder" icon="sight::module::ui::flaticons/ExtrudeRevert.svg" />
                         <separator/>
-                        <menuItem name="Add distance" icon="sight_module_ui_flaticons-0.1/AddDistance.svg" />
-                        <menuItem name="Remove distance" icon="sight_module_ui_flaticons-0.1/RemoveDistance.svg" />
-                        <menuItem name="Hide/show distance" icon="sight_module_ui_flaticons-0.1/Distance.svg" style="check" />
+                        <menuItem name="Add distance" icon="sight::module::ui::flaticons/AddDistance.svg" />
+                        <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
+                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide axis" icon="sight_module_ui_flaticons-0.1/Axis.svg" style="check" />
+                        <menuItem name="Show/hide axis" icon="sight::module::ui::flaticons/Axis.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -367,7 +367,7 @@
             <service uid="volumeTFAct" type="::sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="SightViewer_TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
-                <parameter replace="WINDOW_ICON" by="SightViewer-@PROJECT_VERSION@/Ogre_logo.svg" />
+                <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
                 <inout key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <inout key="tfPools" uid="volumeTFPools" />
@@ -381,7 +381,7 @@
             <service uid="pacsAct" type="::sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="SightViewer_PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
-                <parameter replace="WINDOW_ICON" by="SightViewer-@PROJECT_VERSION@/Ogre_logo.svg" />
+                <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
                 <inout key="previewSeriesDB" uid="previewSeriesDB" />
                 <inout key="localSeriesDB" uid="localSeriesDB" />
                 <inout key="image" uid="image" />

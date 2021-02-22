@@ -3,8 +3,6 @@
 
 file(STRINGS "${PROJECT_DIR}/rc/plugin.xml" PLUGIN_CONTENT)
 
-list(APPEND REGISTER_INCLUDE "#include <service/macros.hpp>")
-
 set(FOUND_EXTENSION OFF)
 foreach(LINE ${PLUGIN_CONTENT})
 
@@ -27,7 +25,11 @@ foreach(LINE ${PLUGIN_CONTENT})
             get_filename_component(PROJECT_LAST_DIR ${PROJECT_DIR} NAME)
             string(REGEX REPLACE ".*${PROJECT_LAST_DIR}::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
             string(REGEX REPLACE "::" "/" SERVICE_INCLUDE ${SERVICE_INCLUDE})
-            list(APPEND REGISTER_INCLUDE "#include <${PROJECT_DIR}/${SERVICE_INCLUDE}.hpp>")
+            set(SERVICE_INCLUDE "${PROJECT_DIR}/${SERVICE_INCLUDE}.hpp")
+            if(NOT "${SERVICE}" MATCHES "module")
+                string(REGEX REPLACE "modules" "libs" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+            endif()
+            list(APPEND REGISTER_INCLUDE "#include <${SERVICE_INCLUDE}>")
 
             foreach(OBJ ${OBJECTS})
                 list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SERVICE}, ${OBJ} )\n")
@@ -60,9 +62,8 @@ if(REGISTER_SERVICES)
     list(APPEND REGISTER_INCLUDE "#include <service/macros.hpp>")
 
     string(REPLACE ";" "" REGISTER_SERVICES "${REGISTER_SERVICES}")
+    string(REPLACE ";" "\n" REGISTER_INCLUDE "${REGISTER_INCLUDE}")
 endif()
-
-string(REPLACE ";" "\n" REGISTER_INCLUDE "${REGISTER_INCLUDE}")
 
 configure_file( "${CMAKE_SCRIPTS_DIR}/registerServices.cpp.in"
                 "${REGISTERSERVICE_OUTPUT_PATH}/registerServices.cpp")

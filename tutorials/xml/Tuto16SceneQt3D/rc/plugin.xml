@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin id="Tuto16SceneQt3D" version="@PROJECT_VERSION@" >
+<plugin id="Tuto16SceneQt3D" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -38,7 +38,7 @@
                 <gui>
                     <frame>
                         <name>Tuto16SceneQt3D</name>
-                        <icon>Tuto16SceneQt3D-0.1/tuto.ico</icon>
+                        <icon>Tuto16SceneQt3D/tuto.ico</icon>
                         <minSize width="1080" height="720" />
                     </frame>
                     <menuBar/>

@@ -49,14 +49,14 @@
         <service uid="toolbar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="start" icon="sight_module_ui_icons-0.1/start-cam.svg" />
-                    <menuItem name="stop" icon="sight_module_ui_icons-0.1/stop-cam.svg" />
+                    <menuItem name="start" icon="sight::module::ui::icons/start-cam.svg" />
+                    <menuItem name="stop" icon="sight::module::ui::icons/stop-cam.svg" />
                     <separator/>
-                    <menuItem name="configure depth record" icon="sight_module_ui_icons-0.1/configuration.svg" />
-                    <menuItem name="configure color record" icon="sight_module_ui_icons-0.1/configuration.svg" />
-                    <menuItem name="configure infrared record" icon="sight_module_ui_icons-0.1/configuration.svg" />
+                    <menuItem name="configure depth record" icon="sight::module::ui::icons/configuration.svg" />
+                    <menuItem name="configure color record" icon="sight::module::ui::icons/configuration.svg" />
+                    <menuItem name="configure infrared record" icon="sight::module::ui::icons/configuration.svg" />
                     <separator/>
-                    <menuItem name="start record" icon="sight_module_ui_icons-0.1/camera-photo.svg" />
+                    <menuItem name="start record" icon="sight::module::ui::icons/camera-photo.svg" />
                 </layout>
             </gui>
             <registry>

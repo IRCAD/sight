@@ -112,10 +112,9 @@ void AppConfig::parseBundleInformation()
         // Get module
         std::shared_ptr< core::runtime::Module> module = ext->getModule();
         std::string moduleId                           = module->getIdentifier();
-        std::string moduleVersion                      = module->getVersion().string();
 
         // Add app info
-        this->addAppInfo( configId, group, desc, parameters, config, moduleId, moduleVersion );
+        this->addAppInfo( configId, group, desc, parameters, config, moduleId );
     }
 }
 
@@ -126,8 +125,7 @@ void AppConfig::addAppInfo( const std::string& configId,
                             const std::string& desc,
                             const AppInfo::ParametersType& parameters,
                             const core::runtime::ConfigurationElement::csptr& config,
-                            const std::string& moduleId,
-                            const std::string& moduleVersion)
+                            const std::string& moduleId)
 {
     core::mt::WriteLock lock(m_registryMutex);
 
@@ -135,13 +133,12 @@ void AppConfig::addAppInfo( const std::string& configId,
     SLM_ASSERT("The app config with the id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
-    info->group         = group;
-    info->desc          = desc;
-    info->config        = config;
-    info->parameters    = parameters;
-    info->moduleId      = moduleId;
-    info->moduleVersion = moduleVersion;
-    m_reg[configId]     = info;
+    info->group      = group;
+    info->desc       = desc;
+    info->config     = config;
+    info->parameters = parameters;
+    info->moduleId   = moduleId;
+    m_reg[configId]  = info;
 }
 
 //-----------------------------------------------------------------------------
@@ -227,7 +224,7 @@ std::shared_ptr< core::runtime::Module > AppConfig::getModule(const std::string&
     SLM_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
                iter != m_reg.end());
 
-    auto module = core::runtime::findModule(iter->second->moduleId, iter->second->moduleVersion);
+    auto module = core::runtime::findModule(iter->second->moduleId);
 
     return module;
 }

@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <boost/utility.hpp>
 
@@ -51,7 +50,7 @@ public:
      *
      * @param[in]   identifier a string containing a module identifier
      */
-    Uninitializer( const std::string& identifier, const Version& version = Version() );
+    Uninitializer( const std::string& identifier );
 
     /**
      * @brief   Applies the uninitializer on the module.
@@ -63,8 +62,6 @@ public:
 protected:
 
     const std::string m_identifier;     ///< the module identifier
-    const Version m_version;            ///< the module version
-
 };
 
 } // namespace profile

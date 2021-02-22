@@ -102,9 +102,9 @@
         <service uid="topToolbarView" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Fullscreen" icon="sight_module_ui_flaticons-0.1/YellowFullscreen.svg" />
-                    <menuItem name="Windowed" icon="sight_module_ui_flaticons-0.1/YellowMinimize.svg" shortcut="Escape" />
-                    <menuItem name="Snapshot" icon="sight_module_ui_flaticons-0.1/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
+                    <menuItem name="Windowed" icon="sight::module::ui::flaticons/YellowMinimize.svg" shortcut="Escape" />
+                    <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
                     <spacer/>
                 </layout>
             </gui>
@@ -467,7 +467,7 @@
         <!-- Load the background image -->
         <service uid="backgroundReaderSrv" type="::sight::module::io::vtk::SImageReader">
             <inout key="data" uid="background" />
-            <resource>SightViewer-@PROJECT_VERSION@/background.png</resource>
+            <resource>SightViewer/background.png</resource>
         </service>
 
         <!-- Write the snapshot image -->

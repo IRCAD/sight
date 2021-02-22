@@ -22,10 +22,10 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
     Qt5::3DInput
 )
 
-set(FWPROJECT_FULLNAME ${${FWPROJECT_NAME}_FULLNAME})
+set(FWPROJECT_FULLNAME ${FWPROJECT_NAME})
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/resources.cfg.in"
-                "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${FWPROJECT_NAME}_FULLNAME}/resources.cfg" @ONLY)
+                "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}/resources.cfg" @ONLY)
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 

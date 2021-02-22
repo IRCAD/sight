@@ -26,9 +26,6 @@
 
 #include <data/Matrix4.hpp>
 
-fwServicesRegisterMacro( ::sight::service::IXMLParser, ::sight::service::parser::Matrix4,
-                         ::sight::data::Matrix4 )
-
 namespace sight::service
 {
 namespace parser

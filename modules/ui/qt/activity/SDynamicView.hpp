@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/extension/Activity.hpp>
 #include <activity/ActivityMsg.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -84,7 +84,7 @@ namespace activity
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
          <parameter replace="SERIESDB" by="medicalData"  />
-         <parameter replace="ICON_PATH" by="module_ui_icons-0.1/app.ico"  />
+         <parameter replace="ICON_PATH" by="module_ui_icons/app.ico"  />
      </parameters>
      <config document="true" />
    </service>

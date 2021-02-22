@@ -119,8 +119,7 @@ public:
                                  const std::string& desc,
                                  const AppInfo::ParametersType& parameters,
                                  const core::runtime::ConfigurationElement::csptr& config,
-                                 const std::string& moduleId,
-                                 const std::string& moduleVersion);
+                                 const std::string& moduleId);
 
     /**
      * @brief  Return the adapted config with the identifier configId.

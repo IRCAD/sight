@@ -1,4 +1,4 @@
-<plugin id="config_viz_scene2d" version="@PROJECT_VERSION@" >
+<plugin id="sight::config::viz::scene2d" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene2d" />

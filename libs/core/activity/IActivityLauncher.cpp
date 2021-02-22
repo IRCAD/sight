@@ -119,7 +119,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
     info = activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId, info.bundleVersion);
+    std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
     if (!module->isStarted())
     {
         module->start();

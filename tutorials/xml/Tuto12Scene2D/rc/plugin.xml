@@ -1,4 +1,4 @@
-<plugin id="Tuto12Scene2D" version="@PROJECT_VERSION@" >
+<plugin id="Tuto12Scene2D" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -14,7 +14,7 @@
                 <gui>
                     <frame>
                         <name>Tuto12Scene2D</name>
-                        <icon>Tuto12Scene2D-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto12Scene2D/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>

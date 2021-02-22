@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <core/base.hpp>
 
@@ -86,13 +85,6 @@ public:
      * @return  a string containing the module's plugin class
      */
     CORE_API virtual const std::string getClass() const = 0;
-
-    /**
-     * @brief   Retrieves the version of the module.
-     *
-     * @return  the module version
-     */
-    CORE_API virtual const Version& getVersion() const = 0;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.

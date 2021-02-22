@@ -58,10 +58,10 @@
         <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Start camera" icon="sight_module_ui_icons-0.1/start-cam.svg" />
-                    <menuItem name="Stop camera" icon="sight_module_ui_icons-0.1/stop-cam.svg" />
-                    <menuItem name="Pause video" icon="sight_module_ui_icons-0.1/pause-cam.svg" />
-                    <menuItem name="Loop video" icon="sight_module_ui_icons-0.1/loop-cam.svg" style="check" />
+                    <menuItem name="Start camera" icon="sight::module::ui::icons/start-cam.svg" />
+                    <menuItem name="Stop camera" icon="sight::module::ui::icons/stop-cam.svg" />
+                    <menuItem name="Pause video" icon="sight::module::ui::icons/pause-cam.svg" />
+                    <menuItem name="Loop video" icon="sight::module::ui::icons/loop-cam.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -119,11 +119,11 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Add" icon="sight_module_ui_icons-0.1/Import.svg" />
-                    <menuItem name="Remove" icon="sight_module_ui_icons-0.1/remove.svg" />
-                    <menuItem name="Reset" icon="sight_module_ui_icons-0.1/reset.svg" />
-                    <menuItem name="Calibrate with openCV" icon="sight_module_ui_icons-0.1/CheckButton.svg" />
-                    <menuItem name="Draw" icon="sight_module_ui_icons-0.1/Preview.svg" />
+                    <menuItem name="Add" icon="sight::module::ui::icons/Import.svg" />
+                    <menuItem name="Remove" icon="sight::module::ui::icons/remove.svg" />
+                    <menuItem name="Reset" icon="sight::module::ui::icons/reset.svg" />
+                    <menuItem name="Calibrate with openCV" icon="sight::module::ui::icons/CheckButton.svg" />
+                    <menuItem name="Draw" icon="sight::module::ui::icons/Preview.svg" />
                 </layout>
             </gui>
             <registry>

@@ -89,7 +89,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
     // Load Segmented Property Registry
     const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
-        "io_dicom-" IO_DICOM_VER "/SegmentedPropertyRegistry.csv");
+        "io_dicom/SegmentedPropertyRegistry.csv");
 
     if(!surfaceIE.loadSegmentedPropertyRegistry(filepath))
     {

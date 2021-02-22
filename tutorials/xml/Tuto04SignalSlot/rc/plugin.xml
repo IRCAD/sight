@@ -1,4 +1,4 @@
-<plugin id="Tuto04SignalSlot" version="@PROJECT_VERSION@" >
+<plugin id="Tuto04SignalSlot" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -18,7 +18,7 @@
                 <gui>
                     <frame>
                         <name>Tuto04SignalSlot</name>
-                        <icon>Tuto04SignalSlot-@PROJECT_VERSION@/tuto.ico</icon>
+                        <icon>Tuto04SignalSlot/tuto.ico</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar />

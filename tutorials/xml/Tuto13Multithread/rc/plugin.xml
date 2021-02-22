@@ -1,4 +1,4 @@
-﻿<plugin id="Tuto13Multithread" version="@PROJECT_VERSION@" >
+﻿<plugin id="Tuto13Multithread" >
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />

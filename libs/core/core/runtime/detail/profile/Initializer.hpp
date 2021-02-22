@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/Version.hpp"
 
 #include <boost/utility.hpp>
 
@@ -39,8 +38,7 @@ namespace profile
 {
 
 /**
- * @brief   Starts a given module. Only the identifier of the module and the version are passed to allow
- *          loading and unloading.
+ * @brief   Starts a given module. Only the identifier of the module is passed to allow loading and unloading.
  */
 class Initializer : public boost::noncopyable
 {
@@ -52,7 +50,7 @@ public:
      *
      * @param[in]   identifier  a string containing a module identifier
      */
-    Initializer( const std::string& identifier, const Version& version = Version() );
+    Initializer( const std::string& identifier );
 
     /**
      * @brief   Applies the initializer on the module.
@@ -64,8 +62,6 @@ public:
 protected:
 
     const std::string m_identifier;     ///< the module identifier
-    const Version m_version;            ///< the module version
-
 };
 
 } // namespace profile

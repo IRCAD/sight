@@ -43,11 +43,10 @@ namespace ut
 
 void AppConfigParametersTest::setUp()
 {
-    // Set up context before running a test.
-    //modules location
+    // Set up context before running a test
     core::runtime::init();
 
-    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service-0.0");
+    std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
     auto& runtime = core::runtime::Runtime::get();

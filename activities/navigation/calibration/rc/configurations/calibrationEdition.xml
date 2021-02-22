@@ -40,14 +40,14 @@
         <service uid="toolBarView" type="::sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="Export camera series" icon="sight_module_ui_flaticons-0.1/BlueSave.svg" />
+                    <menuItem name="Export camera series" icon="sight::module::ui::flaticons/BlueSave.svg" />
                     <separator/>
-                    <menuItem name="Export xml/yaml" icon="sight_module_ui_flaticons-0.1/BlueFile.svg" />
+                    <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />
                     <separator/>
-                    <menuItem name="Start" icon="sight_module_ui_flaticons-0.1/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Stop" icon="sight_module_ui_flaticons-0.1/RedStop.svg" />
-                    <menuItem name="Pause" icon="sight_module_ui_flaticons-0.1/OrangePause.svg" shortcut="Space" />
-                    <menuItem name="Loop" icon="sight_module_ui_flaticons-0.1/OrangeLoop.svg" style="check" />
+                    <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                    <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                    <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                 </layout>
             </gui>
             <registry>
