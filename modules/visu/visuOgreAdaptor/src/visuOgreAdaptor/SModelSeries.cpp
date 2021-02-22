@@ -94,6 +94,10 @@ void SModelSeries::configuring()
             hexaMask.substr(0, 2) == "0x");
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
+    if(config.get_optional<bool>("visible"))
+    {
+        m_isVisibleTag = true;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -147,13 +151,20 @@ void SModelSeries::updating()
         adaptor->setQueryFlags(m_queryFlags);
 
         adaptor->start();
-        adaptor->updateVisibility(!showRec);
+        if(m_isVisibleTag)
+        {
+            adaptor->updateVisibility(!m_isVisible);
+            SLM_WARN("The value of the modelSeries field will not be taken into account");
+        }
+        else
+        {
+            adaptor->updateVisibility(!showRec);
+        }
 
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
     }
-    this->setVisible(m_isVisible);
 }
 
 //------------------------------------------------------------------------------
