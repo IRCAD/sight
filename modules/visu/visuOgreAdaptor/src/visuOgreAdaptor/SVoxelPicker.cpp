@@ -212,7 +212,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
                     const int sagittalIdx = static_cast<int>((info.m_worldPos[0] - origin[0])/spacing[0]);
                     const int frontalIdx  = static_cast<int>((info.m_worldPos[1] - origin[1])/spacing[1]);
                     const int axialIdx    = static_cast<int>((info.m_worldPos[2] - origin[2])/spacing[2]);
-                    auto sig              = image->signal< ::fwData::Image::SliceIndexModifiedSignalType>(
+                    const auto sig        = image->signal< ::fwData::Image::SliceIndexModifiedSignalType>(
                         ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
                     sig->asyncEmit(axialIdx, frontalIdx, sagittalIdx);
                 }
