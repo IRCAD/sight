@@ -1,0 +1,5 @@
+add_subdirectory(ExOgreRGBDStream)
+add_subdirectory(ExVideoRecorder)
+add_subdirectory(ExFrameByFrame)
+add_subdirectory(ExIgtl)
+add_subdirectory(ExRealSense)

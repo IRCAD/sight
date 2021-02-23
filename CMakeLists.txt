@@ -219,6 +219,15 @@ endforeach()
 # The Properties.cmake files are the entry point to scan for targets
 # We really start the configure process here
 ########################################################################################################################
+add_subdirectory(libs)
+add_subdirectory(modules)
+add_subdirectory(configs)
+add_subdirectory(activities) 
+add_subdirectory(apps)
+add_subdirectory(utils)
+add_subdirectory(examples)
+add_subdirectory(tutorials)
+
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
 
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)

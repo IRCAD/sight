@@ -1,0 +1,3 @@
+add_subdirectory(ARCalibration)
+add_subdirectory(dicomxplorer)
+add_subdirectory(SightViewer)

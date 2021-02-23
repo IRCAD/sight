@@ -1,0 +1,8 @@
+add_subdirectory(pch)
+add_subdirectory(core)
+add_subdirectory(utestData)
+add_subdirectory(activity)
+add_subdirectory(utest)
+add_subdirectory(atoms)
+add_subdirectory(service)
+add_subdirectory(data)

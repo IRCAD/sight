@@ -1,0 +1,3 @@
+add_subdirectory(3DVisualizationActivity)
+add_subdirectory(volumeRenderingActivity)
+add_subdirectory(2DVisualizationActivity)
