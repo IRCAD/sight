@@ -1,5 +1,6 @@
+sight_target( io_dimseTest TYPE TEST )
 
-fwLoadProperties()
+
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core

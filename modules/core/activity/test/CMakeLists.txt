@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_activityTest TYPE TEST )
+
 
 
 

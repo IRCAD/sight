@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto11Picker TYPE APP UNIQUE ON )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

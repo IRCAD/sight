@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_atomsTest TYPE TEST )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  data

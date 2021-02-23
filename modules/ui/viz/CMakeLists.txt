@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_ui_viz TYPE MODULE )
+
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 

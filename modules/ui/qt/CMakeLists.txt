@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_ui_qt TYPE MODULE START ON )
+
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Help Multimedia MultimediaWidgets  Qml Quick Widgets QuickWidgets REQUIRED)
 

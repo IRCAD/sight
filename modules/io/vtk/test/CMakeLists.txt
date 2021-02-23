@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_vtkTest TYPE TEST )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_io_vtk

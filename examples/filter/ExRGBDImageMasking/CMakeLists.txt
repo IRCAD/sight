@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( ExRGBDImageMasking TYPE APP )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

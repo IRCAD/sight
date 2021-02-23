@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( activity_io_dicomweb TYPE MODULE )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

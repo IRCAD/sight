@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto03MesherWithGenericSceneCpp TYPE APP START ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_data

@@ -1,5 +1,6 @@
+sight_target( module_filter_point TYPE MODULE )
 
-fwLoadProperties()
+
 
 find_package(VTK QUIET COMPONENTS vtkCommonDataModel REQUIRED)
 

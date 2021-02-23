@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( DicomAnonymizer TYPE EXECUTABLE CONSOLE ON )
+
 
 find_package(Boost QUIET COMPONENTS program_options REQUIRED)
 fwLink(${Boost_LIBRARIES})

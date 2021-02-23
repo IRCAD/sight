@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_debug TYPE MODULE )
+
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     #TODO write FindDbgHelp ...

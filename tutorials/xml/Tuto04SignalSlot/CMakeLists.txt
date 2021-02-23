@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto04SignalSlot TYPE APP )
+
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher
                  module_appXml

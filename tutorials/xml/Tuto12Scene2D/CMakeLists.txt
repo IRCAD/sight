@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto12Scene2D TYPE APP )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

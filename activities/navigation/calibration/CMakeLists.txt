@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( activity_navigation_calibration TYPE MODULE )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_ui_base

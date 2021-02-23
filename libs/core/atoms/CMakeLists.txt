@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( atoms TYPE LIBRARY )
+
 
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DCAMP_COMPILATION")
 

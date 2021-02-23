@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( registrationActivity TYPE MODULE )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

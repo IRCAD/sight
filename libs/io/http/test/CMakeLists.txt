@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_httpTest TYPE TEST )
+
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Network REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui Qt5::Network)

@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_zip TYPE LIBRARY )
+
 
 find_package(ZLIB QUIET REQUIRED )
 fwInclude(${ZLIB_INCLUDE_DIRS}) # No forward, minizip should be private

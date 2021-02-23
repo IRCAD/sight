@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto02GenericSceneCpp TYPE APP START ON WARNINGS_AS_ERRORS ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_ui_base

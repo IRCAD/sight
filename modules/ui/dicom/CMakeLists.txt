@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_ui_dicom TYPE MODULE )
+
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 fwLink(

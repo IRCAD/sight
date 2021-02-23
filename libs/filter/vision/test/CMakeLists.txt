@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( filter_visionTest TYPE TEST )
+
 
 find_package(CppUnit QUIET)
 

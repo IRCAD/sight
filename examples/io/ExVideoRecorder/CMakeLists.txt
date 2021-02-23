@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( ExVideoRecorder TYPE APP UNIQUE ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

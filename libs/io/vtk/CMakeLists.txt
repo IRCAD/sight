@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_vtk TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
+
 
 find_package(VTK QUIET REQUIRED COMPONENTS
     vtkFiltersGeometry

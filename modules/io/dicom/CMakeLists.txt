@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_dicom TYPE MODULE )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  data

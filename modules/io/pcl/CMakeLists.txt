@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_pcl TYPE MODULE )
+
 
 find_package(PCL QUIET REQUIRED COMPONENTS common io)
 

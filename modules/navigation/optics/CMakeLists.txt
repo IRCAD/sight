@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_navigation_optics TYPE MODULE )
+
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_aruco)
 

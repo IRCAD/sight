@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto10LaunchBasicConfig TYPE APP )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

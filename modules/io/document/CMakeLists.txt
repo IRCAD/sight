@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_document TYPE MODULE )
+
 
 find_package(Qt5 QUIET COMPONENTS PrintSupport REQUIRED)
 

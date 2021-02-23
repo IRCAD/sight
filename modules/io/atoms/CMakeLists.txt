@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_atoms TYPE MODULE )
+
 
 
 

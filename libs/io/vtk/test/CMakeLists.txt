@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_vtkTest TYPE TEST )
+
 
 find_package(VTK QUIET COMPONENTS vtkFiltersSources REQUIRED)
 

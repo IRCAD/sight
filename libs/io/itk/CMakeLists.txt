@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_itk TYPE LIBRARY PCH pchData )
+
 
 find_package(ITK QUIET REQUIRED)
 find_package(JPEG QUIET REQUIRED)

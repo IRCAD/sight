@@ -1,5 +1,6 @@
+sight_target( io_igtl TYPE LIBRARY )
 
-fwLoadProperties()
+
 
 find_package(LibArchive REQUIRED)
 target_include_directories(${FWPROJECT_NAME} PRIVATE ${LibArchive_INCLUDE_DIRS})

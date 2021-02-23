@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( config_ui_datamanager TYPE MODULE )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_ui_base

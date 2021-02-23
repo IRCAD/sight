@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_ui_history TYPE MODULE )
+
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core

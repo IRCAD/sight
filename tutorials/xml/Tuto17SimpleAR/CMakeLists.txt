@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto17SimpleAR TYPE APP )
+
 
 set(MODULE_PATH "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
 

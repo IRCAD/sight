@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_dimse TYPE LIBRARY PCH pchData )
+
 
 find_package(DCMTK QUIET REQUIRED)
 target_include_directories(${FWPROJECT_NAME} PRIVATE ${DCMTK_INCLUDE_DIRS})

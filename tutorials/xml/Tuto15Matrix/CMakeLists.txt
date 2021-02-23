@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto15Matrix TYPE APP )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

@@ -1,6 +1,7 @@
+sight_target( ExOpenvslam TYPE APP )
+
 # For now openvslam is only available for unix platforms.
 if(UNIX)
-    fwLoadProperties()
 endif()
 
 add_dependencies(${FWPROJECT_NAME} 

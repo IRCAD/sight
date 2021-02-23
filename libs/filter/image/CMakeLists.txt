@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( filter_image TYPE LIBRARY PCH pchServicesOmp )
+
 
 find_package(ITK QUIET COMPONENTS ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT)

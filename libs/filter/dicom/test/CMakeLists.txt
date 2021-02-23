@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( filter_dicomTest TYPE TEST )
+
 
 find_package(DCMTK QUIET REQUIRED)
 fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )

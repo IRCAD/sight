@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( geometry_data TYPE LIBRARY PCH pchData )
+
 
 find_package(glm QUIET REQUIRED)
 

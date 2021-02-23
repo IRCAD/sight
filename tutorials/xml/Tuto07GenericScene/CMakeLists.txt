@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto07GenericScene TYPE APP UNIQUE ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

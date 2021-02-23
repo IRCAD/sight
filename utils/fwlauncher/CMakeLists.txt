@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( fwlauncher TYPE EXECUTABLE WARNINGS_AS_ERRORS ON )
+
 
 # TODO: We should manage to get rid of this definition
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE SIGHT_MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")

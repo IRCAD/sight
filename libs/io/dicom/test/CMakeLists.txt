@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_dicomTest TYPE TEST )
+
 
 find_package(GDCM QUIET REQUIRED)
 include(${GDCM_USE_FILE})

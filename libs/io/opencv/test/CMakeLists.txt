@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_opencvTest TYPE TEST )
+
 
 find_package(Qt5 QUIET COMPONENTS Test REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Test)

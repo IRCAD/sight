@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_igtlTest TYPE TEST )
+
 
 
 

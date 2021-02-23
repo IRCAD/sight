@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( ui_dicom TYPE LIBRARY PCH pchData )
+
 
 find_package(DCMTK QUIET REQUIRED)
 fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )

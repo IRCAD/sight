@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( scene2DTest TYPE TEST )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  data

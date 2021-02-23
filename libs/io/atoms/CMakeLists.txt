@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_atoms TYPE LIBRARY )
+
 
 find_package(CAMP QUIET REQUIRED)
 find_package(Boost QUIET COMPONENTS log log_setup REQUIRED)

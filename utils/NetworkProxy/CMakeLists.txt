@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( NetworkProxy TYPE EXECUTABLE CONSOLE ON )
+
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core

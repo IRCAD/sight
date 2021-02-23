@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( VersionGenerator TYPE EXECUTABLE CONSOLE ON )
+
 
 find_package(Boost QUIET COMPONENTS program_options REQUIRED)
 

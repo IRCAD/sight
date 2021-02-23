@@ -1,5 +1,6 @@
+sight_target( module_io_igtl TYPE MODULE )
 
-fwLoadProperties()
+
 
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

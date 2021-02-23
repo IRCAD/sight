@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_io_vtk TYPE MODULE )
+
 
 find_package(VTK QUIET COMPONENTS vtkIOImport REQUIRED)
 

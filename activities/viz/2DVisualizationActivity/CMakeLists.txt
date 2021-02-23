@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( 2DVisualizationActivity TYPE MODULE )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

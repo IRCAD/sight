@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto04MeshGeneratorCpp TYPE APP UNIQUE ON )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

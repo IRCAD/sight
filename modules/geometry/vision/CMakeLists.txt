@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_geometry_vision TYPE MODULE )
+
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d opencv_imgproc opencv_imgcodecs OPTIONAL_COMPONENTS opencv_cudawarping opencv_cudaimgproc)
 

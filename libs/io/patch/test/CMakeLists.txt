@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_patchTest TYPE TEST )
+
 
 
 

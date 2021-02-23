@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( coreTest TYPE TEST WARNINGS_AS_ERRORS ON )
+
 
 if(UNIX)
     target_compile_definitions(${FWPROJECT_NAME} PRIVATE CAMP_LIB_DIR="/lib/x86_64-linux-gnu")

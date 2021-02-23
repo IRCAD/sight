@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( geometry_dataTest TYPE TEST )
+
 
 
 

@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( dicomxplorer TYPE APP )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_service

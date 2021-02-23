@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_filter_vision TYPE MODULE )
+
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_core opencv_imgproc opencv_highgui)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_core opencv_imgproc opencv_highgui)

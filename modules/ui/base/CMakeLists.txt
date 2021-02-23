@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_ui_base TYPE MODULE )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_service

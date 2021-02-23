@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( ui_qml TYPE LIBRARY PCH pchServices )
+
 
 target_compile_definitions(${FWPROJECT_NAME} PUBLIC "-DQT_NO_KEYWORDS")
 

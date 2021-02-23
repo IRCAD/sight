@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( activity_navigation_calibrationTest TYPE TEST )
+
 
 
 

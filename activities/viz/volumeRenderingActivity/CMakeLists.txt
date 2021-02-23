@@ -1,5 +1,6 @@
+sight_target( volumeRenderingActivity TYPE MODULE )
 
-fwLoadProperties()
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( navigation_openvslam TYPE LIBRARY PCH OFF )
+
 
 # For now openvslam is only available for unix platforms.
 if(UNIX)

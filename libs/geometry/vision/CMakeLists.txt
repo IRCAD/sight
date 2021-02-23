@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( geometry_vision TYPE LIBRARY PCH OFF )
+
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d opencv_aruco)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC opencv_calib3d opencv_aruco)

@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( coreDetailTest TYPE TEST WARNINGS_AS_ERRORS ON )
+
 
 # We need this one to test the location
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")

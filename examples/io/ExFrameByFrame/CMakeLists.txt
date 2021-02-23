@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( ExFrameByFrame TYPE APP UNIQUE ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

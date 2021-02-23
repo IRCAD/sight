@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( core TYPE LIBRARY WARNINGS_AS_ERRORS ON )
+
 
 find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
 

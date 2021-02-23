@@ -1,5 +1,6 @@
+sight_target( config_ui_activity TYPE MODULE )
 
-fwLoadProperties()
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

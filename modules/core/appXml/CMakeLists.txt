@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_appXml TYPE MODULE START ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  module_service

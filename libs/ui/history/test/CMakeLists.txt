@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( ui_historyTest TYPE TEST )
+
 
 
 

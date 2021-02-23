@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( geometry_glm TYPE LIBRARY )
+
 
 find_package(glm QUIET REQUIRED)
 

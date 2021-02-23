@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( blendActivity TYPE MODULE )
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

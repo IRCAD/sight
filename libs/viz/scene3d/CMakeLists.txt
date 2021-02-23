@@ -1,3 +1,5 @@
+sight_target( viz_scene3d TYPE LIBRARY WARNINGS_AS_ERRORS ON )
+
 # include first to be taken into account in the PCH compile flags
 find_package(OpenMP QUIET)
 
@@ -6,7 +8,6 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-fwLoadProperties()
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC OgreOverlay)
 

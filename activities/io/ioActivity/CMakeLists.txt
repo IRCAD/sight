@@ -1,5 +1,6 @@
+sight_target( module_io_activity TYPE MODULE )
 
-fwLoadProperties()
+
 
 
 add_dependencies(${FWPROJECT_NAME} 

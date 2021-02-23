@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( geometry_eigen TYPE LIBRARY )
+
 
 find_package(Eigen3 QUIET REQUIRED)
 

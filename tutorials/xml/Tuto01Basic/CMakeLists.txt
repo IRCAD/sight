@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto01Basic TYPE APP )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

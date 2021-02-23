@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto06GuiQml TYPE APP START ON )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  data

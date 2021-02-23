@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_navigation_calibration TYPE MODULE )
+
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d)
 find_package(Eigen3 QUIET REQUIRED)

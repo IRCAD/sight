@@ -1,3 +1,5 @@
+sight_target( module_io_realsense TYPE MODULE PCH pchServicesOmp )
+
 
 find_package(OpenMP QUIET)
 
@@ -6,7 +8,6 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-fwLoadProperties()
 
 find_package(realsense2 QUIET REQUIRED)
 

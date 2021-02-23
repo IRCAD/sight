@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_filter_image TYPE MODULE )
+
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")

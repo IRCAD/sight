@@ -1,6 +1,7 @@
+sight_target( module_navigation_openvslam TYPE MODULE PCH OFF )
+
 # For now openvslam is only available for unix platforms.
 if(UNIX)
-    fwLoadProperties()
 
     find_package(OpenCV QUIET REQUIRED COMPONENTS core highgui imgproc imgcodecs OPTIONAL_COMPONENTS cudawarping cudaimgproc)
     target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)

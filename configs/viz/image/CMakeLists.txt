@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( config_viz_image TYPE MODULE )
+
 
 add_dependencies(${FWPROJECT_NAME} 
                  2DVisualizationActivity

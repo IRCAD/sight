@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto06SceneQt3DCpp TYPE APP START ON )
+
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher
                  module_ui_base

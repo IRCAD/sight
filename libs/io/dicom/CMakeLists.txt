@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( io_dicom TYPE LIBRARY )
+
 
 find_package(Boost QUIET COMPONENTS locale REQUIRED)
 

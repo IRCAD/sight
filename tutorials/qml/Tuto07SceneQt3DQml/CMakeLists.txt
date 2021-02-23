@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( Tuto07SceneQt3DQml TYPE APP START ON )
+
 
 find_package(Qt5 QUIET COMPONENTS Core Qml REQUIRED)
 

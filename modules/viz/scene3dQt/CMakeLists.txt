@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_viz_scene3dQt TYPE MODULE START ON WARNINGS_AS_ERRORS ON )
+
 
 add_definitions("-DQT_NO_KEYWORDS")
 

@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( utestDataTest TYPE TEST )
+
 find_package(CppUnit QUIET REQUIRED)
 fwInclude(${CPPUNIT_INCLUDE_DIR})
 fwLink(${CPPUNIT_LIBRARY})

@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( filter_dicom TYPE LIBRARY PCH pchData )
+
 
 fwForwardInclude( ${DCMTK_INCLUDE_DIRS} )
 fwLink( ${DCMTK_LIBRARIES} )

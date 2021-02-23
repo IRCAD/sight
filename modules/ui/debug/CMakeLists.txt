@@ -1,4 +1,5 @@
-fwLoadProperties()
+sight_target( module_ui_debug TYPE MODULE )
+
 
 find_package(Qt5 QUIET COMPONENTS Core Concurrent Gui Widgets REQUIRED)
 find_package(LibXml2 QUIET REQUIRED)
