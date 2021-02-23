@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -51,7 +51,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
         <service type="::visuOgreAdaptor::SVoxelPicker">
             <in key="image" uid="..." />
-            <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true" />
+            <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
+ * moveOnPick="false" />
        </service>
    @endcode
  *
@@ -65,6 +66,8 @@ namespace visuOgreAdaptor
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): orientation of the image.
  * - \b mode (optional, 2D/3D, default=2D): in 2D, the ray is intersected with the current image slice.
  *                                          In 3D, the ray intersects each slices and returns the nearest one.
+ * - \b moveOnPick (optional, bool, default=false): move image slices indexes on the picked position.
+
  */
 class VISUOGREADAPTOR_CLASS_API SVoxelPicker final :
     public ::fwRenderOgre::IAdaptor,
@@ -152,6 +155,9 @@ private:
 
     /// Defines if the interaction must take into account above layers.
     bool m_layerOrderDependant { true };
+
+    /// Defines if the image slices indexes will be updated with the picked position.
+    bool m_moveOnPick { false };
 
     /// Defines the signal sent on picking events.
     ::fwCom::Signal< void ( ::fwDataTools::PickingInfo ) >::sptr m_pickedSig;
