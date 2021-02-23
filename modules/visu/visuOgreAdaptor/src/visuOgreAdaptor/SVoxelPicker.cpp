@@ -206,7 +206,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
             {
                 info.m_modifierMask |= ::fwDataTools::PickingInfo::CTRL;
 
-                if(m_moveOnPick)
+                if(m_moveOnPick && info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
                 {
                     // Emit slices positions
                     const int sagittalIdx = static_cast<int>((info.m_worldPos[0] - origin[0])/spacing[0]);
