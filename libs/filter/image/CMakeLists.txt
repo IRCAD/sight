@@ -13,3 +13,9 @@ fwInclude(
     ${GLM_INCLUDE_DIRS}
 )
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      data
+                      geometry_data
+                      io_itk
+)

@@ -12,3 +12,12 @@ fwLink(
     gdcmMSFF
 )
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      io_dicom
+                      filter_dicom
+                      geometry_data
+                      utestData
+)

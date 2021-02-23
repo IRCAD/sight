@@ -6,3 +6,12 @@ if(UNIX)
     target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
     target_link_libraries(${FWPROJECT_NAME} PUBLIC "dl")
 endif()
+
+add_dependencies(${FWPROJECT_NAME} 
+                 module_utest
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      utest
+)

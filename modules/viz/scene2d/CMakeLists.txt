@@ -6,3 +6,13 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets)
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      module_ui_qt
+                      viz_base
+                      viz_scene2d
+                      service
+                      ui_base
+)

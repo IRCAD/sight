@@ -5,3 +5,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     fwLink(dbghelp)
 endif()
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      ui_base
+                      service
+)

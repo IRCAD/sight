@@ -56,3 +56,10 @@ endif()
 #add vtk definitions instead of include(${VTK_USE_FILE})
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${VTK_DEFINITIONS})
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      io_base
+                      geometry_data
+)

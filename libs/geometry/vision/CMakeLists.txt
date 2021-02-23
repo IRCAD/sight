@@ -12,3 +12,9 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC ${CERES_LIBRARIES})
 fwInclude(
     ${CERES_INCLUDE_DIRS}
 )
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      geometry_eigen
+)

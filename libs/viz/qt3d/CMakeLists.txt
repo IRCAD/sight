@@ -32,3 +32,12 @@ set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 # Disable C4251 warning: class 'class_1>' needs to have dll-interface to be used by clients of class 'class_2'
 # On windows, Qml classes are entirely exported but IService class is not exported, only its methods.
 target_compile_options(${FWPROJECT_NAME} PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4251>)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      geometry_data
+                      ui_base
+                      viz_base
+                      service
+)

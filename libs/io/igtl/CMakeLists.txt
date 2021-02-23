@@ -14,3 +14,12 @@ else()
     target_include_directories(${FWPROJECT_NAME} PUBLIC ${OpenIGTLink_INCLUDE_DIRS})
 endif()
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      service
+                      io_zip
+                      atoms
+                      io_atoms
+)

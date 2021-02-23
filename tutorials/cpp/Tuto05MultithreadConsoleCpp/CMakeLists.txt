@@ -10,3 +10,16 @@ find_package(Boost QUIET COMPONENTS log REQUIRED)
 fwLink(
     ${Boost_LOG_LIBRARY}
 )
+
+add_dependencies(${FWPROJECT_NAME} 
+                 fwlauncher
+                 module_appXml
+                 data
+                 module_service
+                 module_ui_console
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      data
+                      service
+)

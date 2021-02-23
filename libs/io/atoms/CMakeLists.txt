@@ -14,3 +14,11 @@ fwLink(
 )
 
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DCAMP_COMPILATION")
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      atoms
+                      core
+                      data
+                      io_zip
+                      activity
+)

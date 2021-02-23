@@ -23,3 +23,15 @@ if(NOT ${ENABLE_QML_APPLICATION})
 endif()
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+add_dependencies(${FWPROJECT_NAME} 
+                 data
+                 module_service
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      ui_base
+                      service
+)

@@ -23,3 +23,19 @@ fwLink(
 )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+add_dependencies(${FWPROJECT_NAME} 
+                 module_ui_qml
+                 data
+                 module_io_vtk
+                 module_ui_base
+                 module_service
+                 fwlauncher
+                 module_viz_qt3d
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      ui_qml
+                      service
+                      viz_qt3d
+)

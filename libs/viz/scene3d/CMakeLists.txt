@@ -48,3 +48,12 @@ set(FWPROJECT_FULLNAME ${FWPROJECT_NAME})
 
 configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/resources.cfg.in"
                 "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}/resources.cfg" @ONLY)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      geometry_data
+                      ui_base
+                      viz_base
+                      service
+)

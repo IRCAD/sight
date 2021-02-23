@@ -13,3 +13,10 @@ fwInclude(
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_highgui)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC opencv_highgui)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      utestData
+                      geometry_data
+                      geometry_vision
+)

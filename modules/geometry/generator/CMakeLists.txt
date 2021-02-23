@@ -15,3 +15,12 @@ else()
     )
 endif()
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      ui_base
+                      service
+                      io_vtk
+                      geometry_data
+)

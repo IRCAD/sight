@@ -5,3 +5,12 @@ find_package(Eigen3 QUIET REQUIRED)
 
 target_link_libraries(${FWPROJECT_NAME} PRIVATE Eigen3::Eigen)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_calib3d)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      service
+                      geometry_data
+                      geometry_eigen
+                      geometry_vision
+)

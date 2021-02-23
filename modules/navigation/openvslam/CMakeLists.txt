@@ -29,3 +29,12 @@ if(UNIX)
         EXPECTED_HASH SHA256=33a6808d3d963f23c938d17c64b199194dfeaa2a5649fa130d01fab54c82797f
     )
 endif()
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      service
+                      ui_base
+                      io_opencv
+                      navigation_openvslam
+)

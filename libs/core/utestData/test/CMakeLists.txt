@@ -5,3 +5,9 @@ fwLink(${CPPUNIT_LIBRARY})
 
 
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      utestData
+                      data
+)

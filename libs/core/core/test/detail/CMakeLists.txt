@@ -13,3 +13,8 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE CppUnit)
 if(UNIX)
     target_link_libraries(${FWPROJECT_NAME} PRIVATE dl)
 endif()
+
+add_dependencies(${FWPROJECT_NAME} 
+                 utest
+                 module_utest
+)

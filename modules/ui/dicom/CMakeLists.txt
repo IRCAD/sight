@@ -13,3 +13,19 @@ fwInclude(
 )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+add_dependencies(${FWPROJECT_NAME} 
+                 data
+                 module_service
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      filter_dicom
+                      ui_dicom
+                      ui_base
+                      module_ui_qt
+                      service
+                      io_base
+                      data
+)

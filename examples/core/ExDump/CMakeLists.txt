@@ -1,1 +1,24 @@
 fwLoadProperties()
+
+add_dependencies(${FWPROJECT_NAME} 
+                 fwlauncher
+                 module_appXml
+                 module_ui_base
+                 module_ui_qt
+                 data
+                 module_service
+                 module_ui_base
+                 module_ui_flaticons
+                 module_io_atoms
+                 module_io_itk
+                 module_io_vtk
+                 module_io_dicom
+                 module_io_matrix
+                 module_memory
+                 2DVisualizationActivity
+                 3DVisualizationActivity
+                 module_io_activity
+                 atoms
+                 module_debug
+                 module_ui_debug
+)

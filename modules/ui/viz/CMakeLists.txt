@@ -15,3 +15,18 @@ fwLink(
 )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+
+add_dependencies(${FWPROJECT_NAME} 
+                 module_ui_base
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      io_base
+                      geometry_data
+                      module_ui_qt
+                      service
+                      viz_scene3d
+                      ui_base
+)

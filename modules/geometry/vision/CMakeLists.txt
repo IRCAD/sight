@@ -12,3 +12,17 @@ if(DEFINED OpenCV_COMPUTE_CAPABILITIES)
         target_link_libraries(${FWPROJECT_NAME} PRIVATE opencv_cudawarping opencv_cudaimgproc )
     endif()
 endif()
+
+add_dependencies(${FWPROJECT_NAME} 
+                 data
+                 module_service
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      geometry_vision
+                      core
+                      data
+                      ui_base
+                      service
+                      io_opencv
+)

@@ -9,3 +9,6 @@ if(UNIX)
     find_package(openvslam QUIET REQUIRED COMPONENTS openvslam)
     target_link_libraries(${FWPROJECT_NAME} PUBLIC openvslam::openvslam)
 endif()
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      data
+)

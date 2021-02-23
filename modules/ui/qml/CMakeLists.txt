@@ -20,3 +20,14 @@ fwLink(
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 set(QML_IMPORT_PATH "${QML_IMPORT_PATH};${${FWPROJECT_NAME}_RC_BUILD_DIR}" CACHE STRING "Path of the Qml modules" FORCE)
+
+add_dependencies(${FWPROJECT_NAME} 
+                 module_ui_base
+)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      ui_qml
+                      module_ui_qt
+                      service
+)

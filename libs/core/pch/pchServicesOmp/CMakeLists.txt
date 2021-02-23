@@ -7,3 +7,7 @@ if (OPENMP_CXX_FOUND)
 endif()
 
 fwLoadProperties()
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      service
+)

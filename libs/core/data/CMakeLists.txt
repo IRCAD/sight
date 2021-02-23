@@ -8,3 +8,7 @@ fwInclude(
 fwLink(
     ${CAMP_LIBRARIES}
 )
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+)

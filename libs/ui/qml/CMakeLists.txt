@@ -18,3 +18,10 @@ set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 # Disable C4275 warning: non - DLL-interface class 'class_1' used as base for DLL-interface class 'class_2'.
 # On windows, Qml classes are entirely exported but IService class is not exported only its methods.
 target_compile_options(${FWPROJECT_NAME} PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4275>)
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      ui_base
+                      service
+)

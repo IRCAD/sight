@@ -18,3 +18,10 @@ fwLink(
     ${realsense2_LIBRARY}
 )
 
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      core
+                      data
+                      ui_base
+                      service
+)

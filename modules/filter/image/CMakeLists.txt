@@ -23,3 +23,11 @@ else()
         vtkImagingCore
     )
 endif()
+target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+                      data
+                      service
+                      filter_image
+                      io_vtk
+                      ui_base
+                      ui_history
+)
