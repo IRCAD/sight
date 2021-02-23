@@ -352,13 +352,19 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
-
-    # On linux add ".bin" suffix, to distinguish executable (.bin) from launcher script(.sh).
+    # Do it here because add ".bin" suffix change the ${FWPROJECT_NAME} (!!!)
     if(UNIX)
-    set_target_properties( ${FWPROJECT_NAME}
-        PROPERTIES
-        SUFFIX ".bin"
-    )
+        set(PROJECT_EXECUTABLE "${FWPROJECT_NAME}.bin")
+        string(TOLOWER "${FWPROJECT_NAME}" SIGHT_TEST_SCRIPT)
+        
+        # On linux add ".bin" suffix, to distinguish executable (.bin) from launcher script(.sh).
+        set_target_properties( ${FWPROJECT_NAME}
+            PROPERTIES
+            SUFFIX ".bin"
+        )
+    else()
+        set(PROJECT_EXECUTABLE "${FWPROJECT_NAME}")
+        string(TOLOWER "${FWPROJECT_NAME}.bat" SIGHT_TEST_SCRIPT)
     endif()
 
     configureProject( ${FWPROJECT_NAME} 0.0 )
@@ -380,10 +386,6 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
     # Configure launcher script
     if(UNIX)
-        string(TOLOWER ${FWPROJECT_NAME} ${FWPROJECT_NAME}_SCRIPT)
-        
-        set(PROJECT_EXECUTABLE ${FWPROJECT_NAME}.bin)
-
         # Use the right path separator on unix
         if(EXTERNAL_LIBRARIES)
             string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${EXTERNAL_LIBRARIES}/lib")
@@ -392,29 +394,29 @@ macro(fwCppunitTest FWPROJECT_NAME)
         endif()
 
         # Build the shell script from template_test.sh.in
-        configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT} @ONLY)
 
         # Cleanup
         unset(FW_EXTERNAL_LIBRARIES_DIRS)
-
-        file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
-            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-    elseif(WIN32)
-        string(TOLOWER ${FWPROJECT_NAME}.bat ${FWPROJECT_NAME}_SCRIPT)
-        set(PROJECT_EXECUTABLE ${FWPROJECT_NAME})
-
-        configure_file(${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} @ONLY)
-        unset(FW_EXTERNAL_LIBRARIES_DIRS)
-        file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${${FWPROJECT_NAME}_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin
-            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-    endif()
-
-    if(TESTS_XML_OUTPUT)
-        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT} --xml" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-        set_tests_properties(${FWPROJECT_NAME} PROPERTIES TIMEOUT 240)
     else()
-        add_test(NAME ${FWPROJECT_NAME} COMMAND "${${FWPROJECT_NAME}_SCRIPT}" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+        # Build the bat script from template_exe.bat.in
+        configure_file(${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT} @ONLY)
     endif()
+
+    # Copy launcher script
+    file(COPY ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT} DESTINATION ${CMAKE_BINARY_DIR}/bin/
+            FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+    # Set test command
+    if(TESTS_XML_OUTPUT)
+        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+        set_tests_properties(${SIGHT_TEST_SCRIPT} PROPERTIES TIMEOUT 240)
+    else()
+        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+    endif()
+
+    # Cleanup
+    unset(SIGHT_TEST_SCRIPT)
 
     # Adds project into folder test
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "test")
