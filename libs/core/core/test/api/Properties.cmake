@@ -1,6 +1,0 @@
-set( NAME coreTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core utest )
-set( REQUIREMENTS module_utest )
-set( WARNINGS_AS_ERRORS ON)

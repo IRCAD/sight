@@ -1,5 +1,0 @@
-set( NAME io_baseTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core utestData data io_base)
-set( REQUIREMENTS  )

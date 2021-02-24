@@ -1,6 +1,0 @@
-set( NAME viz_scene3dTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES core utestData data viz_scene3d)
-set( REQUIREMENTS  )
-set( WARNINGS_AS_ERRORS ON )

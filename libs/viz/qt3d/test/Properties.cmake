@@ -1,6 +1,0 @@
-set( NAME viz_qt3dTest )
-set( VERSION  )
-set( TYPE TEST )
-set( DEPENDENCIES data viz_qt3d utestData)
-set( REQUIREMENTS )
-set( WARNINGS_AS_ERRORS ON )
