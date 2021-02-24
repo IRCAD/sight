@@ -1,3 +1,5 @@
+add_subdirectory(exTimeLineData)
+
 sight_add_target( ExTimeLine TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
