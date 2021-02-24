@@ -59,19 +59,17 @@ void Os::getSharedLibraryPath()
     const auto cwd = fs::current_path();
 
     {
-        const auto fwCorePath = core::tools::os::getSharedLibraryPath("sight_core");
         const auto execPath   = ::boost::dll::program_location().remove_filename();
 
 #if defined(WIN32)
+        const auto actualPath = core::tools::os::getSharedLibraryPath("sight_core");
         const fs::path expectedPath = fs::path(execPath.string()) / "sight_core.dll";
-#elif defined(__APPLE__)
-        const fs::path expectedPath = fs::path(execPath.parent_path().string()) / MODULE_LIB_PREFIX /
-                                      "libsight_core.0.dylib";
 #else
+        const auto actualPath = core::tools::os::getSharedLibraryPath("sight_core").replace_extension().replace_extension();
         const fs::path expectedPath = fs::path(execPath.parent_path().string()) / MODULE_LIB_PREFIX /
-                                      "libsight_core.so.0";
+                                      "libsight_core.so";
 #endif
-        CPPUNIT_ASSERT_EQUAL(expectedPath, fwCorePath);
+        CPPUNIT_ASSERT_EQUAL(expectedPath, actualPath);
     }
 
     // Test that a call with a not loaded library throws an error
@@ -87,8 +85,6 @@ void Os::getSharedLibraryPath()
     #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "camp.dll";
     #endif
-#elif defined(__APPLE__)
-    const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.dylib";
 #else
     const auto campPath = fs::path(CAMP_LIB_DIR) / "libcamp.so.0.8";
 #endif
