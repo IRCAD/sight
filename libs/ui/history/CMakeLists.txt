@@ -7,3 +7,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       data
                       filter_image
 )
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

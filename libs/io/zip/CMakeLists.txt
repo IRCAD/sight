@@ -9,3 +9,7 @@ target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DHAVE_AES")
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DUSE_INTEL_AES_IF_PRESENT")
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core)
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

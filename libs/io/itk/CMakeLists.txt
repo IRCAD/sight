@@ -13,3 +13,7 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ZLIB_LIBRARIES} ${JPEG_LIBRARY
 target_link_libraries(${FWPROJECT_NAME} PUBLIC ITKCommon ITKIOImageBase ITKIOJPEG ITKMetaIO itksys itkopenjpeg)
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core data io_base)
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

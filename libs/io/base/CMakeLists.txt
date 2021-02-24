@@ -8,3 +8,7 @@ target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ZLIB_INCLUDE_DIRS}
 target_link_libraries(${FWPROJECT_NAME} PRIVATE  ${ZLIB_LIBRARIES})
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core data service)
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

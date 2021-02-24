@@ -24,3 +24,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       atoms
                       io_atoms
 )
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

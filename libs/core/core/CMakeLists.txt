@@ -26,3 +26,7 @@ target_link_libraries(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC ${LIBXML2_LIBRARIES})
 if(WIN32)
     target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC ${Iconv_INCLUDE_DIR})
 endif()
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

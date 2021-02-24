@@ -54,3 +54,7 @@ endif()
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${VTK_DEFINITIONS})
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core data io_base geometry_data)
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

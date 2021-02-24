@@ -12,3 +12,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       ui_base
                       service
 )
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

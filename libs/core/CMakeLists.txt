@@ -9,3 +9,7 @@ add_subdirectory(pch/pchServices)
 add_subdirectory(pch/pchServicesOmp)
 add_subdirectory(utestData)
 add_subdirectory(atoms)
+
+if(BUILD_TESTS)
+    add_subdirectory(utest)
+endif(BUILD_TESTS)

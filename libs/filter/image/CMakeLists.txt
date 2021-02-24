@@ -12,3 +12,7 @@ find_package(glm QUIET REQUIRED)
 target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC data geometry_data io_itk)
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

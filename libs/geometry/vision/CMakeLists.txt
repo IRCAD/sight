@@ -12,3 +12,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC ${CERES_LIBRARIES})
 target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${CERES_INCLUDE_DIRS})
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core data geometry_eigen)
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

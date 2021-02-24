@@ -13,3 +13,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       service
                       io_base
 )
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)

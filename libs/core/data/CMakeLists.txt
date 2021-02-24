@@ -5,3 +5,7 @@ target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${CAMP_INCLUDE_DIR})
 target_link_libraries(${FWPROJECT_NAME} PRIVATE ${CAMP_LIBRARIES})
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core )
+
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif(BUILD_TESTS)
