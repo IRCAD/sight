@@ -15,7 +15,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       filter_dicom
                       ui_dicom
                       ui_base
-                      module_ui_qt
+                      ui_qt
                       service
                       io_base
                       data

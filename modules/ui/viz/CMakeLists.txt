@@ -15,7 +15,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       data
                       io_base
                       geometry_data
-                      module_ui_qt
+                      ui_qt
                       service
                       viz_scene3d
                       ui_base

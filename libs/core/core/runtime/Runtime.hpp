@@ -76,17 +76,22 @@ public:
     /**
      * @brief       Set the working path where Modules and share folder are located.
      *
-     * @param[in]   workingPath a boost path.
+     * @param[in]   workingPath a std path.
      */
     [[deprecated("To be removed in Sight 22.0, Sight location is now detected automatically")]]
     CORE_API void setWorkingPath(const std::filesystem::path& workingPath);
 
     /**
      * @brief       Get the path where Modules and share folder are located.
-     *
-     * @return      a boost path.
+     * @return      a std path.
      */
     CORE_API virtual std::filesystem::path getWorkingPath() const = 0;
+
+    /**
+     * @brief       Get the path where Modules and share folder are located.
+     * @return      a vector of std path.
+     */
+    CORE_API virtual std::vector<std::filesystem::path> getRepositoriesPath() const = 0;
 
     /**
      * @name    Modules
@@ -133,10 +138,6 @@ public:
     CORE_API virtual std::shared_ptr< Extension > findExtension( const std::string& identifier ) const = 0;
 
     //@}
-
-    /// Return all modules known by the runtime
-    [[deprecated("To be removed in Sight 22.0, use getModules() instead")]]
-    CORE_API virtual ModuleContainer getBundles() = 0;
 
     /// Return all modules known by the runtime
     CORE_API virtual ModuleContainer getModules() = 0;

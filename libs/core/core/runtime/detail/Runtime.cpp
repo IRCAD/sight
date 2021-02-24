@@ -96,9 +96,11 @@ void Runtime::addModules( const std::filesystem::path& repository )
 {
     try
     {
-        using core::runtime::detail::io::ModuleDescriptorReader;
-        const ModuleDescriptorReader::ModuleContainer modules = ModuleDescriptorReader::createModules( repository );
+        const auto modules = core::runtime::detail::io::ModuleDescriptorReader::createModules( repository );
         std::for_each( modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1) );
+        static const std::regex expr("share/\\w*");
+        const auto libRepoStr = std::regex_replace(repository.string(), expr, MODULE_LIB_PREFIX);
+        m_repositories.push_back(std::filesystem::canonical(std::filesystem::path(libRepoStr)));
     }
     catch(const std::exception& exception)
     {
@@ -320,13 +322,6 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-core::runtime::Runtime::ModuleContainer Runtime::getBundles()
-{
-    return this->getModules();
-}
-
-//------------------------------------------------------------------------------
-
 core::runtime::Runtime::ModuleContainer Runtime::getModules()
 {
     core::runtime::Runtime::ModuleContainer modules;
@@ -339,6 +334,13 @@ core::runtime::Runtime::ModuleContainer Runtime::getModules()
 std::filesystem::path Runtime::getWorkingPath() const
 {
     return m_workingPath;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::filesystem::path> Runtime::getRepositoriesPath() const
+{
+    return m_repositories;
 }
 
 //------------------------------------------------------------------------------

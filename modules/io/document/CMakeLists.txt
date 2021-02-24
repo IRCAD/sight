@@ -9,7 +9,7 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       core
                       data
                       ui_base
-                      module_ui_qt
+                      ui_qt
                       service
                       io_base
 )

@@ -9,6 +9,6 @@ add_subdirectory(pch/pchServicesOmp)
 add_subdirectory(atoms)
 
 if(BUILD_TESTS)
-    add_subdirectory(utest)
-    add_subdirectory(utestData)
+add_subdirectory(utest)
+add_subdirectory(utestData)
 endif(BUILD_TESTS)

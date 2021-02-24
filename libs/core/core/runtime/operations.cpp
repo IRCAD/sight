@@ -265,7 +265,7 @@ std::shared_ptr<Module> loadModule(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-bool loadLibrary(const std::string& identifier, const std::string& dirName)
+bool loadLibrary(const std::string& identifier)
 {
     static std::map<std::string, std::shared_ptr<detail::dl::Library> > s_LIBRARIES;
 
@@ -278,22 +278,26 @@ bool loadLibrary(const std::string& identifier, const std::string& dirName)
     auto library                       = std::make_shared<detail::dl::Library>(identifier);
     const core::runtime::Runtime& rntm = core::runtime::Runtime::get();
 
-    auto searchPath = rntm.getWorkingPath() / MODULE_LIB_PREFIX;
-    library->setSearchPath(searchPath);
-
-    try
+    // Try to load from all known paths
+    const auto repositories = rntm.getRepositoriesPath();
+    for(auto repo : repositories)
     {
-        library->load();
-    }
-    catch (const RuntimeException& e)
-    {
-        SLM_ERROR("Could not load library '" + identifier + "': " + e.what() );
-        return false;
-    }
+        library->setSearchPath(repo);
+        try
+        {
+            library->load();
+            s_LIBRARIES[identifier] = library;
+            return true;
+        }
+        catch (const RuntimeException& e)
+        {
+            // Fail silently and potentially try in the next repository
+        }
 
-    s_LIBRARIES[identifier] = library;
+    }
+    SLM_ERROR("Could not load library '" + identifier);
 
-    return true;
+    return false;
 }
 
 //------------------------------------------------------------------------------

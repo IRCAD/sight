@@ -47,11 +47,13 @@ data::Object::sptr New( const data::registry::KeyType& classname )
     static const std::regex reg("::(\\w*)::(?:(core|filter|geometry|io|navigation|viz)::)?(\\w*)::.*");
     if( std::regex_match(classname, match, reg ) && match.size() >= 3)
     {
-        const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "") + 
+        const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "") +
                                     match[3].str();
-        const bool loaded         = core::runtime::loadLibrary(libname, match[1].str());
+        SLM_DEBUG("libname: " + libname);
+        const bool loaded = core::runtime::loadLibrary(libname);
         if(!loaded)
         {
+            FW_RAISE("Cannot load library for data '" + classname + "'");
             return nullptr;
         }
     }

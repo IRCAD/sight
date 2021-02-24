@@ -15,7 +15,7 @@ add_dependencies(${FWPROJECT_NAME}
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core
                       ui_base
-                      module_ui_qt
+                      ui_qt
                       io_http
                       data
                       service

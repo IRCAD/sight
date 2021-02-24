@@ -128,16 +128,14 @@ public:
      */
     std::shared_ptr< Extension > findExtension( const std::string& identifier ) const final;
 
-    /// @copydoc core::runtime::Runtime::getBundles
-    [[deprecated("To be removed in Sight 22.0, use getModules() instead")]]
-    core::runtime::Runtime::ModuleContainer getBundles() final;
-
     /// @copydoc core::runtime::Runtime::getModules
     core::runtime::Runtime::ModuleContainer getModules() final;
 
     /// @copydoc core::runtime::Runtime::getWorkingPath
     std::filesystem::path getWorkingPath() const final;
 
+    /// @copydoc core::runtime::Runtime::getRepositoriesPath
+    std::vector<std::filesystem::path> getRepositoriesPath() const final;
     //@}
 
     /**
@@ -293,7 +291,8 @@ private:
     ModuleContainer m_modules;                            ///< Contains all modules.
     PluginContainer m_plugins;                            ///< Contains all plugins.
 
-    std::filesystem::path m_workingPath;     ///< Path where Modules and share folder are located.
+    std::filesystem::path m_workingPath;                  ///< Main path where Modules and share folder are located.
+    std::vector<std::filesystem::path> m_repositories;    ///< All paths containing modules, added from the CLI
 };
 
 } // namespace detail

@@ -1,5 +1,9 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+
 # Define some paths whether we are building Sight or using it
 if(FW_BUILD_EXTERNAL)
     set(FWCMAKE_BUILD_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
@@ -31,8 +35,6 @@ include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
 if(NOT FW_BUILD_EXTERNAL)
     include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
 endif()
-
-file(REMOVE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -150,9 +152,7 @@ macro(configureProject FWPROJECT_NAME)
         set(TARGET_NAME ${FWPROJECT_NAME})
     endif()
 
-    if(SET_API_VERSION)
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${SIGHT_VERSION} SOVERSION ${SIGHT_API_VERSION})
-    endif()
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${SIGHT_VERSION} SOVERSION ${SIGHT_API_VERSION})
 
     target_compile_definitions(${TARGET_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_EXPORTS)
 
@@ -492,7 +492,8 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         set(TARGETS_TO_EXPORT ${FWPROJECT_NAME} ${FWPROJECT_NAME_OBJECT_LIB})
     endif()
     install(
-        TARGETS ${TARGETS_TO_EXPORT} EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+        TARGETS ${TARGETS_TO_EXPORT} 
+        EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -519,9 +520,8 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
             DESTINATION
                 ${FWCONFIG_PACKAGE_LOCATION}
     )
-
-    list(APPEND FW_COMPONENTS ${FWPROJECT_NAME} )
-    set(FW_COMPONENTS ${FW_COMPONENTS} PARENT_SCOPE)
+    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
+    set_property(GLOBAL PROPERTY SIGHT_COMPONENTS ${SIGHT_COMPONENTS};${FWPROJECT_NAME} )
 
     # Add Sight targets dependencies
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake")
@@ -600,27 +600,23 @@ macro(fwModule FWPROJECT_NAME)
 
         configureProject( ${FWPROJECT_NAME} )
 
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${SIGHT_API_VERSION})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
+
         set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
     
-        install(
-            TARGETS ${FWPROJECT_NAME}
-            RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
-            OPTIONAL NAMELINK_SKIP
-            )
-
         # create the config.hpp for the current module
         get_header_file_install_destination()
         configure_header_file(${FWPROJECT_NAME} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
 
         # Allows include of type <ui/config.hpp>
-        target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/include")
+        target_include_directories(${FWPROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
         # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs)
+        target_include_directories(${FWPROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs>)
         # Allows include of type <core/..> <data/..> ...
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/core)
+        target_include_directories(${FWPROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core>)
         # Allows include of type <modules/../..>
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR})
+        target_include_directories(${FWPROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
         if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
@@ -636,15 +632,14 @@ macro(fwModule FWPROJECT_NAME)
             endif()
         endif()
     else()
-        add_custom_target(${FWPROJECT_NAME} SOURCES
-            ${${FWPROJECT_NAME}_RC_FILES}
-            ${${FWPROJECT_NAME}_CMAKE_FILES})
+        add_library(${FWPROJECT_NAME} INTERFACE ${${FWPROJECT_NAME}_RC_FILES} ${${FWPROJECT_NAME}_CMAKE_FILES})
     endif()
 
     # Adds project into folder module or apps
     if(${FWPROJECT_NAME}_TYPE STREQUAL "APP")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_TARGET_TYPE "APP")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
+
         if(MSVC_IDE)
             # create the launch config for the current app
             set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
@@ -704,7 +699,34 @@ macro(fwModule FWPROJECT_NAME)
         endif()
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_TARGET_TYPE "MODULE")
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "module")
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "module")                 
+
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_TARGET_TYPE;SIGHT_START")
+
+        install(
+            TARGETS ${FWPROJECT_NAME}
+            EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+            RUNTIME DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
+            ARCHIVE DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
+            LIBRARY DESTINATION ${SIGHT_MODULE_LIB_PREFIX}
+        )
+                
+        # Add all targets to the build-tree export set
+        export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+                FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
+                NAMESPACE sight::)
+
+        # Install sight_Project_Targets.cmake
+        install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
+                FILE
+                ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
+                NAMESPACE
+                    sight::
+                DESTINATION
+                    ${FWCONFIG_PACKAGE_LOCATION}
+        )
+        get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
+        set_property(GLOBAL PROPERTY SIGHT_COMPONENTS ${SIGHT_COMPONENTS};${FWPROJECT_NAME} )
     endif()
 
     set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
@@ -768,11 +790,6 @@ macro(sight_add_target)
         set(${NAME}_PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
         getPchTarget(${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH})
-
-        # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
-        if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
-            list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
-        endif()
     endif()
     
     if("${SIGHT_TARGET_TYPE}" STREQUAL "EXECUTABLE")
@@ -853,3 +870,32 @@ macro(fwDirList result curdir)
     endforeach()
     set(${result} ${dirlist})
 endmacro()
+
+function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
+    set(DEPENDENCY_LIST)
+    set(RESULT "")
+    list(APPEND DEPENDENCY_LIST ${FWPROJECT_NAMES})
+    while(DEPENDENCY_LIST)
+
+        list(GET DEPENDENCY_LIST 0 DEPENDENCY)
+        list(REMOVE_AT DEPENDENCY_LIST 0 )
+
+        if(NOT PROCESSED_${DEPENDENCY})
+            get_target_property(DEPENDS ${DEPENDENCY} LINK_LIBRARIES)
+            set(DEPENDS_COPY ${DEPENDS})
+            foreach(dep ${DEPENDS})
+                if(NOT ${dep} IN_LIST FWPROJECT_NAMES)
+                    list(REMOVE_ITEM DEPENDS_COPY ${dep})
+                endif()
+            endforeach()
+            
+            list(APPEND DEPENDENCY_LIST ${DEPENDS_COPY})
+            set(PROCESSED_${DEPENDENCY} 1)
+        endif()
+
+        list(APPEND RESULT ${DEPENDENCY})
+    endwhile()
+
+    list(REMOVE_DUPLICATES RESULT)
+    set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
+endfunction()

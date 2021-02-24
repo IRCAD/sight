@@ -69,14 +69,8 @@ Module::Module( const std::filesystem::path& location,
     // Post-condition.
     SLM_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
 
-    // Starting from Sight 13.0, the plugin.xml is now likely to be separated from the libraries in the build/install
-    std::string strLocation           = location.parent_path().string();
-    std::filesystem::path strRCPrefix = MODULE_RC_PREFIX;
-    const auto itModule               = strLocation.find(strRCPrefix.string());
-    if(itModule != std::string::npos)
-    {
-        strLocation.replace(itModule, strRCPrefix.string().length(), std::string(MODULE_LIB_PREFIX));
-    }
+    static const std::regex expr("share/.*");
+    const auto strLocation = std::regex_replace(location.string(), expr, MODULE_LIB_PREFIX);
 
     // This may fail if the module does not contain any library, so we ignore the returned error
     m_libraryLocation = std::filesystem::weakly_canonical(std::filesystem::path(strLocation));

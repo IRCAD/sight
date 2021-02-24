@@ -7,7 +7,7 @@ set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core
                       ui_base
-                      module_ui_qt
+                      ui_qt
                       io_dimse
                       data
                       service

@@ -44,19 +44,18 @@ macro(profile_setup PROJECT)
 
         get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
         
-        # to only consider modules and app
         if( "${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
-            # check if a moduleParam macro had been use in the properties.cmake
-            # if yes, get and set module param and values
+
             string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
             string(REGEX REPLACE "^module" "${SIGHT_REPOSITORY}::module" REQ ${REQ})
             string(REGEX REPLACE "^config" "${SIGHT_REPOSITORY}::config" REQ ${REQ})
             string(REGEX REPLACE "^activity" "${SIGHT_REPOSITORY}::activity" REQ ${REQ})
 
+            # check if a moduleParam macro had been used in the CMakeLists.txt
+            # if yes, get and set module param and values
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
                 set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
-
 
                 #set activate tag with parameters
                 list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" >")
@@ -69,7 +68,7 @@ macro(profile_setup PROJECT)
                 list(APPEND XML_ACTIVATE "    </activate>")
             # else simply set the activate tag
             else()
-                 list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" />")
+                list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" />")
             endif()
         endif()
     endforeach()
@@ -86,24 +85,6 @@ macro(profile_setup PROJECT)
     configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
                     "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}/profile.xml")
 endmacro()
-
-function(findRequirements FWPROJECT_NAME)
-    list(APPEND ALL_REQUIREMENTS ${FWPROJECT_NAME})
-
-    set(CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS})
-    if(${FWPROJECT_NAME}_MODULE_DEPENDENCIES)
-        list(APPEND CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_MODULE_DEPENDENCIES})
-        list(REMOVE_DUPLICATES CURRENT_REQUIREMENTS)
-    endif()
-
-    foreach(CURRENT_REQUIREMENT ${CURRENT_REQUIREMENTS})
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
-            findRequirements(${CURRENT_REQUIREMENT})
-        endif()
-    endforeach()
-
-    set(ALL_REQUIREMENTS ${ALL_REQUIREMENTS} PARENT_SCOPE)
-endfunction()
 
 macro(moduleParam MODULE_NAME)
     set(options)

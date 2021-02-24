@@ -223,11 +223,10 @@ CORE_API std::shared_ptr<Module> loadModule( const std::string& identifier );
  * @brief   Load a library.
  *
  * @param   identifier  a string containing a module identifier
- * @param   dirName     optional folder where to look for the library
  *
  * @return  success
  */
-CORE_API bool loadLibrary( const std::string& identifier, const std::string& dirName = std::string() );
+CORE_API bool loadLibrary( const std::string& identifier );
 
 /**
  * @brief   Starts the given module set profile.

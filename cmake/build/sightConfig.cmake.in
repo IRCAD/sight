@@ -3,13 +3,13 @@ cmake_policy(SET CMP0067 NEW)
 
 set(FW_BUILD_EXTERNAL 1)
 
-include("${CMAKE_CURRENT_LIST_DIR}/sight_requirements.cmake")
+include(GNUInstallDirs)
 include("${CMAKE_CURRENT_LIST_DIR}/macros.cmake")
 
 # Needed for FindFilesystem.cmake
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 
-set(_SUPPORTED_COMPONENTS @FW_COMPONENTS@)
+set(SIGHT_SUPPORTED_COMPONENTS @SIGHT_COMPONENTS@)
 
 if(MSVC AND NOT VCPKG_TARGET_TRIPLET)
     string(TOLOWER ${PRJ_NAME} APP_NAME)
@@ -23,6 +23,7 @@ endif()
 setExternalLibrariesDir()
 
 set(FW_INSTALL_PATH_SUFFIX "${SIGHT_REPOSITORY}")
+set(FWCONFIG_PACKAGE_LOCATION lib/cmake/${SIGHT_REPOSITORY})
 set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
 if(WIN32)
     set(SIGHT_MODULE_LIB_PREFIX "${CMAKE_INSTALL_BINDIR}")
@@ -35,7 +36,7 @@ file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_LIB_PREFIX@" Sight_LIBRA
 file(TO_CMAKE_PATH "${sight_DIR}/../../../@SIGHT_MODULE_RC_PREFIX@" Sight_MODULES_DIR)
 file(TO_CMAKE_PATH "${sight_DIR}/../../../" Sight_DEFINE_DIR)
 
-foreach(sight_comp ${_SUPPORTED_COMPONENTS})
+foreach(sight_comp ${SIGHT_SUPPORTED_COMPONENTS})
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
         include("${CMAKE_CURRENT_LIST_DIR}/sight_${sight_comp}_Dependencies.cmake")
     endif()
@@ -45,25 +46,12 @@ endforeach()
 foreach(sight_comp ${sight_FIND_COMPONENTS})
     if(NOT ${sight_comp}_FOUND)
         message(STATUS "Looking for sight component: ${sight_comp}")
-        if (NOT ";${_SUPPORTED_COMPONENTS};" MATCHES ${sight_comp})
+        if (NOT sight_comp IN_LIST SIGHT_SUPPORTED_COMPONENTS)
             set(sight_FOUND False)
             set(sight_NOT_FOUND_MESSAGE "Unsupported component: ${sight_comp}")
         endif()
 
-        # For now I do not know how to unroll this loop when configuring the file... so for now just use the default log level
-        set_property( TARGET sight::${sight_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SIGHT_DIR="${Sight_DEFINE_DIR}")
+        set_property(TARGET sight::${sight_comp} PROPERTY INTERFACE_COMPILE_DEFINITIONS SIGHT_DIR="${Sight_DEFINE_DIR}")
         set(${sight_comp}_FOUND 1)
     endif()
 endforeach()
-
-set(SPYLOG_LEVEL "error" CACHE STRING "Log level")
-set(SPYLOG_LEVEL_VALUES "fatal;error;warning;info;debug;trace" CACHE INTERNAL
-    "List of possible values for log level")
-set(SPYLOG_LEVEL_MAP_fatal 1)
-set(SPYLOG_LEVEL_MAP_error 2)
-set(SPYLOG_LEVEL_MAP_warning 3)
-set(SPYLOG_LEVEL_MAP_info 4)
-set(SPYLOG_LEVEL_MAP_debug 5)
-set(SPYLOG_LEVEL_MAP_trace 6)
-set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
-

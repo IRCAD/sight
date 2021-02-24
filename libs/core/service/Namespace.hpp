@@ -55,7 +55,7 @@ namespace sight::service
 
                  <!--
                      Description service of the GUI:
-                     The module::ui::base::frame::SFrame service automatically positions the various
+                     The module::ui::base::SFrame service automatically positions the various
                      containers in the application main window.
                      Here, it declares a container for the 3D rendering service.
                  -->
@@ -251,7 +251,7 @@ namespace sight::service
 
              <!--
                  Description service of the GUI:
-                 The module::ui::base::frame::SFrame service automatically positions the various
+                 The module::ui::base::SFrame service automatically positions the various
                  containers in the application main window.
                  Here, it declares a container for the 3D rendering service.
              -->
