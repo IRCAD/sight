@@ -3,9 +3,8 @@ sight_add_target( viz_scene3d TYPE LIBRARY PCH pchServicesOmp WARNINGS_AS_ERRORS
 # include first to be taken into account in the PCH compile flags
 find_package(OpenMP QUIET)
 if (OPENMP_FOUND)
-    target_compile_options(${FWPROJECT_NAME} PUBLIC ${OpenMP_CXX_FLAGS})
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
 endif()
-
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC OgreOverlay)
 

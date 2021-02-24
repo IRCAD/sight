@@ -38,3 +38,5 @@ moduleParam(
     PARAM_VALUES
         ExRGBDImageMasking_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

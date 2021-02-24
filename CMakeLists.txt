@@ -215,12 +215,12 @@ set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
 add_subdirectory(libs)
 add_subdirectory(modules)
-#add_subdirectory(configs)
-#add_subdirectory(activities) 
-#add_subdirectory(apps)
+add_subdirectory(configs)
+add_subdirectory(activities) 
 add_subdirectory(utils)
+add_subdirectory(apps)
 add_subdirectory(tutorials)
-#add_subdirectory(examples)
+add_subdirectory(examples)
 
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()

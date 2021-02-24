@@ -17,3 +17,5 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       service
                       ui_qml
 )
+
+sight_add_shortcut(${FWPROJECT_NAME})

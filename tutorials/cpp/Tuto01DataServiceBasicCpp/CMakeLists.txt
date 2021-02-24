@@ -13,3 +13,5 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       data
                       service
 )
+
+sight_add_shortcut(${FWPROJECT_NAME})

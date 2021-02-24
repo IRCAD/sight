@@ -27,3 +27,5 @@ moduleParam(
     PARAM_VALUES
         Tuto05Mesher_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

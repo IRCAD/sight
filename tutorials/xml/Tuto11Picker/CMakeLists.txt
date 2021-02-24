@@ -28,3 +28,5 @@ moduleParam(module_ui_qt
         sight_module_ui_qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 moduleParam(module_appXml PARAM_LIST config PARAM_VALUES Tuto11Picker_AppCfg)
+
+sight_add_shortcut(${FWPROJECT_NAME})

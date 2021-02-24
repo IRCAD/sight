@@ -32,3 +32,5 @@ PARAM_LIST
 PARAM_VALUES
     ExRealSense_AppCgf
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

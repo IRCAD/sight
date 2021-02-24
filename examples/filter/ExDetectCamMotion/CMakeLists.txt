@@ -30,3 +30,5 @@ moduleParam(
     PARAM_VALUES
         ExDetectCamMotion_AppCgf
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

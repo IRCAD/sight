@@ -28,3 +28,5 @@ moduleParam(
     PARAM_VALUES
         Tuto13Multithread_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

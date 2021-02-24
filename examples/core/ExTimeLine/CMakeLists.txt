@@ -1,12 +1,10 @@
 sight_add_target( ExTimeLine TYPE APP )
 
-
 add_dependencies(${FWPROJECT_NAME} 
                  module_appXml
                  module_service
                  fwlauncher
                  module_ui_console
-                 exTimeLineData
 )
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
@@ -23,3 +21,5 @@ moduleParam(
     PARAM_VALUES
         ExTimeLine_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

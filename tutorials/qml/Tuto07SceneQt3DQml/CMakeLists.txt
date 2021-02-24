@@ -20,3 +20,5 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       service
                       viz_qt3d
 )
+
+sight_add_shortcut(${FWPROJECT_NAME})

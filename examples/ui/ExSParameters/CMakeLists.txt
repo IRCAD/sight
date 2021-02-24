@@ -25,3 +25,5 @@ moduleParam(
     PARAM_VALUES
         ExSParameters_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

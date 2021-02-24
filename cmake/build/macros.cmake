@@ -822,7 +822,6 @@ endmacro()
 
 macro(sight_add_shortcut TARGET)
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rc/profile.xml" )
-        message("${CMAKE_CURRENT_SOURCE_DIR}/rc/profile.xml")
         profile_setup(${TARGET})
     endif()
 endmacro()

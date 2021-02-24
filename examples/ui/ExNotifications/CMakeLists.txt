@@ -29,3 +29,5 @@ moduleParam(
     PARAM_VALUES
         ExNotifications_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})

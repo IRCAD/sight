@@ -36,3 +36,5 @@ moduleParam(
     PARAM_VALUES
         Tuto04MeshGeneratorCpp_AppCfg
 ) # Main application's configuration to launch
+
+sight_add_shortcut(${FWPROJECT_NAME})
