@@ -1,15 +1,5 @@
 sight_add_target( module_io_itkTest TYPE TEST )
 
-
-
-fwInclude(
-)
-fwLink(
-)
-
-
-
-
 add_dependencies(${FWPROJECT_NAME} 
                  data
                  module_service

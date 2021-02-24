@@ -8,7 +8,6 @@ target_compile_definitions(${FWPROJECT_NAME} PRIVATE MODULE_LIB_PREFIX="${SIGHT_
 # Link with the library objects instead of classical shared library
 target_link_libraries(${FWPROJECT_NAME} PUBLIC core_obj)
 
-find_package(CppUnit QUIET REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE CppUnit)
 
 if(UNIX)

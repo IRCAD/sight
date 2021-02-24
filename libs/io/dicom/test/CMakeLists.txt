@@ -1,11 +1,10 @@
 sight_add_target( io_dicomTest TYPE TEST )
 
-
-find_package(GDCM QUIET REQUIRED)
-include(${GDCM_USE_FILE})
-fwForwardInclude(${GDCM_INCLUDE_DIRS})
-fwLink(${GDCM_LIBRARIES} gdcmCommon gdcmMSFF)
-
+find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC
+    gdcmCommon
+    gdcmMSFF
+)
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       io_dicom

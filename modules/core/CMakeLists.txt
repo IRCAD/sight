@@ -5,7 +5,6 @@ add_subdirectory(activity)
 add_subdirectory(debug)
 add_subdirectory(service)
 add_subdirectory(data)
-add_subdirectory(utest)
 
 if(BUILD_TESTS)
     add_subdirectory(utest)

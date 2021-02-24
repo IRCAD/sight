@@ -53,6 +53,10 @@ mark_as_advanced(TESTS_XML_OUTPUT)
 set(TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
 mark_as_advanced(TESTS_FILTER)
 
+if(BUILD_TESTS)
+    find_package(CppUnit QUIET REQUIRED)
+endif(BUILD_TESTS)
+
 set(SET_API_VERSION ON)
 
 option(ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)

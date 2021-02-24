@@ -1,6 +1,5 @@
 add_subdirectory(core)
 add_subdirectory(pch/pchCore)
-add_subdirectory(utest)
 add_subdirectory(data)
 add_subdirectory(pch/pchData)
 add_subdirectory(activity)

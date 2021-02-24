@@ -8,18 +8,11 @@ if(WIN32)
     target_link_libraries(${FWPROJECT_NAME} PRIVATE VTK::FiltersSources)
 else()
     # VTK7
-    fwInclude(
-        ${VTK_INCLUDE_DIRS}
-    )
-    fwLink(
-        vtkFiltersSources
-    )
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE vtkFiltersSources)
 
     if(UNIX)
         find_package(GLEW)
-        fwLink(
-            ${GLEW_LIBRARIES}
-        )
+        target_link_libraries(${FWPROJECT_NAME} PRIVATE ${GLEW_LIBRARIES})
     endif()
 endif()
 

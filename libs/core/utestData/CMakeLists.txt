@@ -1,9 +1,6 @@
 sight_add_target( utestData TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
 
-
-find_package(CppUnit QUIET REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC CppUnit)
-
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core
                       data
