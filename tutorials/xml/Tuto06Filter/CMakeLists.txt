@@ -1,4 +1,4 @@
-sight_target( Tuto06Filter TYPE APP )
+sight_add_target( Tuto06Filter TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

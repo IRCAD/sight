@@ -1,4 +1,4 @@
-sight_target( io_itkTest TYPE TEST )
+sight_add_target( io_itkTest TYPE TEST )
 
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

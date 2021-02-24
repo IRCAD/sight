@@ -1,4 +1,4 @@
-sight_target( viz_scene2d TYPE LIBRARY )
+sight_add_target( viz_scene2d TYPE LIBRARY )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)

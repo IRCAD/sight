@@ -1,4 +1,4 @@
-sight_target( module_ui_qt TYPE MODULE START ON )
+sight_add_target( module_ui_qt TYPE MODULE START ON )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Help Multimedia MultimediaWidgets  Qml Quick Widgets QuickWidgets REQUIRED)
@@ -8,11 +8,7 @@ target_link_libraries(${FWPROJECT_NAME} PRIVATE Qt5::Core Qt5::Gui Qt5::Help
                                                 Qt5::Qml Qt5::Quick Qt5::Widgets Qt5::QuickWidgets )
 
 find_package(glm QUIET REQUIRED)
-
-fwForwardInclude(
-
-    ${GLM_INCLUDE_DIRS}
-)
+target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 

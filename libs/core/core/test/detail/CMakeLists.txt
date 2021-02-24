@@ -1,4 +1,4 @@
-sight_target( coreDetailTest TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target( coreDetailTest TYPE TEST WARNINGS_AS_ERRORS ON )
 
 
 # We need this one to test the location

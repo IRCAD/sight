@@ -1,4 +1,4 @@
-sight_target( module_debug TYPE MODULE )
+sight_add_target( module_debug TYPE MODULE )
 
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")

@@ -1,19 +1,9 @@
-sight_target( module_io_document TYPE MODULE )
-
+sight_add_target( module_io_document TYPE MODULE )
 
 find_package(Qt5 QUIET COMPONENTS PrintSupport REQUIRED)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::PrintSupport)
 
-fwForwardInclude(
-    ${Qt5PrintSupport_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${Qt5PrintSupport_LIBRARIES}
-)
-
-add_dependencies(${FWPROJECT_NAME} 
-                 module_service
-)
+add_dependencies(${FWPROJECT_NAME} module_service)
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core

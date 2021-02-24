@@ -1,4 +1,4 @@
-sight_target( io_dimse TYPE LIBRARY PCH pchData )
+sight_add_target( io_dimse TYPE LIBRARY PCH pchData )
 
 
 find_package(DCMTK QUIET REQUIRED)

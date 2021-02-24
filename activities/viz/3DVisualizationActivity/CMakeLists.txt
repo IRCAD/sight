@@ -1,4 +1,4 @@
-sight_target( 3DVisualizationActivity TYPE MODULE )
+sight_add_target( 3DVisualizationActivity TYPE MODULE )
 
 
 

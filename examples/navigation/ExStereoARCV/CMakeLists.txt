@@ -1,4 +1,4 @@
-sight_target( ExStereoARCV TYPE APP )
+sight_add_target( ExStereoARCV TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

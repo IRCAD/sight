@@ -1,4 +1,4 @@
-sight_target( module_filter_image TYPE MODULE )
+sight_add_target( module_filter_image TYPE MODULE )
 
 
 if(MSVC)

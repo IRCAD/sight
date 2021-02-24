@@ -1,4 +1,4 @@
-sight_target( viz_base TYPE LIBRARY PCH pchServices )
+sight_add_target( viz_base TYPE LIBRARY PCH pchServices )
 
 
 

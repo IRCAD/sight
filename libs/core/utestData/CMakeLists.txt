@@ -1,4 +1,4 @@
-sight_target( utestData TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
+sight_add_target( utestData TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
 
 
 find_package(CppUnit QUIET REQUIRED)

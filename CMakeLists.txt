@@ -24,6 +24,8 @@ endif()
 project (sight)
 
 set(SIGHT_REPOSITORY "sight")
+set(SIGHT_VERSION "21.0.0")
+set(SIGHT_API_VERSION "21.0")
 
 if(APPLE)
     message(FATAL_ERROR "macOS is no more supported.")
@@ -36,6 +38,7 @@ include(CMakeParseArguments)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
@@ -78,11 +81,6 @@ if(CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
-
-set(PROJECTS_TO_BUILD CACHE STRING
-        "List of projects that will be configured for build.
-        Leave empty to configure all projects"
-    )
 
 # Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -215,285 +213,148 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
 endforeach()
 
-########################################################################################################################
-# The Properties.cmake files are the entry point to scan for targets
-# We really start the configure process here
-########################################################################################################################
 add_subdirectory(libs)
 add_subdirectory(modules)
-add_subdirectory(configs)
-add_subdirectory(activities) 
-add_subdirectory(apps)
+#add_subdirectory(configs)
+#add_subdirectory(activities) 
+#add_subdirectory(apps)
 add_subdirectory(utils)
-add_subdirectory(examples)
 add_subdirectory(tutorials)
-
-file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
+#add_subdirectory(examples)
 
 set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
-unset(PROJECT_LIST)
-
-# Parse all Properties.cmake files and populate a list of CMake variables for each projet
-# to know its dependencies, requirements, version, pch usage, etc...
-foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
-    get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
-
-    loadProperties("${PROPERTIES_FILE}")
-    if(NOT NAME)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
-    endif()
-
-    list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
-    if(DEP_LOOP GREATER -1)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own dependency.")
-    endif()
-
-    list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
-    if(REQ_LOOP GREATER -1)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be its own requirement.")
-    endif()
-
-    if(${NAME}_DIR)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
-    endif()
-
-    string( TOUPPER "${TYPE}" TYPE )
-
-    set(${NAME}_DEPENDENCIES      "${DEPENDENCIES}")
-    set(${NAME}_REQUIREMENTS      "${REQUIREMENTS}")
-    set(${NAME}_DISABLE_PCH       "${DISABLE_PCH}")
-    set(${NAME}_WARNINGS_AS_ERRORS "${WARNINGS_AS_ERRORS}")
-    set(${NAME}_GENERATE_OBJECT_LIB "${GENERATE_OBJECT_LIB}")
-
-    # Get the pch target, test the existence of type variable to exclude unbuilt projects
-    if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
-        set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
-
-        getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
-
-        # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
-        if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
-            list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
-        endif()
-    endif()
-
-    set(${NAME}_VERSION "${VERSION}")
-    set(${NAME}_DIR "${PROJECT_DIR}")
-
-    if(TYPE STREQUAL "APP")
-        set(${NAME}_UNIQUE "${UNIQUE}")
-    endif()
-
-    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "MODULE" OR TYPE STREQUAL "APP" AND START)
-        set(${NAME}_START "${START}")
-    endif()
-
-    set(${NAME}_START_BEFORE "${START_BEFORE}")
-
-    list(APPEND PROJECT_LIST ${NAME})
-
-endforeach()
-
-# Now find all dependencies if we restrict the build to some projects
-if(PROJECTS_TO_BUILD)
-    set(PROJECT_LIST ${PROJECTS_TO_BUILD})
-    findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
-
-    foreach(PROJECT ${PROJECT_LIST})
-        set(${PROJECT}_INSTALL 1)
-
-        if(NOT ${PROJECT}_DIR)
-            message(FATAL_ERROR "Can not find any project for '${PROJECT}' set in PROJECTS_TO_BUILD variable")
-        endif()
-        # Configure cpack to package the project sources.
-        findProjectSubdirectory("${${PROJECT}_DIR}" "${CMAKE_SOURCE_DIR}" SOURCE_INSTALL_DIR)
-        # Add the project to CPack's list of source directories.
-        list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
-    endforeach()
-
-    # Copy important sight files in a temporary directory to be packaged when generating a source archive.
-    set(PACKAGE_SRC_DIR "${CMAKE_BINARY_DIR}/package_source")
-    file(MAKE_DIRECTORY ${PACKAGE_SRC_DIR})
-    file(COPY CMakeLists.txt COPYING COPYING.LESSER README.md DESTINATION ${PACKAGE_SRC_DIR})
-    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${PACKAGE_SRC_DIR} "." "${CMAKE_SOURCE_DIR}/cmake" "./cmake")
-
-    message(STATUS "Project configuration is restricted to : ${PROJECTS_TO_BUILD}")
-elseif(BUILD_SDK)
-    foreach(PROJECT ${PROJECT_LIST})
-        set(${PROJECT}_INSTALL 1)
-    endforeach()
-endif()
-
-# Clear all previous tests from project list
-findTests("${PROJECT_LIST}" "" PROJECT_TESTS)
-if(PROJECT_TESTS)
-    list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
-endif()
-
-findTests("${PROJECT_LIST}" "${TESTS_FILTER}" PROJECT_TESTS)
-findAllDependencies("${PROJECT_TESTS}" PROJECT_TESTS_DEPS)
-list(REMOVE_DUPLICATES PROJECT_TESTS_DEPS)
-
-# Add all test sources to the source package. Needed to make the package buildable without setting BUILD_TESTS=OFF.
-foreach(PROJECT ${PROJECT_TESTS_DEPS})
-    findProjectSubdirectory("${${PROJECT}_DIR}" "${REPOSITORIES_DIRECTORIES}" SOURCE_INSTALL_DIR)
-    list(APPEND CPACK_SOURCE_INSTALLED_DIRECTORIES ${${PROJECT}_DIR} ${SOURCE_INSTALL_DIR})
-endforeach()
-
-# Append tests to the project list
-if(BUILD_TESTS)
-    list(APPEND PROJECT_LIST ${PROJECT_TESTS_DEPS})
-    list(REMOVE_DUPLICATES PROJECT_LIST)
-endif()
-
-########################################################################################################################
-# Compiler flags (We assume that we use the same flags fo C and C++ and we do only C++ here)
-########################################################################################################################
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
-
-########################################################################################################################
-# Second projects scan where we actually perform the add_subdirectory() for each project and its dependencies
-########################################################################################################################
-
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()
-
-foreach(PROJECT ${PROJECT_LIST})
-    addProject(${PROJECT})
-endforeach()
 
 ########################################################################################################################
 # Export and install targets
 ########################################################################################################################
 
-if(BUILD_SDK)
-    # Create the sightConfig.cmake file
-    set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in)
+# Create the sightConfig.cmake file
+set(FWCONFIG_FILE ${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in)
 
-    configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" @ONLY)
+configure_file(${FWCONFIG_FILE} "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" @ONLY)
 
-    # Create the sightConfigVersion file
-    set(SIGHT_VERSION ${GIT_TAG})
+# Create the sightConfigVersion file
+set(SIGHT_VERSION ${GIT_TAG})
 
-    write_basic_package_version_file(
-      "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
-      VERSION ${SIGHT_VERSION}
-      COMPATIBILITY AnyNewerVersion
-    )
+write_basic_package_version_file(
+  "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
+  VERSION ${SIGHT_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
 
-    # Install the sightConfig.cmake and sightConfigVersion.cmake
+# Install the sightConfig.cmake and sightConfigVersion.cmake
+install(
+  FILES
+    "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
+    "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
+  DESTINATION
+    ${FWCONFIG_PACKAGE_LOCATION}
+  COMPONENT
+    dev
+)
+
+# Install some files needed for the build
+install(
+  FILES
+    "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
+    "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+    "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
+    "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/build/plugin.xml.in"
+    "${CMAKE_SOURCE_DIR}/cmake/build/profile_config.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/build/profile.xml.in"
+    "${CMAKE_SOURCE_DIR}/cmake/build/registerServices.cpp.in"
+  DESTINATION
+    ${FWCONFIG_PACKAGE_LOCATION}/build
+  COMPONENT
+    dev
+)
+
+# Install some files needed for the install
+install(
+  FILES
+    "${CMAKE_SOURCE_DIR}/cmake/install/generic_install.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/install/helper.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/install/get_git_rev.cmake"
+  DESTINATION
+    ${FWCONFIG_PACKAGE_LOCATION}/install
+  COMPONENT
+    dev
+)
+
+if(WIN32)
     install(
       FILES
-        "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake"
-        "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
-        "${CMAKE_BINARY_DIR}/cmake/sight_requirements.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
       DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}
+        ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
         dev
     )
-
-    # Install some files needed for the build
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
-        "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
-        "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
-        "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/build/plugin.xml.in"
-        "${CMAKE_SOURCE_DIR}/cmake/build/profile_config.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/build/profile.xml.in"
-        "${CMAKE_SOURCE_DIR}/cmake/build/registerServices.cpp.in"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
       DESTINATION
-        ${FWCONFIG_PACKAGE_LOCATION}/build
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows
       COMPONENT
         dev
     )
-
-    # Install some files needed for the install
     install(
       FILES
-        "${CMAKE_SOURCE_DIR}/cmake/install/generic_install.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/install/helper.cmake"
-        "${CMAKE_SOURCE_DIR}/cmake/install/get_git_rev.cmake"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.template.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/banner_nsis.bmp"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/dialog_nsis.bmp"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/app.ico"
+        "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
+      COMPONENT
+        dev
+    )
+elseif(UNIX)
+    install(
+      FILES
+      "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/build/linux
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/cmake/install/linux_install.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
       COMPONENT
         dev
     )
 
-    if(WIN32)
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install/windows
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.InstallOptions.ini.in"
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/NSIS.template.in"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/banner_nsis.bmp"
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/dialog_nsis.bmp"
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/app.ico"
-            "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
-          COMPONENT
-            dev
-        )
-    elseif(UNIX)
-        install(
-          FILES
-          "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/build/linux
-          COMPONENT
-            dev
-        )
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/linux_install.cmake"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install
-          COMPONENT
-            dev
-        )
-
-        install(
-          FILES
-            "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
-            "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
-          DESTINATION
-            ${FWCONFIG_PACKAGE_LOCATION}/install/linux
-          COMPONENT
-            dev
-        )
-    endif()
+    install(
+      FILES
+        "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
+        "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/linux
+      COMPONENT
+        dev
+    )
 endif()
 
 
@@ -524,7 +385,6 @@ endif()
 ########################################################################################################################
 # Packaging for the SDK
 ########################################################################################################################
-if(BUILD_SDK)
-    set(FWPROJECT_NAME sight)
-    generic_install()
-endif()
+
+set(FWPROJECT_NAME sight)
+generic_install()

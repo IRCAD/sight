@@ -1,9 +1,8 @@
-sight_target( ui_dicom TYPE LIBRARY PCH pchData )
+sight_add_target( ui_dicom TYPE LIBRARY PCH pchData )
 
-
-find_package(DCMTK QUIET REQUIRED)
-fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )
-fwLink( ${DCMTK_LIBRARIES} )
+find_package(DCMTK REQUIRED)
+target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${DCMTK_INCLUDE_DIRS})
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${DCMTK_LIBRARIES})
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets Concurrent REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent)

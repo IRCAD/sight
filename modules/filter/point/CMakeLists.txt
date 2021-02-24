@@ -1,4 +1,4 @@
-sight_target( module_filter_point TYPE MODULE )
+sight_add_target( module_filter_point TYPE MODULE )
 
 
 

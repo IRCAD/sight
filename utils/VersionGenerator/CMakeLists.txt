@@ -1,12 +1,6 @@
-sight_target( VersionGenerator TYPE EXECUTABLE CONSOLE ON )
-
+sight_add_target( VersionGenerator TYPE EXECUTABLE CONSOLE ON )
 
 find_package(Boost QUIET COMPONENTS program_options REQUIRED)
+target_link_libraries(${FWPROJECT_NAME} PRIVATE Boost::program_options)
 
-fwLink(
-    ${Boost_PROGRAM_OPTIONS_LIBRARY}
-)
-
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
-                      io_atoms
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC io_atoms)

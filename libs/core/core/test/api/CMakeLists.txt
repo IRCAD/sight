@@ -1,4 +1,4 @@
-sight_target( coreTest TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target( coreTest TYPE TEST WARNINGS_AS_ERRORS ON )
 
 
 if(UNIX)

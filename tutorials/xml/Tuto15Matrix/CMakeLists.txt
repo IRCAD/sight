@@ -1,4 +1,4 @@
-sight_target( Tuto15Matrix TYPE APP )
+sight_add_target( Tuto15Matrix TYPE APP )
 
 
 

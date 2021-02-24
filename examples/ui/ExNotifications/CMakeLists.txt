@@ -1,4 +1,4 @@
-sight_target( ExNotifications TYPE APP )
+sight_add_target( ExNotifications TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

@@ -1,4 +1,4 @@
-sight_target( toolCalibrationActivity TYPE MODULE )
+sight_add_target( toolCalibrationActivity TYPE MODULE )
 
 
 add_dependencies(${FWPROJECT_NAME} 

@@ -1,4 +1,4 @@
-sight_target( Tuto14Gui TYPE APP )
+sight_add_target( Tuto14Gui TYPE APP )
 
 
 

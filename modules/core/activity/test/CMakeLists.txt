@@ -1,4 +1,4 @@
-sight_target( module_activityTest TYPE TEST )
+sight_add_target( module_activityTest TYPE TEST )
 
 
 

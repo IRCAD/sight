@@ -1,4 +1,4 @@
-sight_target( module_io_atoms TYPE MODULE )
+sight_add_target( module_io_atoms TYPE MODULE )
 
 
 

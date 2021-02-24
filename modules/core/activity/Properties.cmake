@@ -21,5 +21,4 @@ if(NOT ${ENABLE_QML_APPLICATION})
     list(APPEND REQUIREMENTS
         module_ui_qt
         )
-    add_definitions ( -DKEEP_OLD_SERVICE )
 endif()

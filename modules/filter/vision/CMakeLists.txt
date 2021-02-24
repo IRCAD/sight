@@ -1,4 +1,4 @@
-sight_target( module_filter_vision TYPE MODULE )
+sight_add_target( module_filter_vision TYPE MODULE )
 
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_core opencv_imgproc opencv_highgui)

@@ -1,4 +1,4 @@
-sight_target( ARCalibration TYPE APP )
+sight_add_target( ARCalibration TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

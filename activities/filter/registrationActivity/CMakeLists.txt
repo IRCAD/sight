@@ -1,4 +1,4 @@
-sight_target( registrationActivity TYPE MODULE )
+sight_add_target( registrationActivity TYPE MODULE )
 
 
 

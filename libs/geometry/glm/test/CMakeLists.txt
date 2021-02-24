@@ -1,4 +1,4 @@
-sight_target( geometry_glmTest TYPE TEST )
+sight_add_target( geometry_glmTest TYPE TEST )
 
 
 

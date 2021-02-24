@@ -1,4 +1,4 @@
-sight_target( Tuto04SignalSlot TYPE APP )
+sight_add_target( Tuto04SignalSlot TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

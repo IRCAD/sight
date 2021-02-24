@@ -321,12 +321,13 @@ endfunction()
 function(use_precompiled_header _target _input)
     cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
+    get_target_property(_pch_binary_dir ${_input} BINARY_DIR)
+
     if(MSVC)
         target_include_directories(${_target} PRIVATE "${${_input}_PROJECT_DIR}/include/${_input}" )
 
         set(_pch_header "${${_input}_PROJECT_DIR}/include/${_input}/pch.hpp")
-        set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
-        set(_cxx_path "${_pch_binary_dir}/${_input}/include/${_input}")
+        set(_cxx_path "${_pch_binary_dir}/include/${_input}")
         set(_pch_cxx_pch "${_cxx_path}/pch.pch")
 
         # Iterate over all source files and request pch usage
@@ -356,8 +357,7 @@ function(use_precompiled_header _target _input)
 
     if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         set(_pch_header "pch.hpp")
-        set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
-        set(_pchfile "${_pch_binary_dir}/${_input}/include/${_input}/pch.hpp")
+        set(_pchfile "${_pch_binary_dir}/include/${_input}/pch.hpp")
 
         if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             set(_output_cxx "${_pchfile}.pch")
@@ -365,7 +365,7 @@ function(use_precompiled_header _target _input)
             set(_output_cxx "${_pchfile}.gch")
 
             # Add the location of the pch as an include directory
-            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/${_input}/include/${_input} )
+            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/include/${_input} )
         endif()
 
         assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})

@@ -1,26 +1,12 @@
-sight_target( module_activity TYPE MODULE )
+sight_add_target( module_activity TYPE MODULE )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui REQUIRED)
-
-fwForwardInclude(
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Gui_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui)
 
 if(NOT ${ENABLE_QML_APPLICATION})
     find_package(Qt5 QUIET COMPONENTS Widgets REQUIRED)
-    fwForwardInclude(
-        ${Qt5Widgets_INCLUDE_DIRS}
-    )
-    fwLink(
-        ${Qt5Widgets_LIBRARIES}
-    )
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Widgets)
 endif()
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

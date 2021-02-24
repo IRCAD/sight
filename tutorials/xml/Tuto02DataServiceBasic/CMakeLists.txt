@@ -1,4 +1,4 @@
-sight_target( Tuto02DataServiceBasic TYPE APP )
+sight_add_target( Tuto02DataServiceBasic TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

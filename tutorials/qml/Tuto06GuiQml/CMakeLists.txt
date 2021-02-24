@@ -1,4 +1,4 @@
-sight_target( Tuto06GuiQml TYPE APP START ON )
+sight_add_target( Tuto06GuiQml TYPE APP START ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 

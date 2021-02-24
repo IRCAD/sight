@@ -1,4 +1,4 @@
-sight_target( io_dimseTest TYPE TEST )
+sight_add_target( io_dimseTest TYPE TEST )
 
 
 

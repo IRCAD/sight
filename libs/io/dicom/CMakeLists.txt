@@ -1,4 +1,4 @@
-sight_target( io_dicom TYPE LIBRARY )
+sight_add_target( io_dicom TYPE LIBRARY )
 
 
 find_package(Boost QUIET COMPONENTS locale REQUIRED)

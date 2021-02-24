@@ -1,4 +1,4 @@
-sight_target( activity_navigation_calibration TYPE MODULE )
+sight_add_target( activity_navigation_calibration TYPE MODULE )
 
 
 add_dependencies(${FWPROJECT_NAME} 

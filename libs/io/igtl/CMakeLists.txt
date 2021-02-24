@@ -1,4 +1,4 @@
-sight_target( io_igtl TYPE LIBRARY )
+sight_add_target( io_igtl TYPE LIBRARY )
 
 
 

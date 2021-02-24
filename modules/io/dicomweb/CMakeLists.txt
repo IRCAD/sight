@@ -1,4 +1,4 @@
-sight_target( module_io_dicomweb TYPE MODULE PRIORITY 1 )
+sight_add_target( module_io_dicomweb TYPE MODULE PRIORITY 1 )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Network Widgets REQUIRED)

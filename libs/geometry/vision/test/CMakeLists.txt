@@ -1,4 +1,4 @@
-sight_target( geometry_visionTest TYPE TEST )
+sight_add_target( geometry_visionTest TYPE TEST )
 
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_imgcodecs)

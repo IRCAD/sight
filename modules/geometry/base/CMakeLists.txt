@@ -1,12 +1,7 @@
-sight_target( module_geometry_base TYPE MODULE )
-
+sight_add_target( module_geometry_base TYPE MODULE )
 
 find_package(glm QUIET REQUIRED)
-
-fwInclude(
-
-    ${GLM_INCLUDE_DIRS}
-)
+target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
 
 add_dependencies(${FWPROJECT_NAME} 
                  data

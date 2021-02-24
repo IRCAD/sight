@@ -1,4 +1,4 @@
-sight_target( dicomxplorer TYPE APP )
+sight_add_target( dicomxplorer TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

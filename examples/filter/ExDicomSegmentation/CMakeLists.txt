@@ -1,4 +1,4 @@
-sight_target( ExDicomSegmentation TYPE APP UNIQUE ON )
+sight_add_target( ExDicomSegmentation TYPE APP UNIQUE ON )
 
 
 

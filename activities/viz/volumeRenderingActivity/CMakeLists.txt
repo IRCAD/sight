@@ -1,4 +1,4 @@
-sight_target( volumeRenderingActivity TYPE MODULE )
+sight_add_target( volumeRenderingActivity TYPE MODULE )
 
 
 

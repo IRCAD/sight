@@ -1,4 +1,4 @@
-sight_target( module_memory TYPE MODULE START ON )
+sight_add_target( module_memory TYPE MODULE START ON )
 
 
 

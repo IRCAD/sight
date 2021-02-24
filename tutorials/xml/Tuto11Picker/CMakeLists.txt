@@ -1,4 +1,4 @@
-sight_target( Tuto11Picker TYPE APP UNIQUE ON )
+sight_add_target( Tuto11Picker TYPE APP UNIQUE ON )
 
 
 

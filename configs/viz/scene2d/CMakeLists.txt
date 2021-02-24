@@ -1,4 +1,4 @@
-sight_target( config_viz_scene2d TYPE MODULE )
+sight_add_target( config_viz_scene2d TYPE MODULE )
 
 
 add_dependencies(${FWPROJECT_NAME} 

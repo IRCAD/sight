@@ -1,4 +1,4 @@
-sight_target( ExFrameByFrame TYPE APP UNIQUE ON )
+sight_add_target( ExFrameByFrame TYPE APP UNIQUE ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 

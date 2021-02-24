@@ -1,4 +1,4 @@
-sight_target( navigation_openvslamTest TYPE TEST )
+sight_add_target( navigation_openvslamTest TYPE TEST )
 
 # For now openvslam is only available for unix platforms.
 if(UNIX)

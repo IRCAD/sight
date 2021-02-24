@@ -1,4 +1,4 @@
-sight_target( blendActivity TYPE MODULE )
+sight_add_target( blendActivity TYPE MODULE )
 
 
 

@@ -1,4 +1,4 @@
-sight_target( module_io_video TYPE MODULE )
+sight_add_target( module_io_video TYPE MODULE )
 
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_videoio)

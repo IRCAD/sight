@@ -1,4 +1,4 @@
-sight_target( io_httpTest TYPE TEST )
+sight_add_target( io_httpTest TYPE TEST )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Network REQUIRED)

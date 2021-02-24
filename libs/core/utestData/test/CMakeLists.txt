@@ -1,4 +1,4 @@
-sight_target( utestDataTest TYPE TEST )
+sight_add_target( utestDataTest TYPE TEST )
 
 find_package(CppUnit QUIET REQUIRED)
 fwInclude(${CPPUNIT_INCLUDE_DIR})

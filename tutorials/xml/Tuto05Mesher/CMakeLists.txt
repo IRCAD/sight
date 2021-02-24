@@ -1,4 +1,4 @@
-sight_target( Tuto05Mesher TYPE APP )
+sight_add_target( Tuto05Mesher TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

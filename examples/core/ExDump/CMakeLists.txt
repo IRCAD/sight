@@ -1,4 +1,4 @@
-sight_target( ExDump TYPE APP )
+sight_add_target( ExDump TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

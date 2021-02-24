@@ -1,4 +1,4 @@
-sight_target( geometry_eigenTest TYPE TEST )
+sight_add_target( geometry_eigenTest TYPE TEST )
 
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

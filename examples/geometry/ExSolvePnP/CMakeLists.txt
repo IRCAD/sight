@@ -1,4 +1,4 @@
-sight_target( ExSolvePnP TYPE APP )
+sight_add_target( ExSolvePnP TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

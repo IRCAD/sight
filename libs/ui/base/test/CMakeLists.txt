@@ -1,4 +1,4 @@
-sight_target( ui_base_test TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target( ui_base_test TYPE TEST WARNINGS_AS_ERRORS ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 

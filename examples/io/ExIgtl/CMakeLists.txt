@@ -1,4 +1,4 @@
-sight_target( ExIgtl TYPE APP UNIQUE ON )
+sight_add_target( ExIgtl TYPE APP UNIQUE ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 

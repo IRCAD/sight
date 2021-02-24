@@ -1,4 +1,4 @@
-sight_target( ExOpenvslam TYPE APP )
+sight_add_target( ExOpenvslam TYPE APP )
 
 # For now openvslam is only available for unix platforms.
 if(UNIX)

@@ -1,4 +1,4 @@
-sight_target( config_ui_activity TYPE MODULE )
+sight_add_target( config_ui_activity TYPE MODULE )
 
 
 

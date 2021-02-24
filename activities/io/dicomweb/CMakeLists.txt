@@ -1,4 +1,4 @@
-sight_target( activity_io_dicomweb TYPE MODULE )
+sight_add_target( activity_io_dicomweb TYPE MODULE )
 
 
 

@@ -1,4 +1,4 @@
-sight_target( io_baseTest TYPE TEST )
+sight_add_target( io_baseTest TYPE TEST )
 
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

@@ -1,4 +1,4 @@
-sight_target( filter_imageTest TYPE TEST )
+sight_add_target( filter_imageTest TYPE TEST )
 
 
 if(MSVC)

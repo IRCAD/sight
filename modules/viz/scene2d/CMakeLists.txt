@@ -1,4 +1,4 @@
-sight_target( module_viz_scene2d TYPE MODULE PRIORITY 2 )
+sight_add_target( module_viz_scene2d TYPE MODULE PRIORITY 2 )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)

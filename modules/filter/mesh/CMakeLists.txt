@@ -1,4 +1,4 @@
-sight_target( module_filter_mesh TYPE MODULE )
+sight_add_target( module_filter_mesh TYPE MODULE )
 
 
 find_package(VTK QUIET COMPONENTS vtkFiltersCore REQUIRED)

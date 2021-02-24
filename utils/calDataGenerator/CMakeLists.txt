@@ -1,4 +1,4 @@
-sight_target( calDataGenerator TYPE EXECUTABLE CONSOLE ON )
+sight_add_target( calDataGenerator TYPE EXECUTABLE CONSOLE ON )
 
 
 find_package(Boost QUIET REQUIRED COMPONENTS program_options)

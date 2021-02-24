@@ -1,4 +1,4 @@
-sight_target( ui_historyTest TYPE TEST )
+sight_add_target( ui_historyTest TYPE TEST )
 
 
 

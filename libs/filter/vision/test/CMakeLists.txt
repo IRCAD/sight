@@ -1,4 +1,4 @@
-sight_target( filter_visionTest TYPE TEST )
+sight_add_target( filter_visionTest TYPE TEST )
 
 
 find_package(CppUnit QUIET)

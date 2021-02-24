@@ -1,24 +1,15 @@
-sight_target( module_io_realsense TYPE MODULE PCH pchServicesOmp )
-
+sight_add_target( module_io_realsense TYPE MODULE PCH pchServicesOmp )
 
 find_package(OpenMP QUIET)
 
 if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    target_link_libraries(${FWPROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
 endif()
-
 
 find_package(realsense2 QUIET REQUIRED)
 
-fwInclude(
-    ${REALSENSE2_INCLUDE_DIRS}
-)
-
-fwLink(
-    ${realsense2_LIBRARY}
-)
-
+target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${REALSENSE2_INCLUDE_DIRS})
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${realsense2_LIBRARY})
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 
                       core

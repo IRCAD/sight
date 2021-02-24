@@ -1,4 +1,4 @@
-sight_target( serviceTest TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target( serviceTest TYPE TEST WARNINGS_AS_ERRORS ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 

@@ -1,4 +1,4 @@
-sight_target( Tuto09MatrixTransformInGS TYPE APP )
+sight_add_target( Tuto09MatrixTransformInGS TYPE APP )
 
 
 

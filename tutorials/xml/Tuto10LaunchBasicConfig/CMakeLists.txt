@@ -1,4 +1,4 @@
-sight_target( Tuto10LaunchBasicConfig TYPE APP )
+sight_add_target( Tuto10LaunchBasicConfig TYPE APP )
 
 
 

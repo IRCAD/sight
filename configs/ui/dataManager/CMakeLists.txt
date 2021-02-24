@@ -1,4 +1,4 @@
-sight_target( config_ui_datamanager TYPE MODULE )
+sight_add_target( config_ui_datamanager TYPE MODULE )
 
 
 add_dependencies(${FWPROJECT_NAME} 

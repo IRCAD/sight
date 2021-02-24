@@ -1,4 +1,4 @@
-sight_target( module_io_vtkTest TYPE TEST )
+sight_add_target( module_io_vtkTest TYPE TEST )
 
 
 add_dependencies(${FWPROJECT_NAME} 

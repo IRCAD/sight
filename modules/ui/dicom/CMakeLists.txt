@@ -1,18 +1,8 @@
-sight_target( module_ui_dicom TYPE MODULE )
+sight_add_target( module_ui_dicom TYPE MODULE )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
-fwLink(
-    ${Qt5Core_LIBRARIES}
-    ${Qt5Gui_LIBRARIES}
-    ${Qt5Widgets_LIBRARIES}
-)
-fwInclude(
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Gui_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
-)
-
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
 add_dependencies(${FWPROJECT_NAME} 

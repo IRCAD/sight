@@ -1,5 +1,0 @@
-add_subdirectory(pchCamp)
-add_subdirectory(pchServices)
-add_subdirectory(pchCore)
-add_subdirectory(pchServicesOmp)
-add_subdirectory(pchData)

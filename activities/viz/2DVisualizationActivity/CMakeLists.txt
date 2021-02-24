@@ -1,4 +1,4 @@
-sight_target( 2DVisualizationActivity TYPE MODULE )
+sight_add_target( 2DVisualizationActivity TYPE MODULE )
 
 
 

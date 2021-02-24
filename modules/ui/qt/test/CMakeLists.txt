@@ -1,4 +1,4 @@
-sight_target( module_ui_qtTest TYPE TEST )
+sight_add_target( module_ui_qtTest TYPE TEST )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets Concurrent REQUIRED)

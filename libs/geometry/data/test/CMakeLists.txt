@@ -1,4 +1,4 @@
-sight_target( geometry_dataTest TYPE TEST )
+sight_add_target( geometry_dataTest TYPE TEST )
 
 
 

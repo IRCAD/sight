@@ -1,4 +1,4 @@
-sight_target( ExTimeLine TYPE APP )
+sight_add_target( ExTimeLine TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

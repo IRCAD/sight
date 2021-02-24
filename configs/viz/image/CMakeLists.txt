@@ -1,4 +1,4 @@
-sight_target( config_viz_image TYPE MODULE )
+sight_add_target( config_viz_image TYPE MODULE )
 
 
 add_dependencies(${FWPROJECT_NAME} 

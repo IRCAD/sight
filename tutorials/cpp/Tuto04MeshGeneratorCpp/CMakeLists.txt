@@ -1,4 +1,4 @@
-sight_target( Tuto04MeshGeneratorCpp TYPE APP UNIQUE ON )
+sight_add_target( Tuto04MeshGeneratorCpp TYPE APP UNIQUE ON )
 
 
 

@@ -1,4 +1,4 @@
-sight_target( module_ui_vizTest TYPE TEST )
+sight_add_target( module_ui_vizTest TYPE TEST )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)

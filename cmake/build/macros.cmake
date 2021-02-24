@@ -78,7 +78,7 @@ function(get_header_file_install_destination)
 endfunction()
 
 macro(configure_header_file FWPROJECT_NAME FILENAME HEADER_FILE_DESTINATION_REL)
-    set(HEADER_FILE_DESTINATION "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${HEADER_FILE_DESTINATION_REL}")
+    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_FILE_DESTINATION_REL}")
     configure_file(
         "${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in"
         ${HEADER_FILE_DESTINATION}/${FILENAME}
@@ -125,8 +125,8 @@ macro(initProject PRJNAME )
 
     set (${FWPROJECT_NAME}_DIR       ${CMAKE_CURRENT_SOURCE_DIR})
     set (${FWPROJECT_NAME}_DIR       ${${FWPROJECT_NAME}_DIR}  PARENT_SCOPE)
-    set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME})
-    set (${FWPROJECT_NAME}_BUILD_DIR ${${FWPROJECT_NAME}_BUILD_DIR} PARENT_SCOPE)
+    set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
+    set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} PARENT_SCOPE)
 
     set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE)
@@ -143,12 +143,7 @@ macro(initProject PRJNAME )
 endmacro()
 
 
-macro(setVersion FWPROJECT_NAME PROJECT_VERSION)
-    set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION})
-    set(${FWPROJECT_NAME}_VERSION ${PROJECT_VERSION} PARENT_SCOPE)
-endmacro()
-
-macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
+macro(configureProject FWPROJECT_NAME)
     string(TOUPPER ${FWPROJECT_NAME} PROJECT_NAME_UPCASE)
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
@@ -159,11 +154,8 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
         set(TARGET_NAME ${FWPROJECT_NAME})
     endif()
 
-    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
-    string(REGEX MATCH "^[^.]+" API_VERSION ${PROJECT_VERSION})
-
     if(SET_API_VERSION)
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION})
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${SIGHT_VERSION} SOVERSION ${SIGHT_API_VERSION})
     endif()
 
     target_compile_definitions(${TARGET_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_EXPORTS)
@@ -188,7 +180,6 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
                              -DIN_FILE="${RES_DIR}/${REL_PATH}"
                              -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
                              -DFWPROJECT_NAME="${FWPROJECT_NAME}"
-                             -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
                              -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
@@ -219,7 +210,7 @@ macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
 endmacro()
 
 
-macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
+macro(fwExec FWPROJECT_NAME)
     set(options CONSOLE)
     set(oneValueArgs)
     set(multiValueArgs)
@@ -227,9 +218,6 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
     set(${FWPROJECT_NAME}_TYPE "EXECUTABLE")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
-    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
-
-    initProject( ${FWPROJECT_NAME} )
 
     if(WIN32 AND NOT ${FWEXEC_CONSOLE})
         set(GUI_TYPE WIN32)
@@ -251,7 +239,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         )
     endif()
 
-    configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
+    configureProject( ${FWPROJECT_NAME} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${FWPROJECT_NAME}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}")
@@ -332,14 +320,11 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
     configure_file(
         "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
-        "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/src/cppunit_main.cpp"
+        "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
         IMMEDIATE @ONLY)
 
     set(${FWPROJECT_NAME}_TYPE "TEST")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
-    setVersion(${FWPROJECT_NAME} 0.0)
-
-    initProject( ${FWPROJECT_NAME} tu "${CMAKE_CURRENT_SOURCE_DIR}")
 
     string(REGEX REPLACE "Test$" "" DIRNAME "${FWPROJECT_NAME}")
     set(TU_NAME "tu_exec_${DIRNAME}")
@@ -348,7 +333,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${fwCppunitTest_UNPARSED_ARGUMENTS}
         ${${FWPROJECT_NAME}_HEADERS}
         ${${FWPROJECT_NAME}_SOURCES}
-        ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/src/cppunit_main.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
 
@@ -367,7 +352,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         string(TOLOWER "${FWPROJECT_NAME}.bat" SIGHT_TEST_SCRIPT)
     endif()
 
-    configureProject( ${FWPROJECT_NAME} 0.0 )
+    configureProject( ${FWPROJECT_NAME} )
 
     if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
         set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/tu/rc")
@@ -439,14 +424,9 @@ macro(fwCppunitTest FWPROJECT_NAME)
     endif()
 endmacro()
 
-macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
-
+macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     set(${FWPROJECT_NAME}_TYPE "LIBRARY")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
-
-    initProject( ${FWPROJECT_NAME} )
-
-    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
     if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
@@ -455,7 +435,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    if(${FWPROJECT_NAME}_GENERATE_OBJECT_LIB)
+    if(${OBJECT_LIBRARY})
         set(FWPROJECT_NAME_OBJECT_LIB ${FWPROJECT_NAME}_obj)
         add_library(${FWPROJECT_NAME_OBJECT_LIB} OBJECT
             ${${FWPROJECT_NAME}_HEADERS}
@@ -467,7 +447,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME_OBJECT_LIB}> ${${FWPROJECT_NAME}_PCH_LIB})
 
         target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
         )
@@ -480,16 +460,16 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             ${${FWPROJECT_NAME}_CMAKE_FILES}
             ${${FWPROJECT_NAME}_PCH_LIB})
         target_include_directories(${FWPROJECT_NAME} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/>
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
           $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
         )
     endif()
 
-    configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
+    configureProject( ${FWPROJECT_NAME} )
 
     # Set interface properties
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${API_VERSION})
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${SIGHT_API_VERSION})
     set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
 
     set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
@@ -617,11 +597,9 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
 endmacro()
 
-macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
+macro(fwModule FWPROJECT_NAME)
 
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
-    setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
-    initProject( ${FWPROJECT_NAME} )
 
     if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
@@ -644,15 +622,15 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
 
         # create the custom command that may generate the plugin.xml and the registerServices.cpp file
         if(EXISTS "${${FWPROJECT_NAME}_DIR}/rc/plugin.xml" )
-            target_sources( ${FWPROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" )
-            set_source_files_properties("${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/registerServices.cpp" PROPERTIES
+            target_sources( ${FWPROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/registerServices.cpp" )
+            set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/registerServices.cpp" PROPERTIES
                 GENERATED TRUE
                 SKIP_AUTOMOC ON)
 
             plugin_setup("${FWPROJECT_NAME}" "${${FWPROJECT_NAME}_HEADERS}")
         endif()
 
-        configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
+        configureProject( ${FWPROJECT_NAME} )
 
         set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
         
@@ -670,7 +648,7 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
         configure_header_file(${FWPROJECT_NAME} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
 
         # Allows include of type <ui/config.hpp>
-        target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include")
+        target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/include")
         # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
         target_include_directories(${FWPROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs)
         # Allows include of type <core/..> <data/..> ...
@@ -777,267 +755,80 @@ macro(fwModule FWPROJECT_NAME PROJECT_VERSION)
     endif()
 endmacro()
 
-# Include the projects in parameter and export them.
-# Compiling warnings will not be reported (because of SYSTEM).
-macro(fwForwardInclude)
-    foreach(INCLUDE ${ARGV})
-        # Do not expose the dependencies in the install interface (for the SDK)
-        target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<BUILD_INTERFACE:${INCLUDE}>)
+function(getPchTarget TARGET TARGET_DIR TYPE PCH)
 
-        string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${INCLUDE})
-        if(IS_LIB_SYSTEM)
-            # Let the absolute directly for system libraries
-            target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${INCLUDE}>)
-        else()
-            # Make the include path relative to the install location for the libraries that we build
-            string(REGEX REPLACE "(.*)(include.*)" "\\2" RELATIVE_INCLUDE ${INCLUDE})
-            target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC $<INSTALL_INTERFACE:${RELATIVE_INCLUDE}>)
-        endif()
-    endforeach()
-endmacro()
-
-macro(fwForwardLink)
-    set(PREFIX "")
-    foreach(LIB ${ARGV})
-        if(${LIB} STREQUAL "debug" OR ${LIB} STREQUAL "optimized" OR ${LIB} STREQUAL "general")
-            set(PREFIX ${LIB})
-        else()
-            # Do not expose the dependencies in the install interface (for the SDK)
-            target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<BUILD_INTERFACE:${LIB}>)
-
-            string(REGEX MATCH "/usr" IS_LIB_SYSTEM ${LIB})
-            if(IS_LIB_SYSTEM)
-                # Let the absolute path for system libraries
-                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${LIB}>)
-            else()
-                # Make the path relative to the install location for the libraries that we build
-                # If the input is a lib module and not a path, the string will not be changed, which is ok
-                string(REGEX REPLACE "(.*)(lib/.*)" "\\2" RELATIVE_INCLUDE ${LIB})
-                target_link_libraries(${FWPROJECT_NAME} PUBLIC ${PREFIX} $<INSTALL_INTERFACE:${RELATIVE_LIB}>)
-            endif()
-            set(PREFIX "")
-        endif()
-    endforeach()
-endmacro()
-
-# Include the projects in parameter but do not export them.
-# Compiling warnings will not be reported (because of SYSTEM).
-macro(fwInclude)
-    target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ARGV})
-endmacro()
-
-macro(fwLink)
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
-endmacro()
-
-
-# Defines project's linked dependencies on others projects
-# example :
-#     fwDefineDependencies( fwCore fwData )
-# WARNING : some part of this cmake file relies on this macro signature
-
-macro(fwDefineDependencies)
-
-    set(${NAME}_DEPENDENCIES)
-    set(${NAME}_MODULE_DEPENDENCIES)
-
-    foreach(PROJECT ${ARGV})
-        list(APPEND ${NAME}_DEPENDENCIES ${PROJECT})
-        list(APPEND ${NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
-    endforeach()
-
-    set(${NAME}_DEPENDENCIES ${${NAME}_DEPENDENCIES} PARENT_SCOPE)
-    set(${NAME}_MODULE_DEPENDENCIES ${${NAME}_MODULE_DEPENDENCIES} PARENT_SCOPE)
-
-endmacro()
-
-# Defines project's linked dependencies on others projects
-# example :
-#     fwUse( fwCore fwData )
-# WARNING : some part of this cmake file relies on this macro signature
-
-macro(fwUse)
-    if(${FWPROJECT_NAME}_GENERATE_OBJECT_LIB)
-        target_link_libraries(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC ${ARGV})
-    else()
-        target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
-    endif()
-endmacro()
-
-
-
-# Defines project's requirements on others projects
-# example :
-#     fwReq( ioVTK ioITK )
-# WARNING : some part of this cmake file relies on this macro signature
-macro(fwReq)
-    foreach(DEPENDENCY ${ARGV})
-        if(NOT ${DEPENDENCY}_EXTERNAL)
-            add_dependencies(${FWPROJECT_NAME} ${DEPENDENCY})
-        endif()
-    endforeach()
-
-    set(${FWPROJECT_NAME}_REQUIREMENTS)
-
-    foreach(PROJECT ${ARGV})
-        list(APPEND ${FWPROJECT_NAME}_REQUIREMENTS ${PROJECT})
-        list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_REQUIREMENTS ${PROJECT})
-    endforeach()
-
-    set(${FWPROJECT_NAME}_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS} PARENT_SCOPE)
-
-endmacro()
-
-
-function(checkMissingDependencies DIR KEYWORD RESULT)
-    set(${RESULT} "" PARENT_SCOPE)
-    file(READ ${DIR}/CMakeLists.txt CMAKELISTS_CONTENT)
-    string(REGEX MATCH "${KEYWORD} *[^)]+" DEPENDENCIES "${CMAKELISTS_CONTENT}")
-    string(REGEX REPLACE "^.*\\(" " " DEPENDENCIES "${DEPENDENCIES}")
-    string(STRIP DEPENDENCIES "${DEPENDENCIES}")
-    string(REGEX REPLACE "( |\n|#)+" ";" DEPENDENCIES "${DEPENDENCIES}")
-    string(REGEX REPLACE "^;" "" DEPENDENCIES "${DEPENDENCIES}")
-    string(REGEX REPLACE ";+" ";" DEPENDENCIES "${DEPENDENCIES}")
-
-
-    set(DEPENDENCY_LIST)
-    foreach(DEPENDENCY ${DEPENDENCIES})
-        if(NOT ${DEPENDENCY}_TYPE)
-            list(APPEND DEPENDENCY_LIST ${DEPENDENCY})
-        endif()
-    endforeach()
-    set(${RESULT} ${DEPENDENCY_LIST} PARENT_SCOPE)
-endfunction()
-
-
-function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
-    set(DEPENDENCY_LIST)
-    set(RESULT "")
-    list(APPEND DEPENDENCY_LIST ${FWPROJECT_NAMES})
-    while(DEPENDENCY_LIST)
-
-        list(GET DEPENDENCY_LIST 0 DEPENDENCY)
-        list(REMOVE_AT DEPENDENCY_LIST 0 )
-
-        if(NOT PROCESSED_${DEPENDENCY})
-            list(APPEND DEPENDENCY_LIST ${${DEPENDENCY}_DEPENDENCIES})
-            list(APPEND DEPENDENCY_LIST ${${DEPENDENCY}_REQUIREMENTS})
-            set(PROCESSED_${DEPENDENCY} 1)
-        endif()
-
-        list(APPEND RESULT ${DEPENDENCY})
-    endwhile()
-
-    list(REMOVE_DUPLICATES RESULT)
-    set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
-
-endfunction()
-
-function(findTests FWPROJECTS FILTER RESULT_VAR)
-    set(RESULT "")
-
-    foreach(PROJECT ${FWPROJECTS})
-        if(${PROJECT}Test_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}Test_DIR}" MATCHES "${FILTER}" ))
-            list(APPEND RESULT ${PROJECT}Test)
-        endif()
-        if(${PROJECT}DetailTest_DIR AND ("${FILTER}" STREQUAL "" OR "${${PROJECT}DetailTest_DIR}" MATCHES "${FILTER}" ))
-            list(APPEND RESULT ${PROJECT}DetailTest)
-        endif()
-    endforeach()
-
-    set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
-endfunction()
-
-function(findProjectSubdirectory PROJECT_DIR REPOSITORY_DIRECTORIES RESULT_DIR)
-    # Search for the project in all the repositories (sight + additional repos).
-    foreach(REPO_DIR ${REPOSITORY_DIRECTORIES})
-        # Try to strip the repo's directory from the project's directory.
-        string(REPLACE "${REPO_DIR}/" "" RESULT ${PROJECT_DIR})
-        if(NOT ${RESULT} STREQUAL ${PROJECT_DIR})
-            # If it succeeded that means that the project repo was found. We can stop now.
-            set(${RESULT_DIR} ${RESULT} PARENT_SCOPE)
-            break()
-        endif()
-    endforeach()
-endfunction()
-
-function(getPchTarget FWPROJECT_NAME PROJECT_DIR TYPE)
-
-    if(ARGN)
+    if(NOT PCH STREQUAL "ON")
         # Use pch from an another target
-        set(${FWPROJECT_NAME}_PCH_TARGET ${ARGN} PARENT_SCOPE)
-    elseif(EXISTS "${PROJECT_DIR}/pch.hpp")
+        set(${TARGET}_PCH_TARGET ${PCH} PARENT_SCOPE)
+    elseif(EXISTS "${TARGET_DIR}/pch.hpp")
         # Custom pch
-        set(${FWPROJECT_NAME}_PCH_TARGET ${FWPROJECT_NAME} PARENT_SCOPE)
+        set(${TARGET}_PCH_TARGET ${TARGET} PARENT_SCOPE)
     else()
         # Default pch
-        if( TYPE STREQUAL "MODULE" OR TYPE STREQUAL "BUNDLE" )
-            set(${FWPROJECT_NAME}_PCH_TARGET pchServices PARENT_SCOPE)
+        if( TYPE STREQUAL "MODULE" )
+            set(${TARGET}_PCH_TARGET pchServices PARENT_SCOPE)
         else()
-            set(${FWPROJECT_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
+            set(${TARGET}_PCH_TARGET pchCore PARENT_SCOPE)
         endif()
     endif()
 
 endfunction()
 
-macro(loadProperties PROPERTIES_FILE)
-    unset(NAME)
-    unset(OPTIONS)
-    unset(VERSION)
-    unset(TYPE)
-    unset(START)
-    unset(DEPENDENCIES)
-    unset(REQUIREMENTS)
-    unset(CPPUNITTEST_OPTIONS)
-    unset(UNIQUE)
-    unset(PLATFORM)
-    unset(USE_PCH_FROM_TARGET)
-    unset(DISABLE_PCH)
-    unset(START_BEFORE)
-    unset(PLUGINS)
-    unset(WARNINGS_AS_ERRORS)
-    unset(GENERATE_OBJECT_LIB)
 
-    include("${PROPERTIES_FILE}")
-endmacro()
+macro(sight_add_target)
 
+    set(options)
+    set(oneValueArgs TYPE PCH START PRIORITY CONSOLE OBJECT_LIBRARY WARNINGS_AS_ERRORS UNIQUE)
+    set(multiValueArgs)
+    cmake_parse_arguments(SIGHT_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-macro(fwLoadProperties)
-    loadProperties("Properties.cmake")
+    set(NAME ${ARGV0})
+    
+    initProject( ${NAME} )
 
-    if(FW_BUILD_EXTERNAL)
-        set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
-        set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+    if(NOT DEFINED SIGHT_TARGET_PCH)
+        set(SIGHT_TARGET_PCH ON)
+    elseif(NOT SIGHT_TARGET_PCH)
+        set(${NAME}_DISABLE_PCH ON)
+    endif()
+    if(NOT DEFINED SIGHT_TARGET_OBJECT_LIBRARY)
+        set(SIGHT_TARGET_OBJECT_LIBRARY OFF)
+    endif()
+    
+    # Get the pch target, test the existence of type variable to exclude unbuilt projects
+    if(ENABLE_PCH AND SIGHT_TARGET_TYPE AND SIGHT_TARGET_PCH)
+        set(${NAME}_PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+
+        getPchTarget(${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH})
+
+        # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
+        if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
+            list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
+        endif()
     endif()
 
-    string( TOUPPER "${TYPE}" TYPE )
-
-    if(PLUGINS)
-        set(${NAME}_PLUGINS ${PLUGINS})
-        set(${NAME}_PLUGINS ${PLUGINS} PARENT_SCOPE)
-    endif()
-
-    fwDefineDependencies( ${NAME} ${DEPENDENCIES} )
-
-    if( TYPE STREQUAL "EXECUTABLE" )
-        fwExec(${NAME} ${VERSION} ${OPTIONS})
-    elseif( TYPE STREQUAL "LIBRARY" )
-        fwLib(${NAME} ${VERSION} ${OPTIONS})
-    elseif( TYPE STREQUAL "MODULE" OR TYPE STREQUAL "BUNDLE")
-        set(${NAME}_TYPE "MODULE")
-        fwModule(${NAME} ${VERSION} ${OPTIONS})
-    elseif( TYPE STREQUAL "TEST" )
+    
+    if( SIGHT_TARGET_TYPE STREQUAL "EXECUTABLE")
+        fwExec(${NAME})
+    elseif( SIGHT_TARGET_TYPE STREQUAL "LIBRARY" )
+        fwLib(${NAME} ${SIGHT_TARGET_OBJECT_LIBRARY})
+    elseif( SIGHT_TARGET_TYPE STREQUAL "MODULE")
+        set(${NAME}_SIGHT_TARGET "MODULE")
+        fwModule(${NAME})
+    elseif( SIGHT_TARGET_TYPE STREQUAL "TEST" )
         fwCppunitTest(${NAME} "${OPTIONS}")
-    elseif( TYPE STREQUAL "APP" )
+    elseif( SIGHT_TARGET_TYPE STREQUAL "APP" )
         set(${NAME}_TYPE "APP")
-        fwModule(${NAME} ${VERSION} ${OPTIONS})
+        fwModule(${NAME})
         if(NOT EXISTS "${${NAME}_DIR}/rc/profile.xml" )
             set(PROJECT ${NAME})
             profile_setup(${PROJECT})
         endif()
     endif()
 
-    fwManageWarnings(${NAME})
+    if(SIGHT_TARGET_WARNINGS_AS_ERRORS)
+        fwManageWarnings(${NAME})
+    endif()
 
     if(DEPENDENCIES)
         fwUse( ${DEPENDENCIES} )
@@ -1056,63 +847,10 @@ macro(fwLoadProperties)
     endif()
 
     if( TYPE STREQUAL "EXECUTABLE" OR TYPE STREQUAL "APP" )
-        # Only execute install for the required targets, and not implicit dependencies
-        if(${NAME} IN_LIST PROJECTS_TO_BUILD)
-            generic_install()
-        endif()
+        generic_install()
     endif()
-
-
 endmacro()
 
-
-macro(addProject PROJECT)
-    set(PROJECT_CACHE ${ARGN})
-    list(FIND PROJECT_CACHE "${PROJECT}" DEP_LOOP)
-    if(DEP_LOOP GREATER -1)
-        message(FATAL_ERROR "Looks like there is a dependency loop in projects: ${PROJECT_CACHE};${PROJECT}")
-    endif()
-
-    if( NOT ${PROJECT}_CONFIGURED )
-        list(APPEND PROJECT_CACHE ${PROJECT})
-
-        foreach(DEPENDENCY ${${PROJECT}_DEPENDENCIES})
-            addProject( ${DEPENDENCY} "${PROJECT_CACHE}")
-        endforeach()
-
-        foreach(REQUIREMENT ${${PROJECT}_REQUIREMENTS})
-            addProject( ${REQUIREMENT} "${PROJECT_CACHE}")
-        endforeach()
-
-        set(${PROJECT}_CONFIGURED 1)
-
-        message(STATUS "Configuring ${PROJECT}: ${${PROJECT}_DIR}")
-        if(${PROJECT}_DIR)
-            add_subdirectory(${${PROJECT}_DIR} ${PROJECT})
-        else()
-            message(SEND_ERROR "<${PROJECT}> dir '' not found.")
-        endif()
-
-        if(BUILD_SDK)
-            # Store requirements for the SDK
-            file(APPEND "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake"
-                "set(${PROJECT}_EXTERNAL 1)\n"
-                "set(${PROJECT}_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})\n"
-                "set(${PROJECT}_DEPENDENCIES ${${PROJECT}_DEPENDENCIES})\n"
-                "set(${PROJECT}_VERSION ${${PROJECT}_VERSION})\n"
-                "set(${PROJECT}_TYPE ${${PROJECT}_TYPE})\n")
-            if(${PROJECT}_START)
-                file(APPEND "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake"
-                    "set(${PROJECT}_START ${${PROJECT}_START})\n")
-            endif()
-            if(${PROJECT}_PLUGINS)
-                file(APPEND "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_requirements.cmake"
-                    "set(${PROJECT}_PLUGINS ${${PROJECT}_PLUGINS})\n")
-            endif()
-        endif()
-    endif()
-    unset(PROJECT_CACHE)
-endmacro()
 
 # Treat warnings as errors if requested
 #   to activate "warning as errors", simply write in the Properties.cmake of your project:

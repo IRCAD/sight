@@ -1,4 +1,4 @@
-sight_target( SightViewer TYPE APP )
+sight_add_target( SightViewer TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

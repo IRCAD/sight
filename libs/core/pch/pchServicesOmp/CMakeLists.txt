@@ -1,14 +1,11 @@
-sight_target( pchServicesOmp TYPE LIBRARY )
+sight_add_target( pchServicesOmp TYPE LIBRARY )
 
 # include first to be taken into account in the PCH compile flags
 find_package(OpenMP QUIET)
 
 if (OPENMP_CXX_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    target_compile_options(${FWPROJECT_NAME} PUBLIC ${OpenMP_CXX_FLAGS})
 endif()
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
-                      service
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC service)

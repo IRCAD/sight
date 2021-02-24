@@ -1,4 +1,4 @@
-sight_target( Tuto13Multithread TYPE APP )
+sight_add_target( Tuto13Multithread TYPE APP )
 
 
 

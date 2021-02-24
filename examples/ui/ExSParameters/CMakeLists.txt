@@ -1,4 +1,4 @@
-sight_target( ExSParameters TYPE APP )
+sight_add_target( ExSParameters TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

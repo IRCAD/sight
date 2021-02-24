@@ -1,4 +1,4 @@
-sight_target( viz_qt3dTest TYPE TEST WARNINGS_AS_ERRORS ON )
+sight_add_target( viz_qt3dTest TYPE TEST WARNINGS_AS_ERRORS ON )
 
 
 find_package(CppUnit QUIET REQUIRED)

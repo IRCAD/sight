@@ -1,4 +1,4 @@
-sight_target( module_service TYPE MODULE )
+sight_add_target( module_service TYPE MODULE )
 
 
 add_dependencies(${FWPROJECT_NAME} 

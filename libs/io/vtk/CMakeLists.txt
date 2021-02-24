@@ -1,4 +1,4 @@
-sight_target( io_vtk TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
+sight_add_target( io_vtk TYPE LIBRARY PCH pchData WARNINGS_AS_ERRORS ON )
 
 
 find_package(VTK QUIET REQUIRED COMPONENTS
@@ -30,11 +30,11 @@ if(VCPKG_TARGET_TRIPLET)
     )
 
 else()
+# Necessary for all related unit-tests and utilities
+    find_package(GLEW)
     # VTK7
-    fwForwardInclude(
-        ${VTK_INCLUDE_DIRS}
-    )
-    fwForwardLink(
+    target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC  
         vtkFiltersGeometry
         vtkFiltersModeling
         vtkIOExport
@@ -45,22 +45,12 @@ else()
         vtkIOXML
         vtkRenderingFreeType
         vtkRenderingOpenGL2
-    )
-
-    # Necessary for all related unit-tests and utilities
-    find_package(GLEW)
-    fwForwardLink(
         ${GLEW_LIBRARIES}
     )
+
 endif()
 
 #add vtk definitions instead of include(${VTK_USE_FILE})
 target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${VTK_DEFINITIONS})
 
-
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
-                      core
-                      data
-                      io_base
-                      geometry_data
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC core data io_base geometry_data)

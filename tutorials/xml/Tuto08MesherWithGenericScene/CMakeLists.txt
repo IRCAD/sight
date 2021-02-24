@@ -1,4 +1,4 @@
-sight_target( Tuto08MesherWithGenericScene TYPE APP UNIQUE ON )
+sight_add_target( Tuto08MesherWithGenericScene TYPE APP UNIQUE ON )
 
 
 

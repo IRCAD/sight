@@ -1,4 +1,4 @@
-sight_target( activity_navigation_calibrationTest TYPE TEST )
+sight_add_target( activity_navigation_calibrationTest TYPE TEST )
 
 
 

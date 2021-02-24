@@ -1,4 +1,4 @@
-sight_target( ExRegistration TYPE APP )
+sight_add_target( ExRegistration TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
                  fwlauncher

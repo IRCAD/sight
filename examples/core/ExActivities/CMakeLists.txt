@@ -1,4 +1,4 @@
-sight_target( ExActivities TYPE APP )
+sight_add_target( ExActivities TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

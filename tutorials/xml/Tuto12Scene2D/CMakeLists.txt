@@ -1,4 +1,4 @@
-sight_target( Tuto12Scene2D TYPE APP )
+sight_add_target( Tuto12Scene2D TYPE APP )
 
 
 

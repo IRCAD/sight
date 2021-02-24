@@ -1,4 +1,4 @@
-sight_target( ExRGBDManualAR TYPE APP )
+sight_add_target( ExRGBDManualAR TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

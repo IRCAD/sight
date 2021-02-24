@@ -1,11 +1,6 @@
-sight_target( filter_dicom TYPE LIBRARY PCH pchData )
+sight_add_target( filter_dicom TYPE LIBRARY PCH pchData )
 
+target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${DCMTK_INCLUDE_DIRS})
+target_link_libraries(${FWPROJECT_NAME} PRIVATE ${DCMTK_LIBRARIES})
 
-fwForwardInclude( ${DCMTK_INCLUDE_DIRS} )
-fwLink( ${DCMTK_LIBRARIES} )
-
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
-                      core
-                      data
-                      geometry_data
-)
+target_link_libraries(${FWPROJECT_NAME} PUBLIC core data geometry_data)

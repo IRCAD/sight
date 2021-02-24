@@ -1,4 +1,4 @@
-sight_target( ExRGBDImageMasking TYPE APP )
+sight_add_target( ExRGBDImageMasking TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 

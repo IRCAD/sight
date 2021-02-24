@@ -1,4 +1,4 @@
-sight_target( io_opencvTest TYPE TEST )
+sight_add_target( io_opencvTest TYPE TEST )
 
 
 find_package(Qt5 QUIET COMPONENTS Test REQUIRED)

@@ -1,4 +1,4 @@
-sight_target( module_io_matrix TYPE MODULE )
+sight_add_target( module_io_matrix TYPE MODULE )
 
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

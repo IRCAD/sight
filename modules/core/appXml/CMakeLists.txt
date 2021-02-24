@@ -1,4 +1,4 @@
-sight_target( module_appXml TYPE MODULE START ON )
+sight_add_target( module_appXml TYPE MODULE START ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 

@@ -1,4 +1,4 @@
-sight_target( module_navigation_calibration TYPE MODULE )
+sight_add_target( module_navigation_calibration TYPE MODULE )
 
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d)

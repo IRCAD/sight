@@ -1,4 +1,4 @@
-sight_target( module_io_itkTest TYPE TEST )
+sight_add_target( module_io_itkTest TYPE TEST )
 
 
 

@@ -1,4 +1,4 @@
-sight_target( io_opencv TYPE LIBRARY )
+sight_add_target( io_opencv TYPE LIBRARY )
 
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_calib3d)
