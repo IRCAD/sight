@@ -55,7 +55,7 @@
                 <id>RGBDCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
-                <id>toolCalibrationActivity</id>
+                <id>ToolCalibration</id>
             </filter>
         </service>
 

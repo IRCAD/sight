@@ -109,9 +109,9 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>sight::ui::base::IAction</type>
-         <service>sight::module::ui::base::com::STimestampSlotCaller</service>
-         <object>sight::data::Object</object>
+         <type>::sight::ui::base::IAction</type>
+         <service>::sight::module::ui::base::com::STimestampSlotCaller</service>
+         <object>::sight::data::Object</object>
          <desc>Runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.</desc>
     </extension>
 

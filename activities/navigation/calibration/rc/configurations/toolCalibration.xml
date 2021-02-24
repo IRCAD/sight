@@ -9,7 +9,9 @@
         <object uid="matricesVector" type="::sight::data::Vector" />
         <object uid="toolMatrix" type="::sight::data::Matrix4" src="deferred"/>
         <object uid="matrixCalibration" type="::sight::data::Matrix4" src="deferred"/>
+        <object uid="matrixCalibration" type="::sight::data::Matrix4" src="deferred"/>
         <object uid="trackerMatrix0" type="::sight::data::Matrix4" />
+        <object uid="calibrationAxisMatrix" type="::sight::data::Matrix4" />
         <object uid="pointlist" type="::sight::data::PointList" />
 
         <!-- *************************** Begin Layouts *************************** -->
@@ -80,7 +82,7 @@
 
         <service uid="actionAddPoint" type="::sight::module::ui::base::com::SSlotCaller" >
            <slots>
-               <slot>markerToPoint/addPoint</slot>
+               <slot>originToPoint/addPoint</slot>
                <slot>manageVector/addCopy</slot>
            </slots>
         </service>
@@ -101,7 +103,7 @@
 
         <!-- *************************** Begin Services *************************** -->
 
-        <service uid="markerToPoint" type="::sight::module::geometry::vision::SMarkerToPoint">
+        <service uid="originToPoint" type="::sight::module::geometry::vision::SMarkerToPoint" >
             <in key="matrixTL" uid="matrixTL" />
             <inout key="pointList" uid="pointlist" />
         </service>
@@ -122,7 +124,7 @@
             </inout>
         </service>
 
-        <service uid="status" type="::sight::module::ui::base::editor::SStatus" >
+        <service uid="status" type="::sight::module::ui::qt::SStatus" >
             <form>circle</form>
             <labelStatus>Sensor status</labelStatus>
             <green>Sensor is tracked</green>
@@ -169,69 +171,74 @@
             <addSelection service="::sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
+        <service uid="concatenateMatrices" type="::sight::module::geometry::base::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="trackerMatrix0" autoConnect="yes"/>
+                <key uid="matrixCalibration" autoConnect="yes"/>
+            </in>
+            <inout key="output" uid="calibrationAxisMatrix" />
+       </service>
+
         <!-- *************************** End Services *************************** -->
 
         <!-- *************************** Begin resultView *************************** -->
 
-        <service uid="resultView" type="::fwRenderVTK::SRender" >
-            <scene>
-                <renderer id="default" layer="0" background="0.0" />
-                <adaptor uid="trackerTransformAdaptor0" />
-                <adaptor uid="systemCenterAxis" />
-                <adaptor uid="trackerAxis0" />
-                <adaptor uid="pointlistAdaptor" />
-                <adaptor uid="toolCalibrationTransform" />
-                <adaptor uid="toolAxis" />
-
-                <adaptor uid="calibrationTransform" />
-                <adaptor uid="calibrationAxis" />
-                <vtkObject id="calibrationTransform" class="vtkTransform" />
-                <vtkObject id="vtkTrackerMatrix0" class="vtkTransform" />
-
-                <vtkObject id="calibrationMat" class="vtkTransform">
-                    <vtkTransform>
-                        <concatenate>vtkTrackerMatrix0</concatenate>
-                        <concatenate>calibrationTransform</concatenate>
-                    </vtkTransform>
-                </vtkObject>
-
+        <service uid="resultView" type="::sight::viz::scene3d::SRender" >
+            <scene renderMode="sync">
+                <background topColor="#000000" bottomColor="#000000" />
+                <layer id="default" order="1" />
+                <adaptor uid="trackedMatrixAdp" />
+                <adaptor uid="calibMatAdp" />
+                <adaptor uid="calibAxisMatAdp" /> 
+                <adaptor uid="systemCenterAxisAdp" />
+                <adaptor uid="trackerAxis0Adp" />
+                <adaptor uid="pointlistAdp" />
+                <adaptor uid="toolCalibrationAdp" />
+                <adaptor uid="toolAxisAdp" />
+                <adaptor uid="calibrationAxisAdp" />
             </scene>
         </service>
 
-        <service uid="trackerTransformAdaptor0" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="trackerMatrix0" />
-            <config renderer="default" transform="vtkTrackerMatrix0" />
+        <service uid="trackedMatrixAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <inout key="transform" uid="trackerMatrix0" />
+            <config layer="default" transform="trackerMatrix0Trf" />
         </service>
 
-        <service uid="calibrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="matrixCalibration" />
-            <config renderer="default" transform="calibrationTransform" />
+         <service uid="calibMatAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <inout key="transform" uid="matrixCalibration" />
+            <config layer="default" transform="calibrationTrf" />
         </service>
 
-        <service uid="calibrationAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="20" transform="calibrationMat" label="no" marker="yes" markerColor="#0000FF" />
+        <service uid="calibAxisMatAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+            <inout key="transform" uid="calibrationAxisMatrix" />
+            <config layer="default" transform="calibrationAxisTrf" />
         </service>
 
-        <service uid="toolCalibrationTransform" type="::visuVTKAdaptor::STransform" autoConnect="yes">
-            <inout key="tm3d" uid="toolMatrix" />
-            <config renderer="default" transform="toolCalibrationTransform" />
+        <service uid="calibrationAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+            <config layer="default" length="20" transform="calibrationAxisTrf" label="no" origin="yes" originColor="#0000FF" />
         </service>
 
-        <service uid="systemCenterAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="20" transform="id" label="no" marker="yes" markerColor="#FFFFFF" />
+        <service uid="toolCalibrationAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes">
+            <inout key="transform" uid="toolMatrix" />
+            <config layer="default" transform="toolCalibrationTrf" />
         </service>
 
-        <service uid="toolAxis" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="20" transform="toolCalibrationTransform" label="no" marker="yes" markerColor="#FF0000" />
+        <service uid="systemCenterAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+            <config layer="default" length="20" transform="id" label="no" origin="yes" originColor="#FFFFFF" />
         </service>
 
-        <service uid="trackerAxis0" type="::visuVTKAdaptor::SAxis">
-            <config renderer="default" length="20" transform="vtkTrackerMatrix0" label="no" marker="yes" markerColor="#00FF00" />
+        <service uid="toolAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+            <config layer="default" length="20" transform="toolCalibrationTrf" label="no" origin="yes" originColor="#FF0000" />
         </service>
 
-        <service uid="pointlistAdaptor" type="::visuVTKARAdaptor::SPointList3D" autoConnect="yes">
+        <service uid="trackerAxis0Adp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+            <config layer="default" length="20" transform="trackerMatrix0Trf" label="no" origin="yes" originColor="#00FF00" />
+        </service>
+
+        <service uid="pointlistAdp" type="::sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes">
             <in key="pointList" uid="pointlist" />
-            <config renderer="default" color="#cb1f72" radius="3.0" />
+            <config layer="default" radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16"
+                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -264,21 +271,25 @@
 
         <start uid="mainView" />
         <start uid="trackerTLMatrixSynchronizer" />
-        <start uid="markerToPoint" />
+        <start uid="originToPoint" />
         <start uid="toolCalibration" />
         <start uid="manageVector" />
         <start uid="calibrationMatrixWriter" />
+        <start uid="concatenateMatrices" />
 
-        <!-- VTK scene 'resultView' -->
+        <!-- Ogre scene 'resultView' -->
 
-        <start uid="trackerAxis0" />
-        <start uid="systemCenterAxis" />
-        <start uid="trackerTransformAdaptor0" />
-        <start uid="pointlistAdaptor" />
-        <start uid="toolCalibrationTransform" />
-        <start uid="toolAxis" />
-        <start uid="calibrationTransform" />
-        <start uid="calibrationAxis" />
+        <start uid="trackedMatrixAdp" />
+        <start uid="calibMatAdp" />
+        <start uid="calibAxisMatAdp" /> 
+        <start uid="systemCenterAxisAdp" />
+        <start uid="trackerAxis0Adp" />
+        <start uid="pointlistAdp" />
+        <start uid="toolCalibrationAdp" />
+        <start uid="toolAxisAdp" />
+        <start uid="calibrationAxisAdp" />
+
+        <update uid="concatenateMatrices" />
 
     </config>
 </extension>

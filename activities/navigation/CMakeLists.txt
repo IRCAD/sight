@@ -1,2 +1,1 @@
-add_subdirectory(toolCalibrationActivity)
 add_subdirectory(calibration)

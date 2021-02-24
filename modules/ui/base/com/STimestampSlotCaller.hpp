@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2014-2021 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -39,10 +39,18 @@ namespace com
 /**
  * @brief Runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
  *
+ *
  * @code{.xml}
-     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
-     slot->asyncRun(timestamp);
+   <service uid="..." type=::sight::module::ui::base::com::STimestampSlotCaller" autoConnect="no">
+        <slots>
+            <slot>hasSlotsId/slotKey</slot>
+            <slot>hasSlots2Id/slot2Key</slot>
+        </slots>
+   </service>
    @endcode
+ * - \b slot : defines the slot to run
+ * - \b hasSlotsId : fwId of the HasSlots (usually a service)
+ * - \b slotKey : the identifier of the slot in the HasSlots
  */
 class MODULE_UI_BASE_CLASS_API STimestampSlotCaller : public ::sight::ui::base::IAction
 {
@@ -68,19 +76,6 @@ protected:
 
     /**
      * @brief Configure the service
-     *
-     * @code{.xml}
-        <service uid="..." type="::ui::base::IAction" impl="::sight::module::ui::base::STimestampSlotCaller"
-     * autoConnect="no">
-            <slots>
-              <slot>hasSlotsId/slotKey</slot>
-              <slot>hasSlots2Id/slot2Key</slot>
-          </slots>
-        </service>
-       @endcode
-     * - \b slot : defines the slot to run
-     *   - \b hasSlotsId : fwId of the HasSlots (usually a service)
-     *   - \b slotKey : the identifier of the slot in the HasSlots
      */
     MODULE_UI_BASE_API virtual void configuring() override;
 

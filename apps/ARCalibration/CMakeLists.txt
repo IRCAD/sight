@@ -7,6 +7,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_ui_base
                  module_ui_qt
                  module_service
+                 module_sync
                  data
                  module_ui_base
                  module_ui_flaticons
@@ -15,12 +16,13 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_vision
                  module_io_activity
                  module_io_realsense
-                 module_ui_base
+                 module_io_igtl
                  module_activity
                  activity_navigation_calibration
-                 toolCalibrationActivity
                  module_data
                  module_memory
+                 module_geometry_vision
+                 module_navigation_calibration
 )
 
 moduleParam(module_ui_qt

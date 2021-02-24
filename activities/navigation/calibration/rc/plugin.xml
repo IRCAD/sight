@@ -16,12 +16,13 @@
     <xi:include href="configurations/calibrationCharuco.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calExtrinsicCharucoView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/toolCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::sight::activity::extension::Activity">
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
+        <icon>::sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -43,7 +44,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>sight_module_ui_flaticons/BlueParametersCamera.svg</icon>
+        <icon>::sight::module::ui::flaticons/BlueParametersCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -60,7 +61,7 @@
         <id>RGBDCalibration</id>
         <title>RGBD camera calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
-        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
+        <icon>::sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements>
         </requirements>
         <appConfig id="RGBDCalibration">
@@ -73,7 +74,7 @@
         <id>CalibrationCharuco</id>
         <title>Calibration Charuco</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
-        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
+        <icon>::sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -93,6 +94,19 @@
         <config>
             <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />
         </config>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>ToolCalibration</id>
+        <title>Tool calibration</title>
+        <desc>Tool Calibration Activity using a tracking system</desc>
+        <icon>::sight::module::ui::icons/calibrationActivity.svg</icon>
+        <requirements>
+        </requirements>
+        <appConfig id="toolCalibration">
+            <parameters>
+            </parameters>
+        </appConfig>
     </extension>
 
 </plugin>
