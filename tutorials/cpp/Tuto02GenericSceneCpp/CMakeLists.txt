@@ -18,3 +18,12 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       data
                       service
 )
+
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        sight_module_ui_qt/flatdark.rcc
+        sight_module_ui_qt/flatdark.qss
+) # Allow dark theme via module_ui_qt

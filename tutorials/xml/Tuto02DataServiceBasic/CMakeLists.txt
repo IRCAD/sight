@@ -9,3 +9,11 @@ add_dependencies(${FWPROJECT_NAME}
                  module_ui_base
                  module_io_vtk
 )
+
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        TutoDataServiceBasic_AppCfg
+) # Main application's configuration to launch

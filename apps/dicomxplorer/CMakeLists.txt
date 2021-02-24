@@ -22,3 +22,5 @@ add_dependencies(${FWPROJECT_NAME}
                  atoms
                  module_ui_base
 )
+
+moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

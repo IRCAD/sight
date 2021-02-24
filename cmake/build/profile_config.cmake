@@ -1,40 +1,34 @@
 
 # Do not change the indentation of the activate list
-macro(profile_setup ${PROJECT})
+macro(profile_setup PROJECT)
     set(UNIQUE "false")
-    #Set the check-single-instance
-    if(${PROJECT}_UNIQUE)
-        string(TOLOWER "${${PROJECT}_UNIQUE}" UNIQUE)
-    endif()
 
-    #Clear last set
-    unset(XML_ACTIVATE)
-    # unset start for the current app
-    unset(START_MODULES)
-    unset(XML_START_MODULES)
+    #Set the check-single-instance
+    get_target_property(UNIQUE ${PROJECT} SIGHT_UNIQUE)
+    string(TOLOWER "${UNIQUE}" UNIQUE)
 
     # set a variable used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
 
-    # Add each requirements to the activate list
-    set(ALL_REQUIREMENTS "")
-    findRequirements(${PROJECT} ALL_REQUIREMENTS)
-    list(REMOVE_DUPLICATES ALL_REQUIREMENTS)
-    list(SORT ALL_REQUIREMENTS)
+    get_target_property(ALL_REQUIREMENTS ${PROJECT} MANUALLY_ADDED_DEPENDENCIES)
 
     # Manage module starting
-    if(${PROJECT}_START)
+    get_target_property(START ${PROJECT} SIGHT_START)
+    if(START)
         list(APPEND START_MODULES "${PROJECT}")
     endif()
 
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
         # get the start option of the current requirement if exists
-        if(${CURRENT_REQUIREMENT}_START)
+        get_target_property(START ${CURRENT_REQUIREMENT} SIGHT_START)
+        if(START)
             list(APPEND START_MODULES "${CURRENT_REQUIREMENT}")
         endif()
     endforeach()
 
     list(SORT START_MODULES)
+
+    list(APPEND ALL_REQUIREMENTS "${PROJECT}")
 
     # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
@@ -48,8 +42,10 @@ macro(profile_setup ${PROJECT})
             endif()
         endforeach()
 
+        get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
+        
         # to only consider modules and app
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
+        if( "${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
             # check if a moduleParam macro had been use in the properties.cmake
             # if yes, get and set module param and values
             string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
@@ -109,16 +105,9 @@ function(findRequirements FWPROJECT_NAME)
     set(ALL_REQUIREMENTS ${ALL_REQUIREMENTS} PARENT_SCOPE)
 endfunction()
 
-macro(bundleParam MODULE_NAME)
-    set(options)
-    set(oneValueArgs)
-    set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
-endmacro()
-
 macro(moduleParam MODULE_NAME)
     set(options)
     set(oneValueArgs)
     set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("${FWPROJECT_NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 endmacro()

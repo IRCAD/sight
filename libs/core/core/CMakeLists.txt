@@ -5,7 +5,7 @@ find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
 target_link_libraries(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC std::filesystem)
 target_link_libraries(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC Boost::date_time Boost::log Boost::log_setup Boost::iostreams)
 
-target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${CAMP_INCLUDE_DIR} )
+target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} SYSTEM PUBLIC ${CAMP_INCLUDE_DIR} )
 
 target_link_libraries(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC ${CAMP_LIBRARIES})
 
@@ -28,5 +28,6 @@ if(WIN32)
 endif()
 
 if(BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/api)
+    add_subdirectory(test/detail)
 endif(BUILD_TESTS)

@@ -19,12 +19,12 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
         list(APPEND PROJECT_REQUIREMENTS ${CURRENT_MODULE_DEPS})
     endforeach()
 
-    if(EXISTS "${${PROJECT}_DIR}/rc/plugin.xml")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml")
         set(PLUGIN_CONFIG_COMMAND   ${CMAKE_COMMAND}
                                     -DPROJECT="${PROJECT}"
-                                    -DPROJECT_DIR="${${PROJECT}_DIR}"
+                                    -DPROJECT_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
                                     -DCMAKE_SCRIPTS_DIR="${FWCMAKE_BUILD_FILES_DIR}"
-                                    -DREGISTERSERVICE_OUTPUT_PATH="${CMAKE_BINARY_DIR}/${PROJECT}"
+                                    -DREGISTERSERVICE_OUTPUT_PATH="${CMAKE_CURRENT_BINARY_DIR}"
                                     -DSIGHT_REPOSITORY="${SIGHT_REPOSITORY}"
                                     -P "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake"
         )
@@ -32,10 +32,10 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
                                                   "${FWCMAKE_RESOURCE_PATH}/build/plugin_config_command.cmake")
 
         add_custom_command(
-            OUTPUT "${CMAKE_BINARY_DIR}/${PROJECT}/registerServices.cpp"
+            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/registerServices.cpp"
             COMMAND ${PLUGIN_CONFIG_COMMAND}
             MAIN_DEPENDENCY "${FWCMAKE_BUILD_FILES_DIR}/registerServices.cpp.in"
-            DEPENDS ${PLUGIN_CONFIG_COMMAND_DEPENDS} "${${PROJECT}_DIR}/rc/plugin.xml"
+            DEPENDS ${PLUGIN_CONFIG_COMMAND_DEPENDS} "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml"
             COMMENT "Generating service registration file for ${PROJECT}"
             )
     endif()

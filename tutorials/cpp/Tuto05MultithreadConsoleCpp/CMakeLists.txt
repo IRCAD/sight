@@ -12,3 +12,19 @@ add_dependencies(${FWPROJECT_NAME}
 )
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC data service)
+
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+/flatdark.rcc
+/flatdark.qss
+) # Allow dark theme via module_ui_qt
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        Tuto05MultithreadConsoleCpp_AppCfg
+) # Main application's configuration to launch

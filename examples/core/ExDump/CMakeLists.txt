@@ -23,3 +23,26 @@ add_dependencies(${FWPROJECT_NAME}
                  module_debug
                  module_ui_debug
 )
+
+moduleParam(
+        module_memory
+    PARAM_LIST
+        loading_mode
+    PARAM_VALUES
+        lazy
+) # Set the reading mode to "lazy", so the buffers will only be read in module_memory when they are used.
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        sight_module_ui_qt/flatdark.rcc
+        sight_module_ui_qt/flatdark.qss
+) # Allow dark theme via module_ui_qt
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExDump_AppCfg
+) # Main application's configuration to launch

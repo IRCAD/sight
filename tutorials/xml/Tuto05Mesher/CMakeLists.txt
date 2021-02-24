@@ -11,3 +11,19 @@ add_dependencies(${FWPROJECT_NAME}
                  module_viz_sample
                  module_filter_mesh
 )
+
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        sight_module_ui_qt/flatdark.rcc
+        sight_module_ui_qt/flatdark.qss
+) # Allow dark theme via module_ui_qt
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        Tuto05Mesher_AppCfg
+) # Main application's configuration to launch

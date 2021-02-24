@@ -12,3 +12,12 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_atoms
                  module_viz_qt3d
 )
+
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        sight_module_ui_qt/flatdark.rcc
+        sight_module_ui_qt/flatdark.qss
+) # Allow dark theme via module_ui_qt

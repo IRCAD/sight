@@ -22,3 +22,19 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_vision
                  module_navigation_openvslam
 )
+
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        sight_module_ui_qt/flatdark.rcc
+        sight_module_ui_qt/flatdark.qss
+) # Allow dark theme via module_ui_qt
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExOpenvslam_AppCfg
+) # Main application's configuration to launch

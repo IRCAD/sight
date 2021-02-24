@@ -1,6 +1,5 @@
 # CMake script file launch at build time before the build of each module
 
-
 file(STRINGS "${PROJECT_DIR}/rc/plugin.xml" PLUGIN_CONTENT)
 
 set(FOUND_EXTENSION OFF)

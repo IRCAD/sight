@@ -22,3 +22,19 @@ add_dependencies(${FWPROJECT_NAME}
                  module_data
                  module_memory
 )
+
+moduleParam(module_ui_qt
+    PARAM_LIST
+        resource
+        stylesheet
+    PARAM_VALUES
+        sight_sight_module_ui_qt/flatdark.rcc
+        sight_sight_module_ui_qt/flatdark.qss
+) # Allow dark theme via module_ui_qt
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config parameters
+    PARAM_VALUES
+        ARCalibration_AppCfg ARCalibration_AppCfgParam
+) # Main application's configuration to launch

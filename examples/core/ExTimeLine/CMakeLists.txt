@@ -15,3 +15,11 @@ target_link_libraries(${FWPROJECT_NAME} PUBLIC
                       core
                       exTimeLineData
 )
+
+moduleParam(
+        module_appXml
+    PARAM_LIST
+        config
+    PARAM_VALUES
+        ExTimeLine_AppCfg
+) # Main application's configuration to launch

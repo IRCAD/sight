@@ -46,8 +46,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modu
 # User options
 ########################################################################################################################
 
-option(BUILD_SDK "Build Sight as a SDK" OFF)
-
 # Tests build / run options
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
@@ -213,6 +211,8 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR} )
 endforeach()
 
+set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
+
 add_subdirectory(libs)
 add_subdirectory(modules)
 #add_subdirectory(configs)
@@ -221,8 +221,6 @@ add_subdirectory(modules)
 add_subdirectory(utils)
 add_subdirectory(tutorials)
 #add_subdirectory(examples)
-
-set(FWCONFIG_PACKAGE_LOCATION lib/cmake/sight)
 
 # Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()
