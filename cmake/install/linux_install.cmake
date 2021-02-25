@@ -6,7 +6,9 @@ macro(linux_install PRJ_NAME)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
-    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
+    get_target_property(TARGET_TYPE ${FWPROJECT_NAME} SIGHT_TARGET_TYPE)
+
+    if("$TARGET_TYPE}" STREQUAL  "APP")
 
         set(LAUNCHER_PATH "bin/fwlauncher.bin-${fwlauncher_VERSION}")
         set(LAUNCHER "fwlauncher.bin-${fwlauncher_VERSION}")
@@ -16,14 +18,14 @@ macro(linux_install PRJ_NAME)
             # install the launcher
             install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
         endif()
-    elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
+    elseif("${TARGET_TYPE}" STREQUAL  "EXECUTABLE")
 
         set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin-${${PRJ_NAME}_VERSION}")
         set(LAUNCHER "${PRJ_NAME}.bin-${${PRJ_NAME}_VERSION}")
         set(PROFILE_PATH "")
 
     elseif()
-        message(FATAL_ERROR "'${PRJ_NAME}' is not an installable (type : ${${PRJ_NAME}_TYPE})")
+        message(FATAL_ERROR "'${PRJ_NAME}' is not an installable (type : ${TARGET_TYPE})")
     endif()
 
     set(PROJECT_REQUIREMENTS ${${PROJECT}_REQUIREMENTS})
@@ -64,12 +66,12 @@ macro(linux_install PRJ_NAME)
         set(CPACK_PACKAGE_VERSION "${VERSION}")
     endif()
 
-    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
+    if("${TARGET_TYPE}" STREQUAL  "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
-    elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
+    elseif("${TARGET_TYPE}" STREQUAL  "EXECUTABLE")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template_exe.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
