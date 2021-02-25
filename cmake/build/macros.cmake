@@ -705,7 +705,6 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_TARGET_TYPE;SIGHT_START")
 
         # Only prefix with the repository name for modules
-        message("output  ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
 
         install(

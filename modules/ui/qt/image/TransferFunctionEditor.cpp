@@ -30,12 +30,17 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-
 #include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
+
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -43,11 +48,6 @@
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
-
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -59,7 +59,6 @@ static const service::IService::KeyType s_TF_OUTPUT        = "tf";
 static const service::IService::KeyType s_CURRENT_TF_INPUT = "currentTF";
 
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -120,7 +119,7 @@ void TransferFunctionEditor::starting()
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox();
 
-    std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("uiTF"));
+    std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::ui::qt"));
 
     const auto deletePath = modulePath / "delete.png";
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");

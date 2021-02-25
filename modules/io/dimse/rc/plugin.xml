@@ -2,7 +2,7 @@
 <!-- DO NOT EDIT MANUALLY !!! -->
 
 <plugin id="sight::module::io::dimse" library="true" >
-    <requirement id="sight_module_ui_qt"/>
+    <requirement id="sight::module::ui::qt"/>
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
          <service>::sight::module::io::dimse::SPacsConfigurationEditor</service>

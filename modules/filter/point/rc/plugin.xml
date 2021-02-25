@@ -2,7 +2,7 @@
 <!-- DO NOT EDIT MANUALLY !!! -->
 
 <plugin id="sight::module::filter::point" library="true" >
-    <requirement id="sight_module_ui_qt"/>
+    <requirement id="sight::module::ui::qt"/>
 
     <extension implements="::sight::service::extension::Factory">
          <type>::sight::service::IRegisterer</type>

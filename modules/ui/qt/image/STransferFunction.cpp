@@ -33,12 +33,17 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-
 #include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
+
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QBoxLayout>
 #include <QComboBox>
@@ -46,11 +51,6 @@
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
-
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -78,12 +78,11 @@ static const std::string s_VERSION_TF = "V1";
 
 //------------------------------------------------------------------------------
 
-
 //------------------------------------------------------------------------------
 
 STransferFunction::STransferFunction()
 {
-    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("uiTF"));
+    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::ui::qt"));
 
     m_deleteIcon       = modulePath / "delete.png";
     m_newIcon          = modulePath / "new.png";

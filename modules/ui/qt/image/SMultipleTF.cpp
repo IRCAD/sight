@@ -31,16 +31,16 @@
 #include <data/tools/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <service/op/Add.hpp>
-
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
 
-#include <QBoxLayout>
+#include <service/op/Add.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QBoxLayout>
 
 namespace sight::module::ui::qt::image
 {
@@ -71,7 +71,7 @@ static const std::string s_VERSION_TF = "V1";
 
 SMultipleTF::SMultipleTF()
 {
-    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("uiTF"));
+    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::ui::qt"));
 
     m_deleteIcon       = modulePath / "delete.png";
     m_newIcon          = modulePath / "new.png";
@@ -157,7 +157,7 @@ void SMultipleTF::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = core::runtime::getModuleResourceFilePath("module_ui_qt", "tf");
+        const auto pathRoot = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "tf");
         m_paths.push_back(pathRoot);
     }
 }
