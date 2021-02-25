@@ -1,7 +1,7 @@
 sight_add_target( activity_navigation_calibration TYPE MODULE )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(${FWPROJECT_NAME}
                  module_ui_base
                  module_viz_scene3d
                  module_viz_scene3dQt
@@ -21,13 +21,3 @@ add_dependencies(${FWPROJECT_NAME}
                  module_data
                  module_navigation_calibration
 )
-
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
-                      activity
-                      core
-                      data
-)
-
-if(BUILD_TESTS)
-    add_subdirectory(test)
-endif(BUILD_TESTS)
