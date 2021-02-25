@@ -437,9 +437,12 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
         add_library(${FWPROJECT_NAME} SHARED $<TARGET_OBJECTS:${FWPROJECT_NAME_OBJECT_LIB}> ${${FWPROJECT_NAME}_PCH_LIB})
 
         target_include_directories(${FWPROJECT_NAME_OBJECT_LIB} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+        )
+        target_include_directories(${FWPROJECT_NAME} PUBLIC
+            $<INSTALL_INTERFACE:include>
         )
         target_link_libraries(${FWPROJECT_NAME} PUBLIC ${FWPROJECT_NAME_OBJECT_LIB})
     else()
@@ -450,9 +453,10 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
             ${${FWPROJECT_NAME}_CMAKE_FILES}
             ${${FWPROJECT_NAME}_PCH_LIB})
         target_include_directories(${FWPROJECT_NAME} PUBLIC
-          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+            $<INSTALL_INTERFACE:include>
         )
     endif()
 
