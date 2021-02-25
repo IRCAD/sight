@@ -147,15 +147,13 @@ Layer::sptr IAdaptor::getLayer() const
 
 void IAdaptor::requestRender()
 {
-    /*
-       auto renderService = this->getRenderService();
-       if ( (renderService->getStatus() == service::IService::STARTED ||
-          renderService->getStatus() == service::IService::SWAPPING) &&
-         renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO )
-       {
-        this->getRenderService()->requestRender();
-       }
-     */
+    auto renderService = this->getRenderService();
+    if ( (renderService->getStatus() == service::IService::STARTED ||
+        renderService->getStatus() == service::IService::SWAPPING) &&
+        renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO )
+    {
+    this->getRenderService()->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------
