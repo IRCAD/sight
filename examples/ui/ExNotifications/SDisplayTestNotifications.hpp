@@ -29,7 +29,7 @@
 
 namespace dial = sight::ui::base::dialog;
 
-namespace exnotifications
+namespace ExNotifications
 {
 
 /**
@@ -93,4 +93,4 @@ private:
 
 };
 
-} // namespace exnotifications
+} // namespace ExNotifications

@@ -1,5 +1,5 @@
 
-function(plugin_setup PROJECT HEADERS_DEPENDS)
+function(plugin_setup PROJECT)
 
     # set variables used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
@@ -8,15 +8,10 @@ function(plugin_setup PROJECT HEADERS_DEPENDS)
     # Filter modules and app requirements from the requirement list
     foreach(CURRENT_REQUIREMENT ${${PROJECT}_REQUIREMENTS})
         # to only consider modules and app
-        get_target_property(TARGET_TYPE ${CURRENT_REQUIREMENT} TYPE)
+        get_target_property(TARGET_TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
         if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
             list(APPEND PROJECT_REQUIREMENTS ${CURRENT_REQUIREMENT})
          endif()
-    endforeach()
-
-    # Add each module deps to the requirement list
-    foreach(CURRENT_MODULE_DEPS ${${PROJECT}_MODULE_DEPENDENCIES})
-        list(APPEND PROJECT_REQUIREMENTS ${CURRENT_MODULE_DEPS})
     endforeach()
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml")

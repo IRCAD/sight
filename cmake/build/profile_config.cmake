@@ -30,6 +30,8 @@ macro(profile_setup PROJECT)
 
     list(APPEND ALL_REQUIREMENTS "${PROJECT}")
 
+    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
+
     # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
 
@@ -45,11 +47,11 @@ macro(profile_setup PROJECT)
         get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
         
         if( "${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
-
+            
             string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
-            string(REGEX REPLACE "^module" "${SIGHT_REPOSITORY}::module" REQ ${REQ})
-            string(REGEX REPLACE "^config" "${SIGHT_REPOSITORY}::config" REQ ${REQ})
-            string(REGEX REPLACE "^activity" "${SIGHT_REPOSITORY}::activity" REQ ${REQ})
+            if(${CURRENT_REQUIREMENT} IN_LIST SIGHT_COMPONENTS)
+                set(REQ "${SIGHT_REPOSITORY}::${REQ}")
+            endif()
 
             # check if a moduleParam macro had been used in the CMakeLists.txt
             # if yes, get and set module param and values
@@ -76,9 +78,10 @@ macro(profile_setup PROJECT)
 
     foreach(CURRENT_MODULE ${START_MODULES})
         string(REPLACE "_" "::" MODULE ${CURRENT_MODULE})
-        string(REGEX REPLACE "^module" "${SIGHT_REPOSITORY}::module" MODULE ${MODULE})
-        string(REGEX REPLACE "^config" "${SIGHT_REPOSITORY}::config" MODULE ${MODULE})
-        string(REGEX REPLACE "^activity" "${SIGHT_REPOSITORY}::activity" MODULE ${MODULE})
+        if(${CURRENT_MODULE} IN_LIST SIGHT_COMPONENTS)
+            set(MODULE "${SIGHT_REPOSITORY}::${MODULE}")
+        endif()
+
         set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE}\" />")
     endforeach()
 

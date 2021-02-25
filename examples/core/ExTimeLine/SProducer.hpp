@@ -44,7 +44,7 @@ namespace ExTimeLine
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b timeline [::exTimeLineData::MessageTL]: timeline where to put messages.
+ * - \b timeline [::ExTimeLine::MessageTL]: timeline where to put messages.
  * @subsection Configuration Configuration:
  * - \b message : message to be sent.
  * - \b id : id of the sender.

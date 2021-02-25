@@ -20,8 +20,28 @@
  *
  ***********************************************************************/
 
-#include "MessageTL.hpp"
+#pragma once
 
-#include <data/registry/macros.hpp>
+#include "ExNotifications/config.hpp"
 
-fwDataRegisterMacro( ::exTimeLineData::MessageTL )
+#include <core/runtime/Plugin.hpp>
+
+namespace ExNotifications
+{
+
+/// This class is started when the module is loaded.
+class EXNOTIFICATIONS_CLASS_API Plugin : public sight::core::runtime::Plugin
+{
+public:
+
+    /// Destroys the plugin.
+    EXNOTIFICATIONS_API ~Plugin() noexcept override;
+
+    /// Adds the default worker.
+    EXNOTIFICATIONS_API void start() override;
+
+    /// Does nothing here.
+    EXNOTIFICATIONS_API void stop() noexcept override;
+};
+
+} // namespace ExNotifications

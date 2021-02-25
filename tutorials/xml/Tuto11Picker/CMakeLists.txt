@@ -29,4 +29,4 @@ moduleParam(module_ui_qt
 ) # Allow dark theme via module_ui_qt
 moduleParam(module_appXml PARAM_LIST config PARAM_VALUES Tuto11Picker_AppCfg)
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

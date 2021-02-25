@@ -27,4 +27,4 @@ moduleParam(
         Tuto12Scene2D_AppCfg
    ) # Allow dark theme via module_ui_qt
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

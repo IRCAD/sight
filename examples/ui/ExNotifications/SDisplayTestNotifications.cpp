@@ -27,12 +27,11 @@
 
 #include <service/macros.hpp>
 
-namespace exnotifications
+namespace ExNotifications
 {
 
 static const sight::core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 static const sight::core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
-
 
 using namespace sight;
 
@@ -223,4 +222,4 @@ void SDisplayTestNotifications::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace exnotifications
+} // namespace ExNotifications

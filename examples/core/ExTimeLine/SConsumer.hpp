@@ -52,7 +52,7 @@ namespace ExTimeLine
        </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [::exTimeLineData::MessageTL]: timeline containing messages.
+ * - \b timeline [::ExTimeLine::MessageTL]: timeline containing messages.
  * @subsection Configuration Configuration:
  * - \b id : id of the receiver.
  * - \b period (optional): time between two messages display, in milliseconds.

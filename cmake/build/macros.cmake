@@ -567,7 +567,7 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
 
 endmacro()
 
-macro(fwModule FWPROJECT_NAME)
+macro(fwModule FWPROJECT_NAME TARGET_TYPE)
 
     if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
@@ -595,15 +595,13 @@ macro(fwModule FWPROJECT_NAME)
                 GENERATED TRUE
                 SKIP_AUTOMOC ON)
 
-            plugin_setup("${FWPROJECT_NAME}" "${${FWPROJECT_NAME}_HEADERS}")
+            plugin_setup("${FWPROJECT_NAME}")
         endif()
 
         configureProject( ${FWPROJECT_NAME} )
 
         set_target_properties(${FWPROJECT_NAME} PROPERTIES INTERFACE_${FWPROJECT_NAME}_MAJOR_VERSION ${SIGHT_API_VERSION})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES COMPATIBLE_INTERFACE_STRING ${FWPROJECT_NAME}_MAJOR_VERSION)
-
-        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
     
         # create the config.hpp for the current module
         get_header_file_install_destination()
@@ -634,9 +632,8 @@ macro(fwModule FWPROJECT_NAME)
     else()
         add_library(${FWPROJECT_NAME} INTERFACE ${${FWPROJECT_NAME}_RC_FILES} ${${FWPROJECT_NAME}_CMAKE_FILES})
     endif()
-
-    # Adds project into folder module or apps
-    if(${FWPROJECT_NAME}_TYPE STREQUAL "APP")
+    
+    if("${TARGET_TYPE}" STREQUAL "APP")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES SIGHT_TARGET_TYPE "APP")
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
 
@@ -702,6 +699,10 @@ macro(fwModule FWPROJECT_NAME)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "module")                 
 
         set_target_properties(${FWPROJECT_NAME} PROPERTIES EXPORT_PROPERTIES "SIGHT_TARGET_TYPE;SIGHT_START")
+
+        # Only prefix with the repository name for modules
+        message("output  ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}")
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${SIGHT_REPOSITORY}_${FWPROJECT_NAME})
 
         install(
             TARGETS ${FWPROJECT_NAME}
@@ -797,11 +798,11 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "LIBRARY")
         fwLib(${NAME} ${SIGHT_TARGET_OBJECT_LIBRARY})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
-        fwModule(${NAME})
+        fwModule(${NAME} ${SIGHT_TARGET_TYPE})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
         fwCppunitTest(${NAME} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
-        fwModule(${NAME})
+        fwModule(${NAME} ${SIGHT_TARGET_TYPE})
     endif()
 
     if("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
@@ -834,7 +835,7 @@ macro(sight_add_target)
     endif()
 endmacro()
 
-macro(sight_add_shortcut TARGET)
+macro(sight_generate_profile TARGET)
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rc/profile.xml" )
         profile_setup(${TARGET})
     endif()

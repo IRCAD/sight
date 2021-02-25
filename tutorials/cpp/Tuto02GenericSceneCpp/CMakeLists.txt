@@ -28,4 +28,4 @@ moduleParam(module_ui_qt
         sight_module_ui_qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

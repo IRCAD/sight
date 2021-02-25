@@ -1,5 +1,3 @@
-add_subdirectory(exTimeLineData)
-
 sight_add_target( ExTimeLine TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
@@ -9,12 +7,9 @@ add_dependencies(${FWPROJECT_NAME}
                  module_ui_console
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
-                      data
-                      service
-                      core
-                      exTimeLineData
-)
+target_include_directories(${FWPROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/.. )
+
+target_link_libraries(${FWPROJECT_NAME} PUBLIC data service core)
 
 moduleParam(
         module_appXml
@@ -24,4 +19,4 @@ moduleParam(
         ExTimeLine_AppCfg
 ) # Main application's configuration to launch
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

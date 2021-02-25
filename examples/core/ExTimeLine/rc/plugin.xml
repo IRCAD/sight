@@ -6,13 +6,13 @@
     <extension implements="::sight::service::extension::Factory" >
         <type>::sight::service::IService</type>
         <service>::ExTimeLine::SProducer</service>
-        <object>::exTimeLineData::MessageTL</object>
+        <object>::ExTimeLine::MessageTL</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory" >
         <type>::sight::service::IService</type>
         <service>::ExTimeLine::SConsumer</service>
-        <object>::exTimeLineData::MessageTL</object>
+        <object>::ExTimeLine::MessageTL</object>
     </extension>
 
     <extension implements="::sight::service::extension::AppConfig" >
@@ -21,7 +21,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="messageTL" type="::exTimeLineData::MessageTL" />
+            <object uid="messageTL" type="::ExTimeLine::MessageTL" />
 
             <!-- ************************************* Services ************************************ -->
 

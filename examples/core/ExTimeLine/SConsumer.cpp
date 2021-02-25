@@ -22,7 +22,7 @@
 
 #include "SConsumer.hpp"
 
-#include "exTimeLineData/MessageTL.hpp"
+#include "MessageTL.hpp"
 
 #include <core/com/Slots.hxx>
 #include <core/thread/Timer.hpp>
@@ -30,7 +30,6 @@
 #include <service/macros.hpp>
 
 #include <functional>
-
 
 namespace ExTimeLine
 {
@@ -88,14 +87,14 @@ void SConsumer::stopping()
 
 void SConsumer::updating()
 {
-    const auto timeline = this->getLockedInput< ::exTimeLineData::MessageTL >("timeline");
+    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL >("timeline");
 
     const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
-    const CSPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
     {
-        const ::exTimeLineData::MsgData& element = buffer->getElement(0);
+        const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
             " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
@@ -106,13 +105,13 @@ void SConsumer::updating()
 
 void SConsumer::consume(sight::core::HiResClock::HiResClockType timestamp)
 {
-    const auto timeline = this->getLockedInput< ::exTimeLineData::MessageTL >("timeline");
+    const auto timeline = this->getLockedInput< ::ExTimeLine::MessageTL >("timeline");
 
-    const CSPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
+    const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
     {
-        const ::exTimeLineData::MsgData& element = buffer->getElement(0);
+        const ::ExTimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
             " MESSAGE: \"" << element.szMsg << "\"" << std::endl;

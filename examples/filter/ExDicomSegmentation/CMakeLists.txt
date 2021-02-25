@@ -42,4 +42,4 @@ moduleParam(
         ExDicomSegmentation_AppCfg
 ) # Main application's configuration to launch
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

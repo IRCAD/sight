@@ -8,6 +8,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_service
                  module_ui_base
                  module_io_vtk
+                 module_viz_sample
 )
 
 moduleParam(
@@ -18,4 +19,4 @@ moduleParam(
         TutoDataServiceBasic_AppCfg
 ) # Main application's configuration to launch
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

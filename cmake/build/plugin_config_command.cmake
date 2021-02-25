@@ -7,7 +7,7 @@ foreach(LINE ${PLUGIN_CONTENT})
 
     if(NOT FOUND_EXTENSION)
         # Look for service extension
-        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::Factory\">")
+        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::Factory\" *>")
             set(FOUND_EXTENSION ON)
             set(OBJECTS "")
         endif()
@@ -15,14 +15,17 @@ foreach(LINE ${PLUGIN_CONTENT})
         if("${LINE}" MATCHES "</extension>")
             set(FOUND_EXTENSION OFF)
 
-            # Generate an entry for one service
+            # 1. Generate an entry for one service
             list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${TYPE}, ${SERVICE} )\n")
 
-            # Generate the include for the service
+            # 2. Generate the include for the service
             set(SERVICE_INCLUDE ${SERVICE})
+            # Remove the trailing :: from the left
             string(REGEX REPLACE "^::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+            # Guess the name of the root of the target containing the file
             get_filename_component(PROJECT_LAST_DIR ${PROJECT_DIR} NAME)
             string(REGEX REPLACE ".*${PROJECT_LAST_DIR}::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+
             string(REGEX REPLACE "::" "/" SERVICE_INCLUDE ${SERVICE_INCLUDE})
             set(SERVICE_INCLUDE "${PROJECT_DIR}/${SERVICE_INCLUDE}.hpp")
             if(NOT "${SERVICE}" MATCHES "module")
@@ -31,12 +34,15 @@ foreach(LINE ${PLUGIN_CONTENT})
             list(APPEND REGISTER_INCLUDE "#include <${SERVICE_INCLUDE}>")
 
             foreach(OBJ ${OBJECTS})
+                # 3. Generate the object register macros
                 list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SERVICE}, ${OBJ} )\n")
-                # Generate the include for the data objects
 
+                # 4. Generate the include for the data objects
                 set(OBJECT_INCLUDE ${OBJ})
+                # Remove the trailing :: from the left
                 string(REGEX REPLACE "^::(.*)" "\\1" OBJECT_INCLUDE ${OBJECT_INCLUDE})
-                string(REGEX REPLACE "[A-z0-9]*::(.*)" "\\1" OBJECT_INCLUDE ${OBJECT_INCLUDE})
+                # Drop the root namespace
+                string(REGEX REPLACE "([A-z0-9]*::)?([A-z0-9]*::[A-z0-9]*(.*))" "\\2" OBJECT_INCLUDE ${OBJECT_INCLUDE})
                 string(REGEX REPLACE "::" "/" OBJECT_INCLUDE ${OBJECT_INCLUDE})
 
                 list(APPEND REGISTER_INCLUDE "#include <${OBJECT_INCLUDE}.hpp>")

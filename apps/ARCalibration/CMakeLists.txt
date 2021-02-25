@@ -28,8 +28,8 @@ moduleParam(module_ui_qt
         resource
         stylesheet
     PARAM_VALUES
-        sight_sight_module_ui_qt/flatdark.rcc
-        sight_sight_module_ui_qt/flatdark.qss
+        sight_module_ui_qt/flatdark.rcc
+        sight_module_ui_qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 moduleParam(
         module_appXml
@@ -39,4 +39,4 @@ moduleParam(
         ARCalibration_AppCfg ARCalibration_AppCfgParam
 ) # Main application's configuration to launch
 
-sight_add_shortcut(${FWPROJECT_NAME})
+sight_generate_profile(${FWPROJECT_NAME})

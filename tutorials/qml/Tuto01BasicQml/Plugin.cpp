@@ -31,7 +31,7 @@ namespace sight::Tuto01BasicQml
 {
 
 static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
-    "::Tuto01BasicQml::Plugin");
+    "::sight::Tuto01BasicQml::Plugin");
 
 //------------------------------------------------------------------------------
 

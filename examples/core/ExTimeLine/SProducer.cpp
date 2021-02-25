@@ -22,7 +22,7 @@
 
 #include "SProducer.hpp"
 
-#include "exTimeLineData/MessageTL.hpp"
+#include "MessageTL.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/thread/Timer.hpp>
@@ -30,7 +30,6 @@
 #include <service/macros.hpp>
 
 #include <functional>
-
 
 namespace ExTimeLine
 {
@@ -76,7 +75,7 @@ void SProducer::starting()
     // Init timeline pool
     if(m_timelineSize)
     {
-        const auto timeline = this->getLockedInOut< ::exTimeLineData::MessageTL >("timeline");
+        const auto timeline = this->getLockedInOut< ::ExTimeLine::MessageTL >("timeline");
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
@@ -100,17 +99,17 @@ void SProducer::stopping()
 
 void SProducer::updating()
 {
-    ::exTimeLineData::MessageTL::sptr timeline = this->getInOut< ::exTimeLineData::MessageTL >("timeline");
+    ::ExTimeLine::MessageTL::sptr timeline = this->getInOut< ::ExTimeLine::MessageTL >("timeline");
 
     const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
-    SPTR(::exTimeLineData::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
 
-    ::exTimeLineData::MsgData* data = buffer->addElement(0);
+    ::ExTimeLine::MsgData* data = buffer->addElement(0);
 
     const std::string message = m_message + " #" + std::to_string( m_msgCount++ );
 
     data->uidSender = m_senderId;
-    strncpy(data->szMsg, message.c_str(), ::exTimeLineData::MsgData::MAX_MSG_SIZE);
+    strncpy(data->szMsg, message.c_str(), ::ExTimeLine::MsgData::MAX_MSG_SIZE);
 
     timeline->pushObject(buffer);
 

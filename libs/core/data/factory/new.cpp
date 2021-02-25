@@ -38,32 +38,37 @@ namespace factory
 
 data::Object::sptr New( const data::registry::KeyType& classname )
 {
-    if(classname.empty())
-    {
-        return nullptr;
-    }
+    SLM_ASSERT("A classname must be specified", !classname.empty());
 
-    std::smatch match;
-    static const std::regex reg("::(\\w*)::(?:(core|filter|geometry|io|navigation|viz)::)?(\\w*)::.*");
-    if( std::regex_match(classname, match, reg ) && match.size() >= 3)
+    // 1. Try first to create the data
+    auto data = data::registry::get()->create(classname);
+
+    // 2. If that fails, try to load the library it belongs to
+    if(data == nullptr)
     {
-        const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "") +
-                                    match[3].str();
-        SLM_DEBUG("libname: " + libname);
-        const bool loaded = core::runtime::loadLibrary(libname);
-        if(!loaded)
+        std::smatch match;
+        static const std::regex reg("::(\\w*)::(?:(core|filter|geometry|io|navigation|ui|viz)::)?(\\w*)::.*");
+        if( std::regex_match(classname, match, reg ) && match.size() >= 3)
         {
-            FW_RAISE("Cannot load library for data '" + classname + "'");
-            return nullptr;
+            const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "") +
+                                        match[3].str();
+            SLM_DEBUG("libname: " + libname);
+            const bool loaded = core::runtime::loadLibrary(libname);
+            if(!loaded)
+            {
+                FW_RAISE("Cannot load library for data '" + classname + "'");
+                return nullptr;
+            }
         }
-    }
-    else
-    {
-        FW_RAISE("Cannot determine library name from data '" + classname + "'");
+        else
+        {
+            FW_RAISE("Cannot determine library name from data '" + classname + "'");
+        }
+        // 3. Re-try now that the library is loaded
+        data = data::registry::get()->create(classname);
     }
 
-    return data::registry::get()->create(classname);
-
+    return data;
 }
 
 } // namespace factory

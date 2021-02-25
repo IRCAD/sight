@@ -100,7 +100,7 @@ void Runtime::addModules( const std::filesystem::path& repository )
         std::for_each( modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1) );
         static const std::regex expr("share/\\w*");
         const auto libRepoStr = std::regex_replace(repository.string(), expr, MODULE_LIB_PREFIX);
-        m_repositories.push_back(std::filesystem::canonical(std::filesystem::path(libRepoStr)));
+        m_repositories.push_back(std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)));
     }
     catch(const std::exception& exception)
     {
@@ -231,7 +231,7 @@ Runtime::findModule( const std::string& identifier ) const
     const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
 
     std::shared_ptr<Module> resModule;
-    for(const std::shared_ptr<Module>& module :  m_modules)
+    for(const std::shared_ptr<Module>& module : m_modules)
     {
         if(module->getIdentifier() == id)
         {

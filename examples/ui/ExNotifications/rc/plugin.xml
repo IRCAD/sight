@@ -9,7 +9,7 @@ this mode is not recommanded since each service can pop notification without any
 are already displayed and where they are displayed on screen.
 
 -->
-<plugin id="ExNotifications" >
+<plugin id="ExNotifications" library="true">
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
@@ -17,7 +17,7 @@ are already displayed and where they are displayed on screen.
 
     <extension implements="::sight::service::extension::Factory" >
         <type>::sight::ui::base::IAction</type>
-        <service>::exnotifications::SDisplayTestNotifications</service>
+        <service>::ExNotifications::SDisplayTestNotifications</service>
         <object>::sight::data::Object</object>
     </extension>
 
@@ -114,7 +114,7 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="::exnotifications::SDisplayTestNotifications" />
+            <service uid="testNotifierSrv" type="::ExNotifications::SDisplayTestNotifications" />
 
             <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifierSrv" type="::sight::module::ui::qt::SNotifier" >

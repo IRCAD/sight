@@ -27,7 +27,7 @@
 #include <data/timeline/GenericObject.hpp>
 #include <data/timeline/GenericObject.hxx>
 
-namespace exTimeLineData
+namespace ExTimeLine
 {
 
 struct MsgData
@@ -65,4 +65,4 @@ public:
 
 };
 
-} // namespace exTimeLineData.
+} // namespace ExTimeLine
