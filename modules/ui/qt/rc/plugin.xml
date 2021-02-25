@@ -135,7 +135,7 @@
 
     <extension implements="::sight::service::extension::Factory">
          <type>::sight::ui::base::IEditor</type>
-         <service>sight::module::ui::qt::calibration::SCameraInformationEditor</service>
+         <service>::sight::module::ui::qt::calibration::SCameraInformationEditor</service>
          <object>::sight::data::Camera</object>
          <desc>SCameraInformationEditor service is used to display the intrinsic calibration of a camera.</desc>
     </extension>

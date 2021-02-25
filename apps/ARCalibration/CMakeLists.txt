@@ -14,6 +14,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_ui_icons
                  module_io_atoms
                  module_io_vision
+                 module_io_video
                  module_io_activity
                  module_io_realsense
                  module_io_igtl
@@ -22,6 +23,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_data
                  module_memory
                  module_geometry_vision
+                 module_geometry_base
                  module_navigation_calibration
 )
 

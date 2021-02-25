@@ -268,7 +268,7 @@
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="Status" type="::sight::module::ui::base::editor::SStatus">
+        <service uid="Status" type="::sight::module::ui::qt::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>

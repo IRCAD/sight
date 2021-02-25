@@ -16,6 +16,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_video
                  module_io_igtl
                  module_geometry_vision
+                 module_geometry_base
                  module_sync
                  module_data
                  module_navigation_calibration
