@@ -137,14 +137,14 @@ bool AppManager::checkInputs()
                 }
                 else if(!input.isOptional)
                 {
-                    const data::Object::sptr newObj = data::factory::New(input.defaultValue);
+                    // data::factory::New() require a classname.
+                    const data::Object::sptr newObj = input.defaultValue.empty() ? nullptr : data::factory::New(input.defaultValue);
                     if (newObj)
                     {
                         this->addObject(obj, this->getInputID(input.key));
                     }
                     else
                     {
-                        // TODO print a message
                         SLM_DEBUG("[" + this->getID() + "] missing input for : '" + input.key + "'")
                         isOK = false;
                     }
