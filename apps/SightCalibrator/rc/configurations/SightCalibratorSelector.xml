@@ -1,5 +1,5 @@
 <extension implements="::sight::service::extension::AppConfig">
-    <id>ARCalibration_Selector_AppCfg</id>
+    <id>SightCalibrator_Selector_AppCfg</id>
     <parameters>
         <param name="SERIESDB" />
         <param name="WID_PARENT" />

@@ -1,7 +1,6 @@
-sight_add_target( ARCalibration TYPE APP )
+sight_add_target( SightCalibrator TYPE APP )
 
-
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(${FWPROJECT_NAME}
                  fwlauncher
                  module_appXml
                  module_ui_base
@@ -40,7 +39,7 @@ moduleParam(
     PARAM_LIST
         config parameters
     PARAM_VALUES
-        ARCalibration_AppCfg ARCalibration_AppCfgParam
+        SightCalibrator_AppCfg SightCalibrator_AppCfgParam
 ) # Main application's configuration to launch
 
 sight_generate_profile(${FWPROJECT_NAME})

@@ -1,5 +1,5 @@
 <extension implements="::sight::service::extension::AppConfig">
-    <id>ARCalibration_AppCfg</id>
+    <id>SightCalibrator_AppCfg</id>
     <parameters>
         <param name="APP_NAME" />
         <param name="ICON_PATH" />
@@ -11,7 +11,6 @@
         <object uid="seriesDB" type="::sight::data::SeriesDB" />
         <object uid="loadingSeriesDB" type="::sight::data::SeriesDB" />
         <object uid="currentActivity" type="::sight::data::ActivitySeries" src="deferred" />
-        <object uid="selections" type="::sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -101,7 +100,7 @@
         </service>
 
         <service uid="dynamicView" type="::sight::module::ui::qt::activity::SDynamicView" >
-            <mainActivity id="ARCalibrationActivitySelector_Activity" closable="false" />
+            <mainActivity id="SightCalibratorActivitySelector_Activity" closable="false" />
             <inout key="SERIESDB" uid="seriesDB" />
             <inout key="LOADING_SERIESDB" uid="loadingSeriesDB" />
             <parameters>
@@ -150,7 +149,7 @@
         <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
 
         <service uid="selectorAct" type="::sight::module::ui::base::SConfigLauncher" >
-            <appConfig id="ARCalibration_Selector_AppCfg" />
+            <appConfig id="SightCalibrator_Selector_AppCfg" />
             <inout key="SERIESDB" uid="seriesDB" />
             <parameter replace="WID_PARENT" uid="selectorView" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
