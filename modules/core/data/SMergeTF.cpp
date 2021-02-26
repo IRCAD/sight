@@ -120,10 +120,10 @@ void SMergeTF::merge() const
     typedef sight::data::TransferFunction::TFValueType TFValue;
     TFValue min = std::numeric_limits< TFValue >::max();
     TFValue max = std::numeric_limits< TFValue >::lowest();
-    for(auto poolElt : *tfPool)
+    for(const auto& poolElt : *tfPool)
     {
         // Checks if the composite element is a TF.
-        auto tf = sight::data::TransferFunction::dynamicCast(poolElt.second);
+        const auto tf = sight::data::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
         const sight::data::mt::locked_ptr tfLock(tf);
 
@@ -139,7 +139,7 @@ void SMergeTF::merge() const
                                     value  = value * window + minWL;
                                     value += _delta;
 
-                                    outTF->addTFColor(value, this->mergeColors(tfPool.get_shared(), value));
+                                    outTF->addTFColor(value, this->mergeColors(tfPool.get_shared(), value, tf));
                                     if(value < min)
                                     {
                                         min = value;
@@ -217,15 +217,17 @@ void SMergeTF::merge() const
 //------------------------------------------------------------------------------
 
 sight::data::TransferFunction::TFColor SMergeTF::mergeColors(const sight::data::Composite::csptr _tfPool,
-                                                             sight::data::TransferFunction::TFValueType _value) const
+                                                             sight::data::TransferFunction::TFValueType _value,
+                                                             const sight::data::TransferFunction::csptr& _already_locked_tf)
+const
 {
     sight::data::TransferFunction::TFColor result;
-    for(sight::data::Composite::value_type poolElt : *_tfPool)
+    for(const sight::data::Composite::value_type& poolElt : *_tfPool)
     {
         // Checks if the composite element is a TF.
         const auto tf = sight::data::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
-        const sight::data::mt::locked_ptr tfLock(tf);
+        const sight::data::mt::locked_ptr tfLock(tf == _already_locked_tf ? nullptr : tf);
 
         // Gets window/level informations to change TF value from window/level space to TF space .
         const sight::data::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();

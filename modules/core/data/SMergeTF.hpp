@@ -101,7 +101,9 @@ private:
      * @return The final blended color.
      */
     sight::data::TransferFunction::TFColor mergeColors(const sight::data::Composite::csptr _tfPool,
-                                                       sight::data::TransferFunction::TFValueType _value) const;
+                                                       sight::data::TransferFunction::TFValueType _value,
+                                                       const sight::data::TransferFunction::csptr& _already_locked_tf)
+    const;
 
     /// Handles all connections between this service and all TF.
     core::com::helper::SigSlotConnection m_connections;
