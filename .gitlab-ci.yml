@@ -6,6 +6,17 @@ stages:
 .linux_before:
   image: "${SIGHT_CI_UBUNTU20_10}:dev"
   dependencies: []
+  variables:
+    CCACHE_BASEDIR: $CI_PROJECT_DIR
+    CCACHE_MAXSIZE: "32G"
+    CCACHE_COMPRESS: "1"
+    CCACHE_SLOPPINESS: "include_file_ctime,pch_defines,time_macros,file_macro,system_headers"
+    CCACHE_NOHASHDIR: "1"
+    CCACHE_DIR: "/cache/ccache"
+    BUILD_TYPE: "Release"
+    BUILD_DOCUMENTATION: "ON"
+    CC: "/usr/lib/ccache/gcc-10"
+    CXX: "/usr/lib/ccache/g++-10"
   before_script:
     # Prepare sight source
     - sudo chown -R sight:sight .
@@ -13,17 +24,17 @@ stages:
     # TODO: uncomment me to merge again MR branch into dev
     - export EXTRA_BRANCH="dev"
     # - >
-      # if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-      #   git config user.name ${GITLAB_USER_ID}
-      #   git config user.email ${GITLAB_USER_EMAIL}
-      #   git fetch --all
-      #   git checkout dev
-      #   git reset --hard origin/dev
-      #   git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
-      #   export EXTRA_BRANCH="dev"
-      # else
-      #   export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
-      # fi
+    # if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
+    #   git config user.name ${GITLAB_USER_ID}
+    #   git config user.email ${GITLAB_USER_EMAIL}
+    #   git fetch --all
+    #   git checkout dev
+    #   git reset --hard origin/dev
+    #   git merge "origin/"${CI_COMMIT_REF_NAME} --no-commit --no-ff
+    #   export EXTRA_BRANCH="dev"
+    # else
+    #   export EXTRA_BRANCH="${CI_COMMIT_REF_NAME}"
+    # fi
     # Reset the modified time of all files to improve ccache performance
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
 
@@ -36,8 +47,7 @@ lint:sheldon:
     # TODO: use dev/master/tag branch
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b wip-massive-refactor
     # Stage all files from the merge to get them checked by sheldon.
-    - git add * -f
-    - git reset sight-git
+    - git add *
     # Display modified files.
     - git status
     # Run sheldon on the merge result.
@@ -52,22 +62,15 @@ lint:sheldon:
   dependencies: []
   stage: build
   script:
-    # Export CCache variable
-    - export CCACHE_BASEDIR=${PWD}
-    - export CCACHE_MAXSIZE=32G
-    - export CCACHE_COMPRESS=1
-    - export CCACHE_SLOPPINESS=include_file_ctime,pch_defines,time_macros,file_macro,system_headers
-    - export CCACHE_NOHASHDIR=1
-    - export CCACHE_DIR=/cache/ccache
     # Print CCache statistics
     - ccache -s
     # Launch CMake
-    - mkdir -p $CI_PROJECT_DIR/install $CI_PROJECT_DIR/build
-    - cd $CI_PROJECT_DIR/build
+    - mkdir -p $CI_PROJECT_DIR/.install $CI_PROJECT_DIR/.build
+    - cd $CI_PROJECT_DIR/.build
     - >
       cmake $CI_PROJECT_DIR
       -G Ninja
-      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/install
+      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
       -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
       -DBUILD_TESTS=ON
       -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
@@ -81,7 +84,7 @@ lint:sheldon:
     - ccache -s
     # Clone sight-data.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
-    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/build/sight-data
+    - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/.build/sight-data
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j4
     # Build documentation if needed
@@ -93,8 +96,8 @@ lint:sheldon:
   artifacts:
     when: always
     paths:
-      - $CI_PROJECT_DIR/build/ctest.log
-      - $CI_PROJECT_DIR/build/Documentation/Doxygen/
+      - $CI_PROJECT_DIR/.build/ctest.log
+      - $CI_PROJECT_DIR/.build/Documentation/Doxygen/
 
 build:linux-debug-gcc:
   extends: .linux_build

@@ -239,7 +239,9 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/build/sightConfig.cmake.in
                ${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake @ONLY)
 
 # Create the sightConfigVersion file
-set(SIGHT_VERSION ${GIT_TAG})
+if(NOT "${GIT_TAG}" STREQUAL "" )
+  set(SIGHT_VERSION ${GIT_TAG})
+endif()
 
 write_basic_package_version_file(
   "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
