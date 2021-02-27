@@ -22,15 +22,15 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/macros.hpp>
 
 namespace sight::module::io::vision
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>
-registrar("::sight::module::io::vision::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>
+registry("::sight::module::io::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {

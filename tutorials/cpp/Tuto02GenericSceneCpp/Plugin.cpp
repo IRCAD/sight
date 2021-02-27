@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
@@ -32,7 +32,7 @@ using namespace sight;
 namespace Tuto02GenericSceneCpp
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto02GenericSceneCpp::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto02GenericSceneCpp::Plugin");
 
 //------------------------------------------------------------------------------
 

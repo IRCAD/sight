@@ -35,7 +35,7 @@ namespace registry
 {
 
 #define fwActivitiesBuilderRegisterMacro( BuilderClassname, BuilderFunctorKey )   \
-    static activity::IBuilder::Registrar< BuilderClassname >                \
+    static activity::IBuilder::Registry< BuilderClassname >                \
     BOOST_PP_CAT( s__factory__record__, __LINE__) ( BuilderFunctorKey );
 
 } // end namespace registry

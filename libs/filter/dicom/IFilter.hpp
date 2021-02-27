@@ -51,10 +51,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar()
+        Registry()
         {
             filter::dicom::registry::get()->addFactory(T::classname(), &filter::dicom::factory::New<T>);
         }

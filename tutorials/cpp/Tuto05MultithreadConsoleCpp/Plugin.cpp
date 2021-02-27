@@ -22,14 +22,14 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 namespace Tuto05MultithreadConsoleCpp
 {
 
 //-----------------------------------------------------------------------------
 
-static sight::core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+static sight::core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
     "::Tuto05MultithreadConsoleCpp::Plugin");
 
 //-----------------------------------------------------------------------------

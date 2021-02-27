@@ -23,7 +23,7 @@
 #include "Plugin.hpp"
 
 #include <core/com/Slot.hxx>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/thread/ActiveWorkers.hpp>
 
 #include <service/registry/Proxy.hpp>
@@ -33,7 +33,7 @@ using namespace sight;
 namespace Tuto03MesherWithGenericSceneCpp
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
     "::Tuto03MesherWithGenericSceneCpp::Plugin");
 
 static const std::string s_IMAGE_ID          = "image";

@@ -22,7 +22,7 @@
 
 #include "core/runtime/detail/EmptyPlugin.hpp"
 
-#include "core/runtime/utils/GenericExecutableFactoryRegistrar.hpp"
+#include "core/runtime/utils/GenericExecutableFactoryRegistry.hpp"
 
 namespace sight::core::runtime
 {

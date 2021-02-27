@@ -81,7 +81,7 @@
     BOOST_PP_CAT(__FWCAMP_FUNC_SUFFIX(desc), Reg)
 
 #define __FWCAMP__USEROBJREG(desc) \
-    sight::core::reflection::UserObjectRegistrar < __FWCAMP_NAMESPACE_NAME(desc) >
+    sight::core::reflection::UserObjectRegistry < __FWCAMP_NAMESPACE_NAME(desc) >
 //----------------------------------------------------------------------------
 
 /**
@@ -109,7 +109,7 @@
     namespace sight::core::reflection \
     { \
     template<typename T> \
-    struct UserObjectRegistrar; \
+    struct UserObjectRegistry; \
     } \
     __FWCAMP_PREDECLARE_MACRO(desc) \
     __FWCAMP__AUTO__DECLARE__MACRO(desc)

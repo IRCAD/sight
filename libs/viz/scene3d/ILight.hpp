@@ -59,10 +59,10 @@ public:
      * @tparam T Factory product type.
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar(std::string functorKey)
+        Registry(std::string functorKey)
         {
             viz::scene3d::registry::getLightRegistry()->addFactory(functorKey, &viz::scene3d::lightFactory::New<T>);
         }

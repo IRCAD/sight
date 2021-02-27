@@ -35,7 +35,7 @@ namespace registry
 {
 
 /**
- * @brief   Defines the menuBar registrar for IHM.
+ * @brief   Defines the menuBar registry for IHM.
  */
 class UI_BASE_CLASS_API MenuBar : public ui::base::GuiBaseObject
 {
@@ -63,7 +63,7 @@ public:
     /**
      * @brief Return the fwMenu associated with the menuSid.
      * @param menuSid sid of the menu service
-     * @param menus  vector containing the fwMenu manages by this registrar.
+     * @param menus  vector containing the fwMenu manages by this registry.
      */
     UI_BASE_API virtual ui::base::container::fwMenu::sptr getFwMenu(std::string menuSid,
                                                                     std::vector< ui::base::container::fwMenu::sptr > menus);
@@ -97,7 +97,7 @@ public:
     UI_BASE_API virtual void initialize( core::runtime::ConfigurationElement::sptr configuration);
 
     /**
-     * @brief Starting menu bar registrar.
+     * @brief Starting menu bar registry.
      * All services managed in local menus
      * and with start="yes" in configuration will be started.
      * @pre MenuBar must be initialized before.

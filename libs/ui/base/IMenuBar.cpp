@@ -49,15 +49,15 @@ IMenuBar::~IMenuBar()
 void IMenuBar::initialize()
 {
 
-    m_registrar = ui::base::registry::MenuBar::New(this->getID());
+    m_registry = ui::base::registry::MenuBar::New(this->getID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
+    std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
+    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistry.empty() );
 
-    if(!vectRegistrar.empty())
+    if(!vectRegistry.empty())
     {
-        m_registrarConfig = vectRegistrar.at(0);
-        m_registrar->initialize(m_registrarConfig);
+        m_registryConfig = vectRegistry.at(0);
+        m_registry->initialize(m_registryConfig);
     }
 
     // find gui configuration
@@ -81,7 +81,7 @@ void IMenuBar::initialize()
 
 void IMenuBar::create()
 {
-    ui::base::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
+    ui::base::container::fwMenuBar::sptr menuBar = m_registry->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
@@ -89,14 +89,14 @@ void IMenuBar::create()
             m_layoutManager->createLayout(menuBar);
         }) ).wait();
 
-    m_registrar->manage(m_layoutManager->getMenus());
+    m_registry->manage(m_layoutManager->getMenus());
 }
 
 //-----------------------------------------------------------------------------
 
 void IMenuBar::destroy()
 {
-    m_registrar->unmanage();
+    m_registry->unmanage();
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
@@ -108,7 +108,7 @@ void IMenuBar::destroy()
 
 void IMenuBar::menuServiceStopping(std::string menuSrvSID)
 {
-    ui::base::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ui::base::container::fwMenu::sptr menu = m_registry->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
     if (m_hideMenus)
     {
@@ -131,7 +131,7 @@ void IMenuBar::menuServiceStopping(std::string menuSrvSID)
 
 void IMenuBar::menuServiceStarting(std::string menuSrvSID)
 {
-    ui::base::container::fwMenu::sptr menu = m_registrar->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
+    ui::base::container::fwMenu::sptr menu = m_registry->getFwMenu(menuSrvSID, m_layoutManager->getMenus());
 
     if (m_hideMenus)
     {

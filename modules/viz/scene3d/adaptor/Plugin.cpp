@@ -22,14 +22,14 @@
 
 #include "modules/viz/scene3d/adaptor/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
 using namespace core::runtime::utils;
 
-static GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::viz::scene3d::adaptor::Plugin");
+static GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::viz::scene3d::adaptor::Plugin");
 
 Plugin::~Plugin() noexcept
 {

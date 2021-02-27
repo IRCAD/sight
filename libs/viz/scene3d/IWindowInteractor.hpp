@@ -93,10 +93,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar(std::string functorKey)
+        Registry(std::string functorKey)
         {
             viz::scene3d::registry::get()->addFactory(functorKey, &viz::scene3d::factory::New<T>);
         }
@@ -110,10 +110,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class OffscreenMgrRegistrar
+    class OffscreenMgrRegistry
     {
     public:
-        OffscreenMgrRegistrar(std::string functorKey)
+        OffscreenMgrRegistry(std::string functorKey)
         {
             auto fact = [](std::pair<unsigned int, unsigned int> _dims) -> std::shared_ptr< T >
                         {

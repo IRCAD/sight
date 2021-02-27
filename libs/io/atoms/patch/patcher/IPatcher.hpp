@@ -59,10 +59,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar(std::string functorKey)
+        Registry(std::string functorKey)
         {
             io::atoms::patch::patcher::registry::get()->addFactory(functorKey,
                                                                    &io::atoms::patch::patcher::factory::New<T>);

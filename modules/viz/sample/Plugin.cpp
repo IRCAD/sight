@@ -23,14 +23,14 @@
 #include "modules/viz/sample/Plugin.hpp"
 
 #include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 namespace sight::module::viz::sample
 {
 
 //------------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::viz::sample::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::viz::sample::Plugin");
 
 //------------------------------------------------------------------------------
 

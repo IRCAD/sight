@@ -33,17 +33,17 @@ namespace sight::service
  * Creates internally the service factory and adds it to the FactoryRegistry
  */
 template<class SRV_IMPL>
-class ServiceFactoryRegistrar
+class ServiceFactoryRegistry
 {
 public:
 
-    ServiceFactoryRegistrar(const std::string& simpl, const std::string& stype)
+    ServiceFactoryRegistry(const std::string& simpl, const std::string& stype)
     {
         auto factory = service::extension::Factory::getDefault();
         factory->addServiceFactory( &::sight::service::factory::New< SRV_IMPL >, simpl, stype);
     }
 
-    ServiceFactoryRegistrar(const std::string& simpl, const std::string& stype, const std::string& oimpl)
+    ServiceFactoryRegistry(const std::string& simpl, const std::string& stype, const std::string& oimpl)
     {
         auto factory = service::extension::Factory::getDefault();
         factory->addServiceFactory( &::sight::service::factory::New< SRV_IMPL >, simpl, stype);
@@ -54,11 +54,11 @@ public:
 /**
  * @brief Helper for associating an object to a service implementation
  */
-class ServiceObjectFactoryRegistrar
+class ServiceObjectFactoryRegistry
 {
 public:
 
-    ServiceObjectFactoryRegistrar(const std::string& simpl, const std::string& oimpl)
+    ServiceObjectFactoryRegistry(const std::string& simpl, const std::string& oimpl)
     {
         auto factory = service::extension::Factory::getDefault();
         factory->addObjectFactory( simpl, oimpl);

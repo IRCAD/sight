@@ -101,9 +101,9 @@ private:
     void initializeLayoutManager( core::runtime::ConfigurationElement::sptr layoutConfig );
 
     ui::base::layoutManager::IMenuBarLayoutManager::sptr m_layoutManager;
-    ui::base::registry::MenuBar::sptr m_registrar;
+    ui::base::registry::MenuBar::sptr m_registry;
 
-    ConfigurationType m_registrarConfig;
+    ConfigurationType m_registryConfig;
     ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the menu if the service is stopped

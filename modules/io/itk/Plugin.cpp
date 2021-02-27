@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/macros.hpp>
 
@@ -31,7 +31,7 @@
 namespace sight::module::io::itk
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::io::itk::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::io::itk::Plugin");
 
 Plugin::~Plugin() noexcept
 {

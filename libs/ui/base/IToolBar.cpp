@@ -51,15 +51,15 @@ IToolBar::~IToolBar()
 
 void IToolBar::initialize()
 {
-    m_registrar = ui::base::registry::ToolBar::New(this->getID());
+    m_registry = ui::base::registry::ToolBar::New(this->getID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
+    std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
+    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistry.empty() );
 
-    if(!vectRegistrar.empty())
+    if(!vectRegistry.empty())
     {
-        m_registrarConfig = vectRegistrar.at(0);
-        m_registrar->initialize(m_registrarConfig);
+        m_registryConfig = vectRegistry.at(0);
+        m_registry->initialize(m_registryConfig);
     }
 
     // find gui configuration
@@ -93,8 +93,8 @@ void IToolBar::initialize()
 
 void IToolBar::create()
 {
-    ui::base::container::fwToolBar::sptr toolBar               = m_registrar->getParent();
-    std::vector< ui::base::IMenuItemCallback::sptr > callbacks = m_registrar->getCallbacks();
+    ui::base::container::fwToolBar::sptr toolBar               = m_registry->getParent();
+    std::vector< ui::base::IMenuItemCallback::sptr > callbacks = m_registry->getCallbacks();
 
     SLM_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
@@ -104,16 +104,16 @@ void IToolBar::create()
             m_layoutManager->createLayout(toolBar);
         })).wait();
 
-    m_registrar->manage(m_layoutManager->getMenuItems());
-    m_registrar->manage(m_layoutManager->getMenus());
-    m_registrar->manage(m_layoutManager->getContainers());
+    m_registry->manage(m_layoutManager->getMenuItems());
+    m_registry->manage(m_layoutManager->getMenus());
+    m_registry->manage(m_layoutManager->getContainers());
 }
 
 //-----------------------------------------------------------------------------
 
 void IToolBar::destroy()
 {
-    m_registrar->unmanage();
+    m_registry->unmanage();
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
@@ -125,7 +125,7 @@ void IToolBar::destroy()
 
 void IToolBar::actionServiceStopping(std::string actionSrvSID)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     if (m_hideActions)
@@ -148,7 +148,7 @@ void IToolBar::actionServiceStopping(std::string actionSrvSID)
 
 void IToolBar::actionServiceStarting(std::string actionSrvSID)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     const service::IService::csptr service   = service::get( actionSrvSID );
@@ -168,7 +168,7 @@ void IToolBar::actionServiceStarting(std::string actionSrvSID)
 
 void IToolBar::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     const service::IService::csptr service   = service::get( actionSrvSID );
@@ -185,7 +185,7 @@ void IToolBar::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 
 void IToolBar::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
@@ -198,7 +198,7 @@ void IToolBar::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
 
 void IToolBar::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]

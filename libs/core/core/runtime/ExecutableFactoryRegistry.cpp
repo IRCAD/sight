@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "core/runtime/ExecutableFactoryRegistrar.hpp"
+#include "core/runtime/ExecutableFactoryRegistry.hpp"
 
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/Runtime.hpp"
@@ -28,7 +28,7 @@
 namespace sight::core::runtime
 {
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
+ExecutableFactoryRegistry::ExecutableFactoryRegistry( std::shared_ptr< ExecutableFactory > factory )
 {
     // Pre-condition
     SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);

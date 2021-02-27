@@ -75,14 +75,14 @@ void IGuiContainer::initialize()
 {
     SLM_ASSERT("The service '" + this->getID() + "' does not contain a configuration", m_configuration);
 
-    // Create view registrar
-    m_viewRegistrar = ui::base::registry::View::New( this->getID() );
+    // Create view registry
+    m_viewRegistry = ui::base::registry::View::New( this->getID() );
     // find View configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
     if ( !vectViewMng.empty() )
     {
-        m_viewRegistrarConfig = vectViewMng.at(0);
-        m_viewRegistrar->initialize(m_viewRegistrarConfig);
+        m_viewRegistryConfig = vectViewMng.at(0);
+        m_viewRegistry->initialize(m_viewRegistryConfig);
     }
 
     // Create initializeLayoutManager
@@ -126,13 +126,13 @@ void IGuiContainer::initialize()
 void IGuiContainer::create()
 {
     SLM_ASSERT("["+this->getID()+"'] View must be initialized, don't forget to call 'initialize()' in "
-               "'configuring()' method.", m_viewRegistrar);
-    ui::base::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
+               "'configuring()' method.", m_viewRegistry);
+    ui::base::container::fwContainer::sptr parent = m_viewRegistry->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >([this, &parent]
         {
-            SLM_ASSERT("View must be initialized.", m_viewRegistrar);
+            SLM_ASSERT("View must be initialized.", m_viewRegistry);
 
             ui::base::GuiBaseObject::sptr guiObj =
                 ui::base::factory::New(ui::base::builder::IContainerBuilder::REGISTRY_KEY);
@@ -154,7 +154,7 @@ void IGuiContainer::create()
                         m_toolBarBuilder->createToolBar(parent);
                     }).wait();
 
-                    m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
+                    m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
                 core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
@@ -174,7 +174,7 @@ void IGuiContainer::create()
                     views.push_back(slideBuilder->getContainer());
                 }
 
-                m_viewRegistrar->manage(views);
+                m_viewRegistry->manage(views);
             }
         }).wait();
 }
@@ -183,13 +183,13 @@ void IGuiContainer::create()
 
 void IGuiContainer::destroy()
 {
-    SLM_ASSERT("View must be initialized.", m_viewRegistrar);
+    SLM_ASSERT("View must be initialized.", m_viewRegistry);
 
     if ( m_viewLayoutManagerIsCreated )
     {
         if (m_hasToolBar)
         {
-            m_viewRegistrar->unmanageToolBar();
+            m_viewRegistry->unmanageToolBar();
             SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
             core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
@@ -198,7 +198,7 @@ void IGuiContainer::destroy()
                 }).wait();
         }
 
-        m_viewRegistrar->unmanage();
+        m_viewRegistry->unmanage();
         SLM_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
 
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
@@ -285,8 +285,8 @@ void IGuiContainer::setParent(std::string wid)
 {
     core::thread::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >([this, &wid]
         {
-            m_viewRegistrar->setParent(wid);
-            ui::base::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
+            m_viewRegistry->setParent(wid);
+            ui::base::container::fwContainer::sptr parent = m_viewRegistry->getParent();
             SLM_ASSERT("Parent container is unknown.", parent);
             m_containerBuilder->setParent(parent);
         } ));
@@ -296,7 +296,7 @@ void IGuiContainer::setParent(std::string wid)
 
 void IGuiContainer::setEnabled(bool isEnabled)
 {
-    ui::base::container::fwContainer::sptr container = m_viewRegistrar->getParent();
+    ui::base::container::fwContainer::sptr container = m_viewRegistry->getParent();
     container->setEnabled(isEnabled);
 }
 
@@ -318,7 +318,7 @@ void IGuiContainer::disable()
 
 void IGuiContainer::setVisible(bool isVisible)
 {
-    ui::base::container::fwContainer::sptr container = m_viewRegistrar->getParent();
+    ui::base::container::fwContainer::sptr container = m_viewRegistry->getParent();
     container->setVisible(isVisible);
 }
 

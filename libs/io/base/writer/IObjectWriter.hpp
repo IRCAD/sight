@@ -70,10 +70,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar()
+        Registry()
         {
             io::base::writer::registry::get()->addFactory(T::classname(), &io::base::writer::factory::New<T>);
         }

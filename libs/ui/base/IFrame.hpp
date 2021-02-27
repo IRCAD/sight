@@ -167,11 +167,11 @@ private:
     void initializeToolBarBuilder( core::runtime::ConfigurationElement::sptr toolBarConfig );
 
     ui::base::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
-    ui::base::registry::View::sptr m_viewRegistrar;
+    ui::base::registry::View::sptr m_viewRegistry;
     ui::base::builder::IMenuBarBuilder::sptr m_menuBarBuilder;
     ui::base::builder::IToolBarBuilder::sptr m_toolBarBuilder;
 
-    ConfigurationType m_registrarConfig;
+    ConfigurationType m_registryConfig;
     ConfigurationType m_frameConfig;
     ConfigurationType m_menuBarConfig;
     ConfigurationType m_toolBarConfig;

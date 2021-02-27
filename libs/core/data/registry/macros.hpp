@@ -29,7 +29,7 @@ namespace sight::data
 namespace registry
 {
 #define fwDataRegisterMacro( classname )                                  \
-    static ::sight::data::Object::Registrar< classname > BOOST_PP_CAT(s__factory__record__, __LINE__);
+    static ::sight::data::Object::Registry< classname > BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 } // end namespace registry
 } // end namespace sight::data

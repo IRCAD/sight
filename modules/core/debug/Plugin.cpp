@@ -24,12 +24,12 @@
 
 #include "installSIGSEVBacktrace.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 namespace sight::module::debug
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::core::debug::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::core::debug::Plugin");
 
 //------------------------------------------------------------------------------
 

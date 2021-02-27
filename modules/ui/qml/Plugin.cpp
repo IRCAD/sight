@@ -25,7 +25,7 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
@@ -56,7 +56,7 @@ namespace sight::module::ui::qml
 {
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::ui::qml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::ui::qml::Plugin");
 
 //-----------------------------------------------------------------------------
 

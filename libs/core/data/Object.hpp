@@ -78,10 +78,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar()
+        Registry()
         {
             data::registry::get()->addFactory(T::classname(), &sight::data::factory::New<T>);
         }

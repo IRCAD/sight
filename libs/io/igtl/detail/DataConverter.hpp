@@ -31,7 +31,7 @@ namespace sight::io::igtl::detail
 {
 ///converterRegisterMacro need to be called by every converter
 #define converterRegisterMacro( ClassName ) \
-    static io::igtl::detail::DataConverter::Registrar< ClassName > BOOST_PP_CAT( s__factory__record__, __LINE__);
+    static io::igtl::detail::DataConverter::Registry< ClassName > BOOST_PP_CAT( s__factory__record__, __LINE__);
 
 /**
  *
@@ -55,16 +55,16 @@ public:
     ///Static method to access a instance of DataConverter (singleton)
     IO_IGTL_API static DataConverter::sptr getInstance();
 
-    ///Static method called by the registrar class to register a new converter
+    ///Static method called by the registry class to register a new converter
     IO_IGTL_API static void registerConverter(converter::IConverter::sptr c);
 
-    ///Class Registrar used by the macro to register new converter in the m_converters
+    ///Class Registry used by the macro to register new converter in the m_converters
     template <typename T>
-    class Registrar
+    class Registry
     {
 
     public:
-        Registrar()
+        Registry()
         {
             DataConverter::registerConverter(T::New());
         }

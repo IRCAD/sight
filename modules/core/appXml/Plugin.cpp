@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/AppConfigParameters.hpp>
@@ -30,7 +30,7 @@
 namespace sight::module::appXml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::appXml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::appXml::Plugin");
 
 //------------------------------------------------------------------------------
 

@@ -197,7 +197,7 @@ protected:
 
 private:
 
-    ui::base::registry::Action::sptr m_registrar;
+    ui::base::registry::Action::sptr m_registry;
 
     /// Handle the information of the action state inversion.
     bool m_isInverted{false};

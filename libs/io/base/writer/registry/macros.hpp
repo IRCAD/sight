@@ -32,7 +32,7 @@ namespace registry
 {
 
 #define fwDataIOWriterRegisterMacro( classname )                                  \
-    static sight::io::base::writer::IObjectWriter::Registrar< classname > s__factory__record__ ## __LINE__;
+    static sight::io::base::writer::IObjectWriter::Registry< classname > s__factory__record__ ## __LINE__;
 
 } // end namespace registry
 } // end namespace writer

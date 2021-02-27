@@ -22,36 +22,36 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include "core/runtime/ExecutableFactoryRegistry.hpp"
+#include "core/runtime/utils/GenericExecutableFactory.hpp"
 
-#include <memory>
+#include <string>
 
 namespace sight::core::runtime
 {
 
-class ExecutableFactory;
-
-/**
- * @brief   Defines an executable factory registrar class.
- *
- * An instance of this class is responsible for the registration of an
- * executable factory instance in the runtime environment. The factory instace
- * gets registered as soon as a registrar instance gets created.
- * That's why this class is design to be instanciated as static object.
- *
- *
- */
-struct CORE_CLASS_API ExecutableFactoryRegistrar
+namespace utils
 {
 
+/**
+ * @brief   Defines a generic template executable factory registry class.
+ */
+template< typename E >
+struct GenericExecutableFactoryRegistry : public ExecutableFactoryRegistry
+{
+
+    typedef GenericExecutableFactory< E >   FactoryType;
+
     /**
-     * @brief       Constructor
-     *
-     * @param[in]   factory a shared pointer to an executable factory instance to manage
-     * @pre         Loading module exists.
+     * @brief   Constructor
      */
-    CORE_API ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory );
+    GenericExecutableFactoryRegistry(const std::string& type) :
+        ExecutableFactoryRegistry( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
+    {
+    }
 
 };
+
+} // namespace utils
 
 } // namespace sight::core::runtime

@@ -51,15 +51,15 @@ IMenu::~IMenu()
 
 void IMenu::initialize()
 {
-    m_registrar = ui::base::registry::Menu::New(this->getID());
+    m_registry = ui::base::registry::Menu::New(this->getID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistrar.empty() );
+    std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
+    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistry.empty() );
 
-    if(!vectRegistrar.empty())
+    if(!vectRegistry.empty())
     {
-        m_registrarConfig = vectRegistrar.at(0);
-        m_registrar->initialize(m_registrarConfig);
+        m_registryConfig = vectRegistry.at(0);
+        m_registry->initialize(m_registryConfig);
     }
 
     // find gui configuration
@@ -90,8 +90,8 @@ void IMenu::initialize()
 
 void IMenu::create()
 {
-    ui::base::container::fwMenu::sptr menu                     = m_registrar->getParent();
-    std::vector< ui::base::IMenuItemCallback::sptr > callbacks = m_registrar->getCallbacks();
+    ui::base::container::fwMenu::sptr menu                     = m_registry->getParent();
+    std::vector< ui::base::IMenuItemCallback::sptr > callbacks = m_registry->getCallbacks();
 
     SLM_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->setCallbacks(callbacks);
@@ -101,15 +101,15 @@ void IMenu::create()
             m_layoutManager->createLayout(menu);
         })).wait();
 
-    m_registrar->manage(m_layoutManager->getMenuItems());
-    m_registrar->manage(m_layoutManager->getMenus());
+    m_registry->manage(m_layoutManager->getMenuItems());
+    m_registry->manage(m_layoutManager->getMenus());
 }
 
 //-----------------------------------------------------------------------------
 
 void IMenu::destroy()
 {
-    m_registrar->unmanage();
+    m_registry->unmanage();
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
@@ -120,7 +120,7 @@ void IMenu::destroy()
 
 void IMenu::actionServiceStopping(std::string actionSrvSID)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     if (m_hideActions)
@@ -143,7 +143,7 @@ void IMenu::actionServiceStopping(std::string actionSrvSID)
 
 void IMenu::actionServiceStarting(std::string actionSrvSID)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     if (m_hideActions)
@@ -173,7 +173,7 @@ void IMenu::actionServiceStarting(std::string actionSrvSID)
 
 void IMenu::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     const service::IService::csptr service   = service::get( actionSrvSID );
@@ -190,7 +190,7 @@ void IMenu::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 
 void IMenu::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
@@ -203,7 +203,7 @@ void IMenu::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutab
 
 void IMenu::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
 {
-    ui::base::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+    ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(actionSrvSID,
                                                                                 m_layoutManager->getMenuItems());
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]

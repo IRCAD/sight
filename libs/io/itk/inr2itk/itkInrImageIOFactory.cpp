@@ -22,7 +22,7 @@
 
 #include "itkInrImageIOFactory.hpp"
 
-#include "io/itk/ImageIOFactoryRegistrar.hxx"
+#include "io/itk/ImageIOFactoryRegistry.hxx"
 
 #include "itkInrImageIO.hpp"
 

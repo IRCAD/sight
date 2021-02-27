@@ -31,7 +31,7 @@ namespace registry
 {
 
 /**
- * @brief   Defines the action registrar for IHM.
+ * @brief   Defines the action registry for IHM.
  */
 class UI_BASE_CLASS_API Action : public ui::base::GuiBaseObject
 {

@@ -23,7 +23,7 @@
 #include "Plugin.hpp"
 
 #include <core/memory/BufferManager.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/spyLog.hpp>
 
 namespace sight::module::memory
@@ -31,7 +31,7 @@ namespace sight::module::memory
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::memory::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::memory::Plugin");
 
 //-----------------------------------------------------------------------------
 

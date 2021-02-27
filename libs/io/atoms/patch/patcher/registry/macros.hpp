@@ -36,7 +36,7 @@ namespace registry
 {
 
 #define patcherRegisterMacro( classname, objectKey )                                  \
-    static io::atoms::patch::patcher::IPatcher::Registrar< classname >                  \
+    static io::atoms::patch::patcher::IPatcher::Registry< classname >                  \
     BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
 
 } // namespace registry

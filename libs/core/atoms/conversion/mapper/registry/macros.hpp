@@ -36,7 +36,7 @@ namespace registry
 {
 
 #define fwAtomConversionRegisterMacro( classname, functorKey )         \
-    static atoms::conversion::mapper::Base::Registrar< classname >  \
+    static atoms::conversion::mapper::Base::Registry< classname >  \
     BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(functorKey) );
 
 } // end namespace registry

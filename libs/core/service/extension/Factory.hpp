@@ -41,7 +41,7 @@ namespace extension
 {
 
 /**
- * The Factory is a registrar of all the services. It allows to retrieve the informations necessary to
+ * The Factory is a registry of all the services. It allows to retrieve the informations necessary to
  * instantiate the services.
  */
 class SERVICE_CLASS_API Factory : public core::BaseObject

@@ -35,7 +35,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 
 #include <core/runtime/ConfigurationElementContainer.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/helper/Config.hpp>
 #include <service/macros.hpp>

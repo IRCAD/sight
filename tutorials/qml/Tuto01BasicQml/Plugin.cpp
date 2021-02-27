@@ -23,14 +23,14 @@
 #include "Plugin.hpp"
 
 #include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <ui/qml/QmlEngine.hpp>
 
 namespace sight::Tuto01BasicQml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar(
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
     "::sight::Tuto01BasicQml::Plugin");
 
 //------------------------------------------------------------------------------

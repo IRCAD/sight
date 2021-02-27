@@ -25,7 +25,7 @@
 #include "AppManager.hpp"
 
 #include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/AppManager.hpp>
 
@@ -38,7 +38,7 @@ using namespace sight;
 namespace Tuto07SceneQt3DQml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto07SceneQt3DQml::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto07SceneQt3DQml::Plugin");
 
 //------------------------------------------------------------------------------
 

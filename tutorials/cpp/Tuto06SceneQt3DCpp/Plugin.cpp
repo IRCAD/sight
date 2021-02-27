@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <data/Mesh.hpp>
 
@@ -31,7 +31,7 @@ using namespace sight;
 namespace Tuto06SceneQt3DCpp
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Tuto06SceneQt3DCpp::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto06SceneQt3DCpp::Plugin");
 
 //------------------------------------------------------------------------------
 

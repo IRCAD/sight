@@ -34,7 +34,7 @@ namespace registry
 {
 
 #define fwRenderQt3DRegisterMacro( Qt3DRenderInteractorMngClassname, FunctorKey )                               \
-    static sight::viz::qt3d::IWindowInteractor::Registrar< Qt3DRenderInteractorMngClassname >    \
+    static sight::viz::qt3d::IWindowInteractor::Registry< Qt3DRenderInteractorMngClassname >    \
     BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
 
 } // namespace registry.

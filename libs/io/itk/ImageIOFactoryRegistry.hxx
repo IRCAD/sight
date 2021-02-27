@@ -36,10 +36,10 @@ namespace sight::io::itk
  * registration of the factory
  */
 template< class ConcreteImageIOFactory >
-class ImageIOFactoryRegistrar
+class ImageIOFactoryRegistry
 {
 public:
-    ImageIOFactoryRegistrar()
+    ImageIOFactoryRegistry()
     {
         ::itk::ObjectFactoryBase::RegisterFactory( ConcreteImageIOFactory::New() );
     }
@@ -51,5 +51,5 @@ public:
  * @brief a macro helper to register an imageIOFactory
  * @note to be declared outside any namespace
  */
-#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static sight::io::itk::ImageIOFactoryRegistrar< \
-        ConcreteImageIOFactory > registrar;
+#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static sight::io::itk::ImageIOFactoryRegistry< \
+        ConcreteImageIOFactory > registry;

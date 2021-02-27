@@ -57,10 +57,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar(std::string functorKey)
+        Registry(std::string functorKey)
         {
             activity::builder::registry::get()->addFactory( functorKey,
                                                             &activity::builder::factory::New<T> );

@@ -123,13 +123,13 @@ void IFrame::initialize()
                    || m_closePolicy == CLOSE_POLICY_MESSAGE);
     }
 
-    m_viewRegistrar = ui::base::registry::View::New(this->getID());
+    m_viewRegistry = ui::base::registry::View::New(this->getID());
     // find ViewRegistryManager configuration
-    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-    if(!vectRegistrar.empty())
+    std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
+    if(!vectRegistry.empty())
     {
-        m_registrarConfig = vectRegistrar.at(0);
-        m_viewRegistrar->initialize(m_registrarConfig);
+        m_registryConfig = vectRegistry.at(0);
+        m_viewRegistry->initialize(m_registryConfig);
     }
 }
 
@@ -154,7 +154,7 @@ void IFrame::create()
     ui::base::container::fwContainer::sptr container = m_frameLayoutManager->getContainer();
     std::vector< ui::base::container::fwContainer::sptr > subViews;
     subViews.push_back(container);
-    m_viewRegistrar->manage(subViews);
+    m_viewRegistry->manage(subViews);
 
     ui::base::layoutManager::IFrameLayoutManager::CloseCallback fct;
 
@@ -182,7 +182,7 @@ void IFrame::create()
                 m_menuBarBuilder->createMenuBar(frame);
             })).wait();
 
-        m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
+        m_viewRegistry->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
 
     if (m_hasToolBar)
@@ -192,7 +192,7 @@ void IFrame::create()
                 m_toolBarBuilder->createToolBar(frame);
             })).wait();
 
-        m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
+        m_viewRegistry->manageToolBar(m_toolBarBuilder->getToolBar());
     }
 }
 
@@ -200,11 +200,11 @@ void IFrame::create()
 
 void IFrame::destroy()
 {
-    SLM_ASSERT("View must be initialized.", m_viewRegistrar);
+    SLM_ASSERT("View must be initialized.", m_viewRegistry);
 
     if (m_hasToolBar)
     {
-        m_viewRegistrar->unmanageToolBar();
+        m_viewRegistry->unmanageToolBar();
         SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
@@ -215,7 +215,7 @@ void IFrame::destroy()
 
     if (m_hasMenuBar)
     {
-        m_viewRegistrar->unmanageMenuBar();
+        m_viewRegistry->unmanageMenuBar();
         SLM_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
@@ -224,7 +224,7 @@ void IFrame::destroy()
             })).wait();
     }
 
-    m_viewRegistrar->unmanage();
+    m_viewRegistry->unmanage();
     SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]

@@ -68,10 +68,10 @@ public:
     virtual const ParamNamesType& getParamNames() const = 0;
 
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar()
+        Registry()
         {
             core::memory::policy::registry::get()->addFactory(T::leafClassname(),
                                                               &core::memory::policy::factory::New<T>);

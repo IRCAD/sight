@@ -51,10 +51,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar()
+        Registry()
         {
             atoms::registry::get()->addFactory(T::classname(), &atoms::factory::New<T>);
         }

@@ -36,12 +36,12 @@ namespace sight::core::reflection
  * @brief Helper to register and manage the conversion between an data::Object and a camp::userObject
  */
 template<typename T>
-struct UserObjectRegistrar
+struct UserObjectRegistry
 {
     /**
      * @brief Register an object of type name in factory.
      */
-    UserObjectRegistrar( const std::string& name )
+    UserObjectRegistry( const std::string& name )
     {
         core::reflection::registry::get()->addFactory(name, &core::reflection::factory::New<T>);
     }

@@ -205,12 +205,12 @@ private:
     bool m_viewLayoutManagerIsCreated;
     SPTR( ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
 
-    SPTR( ui::base::registry::View) m_viewRegistrar;
+    SPTR( ui::base::registry::View) m_viewRegistry;
     SPTR( ui::base::builder::IToolBarBuilder) m_toolBarBuilder;
     SPTR( ui::base::builder::IContainerBuilder) m_containerBuilder;
     SlideViewContainerType m_slideViewBuilders;
 
-    ConfigurationType m_viewRegistrarConfig;
+    ConfigurationType m_viewRegistryConfig;
     ConfigurationType m_viewLayoutConfig;
     ConfigurationType m_toolBarConfig;
     ConfigurationType m_slideViewConfig;

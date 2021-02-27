@@ -23,7 +23,7 @@
 #include "Plugin.hpp"
 
 #include <core/runtime/Runtime.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/spyLog.hpp>
 
 namespace ExNotifications
@@ -31,7 +31,7 @@ namespace ExNotifications
 
 //-----------------------------------------------------------------------------
 
-static sight::core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::ExNotifications::Plugin");
+static sight::core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::ExNotifications::Plugin");
 
 //-----------------------------------------------------------------------------
 

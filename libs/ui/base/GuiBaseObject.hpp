@@ -48,10 +48,10 @@ public:
      * @tparam T Factory product type
      */
     template <typename T>
-    class Registrar
+    class Registry
     {
     public:
-        Registrar(std::string functorKey)
+        Registry(std::string functorKey)
         {
             ui::base::registry::get()->addFactory(functorKey, &ui::base::factory::New<T>);
         }

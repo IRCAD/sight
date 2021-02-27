@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/macros.hpp>
 
@@ -30,7 +30,7 @@ namespace sight::module::io::dicomweb
 {
 
 using namespace core::runtime::utils;
-static GenericExecutableFactoryRegistrar<Plugin>  registrar("::sight::module::io::dicomweb::Plugin");
+static GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::io::dicomweb::Plugin");
 
 Plugin::~Plugin() noexcept
 {

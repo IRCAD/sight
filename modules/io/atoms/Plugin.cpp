@@ -22,14 +22,14 @@
 
 #include "modules/io/atoms/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <io/patch/semantic/PatchLoader.hpp>
 
 namespace sight::module::io::atoms
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::io::atoms::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::io::atoms::Plugin");
 
 Plugin::~Plugin() noexcept
 {

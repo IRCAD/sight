@@ -78,7 +78,7 @@ IAction::~IAction()
 
 void IAction::initialize()
 {
-    m_registrar = ui::base::registry::Action::New(this->getID());
+    m_registry = ui::base::registry::Action::New(this->getID());
 
     SLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", !m_configuration->hasAttribute(
                    "name"));
@@ -162,14 +162,14 @@ void IAction::initialize()
 
 void IAction::actionServiceStopping()
 {
-    this->m_registrar->actionServiceStopping();
+    this->m_registry->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
 void IAction::actionServiceStarting()
 {
-    this->m_registrar->actionServiceStarting();
+    this->m_registry->actionServiceStarting();
     this->setIsActive(m_isActive);
 }
 
@@ -179,7 +179,7 @@ void IAction::setIsActive(bool isActive)
 {
     m_isActive = isActive;
 
-    this->m_registrar->actionServiceSetActive(m_isActive);
+    this->m_registry->actionServiceSetActive(m_isActive);
     if(m_isActive)
     {
         m_sigChecked->asyncEmit();
@@ -217,7 +217,7 @@ void IAction::setIsExecutable(bool isExecutable)
 {
     m_isExecutable = isExecutable;
 
-    this->m_registrar->actionServiceSetExecutable(m_isExecutable);
+    this->m_registry->actionServiceSetExecutable(m_isExecutable);
     if(m_isExecutable)
     {
         m_sigEnabled->asyncEmit();
@@ -254,7 +254,7 @@ bool IAction::getIsExecutable() const
 void IAction::setVisible(bool isVisible)
 {
     m_isVisible = isVisible;
-    this->m_registrar->actionServiceSetVisible(isVisible);
+    this->m_registry->actionServiceSetVisible(isVisible);
 }
 
 //-----------------------------------------------------------------------------

@@ -38,7 +38,7 @@ namespace registry
 {
 
 /**
- * @brief   Defines the toolBar registrar for IHM.
+ * @brief   Defines the toolBar registry for IHM.
  */
 class UI_BASE_CLASS_API ToolBar : public ui::base::GuiBaseObject
 {
@@ -68,7 +68,7 @@ public:
     /**
      * @brief Return the fwMenuItem associated with the actionSid.
      * @param actionSid sid of the action service
-     * @param menuItems  vector containing the fwMenuItem manages by this registrar.
+     * @param menuItems  vector containing the fwMenuItem manages by this registry.
      */
     UI_BASE_API virtual ui::base::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid,
                                                                             std::vector< ui::base::container::fwMenuItem::sptr > menuItems);

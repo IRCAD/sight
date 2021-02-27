@@ -23,7 +23,7 @@
 #pragma once
 
 #include "service/IService.hpp"
-#include "service/ServiceFactoryRegistrar.hpp"
+#include "service/ServiceFactoryRegistry.hpp"
 
 #include <core/concept_checks.hpp>
 
@@ -49,8 +49,8 @@ namespace sight::service
     public:                                                                                        \
         BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef< ServiceImpl >));               \
     };                                                                                             \
-    static ::sight::service::ServiceFactoryRegistrar< ServiceImpl >                                    \
-    BOOST_PP_CAT( serviceRegistrar, __LINE__) ( #ServiceImpl, #ServiceType );
+    static ::sight::service::ServiceFactoryRegistry< ServiceImpl >                                    \
+    BOOST_PP_CAT( serviceRegistry, __LINE__) ( #ServiceImpl, #ServiceType );
 
 #define __FWSERVICE_REGISTER_OBJECT_MACRO( ServiceImpl, ServiceObject )                           \
     class BOOST_PP_CAT (  ServiceObjectConceptCheck, __LINE__ )                                    \
@@ -58,8 +58,8 @@ namespace sight::service
     public:                                                                                        \
         BOOST_CONCEPT_ASSERT((::sight::core::concepts::SharedPtrTypedef< ServiceObject >));             \
     };                                                                                             \
-    static ::sight::service::ServiceObjectFactoryRegistrar                                             \
-    BOOST_PP_CAT( serviceObjectRegistrar, __LINE__) ( #ServiceImpl, #ServiceObject );
+    static ::sight::service::ServiceObjectFactoryRegistry                                             \
+    BOOST_PP_CAT( serviceObjectRegistry, __LINE__) ( #ServiceImpl, #ServiceObject );
 
 //@{
 

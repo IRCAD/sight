@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/thread/Pool.hpp>
 
 #include <core/thread/ActiveWorkers.hpp>
@@ -34,7 +34,7 @@
 namespace sight::module::service
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::sight::module::service::Plugin");
+static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::service::Plugin");
 
 //-----------------------------------------------------------------------------
 
