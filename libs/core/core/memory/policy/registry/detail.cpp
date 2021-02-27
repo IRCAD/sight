@@ -22,7 +22,7 @@
 
 #include "core/memory/policy/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::core::memory
 {
@@ -35,7 +35,7 @@ struct FwMemoryPolicyRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwMemoryPolicyRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwMemoryPolicyRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

@@ -22,7 +22,7 @@
 
 #include "activity/builder/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::activity
 {
@@ -35,7 +35,7 @@ struct FwActivitiesBuilderRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwActivitiesBuilderRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwActivitiesBuilderRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

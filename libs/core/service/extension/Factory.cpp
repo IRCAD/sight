@@ -29,7 +29,7 @@
 #include <core/runtime/helper.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/Runtime.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <data/Exception.hpp>
 
@@ -45,7 +45,7 @@ namespace extension
 
 Factory::sptr Factory::getDefault()
 {
-    return core::util::LazyInstantiator< Factory >::getInstance();
+    return core::LazyInstantiator< Factory >::getInstance();
 }
 //-----------------------------------------------------------------------------
 

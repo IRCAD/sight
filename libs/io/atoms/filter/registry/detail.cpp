@@ -22,7 +22,7 @@
 
 #include "io/atoms/filter/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::io::atoms::filter
 {
@@ -34,7 +34,7 @@ struct FwDataRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwDataRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwDataRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

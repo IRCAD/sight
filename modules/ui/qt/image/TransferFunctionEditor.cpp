@@ -27,7 +27,7 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -240,7 +240,7 @@ void TransferFunctionEditor::deleteTF()
             int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
-            data::tools::helper::Composite compositeHelper(poolTF);
+            data::helper::Composite compositeHelper(poolTF);
             SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
 
@@ -296,7 +296,7 @@ void TransferFunctionEditor::newTF()
             data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
             SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-            data::tools::helper::Composite compositeHelper(poolTF);
+            data::helper::Composite compositeHelper(poolTF);
             compositeHelper.add(newName, pNewTransferFunction);
 
             m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
@@ -332,7 +332,7 @@ void TransferFunctionEditor::reinitializeTFPool()
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
         SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-        data::tools::helper::Composite compositeHelper(poolTF);
+        data::helper::Composite compositeHelper(poolTF);
         compositeHelper.clear();
         compositeHelper.notify();
 
@@ -366,7 +366,7 @@ void TransferFunctionEditor::renameTF()
             pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
             pTF->setName(newName);
 
-            data::tools::helper::Composite compositeHelper(poolTF);
+            data::helper::Composite compositeHelper(poolTF);
             compositeHelper.remove(str);
             compositeHelper.add(newName, pTF);
             compositeHelper.notify();
@@ -404,7 +404,7 @@ void TransferFunctionEditor::importTF()
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-    data::tools::helper::Composite compositeHelper(poolTF);
+    data::helper::Composite compositeHelper(poolTF);
 
     data::TransferFunction::sptr tf         = data::TransferFunction::New();
     io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >(
@@ -457,7 +457,7 @@ void TransferFunctionEditor::initTransferFunctions()
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
     SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
-    data::tools::helper::Composite compositeHelper(poolTF);
+    data::helper::Composite compositeHelper(poolTF);
 
     const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasTransferFunctionName(defaultTFName))

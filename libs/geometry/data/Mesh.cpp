@@ -22,7 +22,7 @@
 
 #include "geometry/data/Mesh.hpp"
 
-#include "data/tools/thread/RegionThreader.hpp"
+#include "data/thread/RegionThreader.hpp"
 
 #include "geometry/data/Matrix4.hpp"
 
@@ -203,7 +203,7 @@ void Mesh::generateCellNormals(sight::data::Mesh::sptr mesh)
 
         const auto dumpLock = mesh->lock();
 
-        sight::data::tools::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
+        sight::data::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
         rt( std::bind(&generateRegionCellNormals, mesh, std::placeholders::_1, std::placeholders::_2),
             numberOfCells );
     }
@@ -287,7 +287,7 @@ void Mesh::generatePointNormals(sight::data::Mesh::sptr mesh)
 
         const auto dumpLock = mesh->lock();
 
-        sight::data::tools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
+        sight::data::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
         FloatVectors normalsData(rt.numberOfThread());
 
@@ -347,7 +347,7 @@ void Mesh::shakeNormals(sight::data::Array::sptr array)
             ::boost::extents[nbOfNormals]
             );
 
-        sight::data::tools::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);
+        sight::data::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);
         rt( std::bind(&regionShakeNormals<NormalsMultiArrayType>,
                       std::ref(normals),
                       std::placeholders::_1, std::placeholders::_2),

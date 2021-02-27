@@ -23,7 +23,7 @@
 #include "core/thread/Pool.hpp"
 
 #include <core/spyLog.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::core::thread
 {
@@ -91,7 +91,7 @@ Pool::~Pool()
 
 Pool& getDefaultPool()
 {
-    auto poolInstance = core::util::LazyInstantiator< Pool >::getInstance();
+    auto poolInstance = core::LazyInstantiator< Pool >::getInstance();
     return *poolInstance;
 }
 

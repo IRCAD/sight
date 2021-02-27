@@ -22,7 +22,7 @@
 
 #include "BresenhamLineTest.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/BresenhamLine.hpp>
 
@@ -54,8 +54,8 @@ void BresenhamLineTest::straightLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{ 0, 0, 0 }};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{ 0, 0, 1024 }};
 
-        const data::tools::helper::MedicalImage::Orientation SAGITAL =
-            data::tools::helper::MedicalImage::X_AXIS;
+        const data::helper::MedicalImage::Orientation SAGITAL =
+            data::helper::MedicalImage::X_AXIS;
 
         const filter::image::BresenhamLine::PathType result =
             filter::image::BresenhamLine::draw(SAGITAL, START_POINT, END_POINT);
@@ -79,8 +79,8 @@ void BresenhamLineTest::straightLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{ 25, 2057, 3 }};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{ 25, 1313, 3 }};
 
-        const data::tools::helper::MedicalImage::Orientation AXIAL =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation AXIAL =
+            data::helper::MedicalImage::Z_AXIS;
 
         const filter::image::BresenhamLine::PathType result =
             filter::image::BresenhamLine::draw(AXIAL, START_POINT, END_POINT);
@@ -104,8 +104,8 @@ void BresenhamLineTest::straightLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{ 90, 67, 68 }};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{ 90, 67, 54 }};
 
-        const data::tools::helper::MedicalImage::Orientation FRONTAL =
-            data::tools::helper::MedicalImage::Y_AXIS;
+        const data::helper::MedicalImage::Orientation FRONTAL =
+            data::helper::MedicalImage::Y_AXIS;
 
         const filter::image::BresenhamLine::PathType result =
             filter::image::BresenhamLine::draw(FRONTAL, START_POINT, END_POINT);
@@ -127,8 +127,8 @@ void BresenhamLineTest::straightLineTest()
     {
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{ 90, 67, 68 }};
 
-        const data::tools::helper::MedicalImage::Orientation FRONTAL =
-            data::tools::helper::MedicalImage::Y_AXIS;
+        const data::helper::MedicalImage::Orientation FRONTAL =
+            data::helper::MedicalImage::Y_AXIS;
 
         const filter::image::BresenhamLine::PathType result =
             filter::image::BresenhamLine::draw(FRONTAL, START_POINT, START_POINT);
@@ -148,8 +148,8 @@ void BresenhamLineTest::obliqueLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{ 1, 1, 42 }};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{ 11, 5, 42 }};
 
-        const data::tools::helper::MedicalImage::Orientation AXIAL =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation AXIAL =
+            data::helper::MedicalImage::Z_AXIS;
 
         const filter::image::BresenhamLine::PathType result =
             filter::image::BresenhamLine::draw(AXIAL, START_POINT, END_POINT);
@@ -185,8 +185,8 @@ void BresenhamLineTest::obliqueLineTest()
         const filter::image::BresenhamLine::CoordinatesType START_POINT = {{ 1, 4, 1 }};
         const filter::image::BresenhamLine::CoordinatesType END_POINT   = {{ 1, 2, 5 }};
 
-        const data::tools::helper::MedicalImage::Orientation SAGITAL =
-            data::tools::helper::MedicalImage::X_AXIS;
+        const data::helper::MedicalImage::Orientation SAGITAL =
+            data::helper::MedicalImage::X_AXIS;
 
         const filter::image::BresenhamLine::PathType result =
             filter::image::BresenhamLine::draw(SAGITAL, START_POINT, END_POINT);

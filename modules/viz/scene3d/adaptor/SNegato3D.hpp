@@ -28,7 +28,7 @@
 #include <core/com/Slots.hpp>
 
 #include <data/Float.hpp>
-#include <data/tools/helper/TransferFunction.hpp>
+#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
@@ -94,7 +94,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato3D final :
 
 public:
 
-    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::Orientation OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato3D, ::sight::viz::scene3d::IAdaptor)
@@ -265,7 +265,7 @@ private:
     sight::viz::scene3d::Plane::FilteringEnumType m_filtering { sight::viz::scene3d::Plane::FilteringEnumType::NONE };
 
     /// Helps interfacing with the transfer function input.
-    data::tools::helper::TransferFunction m_helperTF;
+    data::helper::TransferFunction m_helperTF;
 
     /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };

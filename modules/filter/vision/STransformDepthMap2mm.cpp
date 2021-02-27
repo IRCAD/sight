@@ -29,8 +29,8 @@
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/helper/Array.hpp>
-#include <data/tools/helper/ArrayGetter.hpp>
+#include <data/helper/Array.hpp>
+#include <data/helper/ArrayGetter.hpp>
 
 #include <service/macros.hpp>
 

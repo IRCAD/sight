@@ -29,7 +29,7 @@
 #include <core/runtime/ConfigurationElement.hpp>
 
 #include <data/Composite.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>

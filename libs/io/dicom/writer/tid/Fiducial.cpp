@@ -36,7 +36,7 @@
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
 
@@ -74,7 +74,7 @@ void Fiducial::createNodes(const SPTR(io::dicom::container::sr::DicomSRNode)& pa
                            bool useSCoord3D)
 {
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int id = 1;
@@ -116,7 +116,7 @@ void Fiducial::createFiducial(const SPTR(io::dicom::container::sr::DicomSRNode)&
 
     // Create Fiducial intent node
     const std::string label =
-        point->getField< data::String >(data::tools::fieldHelper::Image::m_labelId)->value();
+        point->getField< data::String >(data::fieldHelper::Image::m_labelId)->value();
     SPTR(io::dicom::container::sr::DicomSRTextNode) intentNode =
         std::make_shared< io::dicom::container::sr::DicomSRTextNode >(
             io::dicom::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"), "HAS PROPERTIES", label);

@@ -24,7 +24,7 @@
 
 #include "io/igtl/detail/converter/AtomConverter.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
@@ -39,7 +39,7 @@ namespace sight::io::igtl::detail
 
 DataConverter::sptr DataConverter::getInstance()
 {
-    return core::util::LazyInstantiator< DataConverter >::getInstance();
+    return core::LazyInstantiator< DataConverter >::getInstance();
 }
 
 //-----------------------------------------------------------------------------

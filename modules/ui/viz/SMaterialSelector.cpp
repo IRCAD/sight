@@ -26,7 +26,7 @@
 
 #include <data/Material.hpp>
 #include <data/String.hpp>
-#include <data/tools/helper/Field.hpp>
+#include <data/helper/Field.hpp>
 
 #include <service/macros.hpp>
 
@@ -166,7 +166,7 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
     data::String::sptr string          = data::String::New();
     string->setValue(text.toStdString());
 
-    data::tools::helper::Field helper(material);
+    data::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
 

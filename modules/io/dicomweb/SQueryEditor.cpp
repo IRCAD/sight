@@ -23,7 +23,7 @@
 #include "SQueryEditor.hpp"
 
 #include <data/DicomSeries.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -318,7 +318,7 @@ void SQueryEditor::queryStudyDate()
 void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
 {
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >("seriesDB");
-    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Delete old series from the SeriesDB
     seriesDBHelper.clear();

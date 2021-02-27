@@ -30,7 +30,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -311,7 +311,7 @@ void STransferFunction::deleteTF()
             const int indexSelectedTF       = m_transferFunctionPreset->currentIndex();
             const std::string selectedTFKey = m_transferFunctionPreset->currentText().toStdString();
 
-            data::tools::helper::Composite compositeHelper(poolTF.get_shared());
+            data::helper::Composite compositeHelper(poolTF.get_shared());
             SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
 
             compositeHelper.remove(selectedTFKey);
@@ -365,7 +365,7 @@ void STransferFunction::newTF()
             pNewTransferFunction->setName(newName);
             {
                 const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
-                data::tools::helper::Composite compositeHelper(poolTF.get_shared());
+                data::helper::Composite compositeHelper(poolTF.get_shared());
                 compositeHelper.add(newName, pNewTransferFunction);
                 compositeHelper.notify();
             }
@@ -399,7 +399,7 @@ void STransferFunction::reinitializeTFPool()
     {
         {
             const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
-            data::tools::helper::Composite compositeHelper(poolTF.get_shared());
+            data::helper::Composite compositeHelper(poolTF.get_shared());
             compositeHelper.clear();
             compositeHelper.notify();
         }
@@ -436,7 +436,7 @@ void STransferFunction::renameTF()
                     pTF->setName(newName);
                 }
 
-                data::tools::helper::Composite compositeHelper(poolTF.get_shared());
+                data::helper::Composite compositeHelper(poolTF.get_shared());
                 compositeHelper.remove(str);
                 compositeHelper.add(newName, pTF);
                 compositeHelper.notify();
@@ -489,7 +489,7 @@ void STransferFunction::importTF()
 
         const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
-        data::tools::helper::Composite compositeHelper(poolTF.get_shared());
+        data::helper::Composite compositeHelper(poolTF.get_shared());
         compositeHelper.add(tf->getName(), tf);
 
         m_transferFunctionPreset->addItem(QString(tf->getName().c_str()));
@@ -532,7 +532,7 @@ void STransferFunction::initTransferFunctions()
         // Get transfer function composite (pool TF)
         const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
-        data::tools::helper::Composite compositeHelper(poolTF.get_shared());
+        data::helper::Composite compositeHelper(poolTF.get_shared());
 
         const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
         if(!this->hasTransferFunctionName(defaultTFName, poolTF.get_shared()))

@@ -26,7 +26,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -209,7 +209,7 @@ public:
             reinterpret_cast< data::Image::BufferType* >(
                 m_roi->getPixelBuffer(index[0] + index[1]*size[0] + index[2]*size[0]*size[1]));
 
-        return !data::tools::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roi->getType().sizeOf());
+        return !data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roi->getType().sizeOf());
     }
 
 private:

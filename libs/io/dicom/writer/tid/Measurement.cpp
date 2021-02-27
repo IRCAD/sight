@@ -37,7 +37,7 @@
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
 
@@ -73,7 +73,7 @@ void Measurement::createNodes(const SPTR(io::dicom::container::sr::DicomSRNode)&
                               bool useSCoord3D)
 {
     data::Vector::sptr distanceVector =
-        m_object->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
+        m_object->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId);
     if (distanceVector)
     {
         unsigned int id = 1;

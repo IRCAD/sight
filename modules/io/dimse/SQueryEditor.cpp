@@ -25,7 +25,7 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -541,7 +541,7 @@ void SQueryEditor::updateSeriesDB(const data::SeriesDB::ContainerType& _series)
 {
     const auto seriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIESDB_INOUT);
 
-    data::tools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
+    data::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Delete old series from the SeriesDB.
     seriesDBHelper.clear();

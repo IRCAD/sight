@@ -28,7 +28,7 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -225,7 +225,7 @@ void SChessBoardDetector::doDetection(size_t _imageIndex)
     SLM_ASSERT("Missing 'image' input.", img);
 
     data::mt::ObjectReadLock imgLock(img);
-    const bool isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
+    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img);
 
     if(isValid)
     {

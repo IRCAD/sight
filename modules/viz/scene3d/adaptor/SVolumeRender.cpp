@@ -28,7 +28,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -220,7 +220,7 @@ void SVolumeRender::starting()
     bool isValid = false;
     {
         const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-        isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
     if(isValid)
     {
@@ -830,7 +830,7 @@ void SVolumeRender::toggleVREffect(module::viz::scene3d::adaptor::SVolumeRender:
     bool isValid = false;
     {
         const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-        isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
+        isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared());
     }
 
     // Volume illumination is only implemented for raycasting rendering

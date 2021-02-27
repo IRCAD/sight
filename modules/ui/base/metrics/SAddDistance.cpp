@@ -28,8 +28,8 @@
 #include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::module::ui::base::metrics
@@ -69,7 +69,7 @@ void SAddDistance::updating()
 {
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         const data::Point::sptr pt1 = data::Point::New();
         std::copy( image->getOrigin2().begin(), image->getOrigin2().begin() +3, pt1->getCoord().begin() );
@@ -92,7 +92,7 @@ void SAddDistance::updating()
         pl->getPoints().push_back( pt2 );
 
         const data::Vector::sptr vectDist
-            = image->setDefaultField(data::tools::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
+            = image->setDefaultField(data::fieldHelper::Image::m_imageDistancesId, data::Vector::New());
 
         vectDist->getContainer().push_back(pl);
 

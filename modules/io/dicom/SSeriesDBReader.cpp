@@ -32,7 +32,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
@@ -295,7 +295,7 @@ data::SeriesDB::sptr SSeriesDBReader::createSeriesDB( const std::filesystem::pat
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                data::tools::helper::SeriesDB sDBhelper(dummy);
+                data::helper::SeriesDB sDBhelper(dummy);
                 sDBhelper.clear();
             }
         }
@@ -332,7 +332,7 @@ void SSeriesDBReader::updating()
             data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
 
             // Clear SeriesDB and add new series
-            data::tools::helper::SeriesDB sDBhelper(seriesDB);
+            data::helper::SeriesDB sDBhelper(seriesDB);
             data::mt::ObjectWriteLock lock(seriesDB);
             sDBhelper.clear();
             // Notify removal.

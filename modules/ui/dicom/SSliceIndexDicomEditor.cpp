@@ -34,9 +34,9 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/helper/Composite.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/helper/Composite.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
@@ -269,7 +269,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     }
 
     // Clear temporary seriesDB
-    data::tools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
+    data::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
     sDBTempohelper.clear();
 
     // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)
@@ -328,11 +328,11 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         data::Image::sptr newImage      = imageSeries->getImage();
         const data::Image::Size newSize = newImage->getSize2();
 
-        newImage->setField(data::tools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+        newImage->setField(data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast< int >(newSize[0]/2));
-        newImage->setField(data::tools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+        newImage->setField(data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast< int >(newSize[1]/2));
-        newImage->setField(data::tools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+        newImage->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
 
         this->setOutput("image", newImage);
     }

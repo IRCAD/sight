@@ -26,8 +26,8 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -215,7 +215,7 @@ void SNegato2D::newImage()
         const auto tf  = tfW.lock();
         m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
-        if(!data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
         {
             return;
         }
@@ -230,19 +230,19 @@ void SNegato2D::newImage()
         // Update Slice
         const auto imgSize       = image->getSize2();
         const auto axialIdxField = image->getField< data::Integer >(
-            data::tools::fieldHelper::Image::m_axialSliceIndexId);
+            data::fieldHelper::Image::m_axialSliceIndexId);
         SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
         axialIdx = axialIdxField ?
                    static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
 
         const auto frontalIdxField = image->getField< data::Integer >(
-            data::tools::fieldHelper::Image::m_frontalSliceIndexId);
+            data::fieldHelper::Image::m_frontalSliceIndexId);
         SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
         frontalIdx = frontalIdxField ?
                      static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
 
         const auto sagittalIdxField = image->getField< data::Integer >(
-            data::tools::fieldHelper::Image::m_sagittalSliceIndexId);
+            data::fieldHelper::Image::m_sagittalSliceIndexId);
         SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
         sagittalIdx = sagittalIdxField ?
                       static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0]/2);

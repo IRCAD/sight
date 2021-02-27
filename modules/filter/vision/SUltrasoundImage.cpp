@@ -29,7 +29,7 @@
 
 #include <core/Profiling.hpp>
 
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -132,7 +132,7 @@ void SUltrasoundImage::updating()
     data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
     SLM_ASSERT("Missing input frame.", inputImage);
 
-    const bool isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(inputImage);
+    const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(inputImage);
     if(!isValid)
     {
         return;

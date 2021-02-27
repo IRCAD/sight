@@ -28,7 +28,7 @@
 #include <core/com/Slot.hxx>
 
 #include <data/String.hpp>
-#include <data/tools/helper/Vector.hpp>
+#include <data/helper/Vector.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( sight::data::tools::ut::VectorHelperTest );
@@ -109,7 +109,7 @@ void VectorHelperTest::testHelper()
 
     {
         // Test add()
-        data::tools::helper::Vector vectorHelper(vector);
+        data::helper::Vector vectorHelper(vector);
         vectorHelper.add(vectorObj1);
         vectorHelper.add(vectorObj2);
         CPPUNIT_ASSERT_EQUAL(size_t(2), vector->size());
@@ -130,7 +130,7 @@ void VectorHelperTest::testHelper()
 
     {
         // Test add()
-        data::tools::helper::Vector vectorHelper(vector);
+        data::helper::Vector vectorHelper(vector);
         vectorHelper.add(vectorObj3);
         CPPUNIT_ASSERT_EQUAL(size_t(3), vector->size());
         CPPUNIT_ASSERT((*vector)[0] == vectorObj1);
@@ -153,7 +153,7 @@ void VectorHelperTest::testHelper()
 
     {
         // Test remove()
-        data::tools::helper::Vector vectorHelper(vector);
+        data::helper::Vector vectorHelper(vector);
         vectorHelper.remove(vectorObj1);
         vectorHelper.remove(vectorObj2);
         CPPUNIT_ASSERT_EQUAL(size_t(1), vector->size());
@@ -176,7 +176,7 @@ void VectorHelperTest::testHelper()
 
     {
         // Test add(), and clear()
-        data::tools::helper::Vector vectorHelper(vector);
+        data::helper::Vector vectorHelper(vector);
         vectorHelper.add(vectorObj2);
         CPPUNIT_ASSERT_EQUAL(size_t(2), vector->size());
         CPPUNIT_ASSERT((*vector)[0] == vectorObj3);

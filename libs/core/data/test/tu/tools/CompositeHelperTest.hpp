@@ -30,7 +30,7 @@ namespace ut
 {
 
 /**
- * @brief   Test data::tools::helper::Composite methods.
+ * @brief   Test data::helper::Composite methods.
  */
 class CompositeHelperTest : public CPPUNIT_NS::TestFixture
 {

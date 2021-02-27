@@ -29,7 +29,7 @@
 #include <core/macros.hpp>
 #include <core/mt/types.hpp>
 #include <core/tools/Object.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 #include <unordered_map>

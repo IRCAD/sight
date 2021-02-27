@@ -31,7 +31,7 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 #include <gdcmUIDGenerator.h>
@@ -149,7 +149,7 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence)
 {
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int index = 0;
@@ -166,7 +166,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
 
             // Fiducial Description - Type 3
             std::string label =
-                point->getField< data::String >(data::tools::fieldHelper::Image::m_labelId)->value();
+                point->getField< data::String >(data::fieldHelper::Image::m_labelId)->value();
             io::dicom::helper::DicomDataWriter::setTagValue< 0x0070, 0x030F >(label, fiducialItemDataset);
 
             // Shape Type - Type 1

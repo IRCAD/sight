@@ -34,8 +34,8 @@
 #include <data/Boolean.hpp>
 #include <data/Image.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <itkLabelImageToShapeLabelMapFilter.h>
 
@@ -171,7 +171,7 @@ struct LabelImageFilter
                         std::stringstream labelName;
                         labelName << n;
                         data::String::sptr label = data::String::New(labelName.str());
-                        //newPoint->setField( data::tools::fieldHelper::Image::m_labelId, label );
+                        //newPoint->setField( data::fieldHelper::Image::m_labelId, label );
 
                         planePointList->getPoints().push_back(newPoint);
                     }
@@ -182,9 +182,9 @@ struct LabelImageFilter
         else
         {
             //get landmarks
-            data::tools::fieldHelper::MedicalImageHelpers::checkLandmarks( image );
+            data::fieldHelper::MedicalImageHelpers::checkLandmarks( image );
             data::PointList::sptr landmarks =
-                image->getField< data::PointList >( data::tools::fieldHelper::Image::m_imageLandmarksId);
+                image->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
 
             SLM_ASSERT("landmarks not instanced", landmarks);
             landmarks->getPoints().clear();
@@ -205,7 +205,7 @@ struct LabelImageFilter
                 std::stringstream labelName;
                 labelName << n;
                 data::String::sptr label = data::String::New(labelName.str());
-                newPoint->setField( data::tools::fieldHelper::Image::m_labelId, label );
+                newPoint->setField( data::fieldHelper::Image::m_labelId, label );
             }
             image->setField("ShowLandmarks", data::Boolean::New(true));
         }

@@ -31,7 +31,7 @@
 #include <core/spyLog.hpp>
 #include <core/tools/System.hpp>
 
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
@@ -593,7 +593,7 @@ void Utils::setPixelFormatFromOgre( data::Image::sptr _image, ::Ogre::PixelForma
 void Utils::loadOgreTexture(const data::Image::csptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
-    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
+    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
     if(imageIsValid)
     {

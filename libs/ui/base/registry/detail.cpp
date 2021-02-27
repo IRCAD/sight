@@ -22,7 +22,7 @@
 
 #include "ui/base/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::ui::base
 {
@@ -34,7 +34,7 @@ struct FwGuiRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwGuiRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwGuiRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

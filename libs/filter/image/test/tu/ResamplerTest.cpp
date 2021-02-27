@@ -24,7 +24,7 @@
 
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -117,7 +117,7 @@ void ResamplerTest::translateTest()
     std::uint8_t value = 255;
 
     SPTR(data::Image::BufferType) bufferValue =
-        data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(imageIn, value);
 
     const auto inDumpLock = imageIn->lock();
 

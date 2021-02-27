@@ -30,7 +30,7 @@
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <service/macros.hpp>
 
@@ -128,19 +128,19 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         const auto& firstPointReg = registeredPL->getPoints()[0];
 
         // If the points have labels ...
-        if(firstPoint->getField< data::String >(data::tools::fieldHelper::Image::m_labelId ) != nullptr
-           && firstPointReg->getField< data::String >(data::tools::fieldHelper::Image::m_labelId ) != nullptr)
+        if(firstPoint->getField< data::String >(data::fieldHelper::Image::m_labelId ) != nullptr
+           && firstPointReg->getField< data::String >(data::fieldHelper::Image::m_labelId ) != nullptr)
         {
             // ... Then match them according to that label.
             for( data::Point::sptr pointRef : referencePL->getPoints() )
             {
                 const std::string& labelRef =
-                    pointRef->getField< data::String >(data::tools::fieldHelper::Image::m_labelId )->value();
+                    pointRef->getField< data::String >(data::fieldHelper::Image::m_labelId )->value();
 
                 for( data::Point::sptr pointReg : registeredPL->getPoints() )
                 {
                     const std::string& labelReg =
-                        pointReg->getField< data::String >(data::tools::fieldHelper::Image::m_labelId )->value();
+                        pointReg->getField< data::String >(data::fieldHelper::Image::m_labelId )->value();
 
                     if(labelRef == labelReg)
                     {

@@ -29,8 +29,8 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <service/macros.hpp>
 
@@ -104,15 +104,15 @@ void SPropagator::configuring()
 
     if(orientation == "sagital")
     {
-        m_orientation = data::tools::helper::MedicalImage::X_AXIS;
+        m_orientation = data::helper::MedicalImage::X_AXIS;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = data::tools::helper::MedicalImage::Y_AXIS;
+        m_orientation = data::helper::MedicalImage::Y_AXIS;
     }
     else if(orientation == "axial")
     {
-        m_orientation = data::tools::helper::MedicalImage::Z_AXIS;
+        m_orientation = data::helper::MedicalImage::Z_AXIS;
     }
     else
     {
@@ -132,8 +132,8 @@ void SPropagator::starting()
     SLM_ASSERT("'imageIn' does not exist", imgIn);
     SLM_ASSERT("'imageOut' does not exist", imgOut);
 
-    bool isValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn) &&
-                   data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
+    bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn) &&
+                   data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
 
     SLM_FATAL_IF("Input and output image must have the same size.", imgIn->getSize2() != imgOut->getSize2());
     SLM_WARN_IF("Input and output image must have the same spacing.", imgIn->getSpacing2() != imgOut->getSpacing2());
@@ -255,7 +255,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     SLM_ASSERT("'image' does not exist", image);
 
     SPTR(data::Image::BufferType) val =
-        data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, m_value);
+        data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, m_value);
 
     const data::Image::Spacing imgSpacing = image->getSpacing2();
     // Draw lines as thick as a single voxel.

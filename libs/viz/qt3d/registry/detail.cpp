@@ -22,7 +22,7 @@
 
 #include "viz/qt3d/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::viz::qt3d
 {
@@ -34,7 +34,7 @@ struct FwRenderQt3DRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwRenderQt3DRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwRenderQt3DRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

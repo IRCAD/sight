@@ -29,7 +29,7 @@
 
 #include <core/LogicStamp.hpp>
 #include <core/tools/fwID.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -48,7 +48,7 @@ namespace OSR
 
 service::registry::ObjectService::sptr get()
 {
-    return core::util::LazyInstantiator< service::registry::ObjectService >::getInstance();
+    return core::LazyInstantiator< service::registry::ObjectService >::getInstance();
 }
 
 //------------------------------------------------------------------------------

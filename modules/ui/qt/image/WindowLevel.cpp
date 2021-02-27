@@ -32,9 +32,9 @@
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <service/macros.hpp>
@@ -206,7 +206,7 @@ void WindowLevel::updating()
     SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
     const data::mt::ObjectReadLock imgLock(image);
 
-    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
     this->setEnabled(imageIsValid);
 
     if(imageIsValid)
@@ -214,7 +214,7 @@ void WindowLevel::updating()
         if(m_autoWindowing)
         {
             double min, max;
-            data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
             this->updateImageWindowLevel(min, max);
         }
 
@@ -374,7 +374,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
         case 4:         // Fit Image Range
         {
             const data::mt::ObjectReadLock imgLock(image);
-            data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
         break;
         case 5:         // Custom : TODO
@@ -460,7 +460,7 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
         data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
         SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
         double min, max;
-        data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         this->updateImageWindowLevel(min, max);
         this->onImageWindowLevelChanged(min, max);
     }

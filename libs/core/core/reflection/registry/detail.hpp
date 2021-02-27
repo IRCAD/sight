@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 #include <core/tools/Object.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -46,7 +46,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef core::util::FactoryRegistry< SPTR(::camp::UserObject)(core::tools::Object*), KeyType > Type;
+typedef core::FactoryRegistry< SPTR(::camp::UserObject)(core::tools::Object*), KeyType > Type;
 
 CORE_API SPTR(Type) get();
 

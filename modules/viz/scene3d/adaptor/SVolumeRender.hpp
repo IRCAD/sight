@@ -27,7 +27,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
-#include <data/tools/helper/TransferFunction.hpp>
+#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/IGraphicsWorker.hpp>
@@ -361,7 +361,7 @@ private:
     void updateClippingTM3D();
 
     /// Helps to manage the optional volume TF.
-    data::tools::helper::TransferFunction m_helperVolumeTF;
+    data::helper::TransferFunction m_helperVolumeTF;
 
     /// Implements a simple GPU ray-tracing renderer.
     sight::viz::scene3d::vr::RayTracingVolumeRenderer* m_volumeRenderer { nullptr };

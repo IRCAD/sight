@@ -23,7 +23,7 @@
 #include "LazyInstantiatorTest.hpp"
 
 #include <core/mt/types.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <chrono>
 #include <exception>
@@ -90,13 +90,13 @@ void LazyInstantiatorTest::lazyTest()
 
     CPPUNIT_ASSERT_EQUAL(1, cpt.s_counter);
 
-    StaticCounter<>::sptr counter1 = core::util::LazyInstantiator< StaticCounter<> >::getInstance();
+    StaticCounter<>::sptr counter1 = core::LazyInstantiator< StaticCounter<> >::getInstance();
     CPPUNIT_ASSERT_EQUAL(2, counter1->s_counter);
 
-    StaticCounter<>::sptr counter2 = core::util::LazyInstantiator< StaticCounter<> >::getInstance();
+    StaticCounter<>::sptr counter2 = core::LazyInstantiator< StaticCounter<> >::getInstance();
     CPPUNIT_ASSERT_EQUAL(2, counter2->s_counter);
 
-    StaticCounter<>::sptr counter3 = core::util::LazyInstantiator< StaticCounter<>, second_counter >::getInstance();
+    StaticCounter<>::sptr counter3 = core::LazyInstantiator< StaticCounter<>, second_counter >::getInstance();
     CPPUNIT_ASSERT_EQUAL(3, counter3->s_counter);
 
     StaticCounter<>::s_counter = 0;
@@ -120,7 +120,7 @@ struct CounterThread
     void run ()
     {
         CounterType::sptr counter;
-        counter = core::util::LazyInstantiator< CounterType, thread_counter_tag >::getInstance();
+        counter = core::LazyInstantiator< CounterType, thread_counter_tag >::getInstance();
     }
 };
 
@@ -143,7 +143,7 @@ void LazyInstantiatorTest::threadSafetyTest()
     }
 
     CounterThread::CounterType::sptr counter;
-    counter = core::util::LazyInstantiator< CounterThread::CounterType, thread_counter_tag >::getInstance();
+    counter = core::LazyInstantiator< CounterThread::CounterType, thread_counter_tag >::getInstance();
     CPPUNIT_ASSERT_EQUAL(1, counter->s_counter);
 
     CounterThread::CounterType::s_counter = 0;

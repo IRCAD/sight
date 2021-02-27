@@ -24,7 +24,7 @@
 
 #include <core/tools/fwID.hpp>
 
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 
 namespace sight::module::data
 {

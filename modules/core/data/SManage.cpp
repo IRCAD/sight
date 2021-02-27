@@ -31,10 +31,10 @@
 #include <data/Exception.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/helper/Composite.hpp>
-#include <data/tools/helper/Field.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
-#include <data/tools/helper/Vector.hpp>
+#include <data/helper/Composite.hpp>
+#include <data/helper/Field.hpp>
+#include <data/helper/SeriesDB.hpp>
+#include <data/helper/Vector.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -136,7 +136,7 @@ void SManage::addOrSwap()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Composite helper( composite );
+        sight::data::helper::Composite helper( composite );
         if (composite->find(m_compositeKey) == composite->end())
         {
             helper.add(m_compositeKey, obj);
@@ -154,7 +154,7 @@ void SManage::addOrSwap()
         auto iter = std::find(vector->begin(), vector->end(), obj);
         if (iter == vector->end())
         {
-            sight::data::tools::helper::Vector helper( vector );
+            sight::data::helper::Vector helper( vector );
             helper.add(obj);
             helper.notify();
         }
@@ -169,7 +169,7 @@ void SManage::addOrSwap()
         auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
         if (iter == seriesDB->end())
         {
-            sight::data::tools::helper::SeriesDB helper( seriesDB );
+            sight::data::helper::SeriesDB helper( seriesDB );
             helper.add(series);
             helper.notify();
         }
@@ -178,7 +178,7 @@ void SManage::addOrSwap()
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        sight::data::tools::helper::Field helper( fieldHolder );
+        sight::data::helper::Field helper( fieldHolder );
         helper.addOrSwap(m_fieldName, obj);
         helper.notify();
     }
@@ -201,14 +201,14 @@ void SManage::swap()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed",  !fieldHolder);
-        sight::data::tools::helper::Composite helper( composite );
+        sight::data::helper::Composite helper( composite );
         helper.swap(m_compositeKey, obj);
         helper.notify();
     }
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !composite);
-        sight::data::tools::helper::Field helper( fieldHolder );
+        sight::data::helper::Field helper( fieldHolder );
         helper.swap(m_fieldName, obj);
         helper.notify();
     }
@@ -232,7 +232,7 @@ void SManage::remove()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Composite helper( composite );
+        sight::data::helper::Composite helper( composite );
         helper.remove(m_compositeKey);
         helper.notify();
     }
@@ -240,7 +240,7 @@ void SManage::remove()
     {
         SLM_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
         SLM_ASSERT("Object '" + s_OBJECT_INOUT + "' is missing.", obj);
-        sight::data::tools::helper::Vector helper( vector );
+        sight::data::helper::Vector helper( vector );
         helper.remove(obj);
         helper.notify();
     }
@@ -251,14 +251,14 @@ void SManage::remove()
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
 
-        sight::data::tools::helper::SeriesDB helper( seriesDB );
+        sight::data::helper::SeriesDB helper( seriesDB );
         helper.remove(series);
         helper.notify();
     }
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        sight::data::tools::helper::Field helper( fieldHolder );
+        sight::data::helper::Field helper( fieldHolder );
         helper.remove(m_fieldName);
         helper.notify();
     }
@@ -282,7 +282,7 @@ void SManage::removeIfPresent()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Composite helper( composite );
+        sight::data::helper::Composite helper( composite );
         if (composite->find(m_compositeKey) != composite->end())
         {
             helper.remove(m_compositeKey);
@@ -296,7 +296,7 @@ void SManage::removeIfPresent()
         auto iter = std::find(vector->begin(), vector->end(), obj);
         if (iter != vector->end())
         {
-            sight::data::tools::helper::Vector helper( vector );
+            sight::data::helper::Vector helper( vector );
             helper.remove(obj);
             helper.notify();
         }
@@ -312,7 +312,7 @@ void SManage::removeIfPresent()
         auto iter = std::find(seriesDB->begin(), seriesDB->end(), series);
         if (iter != seriesDB->end())
         {
-            sight::data::tools::helper::SeriesDB helper( seriesDB );
+            sight::data::helper::SeriesDB helper( seriesDB );
             helper.remove(series);
             helper.notify();
         }
@@ -321,7 +321,7 @@ void SManage::removeIfPresent()
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        sight::data::tools::helper::Field helper( fieldHolder );
+        sight::data::helper::Field helper( fieldHolder );
         try
         {
             helper.remove(m_fieldName);
@@ -350,27 +350,27 @@ void SManage::clear()
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Composite helper( composite );
+        sight::data::helper::Composite helper( composite );
         helper.clear();
         helper.notify();
     }
     else if (vector)
     {
         SLM_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Vector helper( vector );
+        sight::data::helper::Vector helper( vector );
         helper.clear();
         helper.notify();
     }
     else if (seriesDB)
     {
-        sight::data::tools::helper::SeriesDB helper( seriesDB );
+        sight::data::helper::SeriesDB helper( seriesDB );
         helper.clear();
         helper.notify();
     }
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        sight::data::tools::helper::Field helper( fieldHolder );
+        sight::data::helper::Field helper( fieldHolder );
         helper.clear();
         helper.notify();
     }
@@ -400,14 +400,14 @@ void SManage::internalAdd(bool _copy)
     if (composite)
     {
         SLM_ASSERT("Only one target object is managed", !vector && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Composite helper( composite );
+        sight::data::helper::Composite helper( composite );
         helper.add(m_compositeKey, obj);
         helper.notify();
     }
     else if (vector)
     {
         SLM_ASSERT("Only one target object is managed", !composite && !seriesDB && !fieldHolder);
-        sight::data::tools::helper::Vector helper( vector );
+        sight::data::helper::Vector helper( vector );
         helper.add(obj);
         helper.notify();
     }
@@ -416,14 +416,14 @@ void SManage::internalAdd(bool _copy)
         sight::data::Series::sptr series = sight::data::Series::dynamicCast(obj);
         SLM_ASSERT("Target object is a SeriesDB, so object must be a Series.", series);
         SLM_ASSERT("Only one target object is managed", !composite && !vector && !fieldHolder);
-        sight::data::tools::helper::SeriesDB helper( seriesDB );
+        sight::data::helper::SeriesDB helper( seriesDB );
         helper.add(series);
         helper.notify();
     }
     else if (fieldHolder)
     {
         SLM_ASSERT("Only one target object is managed",  !vector && !composite && !seriesDB);
-        sight::data::tools::helper::Field helper( fieldHolder );
+        sight::data::helper::Field helper( fieldHolder );
         helper.add(m_fieldName, obj);
         helper.notify();
     }

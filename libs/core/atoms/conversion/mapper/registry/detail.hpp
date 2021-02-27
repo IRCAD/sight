@@ -25,7 +25,7 @@
 #include "atoms/config.hpp"
 
 #include <core/macros.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef core::util::FactoryRegistry< SPTR(atoms::conversion::mapper::Base)(), KeyType > Type;
+typedef core::FactoryRegistry< SPTR(atoms::conversion::mapper::Base)(), KeyType > Type;
 
 ATOMS_API SPTR(Type) get();
 

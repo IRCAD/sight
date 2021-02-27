@@ -26,7 +26,7 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -237,11 +237,11 @@ std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(con
                                                                              const Ogre::Vector3& _spacing)
 {
     const auto axialIdx =
-        _image->getField< data::Integer >(data::tools::fieldHelper::Image::m_axialSliceIndexId)->getValue();
+        _image->getField< data::Integer >(data::fieldHelper::Image::m_axialSliceIndexId)->getValue();
     const auto frontalIdx =
-        _image->getField< data::Integer >(data::tools::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
+        _image->getField< data::Integer >(data::fieldHelper::Image::m_frontalSliceIndexId)->getValue();
     const auto sagittalIdx =
-        _image->getField< data::Integer >(data::tools::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
+        _image->getField< data::Integer >(data::fieldHelper::Image::m_sagittalSliceIndexId)->getValue();
 
     const ::Ogre::Real axialIndex    = static_cast< ::Ogre::Real >(axialIdx);
     const ::Ogre::Real frontalIndex  = static_cast< ::Ogre::Real >(frontalIdx);

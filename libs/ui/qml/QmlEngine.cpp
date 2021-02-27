@@ -23,7 +23,7 @@
 #include "QmlEngine.hpp"
 
 #include <core/runtime/Runtime.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <QDir>
 #include <QQmlComponent>
@@ -68,7 +68,7 @@ QmlEngine::~QmlEngine()
 
 SPTR(QmlEngine) QmlEngine::getDefault()
 {
-    auto engineInstance = core::util::LazyInstantiator< QmlEngine >::getInstance();
+    auto engineInstance = core::LazyInstantiator< QmlEngine >::getInstance();
     return engineInstance;
 }
 

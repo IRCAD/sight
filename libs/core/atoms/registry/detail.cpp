@@ -22,7 +22,7 @@
 
 #include "atoms/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::atoms
 {
@@ -34,7 +34,7 @@ struct FwAtomsRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwAtomsRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwAtomsRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

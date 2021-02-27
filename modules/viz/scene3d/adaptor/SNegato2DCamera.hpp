@@ -24,8 +24,8 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
-#include <data/tools/helper/TransferFunction.hpp>
+#include <data/helper/MedicalImage.hpp>
+#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 
@@ -168,7 +168,7 @@ protected:
 
 private:
 
-    using Orientation = data::tools::helper::MedicalImage::Orientation;
+    using Orientation = data::helper::MedicalImage::Orientation;
 
     /// SLOT: resets the camera's zoom.
     void resetCamera();
@@ -190,13 +190,13 @@ private:
     bool m_isInteracting { false };
 
     /// Defines the image current orientation.
-    Orientation m_currentNegatoOrientation {  data::tools::helper::MedicalImage::Orientation::Z_AXIS };
+    Orientation m_currentNegatoOrientation {  data::helper::MedicalImage::Orientation::Z_AXIS };
 
     /// Defines the interaction priority.
     int m_priority { 0 };
 
     /// Helps interfacing with the transfer function input.
-    data::tools::helper::TransferFunction m_helperTF;
+    data::helper::TransferFunction m_helperTF;
 
     /// Defines the transfer function window value at the time the interaction started.
     double m_initialWindow { 0.f };

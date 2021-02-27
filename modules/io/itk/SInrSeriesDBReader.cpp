@@ -35,7 +35,7 @@
 #include <data/Patient.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -186,7 +186,7 @@ void SInrSeriesDBReader::updating()
             localSeriesDB->getContainer().push_back(imgSeries);
         }
 
-        data::tools::helper::SeriesDB sDBhelper(seriesDB);
+        data::helper::SeriesDB sDBhelper(seriesDB);
 
         data::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);

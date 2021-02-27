@@ -28,7 +28,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::io::dicom
@@ -50,7 +50,7 @@ bool Fiducial::containsLandmarks(const SPTR(data::SeriesDB)& seriesDB)
             if(image)
             {
                 data::PointList::sptr pointList =
-                    image->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+                    image->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
                 if(pointList && !pointList->getPoints().empty())
                 {
                     return true;
@@ -76,7 +76,7 @@ bool Fiducial::containsDistances(const SPTR(data::SeriesDB)& seriesDB)
             if(image)
             {
                 data::Vector::sptr distanceVector =
-                    image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
+                    image->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     return true;
@@ -102,7 +102,7 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesDB)& seriesDB)
             if(image)
             {
                 data::Vector::sptr distanceVector =
-                    image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
+                    image->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     for(const data::Object::sptr& object : distanceVector->getContainer())

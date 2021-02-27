@@ -24,7 +24,7 @@
 
 #include <data/Array.hpp>
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -88,7 +88,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(156) = MIN;
         image->at<Type>(245) = MAX;
 
-        data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
+        data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", MAX, resMax);
     }
@@ -123,7 +123,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(16)  = MIN;
         image->at<Type>(286) = MAX;
 
-        data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
+        data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("min values are not equal",
                                              static_cast<double>(MIN), static_cast<double>(resMin), 0.00001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("max values are not equal",
@@ -162,7 +162,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
         image->at<Type>(5)    = MIN;
         image->at<Type>(2155) = MAX;
 
-        data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
+        data::fieldHelper::MedicalImageHelpers::getMinMax(image, resMin, resMax);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", MAX, resMax);
     }
@@ -345,29 +345,29 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
         const data::Image::BufferType* pixBuf =
             static_cast< data::Image::BufferType* >(image->getPixelBuffer(0));
 
-        bool isNull = data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+        bool isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
-        isNull = data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 100);
+        isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 100);
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
             std::array<float, 3> pixelValue = {{ 42.0f, 1487.4f, 0.1445f }};
             image->setPixelBuffer(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
-            isNull = data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
 
             const data::Image::BufferType* pixBuf =
                 static_cast< data::Image::BufferType* >(image->getPixelBuffer(10));
 
-            isNull = data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
 
             image->setPixelBuffer(15, reinterpret_cast<uint8_t*>(pixelValue.data()));
-            isNull = data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 5*3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 5*3);
             CPPUNIT_ASSERT_EQUAL(true, isNull);
-            isNull = data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 6*3);
+            isNull = data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, 6*3);
             CPPUNIT_ASSERT_EQUAL(false, isNull);
         }
     }

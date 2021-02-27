@@ -28,7 +28,7 @@
 #include <data/location/Folder.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -145,7 +145,7 @@ void SSeriesDBWriter::updating()
 
         // Create SeriesDB
         data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-        data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
+        data::helper::SeriesDB seriesDBHelper(seriesDB);
 
         for(const data::Object::sptr& object : vector->getContainer())
         {
@@ -214,7 +214,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
 
     // Create SeriesDB
     data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::helper::SeriesDB seriesDBHelper(seriesDB);
 
     for(const data::Object::sptr& object : vector->getContainer())
     {

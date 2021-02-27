@@ -37,7 +37,7 @@
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
 
@@ -108,7 +108,7 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
-    if(m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId))
+    if(m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId))
     {
         // Create Fiducial Container
         SPTR(io::dicom::container::sr::DicomSRContainerNode) fiducialNode =
@@ -121,7 +121,7 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
     }
 
     // Add distances
-    if(m_object->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId))
+    if(m_object->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId))
     {
         // Create Imaging Measurements Container
         SPTR(io::dicom::container::sr::DicomSRContainerNode) imagingMeasurementsNode =

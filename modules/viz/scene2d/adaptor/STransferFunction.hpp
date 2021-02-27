@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <viz/scene2d/IAdaptor.hpp>

@@ -31,7 +31,7 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
@@ -150,7 +150,7 @@ void SManagePointList::addPoint(const data::Point::sptr _point) const
     {
         const auto counter             = pointList->getPoints().size();
         const data::String::sptr label = data::String::New(std::to_string(counter));
-        _point->setField(data::tools::fieldHelper::Image::m_labelId, label );
+        _point->setField(data::fieldHelper::Image::m_labelId, label );
     }
 
     pointList->pushBack(_point);

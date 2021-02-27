@@ -22,7 +22,7 @@
 
 #include "core/reflection/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <camp/userobject.hpp>
 
@@ -35,7 +35,7 @@ struct FwCampRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwCampRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwCampRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

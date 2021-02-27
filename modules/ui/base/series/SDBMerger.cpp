@@ -28,7 +28,7 @@
 #include <core/jobs/IJob.hpp>
 
 #include <data/Series.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
@@ -127,7 +127,7 @@ void SDBMerger::updating( )
     ioSelectorSrv->stop();
     service::OSR::unregisterService( ioSelectorSrv );
 
-    data::tools::helper::SeriesDB sDBhelper(seriesDB);
+    data::helper::SeriesDB sDBhelper(seriesDB);
     sDBhelper.merge(localSeriesDB);
     sDBhelper.notify();
 }

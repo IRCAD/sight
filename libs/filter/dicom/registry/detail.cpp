@@ -22,7 +22,7 @@
 
 #include "filter/dicom/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::filter::dicom
 {
@@ -34,7 +34,7 @@ struct FwDicomIOFilterRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwDicomIOFilterRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwDicomIOFilterRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

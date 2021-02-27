@@ -79,7 +79,7 @@ void SComputeHistogram::updating()
 {
     const auto image = this->getLockedInput<data::Image>(s_IMAGE_INPUT);
 
-    if(data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
+    if(data::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         auto histogram = this->getLockedInOut<data::Histogram>(s_HISTOGRAM_INPUT);
 

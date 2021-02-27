@@ -22,7 +22,7 @@
 
 #include "SSeriesDBMerger.hpp"
 
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -77,7 +77,7 @@ void SSeriesDBMerger::updating()
     auto destinationSeriesDB = this->getInOut< data::SeriesDB>("seriesDB");
     SLM_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
-    data::tools::helper::SeriesDB sDBhelper(destinationSeriesDB);
+    data::helper::SeriesDB sDBhelper(destinationSeriesDB);
     data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
     data::Vector::csptr selectedSeries      = this->getInput< data::Vector >("selectedSeries");
 

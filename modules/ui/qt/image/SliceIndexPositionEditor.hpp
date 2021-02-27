@@ -26,7 +26,7 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <ui/base/IEditor.hpp>
 #include <ui/qt/SliceSelector.hpp>
@@ -71,7 +71,7 @@ public:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    typedef data::tools::helper::MedicalImage::Orientation Orientation;
+    typedef data::helper::MedicalImage::Orientation Orientation;
 
     /**
      * @brief Install the layout.
@@ -151,7 +151,7 @@ private:
 
     sight::ui::qt::SliceSelector* m_sliceSelectorPanel;
 
-    data::tools::helper::MedicalImage m_helper;
+    data::helper::MedicalImage m_helper;
 
 };
 

@@ -26,7 +26,7 @@
 
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <service/macros.hpp>
 
@@ -112,7 +112,7 @@ void SPointListFromMatrices::updating()
         }
 
         data::String::sptr fwLabel = data::String::New(label);
-        p->setField( data::tools::fieldHelper::Image::m_labelId, fwLabel );
+        p->setField( data::fieldHelper::Image::m_labelId, fwLabel );
         pointList->pushBack(p);
 
     }

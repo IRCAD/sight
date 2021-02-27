@@ -29,7 +29,7 @@
 
 #include <data/Boolean.hpp>
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -130,7 +130,7 @@ void ImageTransparency::updating()
     data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
-    bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+    bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
     m_valueSlider->setEnabled(imageIsValid);
     m_valueCheckBox->setEnabled(imageIsValid);
     if (imageIsValid)

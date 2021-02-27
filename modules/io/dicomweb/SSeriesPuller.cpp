@@ -29,7 +29,7 @@
 #include <core/tools/System.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <service/registry/ObjectService.hpp>
@@ -349,7 +349,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
         sight::io::http::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
 
     // Create temporary series helper
-    data::tools::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
+    data::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
 
     for(const data::Series::sptr& series: selectedSeries)
     {
@@ -372,7 +372,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             m_dicomReader->update();
 
             // Merge series
-            data::tools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+            data::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify();
         }

@@ -24,7 +24,7 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -404,7 +404,7 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesDB
-    data::tools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+    data::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
     sDBhelper.clear();
 
     // Be sure series are selected

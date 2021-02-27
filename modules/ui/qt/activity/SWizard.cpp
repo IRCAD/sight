@@ -40,7 +40,7 @@
 #include <data/Patient.hpp>
 #include <data/Series.hpp>
 #include <data/Study.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -298,7 +298,7 @@ void SWizard::createActivity(std::string activityID)
         data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
         SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
-        data::tools::helper::SeriesDB helper(seriesDB);
+        data::helper::SeriesDB helper(seriesDB);
         helper.add(m_actSeries);
         helper.notify();
         m_sigActivityCreated->asyncEmit(m_actSeries);
@@ -490,7 +490,7 @@ void SWizard::onBuildActivity()
                     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
                     SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
-                    data::tools::helper::SeriesDB helper(seriesDB);
+                    data::helper::SeriesDB helper(seriesDB);
                     helper.add(m_actSeries);
                     helper.notify();
                     m_sigActivityCreated->asyncEmit(m_actSeries);

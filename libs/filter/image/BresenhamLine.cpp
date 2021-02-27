@@ -29,22 +29,22 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-BresenhamLine::PathType BresenhamLine::draw(const data::tools::helper::MedicalImage::Orientation orientation,
+BresenhamLine::PathType BresenhamLine::draw(const data::helper::MedicalImage::Orientation orientation,
                                             const CoordinatesType& startCoord, const CoordinatesType& endCoord)
 {
     size_t dim0 = 0, dim1 = 1;
 
     switch(orientation)
     {
-        case data::tools::helper::MedicalImage::X_AXIS:
+        case data::helper::MedicalImage::X_AXIS:
             dim0 = 1;
             dim1 = 2;
             break;
-        case data::tools::helper::MedicalImage::Y_AXIS:
+        case data::helper::MedicalImage::Y_AXIS:
             dim0 = 0;
             dim1 = 2;
             break;
-        case data::tools::helper::MedicalImage::Z_AXIS:
+        case data::helper::MedicalImage::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
             break;

@@ -37,7 +37,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 #include <gdcmWriter.h>
@@ -78,7 +78,7 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
     data::Image::csptr image = imageSeries->getImage();
 
     data::Vector::sptr distances = image->getField< data::Vector >(
-        data::tools::fieldHelper::Image::m_imageDistancesId);
+        data::fieldHelper::Image::m_imageDistancesId);
     SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer

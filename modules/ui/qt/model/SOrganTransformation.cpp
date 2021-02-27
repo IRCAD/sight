@@ -31,8 +31,8 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/tools/helper/Composite.hpp>
-#include <data/tools/helper/Field.hpp>
+#include <data/helper/Composite.hpp>
+#include <data/helper/Field.hpp>
 
 #include <service/macros.hpp>
 
@@ -226,7 +226,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
         data::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         data::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
-        data::tools::helper::Composite aCompositeHelper(pComposite);
+        data::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
         {
             if (pComposite->find(item_name) == pComposite->end())
@@ -335,7 +335,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 {
 
     data::Composite::sptr composite = this->getInOut< data::Composite>(s_COMPOSITE_INOUT);
-    data::tools::helper::Composite compositeHelper(composite);
+    data::helper::Composite compositeHelper(composite);
 
     if(state == Qt::Checked)
     {
@@ -383,7 +383,7 @@ void SOrganTransformation::addMeshTransform()
 
         if (!mesh->getField( s_MATRIX_FIELD_NAME ))
         {
-            data::tools::helper::Field fieldHelper(mesh);
+            data::helper::Field fieldHelper(mesh);
             fieldHelper.setField(s_MATRIX_FIELD_NAME, data::Matrix4::New());
             fieldHelper.notify();
         }

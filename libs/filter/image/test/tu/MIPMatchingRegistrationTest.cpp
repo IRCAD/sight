@@ -28,7 +28,7 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Matrix4.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <glm/gtc/matrix_access.hpp>
 #include <glm/gtc/matrix_transform.hpp>

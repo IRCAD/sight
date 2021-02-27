@@ -29,7 +29,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -101,7 +101,7 @@ void ImageInfo::updating()
 {
     data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
     SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
-    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
 }
 
@@ -114,7 +114,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
         data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
         SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
 
-        const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {

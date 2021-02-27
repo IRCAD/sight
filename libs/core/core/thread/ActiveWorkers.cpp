@@ -22,7 +22,7 @@
 
 #include "core/thread/ActiveWorkers.hpp"
 
-#include "core/util/LazyInstantiator.hpp"
+#include "core/LazyInstantiator.hpp"
 
 namespace sight::core::thread
 {
@@ -47,7 +47,7 @@ ActiveWorkers::~ActiveWorkers()
 
 ActiveWorkers::sptr ActiveWorkers::getDefault()
 {
-    return core::util::LazyInstantiator< ActiveWorkers >::getInstance();
+    return core::LazyInstantiator< ActiveWorkers >::getInstance();
 }
 
 //-----------------------------------------------------------------------------

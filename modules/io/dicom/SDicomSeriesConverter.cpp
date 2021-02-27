@@ -28,7 +28,7 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -130,12 +130,12 @@ void SDicomSeriesConverter::updating()
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                data::tools::helper::SeriesDB sDBhelper(dummy);
+                data::helper::SeriesDB sDBhelper(dummy);
                 sDBhelper.clear();
             }
             else
             {
-                data::tools::helper::SeriesDB sDBhelper(destinationSeriesDB);
+                data::helper::SeriesDB sDBhelper(destinationSeriesDB);
                 sDBhelper.merge(dummy);
                 sDBhelper.notify();
             }

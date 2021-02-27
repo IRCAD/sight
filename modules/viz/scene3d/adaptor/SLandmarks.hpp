@@ -29,7 +29,7 @@
 #include <core/thread/Timer.hpp>
 
 #include <data/Landmarks.hpp>
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
@@ -211,7 +211,7 @@ private:
         bool m_show { false };
     };
 
-    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::Orientation OrientationMode;
 
     /**
      * @brief Gets the normalized camera direction vector.

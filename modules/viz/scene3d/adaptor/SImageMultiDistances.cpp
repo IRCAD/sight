@@ -28,8 +28,8 @@
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 #include <data/PointList.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/helper/Vector.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/helper/Vector.hpp>
 
 #include <service/macros.hpp>
 
@@ -293,7 +293,7 @@ void SImageMultiDistances::addDistances()
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     const data::Vector::sptr distanceField = image->getField< data::Vector >(
-        data::tools::fieldHelper::Image::m_imageDistancesId);
+        data::fieldHelper::Image::m_imageDistancesId);
     if(distanceField)
     {
         for(const auto& object : *distanceField)
@@ -334,7 +334,7 @@ void SImageMultiDistances::removeDistances()
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
     const data::Vector::csptr distanceField
-        = image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
+        = image->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId);
 
     std::vector< core::tools::fwID::IDType > foundId;
     if(distanceField)
@@ -370,7 +370,7 @@ void SImageMultiDistances::updateVisibilityFromField()
 
     const auto image = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
 
-    const bool visibility = image->getField(data::tools::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
+    const bool visibility = image->getField(data::fieldHelper::Image::m_distanceVisibility, data::Boolean::New(
                                                 true))->value();
     m_isVisible = visibility;
 

@@ -28,7 +28,7 @@
 #include <core/com/Slot.hxx>
 
 #include <data/String.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::tools::ut::CompositeHelperTest );
@@ -135,7 +135,7 @@ void CompositeHelperTest::testHelper()
 
     {
         // Test add()
-        data::tools::helper::Composite compositeHelper(obj);
+        data::helper::Composite compositeHelper(obj);
         compositeHelper.add(COMPOSITE_ID1, compositeObj1);
         compositeHelper.add(COMPOSITE_ID2, compositeObj2);
         CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
@@ -160,7 +160,7 @@ void CompositeHelperTest::testHelper()
 
     {
         // Test replacement with swap()
-        data::tools::helper::Composite compositeHelper(obj);
+        data::helper::Composite compositeHelper(obj);
         compositeHelper.swap(COMPOSITE_ID1, compositeObj3);
         CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
         CPPUNIT_ASSERT((*obj)[COMPOSITE_ID1] == compositeObj3);
@@ -186,7 +186,7 @@ void CompositeHelperTest::testHelper()
 
     {
         // Test add(), swap() and remove()
-        data::tools::helper::Composite compositeHelper(obj);
+        data::helper::Composite compositeHelper(obj);
 
         compositeHelper.swap(COMPOSITE_ID2, compositeObj3);
         CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getContainer().size());
@@ -231,7 +231,7 @@ void CompositeHelperTest::testHelper()
 
     {
         // Test clear()
-        data::tools::helper::Composite compositeHelper(obj);
+        data::helper::Composite compositeHelper(obj);
         compositeHelper.clear();
         CPPUNIT_ASSERT_EQUAL(size_t(0), obj->getContainer().size());
     }

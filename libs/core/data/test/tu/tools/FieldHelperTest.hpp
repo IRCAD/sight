@@ -30,7 +30,7 @@ namespace ut
 {
 
 /**
- * @brief   Test data::tools::helper::Field methods.
+ * @brief   Test data::helper::Field methods.
  */
 class FieldHelperTest : public CPPUNIT_NS::TestFixture
 {

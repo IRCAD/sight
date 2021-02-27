@@ -32,7 +32,7 @@
 #include <data/Composite.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 
 #include <service/macros.hpp>
 

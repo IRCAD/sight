@@ -26,7 +26,7 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <viz/scene3d/TransferFunction.hpp>
 
@@ -55,7 +55,7 @@ class VIZ_SCENE3D_CLASS_API Plane
 
 public:
 
-    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::Orientation OrientationMode;
 
     /// Defines the texture filtering mode.
     typedef enum FilteringEnum

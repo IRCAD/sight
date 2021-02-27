@@ -32,7 +32,7 @@
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <core/thread/ActiveWorkers.hpp>
 
@@ -181,7 +181,7 @@ void SeriesDB::readDicomSeries()
     }
 
     data::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
+    data::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Push Dicom Series
     if(!m_job->cancelRequested())
@@ -385,7 +385,7 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
                 if(series)
                 {
                     // Add the series to the DB
-                    data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
+                    data::helper::SeriesDB seriesDBHelper(seriesDB);
                     seriesDBHelper.add(series);
 
                     if(notifier)

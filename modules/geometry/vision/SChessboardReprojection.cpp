@@ -31,7 +31,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -174,7 +174,7 @@ void SChessboardReprojection::updating()
         reprojRadius = std::max(reprojRadius, 1);
 
         data::mt::ObjectWriteLock imgLock(videoImage);
-        if(!data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage))
+        if(!data::fieldHelper::MedicalImageHelpers::checkImageValidity(videoImage))
         {
             return;
         }

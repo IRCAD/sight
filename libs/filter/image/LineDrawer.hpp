@@ -27,7 +27,7 @@
 #include "filter/image/ImageDiff.hpp"
 
 #include <data/Image.hpp>
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <array>
 
@@ -43,7 +43,7 @@ public:
 
     typedef BresenhamLine::CoordinatesType CoordinatesType;
 
-    typedef data::tools::helper::MedicalImage::Orientation OrientationType;
+    typedef data::helper::MedicalImage::Orientation OrientationType;
 
     /// Constructor, instantiates a drawer with an image and a region of interest.
     FILTER_IMAGE_API LineDrawer(const data::Image::sptr& img, const data::Image::csptr& roi);

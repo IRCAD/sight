@@ -22,7 +22,7 @@
 
 #include "io/atoms/patch/patcher/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::io::atoms::patch
 {
@@ -37,7 +37,7 @@ struct FwDataRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwDataRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwDataRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

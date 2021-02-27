@@ -27,7 +27,7 @@
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 namespace sight::activity
 {
@@ -60,7 +60,7 @@ int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
             SLM_ERROR("The series DB must only contain 'ActivitySeries'. The series of type '" +
                       series->getClassname() + "' will be removed")
 
-            data::tools::helper::SeriesDB helper(seriesDB);
+            data::helper::SeriesDB helper(seriesDB);
             helper.remove(series);
             helper.notify();
         }
@@ -70,7 +70,7 @@ int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
             // Remove the wrong data
             SLM_ERROR("The activity '" +activity->getActivityConfigId() + "' is unknown, it will be removed")
 
-            data::tools::helper::SeriesDB helper(seriesDB);
+            data::helper::SeriesDB helper(seriesDB);
             helper.remove(activity);
             helper.notify();
         }
@@ -229,7 +229,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
             }
         }
 
-        data::tools::helper::SeriesDB helper(seriesDB);
+        data::helper::SeriesDB helper(seriesDB);
         helper.add(activity);
         {
             auto sig = seriesDB->signal< data::SeriesDB::AddedSeriesSignalType >(

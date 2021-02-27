@@ -35,8 +35,8 @@
 
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
-#include <data/tools/helper/Vector.hpp>
+#include <data/helper/SeriesDB.hpp>
+#include <data/helper/Vector.hpp>
 
 #include <service/macros.hpp>
 
@@ -305,7 +305,7 @@ void SSelector::onSelectedSeries(QVector< data::Series::sptr > _selection,
                                  QVector< data::Series::sptr > _deselection)
 {
     const auto selectionVector = this->getLockedInOut< data::Vector >(s_SELECTION_INOUT);
-    data::tools::helper::Vector vectorHelper(selectionVector.get_shared());
+    data::helper::Vector vectorHelper(selectionVector.get_shared());
 
     for( data::Series::sptr series :  _deselection)
     {
@@ -345,7 +345,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 void SSelector::onRemoveSeries(QVector< data::Series::sptr > _selection)
 {
     const auto seriesDB = this->getLockedInOut< data::SeriesDB >(s_SERIES_DB_INOUT);
-    data::tools::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
+    data::helper::SeriesDB seriesDBHelper(seriesDB.get_shared());
 
     // Remove duplicated series
     std::set< data::Series::sptr > seriesSet;

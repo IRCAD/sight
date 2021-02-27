@@ -28,7 +28,7 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/helper/Composite.hpp>
+#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -314,7 +314,7 @@ void SMultipleTF::initializePools()
             = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
         const data::Composite::sptr sTFPools = tfPools.get_shared();
-        data::tools::helper::Composite compositeHelper(sTFPools);
+        data::helper::Composite compositeHelper(sTFPools);
 
         // Add the default TF if it not exists.
         const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
@@ -560,7 +560,7 @@ void SMultipleTF::deletePool()
 
             // Remove the current TF pool from the Composite.
             const std::string selectedTFPoolKey = m_tfPoolsPreset->currentText().toStdString();
-            data::tools::helper::Composite compositeHelper(tfPools.get_shared());
+            data::helper::Composite compositeHelper(tfPools.get_shared());
 
             compositeHelper.remove(selectedTFPoolKey);
 
@@ -608,7 +608,7 @@ void SMultipleTF::newPool()
                 defaultComposite->getContainer()[newName] = defaultTf;
 
                 // Add a new composite.
-                data::tools::helper::Composite compositeHelper(sTFPools);
+                data::helper::Composite compositeHelper(sTFPools);
                 {
                     compositeHelper.add(newName, defaultComposite);
                 }
@@ -665,7 +665,7 @@ void SMultipleTF::copyPool()
                 SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
 
                 // Copy the composite.
-                data::tools::helper::Composite compositeHelper(sTFPools);
+                data::helper::Composite compositeHelper(sTFPools);
                 {
                     compositeHelper.add(newName, data::Object::copy(currentTFPool));
                 }
@@ -706,7 +706,7 @@ void SMultipleTF::reinitializePools()
         const data::mt::locked_ptr< data::Composite > tfPools
             = this->getLockedInOut< data::Composite >(s_TF_POOLS_INOUT);
 
-        data::tools::helper::Composite compositeHelper(tfPools.get_shared());
+        data::helper::Composite compositeHelper(tfPools.get_shared());
 
         // Clear it.
         compositeHelper.clear();
@@ -745,7 +745,7 @@ void SMultipleTF::renamePool()
                 data::Object::sptr object = (*tfPools)[str];
 
                 // Rename the composite.
-                data::tools::helper::Composite compositeHelper(sTFPools);
+                data::helper::Composite compositeHelper(sTFPools);
                 compositeHelper.remove(str);
                 compositeHelper.add(newName, object);
                 compositeHelper.notify();
@@ -814,7 +814,7 @@ void SMultipleTF::importPool()
                 poolName = this->createPoolName(poolName, sTFPools);
             }
 
-            data::tools::helper::Composite compositeHelper(sTFPools);
+            data::helper::Composite compositeHelper(sTFPools);
             compositeHelper.add(poolName, tfPool);
             compositeHelper.notify();
 

@@ -26,8 +26,8 @@
 
 #include <core/com/Signal.hpp>
 
-#include <data/tools/helper/MedicalImage.hpp>
-#include <data/tools/helper/TransferFunction.hpp>
+#include <data/helper/MedicalImage.hpp>
+#include <data/helper/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/Plane.hpp>
@@ -77,7 +77,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final : public sight::viz::scene3d:
 
 public:
 
-    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::Orientation OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SNegato2D, ::sight::viz::scene3d::IAdaptor)
@@ -186,7 +186,7 @@ private:
     OrientationMode m_orientation { OrientationMode::Z_AXIS };
 
     /// Helps interfacing with the transfer function input.
-    data::tools::helper::TransferFunction m_helperTF;
+    data::helper::TransferFunction m_helperTF;
 
     /// Defines if the plane border is used or not.
     bool m_border { true };

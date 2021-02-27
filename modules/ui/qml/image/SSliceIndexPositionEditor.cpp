@@ -28,8 +28,8 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <functional>
 
@@ -38,9 +38,9 @@ namespace sight::module::ui::qml::image
 
 const std::string* SSliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-    &data::tools::fieldHelper::Image::m_sagittalSliceIndexId,
-    &data::tools::fieldHelper::Image::m_frontalSliceIndexId,
-    &data::tools::fieldHelper::Image::m_axialSliceIndexId
+    &data::fieldHelper::Image::m_sagittalSliceIndexId,
+    &data::fieldHelper::Image::m_frontalSliceIndexId,
+    &data::fieldHelper::Image::m_axialSliceIndexId
 };
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
@@ -109,9 +109,9 @@ void SSliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sag
 
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    image->setField( data::tools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
-    image->setField( data::tools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
-    image->setField( data::tools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
+    image->setField( data::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+    image->setField( data::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+    image->setField( data::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
     this->updateSliceIndexFromImg();
 }
 
@@ -144,7 +144,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
 {
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
-    if (data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];

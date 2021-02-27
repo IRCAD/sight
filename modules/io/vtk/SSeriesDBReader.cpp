@@ -31,7 +31,7 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -191,7 +191,7 @@ void SSeriesDBReader::updating()
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        data::tools::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
+        data::helper::SeriesDB sdbHelper(lockedSeriesDB.get_shared());
         sdbHelper.clear();
         // Notify removal.
         sdbHelper.notify();

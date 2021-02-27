@@ -27,7 +27,7 @@
 #include <data/Boolean.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/tools/helper/Field.hpp>
+#include <data/helper/Field.hpp>
 
 namespace sight::module::ui::qml::model
 {
@@ -113,7 +113,7 @@ void SModelSeriesList::onShowReconstructions(int state )
 {
     data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
     SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
-    data::tools::helper::Field helper( modelSeries );
+    data::helper::Field helper( modelSeries );
     helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
     helper.notify();
 }

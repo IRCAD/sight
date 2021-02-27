@@ -25,7 +25,7 @@
 #include "core/config.hpp"
 
 #include <core/macros.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef core::util::FactoryRegistry< SPTR(core::memory::IPolicy) (), KeyType > Type;
+typedef core::FactoryRegistry< SPTR(core::memory::IPolicy) (), KeyType > Type;
 
 CORE_API SPTR(Type) get();
 

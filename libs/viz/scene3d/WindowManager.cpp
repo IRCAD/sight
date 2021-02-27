@@ -67,7 +67,7 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
 
 viz::scene3d::WindowManager::sptr WindowManager::get()
 {
-    return core::util::LazyInstantiator< viz::scene3d::WindowManager >::getInstance();
+    return core::LazyInstantiator< viz::scene3d::WindowManager >::getInstance();
 }
 
 // ----------------------------------------------------------------------------

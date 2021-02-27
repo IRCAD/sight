@@ -36,8 +36,8 @@
 #include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -58,9 +58,9 @@ namespace sight::module::ui::qt::image
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-    &data::tools::fieldHelper::Image::m_sagittalSliceIndexId,
-    &data::tools::fieldHelper::Image::m_frontalSliceIndexId,
-    &data::tools::fieldHelper::Image::m_axialSliceIndexId
+    &data::fieldHelper::Image::m_sagittalSliceIndexId,
+    &data::fieldHelper::Image::m_frontalSliceIndexId,
+    &data::fieldHelper::Image::m_axialSliceIndexId
 };
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
@@ -142,15 +142,15 @@ void SliceIndexPositionEditor::configuring()
 
         if(orientation == "axial" )
         {
-            m_helper.setOrientation(data::tools::helper::MedicalImage::Z_AXIS);
+            m_helper.setOrientation(data::helper::MedicalImage::Z_AXIS);
         }
         else if(orientation == "frontal" )
         {
-            m_helper.setOrientation(data::tools::helper::MedicalImage::Y_AXIS);
+            m_helper.setOrientation(data::helper::MedicalImage::Y_AXIS);
         }
         else if(orientation == "sagittal" )
         {
-            m_helper.setOrientation(data::tools::helper::MedicalImage::X_AXIS);
+            m_helper.setOrientation(data::helper::MedicalImage::X_AXIS);
         }
         else
         {
@@ -166,7 +166,7 @@ void SliceIndexPositionEditor::updating()
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    const bool imageIsValid = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
     m_helper.updateImageInfos(image);
     this->updateSliceIndexFromImg();
@@ -191,9 +191,9 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
 
     data::Integer::sptr indexesPtr[3];
     m_helper.getSliceIndex(indexesPtr);
-    image->setField( data::tools::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
-    image->setField( data::tools::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
-    image->setField( data::tools::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
+    image->setField( data::fieldHelper::Image::m_axialSliceIndexId, indexesPtr[2]);
+    image->setField( data::fieldHelper::Image::m_frontalSliceIndexId, indexesPtr[1]);
+    image->setField( data::fieldHelper::Image::m_sagittalSliceIndexId, indexesPtr[0]);
     this->updateSliceIndexFromImg();
 }
 
@@ -225,7 +225,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
     SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
-    if (data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
@@ -281,9 +281,9 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    SLM_ASSERT("Bad slice type "<<type, type == data::tools::helper::MedicalImage::X_AXIS ||
-               type == data::tools::helper::MedicalImage::Y_AXIS ||
-               type == data::tools::helper::MedicalImage::Z_AXIS );
+    SLM_ASSERT("Bad slice type "<<type, type == data::helper::MedicalImage::X_AXIS ||
+               type == data::helper::MedicalImage::Y_AXIS ||
+               type == data::helper::MedicalImage::Z_AXIS );
 
     const int oldType = static_cast< int > (m_helper.getOrientation());
     // Change slice type

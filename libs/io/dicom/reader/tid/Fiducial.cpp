@@ -31,7 +31,7 @@
 #include <data/Boolean.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 namespace sight::io::dicom
 {
@@ -141,15 +141,15 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
     data::Point::sptr point = data::Point::New(x, y, z);
-    point->setField(data::tools::fieldHelper::Image::m_labelId, data::String::New(label));
+    point->setField(data::fieldHelper::Image::m_labelId, data::String::New(label));
 
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
 
     if(!pointList)
     {
         pointList = data::PointList::New();
-        m_object->setField(data::tools::fieldHelper::Image::m_imageLandmarksId, pointList);
+        m_object->setField(data::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
     pointList->getPoints().push_back(point);

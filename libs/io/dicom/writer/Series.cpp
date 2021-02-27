@@ -32,7 +32,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
@@ -88,9 +88,9 @@ void Series::write()
         imageIOD.write(series);
 
         data::PointList::sptr landmarks =
-            image->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+            image->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
         data::Vector::sptr distances =
-            image->getField< data::Vector >(data::tools::fieldHelper::Image::m_imageDistancesId);
+            image->getField< data::Vector >(data::fieldHelper::Image::m_imageDistancesId);
         if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
@@ -131,10 +131,10 @@ bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
     SLM_ASSERT("Image not instanced", image);
 
     data::PointList::sptr pl;
-    pl = image->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+    pl = image->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
     // Check if image has landmark and distance
     return ((pl && pl->getPoints().size() > 0) ||
-            image->getField(data::tools::fieldHelper::Image::m_imageDistancesId));
+            image->getField(data::fieldHelper::Image::m_imageDistancesId));
 }
 
 //------------------------------------------------------------------------------

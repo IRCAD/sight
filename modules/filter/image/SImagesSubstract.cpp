@@ -29,7 +29,7 @@
 // Service associated data
 #include <data/Image.hpp>
 
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 

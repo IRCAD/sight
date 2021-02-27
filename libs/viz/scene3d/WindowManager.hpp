@@ -25,7 +25,7 @@
 #include "viz/scene3d/config.hpp"
 
 #include <core/base.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 

@@ -25,7 +25,7 @@
 #include "ui/base/config.hpp"
 
 #include <core/macros.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -39,7 +39,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef ::sight::core::util::FactoryRegistry< SPTR(sight::ui::base::GuiBaseObject) (), KeyType > Type;
+typedef ::sight::core::FactoryRegistry< SPTR(sight::ui::base::GuiBaseObject) (), KeyType > Type;
 
 UI_BASE_API SPTR(Type) get();
 

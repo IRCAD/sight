@@ -29,7 +29,7 @@
 #include <core/com/Signal.hxx>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -51,7 +51,7 @@ SPTR(void) getLock( const BufferManager::sptr& manager, BufferManager::ConstBuff
 
 BufferManager::sptr BufferManager::getDefault()
 {
-    return core::util::LazyInstantiator< BufferManager >::getInstance();
+    return core::LazyInstantiator< BufferManager >::getInstance();
 }
 
 //-----------------------------------------------------------------------------

@@ -25,8 +25,8 @@
 #include <core/tools/Type.hpp>
 
 #include <data/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -65,8 +65,8 @@ void LineDrawerTest::circleTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{ 20, 20, 20 }};
 
-        const data::tools::helper::MedicalImage::Orientation ORIENTATION =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation ORIENTATION =
+            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 0.0001;
         const std::int16_t VALUE = 152;
 
@@ -77,7 +77,7 @@ void LineDrawerTest::circleTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         ImageDiff diff = drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -100,8 +100,8 @@ void LineDrawerTest::circleTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{ 20, 20, 20 }};
 
-        const data::tools::helper::MedicalImage::Orientation ORIENTATION =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation ORIENTATION =
+            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 5;
         const std::int16_t VALUE = 152;
 
@@ -112,7 +112,7 @@ void LineDrawerTest::circleTest()
         const auto dumpLock = image->lock();
 
         SPTR(data::Image::BufferType) val =
-            data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -237,8 +237,8 @@ void LineDrawerTest::ellipseTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{ 50, 50, 50 }};
 
-        const data::tools::helper::MedicalImage::Orientation ORIENTATION =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation ORIENTATION =
+            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 10;
         const std::int16_t VALUE = 152;
 
@@ -249,7 +249,7 @@ void LineDrawerTest::ellipseTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         ImageDiff diff = drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -320,8 +320,8 @@ void LineDrawerTest::borderTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{ 45, 3, 20 }};
 
-        const data::tools::helper::MedicalImage::Orientation ORIENTATION =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation ORIENTATION =
+            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 15;
         const std::int16_t VALUE = 1952;
 
@@ -332,7 +332,7 @@ void LineDrawerTest::borderTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, nullptr);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);
@@ -386,8 +386,8 @@ void LineDrawerTest::roiTest()
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{ 45, 45, 40 }};
 
-        const data::tools::helper::MedicalImage::Orientation ORIENTATION =
-            data::tools::helper::MedicalImage::Z_AXIS;
+        const data::helper::MedicalImage::Orientation ORIENTATION =
+            data::helper::MedicalImage::Z_AXIS;
         const double THICKNESS   = 15;
         const std::int16_t VALUE = 1952;
 
@@ -407,7 +407,7 @@ void LineDrawerTest::roiTest()
         const std::int16_t ROI_VALUE      = 1;
 
         SPTR(data::Image::BufferType) roiVal =
-            data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(roiImage, ROI_VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(roiImage, ROI_VALUE);
 
         for (size_t i = ROI_BEGIN[0]; i < ROI_END[0]; ++i)
         {
@@ -423,7 +423,7 @@ void LineDrawerTest::roiTest()
 
         const auto dumpLock = image->lock();
         SPTR(data::Image::BufferType) val =
-            data::tools::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
+            data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, VALUE);
 
         filter::image::LineDrawer drawer(image, roiImage);
         drawer.draw(ORIENTATION, POINT, POINT, val.get(), THICKNESS);

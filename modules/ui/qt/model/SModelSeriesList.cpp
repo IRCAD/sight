@@ -39,7 +39,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
-#include <data/tools/helper/Field.hpp>
+#include <data/helper/Field.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -443,7 +443,7 @@ void SModelSeriesList::onShowReconstructions(int _state)
         this->getLockedInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
 
     {
-        data::tools::helper::Field helper( modelSeries.get_shared() );
+        data::helper::Field helper( modelSeries.get_shared() );
         helper.addOrSwap("ShowReconstructions", data::Boolean::New(_state == Qt::Unchecked));
     }
 }

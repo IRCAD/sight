@@ -26,7 +26,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 #include <service/extension/Config.hpp>
@@ -316,7 +316,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
         sight::io::dimse::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
 
     // Create temporary series helper.
-    data::tools::helper::SeriesDB readerSeriesHelper(m_seriesDB);
+    data::helper::SeriesDB readerSeriesHelper(m_seriesDB);
 
     const auto infoNotif = this->signal< service::IService::InfoNotifiedSignalType >(
         service::IService::s_INFO_NOTIFIED_SIG);
@@ -360,7 +360,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
                     m_localSeries.push_back(selectedSeriesUID);
                 }
 
-                data::tools::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
+                data::helper::SeriesDB seriesHelper(destinationSeriesDB.get_shared());
                 seriesHelper.merge(m_seriesDB);
                 seriesHelper.notify();
             }

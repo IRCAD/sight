@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <service/extension/Config.hpp>
 
@@ -379,9 +379,9 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
         data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize2()[0]/2);
         data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize2()[1]/2);
 
-        image->setField(data::tools::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
-        image->setField(data::tools::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
-        image->setField(data::tools::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
+        image->setField(data::fieldHelper::Image::m_axialSliceIndexId, axialIndex);
+        image->setField(data::fieldHelper::Image::m_frontalSliceIndexId, frontalIndex);
+        image->setField(data::fieldHelper::Image::m_sagittalSliceIndexId, sagittalIndex);
 
         // Send the signal
         const auto sig = image->signal< data::Image::ModifiedSignalType >(data::Image::s_MODIFIED_SIG);

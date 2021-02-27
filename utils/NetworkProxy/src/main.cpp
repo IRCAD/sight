@@ -26,7 +26,7 @@
 
 #include <core/spyLog.hpp>
 #include <core/thread/Worker.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <boost/date_time.hpp>
 #include <boost/type.hpp>

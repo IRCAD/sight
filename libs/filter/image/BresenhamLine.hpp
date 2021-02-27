@@ -25,7 +25,7 @@
 #include "filter/image//config.hpp"
 
 #include <data/Image.hpp>
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 namespace sight::filter::image
 {
@@ -46,7 +46,7 @@ public:
     typedef std::vector< CoordinatesType > PathType;
 
     /// Computes a Bresenham line in a 3D image slice.
-    FILTER_IMAGE_API static PathType draw(const data::tools::helper::MedicalImage::Orientation orientation,
+    FILTER_IMAGE_API static PathType draw(const data::helper::MedicalImage::Orientation orientation,
                                           const CoordinatesType& startCoord, const CoordinatesType& endCoord);
 
 };

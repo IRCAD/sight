@@ -25,7 +25,7 @@
 #include "viz/qt3d/config.hpp"
 
 #include <core/macros.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -39,7 +39,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef sight::core::util::FactoryRegistry< SPTR(sight::viz::qt3d::IWindowInteractor) (), KeyType > Type;
+typedef sight::core::FactoryRegistry< SPTR(sight::viz::qt3d::IWindowInteractor) (), KeyType > Type;
 
 VIZ_QT3D_API SPTR(Type) get();
 

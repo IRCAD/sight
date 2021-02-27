@@ -25,8 +25,8 @@
 #include <data/Array.hpp>
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <filter/image/Labeling.hpp>
 
@@ -120,9 +120,9 @@ void LabelingTest::computeCentroids()
     // Call the ITK operator
     filter::image::computeCentroids(img, pointListCentroids, pointListLabels);
 
-    data::tools::fieldHelper::MedicalImageHelpers::checkLandmarks( img );
+    data::fieldHelper::MedicalImageHelpers::checkLandmarks( img );
     data::PointList::sptr landmarks =
-        img->getField< data::PointList >( data::tools::fieldHelper::Image::m_imageLandmarksId);
+        img->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
 
     // Check that we can get the landmarks
     CPPUNIT_ASSERT(landmarks);

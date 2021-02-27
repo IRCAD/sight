@@ -24,8 +24,8 @@
 
 #include <core/mt/types.hpp>
 #include <core/spyLog.hpp>
-#include <core/util/FactoryRegistry.hpp>
-#include <core/util/LazyInstantiator.hpp>
+#include <core/FactoryRegistry.hpp>
+#include <core/LazyInstantiator.hpp>
 
 #include <chrono>
 #include <exception>
@@ -131,7 +131,7 @@ void FactoryRegistryTest::pointerTest()
 {
     ObjectTest::s_counter = 0;
 
-    typedef core::util::FactoryRegistry< ObjectTest::sptr() > FactoryType;
+    typedef core::FactoryRegistry< ObjectTest::sptr() > FactoryType;
     FactoryType objectTestFactory;
     objectTestFactory.addFactory("ObjectTest", []() -> ObjectTest::sptr
             {
@@ -174,7 +174,7 @@ void FactoryRegistryTest::valueTest()
 {
     ObjectTest::s_counter = 0;
 
-    core::util::FactoryRegistry< ObjectTest() > objectTestFactory;
+    core::FactoryRegistry< ObjectTest() > objectTestFactory;
     objectTestFactory.addFactory("ObjectTest", []() -> ObjectTest
             {
                 return ObjectTest();
@@ -210,7 +210,7 @@ void FactoryRegistryTest::argTest()
 {
     ObjectTest::s_counter = 0;
 
-    core::util::FactoryRegistry< ObjectTest::sptr(std::string) > objectTestFactory;
+    core::FactoryRegistry< ObjectTest::sptr(std::string) > objectTestFactory;
     objectTestFactory.addFactory("ObjectTest", [](const std::string& name) -> ObjectTest::sptr
             {
                 return std::make_shared<ObjectTest>(name);
@@ -243,7 +243,7 @@ void FactoryRegistryTest::argTest()
 
 //-----------------------------------------------------------------------------
 
-typedef core::util::FactoryRegistry< ObjectTest::sptr(int) > ThreadSafetyTestFactoryType;
+typedef core::FactoryRegistry< ObjectTest::sptr(int) > ThreadSafetyTestFactoryType;
 
 struct UseFactoryThread
 {

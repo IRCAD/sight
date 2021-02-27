@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/processing/SComputeHistogram.hpp"
 
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 namespace sight::module::viz::scene2d
 {
@@ -57,7 +57,7 @@ struct ComputeHistogramFunctor
         IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
 
-        data::tools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         SLM_ASSERT("Wrong image", max > min);
         if( max > min )
         {

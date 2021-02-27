@@ -29,7 +29,7 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/Image.hpp>
-#include <data/tools/helper/Vector.hpp>
+#include <data/helper/Vector.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -149,7 +149,7 @@ void SImagesSelector::remove()
         data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
         data::Object::sptr obj    = vector->getContainer()[idx];
 
-        data::tools::helper::Vector vectorHelper(vector);
+        data::helper::Vector vectorHelper(vector);
         vectorHelper.remove(obj);
         vectorHelper.notify();
 
@@ -163,7 +163,7 @@ void SImagesSelector::reset()
 {
     data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
-    data::tools::helper::Vector vectorHelper(vector);
+    data::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
     vectorHelper.notify();
 
@@ -224,7 +224,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     data::Vector::sptr vector = this->getInOut< data::Vector >(s_SELECTION_INOUT);
 
-    data::tools::helper::Vector vectorHelper(vector);
+    sight::data::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);
     vectorHelper.notify();
 

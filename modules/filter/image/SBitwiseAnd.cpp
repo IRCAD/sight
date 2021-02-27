@@ -29,7 +29,7 @@
 
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
-#include <data/tools/helper/ImageGetter.hpp>
+#include <data/helper/ImageGetter.hpp>
 
 #include <service/macros.hpp>
 
@@ -156,8 +156,8 @@ void SBitwiseAnd::updating()
     const auto mask = this->getLockedInput< data::Image >(s_MASK_IN);
     SLM_ASSERT("mask does not exist.", mask);
 
-    data::tools::helper::ImageGetter imageHelper(image.get_shared());
-    data::tools::helper::ImageGetter maskHelper(mask.get_shared());
+    data::helper::ImageGetter imageHelper(image.get_shared());
+    data::helper::ImageGetter maskHelper(mask.get_shared());
 
     data::Image::sptr outputImage = data::Image::New();
 

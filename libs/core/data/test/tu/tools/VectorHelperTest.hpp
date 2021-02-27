@@ -30,7 +30,7 @@ namespace ut
 {
 
 /**
- * @brief   Test data::tools::helper::Vector methods.
+ * @brief   Test data::helper::Vector methods.
  */
 class VectorHelperTest : public CPPUNIT_NS::TestFixture
 {

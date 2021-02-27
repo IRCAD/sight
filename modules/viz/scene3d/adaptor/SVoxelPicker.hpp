@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 
@@ -117,7 +117,7 @@ private:
     void pick(MouseButton _button, Modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
-    typedef data::tools::helper::MedicalImage::Orientation OrientationMode;
+    typedef data::helper::MedicalImage::Orientation OrientationMode;
 
     /**
      * @brief SLOT: updates the image slice type.

@@ -27,7 +27,7 @@
 
 #include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::io::dicom

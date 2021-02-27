@@ -31,9 +31,9 @@
 
 #include <data/Image.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/helper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/Image.hpp>
 
 #include <service/macros.hpp>
 
@@ -102,7 +102,7 @@ void SLabelGeometryImage::updating()
 {
     const auto image = this->getLockedInOut< data::Image >("image");
 
-    data::tools::helper::Image imageHelper(image.get_shared());
+    data::helper::Image imageHelper(image.get_shared());
     if (!imageHelper.getBuffer())
     {
         SLM_INFO("Image is not set.");
@@ -115,9 +115,9 @@ void SLabelGeometryImage::updating()
     if(m_lPointListCentroids.empty())
     {
         //get landmarks
-        data::tools::fieldHelper::MedicalImageHelpers::checkLandmarks( image.get_shared() );
+        data::fieldHelper::MedicalImageHelpers::checkLandmarks( image.get_shared() );
         data::PointList::sptr landmarks =
-            image->getField< data::PointList >( data::tools::fieldHelper::Image::m_imageLandmarksId);
+            image->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
@@ -158,7 +158,7 @@ void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string
     for(size_t idPoint = 0; idPoint < selectedPointList->getPoints().size(); ++idPoint)
     {
         data::String::sptr label = data::String::New(std::to_string(idPoint));
-        selectedPointList->getPoints().at(idPoint)->setField( data::tools::fieldHelper::Image::m_labelId, label );
+        selectedPointList->getPoints().at(idPoint)->setField( data::fieldHelper::Image::m_labelId, label );
     }
 
     this->setOutput("pointList", m_lPointListCentroids.at(indexPlane));

@@ -34,7 +34,7 @@
 #include <core/runtime/operations.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 #include <service/macros.hpp>
 

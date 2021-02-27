@@ -29,7 +29,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/tools/fieldHelper/Image.hpp>
+#include <data/fieldHelper/Image.hpp>
 
 namespace sight::io::dicom
 {
@@ -63,11 +63,11 @@ SpatialFiducials::~SpatialFiducials()
 void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 {
     data::PointList::sptr pointList =
-        m_object->getField< data::PointList >(data::tools::fieldHelper::Image::m_imageLandmarksId);
+        m_object->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
     if(!pointList)
     {
         pointList = data::PointList::New();
-        m_object->setField(data::tools::fieldHelper::Image::m_imageLandmarksId, pointList);
+        m_object->setField(data::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
     const ::gdcm::DataElement& graphicCoordinatesDataElement =
@@ -103,7 +103,7 @@ void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 
         data::Point::sptr point = data::Point::New(static_cast<double>(pointValues[0]),
                                                    static_cast<double>(pointValues[1]), zCoordinate);
-        point->setField(data::tools::fieldHelper::Image::m_labelId, data::String::New(label));
+        point->setField(data::fieldHelper::Image::m_labelId, data::String::New(label));
         pointList->getPoints().push_back(point);
 
     }

@@ -24,9 +24,9 @@
 
 #include <core/spyLog.hpp>
 
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
-#include <data/tools/helper/Image.hpp>
-#include <data/tools/helper/ImageGetter.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/helper/Image.hpp>
+#include <data/helper/ImageGetter.hpp>
 
 namespace sight::filter::image
 {
@@ -37,7 +37,7 @@ LineDrawer::LineDrawer(const data::Image::sptr& img, const data::Image::csptr& r
     m_image(img),
     m_roiImage(roi)
 {
-    m_useROI = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity( m_roiImage );
+    m_useROI = data::fieldHelper::MedicalImageHelpers::checkImageValidity( m_roiImage );
 
     m_imageTypeSize = m_image->getType().sizeOf();
     m_roiTypeSize   = m_useROI ? m_roiImage->getType().sizeOf() : 0;
@@ -104,7 +104,7 @@ bool LineDrawer::drawPixel( const data::Image::IndexType index, data::Image::Buf
     {
         data::Image::BufferType* roiVal =
             reinterpret_cast< data::Image::BufferType* >(m_roiImage->getPixelBuffer(index));
-        if (data::tools::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
+        if (data::fieldHelper::MedicalImageHelpers::isBufNull(roiVal, m_roiTypeSize))
         {
             return false;
         }
@@ -115,7 +115,7 @@ bool LineDrawer::drawPixel( const data::Image::IndexType index, data::Image::Buf
         return false;
     }
 
-    if (!overwrite && !data::tools::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, m_imageTypeSize) )
+    if (!overwrite && !data::fieldHelper::MedicalImageHelpers::isBufNull(pixBuf, m_imageTypeSize) )
     {
         return false;
     }
@@ -138,15 +138,15 @@ ImageDiff LineDrawer::draw(const OrientationType orientation, const CoordinatesT
 
     switch ( orientation )
     {
-        case data::tools::helper::MedicalImage::Z_AXIS:
+        case data::helper::MedicalImage::Z_AXIS:
             dim0 = 0;
             dim1 = 1;
             break;
-        case data::tools::helper::MedicalImage::Y_AXIS:
+        case data::helper::MedicalImage::Y_AXIS:
             dim0 = 2;
             dim1 = 0;
             break;
-        case data::tools::helper::MedicalImage::X_AXIS:
+        case data::helper::MedicalImage::X_AXIS:
             dim0 = 1;
             dim1 = 2;
             break;

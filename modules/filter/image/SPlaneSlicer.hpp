@@ -24,7 +24,7 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <service/IOperator.hpp>
 
@@ -119,7 +119,7 @@ private:
     void updateDefaultValue();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::tools::helper::MedicalImage::Orientation m_orientation;
+    data::helper::MedicalImage::Orientation m_orientation;
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

@@ -27,7 +27,7 @@
 #include <core/tools/Failed.hpp>
 
 #include <data/Integer.hpp>
-#include <data/tools/helper/TransferFunction.hpp>
+#include <data/helper/TransferFunction.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -185,7 +185,7 @@ private:
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     data::TransferFunction::sptr m_previousTF;
 
-    data::tools::helper::TransferFunction m_helperTF;
+    data::helper::TransferFunction m_helperTF;
 
 };
 

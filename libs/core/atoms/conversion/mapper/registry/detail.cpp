@@ -22,7 +22,7 @@
 
 #include "atoms/conversion/mapper/registry/detail.hpp"
 
-#include <core/util/LazyInstantiator.hpp>
+#include <core/LazyInstantiator.hpp>
 
 namespace sight::atoms::conversion
 {
@@ -35,7 +35,7 @@ struct FwAtomConversionRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::util::LazyInstantiator< Type, FwAtomConversionRegistryInstantiatorTag > InstantiatorType;
+    typedef core::LazyInstantiator< Type, FwAtomConversionRegistryInstantiatorTag > InstantiatorType;
     return InstantiatorType::getInstance();
 }
 

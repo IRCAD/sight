@@ -25,7 +25,7 @@
 #include "activity/config.hpp"
 
 #include <core/macros.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef core::util::FactoryRegistry< SPTR(activity::IValidator) (), KeyType > Type;
+typedef core::FactoryRegistry< SPTR(activity::IValidator) (), KeyType > Type;
 
 ACTIVITY_API SPTR(Type) get();
 

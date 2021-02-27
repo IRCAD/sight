@@ -26,9 +26,9 @@
 #include "filter/image/ImageDiff.hpp"
 
 #include <data/Image.hpp>
-#include <data/tools/helper/Image.hpp>
-#include <data/tools/helper/ImageGetter.hpp>
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/Image.hpp>
+#include <data/helper/ImageGetter.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <filter/image/BresenhamLine.hpp>
 
@@ -51,7 +51,7 @@ public:
 
     typedef filter::image::BresenhamLine::CoordinatesType CoordinatesType;
 
-    typedef data::tools::helper::MedicalImage::Orientation OrientationType;
+    typedef data::helper::MedicalImage::Orientation OrientationType;
 
     typedef std::vector< CoordinatesType > SeedsType;
 

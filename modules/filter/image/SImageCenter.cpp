@@ -29,7 +29,7 @@
 #include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/tools/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -81,7 +81,7 @@ void SImageCenter::updating()
 
     SLM_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
 
-    const bool imageValidity = data::tools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool imageValidity = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
 
     if(!imageValidity)
     {

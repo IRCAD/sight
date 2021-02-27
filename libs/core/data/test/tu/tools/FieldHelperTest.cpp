@@ -28,7 +28,7 @@
 #include <core/com/Slot.hxx>
 
 #include <data/String.hpp>
-#include <data/tools/helper/Field.hpp>
+#include <data/helper/Field.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::data::tools::ut::FieldHelperTest );
@@ -132,7 +132,7 @@ void FieldHelperTest::testHelper()
 
     {
         // Test setField()
-        data::tools::helper::Field fieldHelper(obj);
+        data::helper::Field fieldHelper(obj);
         fieldHelper.setField(FIELD_ID1, fieldObj1);
         fieldHelper.setField(FIELD_ID2, fieldObj2);
         CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getFields().size());
@@ -157,7 +157,7 @@ void FieldHelperTest::testHelper()
     {
         // Test setFields()
         data::Object::FieldMapType fieldsWithObj1 = { { FIELD_ID1, fieldObj3} };
-        data::tools::helper::Field fieldHelper(obj);
+        data::helper::Field fieldHelper(obj);
         fieldHelper.setFields(fieldsWithObj1);
         CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj3);
@@ -181,7 +181,7 @@ void FieldHelperTest::testHelper()
 
     {
         // Test replacement with setField()
-        data::tools::helper::Field fieldHelper(obj);
+        data::helper::Field fieldHelper(obj);
         fieldHelper.setField(FIELD_ID1, fieldObj2);
         CPPUNIT_ASSERT_EQUAL(size_t(1), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
@@ -207,7 +207,7 @@ void FieldHelperTest::testHelper()
 
     {
         // Test add(), addOrSwap() and remove()
-        data::tools::helper::Field fieldHelper(obj);
+        data::helper::Field fieldHelper(obj);
         fieldHelper.add(FIELD_ID2, fieldObj1);
         CPPUNIT_ASSERT_EQUAL(size_t(2), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == fieldObj2);
@@ -251,7 +251,7 @@ void FieldHelperTest::testHelper()
 
     {
         // Test clear()
-        data::tools::helper::Field fieldHelper(obj);
+        data::helper::Field fieldHelper(obj);
         fieldHelper.clear();
         CPPUNIT_ASSERT_EQUAL(size_t(0), obj->getFields().size());
         CPPUNIT_ASSERT(obj->getField(FIELD_ID1) == nullobj);

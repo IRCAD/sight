@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 #include <core/Demangler.hpp>
-#include <core/util/FactoryRegistry.hpp>
+#include <core/FactoryRegistry.hpp>
 
 #include <boost/graph/named_graph.hpp>
 #include <boost/lexical_cast.hpp>

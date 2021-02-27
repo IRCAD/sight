@@ -33,7 +33,7 @@
 
 #include <data/ActivitySeries.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/tools/helper/SeriesDB.hpp>
+#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -148,7 +148,7 @@ void SExport::updating()
         series->setPerformingPhysiciansName(physicians);
         series->setDescription(description);
 
-        data::tools::helper::SeriesDB seriesDBHelper(seriesDB);
+        data::helper::SeriesDB seriesDBHelper(seriesDB);
         seriesDBHelper.add(series);
         seriesDBHelper.notify();
         this->setIsExecutable(false);

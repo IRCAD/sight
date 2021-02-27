@@ -24,7 +24,7 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <data/tools/helper/MedicalImage.hpp>
+#include <data/helper/MedicalImage.hpp>
 
 #include <QObject>
 
@@ -84,7 +84,7 @@ namespace sight::module::ui::qml::image
  * - \b image [sight::data::Image]: image on which the slice index will be changed
  */
 class MODULE_UI_QML_CLASS_QT_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor,
-                                                             public data::tools::helper::MedicalImage
+                                                             public data::helper::MedicalImage
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
@@ -113,7 +113,7 @@ public Q_SLOTS:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using data::tools::helper::MedicalImage::Orientation;
+    using data::helper::MedicalImage::Orientation;
 
     /// Update the infromation from the image
     MODULE_UI_QML_QT_API virtual void starting() override;
