@@ -74,7 +74,7 @@ void SnapshotEditor::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    std::filesystem::path path = core::runtime::getModuleResourceFilePath("module_ui_qt", "camera-photo.png");
+    std::filesystem::path path = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));

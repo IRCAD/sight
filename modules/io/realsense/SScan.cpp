@@ -161,7 +161,7 @@ void SScan::configuring()
 
     }
 
-    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("sight_module_io_realSense"));
+    static const auto s_modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::io::realSense"));
     // Parse presets files
     this->loadPresets(s_modulePath / "presets");
 }

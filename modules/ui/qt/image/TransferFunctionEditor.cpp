@@ -102,7 +102,7 @@ void TransferFunctionEditor::configuring()
     }
     if (useDefaultPath)
     {
-        const auto pathRoot = core::runtime::getModuleResourceFilePath("module_ui_qt", "tf");
+        const auto pathRoot = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "tf");
         m_paths.push_back(pathRoot);
     }
 }

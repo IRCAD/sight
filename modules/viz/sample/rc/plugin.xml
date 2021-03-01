@@ -2,9 +2,9 @@
 <!-- DO NOT EDIT MANUALLY !!! -->
 
 <plugin id="sight::module::viz::sample" library="true" >
-    <requirement id="sight_module_ui_qt"/>
-    <requirement id="sight_module_viz_scene3d"/>
-    <requirement id="sight_module_viz_scene3dQt"/>
+    <requirement id="sight::module::ui::qt"/>
+    <requirement id="sight::module::viz::scene3d"/>
+    <requirement id="sight::module::viz::scene3dQt"/>
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::IGuiContainer</type>
          <service>::sight::module::viz::sample::SImage</service>

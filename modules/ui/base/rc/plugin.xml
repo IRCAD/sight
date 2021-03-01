@@ -2,7 +2,7 @@
 <!-- DO NOT EDIT MANUALLY !!! -->
 
 <plugin id="sight::module::ui::base" library="true" >
-    <requirement id="sight_module_service"/>
+    <requirement id="sight::module::service"/>
 
     <extension implements="::sight::service::extension::Factory">
          <type>::sight::ui::base::IAction</type>

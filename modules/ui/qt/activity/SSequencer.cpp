@@ -128,7 +128,7 @@ void SSequencer::starting()
     mainLayout->addWidget(m_widget);
 
     const auto path =
-        core::runtime::getModuleResourceFilePath("module_ui_qt", "ActivitySequencer.qml");
+        core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ActivitySequencer.qml");
     QWidget* parent = qtContainer->getQtContainer();
     auto engine     = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);

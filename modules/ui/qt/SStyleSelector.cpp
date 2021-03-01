@@ -69,7 +69,7 @@ void SStyleSelector::starting()
 {
     m_styleMap["DEFAULT"] = std::filesystem::path("");
 
-    const auto styleRc = core::runtime::getModuleResourcePath("module_ui_qt");
+    const auto styleRc = core::runtime::getModuleResourcePath("sight::module::ui::qt");
 
     // Stores each rcc & qss
     for(auto& p: std::filesystem::directory_iterator(styleRc))

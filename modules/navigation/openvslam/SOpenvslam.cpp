@@ -244,7 +244,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     {
         m_sigVocFileLoadingStarted->asyncEmit();
         m_vocabularyPath =
-            core::runtime::getModuleResourceFilePath("module_navigation_openvslam", "orb_vocab.dbow2").string();
+            core::runtime::getModuleResourceFilePath("sight::module::navigation::openvslam", "orb_vocab.dbow2").string();
         m_sigVocFileLoaded->asyncEmit();
     }
     if(m_slamSystem == nullptr)

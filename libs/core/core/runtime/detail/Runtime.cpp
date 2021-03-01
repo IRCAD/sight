@@ -240,17 +240,6 @@ Runtime::findModule( const std::string& identifier ) const
         }
     }
 
-    if(resModule == nullptr)
-    {
-        for(const std::shared_ptr<Module>& module : m_modules)
-        {
-            if(module->getLibraryName() == identifier)
-            {
-                resModule = module;
-                break;
-            }
-        }
-    }
     return resModule;
 }
 
@@ -272,17 +261,6 @@ std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identif
         }
     }
 
-    if(resModule == nullptr)
-    {
-        for(const std::shared_ptr<Module>& module : m_modules)
-        {
-            if(module->getLibraryName() == identifier && module->isEnabled())
-            {
-                resModule = module;
-                break;
-            }
-        }
-    }
     return resModule;
 }
 

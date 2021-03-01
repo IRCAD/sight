@@ -73,8 +73,7 @@ void SeriesRetriever::initialize(const std::string& applicationTitle,
     this->setPort(applicationport);
 
     // Load configuration
-    std::filesystem::path cfgPath =
-        core::runtime::getLibraryResourceFilePath("io_dimse/storescp.cfg");
+    std::filesystem::path cfgPath = core::runtime::getLibraryResourceFilePath("io_dimse/storescp.cfg");
     SLM_ASSERT("storescp.cfg not found !", std::filesystem::exists(cfgPath));
     this->loadAssociationCfgFile(cfgPath.string().c_str());
     this->setAndCheckAssociationProfile("Default");

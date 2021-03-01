@@ -15,7 +15,7 @@
         <id>SightCalibratorActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for SightCalibrator</desc>
-        <icon>sight_module_ui_flaticons/YellowCamera.svg</icon>
+        <icon>sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements />
         <appConfig id="SightCalibrator_ActivitySelector_AppCfg">
             <parameters />

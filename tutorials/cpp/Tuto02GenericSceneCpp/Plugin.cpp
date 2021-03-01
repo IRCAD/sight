@@ -384,8 +384,8 @@ void Plugin::initialize()
     {
         service::IService::ConfigType config;
         config.add("config.checkable", true);
-        config.add("config.icon", "sight_module_ui_flaticons/RedCross.svg");
-        config.add("config.icon2", "sight_module_ui_flaticons/Layers.svg");
+        config.add("config.icon", "sight::module::ui::flaticons/RedCross.svg");
+        config.add("config.icon2", "sight::module::ui::flaticons/Layers.svg");
         config.add("config.iconWidth", "40");
         config.add("config.iconHeight", "16");
         config.add("config.checked", true);
@@ -406,7 +406,7 @@ void Plugin::initialize()
     {
         service::IService::ConfigType config;
         config.add("config.checkable", false);
-        config.add("config.icon", "sight_module_ui_flaticons/YellowPhoto.svg");
+        config.add("config.icon", "sight::module::ui::flaticons/YellowPhoto.svg");
         snapshotSrv->configure(config);
     }
 

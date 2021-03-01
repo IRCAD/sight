@@ -2,7 +2,7 @@
 <!-- DO NOT EDIT MANUALLY !!! -->
 
 <plugin id="sight::module::viz::scene3dQt" library="true" >
-    <requirement id="sight_module_service"/>
-    <requirement id="sight_module_viz_scene3d"/>
+    <requirement id="sight::module::service"/>
+    <requirement id="sight::module::viz::scene3d"/>
 
 </plugin>

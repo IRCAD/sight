@@ -374,7 +374,7 @@ std::string DictionaryReader::extension()
 
 std::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
-    return core::runtime::getLibraryResourceFilePath(PRJ_NAME "/OrganDictionary.dic");
+    return core::runtime::getLibraryResourceFilePath("io_base/OrganDictionary.dic");
 }
 
 //------------------------------------------------------------------------------

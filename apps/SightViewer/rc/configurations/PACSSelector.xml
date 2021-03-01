@@ -285,7 +285,7 @@
         <service uid="seriesPullerAct" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>sight_module_ui_flaticons/YellowPull.svg</icon>
+               <icon>sight::module::ui::flaticons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Pull selected series</toolTip>
@@ -296,7 +296,7 @@
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
-               <icon>sight_module_ui_flaticons/BlueWait.svg</icon>
+               <icon>sight::module::ui::flaticons/BlueWait.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Pulling selected series</toolTip>
@@ -307,7 +307,7 @@
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
-               <icon>sight_module_ui_flaticons/YellowPull.svg</icon>
+               <icon>sight::module::ui::flaticons/YellowPull.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
                <toolTip>Load the image</toolTip>
@@ -319,7 +319,7 @@
         <service uid="showAdvancedQueryEditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>sight_module_ui_flaticons/YellowBottomChevron.svg</icon>
+               <icon>sight::module::ui::flaticons/YellowBottomChevron.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -328,7 +328,7 @@
         <service uid="hideAdvancedQueryEditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>sight_module_ui_flaticons/YellowTopChevron.svg</icon>
+               <icon>sight::module::ui::flaticons/YellowTopChevron.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -337,7 +337,7 @@
         <service uid="showPACSConfigurationSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>sight_module_ui_flaticons/BlueParametersConnected.svg</icon>
+               <icon>sight::module::ui::flaticons/BlueParametersConnected.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>
@@ -346,7 +346,7 @@
         <service uid="hidePACSConfigurationSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
-               <icon>sight_module_ui_flaticons/BlueParametersConnected.svg</icon>
+               <icon>sight::module::ui::flaticons/BlueParametersConnected.svg</icon>
                <iconWidth>24</iconWidth>
                <iconHeight>24</iconHeight>
             </config>

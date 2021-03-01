@@ -363,8 +363,8 @@
         <service uid="checkableSrv" type="::sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
-                <icon>sight_module_ui_flaticons/GreenStart.svg</icon>
-                <icon2>sight_module_ui_flaticons/RedStop.svg</icon2>
+                <icon>sight::module::ui::flaticons/GreenStart.svg</icon>
+                <icon2>sight::module::ui::flaticons/RedStop.svg</icon2>
                 <text>Check</text>
             </config>
         </service>

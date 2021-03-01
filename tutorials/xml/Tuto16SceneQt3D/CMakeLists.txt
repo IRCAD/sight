@@ -18,8 +18,8 @@ moduleParam(module_ui_qt
         resource
         stylesheet
     PARAM_VALUES
-        sight_module_ui_qt/flatdark.rcc
-        sight_module_ui_qt/flatdark.qss
+        sight::module::ui::qt/flatdark.rcc
+        sight::module::ui::qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
 sight_generate_profile(${FWPROJECT_NAME})

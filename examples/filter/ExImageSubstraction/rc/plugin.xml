@@ -333,21 +333,21 @@
             <service uid="snapshotNegato1EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
+                   <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
             <service uid="snapshotNegato2EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
+                   <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
             <service uid="snapshotNegato3EditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
                 <config>
                    <checkable>false</checkable>
-                   <icon>sight_module_ui_flaticons/YellowPhoto.svg</icon>
+                   <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 

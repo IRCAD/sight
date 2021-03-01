@@ -118,16 +118,16 @@ void RuntimeTest::testOperations()
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     // Full path prototype
-    path = core::runtime::getModuleResourceFilePath("sight_module_utest/plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("::sight::module::utest/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/plugin.xml", path);
 
-    path = core::runtime::getModuleResourceFilePath("sight_module_utest/not_existing.file");
+    path = core::runtime::getModuleResourceFilePath("::sight::module::utest/not_existing.file");
     CPPUNIT_ASSERT_EQUAL(location / "module_utest/not_existing.file", path);
 
     path = core::runtime::getModuleResourceFilePath("notExistingBundle/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
-    path = core::runtime::getModuleResourceFilePath("wrong_version_format/plugin.xml");
+    path = core::runtime::getModuleResourceFilePath("wrong::module::format/plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
 
     path = core::runtime::getLibraryResourceFilePath("fwLibrary/plugin.xml");

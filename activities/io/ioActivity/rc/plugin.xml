@@ -8,7 +8,7 @@
         <id>ImageSeriesExport</id>
         <title>ImageSeries Export</title>
         <desc>Activity to export the selected ImageSeries.</desc>
-        <icon>sight_module_ui_icons/Export.svg</icon>
+        <icon>sight::module::ui::icons/Export.svg</icon>
         <requirements>
             <requirement name="series" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -25,7 +25,7 @@
         <id>ModelSeriesExport</id>
         <title>ModelSeries Export</title>
         <desc>Activity to export the selected ModelSeries.</desc>
-        <icon>sight_module_ui_icons/Export.svg</icon>
+        <icon>sight::module::ui::icons/Export.svg</icon>
         <requirements>
             <requirement name="series" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -42,7 +42,7 @@
         <id>DicomSegmentationSurfaceExport</id>
         <title>Dicom Segmentation Surface Export</title>
         <desc>Activity to export a ModelSeries as a Dicom Segmentation Surface file.</desc>
-        <icon>sight_module_ui_icons/Export.svg</icon>
+        <icon>sight::module::ui::icons/Export.svg</icon>
         <requirements>
             <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
