@@ -23,7 +23,6 @@
 #include "Plugin.hpp"
 
 #include <core/runtime/profile/Profile.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
@@ -32,8 +31,7 @@ namespace sight::module::ui::console
 {
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry(
-    "::sight::module::ui::console::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::console::Plugin");
 
 //-----------------------------------------------------------------------------
 

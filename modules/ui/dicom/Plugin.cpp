@@ -22,8 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/dicom/sorter/TagValueConfigurableSorter.hpp>
@@ -31,7 +29,7 @@
 namespace sight::module::ui::dicom
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::ui::dicom::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::dicom::Plugin");
 
 Plugin::Plugin()
 {

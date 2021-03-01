@@ -29,12 +29,6 @@ namespace sight::core::runtime
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> Executable::getBundle() const
-{
-    return this->getModule();
-}
-//------------------------------------------------------------------------------
-
 std::shared_ptr<Module> Executable::getModule() const
 {
     return m_module;

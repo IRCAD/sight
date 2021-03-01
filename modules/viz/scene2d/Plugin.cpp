@@ -22,15 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::viz::scene2d
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry(
-    "::sight::module::viz::scene2d::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::viz::scene2d::Plugin");
 
 //-----------------------------------------------------------------------------
 

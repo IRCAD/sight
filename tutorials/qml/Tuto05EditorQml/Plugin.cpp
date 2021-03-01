@@ -26,7 +26,6 @@
 #include "SStringEditor.hpp"
 
 #include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <ui/qml/QmlEngine.hpp>
 
@@ -35,8 +34,7 @@ using namespace sight;
 namespace Tuto05EditorQml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::Tuto05EditorQml::Plugin");
+SIGHT_REGISTER_PLUGIN("::Tuto05EditorQml::Plugin");
 
 //------------------------------------------------------------------------------
 

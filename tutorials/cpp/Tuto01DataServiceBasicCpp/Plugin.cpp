@@ -23,7 +23,6 @@
 #include "Plugin.hpp"
 
 #include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
@@ -33,7 +32,7 @@ using namespace sight;
 namespace Tuto01DataServiceBasicCpp
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto01DataServiceBasicCpp::Plugin");
+SIGHT_REGISTER_PLUGIN("::Tuto01DataServiceBasicCpp::Plugin");
 
 //------------------------------------------------------------------------------
 

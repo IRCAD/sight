@@ -29,13 +29,6 @@ namespace sight::core::runtime
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> Plugin::getBundle() const noexcept
-{
-    return this->getModule();
-}
-
-//------------------------------------------------------------------------------
-
 std::shared_ptr<Module> Plugin::getModule() const noexcept
 {
     return m_module.lock();

@@ -22,8 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 using namespace sight;
 
 namespace Tuto04MeshGeneratorCpp
@@ -31,7 +29,7 @@ namespace Tuto04MeshGeneratorCpp
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto04MeshGeneratorCpp::Plugin");
+SIGHT_REGISTER_PLUGIN("::Tuto04MeshGeneratorCpp::Plugin");
 
 //-----------------------------------------------------------------------------
 

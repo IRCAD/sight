@@ -22,13 +22,14 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::io::pcl
 {
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::io::pcl::Plugin");
+
+SIGHT_REGISTER_PLUGIN("::sight::module::io::igtl::Plugin");
+
+// ------------------------------------------------------------------------------
 
 Plugin::~Plugin() noexcept
 {

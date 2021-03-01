@@ -22,14 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::ui::viz
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::ui::viz::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::viz::Plugin");
 
 //-----------------------------------------------------------------------------
 

@@ -25,7 +25,6 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/thread/ActiveWorkers.hpp>
 
 #include <service/macros.hpp>
@@ -45,7 +44,7 @@ namespace sight::module::ui::qt
 {
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::ui::qt::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::qt::Plugin");
 
 //-----------------------------------------------------------------------------
 

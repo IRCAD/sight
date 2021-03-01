@@ -78,14 +78,6 @@ struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContai
      *
      * @return  a shared pointer to a module instance
      */
-    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
-    CORE_API const std::shared_ptr< Module > getBundle() const noexcept;
-
-    /**
-     * @brief   Retrieves the module the configuration element is attached to.
-     *
-     * @return  a shared pointer to a module instance
-     */
     CORE_API const std::shared_ptr< Module > getModule() const noexcept;
 
     /**

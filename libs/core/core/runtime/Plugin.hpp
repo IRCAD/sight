@@ -26,6 +26,7 @@
 #include "core/runtime/IPlugin.hpp"
 
 #include <core/macros.hpp>
+#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 namespace sight::core::runtime
 {
@@ -39,8 +40,6 @@ namespace sight::core::runtime
 class CORE_CLASS_API Plugin : public IPlugin
 {
 public:
-    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
-    CORE_API std::shared_ptr<Module> getBundle() const noexcept override;
     CORE_API std::shared_ptr<Module> getModule() const noexcept override;
     CORE_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) noexcept
     override;
@@ -54,5 +53,8 @@ private:
      */
     std::weak_ptr<Module> m_module;
 };
+
+#define SIGHT_REGISTER_PLUGIN(class) \
+    static sight::core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(class)
 
 } // namespace sight::core::runtime

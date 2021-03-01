@@ -22,12 +22,10 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::data
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::data::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::data::Plugin");
 
 Plugin::~Plugin() noexcept
 {

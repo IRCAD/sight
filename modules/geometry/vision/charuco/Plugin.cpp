@@ -22,15 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::geometry::vision::charuco
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::geometry::vision::charuco::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::geometry::vision::charuco::Plugin");
 
 Plugin::~Plugin() noexcept
 {

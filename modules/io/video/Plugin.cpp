@@ -22,13 +22,11 @@
 
 #include "modules/io/video/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::io::video
 {
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::io::video::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::io::video::Plugin");
 
 Plugin::~Plugin() noexcept
 {

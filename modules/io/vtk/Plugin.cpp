@@ -22,12 +22,10 @@
 
 #include "modules/io/vtk/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::io::vtk
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::io::vtk::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::io::vtk::Plugin");
 
 Plugin::~Plugin() noexcept
 {

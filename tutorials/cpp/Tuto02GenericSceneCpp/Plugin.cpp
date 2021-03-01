@@ -22,8 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 
@@ -32,7 +30,7 @@ using namespace sight;
 namespace Tuto02GenericSceneCpp
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto02GenericSceneCpp::Plugin");
+SIGHT_REGISTER_PLUGIN("::Tuto02GenericSceneCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
@@ -79,7 +77,7 @@ void Plugin::initialize()
     }
 
     auto progressBarView = m_appManager->addService("::sight::module::ui::base::SJobBar", true, false);
-    auto menuBarView = m_appManager->addService("::sight::module::ui::base::SMenuBar", "menuBarView", true, false);
+    auto menuBarView     = m_appManager->addService("::sight::module::ui::base::SMenuBar", "menuBarView", true, false);
     {
         service::IService::ConfigType config;
         config.put("gui.layout.menu.<xmlattr>.name", "File");

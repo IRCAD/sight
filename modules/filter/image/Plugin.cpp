@@ -22,15 +22,12 @@
 
 #include "modules/filter/image/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::filter::image::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::filter::image::Plugin");
 
 //-----------------------------------------------------------------------------
 

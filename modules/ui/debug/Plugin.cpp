@@ -22,12 +22,10 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::ui::debug
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::ui::debug::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::debug::Plugin");
 
 //------------------------------------------------------------------------------
 

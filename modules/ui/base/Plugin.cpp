@@ -23,7 +23,6 @@
 #include "modules/ui/base/Plugin.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/tools/Os.hpp>
 
 #include <data/String.hpp>
@@ -37,7 +36,7 @@
 namespace sight::module::ui::base
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::ui::base::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::base::Plugin");
 
 const std::string Plugin::s_PREF_SERVICE_UID = "PREF_SERVICE_UID";
 

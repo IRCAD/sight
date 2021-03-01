@@ -63,13 +63,6 @@ ConfigurationElement::ConfigurationElement( const std::shared_ptr< Module > modu
 
 //------------------------------------------------------------------------------
 
-const std::shared_ptr<Module> ConfigurationElement::getBundle() const noexcept
-{
-    return this->getModule();
-}
-
-//------------------------------------------------------------------------------
-
 const std::shared_ptr<Module> ConfigurationElement::getModule() const noexcept
 {
     return m_module.lock();

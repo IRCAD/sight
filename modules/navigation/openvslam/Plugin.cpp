@@ -22,15 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::navigation::openvslam
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry(
-    "::sight::module::navigation::openvslam::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::navigation::openvslam::Plugin");
 
 //-----------------------------------------------------------------------------
 

@@ -23,15 +23,13 @@
 #include "modules/ui/qt/image/Plugin.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 namespace sight::module::ui::qt::image
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::ui::qt::image::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::ui::qt::image::Plugin");
 
 //-----------------------------------------------------------------------------
 

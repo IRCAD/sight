@@ -22,13 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::io::document
 {
 
 using namespace core::runtime::utils;
-static GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::io::document::Plugin");
+
+SIGHT_REGISTER_PLUGIN("::sight::module::io::document::Plugin");
 
 //-----------------------------------------------------------------------------
 

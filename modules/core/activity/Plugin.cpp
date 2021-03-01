@@ -24,12 +24,10 @@
 
 #include <activity/extension/Activity.hpp>
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::activity
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::activity::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::activity::Plugin");
 
 Plugin::~Plugin() noexcept
 {

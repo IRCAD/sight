@@ -47,13 +47,6 @@ ModuleElement::ModuleElement( std::shared_ptr< Module > module ) :
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> ModuleElement::getBundle() const
-{
-    return this->getModule();
-}
-
-//------------------------------------------------------------------------------
-
 std::shared_ptr<Module> ModuleElement::getModule() const
 {
     return m_module.lock();

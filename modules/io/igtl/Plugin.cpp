@@ -22,14 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::io::igtl
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::io::igtl::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::io::igtl::Plugin");
 
 //-----------------------------------------------------------------------------
 

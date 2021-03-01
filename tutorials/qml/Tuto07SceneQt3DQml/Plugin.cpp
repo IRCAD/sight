@@ -25,20 +25,19 @@
 #include "AppManager.hpp"
 
 #include <core/runtime/operations.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/AppManager.hpp>
 
-#include <QQuickItem>
-
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QQuickItem>
 
 using namespace sight;
 
 namespace Tuto07SceneQt3DQml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::Tuto07SceneQt3DQml::Plugin");
+SIGHT_REGISTER_PLUGIN("::Tuto07SceneQt3DQml::Plugin");
 
 //------------------------------------------------------------------------------
 

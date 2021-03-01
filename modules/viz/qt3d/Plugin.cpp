@@ -22,14 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::viz::qt3d
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::viz::qt3d::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::viz::qt3d::Plugin");
 
 //-----------------------------------------------------------------------------
 

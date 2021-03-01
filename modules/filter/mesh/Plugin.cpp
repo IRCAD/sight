@@ -22,14 +22,12 @@
 
 #include "modules/filter/mesh/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::filter::mesh::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::filter::mesh::Plugin");
 
 //-----------------------------------------------------------------------------
 

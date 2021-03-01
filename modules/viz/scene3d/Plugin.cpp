@@ -22,8 +22,6 @@
 
 #include "modules/viz/scene3d/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <OgreLogManager.h>
 
 namespace sight::module::viz::scene3d
@@ -31,8 +29,7 @@ namespace sight::module::viz::scene3d
 
 //------------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::viz::scene3d::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::viz::scene3d::Plugin");
 
 //------------------------------------------------------------------------------
 

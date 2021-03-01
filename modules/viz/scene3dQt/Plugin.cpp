@@ -22,15 +22,12 @@
 
 #include "modules/viz/scene3dQt/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::viz::scene3dQt
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::viz::scene3dQt::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::viz::scene3dQt::Plugin");
 
 //-----------------------------------------------------------------------------
 

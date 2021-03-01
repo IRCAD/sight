@@ -22,15 +22,13 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/AppConfigParameters.hpp>
 
 namespace sight::module::appXml
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::appXml::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::appXml::Plugin");
 
 //------------------------------------------------------------------------------
 

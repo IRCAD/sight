@@ -22,12 +22,10 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::io::dimse
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry("::sight::module::io::dimse::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::io::dimse::Plugin");
 
 //------------------------------------------------------------------------------
 

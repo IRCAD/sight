@@ -47,14 +47,6 @@ public:
      *
      * @return  a pointer to a module instance
      */
-    [[deprecated("To be removed in Sight 22.0, use getModule() instead")]]
-    CORE_API std::shared_ptr<Module> getBundle() const;
-
-    /**
-     * @brief   Retrieves the module that owns the extension.
-     *
-     * @return  a pointer to a module instance
-     */
     CORE_API std::shared_ptr<Module> getModule() const;
 
     /**

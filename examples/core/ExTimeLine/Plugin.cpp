@@ -25,10 +25,9 @@
 #include "SConsumer.hpp"
 
 #include <core/runtime/Runtime.hpp>
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 #include <core/spyLog.hpp>
-
 #include <core/thread/ActiveWorkers.hpp>
+
 #include <service/extension/Factory.hpp>
 
 namespace ExTimeLine
@@ -36,7 +35,7 @@ namespace ExTimeLine
 
 //-----------------------------------------------------------------------------
 
-static sight::core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::ExTimeLine::Plugin");
+SIGHT_REGISTER_PLUGIN("::ExTimeLine::Plugin");
 
 //-----------------------------------------------------------------------------
 

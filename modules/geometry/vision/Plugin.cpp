@@ -22,15 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::geometry::vision
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::geometry::vision::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::geometry::vision::Plugin");
 
 Plugin::~Plugin() noexcept
 {

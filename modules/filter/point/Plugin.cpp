@@ -22,15 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::filter::point
 {
 
 //-----------------------------------------------------------------------------
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin>  registry(
-    "::sight::module::filter::point::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::filter::point::Plugin");
 
 //-----------------------------------------------------------------------------
 

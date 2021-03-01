@@ -22,12 +22,10 @@
 
 #include "modules/io/matrix/Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 namespace sight::module::io::matrix
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::io::matrix::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::io::matrix::Plugin");
 
 Plugin::~Plugin() noexcept
 {

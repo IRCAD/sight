@@ -22,15 +22,12 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::navigation::calibration
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry(
-    "::sight::module::navigation::calibration::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::navigation::calibration::Plugin");
 
 Plugin::~Plugin() noexcept
 {

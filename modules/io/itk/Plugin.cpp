@@ -22,16 +22,14 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
+#include <io/itk/inr2itk/itkInrImageIO.hpp>
 
 #include <service/macros.hpp>
-
-#include <io/itk/inr2itk/itkInrImageIO.hpp>
 
 namespace sight::module::io::itk
 {
 
-static core::runtime::utils::GenericExecutableFactoryRegistry<Plugin> registry("::sight::module::io::itk::Plugin");
+SIGHT_REGISTER_PLUGIN("::sight::module::io::itk::Plugin");
 
 Plugin::~Plugin() noexcept
 {
