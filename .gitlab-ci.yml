@@ -20,13 +20,17 @@ stages:
   before_script:
     # Prepare sight source
     - sudo chown -R sight:sight .
+    - mkdir -p $CI_PROJECT_DIR/.install $CI_PROJECT_DIR/.build
+    # git configuration
+    - git config merge.renameLimit 999999
+    - git config user.name ${GITLAB_USER_ID}
+    - git config user.email ${GITLAB_USER_EMAIL}
+    - git config advice.addIgnoredFile false
     # Merge the MR branch into dev.
     # TODO: uncomment me to merge again MR branch into dev
     - export EXTRA_BRANCH="dev"
     # - >
     # if [ -z "$CI_COMMIT_TAG" ] && [ "$CI_COMMIT_REF_NAME" != "dev" ] && [ "$CI_COMMIT_REF_NAME" != "master" ]; then
-    #   git config user.name ${GITLAB_USER_ID}
-    #   git config user.email ${GITLAB_USER_EMAIL}
     #   git fetch --all
     #   git checkout dev
     #   git reset --hard origin/dev
@@ -45,13 +49,13 @@ lint:sheldon:
   script:
     # Download sheldon.
     # TODO: use dev/master/tag branch
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b wip-massive-refactor
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b wip-massive-refactor $CI_PROJECT_DIR/.build/sight-git
     # Stage all files from the merge to get them checked by sheldon.
     - git add *
     # Display modified files.
     - git status
     # Run sheldon on the merge result.
-    - sight-git/hooks/sheldon
+    - .build/sight-git/hooks/sheldon
   except:
     - dev
     - master
@@ -65,7 +69,6 @@ lint:sheldon:
     # Print CCache statistics
     - ccache -s
     # Launch CMake
-    - mkdir -p $CI_PROJECT_DIR/.install $CI_PROJECT_DIR/.build
     - cd $CI_PROJECT_DIR/.build
     - >
       cmake $CI_PROJECT_DIR
@@ -137,7 +140,7 @@ deploy:pages:
   dependencies:
     - build:linux-release-gcc
   script:
-    - mv build/Documentation/Doxygen/html/ public/
+    - mv .build/Documentation/Doxygen/html/ public/
   artifacts:
     paths:
       - public
