@@ -48,7 +48,7 @@ class TUTO05MULTITHREADCONSOLECPP_CLASS_API SReadArray final : public sight::ser
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SReadArray, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SReadArray, sight::service::IController)
 
     /// Creates the service.
     TUTO05MULTITHREADCONSOLECPP_API SReadArray() noexcept;

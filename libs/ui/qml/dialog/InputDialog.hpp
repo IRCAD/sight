@@ -26,9 +26,9 @@
 
 #include <core/base.hpp>
 
-#include <QObject>
-
 #include <ui/base/dialog/IInputDialog.hpp>
+
+#include <QObject>
 
 #include <string>
 
@@ -57,7 +57,7 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(InputDialog, ui::base::dialog::IInputDialog, ui::base::factory::New< InputDialog >)
+    SIGHT_DECLARE_CLASS(InputDialog, ui::base::dialog::IInputDialog, ui::base::factory::New< InputDialog >)
 
     UI_QML_API InputDialog(ui::base::GuiBaseObject::Key key);
 

@@ -28,7 +28,6 @@
 
 #include <QGraphicsItemGroup>
 
-
 namespace sight::module::viz::scene2d
 {
 namespace adaptor
@@ -55,9 +54,9 @@ void SSquare::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'x' is missing", config.count("x"));
-    SLM_ASSERT("Attribute 'y' is missing", config.count("y"));
-    SLM_ASSERT("Attribute 'size' is missing", config.count("size"));
+    SIGHT_ASSERT("Attribute 'x' is missing", config.count("x"));
+    SIGHT_ASSERT("Attribute 'y' is missing", config.count("y"));
+    SIGHT_ASSERT("Attribute 'size' is missing", config.count("size"));
 
     m_coord.setX( config.get<double>("x") );
     m_coord.setY( config.get<double>("y") );
@@ -113,7 +112,7 @@ void SSquare::setColor(const std::string& _color )
     {
         // Default value: black (if the color id cannot be parsed)
         m_color = Qt::GlobalColor(Qt::white);
-        SLM_WARN("Color "+_color+" unknown, default value used.");
+        SIGHT_WARN("Color "+_color+" unknown, default value used.");
     }
 }
 
@@ -186,7 +185,7 @@ void SSquare::setDoubleParameter(const double _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
     if(m_autoRefresh)
     {

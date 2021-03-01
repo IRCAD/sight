@@ -52,7 +52,7 @@ class SERVICE_CLASS_API Color final : public service::IXMLParser
 public:
 
     /// Creates default attributes and methods (New(), ::sptr, ...).
-    fwCoreServiceMacro(Color, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Color, service::IXMLParser)
 
     /// Does nothing.
     SERVICE_API Color()

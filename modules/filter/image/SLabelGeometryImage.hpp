@@ -70,7 +70,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public service::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLabelGeometryImage, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SLabelGeometryImage, service::IOperator)
 
     /// Initializes slots.
     MODULE_FILTER_IMAGE_API SLabelGeometryImage();

@@ -81,7 +81,7 @@ bool MedicalImageHelpers::checkImageValidity( data::Image::csptr _pImg )
 
 bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
 {
-    SLM_ASSERT("_pImg pointer null", _pImg);
+    SIGHT_ASSERT("_pImg pointer null", _pImg);
 
     bool fieldIsModified = false;
 
@@ -110,7 +110,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
         fieldIsModified = true;
     }
 
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Information on image slice index is not correct, miss one of these fields : m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
         axialIdx && frontalIdx && sagittalIdx
         );
@@ -141,7 +141,7 @@ bool MedicalImageHelpers::checkImageSliceIndex( data::Image::sptr _pImg )
 
 data::Point::sptr MedicalImageHelpers::getImageSliceIndices( data::Image::sptr _pImg )
 {
-    SLM_ASSERT("_pImg pointer null", _pImg);
+    SIGHT_ASSERT("_pImg pointer null", _pImg);
 
     data::Point::sptr point = data::Point::New();
 
@@ -164,7 +164,7 @@ data::Point::sptr MedicalImageHelpers::getImageSliceIndices( data::Image::sptr _
 
 bool MedicalImageHelpers::checkComment( data::Image::sptr _pImg )
 {
-    SLM_ASSERT("_pImg pointer null", _pImg);
+    SIGHT_ASSERT("_pImg pointer null", _pImg);
 
     bool fieldIsModified = false;
 
@@ -185,8 +185,8 @@ data::Image::sptr MedicalImageHelpers::initialize( data::Image::sptr imgSrc,
                                                    data::Image::sptr imgToInitialize)
 {
     FW_DEPRECATED_MSG("This method is no longer supported", "22.0")
-    SLM_ASSERT("Image source must be initialized", imgSrc);
-    SLM_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
+    SIGHT_ASSERT("Image source must be initialized", imgSrc);
+    SIGHT_ASSERT("Image source must be valid", MedicalImageHelpers::checkImageValidity(imgSrc));
 
     if(!imgToInitialize)
     {

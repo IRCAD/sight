@@ -39,9 +39,9 @@ MeshGetter::MeshGetter( data::Mesh::csptr mesh ) :
                       "::sight::data::Mesh", "22.0")
 
     typedef data::helper::ArrayGetter ArrayGetter;
-    SLM_ASSERT("Mesh ptr is null.", mesh);
+    SIGHT_ASSERT("Mesh ptr is null.", mesh);
 
-    SLM_ASSERT("Mesh ptr is null.", m_mesh);
+    SIGHT_ASSERT("Mesh ptr is null.", m_mesh);
     m_helperPoints          = ArrayGetter::uptr( new ArrayGetter(m_mesh->getPointsArray()));
     m_helperCellTypes       = ArrayGetter::uptr( new ArrayGetter(m_mesh->getCellTypesArray()));
     m_helperCellData        = ArrayGetter::uptr( new ArrayGetter(m_mesh->getCellDataArray()));

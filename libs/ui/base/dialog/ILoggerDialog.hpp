@@ -44,7 +44,7 @@ class UI_BASE_CLASS_API ILoggerDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(ILoggerDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ILoggerDialog, ui::base::GuiBaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

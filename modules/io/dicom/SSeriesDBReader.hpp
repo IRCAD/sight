@@ -118,7 +118,7 @@ class MODULE_IO_DICOM_CLASS_API SSeriesDBReader : public sight::io::base::servic
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SSeriesDBReader, sight::io::base::service::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 

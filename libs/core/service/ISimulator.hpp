@@ -38,7 +38,7 @@ class SERVICE_CLASS_API ISimulator : public service::IService
 
 public:
 
-    fwCoreServiceMacro(ISimulator, service::IService)
+    SIGHT_DECLARE_SERVICE(ISimulator, service::IService)
 
 protected:
 

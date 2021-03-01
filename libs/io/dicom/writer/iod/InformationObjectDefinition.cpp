@@ -44,7 +44,7 @@ InformationObjectDefinition::InformationObjectDefinition(const SPTR(io::dicom::c
     m_progressCallback(progress),
     m_cancelRequestedCallback(cancel)
 {
-    SLM_ASSERT("Instance should not be null.", instance);
+    SIGHT_ASSERT("Instance should not be null.", instance);
 }
 
 //------------------------------------------------------------------------------

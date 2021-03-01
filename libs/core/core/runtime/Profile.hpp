@@ -43,7 +43,7 @@ public:
     typedef std::vector< std::string >  ParamsContainer;
     typedef std::function< int () > RunCallbackType;
 
-    fwCoreClassMacro(Profile, BaseObject)
+    SIGHT_DECLARE_CLASS(Profile, BaseObject)
 
     /**
      * @brief Profile factory.

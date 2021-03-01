@@ -25,7 +25,7 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( ::sight::data::Study )
+SIGHT_REGISTER_DATA( ::sight::data::Study )
 
 namespace sight::data
 {
@@ -45,9 +45,9 @@ Study::~Study()
 void Study::shallowCopy(const data::Object::csptr& _source)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( other );
     m_instanceUID             = other->m_instanceUID;
@@ -67,9 +67,9 @@ void Study::shallowCopy(const data::Object::csptr& _source)
 void Study::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Study::csptr other = Study::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
     m_instanceUID             = other->m_instanceUID;

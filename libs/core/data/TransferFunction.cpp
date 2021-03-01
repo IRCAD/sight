@@ -28,7 +28,7 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Type.hpp>
 
-fwDataRegisterMacro( ::sight::data::TransferFunction )
+SIGHT_REGISTER_DATA( ::sight::data::TransferFunction )
 
 namespace sight::data
 {
@@ -91,9 +91,9 @@ void TransferFunction::initTF()
 void TransferFunction::shallowCopy(const Object::csptr& _source)
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     this->m_level             = other->m_level;
     this->m_window            = other->m_window;
@@ -109,9 +109,9 @@ void TransferFunction::shallowCopy(const Object::csptr& _source)
 void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
 {
     TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, _cache );
     this->m_level             = other->m_level;
     this->m_window            = other->m_window;
@@ -158,7 +158,7 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
 
 TransferFunction::TFValuePairType TransferFunction::getMinMaxTFValues() const
 {
-    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
     TFValuePairType minMax;
     minMax.first  = m_tfData.begin()->first;
     minMax.second = (m_tfData.rbegin())->first;
@@ -189,7 +189,7 @@ void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
 
 TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _value) const
 {
-    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
     const std::pair<double, double> minMax = core::tools::Type::s_DOUBLE.minMax<double>();
     double previousValue                   = minMax.first;
     double nextValue                       = minMax.second;
@@ -244,7 +244,7 @@ TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 
 TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) const
 {
-    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
     const double min = std::numeric_limits<double>::min();
     const double max = std::numeric_limits<double>::max();
@@ -312,7 +312,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) 
 
 TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) const
 {
-    SLM_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
+    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
 
     const double min     = std::numeric_limits<double>::min();
     const double max     = std::numeric_limits<double>::max();
@@ -399,7 +399,7 @@ TransferFunction::TFColor TransferFunction::getInterpolatedColor(TFValueType val
 const TransferFunction::TFColor& TransferFunction::getTFColor(TFValueType _value) const
 {
     TFDataType::const_iterator itr = m_tfData.find(_value);
-    SLM_ASSERT("The value "<< _value <<" is not defined in the transfer function.", itr != m_tfData.end());
+    SIGHT_ASSERT("The value "<< _value <<" is not defined in the transfer function.", itr != m_tfData.end());
     return itr->second;
 }
 

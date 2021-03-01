@@ -26,6 +26,8 @@
 
 #include <data/Camera.hpp>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <QCamera>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -33,8 +35,6 @@
 #include <QPushButton>
 #include <QtMultimedia>
 #include <QVBoxLayout>
-
-#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -154,7 +154,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
             }
             else
             {
-                SLM_ERROR("No compatible pixel format found");
+                SIGHT_ERROR("No compatible pixel format found");
             }
         }
         else
@@ -163,7 +163,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera)
             camera->setHeight(0);
             camera->setWidth(0);
 
-            SLM_ERROR("No camera setting selected, using default...");
+            SIGHT_ERROR("No camera setting selected, using default...");
         }
 
 //FIXME : Setting the pixel format generate an error (gstreamer)
@@ -212,7 +212,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 }
                 else
                 {
-                    SLM_ERROR("No compatible pixel format found");
+                    SIGHT_ERROR("No compatible pixel format found");
                 }
 
                 //Create QCameraViewfinderSettings from the informations of the QCameraImageCapture
@@ -250,7 +250,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
             }
             else
             {
-                SLM_ERROR("No compatible pixel format found");
+                SIGHT_ERROR("No compatible pixel format found");
             }
 
             std::stringstream stream;

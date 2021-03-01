@@ -54,16 +54,16 @@ void Plugin::start()
         if (mode == "lazy")
         {
             manager->setLoadingMode(core::memory::BufferManager::LAZY);
-            SLM_INFO("Enabled lazy loading mode");
+            SIGHT_INFO("Enabled lazy loading mode");
         }
         else if (mode == "direct")
         {
             manager->setLoadingMode(core::memory::BufferManager::DIRECT);
-            SLM_INFO("Enabled direct loading mode");
+            SIGHT_INFO("Enabled direct loading mode");
         }
         else
         {
-            SLM_ERROR("Unknown loading mode : '" + mode + "'");
+            SIGHT_ERROR("Unknown loading mode : '" + mode + "'");
         }
     }
 }

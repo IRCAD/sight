@@ -62,7 +62,7 @@ void IProgressDialog::cancelPressed()
     }
     else if (m_raise)
     {
-        FW_RAISE("Operation canceled");
+        SIGHT_THROW("Operation canceled");
     }
 }
 

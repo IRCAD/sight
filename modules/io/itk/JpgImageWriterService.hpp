@@ -58,7 +58,7 @@ class MODULE_IO_ITK_CLASS_API JpgImageWriterService : public sight::io::base::se
 {
 
 public:
-    fwCoreServiceMacro(JpgImageWriterService, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(JpgImageWriterService, sight::io::base::service::IWriter)
 
     MODULE_IO_ITK_API JpgImageWriterService() noexcept;
 

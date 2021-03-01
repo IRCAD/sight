@@ -40,7 +40,7 @@ class SERVICE_CLASS_API TransferFunction : public service::IXMLParser
 
 public:
 
-    fwCoreServiceMacro(TransferFunction, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(TransferFunction, service::IXMLParser)
 
     /// Constructor : does nothing.
     TransferFunction()

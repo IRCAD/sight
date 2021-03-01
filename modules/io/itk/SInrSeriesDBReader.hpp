@@ -68,7 +68,7 @@ class MODULE_IO_ITK_CLASS_API SInrSeriesDBReader : public sight::io::base::servi
 {
 
 public:
-    fwCoreServiceMacro(SInrSeriesDBReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SInrSeriesDBReader, sight::io::base::service::IReader)
 
     MODULE_IO_ITK_API SInrSeriesDBReader() noexcept;
 

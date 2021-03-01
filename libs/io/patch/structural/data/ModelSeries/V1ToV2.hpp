@@ -37,7 +37,7 @@ namespace ModelSeries
 class IO_PATCH_CLASS_API V1ToV2 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToV2, patch::structural::data::ModelSeries::V1ToV2, new V1ToV2)
+    SIGHT_DECLARE_CLASS(V1ToV2, patch::structural::data::ModelSeries::V1ToV2, new V1ToV2)
 
     /// Constructor
     IO_PATCH_API V1ToV2();

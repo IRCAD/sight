@@ -32,7 +32,7 @@ ModuleElement::ModuleElement() :
     m_enable(true)
 {
     // Post-condition
-    SLM_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr );
+    SIGHT_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr );
 }
 
 //------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ ModuleElement::ModuleElement( std::shared_ptr< Module > module ) :
     m_enable(true)
 {
     // Post-condition
-    SLM_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr );
+    SIGHT_ASSERT("Module '" << m_module.lock()->getIdentifier() << "' not initialized", m_module.lock() != nullptr );
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ bool ModuleElement::isEnabled() const
 {
     // Pre-condition.
     std::shared_ptr< detail::Module > module = std::dynamic_pointer_cast< detail::Module >(m_module.lock());
-    SLM_ASSERT("module not initialized", module != nullptr );
+    SIGHT_ASSERT("module not initialized", module != nullptr );
 
     return module->isEnabled() && m_enable;
 }

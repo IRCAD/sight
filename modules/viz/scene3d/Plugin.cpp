@@ -74,16 +74,16 @@ void SightOgreListener::messageLogged(const ::Ogre::String& _message,
         switch(_lml)
         {
             case ::Ogre::LML_TRIVIAL:
-                SLM_INFO(_message);
+                SIGHT_INFO(_message);
                 break;
             case ::Ogre::LML_NORMAL:
-                SLM_DEBUG(_message);
+                SIGHT_DEBUG(_message);
                 break;
             case ::Ogre::LML_WARNING:
-                SLM_WARN(_message);
+                SIGHT_WARN(_message);
                 break;
             case ::Ogre::LML_CRITICAL:
-                SLM_ERROR(_message);
+                SIGHT_ERROR(_message);
                 break;
         }
     }

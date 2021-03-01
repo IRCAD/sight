@@ -108,7 +108,7 @@ public:
     /// Signal type for job creation.
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
 
-    fwCoreServiceMacro(SReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SReader, sight::io::base::service::IReader)
 
     /// Does nothing
     SReader();

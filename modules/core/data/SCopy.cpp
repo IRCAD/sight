@@ -35,8 +35,7 @@
 namespace sight::module::data
 {
 
-
-const service::IService::KeyType s_SOURCE_INPUT = "source";
+const service::IService::KeyType s_SOURCE_INPUT  = "source";
 const service::IService::KeyType s_TARGET_INOUT  = "target";
 const service::IService::KeyType s_TARGET_OUTPUT = "target";
 
@@ -62,18 +61,18 @@ void SCopy::configuring()
 
     m_hasExtractTag = false;
     const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
-    SLM_ASSERT("One 'in' tag is required.", inCfg);
+    SIGHT_ASSERT("One 'in' tag is required.", inCfg);
 
     const std::vector< ConfigurationType > inoutCfg = m_configuration->find("inout");
     const std::vector< ConfigurationType > outCfg   = m_configuration->find("out");
-    SLM_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() +  outCfg.size() == 1);
+    SIGHT_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() +  outCfg.size() == 1);
 
     const std::vector< ConfigurationType > extractCfg = inCfg->find("extract");
-    SLM_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
+    SIGHT_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
     if (extractCfg.size() == 1)
     {
         ConfigurationType cfg = extractCfg[0];
-        SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+        SIGHT_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
         m_path          = cfg->getAttributeValue("from");
         m_hasExtractTag = true;
     }
@@ -92,7 +91,7 @@ void SCopy::configuring()
         }
         else
         {
-            SLM_ERROR("Mode " + mode + " unknown. It should be either 'copyOnStart' or 'copyOnUpdate'");
+            SIGHT_ERROR("Mode " + mode + " unknown. It should be either 'copyOnStart' or 'copyOnUpdate'");
         }
     }
 }
@@ -117,7 +116,7 @@ void SCopy::updating()
     }
     else
     {
-        SLM_WARN("Object copy was request but the mode is to 'copyOnStart'");
+        SIGHT_WARN("Object copy was request but the mode is to 'copyOnStart'");
     }
 }
 
@@ -157,18 +156,18 @@ void SCopy::copy()
         }
         catch(const sight::data::reflection::exception::ObjectNotFound&)
         {
-            SLM_WARN("Object from '" + m_path + "' not found");
+            SIGHT_WARN("Object from '" + m_path + "' not found");
         }
         catch(const sight::data::reflection::exception::NullPointer&)
         {
-            SLM_WARN("Can't get object from '" + m_path + "'");
+            SIGHT_WARN("Can't get object from '" + m_path + "'");
         }
         catch(std::exception& _e)
         {
-            SLM_FATAL("Unhandled exception: " << _e.what());
+            SIGHT_FATAL("Unhandled exception: " << _e.what());
         }
 
-        SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
+        SIGHT_WARN_IF("Object from '"+ m_path +"' not found", !object);
         if(object)
         {
             source = object;

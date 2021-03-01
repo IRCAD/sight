@@ -42,7 +42,6 @@
 namespace sight::module::ui::base::viz
 {
 
-
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
 std::map< std::string, float > CrossTypeAction::m_scaleConversion = { { std::string("full"), 1.0 },
@@ -85,11 +84,11 @@ void CrossTypeAction::configuring()
     if( this->m_configuration->size() > 0 )
     {
         std::vector < ConfigurationType > vectConfig = this->m_configuration->find("crossType");
-        SLM_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
+        SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
         m_crossType = vectConfig.at(0)->getValue();
         ::boost::algorithm::trim(m_crossType);
         ::boost::algorithm::to_lower(m_crossType);
-        SLM_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());
+        SIGHT_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());
     }
 }
 

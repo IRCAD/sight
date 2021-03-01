@@ -25,10 +25,10 @@
 #include "ui/qml/config.hpp"
 #include "ui/qml/dialog/StandardButton.hpp"
 
+#include <ui/base/dialog/IMessageDialog.hpp>
+
 #include <QObject>
 #include <QUrl>
-
-#include <ui/base/dialog/IMessageDialog.hpp>
 
 #include <string>
 
@@ -49,7 +49,7 @@ Q_PROPERTY(QUrl icon MEMBER m_iconImage NOTIFY iconChanged)
 
 public:
 
-    fwCoreClassMacro(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
+    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
 
     UI_QML_API MessageDialog(ui::base::GuiBaseObject::Key key);
 

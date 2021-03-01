@@ -36,9 +36,8 @@ namespace parser
 class Integer : public GenericField
 {
 public:
-    fwCoreServiceMacro(Integer, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Integer, service::IXMLParser)
 };
 
 } //namespace parser
 } //namespace sight::service
-

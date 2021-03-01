@@ -29,11 +29,11 @@
 #include <data/Mesh.hpp>
 #include <data/tools/Color.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/data/Mesh.hpp>
 
 #include <io/vtk/helper/Mesh.hpp>
+
+#include <service/macros.hpp>
 
 #include <vtkAppendPolyData.h>
 #include <vtkCellData.h>
@@ -51,7 +51,6 @@ namespace sight::module::geometry
 {
 namespace generator
 {
-
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
 
@@ -94,11 +93,11 @@ void SNeedle::configuring()
         const std::string needleColor = needleConfig.get<std::string>("color", "");
         if(!needleColor.empty())
         {
-            SLM_ASSERT( "Color string should start with '#' and followed by 6 ou 8 "
-                        "hexadecimal digits. Given color : " << needleColor,
-                        needleColor [0] == '#'
-                        && ( needleColor.length() == 7 || needleColor.length() == 9)
-                        );
+            SIGHT_ASSERT( "Color string should start with '#' and followed by 6 ou 8 "
+                          "hexadecimal digits. Given color : " << needleColor,
+                          needleColor [0] == '#'
+                          && ( needleColor.length() == 7 || needleColor.length() == 9)
+                          );
             data::tools::Color::hexaStringToRGBA(needleColor, m_needleColor);
         }
 
@@ -110,11 +109,11 @@ void SNeedle::configuring()
             const std::string minorStepsColor = minorStepsConfig.get<std::string>("color", "");
             if(!minorStepsColor.empty())
             {
-                SLM_ASSERT( "Color string should start with '#' and followed by 6 ou 8 "
-                            "hexadecimal digits. Given color : " << minorStepsColor,
-                            minorStepsColor [0] == '#'
-                            && ( minorStepsColor.length() == 7 || minorStepsColor.length() == 9)
-                            );
+                SIGHT_ASSERT( "Color string should start with '#' and followed by 6 ou 8 "
+                              "hexadecimal digits. Given color : " << minorStepsColor,
+                              minorStepsColor [0] == '#'
+                              && ( minorStepsColor.length() == 7 || minorStepsColor.length() == 9)
+                              );
                 data::tools::Color::hexaStringToRGBA(minorStepsColor, m_needleMinorStepsColor);
             }
 
@@ -129,11 +128,11 @@ void SNeedle::configuring()
             const std::string majorStepsColor = majorStepsConfig.get<std::string>("color", "");
             if(!majorStepsColor.empty())
             {
-                SLM_ASSERT( "Color string should start with '#' and followed by 6 ou 8 "
-                            "hexadecimal digits. Given color : " << majorStepsColor,
-                            majorStepsColor [0] == '#'
-                            && ( majorStepsColor.length() == 7 || majorStepsColor.length() == 9)
-                            );
+                SIGHT_ASSERT( "Color string should start with '#' and followed by 6 ou 8 "
+                              "hexadecimal digits. Given color : " << majorStepsColor,
+                              majorStepsColor [0] == '#'
+                              && ( majorStepsColor.length() == 7 || majorStepsColor.length() == 9)
+                              );
                 data::tools::Color::hexaStringToRGBA(majorStepsColor, m_needleMajorStepsColor);
             }
 

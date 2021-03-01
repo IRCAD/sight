@@ -53,7 +53,7 @@ class MODULE_UI_VIZ_CLASS_API SAddPoint : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SAddPoint, service::IController)
+    SIGHT_DECLARE_SERVICE(SAddPoint, service::IController)
 
     /**
      * @name Slots API

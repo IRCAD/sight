@@ -25,9 +25,9 @@
 #include "modules/ui/qml/config.hpp"
 #include "modules/ui/qml/model/OrganListModel.hpp"
 
-#include <QObject>
-
 #include <ui/qml/IQmlEditor.hpp>
+
+#include <QObject>
 
 namespace sight::module::ui::qml::model
 {
@@ -73,7 +73,7 @@ Q_OBJECT
 Q_PROPERTY(OrganListModel* listModel MEMBER m_listModel)
 public:
 
-    fwCoreServiceMacro(SModelSeriesList, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SModelSeriesList() noexcept;

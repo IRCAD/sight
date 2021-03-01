@@ -76,7 +76,7 @@ class MODULE_UI_QT_CLASS_API SNotifier final : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SNotifier, service::IController)
+    SIGHT_DECLARE_SERVICE(SNotifier, service::IController)
 
     /// Constructor, initializes position map & slots.
     MODULE_UI_QT_API SNotifier() noexcept;

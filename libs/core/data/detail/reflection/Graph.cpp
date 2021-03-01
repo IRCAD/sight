@@ -29,7 +29,7 @@
 #include <core/reflection/Mapper/ArrayMapper.hpp>
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Graph))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Graph))
 {
     builder.base< ::sight::data::Object>()
     .tag("object_version", "1")

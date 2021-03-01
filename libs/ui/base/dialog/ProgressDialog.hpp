@@ -41,7 +41,7 @@ class UI_BASE_CLASS_API ProgressDialog : public IProgressDialog
 
 public:
 
-    fwCoreClassMacro(ProgressDialog, ui::base::dialog::IProgressDialog, new ProgressDialog)
+    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, new ProgressDialog)
 
     /// will instanciate the concrete implementation
     UI_BASE_API ProgressDialog( const std::string& title = std::string(),  const std::string& msg = std::string() );

@@ -80,10 +80,10 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< core::runtime::Con
         }
     }
 
-    SLM_ASSERT( "ConfigurationElement should not have children("
-                << _cfgElement->size() <<") and a value ("
-                << nodeValue <<") at the same time.",
-                !(!nodeValue.empty() && _cfgElement->size())  );
+    SIGHT_ASSERT( "ConfigurationElement should not have children("
+                  << _cfgElement->size() <<") and a value ("
+                  << nodeValue <<") at the same time.",
+                  !(!nodeValue.empty() && _cfgElement->size())  );
 
     for ( std::vector< core::runtime::ConfigurationElement::sptr >::iterator iter_cfeC = _cfgElement->begin();
           iter_cfeC != _cfgElement->end();

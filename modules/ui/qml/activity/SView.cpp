@@ -108,8 +108,8 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
         info = sight::activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
         std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
-        SLM_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
-                    "started !", module->isStarted())
+        SIGHT_INFO_IF("Module '" + module->getIdentifier() + "' (used for '" + info.appConfig.id + "') is already "
+                      "started !", module->isStarted())
         if (!module->isStarted())
         {
             module->start();

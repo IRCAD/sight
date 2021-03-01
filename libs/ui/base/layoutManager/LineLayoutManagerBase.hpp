@@ -42,7 +42,7 @@ class UI_BASE_CLASS_API LineLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreClassMacro(LineLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
+    SIGHT_DECLARE_CLASS(LineLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
 
     /// Defines all possible orientation for a LineLayout
     typedef enum

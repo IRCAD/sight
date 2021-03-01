@@ -71,7 +71,7 @@ namespace adaptor
 class MODULE_VIZ_SCENE2D_CLASS_API SCurvedHistogram : public sight::viz::scene2d::IAdaptor
 {
 public:
-    fwCoreServiceMacro(SCurvedHistogram, sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SCurvedHistogram, sight::viz::scene2d::IAdaptor)
 
     typedef sight::viz::scene2d::IAdaptor::Point2DType Point;
     typedef std::vector< Point > Points;

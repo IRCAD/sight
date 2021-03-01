@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( ::sight::data::Line );
+SIGHT_REGISTER_DATA( ::sight::data::Line );
 
 namespace sight::data
 {
@@ -49,9 +49,9 @@ Line::~Line ()
 void Line::shallowCopy(const Object::csptr& _source )
 {
     Line::csptr other = Line::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_position  = other->m_position;
     m_direction = other->m_direction;
@@ -62,9 +62,9 @@ void Line::shallowCopy(const Object::csptr& _source )
 void Line::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Line::csptr other = Line::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_position  = data::Object::copy( other->m_position, cache );
     m_direction = data::Object::copy( other->m_direction, cache );

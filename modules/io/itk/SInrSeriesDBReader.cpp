@@ -27,6 +27,7 @@
 #include <core/tools/UUID.hpp>
 
 #include <data/Equipment.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
@@ -35,23 +36,21 @@
 #include <data/Patient.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/Study.hpp>
-#include <data/helper/SeriesDB.hpp>
-
-#include <service/macros.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/itk/ImageReader.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 namespace sight::module::io::itk
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -162,7 +161,7 @@ void SInrSeriesDBReader::updating()
     {
         // Retrieve dataStruct associated with this service
         data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", seriesDB);
+        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", seriesDB);
 
         data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
 

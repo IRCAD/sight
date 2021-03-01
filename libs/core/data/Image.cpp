@@ -33,7 +33,7 @@
 
 //------------------------------------------------------------------------------
 
-fwDataRegisterMacro( ::sight::data::Image );
+SIGHT_REGISTER_DATA( ::sight::data::Image );
 
 //------------------------------------------------------------------------------
 
@@ -81,9 +81,9 @@ Image::~Image() noexcept
 void Image::shallowCopy(const Object::csptr& _source )
 {
     Image::csptr other = Image::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     // Assign
@@ -97,9 +97,9 @@ void Image::shallowCopy(const Object::csptr& _source )
 void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Image::csptr other = Image::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !other );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !other );
     this->fieldDeepCopy( _source, cache );
 
     // Assign
@@ -120,7 +120,7 @@ size_t Image::resize()
         m_dataArray = data::Array::New();
     }
 
-    SLM_ASSERT( "NumberOfComponents must be > 0", m_numberOfComponents > 0 );
+    SIGHT_ASSERT( "NumberOfComponents must be > 0", m_numberOfComponents > 0 );
 
     const size_t imageDims = this->getNumberOfDimensions();
 
@@ -490,8 +490,8 @@ void Image::setDataArray(data::Array::sptr array, bool copyArrayInfo)
     m_dataArray = array;
     if (copyArrayInfo)
     {
-        FW_RAISE_EXCEPTION_IF(data::Exception("Data array must have a maximum of 3 dimensions"),
-                              array->getNumberOfDimensions() > 3);
+        SIGHT_THROW_EXCEPTION_IF(data::Exception("Data array must have a maximum of 3 dimensions"),
+                                 array->getNumberOfDimensions() > 3);
 
         const data::Array::SizeType arraySize = array->getSize();
         for (size_t i = 0; i < arraySize.size(); ++i)
@@ -549,8 +549,8 @@ const Image::SpacingType& Image::getSpacing() const
 
 void Image::setSpacing(const SpacingType& spacing)
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("Spacing must have a maximum of 3 dimensions"),
-                          spacing.size() > 3);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Spacing must have a maximum of 3 dimensions"),
+                             spacing.size() > 3);
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -585,8 +585,8 @@ const Image::OriginType& Image::getOrigin() const
 
 void Image::setOrigin(const OriginType& origin)
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("Origin must have a maximum of 3 dimensions"),
-                          origin.size() > 3);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Origin must have a maximum of 3 dimensions"),
+                             origin.size() > 3);
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -622,8 +622,8 @@ const Image::SizeType& Image::getSize() const
 
 void Image::setSize(const SizeType& size)
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("Origin must have a maximum of 3 dimensions"),
-                          size.size() > 3);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Origin must have a maximum of 3 dimensions"),
+                             size.size() > 3);
 
     for (size_t i = 0; i < 3; ++i)
     {

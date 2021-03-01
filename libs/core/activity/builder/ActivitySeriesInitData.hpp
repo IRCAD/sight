@@ -39,8 +39,8 @@ namespace builder
 class ACTIVITY_CLASS_API ActivitySeriesInitData : public activity::builder::ActivitySeries
 {
 public:
-    fwCoreClassMacro(ActivitySeriesInitData, activity::IBuilder,
-                     activity::builder::factory::New< ActivitySeriesInitData >)
+    SIGHT_DECLARE_CLASS(ActivitySeriesInitData, activity::IBuilder,
+                        activity::builder::factory::New< ActivitySeriesInitData >)
 
     typedef std::string RegistryKeyType;
 

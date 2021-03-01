@@ -27,10 +27,9 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/data/Matrix4.hpp>
 
+#include <service/macros.hpp>
 
 namespace sight::module::geometry::base
 {
@@ -117,7 +116,7 @@ void SSwitchMatrices::switchToMatrix(size_t index)
     }
     else
     {
-        SLM_WARN("Desired index don't exists, switch to first matrix");
+        SIGHT_WARN("Desired index don't exists, switch to first matrix");
         m_indexOfDesiredMatrix = 0;
     }
 

@@ -24,11 +24,11 @@
 
 #include "ui/qml/config.hpp"
 
+#include <ui/base/dialog/IProgressDialog.hpp>
+
 #include <QObject>
 #include <QPointer>
 #include <QString>
-
-#include <ui/base/dialog/IProgressDialog.hpp>
 
 #include <string>
 
@@ -48,7 +48,7 @@ Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged)
 Q_PROPERTY(bool hasCallback MEMBER m_hasCallback NOTIFY hasCallbackChanged)
 
 public:
-    fwCoreClassMacro(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New<ProgressDialog>)
+    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New<ProgressDialog>)
 
     UI_QML_API ProgressDialog(ui::base::GuiBaseObject::Key key,
                               const std::string& title   = "Progression",

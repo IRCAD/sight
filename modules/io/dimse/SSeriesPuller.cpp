@@ -28,13 +28,13 @@
 
 #include <data/helper/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-#include <service/extension/Config.hpp>
-
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/helper/Series.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
+
+#include <service/extension/Config.hpp>
+#include <service/macros.hpp>
 
 #include <filesystem>
 #include <sstream>
@@ -82,7 +82,7 @@ void SSeriesPuller::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_dicomReaderImplementation = config.get(s_DICOM_READER_CONFIG, m_dicomReaderImplementation);
-    SLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
+    SIGHT_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
 
     m_readerConfig = configType.get(s_READER_CONFIG, m_readerConfig);
 }
@@ -98,7 +98,7 @@ void SSeriesPuller::starting()
     m_seriesDB = data::SeriesDB::New();
 
     m_dicomReader = this->registerService< sight::io::base::service::IReader >(m_dicomReaderImplementation);
-    SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
+    SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
     if(!m_readerConfig.empty())
@@ -107,15 +107,15 @@ void SSeriesPuller::starting()
             service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig, "::io::base::service::IReader");
 
-        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
-                   readerConfig);
+        SIGHT_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
+                     readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }
 
     m_dicomReader->configure();
     m_dicomReader->start().wait();
-    SLM_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
+    SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 }
 
 //------------------------------------------------------------------------------
@@ -215,7 +215,7 @@ void SSeriesPuller::pullSeries()
         }
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
-            SLM_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
+            SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
             const auto failureNotif = this->signal< service::IService::FailureNotifiedSignalType >(
                 service::IService::s_FAILURE_NOTIFIED_SIG);
             failureNotif->asyncEmit("Unable to connect to the PACS");
@@ -251,14 +251,14 @@ void SSeriesPuller::pullSeries()
             }
             else
             {
-                SLM_ERROR("Unknown retrieve method, 'get' will be used");
+                SIGHT_ERROR("Unknown retrieve method, 'get' will be used");
                 seriesEnquirer->pullSeriesUsingGetRetrieveMethod(Series::toSeriesInstanceUIDContainer(
                                                                      pullSeriesVector));
             }
         }
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
-            SLM_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
+            SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
             const auto failureNotif = this->signal< service::IService::FailureNotifiedSignalType >(
                 service::IService::s_FAILURE_NOTIFIED_SIG);
             failureNotif->asyncEmit("Unable to execute query");
@@ -407,7 +407,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& _seriesInstanceUI
     }
     else
     {
-        SLM_WARN("The Dicom Series " + _seriesInstanceUID + " has expired.");
+        SIGHT_WARN("The Dicom Series " + _seriesInstanceUID + " has expired.");
     }
 
     // Notify progress dialog.

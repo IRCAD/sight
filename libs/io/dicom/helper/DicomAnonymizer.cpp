@@ -67,8 +67,8 @@ DicomAnonymizer::DicomAnonymizer() :
     const std::filesystem::path tagsPathStr = core::runtime::getLibraryResourceFilePath(
         "io_dicom/tags.csv");
     std::filesystem::path tagsPath = tagsPathStr;
-    SLM_ASSERT("File '" + tagsPath.string() + "' must exists",
-               std::filesystem::is_regular_file(tagsPath));
+    SIGHT_ASSERT("File '" + tagsPath.string() + "' must exists",
+                 std::filesystem::is_regular_file(tagsPath));
 
     auto csvStream = std::ifstream(tagsPath.string());
     io::dicom::helper::CsvIO csvReader(csvStream);
@@ -79,8 +79,8 @@ DicomAnonymizer::DicomAnonymizer() :
         if(tagVec.size() < 3)
         {
             const std::string errorMessage = "Error when loading tag '" + ::boost::algorithm::join(tagVec, ", ") + "'";
-            SLM_WARN_IF(errorMessage, tagVec.size() != 4);
-            FW_RAISE_EXCEPTION(io::dicom::exception::InvalidTag(errorMessage));
+            SIGHT_WARN_IF(errorMessage, tagVec.size() != 4);
+            SIGHT_THROW_EXCEPTION(io::dicom::exception::InvalidTag(errorMessage));
         }
 
         const std::string& actionCode = tagVec[0];
@@ -116,7 +116,7 @@ DicomAnonymizer::DicomAnonymizer() :
         }
         else
         {
-            SLM_ERROR("Action code '" + actionCode + "' is not managed.");
+            SIGHT_ERROR("Action code '" + actionCode + "' is not managed.");
         }
 
         tagVec = csvReader.getLine();
@@ -154,13 +154,13 @@ void moveDirectory(const std::filesystem::path& input,
     namespace fs = std::filesystem;
     std::error_code ec;
     fs::copy(input, output, fs::copy_options::overwrite_existing | fs::copy_options::recursive, ec);
-    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string()
-                                  << " error : " << ec.message(), ec.value());
+    SIGHT_THROW_IF("copy_directory " << input.string() << " " << output.string()
+                                     << " error : " << ec.message(), ec.value());
 
     fs::directory_iterator it(input);
     fs::directory_iterator end;
     fs::permissions(output, fs::perms::owner_all, ec);
-    SLM_ERROR_IF("set " << output.string() << " permission error : " << ec.message(), ec.value());
+    SIGHT_ERROR_IF("set " << output.string() << " permission error : " << ec.message(), ec.value());
 
     for(; it != end; ++it)
     {
@@ -172,12 +172,12 @@ void moveDirectory(const std::filesystem::path& input,
         else
         {
             fs::rename(*it, dest, ec);
-            FW_RAISE_IF("rename " << it->path().string() << " " << dest.string()
-                                  << " error : " << ec.message(), ec.value());
+            SIGHT_THROW_IF("rename " << it->path().string() << " " << dest.string()
+                                     << " error : " << ec.message(), ec.value());
         }
 
         fs::permissions(dest, fs::perms::owner_all, ec);
-        SLM_ERROR_IF("set " << dest.string() << " permission error : " << ec.message(), ec.value());
+        SIGHT_ERROR_IF("set " << dest.string() << " permission error : " << ec.message(), ec.value());
     }
 }
 
@@ -256,7 +256,7 @@ void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
         if(std::filesystem::is_directory(*it))
         {
             std::filesystem::remove_all((*it), ec);
-            FW_RAISE_IF("remove_all " + dirPath.string() + " error : " + ec.message(), ec.value());
+            SIGHT_THROW_IF("remove_all " + dirPath.string() + " error : " + ec.message(), ec.value());
         }
     }
 
@@ -308,7 +308,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     // File Reader
     ::gdcm::Reader reader;
     reader.SetStream(inputStream);
-    FW_RAISE_IF("Unable to anonymize (file read failed)", !reader.Read());
+    SIGHT_THROW_IF("Unable to anonymize (file read failed)", !reader.Read());
 
     // String filter
     m_stringFilter.SetFile(reader.GetFile());
@@ -412,7 +412,7 @@ void DicomAnonymizer::anonymize(std::istream& inputStream, std::ostream& outputS
     writer.SetStream(outputStream);
     writer.SetFile(datasetFile);
 
-    FW_RAISE_IF("Unable to anonymize (file write failed)", !writer.Write());
+    SIGHT_THROW_IF("Unable to anonymize (file write failed)", !writer.Write());
 }
 
 //------------------------------------------------------------------------------
@@ -436,7 +436,7 @@ void DicomAnonymizer::addExceptionTag(uint16_t group, uint16_t element, const st
 void DicomAnonymizer::preservePrivateTag(const ::gdcm::Tag& tag)
 {
     const bool found = std::find(m_privateTags.begin(), m_privateTags.end(), tag) != m_privateTags.end();
-    SLM_WARN_IF("Private tag " << tag.GetGroup() << ", " << tag.GetElement() << " has already been added", !found);
+    SIGHT_WARN_IF("Private tag " << tag.GetGroup() << ", " << tag.GetElement() << " has already been added", !found);
 
     if(!found)
     {
@@ -488,8 +488,8 @@ void DicomAnonymizer::applyActionCodeK(const ::gdcm::Tag& tag)
 
 void DicomAnonymizer::applyActionCodeC(const ::gdcm::Tag& tag)
 {
-    SLM_FATAL("Basic profile \"C\" is not supported yet: "
-              "Only basic profile is supported by the current implementation.");
+    SIGHT_FATAL("Basic profile \"C\" is not supported yet: "
+                "Only basic profile is supported by the current implementation.");
 }
 
 //------------------------------------------------------------------------------
@@ -699,7 +699,7 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
         }
         default:
         {
-            SLM_ERROR(tag<<" is not supported. Emptied value. ");
+            SIGHT_ERROR(tag<<" is not supported. Emptied value. ");
             m_anonymizer.Empty(tag);
             break;
         }
@@ -714,15 +714,15 @@ void DicomAnonymizer::copyDirectory(const std::filesystem::path& input,
     namespace fs = std::filesystem;
     std::error_code ec;
     fs::copy(input, output, fs::copy_options::overwrite_existing | fs::copy_options::recursive, ec);
-    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string()
-                                  << " error : " << ec.message(), ec.value());
+    SIGHT_THROW_IF("copy_directory " << input.string() << " " << output.string()
+                                     << " error : " << ec.message(), ec.value());
 
     fs::directory_iterator it(input);
     fs::directory_iterator end;
 
     ec.clear();
     fs::permissions(output, fs::perms::owner_all, ec);
-    SLM_ERROR_IF("set " + output.string() + " permission error : " + ec.message(), ec.value());
+    SIGHT_ERROR_IF("set " + output.string() + " permission error : " + ec.message(), ec.value());
 
     for(; it != end; ++it)
     {
@@ -735,9 +735,9 @@ void DicomAnonymizer::copyDirectory(const std::filesystem::path& input,
         {
             // Use stream instead of boost::copy_file (Unix c++11 issue)
             std::ifstream inStream(it->path(), std::ios::binary);
-            FW_RAISE_IF("Unable to read file :" << it->path().string(), !inStream.good());
+            SIGHT_THROW_IF("Unable to read file :" << it->path().string(), !inStream.good());
             std::ofstream outStream(dest, std::ios::binary);
-            FW_RAISE_IF("Unable to write file :" << dest.string(), !outStream.good());
+            SIGHT_THROW_IF("Unable to write file :" << dest.string(), !outStream.good());
 
             outStream << inStream.rdbuf();
 
@@ -747,7 +747,7 @@ void DicomAnonymizer::copyDirectory(const std::filesystem::path& input,
 
         ec.clear();
         fs::permissions(dest, fs::perms::owner_all, ec);
-        SLM_ERROR_IF("set " + dest.string() + " permission error : " + ec.message(), ec.value());
+        SIGHT_ERROR_IF("set " + dest.string() + " permission error : " + ec.message(), ec.value());
     }
 }
 

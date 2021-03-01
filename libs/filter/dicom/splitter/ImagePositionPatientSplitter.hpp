@@ -39,8 +39,8 @@ namespace splitter
 class FILTER_DICOM_CLASS_API ImagePositionPatientSplitter : public ISplitter
 {
 public:
-    fwCoreClassMacro(ImagePositionPatientSplitter, ISplitter,
-                     filter::dicom::factory::New< ImagePositionPatientSplitter >);
+    SIGHT_DECLARE_CLASS(ImagePositionPatientSplitter, ISplitter,
+                        filter::dicom::factory::New< ImagePositionPatientSplitter >);
 
     /// Constructor
     FILTER_DICOM_API ImagePositionPatientSplitter(filter::dicom::IFilter::Key key);

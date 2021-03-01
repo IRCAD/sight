@@ -26,9 +26,9 @@
 
 #include <core/com/Signals.hpp>
 
-#include <viz/scene3d/Layer.hpp>
-
 #include <ui/base/IAction.hpp>
+
+#include <viz/scene3d/Layer.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -57,7 +57,7 @@ class MODULE_UI_VIZ_CLASS_API SStereoToggler : public ::sight::ui::base::IAction
 {
 public:
 
-    fwCoreServiceMacro(SStereoToggler, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SStereoToggler, ::sight::ui::base::IAction)
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoToggler();

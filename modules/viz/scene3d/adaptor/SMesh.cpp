@@ -27,6 +27,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <geometry/data/Mesh.hpp>
+
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
@@ -34,8 +36,6 @@
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/R2VBRenderable.hpp>
 #include <viz/scene3d/SRender.hpp>
-
-#include <geometry/data/Mesh.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -92,7 +92,7 @@ void SMesh::configuring()
 
     const std::string color = config.get<std::string>("color", "");
 
-    SLM_ASSERT("Material not found", m_material);
+    SIGHT_ASSERT("Material not found", m_material);
     m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
     if(config.count(s_AUTORESET_CAMERA_CONFIG))
@@ -127,7 +127,7 @@ void SMesh::configuring()
     if(config.count(s_QUERY_CONFIG))
     {
         const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -171,8 +171,8 @@ void SMesh::starting()
 
         m_materialAdaptor = *result;
 
-        SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
-                   result != mtlAdaptors.end());
+        SIGHT_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
+                     result != mtlAdaptors.end());
         m_material = m_materialAdaptor->getLockedInOut< data::Material >(SMaterial::s_MATERIAL_INOUT).get_shared();
     }
 
@@ -207,7 +207,7 @@ void SMesh::updating()
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+        SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
         m_meshGeometry->clearMesh(*sceneMgr);
     }
     this->updateMesh(mesh.get_shared());
@@ -221,7 +221,7 @@ void SMesh::stopping()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
     this->unregisterServices();
 
@@ -256,12 +256,12 @@ void module::viz::scene3d::adaptor::SMesh::setVisible(bool _visible)
 void SMesh::updateMesh(const data::Mesh::sptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
     {
-        SLM_DEBUG("Empty mesh");
+        SIGHT_DEBUG("Empty mesh");
 
         if(m_entity)
         {
@@ -502,7 +502,7 @@ void SMesh::modifyPointColors()
     if(m_meshGeometry->hasColorLayerChanged(mesh.get_shared()))
     {
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+        SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
         m_meshGeometry->clearMesh(*sceneMgr);
         this->updateMesh(mesh.get_shared());
     }

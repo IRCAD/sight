@@ -38,8 +38,8 @@ namespace ModelSeries
 class MODULE_ACTIVITY_CLASS_API ContainOneTool : public sight::activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(ContainOneTool, ::sight::activity::IObjectValidator,
-                     ::sight::activity::validator::factory::New< ContainOneTool >)
+    SIGHT_DECLARE_CLASS(ContainOneTool, ::sight::activity::IObjectValidator,
+                        ::sight::activity::validator::factory::New< ContainOneTool >)
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API ContainOneTool(::sight::activity::IValidator::Key key);

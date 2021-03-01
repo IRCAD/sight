@@ -104,13 +104,13 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
     get_memory_stats(memory);
     std::uint64_t oToKMo = 1024*1024;
 
-    SLM_INFO("Total memory: " << memory.total/oToKMo<< " Mo");
-    SLM_INFO("Free memory:  " << memory.free/oToKMo << " Mo");
-    SLM_INFO("Buffered:     " << memory.buffered/oToKMo << " Mo");
-    SLM_INFO("Cached:       " << memory.cached/oToKMo << " Mo");
-    SLM_INFO("Swap Cached:  " << memory.swapcached/oToKMo << " Mo");
-    SLM_INFO("Swap Total:   " << memory.swaptotal/oToKMo << " Mo");
-    SLM_INFO("Swap Free:    " << memory.swapfree/oToKMo << " Mo");
+    SIGHT_INFO("Total memory: " << memory.total/oToKMo<< " Mo");
+    SIGHT_INFO("Free memory:  " << memory.free/oToKMo << " Mo");
+    SIGHT_INFO("Buffered:     " << memory.buffered/oToKMo << " Mo");
+    SIGHT_INFO("Cached:       " << memory.cached/oToKMo << " Mo");
+    SIGHT_INFO("Swap Cached:  " << memory.swapcached/oToKMo << " Mo");
+    SIGHT_INFO("Swap Total:   " << memory.swaptotal/oToKMo << " Mo");
+    SIGHT_INFO("Swap Free:    " << memory.swapfree/oToKMo << " Mo");
 
     Status allStat;
     getAllStatus( allStat );
@@ -118,11 +118,11 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
 
     std::uint64_t computedFree = ( memory.total - allStat.VmRSS ) / oToKMo;
     std::uint64_t free         = memory.free / oToKMo;
-    SLM_INFO(  "(ComputedFree, Free, Diff) - ( "
-               << std::setw(5) << computedFree
-               << std::setw(5) << free
-               << std::setw(5) << computedFree -free
-               << " )" );
+    SIGHT_INFO(  "(ComputedFree, Free, Diff) - ( "
+                 << std::setw(5) << computedFree
+                 << std::setw(5) << free
+                 << std::setw(5) << computedFree -free
+                 << " )" );
     (void)computedFree;         // Fixes "unused variable" warnings
     (void)free;
 }
@@ -282,16 +282,16 @@ void PosixMemoryMonitorTools::analyseMemInfo( std::string& line, MemInfo& meminf
 void PosixMemoryMonitorTools::printStatus( Status& stat )
 {
     int oToMo = 1024 * 1024;
-    SLM_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo" );
-    SLM_DEBUG("VmSize = " << stat.VmSize / oToMo << " Mo" );
-    SLM_DEBUG("VmLck = " << stat.VmLck / oToMo << " Mo" );
-    SLM_DEBUG("VmHWM = " << stat.VmHWM / oToMo << " Mo" );
-    SLM_DEBUG("VmRSS = " << stat.VmRSS / oToMo << " Mo" );
-    SLM_DEBUG("VmData = " << stat.VmData / oToMo << " Mo" );
-    SLM_DEBUG("VmStk = " << stat.VmStk / oToMo << " Mo" );
-    SLM_DEBUG("VmExe = " << stat.VmExe / oToMo << " Mo" );
-    SLM_DEBUG("VmLib = " << stat.VmLib / oToMo << " Mo" );
-    SLM_DEBUG("VmPTE = " << stat.VmPTE / oToMo << " Mo" );
+    SIGHT_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo" );
+    SIGHT_DEBUG("VmSize = " << stat.VmSize / oToMo << " Mo" );
+    SIGHT_DEBUG("VmLck = " << stat.VmLck / oToMo << " Mo" );
+    SIGHT_DEBUG("VmHWM = " << stat.VmHWM / oToMo << " Mo" );
+    SIGHT_DEBUG("VmRSS = " << stat.VmRSS / oToMo << " Mo" );
+    SIGHT_DEBUG("VmData = " << stat.VmData / oToMo << " Mo" );
+    SIGHT_DEBUG("VmStk = " << stat.VmStk / oToMo << " Mo" );
+    SIGHT_DEBUG("VmExe = " << stat.VmExe / oToMo << " Mo" );
+    SIGHT_DEBUG("VmLib = " << stat.VmLib / oToMo << " Mo" );
+    SIGHT_DEBUG("VmPTE = " << stat.VmPTE / oToMo << " Mo" );
     (void)oToMo;                // Fixes "unused variable" warnings
 }
 
@@ -487,22 +487,22 @@ void PosixMemoryMonitorTools::printAllStatus()
     totalVmLib  /= oToMo;
     totalVmPTE  /= oToMo;
 
-    SLM_DEBUG("( " << totalVmPeak << std::setw(5) << totalVmSize << std::setw(5) << totalVmLck << std::setw(
-                  5) << totalVmHWM << std::setw(5) << totalVmRSS << std::setw(5) << totalVmData << std::setw(
-                  5) << totalVmStk << std::setw(5) << totalVmExe << std::setw(5) << totalVmLib << std::setw(
-                  5) << totalVmPTE << " )");
+    SIGHT_DEBUG("( " << totalVmPeak << std::setw(5) << totalVmSize << std::setw(5) << totalVmLck << std::setw(
+                    5) << totalVmHWM << std::setw(5) << totalVmRSS << std::setw(5) << totalVmData << std::setw(
+                    5) << totalVmStk << std::setw(5) << totalVmExe << std::setw(5) << totalVmLib << std::setw(
+                    5) << totalVmPTE << " )");
 
     /*
-       SLM_DEBUG("totalVmPeak = " << totalVmPeak / oToMo << " Mo" );
-       SLM_DEBUG("totalVmSize = " << totalVmSize / oToMo << " Mo" );
-       SLM_DEBUG("totalVmLck = " << totalVmLck / oToMo << " Mo" );
-       SLM_DEBUG("totalVmHWM = " << totalVmHWM / oToMo << " Mo" );
-       SLM_DEBUG("totalVmRSS = " << totalVmRSS / oToMo << " Mo" );
-       SLM_DEBUG("totalVmData = " << totalVmData / oToMo << " Mo" );
-       SLM_DEBUG("totalVmStk = " << totalVmStk / oToMo << " Mo" );
-       SLM_DEBUG("totalVmExe = " << totalVmExe / oToMo << " Mo" );
-       SLM_DEBUG("totalVmLib = " << totalVmLib / oToMo << " Mo" );
-       SLM_DEBUG("totalVmPTE = " << totalVmPTE / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmPeak = " << totalVmPeak / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmSize = " << totalVmSize / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmLck = " << totalVmLck / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmHWM = " << totalVmHWM / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmRSS = " << totalVmRSS / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmData = " << totalVmData / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmStk = " << totalVmStk / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmExe = " << totalVmExe / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmLib = " << totalVmLib / oToMo << " Mo" );
+       SIGHT_DEBUG("totalVmPTE = " << totalVmPTE / oToMo << " Mo" );
      */
 }
 

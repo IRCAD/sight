@@ -30,10 +30,10 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/service/IReader.hpp>
 #include <io/itk/ImageReader.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -42,7 +42,6 @@
 
 namespace sight::module::io::itk
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -155,7 +154,7 @@ void InrImageReaderService::updating()
     if( this->hasLocationDefined() )
     {
         data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         if ( this->createImage( this->getFile(), image) )
         {
@@ -180,7 +179,7 @@ void InrImageReaderService::updating()
 void InrImageReaderService::notificationOfDBUpdate()
 {
     data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+    SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
     auto sig = image->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

@@ -51,7 +51,7 @@ class DATA_CLASS_API TransferFunction
 
 public:
 
-    fwCoreClassMacro(TransferFunction)
+    SIGHT_DECLARE_CLASS(TransferFunction)
 
     /// Constructor.
     DATA_API TransferFunction(const std::function<void()>&);

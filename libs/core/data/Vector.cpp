@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( ::sight::data::Vector );
+SIGHT_REGISTER_DATA( ::sight::data::Vector );
 
 namespace sight::data
 {
@@ -55,9 +55,9 @@ Vector::~Vector()
 void Vector::shallowCopy(const Object::csptr& _source )
 {
     Vector::csptr other = Vector::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_container = other->m_container;
 }
@@ -67,9 +67,9 @@ void Vector::shallowCopy(const Object::csptr& _source )
 void Vector::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Vector::csptr other = Vector::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
     m_container.clear();
     m_container.reserve(other->m_container.size());

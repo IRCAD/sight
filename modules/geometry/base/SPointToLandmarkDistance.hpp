@@ -80,7 +80,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkDistance final : public ser
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro(SPointToLandmarkDistance, service::IService)
+    SIGHT_DECLARE_SERVICE(SPointToLandmarkDistance, service::IService)
 
     /// Initializes signals and slots.
     MODULE_GEOMETRY_BASE_API SPointToLandmarkDistance() noexcept;

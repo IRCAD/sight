@@ -32,13 +32,13 @@
 #include <data/location/SingleFile.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/vtk/MeshReader.hpp>
 #include <io/vtk/ObjMeshReader.hpp>
 #include <io/vtk/PlyMeshReader.hpp>
 #include <io/vtk/StlMeshReader.hpp>
 #include <io/vtk/VtpMeshReader.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -48,7 +48,6 @@
 
 namespace sight::module::io::vtk
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -176,8 +175,8 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
     }
     else
     {
-        FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ vtkFile.extension().string() +
-                                               "' is not managed by module::io::vtk::SMeshReader."));
+        SIGHT_THROW_EXCEPTION(core::tools::Failed("Extension '"+ vtkFile.extension().string() +
+                                                  "' is not managed by module::io::vtk::SMeshReader."));
     }
 
     m_sigJobCreated->emit(meshReader->getJob());
@@ -199,7 +198,7 @@ bool SMeshReader::loadMesh( const std::filesystem::path& vtkFile )
             sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
         // Raise exception  for superior level
-        FW_RAISE_EXCEPTION(e);
+        SIGHT_THROW_EXCEPTION(e);
     }
     catch (const std::exception& e)
     {

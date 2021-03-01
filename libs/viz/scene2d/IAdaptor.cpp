@@ -65,11 +65,11 @@ viz::scene2d::SRender::sptr IAdaptor::getScene2DRender() const
 {
     const auto& registry = viz::scene2d::registry::getAdaptorRegistry();
     const auto& iter     = registry.find(this->getID());
-    SLM_ASSERT("Adaptor "+ this->getID() +" not registered", iter != registry.end());
+    SIGHT_ASSERT("Adaptor "+ this->getID() +" not registered", iter != registry.end());
 
     viz::scene2d::SRender::sptr render =
         viz::scene2d::SRender::dynamicCast(core::tools::fwID::getObject(iter->second));
-    SLM_ASSERT("Service SRender "+ iter->second +" not instanced", render);
+    SIGHT_ASSERT("Service SRender "+ iter->second +" not instanced", render);
     return render;
 }
 
@@ -197,7 +197,7 @@ void IAdaptor::configureParams()
     if( config.count("xAxis") )
     {
         m_xAxis = this->getScene2DRender()->getAxis(config.get<std::string>("xAxis"));
-        SLM_ASSERT("xAxis not found", m_xAxis);
+        SIGHT_ASSERT("xAxis not found", m_xAxis);
     }
     else
     {
@@ -207,7 +207,7 @@ void IAdaptor::configureParams()
     if( config.count("yAxis") )
     {
         m_yAxis = this->getScene2DRender()->getAxis(config.get<std::string>("yAxis"));
-        SLM_ASSERT("yAxis not found", m_xAxis);
+        SIGHT_ASSERT("yAxis not found", m_xAxis);
     }
     else
     {

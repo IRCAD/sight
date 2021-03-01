@@ -37,7 +37,6 @@ namespace sight::module::ui::base
 namespace com
 {
 
-
 //-----------------------------------------------------------------------------
 
 STimestampSlotCaller::STimestampSlotCaller()
@@ -70,12 +69,12 @@ void STimestampSlotCaller::configuring()
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            SLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            SIGHT_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            SLM_ASSERT("Missing hasSlotsId attribute", !uid.empty());
-            SLM_ASSERT("Missing slotKey attribute", !key.empty());
+            SIGHT_ASSERT("Missing hasSlotsId attribute", !uid.empty());
+            SIGHT_ASSERT("Missing slotKey attribute", !key.empty());
 
             m_slotInfos.push_back( std::make_pair(uid, key) );
         }
@@ -104,7 +103,7 @@ void STimestampSlotCaller::updating()
         {
             core::tools::Object::sptr obj      = core::tools::fwID::getObject(HasSlotId);
             core::com::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast< core::com::HasSlots >(obj);
-            SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
+            SIGHT_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
 

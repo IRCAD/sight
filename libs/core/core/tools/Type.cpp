@@ -255,8 +255,8 @@ Type::ToolBase::ToolBase(const std::type_info& typeinfo) :
 
 std::string Type::ToolBase::toString(std::any value) const
 {
-    FwCoreNotUsedMacro(value);
-    SLM_ASSERT("unable to convert an unspecified type value", 0);
+    SIGHT_NOT_USED(value);
+    SIGHT_ASSERT("unable to convert an unspecified type value", 0);
     return "";
 }
 
@@ -264,8 +264,8 @@ std::string Type::ToolBase::toString(std::any value) const
 
 std::string Type::ToolBase::toString(const void* value) const
 {
-    FwCoreNotUsedMacro(value);
-    SLM_ASSERT("unable to convert an unspecified type value", 0);
+    SIGHT_NOT_USED(value);
+    SIGHT_ASSERT("unable to convert an unspecified type value", 0);
     return "";
 }
 

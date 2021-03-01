@@ -37,7 +37,7 @@ class MODULE_DEBUG_CLASS_API fwMetrics : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(fwMetrics, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(fwMetrics, sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_DEBUG_API fwMetrics() noexcept;

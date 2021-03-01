@@ -24,7 +24,7 @@
 
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro(sight::viz::scene2d::data::Viewport);
+SIGHT_REGISTER_DATA(sight::viz::scene2d::data::Viewport);
 
 namespace sight::viz::scene2d
 {
@@ -36,9 +36,9 @@ namespace data
 void Viewport::shallowCopy(const sight::data::Object::csptr& _source )
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( sight::data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( sight::data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_x      = other->m_x;
@@ -52,9 +52,9 @@ void Viewport::shallowCopy(const sight::data::Object::csptr& _source )
 void Viewport::cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache )
 {
     Viewport::csptr other = Viewport::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( sight::data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( sight::data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_x      = other->m_x;

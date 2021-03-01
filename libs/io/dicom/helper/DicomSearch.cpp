@@ -80,7 +80,7 @@ void DicomSearch::searchRecursively(const std::filesystem::path& dirPath,
             {
                 dicomFiles.push_back( file );
             }
-            SLM_WARN_IF("Failed to read: " + file.string(), !isDicom);
+            SIGHT_WARN_IF("Failed to read: " + file.string(), !isDicom);
         }
     }
     else

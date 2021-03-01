@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-fwCampAutoDeclareDataMacro((sight)(data)(location)(Folder));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(location)(Folder));
 
 namespace sight::data
 {
@@ -41,9 +41,9 @@ class DATA_CLASS_API Folder : public ILocation
 {
 public:
 
-    fwCoreClassMacro(Folder, ILocation, data::factory::New< Folder >)
+    SIGHT_DECLARE_CLASS(Folder, ILocation, data::factory::New< Folder >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(location)(Folder));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(location)(Folder));
 
     /// Folder factory
     DATA_API static sptr New(PathType path, bool recursive = false );
@@ -98,7 +98,7 @@ struct enableFolder
     enableFolder(RW* rw) :
         m_rw(rw)
     {
-        SLM_ASSERT("m_rw not instanced", m_rw);
+        SIGHT_ASSERT("m_rw not instanced", m_rw);
     }
 
     /// @brief Set folder filesystem path

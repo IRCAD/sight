@@ -34,7 +34,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(ModelSeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ModelSeries))
 
 namespace sight::data
 {
@@ -54,9 +54,9 @@ public:
 
     typedef std::vector< SPTR(data::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassMacro(ModelSeries, data::Object, data::factory::New< ModelSeries >)
+    SIGHT_DECLARE_CLASS(ModelSeries, data::Object, data::factory::New< ModelSeries >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(ModelSeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ModelSeries))
 
     /**
      * @brief Creates the models series.

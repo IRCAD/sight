@@ -24,12 +24,12 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
 #include <QVector>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -60,7 +60,7 @@ class MODULE_UI_QT_CLASS_API SCameraSeriesEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraSeriesEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCameraSeriesEditor, sight::ui::base::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

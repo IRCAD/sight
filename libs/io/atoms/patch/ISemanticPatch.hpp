@@ -46,8 +46,8 @@ class IO_ATOMS_CLASS_API ISemanticPatch : public IPatch
 {
 
 public:
-    fwCoreClassMacro(ISemanticPatch)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(ISemanticPatch)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor
     IO_ATOMS_API ISemanticPatch();

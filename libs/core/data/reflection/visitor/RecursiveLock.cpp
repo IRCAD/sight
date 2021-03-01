@@ -91,7 +91,8 @@ struct LockVisitor : public camp::ValueVisitor< void >
         const camp::Class& metaclass = value.getClass();
         if ( value.pointer() )
         {
-            SLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call("classname") <<"' )" );
+            SIGHT_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call("classname") <<
+                         "' )" );
             if( metaclass.hasFunction("is_a") )
             {
                 if( value.call("is_a", ::camp::Args("::sight::data::Object")).to<bool>() )
@@ -162,10 +163,10 @@ void RecursiveLock::visit(const camp::MapProperty& property)
         first  = value.first;
         second = value.second;
 
-        SLM_ASSERT("Not managed type for map key.",
-                   first.type() == ::camp::stringType ||
-                   first.type() == ::camp::intType ||
-                   first.type() == ::camp::realType );
+        SIGHT_ASSERT("Not managed type for map key.",
+                     first.type() == ::camp::stringType ||
+                     first.type() == ::camp::intType ||
+                     first.type() == ::camp::realType );
 
         if ( second.type() == ::camp::userType )
         {

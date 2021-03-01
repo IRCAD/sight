@@ -26,9 +26,9 @@
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <QObject>
-
 #include <ui/qml/IQmlEditor.hpp>
+
+#include <QObject>
 
 namespace sight::module::ui::qml::image
 {
@@ -90,7 +90,7 @@ Q_OBJECT
 Q_PROPERTY(int sliceIndex WRITE configureSliceIndex)
 public:
 
-    fwCoreServiceMacro(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_QT_API SSliceIndexPositionEditor() noexcept;

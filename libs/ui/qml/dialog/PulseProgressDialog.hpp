@@ -24,9 +24,9 @@
 
 #include "ui/qml/config.hpp"
 
-#include <QObject>
-
 #include <ui/base/dialog/IPulseProgressDialog.hpp>
+
+#include <QObject>
 
 #include <string>
 
@@ -45,8 +45,8 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog,
-                     ui::base::factory::New< PulseProgressDialog >)
+    SIGHT_DECLARE_CLASS(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog,
+                        ui::base::factory::New< PulseProgressDialog >)
 
     UI_QML_API PulseProgressDialog(ui::base::GuiBaseObject::Key key);
 

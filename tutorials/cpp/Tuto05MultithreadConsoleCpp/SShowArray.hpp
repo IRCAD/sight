@@ -49,7 +49,7 @@ class TUTO05MULTITHREADCONSOLECPP_CLASS_API SShowArray final : public sight::ser
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShowArray, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SShowArray, sight::service::IController)
 
     /// Creates the service.
     TUTO05MULTITHREADCONSOLECPP_API SShowArray() noexcept;

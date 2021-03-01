@@ -28,12 +28,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
 
 #include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -84,7 +84,7 @@ void IFrame::initialize()
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("frame");
-        SLM_ASSERT("["+this->getID()+"' ] <frame> element must exist", !vectLayoutMng.empty());
+        SIGHT_ASSERT("["+this->getID()+"' ] <frame> element must exist", !vectLayoutMng.empty());
         m_frameConfig = vectLayoutMng.at(0);
         this->initializeLayoutManager(m_frameConfig);
 
@@ -117,10 +117,10 @@ void IFrame::initialize()
         {
             m_closePolicy = onclose;
         }
-        SLM_ASSERT("["+this->getID()+"' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
-                   +CLOSE_POLICY_NOTIFY+"', '" +CLOSE_POLICY_EXIT+"' or '"+CLOSE_POLICY_MESSAGE+"'",
-                   m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
-                   || m_closePolicy == CLOSE_POLICY_MESSAGE);
+        SIGHT_ASSERT("["+this->getID()+"' ] Invalid onclose value, actual: '" << m_closePolicy << "', accepted: '"
+                     +CLOSE_POLICY_NOTIFY+"', '" +CLOSE_POLICY_EXIT+"' or '"+CLOSE_POLICY_MESSAGE+"'",
+                     m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
+                     || m_closePolicy == CLOSE_POLICY_MESSAGE);
     }
 
     m_viewRegistry = ui::base::registry::View::New(this->getID());
@@ -137,8 +137,8 @@ void IFrame::initialize()
 
 void IFrame::create()
 {
-    SLM_ASSERT("["+this->getID()+"' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
-               "'configuring()' method.", m_frameLayoutManager);
+    SIGHT_ASSERT("["+this->getID()+"' ] FrameLayoutManager must be initialized, don't forget to call 'initialize()' in "
+                 "'configuring()' method.", m_frameLayoutManager);
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
@@ -200,12 +200,12 @@ void IFrame::create()
 
 void IFrame::destroy()
 {
-    SLM_ASSERT("View must be initialized.", m_viewRegistry);
+    SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
 
     if (m_hasToolBar)
     {
         m_viewRegistry->unmanageToolBar();
-        SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
+        SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
@@ -216,7 +216,7 @@ void IFrame::destroy()
     if (m_hasMenuBar)
     {
         m_viewRegistry->unmanageMenuBar();
-        SLM_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
+        SIGHT_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
             {
@@ -225,7 +225,7 @@ void IFrame::destroy()
     }
 
     m_viewRegistry->unmanage();
-    SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
+    SIGHT_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >([&]
         {
@@ -237,14 +237,14 @@ void IFrame::destroy()
 
 void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
 {
-    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'frame', actual: '"
-               +frameConfig->getName()+ "'",
-               frameConfig->getName() == "frame");
+    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'frame', actual: '"
+                 +frameConfig->getName()+ "'",
+                 frameConfig->getName() == "frame");
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY);
     m_frameLayoutManager = ui::base::layoutManager::IFrameLayoutManager::dynamicCast(guiObj);
-    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
-               m_frameLayoutManager);
+    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
+                 m_frameLayoutManager);
 
     m_frameLayoutManager->initialize(frameConfig);
 }
@@ -253,14 +253,14 @@ void IFrame::initializeLayoutManager(ConfigurationType frameConfig)
 
 void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 {
-    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'menuBar', actual: '"
-               +menuBarConfig->getName()+ "'",
-               menuBarConfig->getName() == "menuBar");
+    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'menuBar', actual: '"
+                 +menuBarConfig->getName()+ "'",
+                 menuBarConfig->getName() == "menuBar");
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IMenuBarBuilder::REGISTRY_KEY);
     m_menuBarBuilder = ui::base::builder::IMenuBarBuilder::dynamicCast(guiObj);
-    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::builder::IMenuBarBuilder::REGISTRY_KEY,
-               m_menuBarBuilder);
+    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::builder::IMenuBarBuilder::REGISTRY_KEY,
+                 m_menuBarBuilder);
 
     m_menuBarBuilder->initialize(menuBarConfig);
 }
@@ -269,14 +269,14 @@ void IFrame::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
 
 void IFrame::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
-    SLM_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
-               +toolBarConfig->getName()+ "'",
-               toolBarConfig->getName() == "toolBar");
+    SIGHT_ASSERT("["+this->getID()+"' ] Wrong configuration name, expected: 'toolBar', actual: '"
+                 +toolBarConfig->getName()+ "'",
+                 toolBarConfig->getName() == "toolBar");
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder = ui::base::builder::IToolBarBuilder::dynamicCast(guiObj);
-    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::builder::IToolBarBuilder::REGISTRY_KEY,
-               m_toolBarBuilder);
+    SIGHT_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::builder::IToolBarBuilder::REGISTRY_KEY,
+                 m_toolBarBuilder);
 
     m_toolBarBuilder->initialize(toolBarConfig);
 }

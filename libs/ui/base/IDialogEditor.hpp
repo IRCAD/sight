@@ -40,7 +40,7 @@ class UI_BASE_CLASS_API IDialogEditor : public service::IService
 
 public:
 
-    fwCoreServiceMacro(IDialogEditor, service::IService)
+    SIGHT_DECLARE_SERVICE(IDialogEditor, service::IService)
 
 protected:
 

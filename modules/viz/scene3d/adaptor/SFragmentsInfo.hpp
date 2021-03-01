@@ -66,7 +66,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFragmentsInfo final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SFragmentsInfo, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SFragmentsInfo, ::sight::viz::scene3d::IAdaptor)
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;
@@ -78,7 +78,7 @@ public:
      * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
      *
      * Call @ref module::viz::scene3d::adaptor::destroyCompositor() and
-     *module::viz::scene3d::adaptor::createCompositor(int,
+     * module::viz::scene3d::adaptor::createCompositor(int,
      * int).
      *
      * @param _viewport related layer's viewport.

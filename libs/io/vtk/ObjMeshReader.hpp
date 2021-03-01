@@ -52,9 +52,9 @@ class IO_VTK_CLASS_API ObjMeshReader :
 
 public:
 
-    fwCoreClassMacro(ObjMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
-                     io::base::reader::factory::New< ObjMeshReader >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(ObjMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
+                        io::base::reader::factory::New< ObjMeshReader >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API ObjMeshReader(io::base::reader::IObjectReader::Key key);

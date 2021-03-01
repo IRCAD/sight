@@ -59,7 +59,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SRenderStats final : public sight::viz::scene
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SRenderStats, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SRenderStats, ::sight::viz::scene3d::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SRenderStats() noexcept;

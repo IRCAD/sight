@@ -38,7 +38,7 @@ class UI_BASE_CLASS_API Action : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(Action, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(Action, ui::base::GuiBaseObject)
 
     //------------------------------------------------------------------------------
 

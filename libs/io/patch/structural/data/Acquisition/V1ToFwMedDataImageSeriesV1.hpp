@@ -39,8 +39,8 @@ namespace Acquisition
 class IO_PATCH_CLASS_API V1ToFwMedDataImageSeriesV1 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToFwMedDataImageSeriesV1, patch::structural::data::Acquisition::V1ToFwMedDataImageSeriesV1,
-                     new V1ToFwMedDataImageSeriesV1)
+    SIGHT_DECLARE_CLASS(V1ToFwMedDataImageSeriesV1, patch::structural::data::Acquisition::V1ToFwMedDataImageSeriesV1,
+                        new V1ToFwMedDataImageSeriesV1)
 
     /// Constructor
     IO_PATCH_API V1ToFwMedDataImageSeriesV1();

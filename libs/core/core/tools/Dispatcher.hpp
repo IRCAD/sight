@@ -62,7 +62,7 @@ struct EndTypeListAction
     template< class KeyType, class Parameter>
     static void  invoke( const KeyType& keytype, const Parameter& param )
     {
-        FwCoreNotUsedMacro(param);
+        SIGHT_NOT_USED(param);
         std::string msg = core::tools::getString(keytype) +
                           " : KeyType value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);

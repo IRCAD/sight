@@ -73,7 +73,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SVector final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SVector, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SVector, ::sight::viz::scene3d::IAdaptor)
 
     /// Initialise slots.
     MODULE_VIZ_SCENE3D_API SVector() noexcept;

@@ -28,9 +28,9 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
-#include <OGRE/Ogre.h>
 
 namespace sight::viz::scene3d
 {
@@ -110,11 +110,11 @@ template <class GPU_PARAMETERS>
 inline void TransferFunction::bind(const ::Ogre::Pass* const _pass, const std::string& _texUnitName,
                                    ::Ogre::SharedPtr<GPU_PARAMETERS> _params, const std::string& _uniform) const
 {
-    SLM_ASSERT("Pass is null", _pass);
-    SLM_ASSERT("Parameters pointer is null", _params);
+    SIGHT_ASSERT("Pass is null", _pass);
+    SIGHT_ASSERT("Parameters pointer is null", _params);
 
     auto texUnitState = _pass->getTextureUnitState(_texUnitName);
-    SLM_ASSERT("'" + _texUnitName + "' texture unit is not found", texUnitState);
+    SIGHT_ASSERT("'" + _texUnitName + "' texture unit is not found", texUnitState);
 
     if(texUnitState->getTextureName() != m_texture->getName())
     {

@@ -49,7 +49,7 @@
 
 # ifdef LOG_FWEXCEPTIONS
 #  define __FWCORE_EXCEPTION_LOG(excep)         \
-    SLM_WARN(__FWCORE_EXCEPTION_INFO(excep))
+    SIGHT_WARN(__FWCORE_EXCEPTION_INFO(excep))
 # else
 # define __FWCORE_EXCEPTION_LOG(excep)
 # endif
@@ -86,17 +86,17 @@
 
 #  undef __FWCORE_EXCEPT_RAISE_EXCEPTION
 #  define __FWCORE_EXCEPT_RAISE_EXCEPTION(excep)        \
-    SLM_ASSERT(__FWCORE_EXCEPTION_INFO(excep), false)
+    SIGHT_ASSERT(__FWCORE_EXCEPTION_INFO(excep), false)
 
 #  undef __FWCORE_EXCEPT_FORWARD_EXCEPTION
 #  define __FWCORE_EXCEPT_FORWARD_EXCEPTION(excep)           \
-    SLM_ASSERT(                                             \
+    SIGHT_ASSERT(                                             \
         "[Forwarded] " << __FWCORE_EXCEPTION_INFO(excep),   \
             false)
 
 #  undef __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF
 #  define __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond)     \
-    SLM_ASSERT(                                                \
+    SIGHT_ASSERT(                                                \
         "[Forwarded] " << __FWCORE_EXCEPTION_INFO(excep),      \
             cond)
 
@@ -104,23 +104,23 @@
 
 // -----------------------------------------------------------------------------
 
-# define FW_RAISE_EXCEPTION(excep)  __FWCORE_EXPR_BLOCK(        \
+# define SIGHT_THROW_EXCEPTION(excep)  __FWCORE_EXPR_BLOCK(        \
         __FWCORE_EXCEPT_RAISE_EXCEPTION(excep);                 \
         )
 
-# define FW_RAISE_EXCEPTION_MSG(excep_class, msg) __FWCORE_EXPR_BLOCK(  \
+# define SIGHT_THROW_EXCEPTION_MSG(excep_class, msg) __FWCORE_EXPR_BLOCK(  \
         __FWCORE_EXCEPT_RAISE_EXCEPTION_MSG(excep_class, msg);          \
         )
 
-# define FW_RAISE(msg) __FWCORE_EXPR_BLOCK(     \
+# define SIGHT_THROW(msg) __FWCORE_EXPR_BLOCK(     \
         __FWCORE_EXCEPT_RAISE(msg);             \
         )
 
-# define FW_RAISE_EXCEPTION_IF(excep, cond) __FWCORE_EXPR_BLOCK(        \
+# define SIGHT_THROW_EXCEPTION_IF(excep, cond) __FWCORE_EXPR_BLOCK(        \
         __FWCORE_EXCEPT_RAISE_EXCEPTION_IF(excep, cond)                 \
         )
 
-# define FW_RAISE_IF(msg, cond) __FWCORE_EXPR_BLOCK(    \
+# define SIGHT_THROW_IF(msg, cond) __FWCORE_EXPR_BLOCK(    \
         __FWCORE_EXCEPT_RAISE_IF(msg, cond)             \
         )
 

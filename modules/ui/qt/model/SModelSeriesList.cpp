@@ -35,15 +35,17 @@
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
+#include <data/helper/Field.hpp>
 #include <data/Integer.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
-#include <data/helper/Field.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <boost/format.hpp>
 
@@ -56,8 +58,6 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -92,7 +92,7 @@ public:
         }
         else
         {
-            SLM_WARN(_obj->getClassname() +  " is not a printable object  : ");
+            SIGHT_WARN(_obj->getClassname() +  " is not a printable object  : ");
             return "";
         }
     }
@@ -135,7 +135,7 @@ public:
         }
         else
         {
-            SLM_WARN(_obj->getClassname() +  " is not a printable object  : ");
+            SIGHT_WARN(_obj->getClassname() +  " is not a printable object  : ");
             return "";
         }
     }
@@ -143,10 +143,9 @@ public:
 
 //------------------------------------------------------------------------------
 
-
 static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG = "emptiedSelection";
-static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
+static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
 
 static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
 
@@ -332,7 +331,7 @@ void SModelSeriesList::updateReconstructions()
     auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
 
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     data::mt::locked_ptr< data::ModelSeries > modelSeries =
         this->getLockedInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
@@ -374,7 +373,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr< data::ModelSeries >&
         for(auto const& cIt :  m_displayedInfo)
         {
             data::Object::sptr obj = data::reflection::getObject(reconstruction, cIt.first);
-            SLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
+            SIGHT_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);
             info << QString::fromStdString(cIt.second->apply(obj));
         }
         QTreeWidgetItem* item = new QTreeWidgetItem(info);
@@ -393,7 +392,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr< data::ModelSeries >&
 
 void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem*)
 {
-    SLM_ASSERT("Current selected item is null", _current);
+    SIGHT_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
     data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
@@ -414,7 +413,7 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int)
 {
     std::string id                 = _item->data(0, Qt::UserRole).toString().toStdString();
     data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
-    SLM_ASSERT("rec not instanced", rec);
+    SIGHT_ASSERT("rec not instanced", rec);
 
     const bool itemIsChecked = (_item->checkState(0) == Qt::Checked);
 

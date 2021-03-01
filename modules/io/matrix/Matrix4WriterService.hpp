@@ -50,7 +50,7 @@ class MODULE_IO_MATRIX_CLASS_API Matrix4WriterService : public sight::io::base::
 
 public:
 
-    fwCoreServiceMacro(Matrix4WriterService, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(Matrix4WriterService, sight::io::base::service::IWriter)
 
     /// Super class of writer services
     typedef sight::io::base::service::IWriter SuperClass;

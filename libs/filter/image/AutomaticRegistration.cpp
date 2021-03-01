@@ -148,7 +148,7 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
 
         break;
         default:
-            SLM_FATAL("Unknown metric");
+            SIGHT_FATAL("Unknown metric");
     }
 
     TransformType::Pointer itkTransform = TransformType::New();
@@ -220,7 +220,7 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     metric->SetMovingInterpolator(movingInterpolator.GetPointer());
 
     // Number of registration stages
-    SLM_ASSERT("255 is the maximum number of steps.", _multiResolutionParameters.size() < 256);
+    SIGHT_ASSERT("255 is the maximum number of steps.", _multiResolutionParameters.size() < 256);
     const std::uint8_t numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
 
     RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
@@ -267,7 +267,7 @@ void AutomaticRegistration::registerImage(const data::Image::csptr& _target,
     }
     catch( ::itk::ExceptionObject& err )
     {
-        SLM_ERROR("Error while registering : " << err);
+        SIGHT_ERROR("Error while registering : " << err);
     }
 }
 
@@ -287,7 +287,7 @@ void AutomaticRegistration::stopRegistration()
 
 AutomaticRegistration::RealType AutomaticRegistration::getCurrentMetricValue() const
 {
-    SLM_ASSERT("No optimization process running.", m_optimizer);
+    SIGHT_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentMetricValue();
 }
 
@@ -295,7 +295,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getCurrentMetricValue() c
 
 const AutomaticRegistration::OptimizerType::ParametersType& AutomaticRegistration::getCurrentParameters() const
 {
-    SLM_ASSERT("No optimization process running.", m_optimizer);
+    SIGHT_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentPosition();
 }
 
@@ -303,7 +303,7 @@ const AutomaticRegistration::OptimizerType::ParametersType& AutomaticRegistratio
 
 AutomaticRegistration::RealType AutomaticRegistration::getRelaxationFactor() const
 {
-    SLM_ASSERT("No optimization process running.", m_optimizer);
+    SIGHT_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetRelaxationFactor();
 }
 
@@ -311,7 +311,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getRelaxationFactor() con
 
 AutomaticRegistration::RealType AutomaticRegistration::getLearningRate() const
 {
-    SLM_ASSERT("No optimization process running.", m_optimizer);
+    SIGHT_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetLearningRate();
 }
 
@@ -319,7 +319,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getLearningRate() const
 
 AutomaticRegistration::RealType AutomaticRegistration::getGradientMagnitudeTolerance() const
 {
-    SLM_ASSERT("No optimization process running.", m_optimizer);
+    SIGHT_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetGradientMagnitudeTolerance();
 }
 
@@ -327,7 +327,7 @@ AutomaticRegistration::RealType AutomaticRegistration::getGradientMagnitudeToler
 
 itk::SizeValueType AutomaticRegistration::getCurrentIteration() const
 {
-    SLM_ASSERT("No optimization process running.", m_optimizer);
+    SIGHT_ASSERT("No optimization process running.", m_optimizer);
     return m_optimizer->GetCurrentIteration();
 }
 
@@ -335,7 +335,7 @@ itk::SizeValueType AutomaticRegistration::getCurrentIteration() const
 
 itk::SizeValueType filter::image::AutomaticRegistration::getCurrentLevel() const
 {
-    SLM_ASSERT("No registration process running.", m_registrator);
+    SIGHT_ASSERT("No registration process running.", m_registrator);
     return m_registrator->GetCurrentLevel();
 }
 
@@ -343,7 +343,7 @@ itk::SizeValueType filter::image::AutomaticRegistration::getCurrentLevel() const
 
 void AutomaticRegistration::getCurrentMatrix(const data::Matrix4::sptr& _trf) const
 {
-    SLM_ASSERT("No registration process running.", m_registrator);
+    SIGHT_ASSERT("No registration process running.", m_registrator);
     auto itkMatrix = m_registrator->GetTransform();
     this->convertToF4sMatrix(itkMatrix, _trf);
 }
@@ -380,7 +380,7 @@ double AutomaticRegistration::computeVolume(const data::Image::csptr& _img)
     const auto& spacing = _img->getSpacing2();
     const auto& size    = _img->getSize2();
 
-    SLM_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
+    SIGHT_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
 
     const double voxelVolume = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<double>());
     const size_t nbVoxels    = std::accumulate(size.begin(), size.end(), 1, std::multiplies<size_t>());

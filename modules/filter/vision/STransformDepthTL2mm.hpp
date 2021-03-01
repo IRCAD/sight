@@ -59,7 +59,7 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public service::IOperator
 {
 public:
-    fwCoreServiceMacro(STransformDepthTL2mm, service::IOperator)
+    SIGHT_DECLARE_SERVICE(STransformDepthTL2mm, service::IOperator)
 
     /**
      * @brief STransformDepthTL2mm constructor.

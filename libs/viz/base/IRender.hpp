@@ -50,7 +50,7 @@ class VIZ_BASE_CLASS_API IRender : public ui::base::IGuiContainer
 
 public:
 
-    fwCoreServiceMacro(IRender, ui::base::IGuiContainer)
+    SIGHT_DECLARE_SERVICE(IRender, ui::base::IGuiContainer)
 
 protected:
 

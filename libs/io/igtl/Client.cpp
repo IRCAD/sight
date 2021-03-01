@@ -44,8 +44,8 @@ Client::Client()
 Client::Client (::igtl::ClientSocket::Pointer socket)
 {
     m_socket = socket;
-    SLM_ASSERT("socket is null", socket.IsNotNull());
-    SLM_ASSERT("socket is not connected", socket->GetConnected());
+    SIGHT_ASSERT("socket is null", socket.IsNotNull());
+    SIGHT_ASSERT("socket is not connected", socket->GetConnected());
 }
 
 //------------------------------------------------------------------------------

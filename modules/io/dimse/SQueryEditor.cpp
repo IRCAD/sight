@@ -27,20 +27,20 @@
 #include <data/DicomSeries.hpp>
 #include <data/helper/SeriesDB.hpp>
 
+#include <io/dimse/exceptions/Base.hpp>
+#include <io/dimse/helper/Series.hpp>
+
 #include <service/macros.hpp>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
 #include <dcmtk/ofstd/ofstring.h>
-
-#include <io/dimse/exceptions/Base.hpp>
-#include <io/dimse/helper/Series.hpp>
 
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <algorithm>
 #include <vector>
@@ -298,7 +298,7 @@ void SQueryEditor::executeQuery()
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
-        SLM_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
+        SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
         const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
             service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't connect to the PACS");
@@ -512,7 +512,7 @@ void SQueryEditor::executeQuery()
         for(data::Series::sptr s: series)
         {
             data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
-            SLM_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
+            SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
             const std::string instanceUID = seriesEnquirer->findSOPInstanceUID(dicomSeries->getInstanceUID(), 0);
             dicomSeries->setFirstInstanceNumber((instanceUID.empty() ? 1 : 0));
         }
@@ -521,7 +521,7 @@ void SQueryEditor::executeQuery()
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
-        SLM_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
+        SIGHT_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
         const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
             service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Can't execture query");

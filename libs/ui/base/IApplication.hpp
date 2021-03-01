@@ -34,7 +34,7 @@ namespace sight::ui::base
 class UI_BASE_CLASS_API IApplication : public ui::base::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IApplication, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IApplication, ui::base::GuiBaseObject)
 
     /// Constructor. Do nothing.
     UI_BASE_API IApplication();

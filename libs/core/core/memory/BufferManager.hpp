@@ -87,8 +87,8 @@ public:
 
     typedef std::map< ConstBufferPtrType, BufferInfo > BufferInfoMapType;
 
-    fwCoreClassMacro(BufferManager, core::BaseObject)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(BufferManager, core::BaseObject)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     BufferManager();
     virtual ~BufferManager();

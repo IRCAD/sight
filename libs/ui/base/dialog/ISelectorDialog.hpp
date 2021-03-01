@@ -42,7 +42,7 @@ class UI_BASE_CLASS_API ISelectorDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(ISelectorDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ISelectorDialog, ui::base::GuiBaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

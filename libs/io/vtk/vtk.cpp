@@ -24,9 +24,9 @@
 #include <data/Image.hpp>
 #include <data/ObjectLock.hpp>
 
-#include <boost/cast.hpp>
-
 #include <geometry/data/MeshFunctions.hpp>
+
+#include <boost/cast.hpp>
 
 #include <vtkCell.h>
 #include <vtkCellType.h>
@@ -61,7 +61,7 @@ TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::fwToolsToVtkMap::key_type& key )
 {
     fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
-    FW_RAISE_IF("Unknown Type: " << key, it == s_toVtk.end() );
+    SIGHT_THROW_IF("Unknown Type: " << key, it == s_toVtk.end() );
     return it->second;
 }
 
@@ -71,7 +71,7 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::VtkTofwToolsMap::key_type& key )
 {
     VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
-    FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
+    SIGHT_THROW_IF("Unknown Type: " << key, it == s_fromVtk.end() );
     return it->second;
 }
 
@@ -152,10 +152,10 @@ void* newBuffer(size_t size)
     }
     catch (std::exception& e)
     {
-        SLM_ERROR("No enough memory to allocate an image of type "
-                  << core::tools::Type::create<IMAGETYPE>().string()
-                  << " and of size "<< size << "." << std::endl
-                  << e.what() );
+        SIGHT_ERROR("No enough memory to allocate an image of type "
+                    << core::tools::Type::create<IMAGETYPE>().string()
+                    << " and of size "<< size << "." << std::endl
+                    << e.what() );
         throw;
     }
     return destBuffer;
@@ -209,7 +209,7 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
 
 void fromVTKImage( vtkImageData* source, data::Image::sptr destination )
 {
-    SLM_ASSERT("vtkImageData source and/or data::Image destination are not correct", destination && source );
+    SIGHT_ASSERT("vtkImageData source and/or data::Image destination are not correct", destination && source );
 
     // ensure image size correct
 //    source->UpdateInformation();

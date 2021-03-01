@@ -30,24 +30,24 @@
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/DicomSeries.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/helper/Composite.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/helper/Composite.hpp>
-#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QMouseEvent>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -56,8 +56,7 @@
 namespace sight::module::ui::dicom
 {
 
-
-const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT = "readImage";
+const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT      = "readImage";
 const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
 
 //------------------------------------------------------------------------------
@@ -81,15 +80,15 @@ void SSliceIndexDicomEditor::configuring()
     sight::ui::base::IGuiContainer::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service module::ui::dicom::SSliceIndexDicomEditor must have "
-               "a \"config\" element.", config);
+    SIGHT_ASSERT("The service module::ui::dicom::SSliceIndexDicomEditor must have "
+                 "a \"config\" element.", config);
 
     bool success;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the module::ui::dicom::SSliceIndexDicomEditor "
-               "config element.", success);
+    SIGHT_ASSERT("It should be a \"dicomReader\" tag in the module::ui::dicom::SSliceIndexDicomEditor "
+                 "config element.", success);
 
     // Reader configuration
     core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
@@ -117,7 +116,7 @@ void SSliceIndexDicomEditor::starting()
     QHBoxLayout* layout = new QHBoxLayout();
 
     data::DicomSeries::csptr dicomSeries = this->getInput< data::DicomSeries >("series");
-    SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
     // Slider
@@ -149,8 +148,8 @@ void SSliceIndexDicomEditor::starting()
 
     sight::io::base::service::IReader::sptr dicomReader;
     dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
-    SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-               "::sight::module::ui::dicom::SSliceIndexDicomEditor.", dicomReader);
+    SIGHT_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
+                 "::sight::module::ui::dicom::SSliceIndexDicomEditor.", dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
                                   service::IService::AccessType::INOUT, dicomReader);
 
@@ -233,14 +232,14 @@ void SSliceIndexDicomEditor::triggerNewSlice()
 {
     // DicomSeries
     data::DicomSeries::csptr dicomSeries = this->getInput< data::DicomSeries >("series");
-    SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
     size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
                                 dicomSeries->getFirstInstanceNumber();
 
-    SLM_ERROR_IF("There is no instance available for selected slice index.",
-                 !dicomSeries->isInstanceAvailable(selectedSliceIndex));
+    SIGHT_ERROR_IF("There is no instance available for selected slice index.",
+                   !dicomSeries->isInstanceAvailable(selectedSliceIndex));
 
     if(dicomSeries->isInstanceAvailable(selectedSliceIndex))
     {
@@ -254,7 +253,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 {
     // DicomSeries
     data::DicomSeries::csptr dicomSeries = this->getInput< data::DicomSeries >("series");
-    SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     auto isModalitySupported = [](const data::Series::csptr& series )
                                {
@@ -276,12 +275,12 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
     std::filesystem::path tmpPath = path / "tmp";
 
-    SLM_INFO("Create " + tmpPath.string());
+    SIGHT_INFO("Create " + tmpPath.string());
     std::filesystem::create_directories(tmpPath);
 
     const auto& binaries = dicomSeries->getDicomContainer();
     auto iter            = binaries.find(selectedSliceIndex);
-    SLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
+    SIGHT_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
@@ -290,7 +289,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     const std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     std::ofstream fs(dest, std::ios::binary|std::ios::trunc);
-    FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
+    SIGHT_THROW_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
     fs.write(buffer, static_cast<long>(size));
     fs.close();
@@ -339,14 +338,14 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     std::error_code ec;
     std::filesystem::remove_all(path, ec);
-    SLM_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
+    SIGHT_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
 }
 
 //------------------------------------------------------------------------------
 
 void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) const
 {
-    SLM_WARN("Error: " + message);
+    SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );

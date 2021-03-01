@@ -51,9 +51,9 @@ class IO_VTK_CLASS_API PlyMeshReader :
 
 public:
 
-    fwCoreClassMacro(PlyMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
-                     io::base::reader::factory::New< PlyMeshReader >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(PlyMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
+                        io::base::reader::factory::New< PlyMeshReader >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API PlyMeshReader(io::base::reader::IObjectReader::Key key);

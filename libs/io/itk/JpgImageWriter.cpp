@@ -30,10 +30,10 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Composite.hpp>
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
@@ -45,7 +45,7 @@
 
 #include <filesystem>
 
-fwDataIOWriterRegisterMacro( ::sight::io::itk::JpgImageWriter );
+SIGHT_REGISTER_IO_WRITER( ::sight::io::itk::JpgImageWriter );
 
 namespace sight::io::itk
 {
@@ -84,7 +84,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        SLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
+        SIGHT_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
 
         data::Image::csptr image = param.m_dataImage;
 

@@ -109,8 +109,8 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {
-            FW_RAISE("Unable to read Dicom file '"<< dicomPath <<"' "<<
-                     "(slice: '" << firstItem->first << "')");
+            SIGHT_THROW("Unable to read Dicom file '"<< dicomPath <<"' "<<
+                        "(slice: '" << firstItem->first << "')");
         }
 
         fileFormat.loadAllDataIntoMemory();
@@ -121,7 +121,7 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         // Read SOPClassUID
         dataset = fileFormat.getDataset();
         status  = dataset->findAndGetOFStringArray(DCM_SOPClassUID, data);
-        FW_RAISE_IF("Unable to read tags: \""+dicomPath+"\"", status.bad());
+        SIGHT_THROW_IF("Unable to read tags: \""+dicomPath+"\"", status.bad());
 
         data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer;
         sopClassUIDContainer.insert(data.c_str());

@@ -96,7 +96,7 @@ void SDistortion::configuring()
     }
     else if(mode != "distort")
     {
-        SLM_ERROR("Mode should be distort or undistort");
+        SIGHT_ERROR("Mode should be distort or undistort");
     }
 }
 
@@ -135,14 +135,14 @@ void SDistortion::updating()
     if (m_isEnabled)
     {
         data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-        SLM_FATAL_IF("Object key '" + s_CAMERA_INPUT + "' is not found.", !camera);
+        SIGHT_FATAL_IF("Object key '" + s_CAMERA_INPUT + "' is not found.", !camera);
         if (camera->getIsCalibrated())
         {
             this->remap();
         }
         else
         {
-            SLM_WARN("Unable to distort/undistort the image: camera '" + camera->getID() + "' is not calibrated.");
+            SIGHT_WARN("Unable to distort/undistort the image: camera '" + camera->getID() + "' is not calibrated.");
         }
     }
     else
@@ -212,12 +212,12 @@ void SDistortion::remap()
 
     if (inputImage->getSizeInBytes() == 0 || inputImage->getNumberOfDimensions() < 2)
     {
-        SLM_WARN("Can not remap this image, it is empty.");
+        SIGHT_WARN("Can not remap this image, it is empty.");
         return;
     }
 
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("Object key '" + s_CAMERA_INPUT + "' is not found.", camera);
+    SIGHT_ASSERT("Object key '" + s_CAMERA_INPUT + "' is not found.", camera);
     if(inputSize[0] != camera->getWidth() || inputSize[1] != camera->getHeight())
     {
         std::stringstream msg;
@@ -309,11 +309,11 @@ void SDistortion::remap()
             // this call should copy the undistorted image to the video's
             // frameBuffer.
             undistortedImage.copyTo(img);
-            SLM_ASSERT("OpenCV did something wrong.", img.data == inputImage->getBuffer());
+            SIGHT_ASSERT("OpenCV did something wrong.", img.data == inputImage->getBuffer());
         }
         else
         {
-            SLM_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImage->getBuffer());
+            SIGHT_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImage->getBuffer());
         }
 #endif // OPENCV_CUDA_SUPPORT
     }
@@ -351,7 +351,7 @@ void SDistortion::calibrate()
     m_prevImageSize       = {0, 0, 0};
 
     auto camera = this->getInput< data::Camera> (s_CAMERA_INPUT);
-    SLM_FATAL_IF("Object 'camera' is not found.", !camera);
+    SIGHT_FATAL_IF("Object 'camera' is not found.", !camera);
 
     ::cv::Mat intrinsics;
     ::cv::Mat distCoefs;

@@ -193,8 +193,8 @@ std::string Encoding::convertStringWithoutCodeExtensions(const std::string& sour
     }
     else
     {
-        SLM_WARN_IF("'ISO_IR 6' is not a defined term in DICOM, will be treated as an empty value (ASCII)",
-                    definedTerm == "ISO_IR 6");
+        SIGHT_WARN_IF("'ISO_IR 6' is not a defined term in DICOM, will be treated as an empty value (ASCII)",
+                      definedTerm == "ISO_IR 6");
 
         // Check that the defined term is known
         if(s_DEFINED_TERM_TO_CHARSET.find(definedTerm) != s_DEFINED_TERM_TO_CHARSET.end())
@@ -206,7 +206,7 @@ std::string Encoding::convertStringWithoutCodeExtensions(const std::string& sour
             const std::string msg = "'"+definedTerm+"' is not a defined term in DICOM, "
                                     "will be treated as an empty value (ASCII)";
 
-            SLM_WARN_IF(msg, !logger);
+            SIGHT_WARN_IF(msg, !logger);
             if(logger)
             {
                 logger->warning(msg);
@@ -239,7 +239,7 @@ void checkDefinedTermDeclaration(const std::string& definedTerm,
         const std::string msg = "Escape sequence refers to character set '" + definedTerm
                                 + "' that was not declared in SpecificCharacterSet (0008,0005).";
 
-        SLM_WARN_IF(msg, !logger);
+        SIGHT_WARN_IF(msg, !logger);
         if(logger)
         {
             logger->warning(msg);
@@ -254,7 +254,7 @@ std::string Encoding::convertSequenceWithCodeExtensions(const std::string& seque
                                                         const core::log::Logger::sptr& logger)
 {
     // We need at least two more characters to determine the new character set
-    FW_RAISE_IF("Cannot convert character set: Incomplete escape sequence.", sequence.size() < 2);
+    SIGHT_THROW_IF("Cannot convert character set: Incomplete escape sequence.", sequence.size() < 2);
 
     const char c1 = sequence[0];
     const char c2 = sequence[1];
@@ -300,7 +300,7 @@ std::string Encoding::convertSequenceWithCodeExtensions(const std::string& seque
     }
 
     // Check that a definedTerm has been found
-    FW_RAISE_IF("Unable to retrieve character set from escape sequence.", definedTermAndCharset.first.empty());
+    SIGHT_THROW_IF("Unable to retrieve character set from escape sequence.", definedTermAndCharset.first.empty());
 
     // Check that the defined term has been declared in SpecificCharacterSet (0008,0005)
     checkDefinedTermDeclaration(definedTermAndCharset.first, definedTermList, logger);

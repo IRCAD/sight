@@ -30,13 +30,13 @@
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/service/ioTypes.hpp>
 
-#include <opencv2/core.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
+
+#include <opencv2/core.hpp>
 
 #include <sstream>
 
@@ -147,7 +147,7 @@ void SOpenCVReader::updating()
     if (!fs.isOpened())
     {
         this->m_readFailed = true;
-        SLM_ERROR("The file "+ this->getFile().string() + " cannot be opened.");
+        SIGHT_ERROR("The file "+ this->getFile().string() + " cannot be opened.");
     }
 
     //Remove all CameraSeries

@@ -40,7 +40,7 @@ namespace builder
 class UI_BASE_CLASS_API IMenuBarBuilder : public ui::base::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IMenuBarBuilder, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMenuBarBuilder, ui::base::GuiBaseObject)
 
     typedef std::string RegistryKeyType;
 

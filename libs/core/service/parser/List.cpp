@@ -47,7 +47,7 @@ bool List::refObjectValidator( core::runtime::ConfigurationElement::sptr _cfgEle
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            SLM_ERROR(
+            SIGHT_ERROR(
                 "xml subelement \""<< subElementName <<
                     "\" for element object is not supported for the moment when you use a reference on item List.");
             isOk = false;
@@ -61,7 +61,7 @@ bool List::refObjectValidator( core::runtime::ConfigurationElement::sptr _cfgEle
 
 void List::updating( )
 {
-    SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
+    SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void List::createConfig( core::tools::Object::sptr _obj )
     const std::string GET_OBJECT        = "ref";
 
     data::List::sptr dataList = data::List::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a data::List", dataList);
+    SIGHT_ASSERT("The passed object must be a data::List", dataList);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -87,9 +87,9 @@ void List::createConfig( core::tools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                SLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
-                            "or GET_OBJECT.",
-                            buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                SIGHT_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
+                              "or GET_OBJECT.",
+                              buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
             if( buildMode == BUILD_OBJECT )
@@ -104,13 +104,13 @@ void List::createConfig( core::tools::Object::sptr _obj )
                 data::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SLM_ASSERT("A data::List can contain only data::Object", localObj );
+                SIGHT_ASSERT("A data::List can contain only data::Object", localObj );
                 dataList->getContainer().push_back( localObj );
 
             }
             else // if( buildMode == GET_OBJECT )
             {
-                SLM_FATAL("ACH => Todo");
+                SIGHT_FATAL("ACH => Todo");
             }
         }
     }

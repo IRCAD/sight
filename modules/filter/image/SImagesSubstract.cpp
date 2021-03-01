@@ -40,7 +40,6 @@
 
 #include <itkSubtractImageFilter.h>
 
-
 namespace sight::module::filter::image
 {
 
@@ -84,10 +83,10 @@ void SImagesSubstract::updating()
             typedef itk::Image< std::int16_t, 3 > ImageType;
 
             ImageType::Pointer itkImage1 = io::itk::itkImageFactory< ImageType >( image1 );
-            SLM_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
+            SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
 
             ImageType::Pointer itkImage2 = io::itk::itkImageFactory< ImageType >( image2 );
-            SLM_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
+            SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage2);
 
             ImageType::Pointer output;
 

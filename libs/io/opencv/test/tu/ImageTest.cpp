@@ -45,7 +45,7 @@ static data::Image::sptr genImage(const std::vector<T>& _imageBuffer, size_t _w,
     data::Image::sptr image = data::Image::New();
     const auto dumpLock     = image->lock();
 
-    SLM_ASSERT("Width should be at least 1", _w >= 1);
+    SIGHT_ASSERT("Width should be at least 1", _w >= 1);
     size_t imageDim = 1;
     if(_h > 0)
     {

@@ -413,8 +413,8 @@ SPTR(SERVICE) AppManager::addService( const std::string& type, const std::string
     auto srv = this->addService(type, uid, autoStart, autoUpdate);
 
     auto castedSrv = std::dynamic_pointer_cast< SERVICE >(srv);
-    FW_RAISE_IF("Failed to cast service from factory type '" + type + "' into '" +
-                core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
+    SIGHT_THROW_IF("Failed to cast service from factory type '" + type + "' into '" +
+                   core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
 
     return castedSrv;
 }

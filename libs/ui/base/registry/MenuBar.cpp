@@ -61,8 +61,8 @@ ui::base::container::fwMenuBar::sptr MenuBar::getParent()
 ui::base::container::fwMenu::sptr MenuBar::getFwMenu(std::string menuSid,
                                                      std::vector< ui::base::container::fwMenu::sptr > menus)
 {
-    SLM_ASSERT("The menu '" + menuSid + "'declared in '"+ m_sid +"' is not found",
-               m_menuSids.find(menuSid) != m_menuSids.end());
+    SIGHT_ASSERT("The menu '" + menuSid + "'declared in '"+ m_sid +"' is not found",
+                 m_menuSids.find(menuSid) != m_menuSids.end());
     ui::base::container::fwMenu::sptr menu = menus.at( m_menuSids[menuSid].first );
     return menu;
 }
@@ -71,7 +71,7 @@ ui::base::container::fwMenu::sptr MenuBar::getFwMenu(std::string menuSid,
 
 void MenuBar::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",
         configuration->getName() == "registry");
 
@@ -81,7 +81,7 @@ void MenuBar::initialize( core::runtime::ConfigurationElement::sptr configuratio
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     for( ConfigurationType menu :  vectMenus)
     {
-        SLM_ASSERT("[" + m_sid + "] <menu> tag must have 'sid' attribute", menu->hasAttribute("sid"));
+        SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have 'sid' attribute", menu->hasAttribute("sid"));
 
         if(menu->hasAttribute("sid"))
         {
@@ -89,8 +89,8 @@ void MenuBar::initialize( core::runtime::ConfigurationElement::sptr configuratio
             if(menu->hasAttribute("start"))
             {
                 std::string startValue = menu->getAttributeValue("start");
-                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (requires 'yes' or 'no'), actual: "
-                           + startValue +"'", startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (requires 'yes' or 'no'), actual: "
+                             + startValue +"'", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = menu->getAttributeValue("sid");
@@ -107,15 +107,15 @@ void MenuBar::manage(std::vector< ui::base::container::fwMenu::sptr > menus )
     ui::base::container::fwMenu::sptr menu;
     for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
-        SLM_ASSERT("The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
-                                   << (sid.second.first+1) << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
-                   sid.second.first < menus.size());
+        SIGHT_ASSERT("The menuBar '" << m_sid << "' contains more menus in <registry> than in <layout>: "
+                                     << (sid.second.first+1) << " menus in <registry>, but only " << menus.size() <<" in <layout>.",
+                     sid.second.first < menus.size());
         menu = menus.at( sid.second.first );
         ui::base::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
-                       core::tools::fwID::exist(sid.first ) );
+            SIGHT_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
+                         core::tools::fwID::exist(sid.first ) );
             service::IService::sptr service = service::get( sid.first );
             service->start();
         }
@@ -138,8 +138,8 @@ void MenuBar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
-                       core::tools::fwID::exist(sid.first ) );
+            SIGHT_ASSERT("Menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' menuBar.",
+                         core::tools::fwID::exist(sid.first ) );
             service::IService::sptr service = service::get( sid.first );
             service->stop().wait();
         }

@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Material))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Material))
 {
     builder
     .tag("object_version", "4")
@@ -43,7 +43,7 @@ fwCampImplementDataMacro((sight)(data)(Material))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Material)(OptionsType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Material)(OptionsType))
 {
     builder
     .value("STANDARD", sight::data::Material::STANDARD)
@@ -52,7 +52,7 @@ fwCampImplementEnumMacro((sight)(data)(Material)(OptionsType))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Material)(ShadingType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Material)(ShadingType))
 {
     builder
     .value("AMBIENT", sight::data::Material::AMBIENT)
@@ -62,7 +62,7 @@ fwCampImplementEnumMacro((sight)(data)(Material)(ShadingType))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Material)(RepresentationType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Material)(RepresentationType))
 {
     builder
     .value("SURFACE", sight::data::Material::SURFACE)
@@ -72,7 +72,7 @@ fwCampImplementEnumMacro((sight)(data)(Material)(RepresentationType))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Material)(FilteringType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Material)(FilteringType))
 {
     builder
     .value("NEAREST", sight::data::Material::NEAREST)
@@ -80,7 +80,7 @@ fwCampImplementEnumMacro((sight)(data)(Material)(FilteringType))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Material)(WrappingType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Material)(WrappingType))
 {
     builder
     .value("CLAMP", sight::data::Material::CLAMP)

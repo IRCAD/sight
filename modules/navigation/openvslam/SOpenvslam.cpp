@@ -32,6 +32,10 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
+#include <io/opencv/FrameTL.hpp>
+
+#include <navigation/openvslam/Helper.hpp>
+
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
 #include <openvslam/data/landmark.h>
@@ -42,21 +46,16 @@
 
 #include <service/macros.hpp>
 
-#include <io/opencv/FrameTL.hpp>
-
-#include <navigation/openvslam/Helper.hpp>
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-
 namespace sight::module::navigation::openvslam
 {
 
-
-static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT = "enableLocalization";
+static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT   = "enableLocalization";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
 
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
@@ -162,18 +161,18 @@ void SOpenvslam::configuring()
     {
         //TODO: STEREO Mode.
         m_trackingMode = TrackingMode::MONO;
-        SLM_ERROR("'STEREO' mode is not handle for now. Switching back to 'MONO'");
+        SIGHT_ERROR("'STEREO' mode is not handle for now. Switching back to 'MONO'");
     }
     else if(mode == "DEPTH")
     {
         //TODO: DEPTH Mode.
         m_trackingMode = TrackingMode::MONO;
-        SLM_ERROR("'DEPTH' mode is not handle for now. Switching back to 'MONO'");
+        SIGHT_ERROR("'DEPTH' mode is not handle for now. Switching back to 'MONO'");
     }
     else
     {
         // Here mode should be MONO !
-        SLM_ASSERT("Mode '"+ mode +"' is not a valid mode (MONO, STEREO, DEPTH).", mode == "MONO");
+        SIGHT_ASSERT("Mode '"+ mode +"' is not a valid mode (MONO, STEREO, DEPTH).", mode == "MONO");
         m_trackingMode = TrackingMode::MONO;
     }
 }
@@ -184,10 +183,10 @@ void SOpenvslam::starting()
 {
     // input parameters
     m_frameTL = this->getInput< data::FrameTL >(s_TIMELINE_INPUT);
-    SLM_ASSERT("The input "+ s_TIMELINE_INPUT +" is not valid.", m_frameTL);
+    SIGHT_ASSERT("The input "+ s_TIMELINE_INPUT +" is not valid.", m_frameTL);
 
     m_camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("The input " + s_CAMERA_INPUT +" is not valid.", m_camera);
+    SIGHT_ASSERT("The input " + s_CAMERA_INPUT +" is not valid.", m_camera);
 
     m_cameraMatrixTL = this->getInOut< data::MatrixTL >(s_CAMERA_MATRIXTL_INOUT);
     const data::mt::ObjectWriteLock matrixTLLock(m_cameraMatrixTL);
@@ -202,7 +201,7 @@ void SOpenvslam::starting()
     if(m_trackingMode != TrackingMode::MONO)
     {
         m_frameTL2 = this->getInput< data::FrameTL >(s_TIMELINE2_INPUT);
-        SLM_ASSERT("The input "+ s_TIMELINE2_INPUT +" is not valid.", m_frameTL2);
+        SIGHT_ASSERT("The input "+ s_TIMELINE2_INPUT +" is not valid.", m_frameTL2);
     }
 }
 
@@ -244,7 +243,8 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
     {
         m_sigVocFileLoadingStarted->asyncEmit();
         m_vocabularyPath =
-            core::runtime::getModuleResourceFilePath("sight::module::navigation::openvslam", "orb_vocab.dbow2").string();
+            core::runtime::getModuleResourceFilePath("sight::module::navigation::openvslam",
+                                                     "orb_vocab.dbow2").string();
         m_sigVocFileLoaded->asyncEmit();
     }
     if(m_slamSystem == nullptr)
@@ -260,8 +260,8 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
         m_ovsMapPublisher   = m_slamSystem->get_map_publisher();
         m_ovsFramePublisher = m_slamSystem->get_frame_publisher();
 
-        SLM_ASSERT("Map Publisher souldn't be null", m_ovsMapPublisher);
-        SLM_ASSERT("Frame Publisher souldn't be null", m_ovsFramePublisher);
+        SIGHT_ASSERT("Map Publisher souldn't be null", m_ovsMapPublisher);
+        SIGHT_ASSERT("Frame Publisher souldn't be null", m_ovsFramePublisher);
 
         if(!_mapFile.empty())
         {
@@ -410,7 +410,7 @@ void SOpenvslam::setIntParameter(int _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
@@ -436,7 +436,7 @@ void SOpenvslam::setDoubleParameter(double _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
@@ -450,7 +450,7 @@ void SOpenvslam::setBoolParameter(bool _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
@@ -470,12 +470,12 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SLM_ERROR("Value'"+ _val + "' is not handled for key '" + _key + "'");
+            SIGHT_ERROR("Value'"+ _val + "' is not handled for key '" + _key + "'");
         }
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
@@ -707,7 +707,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             // the two frames need to have same size
             if(imgLeft.cols != imgRight.cols || imgLeft.rows != imgRight.rows)
             {
-                SLM_ERROR("First frame and Second Frame should have the same size");
+                SIGHT_ERROR("First frame and Second Frame should have the same size");
                 return;
             }
 
@@ -742,7 +742,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
         }
         catch (std::exception& e)
         {
-            SLM_ERROR("Error processing openvslam: " << e.what());
+            SIGHT_ERROR("Error processing openvslam: " << e.what());
             return;
         }
 

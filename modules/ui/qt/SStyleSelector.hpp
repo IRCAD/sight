@@ -71,7 +71,7 @@ class MODULE_UI_QT_CLASS_API SStyleSelector : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SStyleSelector, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SStyleSelector, sight::service::IController)
 
     /// Constructor, initializes slots.
     MODULE_UI_QT_API SStyleSelector() noexcept;

@@ -40,8 +40,8 @@ namespace splitter
 class FILTER_DICOM_CLASS_API TagValueInstanceRemoveSplitter : public ISplitter
 {
 public:
-    fwCoreClassMacro(TagValueInstanceRemoveSplitter, ISplitter,
-                     filter::dicom::factory::New< TagValueInstanceRemoveSplitter >);
+    SIGHT_DECLARE_CLASS(TagValueInstanceRemoveSplitter, ISplitter,
+                        filter::dicom::factory::New< TagValueInstanceRemoveSplitter >);
 
     /// Constructor
     FILTER_DICOM_API TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key key);

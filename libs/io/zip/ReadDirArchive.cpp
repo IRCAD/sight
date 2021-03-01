@@ -48,7 +48,7 @@ ReadDirArchive::~ReadDirArchive()
 
 SPTR(std::istream) ReadDirArchive::getFile(const std::filesystem::path& path)
 {
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::Read("File '" +  path.string() + "' "
                                  "in archive '" + m_archive.string() + "' doesn't exist."),
         !std::filesystem::exists(m_archive / path));

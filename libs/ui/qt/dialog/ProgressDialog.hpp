@@ -25,6 +25,8 @@
 #include "ui/qt/config.hpp"
 #include "ui/qt/container/QtContainer.hpp"
 
+#include <ui/base/dialog/IProgressDialog.hpp>
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QPointer>
@@ -33,8 +35,6 @@
 #include <QPushButton>
 #include <QStatusBar>
 #include <QString>
-
-#include <ui/base/dialog/IProgressDialog.hpp>
 
 #include <string>
 
@@ -59,7 +59,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New< ProgressDialog >)
+    SIGHT_DECLARE_CLASS(ProgressDialog, ui::base::dialog::IProgressDialog, ui::base::factory::New< ProgressDialog >)
 
     UI_QT_API ProgressDialog( ui::base::GuiBaseObject::Key key,
                               const std::string& title   = "Progression",

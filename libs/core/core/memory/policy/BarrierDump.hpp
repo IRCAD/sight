@@ -45,7 +45,7 @@ namespace policy
 class CORE_CLASS_API BarrierDump : public core::memory::IPolicy
 {
 public:
-    fwCoreClassMacro(BarrierDump, core::memory::IPolicy, core::memory::policy::factory::New< BarrierDump >)
+    SIGHT_DECLARE_CLASS(BarrierDump, core::memory::IPolicy, core::memory::policy::factory::New< BarrierDump >)
 
     CORE_API BarrierDump();
 

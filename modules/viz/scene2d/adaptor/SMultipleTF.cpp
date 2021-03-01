@@ -24,9 +24,9 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/helper/Composite.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/helper/Composite.hpp>
 
 #include <service/macros.hpp>
 
@@ -102,12 +102,12 @@ void SMultipleTF::starting()
 {
     // Gets the TF pool.
     const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     // Sets the current TF.
     {
         const data::mt::ObjectReadLock tfPoolLock(tfPool);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Sets the current TF used to highlight it in the editor.
         const data::TransferFunction::csptr tf = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
@@ -119,7 +119,7 @@ void SMultipleTF::starting()
             {
                 // Checks if it's a TF.
                 const data::TransferFunction::sptr poolTF = data::TransferFunction::dynamicCast(poolElt.second);
-                SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
+                SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
 
                 if(poolTF == tf)
                 {
@@ -138,7 +138,7 @@ void SMultipleTF::starting()
             // Finds the first TF of the composite.
             const data::TransferFunction::sptr poolTF
                 = data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", poolTF);
             m_currentTF = poolTF;
             // This action will call swapping method but m_currentTF is set by setCurrentTF, nothing will be done.
             this->setOutput(s_TF_OUTPUT, poolTF);
@@ -215,7 +215,7 @@ void SMultipleTF::stopping()
 
 void SMultipleTF::swapping(const KeyType& _key)
 {
-    SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
     const data::TransferFunction::csptr newCurrentTF
         = this->getInput< data::TransferFunction >(s_CURRENT_TF_INPUT);
@@ -245,17 +245,17 @@ void SMultipleTF::createTFPoints()
 {
     // Iterates over each TF to create subTF.
     const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least one TF inside.", tfPool->size() > 0);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least one TF inside.", tfPool->size() > 0);
 
     int zIndex = 0;
     for(data::Composite::value_type poolElt : *tfPool)
     {
         // Checks if it's a TF.
         const data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast(poolElt.second);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
 
         // Pushs the subTF to the vector.
         m_subTF.push_back(this->createSubTF(tf, zIndex));
@@ -305,17 +305,17 @@ SMultipleTF::SubTF* SMultipleTF::createSubTF(const data::TransferFunction::sptr 
     const double pointHeight = (viewportHeight * pointSize)/sceneHeight;
 
     const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
     // Creates the subTF and fill basic informations.
     SubTF* subTF = new SubTF();
     subTF->m_tf = _tf;
 
     // Sets the z-index of the current TF over all others.
-    SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
     const bool isCurrent = m_currentTF == _tf;
     subTF->m_zIndex = isCurrent ? static_cast< int >(tfPool->size()) : _zIndex;
 
@@ -575,7 +575,7 @@ void SMultipleTF::buildLayer()
 void SMultipleTF::setCurrentTF(SubTF* const _subTF)
 {
     // Sets the new current TF.
-    SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
     // Find the old subTF.
     SubTF* const currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
@@ -638,7 +638,7 @@ void SMultipleTF::processInteraction(sight::viz::scene2d::data::Event& _event)
         return;
     }
 
-    SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
     // If it's a resize event, all the scene must be recompted.
     if(_event.getType() == sight::viz::scene2d::data::Event::Resize)
@@ -960,10 +960,10 @@ void SMultipleTF::mouseMoveOnPointEvent(SubTF* const _subTF, const sight::viz::s
 {
     // m_capturedTFPoint must be previously sets by
     // leftButtonClickOnPointEvent(SubTF* const, std::pair< Point2DType, QGraphicsEllipseItem* >&)
-    SLM_ASSERT("The captured TF point must exist", m_capturedTFPoint);
+    SIGHT_ASSERT("The captured TF point must exist", m_capturedTFPoint);
 
     const auto pointIt = std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), *m_capturedTFPoint);
-    SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
+    SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
 
     // Gets the previous point of the TF.
     auto previousPoint = pointIt;
@@ -1129,7 +1129,7 @@ void SMultipleTF::rightButtonClickOnPointEvent(SubTF* const _subTF,
     // Updates the TF.
     auto pointIt =
         std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), _TFPoint);
-    SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
+    SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
     size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
     const data::TransferFunction::sptr tf = _subTF->m_tf;
@@ -1224,7 +1224,7 @@ void SMultipleTF::leftButtonDoubleClickOnPointEvent(SubTF* const _subTF,
         // Updates the TF.
         auto pointIt =
             std::find(_subTF->m_TFPoints.begin(), _subTF->m_TFPoints.end(), _TFPoint);
-        SLM_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
+        SIGHT_ASSERT("The captured point is not found", pointIt != _subTF->m_TFPoints.end());
         size_t pointIndex = pointIt - _subTF->m_TFPoints.begin();
 
         const data::TransferFunction::sptr tf = _subTF->m_tf;
@@ -1298,7 +1298,7 @@ void SMultipleTF::leftButtonDoubleClickEvent(const sight::viz::scene2d::data::Ev
     }
 
     // Finds the current subTF.
-    SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+    SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
     SubTF* const currentSubTF = *(std::find_if(m_subTF.begin(), m_subTF.end(), [&](const SubTF* _subTF)
             {
                 return _subTF->m_tf == m_currentTF;
@@ -1424,7 +1424,7 @@ void SMultipleTF::midButtonClickEvent(sight::viz::scene2d::data::Event& _event)
 void SMultipleTF::mouseMoveOnSubTFEvent(const sight::viz::scene2d::data::Event& _event)
 {
     // m_capturedTF must be previously sets by midButtonClickEvent(const sight::viz::scene2d::data::Event& _event)
-    SLM_ASSERT("The captured subTF must exist", m_capturedTF.first);
+    SIGHT_ASSERT("The captured subTF must exist", m_capturedTF.first);
 
     const sight::viz::scene2d::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
@@ -1501,10 +1501,10 @@ void SMultipleTF::rightButtonCLickEvent(const sight::viz::scene2d::data::Event& 
         if(matchingIt != matchingSubTF.end())
         {
             const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
             const data::mt::ObjectWriteLock tfPoolLock(tfPool);
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
             // Adds the delete action if there is more than one TF.
             if(tfPool->size() > 1)
@@ -1561,10 +1561,10 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
         {
             const auto tfPool = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
             // Finds the key in the composite
-            SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+            SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
             for(data::Composite::value_type poolElt : *tfPool)
             {
                 if(poolElt.second == m_currentTF)
@@ -1576,7 +1576,7 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
 
             // Updates the current TF.
             tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
 
             const double scale = _event.getType() == sight::viz::scene2d::data::Event::MouseWheelDown ? -0.05 : 0.05;
 
@@ -1650,16 +1650,16 @@ void SMultipleTF::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event& _eve
 void SMultipleTF::removeCurrenTF()
 {
     const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     data::helper::Composite compositeHelper(tfPool);
     data::TransferFunction::sptr tf;
     {
         const data::mt::ObjectWriteLock tfPoolLock(tfPool);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Finds the key in the composite
-        SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+        SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
 
         data::Composite::key_type key;
         for(data::Composite::value_type poolElt : *tfPool)
@@ -1678,7 +1678,7 @@ void SMultipleTF::removeCurrenTF()
 
         // Sets the new current TF.
         tf = data::TransferFunction::dynamicCast(tfPool->getContainer().begin()->second);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
         m_currentTF = tf;
         // This action will call swapping method but m_currentTF is set, nothing will be done. The scene is draw after.
         this->setOutput(s_TF_OUTPUT, tf);
@@ -1701,16 +1701,16 @@ void SMultipleTF::removeCurrenTF()
 void SMultipleTF::clampCurrentTF(bool _clamp)
 {
     const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     data::Composite::key_type key;
     data::TransferFunction::sptr tf;
     {
         const data::mt::ObjectReadLock tfPoolLock(tfPool);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Finds the key in the composite
-        SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+        SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
         for(data::Composite::value_type poolElt : *tfPool)
         {
             if(poolElt.second == m_currentTF)
@@ -1722,7 +1722,7 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
 
         // Updates the current TF.
         tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
         tf->setIsClamped(_clamp);
     }
 
@@ -1750,16 +1750,16 @@ void SMultipleTF::clampCurrentTF(bool _clamp)
 void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 {
     const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
 
     data::Composite::key_type key;
     data::TransferFunction::sptr tf;
     {
         const data::mt::ObjectReadLock tfPoolLock(tfPool);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         // Finds the key in the composite
-        SLM_ASSERT("The current TF mustn't be null", m_currentTF);
+        SIGHT_ASSERT("The current TF mustn't be null", m_currentTF);
         for(data::Composite::value_type poolElt : *tfPool)
         {
             if(poolElt.second == m_currentTF)
@@ -1771,7 +1771,7 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 
         // Updates the current TF.
         tf = data::TransferFunction::dynamicCast(tfPool->getContainer()[key]);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' must contain only TF.", tf);
         tf->setInterpolationMode(_linear ? data::TransferFunction::LINEAR : data::TransferFunction::NEAREST);
     }
 
@@ -1799,7 +1799,7 @@ void SMultipleTF::toggleLinearCurrentTF(bool _linear)
 bool SMultipleTF::hasTFName(const std::string& _name) const
 {
     const data::Composite::csptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolsLock(tfPool);
     return tfPool->find(_name) != tfPool->end();
 }
@@ -1809,7 +1809,7 @@ bool SMultipleTF::hasTFName(const std::string& _name) const
 void SMultipleTF::addNewTF(const data::TransferFunction::sptr _tf)
 {
     const data::Composite::sptr tfPool = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' does not exist.", tfPool);
     const data::mt::ObjectReadLock tfPoolLock(tfPool);
 
     // Adds the new TF.

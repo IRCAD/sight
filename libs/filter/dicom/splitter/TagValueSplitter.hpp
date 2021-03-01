@@ -40,7 +40,7 @@ namespace splitter
 class FILTER_DICOM_CLASS_API TagValueSplitter : public ISplitter
 {
 public:
-    fwCoreClassMacro(TagValueSplitter, ISplitter, filter::dicom::factory::New< TagValueSplitter >)
+    SIGHT_DECLARE_CLASS(TagValueSplitter, ISplitter, filter::dicom::factory::New< TagValueSplitter >)
 
     /// Constructor
     FILTER_DICOM_API TagValueSplitter(filter::dicom::IFilter::Key key);

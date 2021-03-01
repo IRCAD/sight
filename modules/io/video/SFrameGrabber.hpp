@@ -107,7 +107,7 @@ class MODULE_IO_VIDEO_CLASS_API SFrameGrabber : public service::IGrabber
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, sight::service::IGrabber)
+    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::service::IGrabber)
 
     /// Constructor. Do nothing.
     MODULE_IO_VIDEO_API SFrameGrabber() noexcept;

@@ -32,11 +32,11 @@
 #include <viz/scene3d/SRender.hpp>
 #include <viz/scene3d/Utils.hpp>
 
+#include <Ogre.h>
 #include <OgreCamera.h>
 #include <OgreMatrix4.h>
 #include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
-#include <Ogre.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -255,7 +255,7 @@ void SCamera::updateTF3D()
 
 void SCamera::setNearClipDistance(::Ogre::Real _nearClipDistance)
 {
-    SLM_ASSERT("The associated camera doesn't exist.", m_camera);
+    SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
     m_camera->setNearClipDistance(_nearClipDistance);
 }
@@ -264,7 +264,7 @@ void SCamera::setNearClipDistance(::Ogre::Real _nearClipDistance)
 
 void SCamera::setFarClipDistance(::Ogre::Real _farClipDistance)
 {
-    SLM_ASSERT("The associated camera doesn't exist.", m_camera);
+    SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
     m_camera->setFarClipDistance(_farClipDistance);
 }
@@ -273,7 +273,7 @@ void SCamera::setFarClipDistance(::Ogre::Real _farClipDistance)
 
 void SCamera::setAspectRatio(::Ogre::Real _ratio)
 {
-    SLM_ASSERT("The associated camera doesn't exist.", m_camera);
+    SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
     m_aspectRatio = _ratio;
     m_camera->setAspectRatio(m_aspectRatio);
@@ -289,8 +289,8 @@ void SCamera::calibrate()
     const auto cameraSeries      = cameraSeriesW.lock();
     const auto cameraCalibration = cameraCalibrationW.lock();
 
-    SLM_WARN_IF("A '" + s_CALIBRATION_INPUT +"' input was set but will not be used because a '"
-                + s_CAMERA_SERIES_INPUT + "' was defined as well", cameraSeries && cameraCalibration);
+    SIGHT_WARN_IF("A '" + s_CALIBRATION_INPUT +"' input was set but will not be used because a '"
+                  + s_CAMERA_SERIES_INPUT + "' was defined as well", cameraSeries && cameraCalibration);
 
     if(cameraSeries)
     {
@@ -340,8 +340,8 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries::csptr& _cs)
     const float farClip  = static_cast< float >(m_camera->getFarClipDistance());
     const size_t nbCams  = _cs->getNumberOfCameras();
 
-    SLM_WARN_IF("There are no cameras in the '" + s_CAMERA_SERIES_INPUT + "', the default projection transform"
-                "will be used.", nbCams == 0);
+    SIGHT_WARN_IF("There are no cameras in the '" + s_CAMERA_SERIES_INPUT + "', the default projection transform"
+                  "will be used.", nbCams == 0);
 
     auto layer = this->getLayer();
 
@@ -369,7 +369,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries::csptr& _cs)
             }
             else
             {
-                SLM_ERROR("Camera #" << i << " is not calibrated.");
+                SIGHT_ERROR("Camera #" << i << " is not calibrated.");
             }
 
             // In fwRenderOgre we define extrinsic calibrations as being the transform from the

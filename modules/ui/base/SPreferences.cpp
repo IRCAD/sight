@@ -29,13 +29,13 @@
 #include <data/Composite.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/atoms/Reader.hpp>
 #include <io/atoms/types.hpp>
 #include <io/atoms/Writer.hpp>
 #include <io/zip/ReadDirArchive.hpp>
 #include <io/zip/WriteDirArchive.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
@@ -43,7 +43,6 @@
 
 namespace sight::module::ui::base
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ void SPreferences::updating()
 void SPreferences::configuring()
 {
     std::vector < core::runtime::ConfigurationElement::sptr > vectConfig = m_configuration->find("filename");
-    SLM_ASSERT("The <filename> element must exist.", !vectConfig.empty() );
+    SIGHT_ASSERT("The <filename> element must exist.", !vectConfig.empty() );
     m_prefFile = vectConfig.at(0)->getValue();
 }
 
@@ -100,7 +99,7 @@ void SPreferences::load()
         }
         catch(...)
         {
-            SLM_ERROR("Failed to load preference file '"+m_prefFile.string()+"'.");
+            SIGHT_ERROR("Failed to load preference file '"+m_prefFile.string()+"'.");
         }
     }
 }
@@ -130,8 +129,8 @@ void SPreferences::save()
     if(fs::exists(m_prefFile) && fs::is_regular_file(m_prefFile) &&
        (fs::status(m_prefFile).permissions() & fs::perms::owner_write) == fs::perms::none)
     {
-        SLM_ERROR("SPreference need write access to the file '"+m_prefFile.string()+"'."
-                  "Please, change file permission.");
+        SIGHT_ERROR("SPreference need write access to the file '"+m_prefFile.string()+"'."
+                    "Please, change file permission.");
     }
     else
     {

@@ -53,7 +53,7 @@ class MODULE_DATA_CLASS_API SObjFromSlot : public module::data::IUpdaterSrv
 
 public:
 
-    fwCoreServiceMacro(SObjFromSlot, ::sight::module::data::IUpdaterSrv)
+    SIGHT_DECLARE_SERVICE(SObjFromSlot, ::sight::module::data::IUpdaterSrv)
 
     /// Constructor.  Do nothing.
     MODULE_DATA_API SObjFromSlot() noexcept;

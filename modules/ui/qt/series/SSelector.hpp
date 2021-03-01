@@ -31,12 +31,12 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QAbstractItemView>
 #include <QObject>
 #include <QPointer>
 #include <QVector>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -85,7 +85,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IEditor)
 
     /// Creates the signal and slots.
     MODULE_UI_QT_API SSelector();

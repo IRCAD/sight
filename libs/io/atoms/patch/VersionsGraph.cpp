@@ -163,8 +163,8 @@ VersionsGraph::EdgeType VersionsGraph::getEdge(const NodeIDType& origin, const N
 {
     core::mt::ReadLock lock(m_graphMutex);
     auto [edgeID, success] = ::boost::edge(origin, target, m_graph);
-    SLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
-                                            << m_graph[target].getVersionName() << "'.", success);
+    SIGHT_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
+                                              << m_graph[target].getVersionName() << "'.", success);
     return m_graph[edgeID];
 }
 
@@ -237,8 +237,8 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
     core::mt::ReadLock lock(m_graphMutex);
     auto [newEdge, success] = ::boost::add_edge(origin, target, edge, m_graph);
 
-    SLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
-               "and '" << edge.getTargetVersion() << "'", success);
+    SIGHT_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
+                 "and '" << edge.getTargetVersion() << "'", success);
 
     return newEdge;
 }

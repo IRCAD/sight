@@ -117,7 +117,7 @@ void Object::setFields( const FieldMapType& fieldMap )
 void Object::removeField( const FieldNameType& name )
 {
     FieldMapType::const_iterator iter = m_fields.find(name);
-    SLM_ASSERT("Field "<<name<<" not found.", iter != m_fields.end());
+    SIGHT_ASSERT("Field "<<name<<" not found.", iter != m_fields.end());
     if(iter != m_fields.end())
     {
         m_fields.erase(iter);
@@ -162,8 +162,8 @@ void Object::fieldDeepCopy(const data::Object::csptr& source, DeepCopyCacheType&
 
 void Object::shallowCopy(const data::Object::csptr& source )
 {
-    FwCoreNotUsedMacro(source);
-    SLM_FATAL("shallowCopy not implemented for : " + this->getClassname() );
+    SIGHT_NOT_USED(source);
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname() );
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ data::Object::sptr Object::copy(const data::Object::csptr& source, Object::DeepC
         if (cacheItem == cache.end())
         {
             obj = data::factory::New(source->getClassname());
-            SLM_ASSERT("Could not create object of type : " + source->getClassname(), obj);
+            SIGHT_ASSERT("Could not create object of type : " + source->getClassname(), obj);
             cache.insert( DeepCopyCacheType::value_type(source, obj) );
             obj->cachedDeepCopy(source, cache);
         }

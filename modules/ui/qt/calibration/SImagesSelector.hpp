@@ -30,12 +30,12 @@
 
 #include <data/FrameTL.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLabel>
 #include <QListWidget>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -68,7 +68,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SImagesSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SImagesSelector, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_QT_API SImagesSelector() noexcept;

@@ -29,7 +29,7 @@
 #include "data/Exception.hpp"
 #include "data/Port.hpp"
 
-fwDataRegisterMacro( ::sight::data::Node );
+SIGHT_REGISTER_DATA( ::sight::data::Node );
 
 namespace sight::data
 {
@@ -41,7 +41,7 @@ const core::com::Signals::SignalKeyType Node::s_UPDATED_SIG = "updated";
 Node::Node(data::Object::Key key) :
     m_sigUpdated(UpdatedSignalType::New())
 {
-    FwCoreNotUsedMacro(key);
+    SIGHT_NOT_USED(key);
     m_signals( s_UPDATED_SIG,  m_sigUpdated);
 }
 
@@ -125,9 +125,9 @@ Port::sptr Node::findPort(const std::string& identifier, bool modeInput) const
 void Node::shallowCopy(const Object::csptr& _source )
 {
     Node::csptr other = Node::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !other );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !other );
     this->fieldShallowCopy( _source );
 
     m_inputs.clear();
@@ -136,7 +136,7 @@ void Node::shallowCopy(const Object::csptr& _source )
     if( other->getObject())
     {
         core::tools::Object::sptr object = data::factory::New( other->getObject()->getClassname() );
-        SLM_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
+        SIGHT_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
         m_object = data::Object::dynamicCast(object);
         m_object->shallowCopy( other->m_object );
     }
@@ -155,9 +155,9 @@ void Node::shallowCopy(const Object::csptr& _source )
 void Node::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Node::csptr other = Node::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_inputs.clear();

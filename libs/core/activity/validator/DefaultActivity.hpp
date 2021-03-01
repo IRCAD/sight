@@ -40,8 +40,8 @@ namespace validator
 class ACTIVITY_CLASS_API DefaultActivity : public activity::IActivityValidator
 {
 public:
-    fwCoreClassMacro(DefaultActivity, activity::IActivityValidator,
-                     activity::validator::factory::New< DefaultActivity >)
+    SIGHT_DECLARE_CLASS(DefaultActivity, activity::IActivityValidator,
+                        activity::validator::factory::New< DefaultActivity >)
 
     /// Constructor. Do nothing.
     ACTIVITY_API DefaultActivity(activity::IValidator::Key key);

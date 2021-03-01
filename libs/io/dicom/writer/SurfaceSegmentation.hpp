@@ -60,8 +60,8 @@ class IO_DICOM_CLASS_API SurfaceSegmentation :
 
 public:
 
-    fwCoreClassMacro(SurfaceSegmentation, io::base::writer::GenericObjectWriter< data::ModelSeries >,
-                     io::base::writer::factory::New< SurfaceSegmentation >);
+    SIGHT_DECLARE_CLASS(SurfaceSegmentation, io::base::writer::GenericObjectWriter< data::ModelSeries >,
+                        io::base::writer::factory::New< SurfaceSegmentation >);
 
     /// Constructor
     IO_DICOM_API SurfaceSegmentation(io::base::writer::IObjectWriter::Key key);

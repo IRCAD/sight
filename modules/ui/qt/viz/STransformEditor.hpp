@@ -24,10 +24,10 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QSlider;
 class QLabel;
@@ -62,7 +62,7 @@ class MODULE_UI_QT_CLASS_API STransformEditor : public QObject,
 {
 Q_OBJECT;
 public:
-    fwCoreServiceMacro(STransformEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STransformEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API STransformEditor() noexcept;

@@ -41,7 +41,7 @@ namespace sight::data
 class DATA_CLASS_API MarkerMap : public data::Object
 {
 public:
-    fwCoreClassMacro(MarkerMap, data::Object, data::factory::New< MarkerMap >)
+    SIGHT_DECLARE_CLASS(MarkerMap, data::Object, data::factory::New< MarkerMap >)
 
     typedef std::string KeyType;
     typedef std::array<float, 2> PointType;

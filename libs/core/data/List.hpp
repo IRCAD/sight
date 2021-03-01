@@ -28,7 +28,7 @@
 
 #include <list>
 
-fwCampAutoDeclareDataMacro((sight)(data)(List));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(List));
 
 namespace sight::data
 {
@@ -43,9 +43,9 @@ class DATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassMacro(List, data::Object, data::factory::New< List >)
+    SIGHT_DECLARE_CLASS(List, data::Object, data::factory::New< List >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(List));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(List));
 
     typedef std::list< Object::sptr > ContainerType;
 

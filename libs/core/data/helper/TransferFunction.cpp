@@ -133,8 +133,9 @@ void TransferFunction::setOrCreateTF(const data::TransferFunction::sptr& _tf, co
 
 data::TransferFunction::sptr TransferFunction::getTransferFunction() const
 {
-    SLM_ASSERT("Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
-               , !m_transferFunction.expired());
+    SIGHT_ASSERT("Transfer funtion is not defined, you must call setTransferFunction() or createTransferFunction() first."
+                 ,
+                 !m_transferFunction.expired());
     return m_transferFunction.lock();
 }
 

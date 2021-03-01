@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Object))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Object))
 {
     builder
     .property("fields", &::sight::data::Object::m_fields)

@@ -29,9 +29,9 @@
 
 #include <data/Material.hpp>
 
-#include <QObject>
-
 #include <ui/qml/IQmlEditor.hpp>
+
+#include <QObject>
 
 namespace sight::module::ui::qml::reconstruction
 {
@@ -93,7 +93,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SRepresentationEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SRepresentationEditor, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SRepresentationEditor() noexcept;

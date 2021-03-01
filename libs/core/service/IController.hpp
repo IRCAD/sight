@@ -37,7 +37,7 @@ class SERVICE_CLASS_API IController : public service::IService
 
 public:
 
-    fwCoreServiceMacro(IController, service::IService)
+    SIGHT_DECLARE_SERVICE(IController, service::IService)
 
 protected:
 

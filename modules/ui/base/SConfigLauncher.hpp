@@ -75,7 +75,7 @@ class MODULE_UI_BASE_CLASS_API SConfigLauncher : public ::sight::ui::base::IActi
 
 public:
 
-    fwCoreServiceMacro(SConfigLauncher, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SConfigLauncher, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SConfigLauncher() noexcept;

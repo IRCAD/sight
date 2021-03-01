@@ -62,7 +62,7 @@ class MODULE_IO_IGTL_CLASS_API SServerSender : public module::io::igtl::INetwork
 
 public:
 
-    fwCoreServiceMacro(SServerSender,  module::io::igtl::INetworkSender )
+    SIGHT_DECLARE_SERVICE(SServerSender,  module::io::igtl::INetworkSender )
 
     /// Constructor
     MODULE_IO_IGTL_API SServerSender();

@@ -46,7 +46,7 @@ class SERVICE_CLASS_API Proxy : public core::BaseObject
 
 public:
 
-    fwCoreClassMacro(Proxy, core::BaseObject, std::make_shared< Proxy >)
+    SIGHT_DECLARE_CLASS(Proxy, core::BaseObject, std::make_shared< Proxy >)
 
     typedef std::string ChannelKeyType;
 

@@ -27,22 +27,22 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+
+#include <geometry/data/Matrix4.hpp>
 
 #include <service/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/helper/Shading.hpp>
 #include <viz/scene3d/ogre.hpp>
 
-#include <geometry/data/Matrix4.hpp>
-
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
-
-#include <ui/base/dialog/MessageDialog.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -452,7 +452,7 @@ void SVolumeRender::updateSampling(int _nbSamples)
 {
     this->getRenderService()->makeCurrent();
 
-    SLM_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536 && _nbSamples >= 0);
+    SIGHT_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536 && _nbSamples >= 0);
     m_nbSamples = static_cast<std::uint16_t>(_nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSamples);

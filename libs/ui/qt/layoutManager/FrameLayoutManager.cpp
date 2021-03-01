@@ -26,6 +26,8 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <boost/lambda/lambda.hpp>
 
 #include <QApplication>
@@ -33,8 +35,6 @@
 #include <QIcon>
 #include <QLayout>
 #include <QMainWindow>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::FrameLayoutManager,
                     ::sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
@@ -72,7 +72,7 @@ void FrameLayoutManager::createFrame()
     if(!frameInfo.m_iconPath.empty())
     {
         QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
-        SLM_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
+        SIGHT_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
         m_qtWindow->setWindowIcon(icon);
     }
     if(!qApp->activeWindow())

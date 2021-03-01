@@ -44,7 +44,7 @@ class SERVICE_CLASS_API Matrix4 : public service::IXMLParser
 
 public:
 
-    fwCoreServiceMacro(Matrix4, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Matrix4, service::IXMLParser)
 
     /// Constructor : does nothing.
     Matrix4()

@@ -27,9 +27,9 @@
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <QObject>
-
 #include <ui/base/IEditor.hpp>
+
+#include <QObject>
 
 #include <filesystem>
 
@@ -84,7 +84,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(TransferFunctionEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(TransferFunctionEditor, sight::ui::base::IEditor)
 
     /// Basic constructor, do nothing.
     MODULE_UI_QT_API TransferFunctionEditor();

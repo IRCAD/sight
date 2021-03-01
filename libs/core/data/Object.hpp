@@ -48,7 +48,7 @@
 #include <string>
 #include <unordered_map>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Object));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Object));
 
 namespace sight::data
 {
@@ -67,9 +67,9 @@ public:
 
     typedef data::factory::Key Key;
 
-    fwCoreClassMacro(Object, core::tools::Object)
-    fwCoreAllowSharedFromThis();
-    fwCampMakeFriendDataMacro((sight)(data)(Object));
+    SIGHT_DECLARE_CLASS(Object, core::tools::Object)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Object));
 
     /**
      * @brief Class used to register a class factory in factory registry.

@@ -99,7 +99,7 @@ const std::string& DynamicType::string() const
 
 unsigned char DynamicType::sizeOf() const
 {
-    SLM_ASSERT("Sizeof not specified.", m_sizeof != 0);
+    SIGHT_ASSERT("Sizeof not specified.", m_sizeof != 0);
     return m_sizeof;
 }
 

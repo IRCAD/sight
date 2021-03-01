@@ -33,7 +33,6 @@
 
 #include <service/macros.hpp>
 
-
 namespace sight::module::sync
 {
 //-----------------------------------------------------------------------------
@@ -140,7 +139,7 @@ void SFrameUpdater::updateFrame( core::HiResClock::HiResClockType timestamp )
                     format = data::Image::RGBA;
                     break;
                 default:
-                    SLM_ERROR("Number of compenent not managed")
+                    SIGHT_ERROR("Number of compenent not managed")
                     return;
             }
 
@@ -179,7 +178,7 @@ void SFrameUpdater::updateImage()
     const core::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
     CSPTR(data::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
 
-    SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+    SIGHT_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
     if(buffer)
     {
         m_lastTimestamp = timestamp;

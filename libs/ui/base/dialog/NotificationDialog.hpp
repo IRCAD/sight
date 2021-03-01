@@ -40,7 +40,7 @@ class UI_BASE_CLASS_API NotificationDialog : public ui::base::dialog::INotificat
 
 public:
 
-    fwCoreClassMacro(NotificationDialog, ui::base::dialog::INotificationDialog, new NotificationDialog)
+    SIGHT_DECLARE_CLASS(NotificationDialog, ui::base::dialog::INotificationDialog, new NotificationDialog)
 
     /**
      * Opens a default message box with the specified title, text and icon.

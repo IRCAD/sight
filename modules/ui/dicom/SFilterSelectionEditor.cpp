@@ -27,12 +27,15 @@
 #include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <service/macros.hpp>
-
 #include <filter/dicom/composite/IComposite.hpp>
 #include <filter/dicom/exceptions/FilterFailure.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/registry/detail.hpp>
+
+#include <service/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -41,12 +44,8 @@
 #include <QSignalMapper>
 #include <QVBoxLayout>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::dicom
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -80,10 +79,10 @@ void SFilterSelectionEditor::starting()
 
     // Get Destination SeriesDB
     m_destinationSeriesDB = this->getInOut< data::SeriesDB>("target");
-    SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
+    SIGHT_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
 
     data::Vector::csptr dataVector = this->getInput< data::Vector >("selection");
-    SLM_ASSERT("Vector object should not be null.", dataVector);
+    SIGHT_ASSERT("Vector object should not be null.", dataVector);
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -395,7 +394,7 @@ void SFilterSelectionEditor::applyFilters()
 
     // Get selected DicomSeries
     data::Vector::csptr vector = this->getInput< data::Vector >("selection");
-    SLM_ASSERT("Vector object should not be null.", vector);
+    SIGHT_ASSERT("Vector object should not be null.", vector);
 
     // Display the informations
     sight::ui::base::dialog::MessageDialog messageBox;
@@ -426,7 +425,7 @@ void SFilterSelectionEditor::applyFilters()
         for(const data::Object::sptr& obj: vector->getContainer())
         {
             data::DicomSeries::sptr srcDicomSeries = data::DicomSeries::dynamicCast(obj);
-            SLM_ASSERT("The series should be a DicomSeries.", srcDicomSeries);
+            SIGHT_ASSERT("The series should be a DicomSeries.", srcDicomSeries);
 
             data::DicomSeries::sptr dicomSeries = data::DicomSeries::New();
             dicomSeries->deepCopy(srcDicomSeries);

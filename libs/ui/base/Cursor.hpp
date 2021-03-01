@@ -39,7 +39,7 @@ class UI_BASE_CLASS_API Cursor : public ui::base::ICursor
 
 public:
 
-    fwCoreClassMacro(Cursor, ui::base::ICursor, new Cursor)
+    SIGHT_DECLARE_CLASS(Cursor, ui::base::ICursor, new Cursor)
 
     /// Constructor. Create the implementation of the specific cursor
     UI_BASE_API Cursor();

@@ -28,4 +28,4 @@
 #include <core/memory/BufferObject.hpp>
 #include <core/reflection/macros.hpp>
 
-fwCampDeclareAccessor((sight)(data)(DicomSeries), (sight)(core)(memory)(BufferObject));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(DicomSeries), (sight)(core)(memory)(BufferObject));

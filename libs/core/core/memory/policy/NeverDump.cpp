@@ -37,9 +37,9 @@ fwMemoryPolicyRegisterMacro(core::memory::policy::NeverDump);
 void NeverDump::allocationRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                    BufferInfo::SizeType size )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
 }
 
 //------------------------------------------------------------------------------
@@ -47,9 +47,9 @@ void NeverDump::allocationRequest( BufferInfo& info, core::memory::BufferManager
 void NeverDump::setRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                             BufferInfo::SizeType size )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
 }
 
 //------------------------------------------------------------------------------
@@ -57,49 +57,49 @@ void NeverDump::setRequest( BufferInfo& info, core::memory::BufferManager::Const
 void NeverDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                    BufferInfo::SizeType newSize )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(newSize);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(newSize);
 }
 
 //------------------------------------------------------------------------------
 
 void NeverDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void NeverDump::lockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void NeverDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void NeverDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void NeverDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void NeverDump::refresh()
 
 std::string NeverDump::getParam(const std::string& name, bool* ok) const
 {
-    FwCoreNotUsedMacro(name);
+    SIGHT_NOT_USED(name);
     if (ok)
     {
         *ok = false;

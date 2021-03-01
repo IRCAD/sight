@@ -51,7 +51,7 @@ class SERVICE_CLASS_API AppInfo : public core::BaseObject
 {
 public:
 
-    fwCoreClassMacro(AppInfo, core::BaseObject, new AppInfo)
+    SIGHT_DECLARE_CLASS(AppInfo, core::BaseObject, new AppInfo)
 
     /// Constructor, do nothing.
     AppInfo()
@@ -84,7 +84,7 @@ public:
     /// Associations of <pattern, value>.
     typedef std::map< std::string, std::string > FieldAdaptorType;
 
-    fwCoreClassMacro(AppConfig, core::BaseObject, new AppConfig)
+    SIGHT_DECLARE_CLASS(AppConfig, core::BaseObject, new AppConfig)
 
     /// Destructor
     SERVICE_API virtual ~AppConfig();

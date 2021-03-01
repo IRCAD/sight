@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Reconstruction));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Reconstruction));
 
 namespace sight::data
 {
@@ -46,9 +46,9 @@ class Mesh;
 class DATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassMacro(Reconstruction, data::Object, data::factory::New< Reconstruction >)
+    SIGHT_DECLARE_CLASS(Reconstruction, data::Object, data::factory::New< Reconstruction >)
 
-    fwCoreAllowSharedFromThis()
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /**
      * @brief Constructor
@@ -59,7 +59,7 @@ public:
     /// Destructor
     DATA_API virtual ~Reconstruction();
 
-    fwCampMakeFriendDataMacro((sight)(data)(Reconstruction));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Reconstruction));
 
     /// Defines shallow copy
     DATA_API void shallowCopy( const Object::csptr& _source ) override;

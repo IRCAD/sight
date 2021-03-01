@@ -207,17 +207,17 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
             }
             else
             {
-                SLM_ERROR("Array type not handled: " << arrayObject->getType());
+                SIGHT_ERROR("Array type not handled: " << arrayObject->getType());
             }
         }
         else
         {
-            SLM_ERROR("Array size not handled: " << numComponents);
+            SIGHT_ERROR("Array size not handled: " << numComponents);
         }
     }
     else
     {
-        SLM_ERROR("No editor found for the object of type " << objType);
+        SIGHT_ERROR("No editor found for the object of type " << objType);
     }
 
     return paramConfig;

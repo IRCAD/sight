@@ -29,11 +29,11 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::viz
 {
@@ -48,7 +48,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(PointEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(PointEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API PointEditor() noexcept;

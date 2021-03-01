@@ -52,7 +52,7 @@ namespace sight::geometry::glm
     const double div = ((d00 * d11) - (d01 * d01));
 
     // Don't test the case in release to avoid performance issue.
-    SLM_ASSERT("Degenerate triangle case leads to zero division.", !(div >= -10e-16 && div <= 10e-16));
+    SIGHT_ASSERT("Degenerate triangle case leads to zero division.", !(div >= -10e-16 && div <= 10e-16));
 
     // Inverse the denominator to speed up computation of v & w.
     const double invdenom = 1. / div;
@@ -108,7 +108,7 @@ namespace sight::geometry::glm
     const double volumeTot = ::glm::dot(vab, ::glm::cross(vac, vad));
 
     // Don't test the case in release to avoid performance issue.
-    SLM_ASSERT("Degenerate triangle case leads to zero division.", volumeTot != 0.);
+    SIGHT_ASSERT("Degenerate triangle case leads to zero division.", volumeTot != 0.);
 
     // Inverse the denominator to speed up computation of v & w.
     const double invdenom = 1. / volumeTot;
@@ -143,8 +143,8 @@ namespace sight::geometry::glm
     [[maybe_unused]] const double sum = u + v + w; // Only used in the following assertion.
 
     // Don't test in release to avoid performance issue.
-    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
-               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+    SIGHT_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+                 , sum < 1. + 10e-9 && sum > 1. - 10e-9);
 
     worldCoordinates = u * _A + v * _B + w * _C;
 
@@ -173,8 +173,8 @@ namespace sight::geometry::glm
     [[maybe_unused]] const double sum = u + v + w + h; // Only used in the following assertion.
 
     // Don't test in release to avoid performance issue.
-    SLM_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
-               , sum < 1. + 10e-9 && sum > 1. - 10e-9);
+    SIGHT_ASSERT("Wrong barycentric coordinates.(u + v + w = " + std::to_string( sum ) + ")"
+                 , sum < 1. + 10e-9 && sum > 1. - 10e-9);
 
     return u * _A + v * _B + w * _C + h * _D;
 

@@ -25,11 +25,10 @@
 #include "ui/qt/util/FuncSlot.hpp"
 
 #include <core/runtime/Runtime.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/Os.hpp>
-
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <QDir>
 #include <QEvent>
@@ -49,7 +48,7 @@ public:
         QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
         m_handler( handler )
     {
-        SLM_ASSERT( "Application should be instantiated", QCoreApplication::instance() );
+        SIGHT_ASSERT( "Application should be instantiated", QCoreApplication::instance() );
     }
 
     ~WorkerQtTask()
@@ -218,7 +217,7 @@ void WorkerQt::init( int& argc, char** argv)
     }
     else
     {
-        SLM_ERROR("Could not determine qt5 plugins path, tried with: " + qt5PluginsDir.string());
+        SIGHT_ERROR("Could not determine qt5 plugins path, tried with: " + qt5PluginsDir.string());
     }
 
     m_argc = argc;
@@ -250,8 +249,8 @@ core::thread::Worker::FutureType WorkerQt::getFuture()
 {
     if (!m_future.valid() )
     {
-        SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
-                   !m_future.valid() && core::thread::getCurrentThreadId() == this->getThreadId() );
+        SIGHT_ASSERT("WorkerQt loop shall be created and ran from main thread ",
+                     !m_future.valid() && core::thread::getCurrentThreadId() == this->getThreadId() );
 
         std::packaged_task< ExitReturnType() > task( std::bind(&QCoreApplication::exec) );
 

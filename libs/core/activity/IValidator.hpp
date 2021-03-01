@@ -73,7 +73,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IValidator, core::BaseObject)
+    SIGHT_DECLARE_CLASS(IValidator, core::BaseObject)
 
     /**
      * @brief Performs validation of given data as inputs for the considered activity.

@@ -38,7 +38,7 @@ class UI_BASE_CLASS_API Application : public ui::base::IApplication
 
 public:
 
-    fwCoreClassMacro(Application, ui::base::IApplication, Application::factory)
+    SIGHT_DECLARE_CLASS(Application, ui::base::IApplication, Application::factory)
 
     UI_BASE_API static Application::sptr getDefault();
 

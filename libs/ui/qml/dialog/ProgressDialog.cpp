@@ -25,16 +25,16 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <ui/base/container/fwContainer.hpp>
+#include <ui/base/IFrame.hpp>
+#include <ui/base/registry/macros.hpp>
+#include <ui/qml/QmlEngine.hpp>
+
 #include <QGuiApplication>
 #include <QObject>
 #include <QQmlProperty>
 #include <QQuickItem>
 #include <QQuickWindow>
-
-#include <ui/base/container/fwContainer.hpp>
-#include <ui/base/IFrame.hpp>
-#include <ui/base/registry/macros.hpp>
-#include <ui/qml/QmlEngine.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qml::dialog::ProgressDialog,
                     ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY );
@@ -70,7 +70,7 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
             core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/Progress.qml");
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
-        SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
+        SIGHT_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
         QQuickItem* item = qobject_cast<QQuickItem*>(m_dialog);
         // get ownership to not get Progress qml destroyed
         QQmlEngine::setObjectOwnership(item, QQmlEngine::CppOwnership);
@@ -86,10 +86,10 @@ ProgressDialog::ProgressDialog( ui::base::GuiBaseObject::Key key, const std::str
             core::runtime::getLibraryResourceFilePath("fwGuiQml/dialog/ProgressDialog.qml");
         // load the qml ui component
         m_window = engine->createComponent(dialogPath);
-        SLM_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_window);
+        SIGHT_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_window);
         m_window->setProperty("title", QString::fromStdString(title));
         m_dialog = m_window->findChild<QObject*>("dialog");
-        SLM_ASSERT("The dialog is not found inside the window", m_dialog);
+        SIGHT_ASSERT("The dialog is not found inside the window", m_dialog);
         QMetaObject::invokeMethod(m_dialog, "open");
 
     }
@@ -116,7 +116,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::operator()(float percent, std::string msg)
 {
-    SLM_ASSERT("m_dialog not instanced", m_dialog);
+    SIGHT_ASSERT("m_dialog not instanced", m_dialog);
     // check if the dialog box has been closed by the user and cancel the progress
     if (!m_visible)
     {
@@ -140,7 +140,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
 
 void ProgressDialog::setTitle(const std::string& title)
 {
-    SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
+    SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
 
     m_title = QString::fromStdString(title);
     if (m_window)
@@ -153,7 +153,7 @@ void ProgressDialog::setTitle(const std::string& title)
 
 void ProgressDialog::setMessage(const std::string& msg)
 {
-    SLM_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
+    SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
     QString title   = m_title;
     if (!title.isEmpty() && !this->m_window)

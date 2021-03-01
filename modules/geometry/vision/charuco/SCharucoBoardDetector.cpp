@@ -30,22 +30,22 @@
 #include <data/Composite.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
+
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
 
 namespace sight::module::geometry::vision::charuco
 {
@@ -89,8 +89,8 @@ SCharucoBoardDetector::~SCharucoBoardDetector() noexcept
 
 void SCharucoBoardDetector::configuring()
 {
-    SLM_ASSERT("You must have the same number of 'timeline' keys and 'calInfo' keys",
-               this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT));
+    SIGHT_ASSERT("You must have the same number of 'timeline' keys and 'calInfo' keys",
+                 this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT));
 
     const auto configTree = this->getConfigTree();
     const auto cfgBoard   = configTree.get_child("board.<xmlattr>");
@@ -135,8 +135,8 @@ void SCharucoBoardDetector::checkPoints( core::HiResClock::HiResClockType timest
         const size_t numTimeline  = this->getKeyGroupSize(s_TIMELINE_INPUT);
         const size_t numDetection = this->getKeyGroupSize(s_DETECTION_INOUT);
 
-        SLM_ERROR_IF("Different number of input timelines and detected point lists.",
-                     numDetection > 0 && numTimeline != numDetection);
+        SIGHT_ERROR_IF("Different number of input timelines and detected point lists.",
+                       numDetection > 0 && numTimeline != numDetection);
 
         const bool detection = (numDetection > 0) && (numTimeline == numDetection);
 
@@ -334,7 +334,7 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(const data::Fram
     if(buffer)
     {
         const auto pixType = tl->getType();
-        SLM_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
+        SIGHT_ASSERT("Expected 8bit pixel components, have " << 8 * pixType.sizeOf(), pixType.sizeOf() == 1);
 
         std::uint8_t* frameBuff = const_cast< std::uint8_t*>( &buffer->getElement(0) );
 
@@ -354,7 +354,7 @@ data::PointList::sptr SCharucoBoardDetector::detectCharucoBoard(const data::Fram
         }
         else
         {
-            SLM_FATAL("Wrong type of image (nb of components = "<<tl->getNumberOfComponents()<<").");
+            SIGHT_FATAL("Wrong type of image (nb of components = "<<tl->getNumberOfComponents()<<").");
         }
 
         std::vector<std::vector< ::cv::Point2f> > arucoCorners;

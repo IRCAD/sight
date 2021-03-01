@@ -77,7 +77,7 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SChessBoardDetector : public service::IController
 {
 public:
-    fwCoreServiceMacro(SChessBoardDetector, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SChessBoardDetector, sight::service::IController)
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was succesful.
     typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;

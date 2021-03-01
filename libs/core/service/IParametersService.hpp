@@ -59,7 +59,7 @@ class SERVICE_CLASS_API IParametersService : public service::IService
 
 public:
 
-    fwCoreServiceMacro(IParametersService, service::IService)
+    SIGHT_DECLARE_SERVICE(IParametersService, service::IService)
 
     SERVICE_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     SERVICE_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;

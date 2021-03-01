@@ -35,10 +35,10 @@
 
 #include <core/tools/UUID.hpp>
 
+#include <io/zip/IReadArchive.hpp>
+
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-
-#include <io/zip/IReadArchive.hpp>
 
 #include <filesystem>
 #include <sstream>
@@ -287,7 +287,7 @@ struct PTreeVisitor
         }
         else
         {
-            FW_RAISE("Buffer type '" << bufType << "' unknown.");
+            SIGHT_THROW("Buffer type '" << bufType << "' unknown.");
         }
         return atom;
     }
@@ -344,7 +344,7 @@ struct PTreeVisitor
         }
         else
         {
-            FW_RAISE("Unknown element found in archive.");
+            SIGHT_THROW("Unknown element found in archive.");
         }
 
         return atom;
@@ -379,37 +379,37 @@ sight::atoms::Base::sptr Reader::read( const io::zip::IReadArchive::sptr& archiv
     }
     else
     {
-        FW_RAISE("This kind of extension is not supported");
+        SIGHT_THROW("This kind of extension is not supported");
     }
 
     typedef ::boost::property_tree::ptree::const_assoc_iterator PtreeItType;
     PtreeItType hasVersionsIt = root.find("versions");
-    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\nno versions found in specified file.",
-                hasVersionsIt == root.not_found());
+    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\nno versions found in specified file.",
+                   hasVersionsIt == root.not_found());
 
     ::boost::property_tree::ptree versions = root.get_child("versions");
 
     PtreeItType hasAtomsVersionsIt = versions.find(Writer::s_ATOMS_VERSION_KEY);
-    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\nno atoms version found in specified file.",
-                hasAtomsVersionsIt == versions.not_found());
+    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\nno atoms version found in specified file.",
+                   hasAtomsVersionsIt == versions.not_found());
 
     PtreeItType hasWriterVersionsIt = versions.find(Writer::s_WRITER_VERSION_KEY);
-    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\nno writer version found in specified file",
-                hasWriterVersionsIt == versions.not_found());
+    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\nno writer version found in specified file",
+                   hasWriterVersionsIt == versions.not_found());
 
     const std::string& atomsVersion  = versions.get< std::string >(Writer::s_ATOMS_VERSION_KEY);
     const std::string& writerVersion = versions.get< std::string >(Writer::s_WRITER_VERSION_KEY);
 
-    FW_RAISE_IF(
+    SIGHT_THROW_IF(
         "Failed to read file '" << rootFilename.string() << "':\n"
                                 << "Detected file version is '" << writerVersion << "'"
                                 << " whereas current version is '" << Writer::s_VERSION << "'",
             Writer::s_VERSION != writerVersion);
 
-    FW_RAISE_IF("Failed to read file '" << rootFilename.string() << "':\n"
-                                        << "Detected atoms version is '" << atomsVersion << "'"
-                                        << " whereas current version is '" << sight::atoms::Base::s_VERSION << "'",
-                sight::atoms::Base::s_VERSION != atomsVersion);
+    SIGHT_THROW_IF("Failed to read file '" << rootFilename.string() << "':\n"
+                                           << "Detected atoms version is '" << atomsVersion << "'"
+                                           << " whereas current version is '" << sight::atoms::Base::s_VERSION << "'",
+                   sight::atoms::Base::s_VERSION != atomsVersion);
 
     PTreeVisitor visitor(root, archive);
     atom = visitor.visit();

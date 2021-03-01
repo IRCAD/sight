@@ -24,11 +24,11 @@
 
 #include "ui/qml/config.hpp"
 
+#include <ui/base/dialog/ISelectorDialog.hpp>
+
 #include <QObject>
 #include <QVariant>
 #include <QVector>
-
-#include <ui/base/dialog/ISelectorDialog.hpp>
 
 #include <vector>
 
@@ -48,7 +48,7 @@ Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 public:
 
-    fwCoreClassMacro(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
+    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
 
     UI_QML_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 

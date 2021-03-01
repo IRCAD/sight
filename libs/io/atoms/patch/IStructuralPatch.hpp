@@ -45,8 +45,8 @@ class IO_ATOMS_CLASS_API IStructuralPatch : public IPatch
 {
 
 public:
-    fwCoreClassMacro(IStructuralPatch)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(IStructuralPatch)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     ///Constructor
     IO_ATOMS_API IStructuralPatch();

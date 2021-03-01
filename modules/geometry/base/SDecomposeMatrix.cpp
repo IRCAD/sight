@@ -79,7 +79,7 @@ service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() cons
 void SDecomposeMatrix::updating()
 {
     auto matrix = this->getInput< data::Matrix4 >(s_SOURCE_INPUT);
-    SLM_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
+    SIGHT_ASSERT("input matrix '" + s_SOURCE_INPUT + "' is not defined", matrix);
     data::mt::ObjectReadLock srcLock(matrix);
 
     ::glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(matrix);

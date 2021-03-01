@@ -38,7 +38,7 @@ namespace sorter
 class FILTER_DICOM_CLASS_API ISorter : public filter::dicom::IFilter
 {
 public:
-    fwCoreClassMacro(ISorter, filter::dicom::IFilter)
+    SIGHT_DECLARE_CLASS(ISorter, filter::dicom::IFilter)
 
     /// Destructor
     FILTER_DICOM_API virtual ~ISorter();

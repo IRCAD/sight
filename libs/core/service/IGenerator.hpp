@@ -38,7 +38,7 @@ class SERVICE_CLASS_API IGenerator : public service::IService
 
 public:
 
-    fwCoreServiceMacro(IGenerator, service::IService)
+    SIGHT_DECLARE_SERVICE(IGenerator, service::IService)
 
 protected:
 

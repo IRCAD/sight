@@ -39,7 +39,7 @@
  * macro will be define but won't have any effect.
  *
  * Each log level macro can accept strings or stringstreams:
- *   - Example : SLM_INFO( "Count : " << i );
+ *   - Example : SIGHT_INFO( "Count : " << i );
  *
  * FATAL macros have a particular behavior : the application is aborted after
  * the message was logged.
@@ -157,12 +157,12 @@
     ::sight::core::log::SpyLogger::getSpyLogger()
 
 // Empty function to trigger deprecation warnings
-[[deprecated("OSLM_* macros removed in Sight 22.0, use SLM_* macros instead.")]]
-void OSLM_DEPRECATED();
+[[deprecated("OSIGHT_* macros removed in Sight 22.0, use SIGHT_* macros instead.")]]
+void OSIGHT_DEPRECATED();
 
 // Empty function to trigger deprecation warnings
 [[deprecated("Trace log level removed in Sight 22.0, use higher log levels instead.")]]
-void SLM_TRACE_DEPRECATED();
+void SIGHT_TRACE_DEPRECATED();
 
 // -----------------------------------------------------------------------------
 
@@ -172,66 +172,66 @@ void SLM_TRACE_DEPRECATED();
 
 /** @{ */
 /** Trace message macros.  */
-# define SLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SLM_TRACE_DEPRECATED()
-# define OSLM_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SLM_TRACE_DEPRECATED()
+# define SIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
+# define OSIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
 /** Conditionnal trace message macros.  */
-# define SLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SLM_TRACE_DEPRECATED()
-# define OSLM_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SLM_TRACE_DEPRECATED()
+# define SIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
+# define OSIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Debug message macros.  */
-# define SLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
-/** @deprecated @sight22, use SLM_DEBUG instead. */
-# define OSLM_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
+# define SIGHT_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SIGHT_DEBUG instead. */
+# define OSIGHT_DEBUG(message) SL_DEBUG(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
 /** Conditionnal debug message macros.  */
-# define SLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** @deprecated @sight22, use SLM_DEBUG_IF instead. */
-# define OSLM_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
+# define SIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SIGHT_DEBUG_IF instead. */
+# define OSIGHT_DEBUG_IF(message, cond) SL_DEBUG_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Info message macros.  */
-# define SLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
-/** @deprecated @sight22, use SLM_INFO instead. */
-# define OSLM_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
+# define SIGHT_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SIGHT_INFO instead. */
+# define OSIGHT_INFO(message) SL_INFO(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
 /** Conditionnal info message macros.  */
-# define SLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** @deprecated @sight22, use SLM_INFO_IF instead. */
-# define OSLM_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
+# define SIGHT_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SIGHT_INFO_IF instead. */
+# define OSIGHT_INFO_IF(message, cond) SL_INFO_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Warning message macros.  */
-# define SLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
-/** @deprecated @sight22, use SLM_WARN instead.  */
-# define OSLM_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
+# define SIGHT_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SIGHT_WARN instead.  */
+# define OSIGHT_WARN(message) SL_WARN(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
 /** Conditionnal warning message macros.  */
-# define SLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** @deprecated @sight22, use SLM_WARN_IF instead. */
-# define OSLM_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
+# define SIGHT_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SIGHT_WARN_IF instead. */
+# define OSIGHT_WARN_IF(message, cond) SL_WARN_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Error message macros.  */
-# define SLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
-/** @deprecated @sight22, use SLM_ERROR instead.  */
-# define OSLM_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
+# define SIGHT_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SIGHT_ERROR instead.  */
+# define OSIGHT_ERROR(message) SL_ERROR(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
 /** Conditionnal error message macros.  */
-# define SLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** @deprecated @sight22, use SLM_ERROR_IF instead.  */
-# define OSLM_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
+# define SIGHT_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SIGHT_ERROR_IF instead.  */
+# define OSIGHT_ERROR_IF(message, cond) SL_ERROR_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /** @{ */
 /** Fatal message macros.  */
-# define SLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
-/** @deprecated @sight22, use SLM_FATAL instead.  */
-# define OSLM_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message); OSLM_DEPRECATED()
+# define SIGHT_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message)
+/** @deprecated @sight22, use SIGHT_FATAL instead.  */
+# define OSIGHT_FATAL(message) SL_FATAL(_SPYLOG_SPYLOGGER_, message); OSIGHT_DEPRECATED()
 /** Conditionnal fatal message macros.  */
-# define SLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
-/** @deprecated @sight22, use SLM_FATAL_IF instead.  */
-# define OSLM_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond); OSLM_DEPRECATED()
+# define SIGHT_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond)
+/** @deprecated @sight22, use SIGHT_FATAL_IF instead.  */
+# define OSIGHT_FATAL_IF(message, cond) SL_FATAL_IF(_SPYLOG_SPYLOGGER_, message, cond); OSIGHT_DEPRECATED()
 /**  @} */
 
 /**
@@ -240,19 +240,19 @@ void SLM_TRACE_DEPRECATED();
 
 /** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
-# define SLM_ASSERT(message, cond)                      \
+# define SIGHT_ASSERT(message, cond)                      \
     SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
-# define OSLM_ASSERT(message, cond)                     \
+# define OSIGHT_ASSERT(message, cond)                     \
     SL_ASSERT(_SPYLOG_SPYLOGGER_, message, cond)
 
 // -----------------------------------------------------------------------------
 
 # ifdef __GNUC__                // with GCC
-#  define SLM_PRETTY_FUNC() __PRETTY_FUNCTION__
+#  define SIGHT_PRETTY_FUNC() __PRETTY_FUNCTION__
 # elif defined(_MSC_VER)        // with MSC
-#  define SLM_PRETTY_FUNC() __FUNCSIG__
+#  define SIGHT_PRETTY_FUNC() __FUNCSIG__
 # else
-#  define SLM_PRETTY_FUNC() __func__
+#  define SIGHT_PRETTY_FUNC() __func__
 # endif
 
 /**
@@ -261,12 +261,12 @@ void SLM_TRACE_DEPRECATED();
  * Generate a log trace message with the (contextual) function signature.
  */
 # ifndef SPYLOG_TIMER
-#  define SLM_TRACE_FUNC() SLM_TRACE(SLM_PRETTY_FUNC())
+#  define SIGHT_TRACE_FUNC() SIGHT_TRACE(SIGHT_PRETTY_FUNC())
 # else
 
-# define SLM_TRACE_FUNC() __FWCORE_EXPR_BLOCK(                  \
+# define SIGHT_TRACE_FUNC() __FWCORE_EXPR_BLOCK(                  \
         core::log::ScopedMessage __spylog__scoped__msg__(        \
-            __FILE__, __LINE__, SLM_PRETTY_FUNC());             \
+            __FILE__, __LINE__, SIGHT_PRETTY_FUNC());             \
         __spylog__scoped__msg__.use();                          \
         )
 
@@ -277,42 +277,42 @@ void SLM_TRACE_DEPRECATED();
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED(oldFnName, newFnName, version) \
-    SLM_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
-                                 << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
-                );
+    SIGHT_ERROR(  "[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
+                                   << newFnName << "' instead. It is still used by '" + this->getClassname() + "'." \
+                  );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_IF(oldFnName, newFnName, version, condition) \
-    SLM_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
-                                  << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
-                 ondition);
+    SIGHT_ERROR_IF("[DEPRECATED] '" << oldFnName << "' is deprecated and will be removed in '" << version << "', use '" \
+                                    << newFnName << "' instead. It is still used by '" + this->getClassname() + "'.", \
+                   ondition);
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_MSG(message, version) \
-    SLM_ERROR(  "[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+    SIGHT_ERROR(  "[DEPRECATED] " << message << " It will be removed in '" << version << "'");
 
 /**
  * @brief Use this macro when deprecating a service key to warn the developer.
  */
 #define FW_DEPRECATED_KEY(newKey, access, version) \
-    SLM_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
-                "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
-                "in '" << version << "'.");
+    SIGHT_ERROR(  "[DEPRECATED] The key '" << newKey << "' is not correctly set. Please correct the configuration to " \
+                  "set an '" << access << "' key named '" << newKey << "'. The support of the old key will be removed " \
+                  "in '" << version << "'.");
 
 //------------------------------------------------------------------------------
 
-inline void OSLM_DEPRECATED()
+inline void OSIGHT_DEPRECATED()
 {
     // Empty function to trigger deprecation warnings
 }
 
 //------------------------------------------------------------------------------
 
-inline void SLM_TRACE_DEPRECATED()
+inline void SIGHT_TRACE_DEPRECATED()
 {
     // Empty function to trigger deprecation warnings
 }

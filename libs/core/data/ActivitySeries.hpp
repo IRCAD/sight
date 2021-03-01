@@ -27,7 +27,7 @@
 
 #include <data/factory/new.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(ActivitySeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ActivitySeries))
 
 namespace sight::data
 {
@@ -46,9 +46,9 @@ class DATA_CLASS_API ActivitySeries : public data::Series
 {
 
 public:
-    fwCoreClassMacro(ActivitySeries, data::Series, data::factory::New< ActivitySeries >)
+    SIGHT_DECLARE_CLASS(ActivitySeries, data::Series, data::factory::New< ActivitySeries >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(ActivitySeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ActivitySeries))
 
     typedef std::string ConfigIdType;
 

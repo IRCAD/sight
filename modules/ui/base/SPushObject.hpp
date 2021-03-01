@@ -51,7 +51,7 @@ class MODULE_UI_BASE_CLASS_API SPushObject : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SPushObject, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SPushObject, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SPushObject() noexcept;

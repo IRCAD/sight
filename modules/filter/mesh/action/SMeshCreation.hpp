@@ -63,7 +63,7 @@ class MODULE_FILTER_MESH_CLASS_API SMeshCreation : public ::sight::ui::base::IAc
 
 public:
 
-    fwCoreServiceMacro(SMeshCreation, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SMeshCreation, ::sight::ui::base::IAction)
 
     MODULE_FILTER_MESH_API SMeshCreation() noexcept;
 

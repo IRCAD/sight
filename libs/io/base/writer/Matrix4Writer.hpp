@@ -48,7 +48,7 @@ class IO_BASE_CLASS_API Matrix4Writer :
 
 public:
 
-    fwCoreClassMacro(
+    SIGHT_DECLARE_CLASS(
         Matrix4Writer,
         GenericObjectWriter< data::Matrix4 >,
         io::base::writer::factory::New< Matrix4Writer >

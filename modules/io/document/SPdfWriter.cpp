@@ -32,14 +32,13 @@
 
 #include <service/macros.hpp>
 
-#include <QPainter>
-#include <QPixmap>
-
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
+#include <QPainter>
+#include <QPixmap>
 
 namespace sight::module::io::document
 {
@@ -81,7 +80,7 @@ void SPdfWriter::configuring()
         const std::vector< ConfigurationType > containersCfg = containersConfig->find(s_CONTAINER_INPUT);
         for (const auto& cfg : containersCfg)
         {
-            SLM_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
+            SIGHT_ASSERT("Missing attribute 'uid'.", cfg->hasAttribute("uid"));
             const std::string id = cfg->getAttributeValue("uid");
             m_containersIDs.push_back( id );
         }
@@ -244,7 +243,7 @@ sight::io::base::service::IOPathType SPdfWriter::getIOPathType() const
 
 void SPdfWriter::scaleQImage(QImage& qImage, const int scale)
 {
-    SLM_ERROR_IF("Image is null.", qImage.isNull());
+    SIGHT_ERROR_IF("Image is null.", qImage.isNull());
     qImage = qImage.scaledToWidth(scale, Qt::FastTransformation);
 }
 

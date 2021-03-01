@@ -26,7 +26,7 @@
 #include "data/Node.hpp"
 #include "data/StructureTraits.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(ReconstructionTraits));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ReconstructionTraits));
 
 namespace sight::data
 {
@@ -45,8 +45,8 @@ namespace sight::data
 class DATA_CLASS_API ReconstructionTraits : public data::Object
 {
 public:
-    fwCoreClassMacro(ReconstructionTraits, data::Object, data::factory::New< ReconstructionTraits >)
-    fwCampMakeFriendDataMacro((sight)(data)(ReconstructionTraits));
+    SIGHT_DECLARE_CLASS(ReconstructionTraits, data::Object, data::factory::New< ReconstructionTraits >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ReconstructionTraits));
 
     /**
      * @brief Constructor

@@ -67,7 +67,7 @@ void Signal< R(A ...) >::disconnect( SlotBase::sptr slot )
     if (iter != m_connections.end())
     {
         SlotConnectionBase::sptr connection( iter->second.lock() );
-        SLM_ASSERT( "Connection has been previously destroyed", connection );
+        SIGHT_ASSERT( "Connection has been previously destroyed", connection );
         if (connection)
         {
             core::mt::UpgradeToWriteLock writeLock(lock);
@@ -77,7 +77,7 @@ void Signal< R(A ...) >::disconnect( SlotBase::sptr slot )
     }
     else
     {
-        FW_RAISE_EXCEPTION( core::com::exception::BadSlot( "No such slot connected" ) );
+        SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "No such slot connected" ) );
     }
 }
 
@@ -146,7 +146,7 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
 
         if(m_connections.find( slot ) != m_connections.end())
         {
-            FW_RAISE_EXCEPTION( core::com::exception::AlreadyConnected("Slot already connected") );
+            SIGHT_THROW_EXCEPTION( core::com::exception::AlreadyConnected("Slot already connected") );
         }
     }
 
@@ -170,7 +170,7 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
         }
         else
         {
-            FW_RAISE_EXCEPTION( core::com::exception::BadSlot( "Incompatible slot" ) );
+            SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "Incompatible slot" ) );
         }
     }
     else if ( sigArity > slot->arity() )
@@ -199,7 +199,7 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
     }
     else
     {
-        FW_RAISE_EXCEPTION( core::com::exception::BadSlot( "Incompatible slot" ) );
+        SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "Incompatible slot" ) );
     }
 
     return connection;
@@ -219,7 +219,7 @@ Connection Signal< R( A ... ) >::getConnection( SlotBase::sptr slot, bool throws
     {
         if(throws)
         {
-            FW_RAISE_EXCEPTION( core::com::exception::BadSlot( "No such slot connected" ) );
+            SIGHT_THROW_EXCEPTION( core::com::exception::BadSlot( "No such slot connected" ) );
         }
     }
     else

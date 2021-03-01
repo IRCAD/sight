@@ -55,7 +55,7 @@ void IMenuBarBuilder::initialize( core::runtime::ConfigurationElement::sptr conf
         const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
         if(!hexaColor.empty())
         {
-            SLM_ASSERT(
+            SIGHT_ASSERT(
                 "Color string should start with '#' and followed by 6 or 8 "
                 "hexadecimal digits. Given color: " << hexaColor,
                     hexaColor[0] == '#'

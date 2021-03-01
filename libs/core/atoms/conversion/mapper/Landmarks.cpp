@@ -113,24 +113,24 @@ data::Object::sptr Landmarks::convert(  atoms::Object::sptr atom,
     for (const auto& elt : map->getValue())
     {
         const std::string name = elt.first;
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                   "sub atoms stored in fwAtom::Map 'landmarks' must be atom objects"),
-                               elt.second->type() != atoms::Base::OBJECT );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                      "sub atoms stored in fwAtom::Map 'landmarks' must be atom objects"),
+                                  elt.second->type() != atoms::Base::OBJECT );
         atoms::Object::sptr obj = atoms::Object::dynamicCast(elt.second);
 
         // get color
         atoms::String::csptr colorObj = atoms::String::dynamicCast(obj->getAttribute("color"));
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                   "sub atom 'color' stored in fwAtom::Object 'landmarks' must be atoms::String"),
-                               !colorObj );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                      "sub atom 'color' stored in fwAtom::Object 'landmarks' must be atoms::String"),
+                                  !colorObj );
 
         const std::string& colorStr = colorObj->getValue();
 
         std::vector< std::string> result;
         ::boost::split(result, colorStr, ::boost::is_any_of(";"));
 
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged("'color' atom must be of type rgba"),
-                               result.size() != 4 );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged("'color' atom must be of type rgba"),
+                                  result.size() != 4 );
         const data::Landmarks::ColorType color = {{
                                                       std::stof(result[0]), std::stof(result[1]),
                                                       std::stof(result[2]), std::stof(result[3])
@@ -138,16 +138,16 @@ data::Object::sptr Landmarks::convert(  atoms::Object::sptr atom,
 
         // get size
         atoms::Numeric::csptr sizeObj = atoms::Numeric::dynamicCast(obj->getAttribute("size"));
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                   "sub atom 'size' stored in fwAtom::Object 'landmarks' must be atoms::Numeric"),
-                               !sizeObj );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                      "sub atom 'size' stored in fwAtom::Object 'landmarks' must be atoms::Numeric"),
+                                  !sizeObj );
         const data::Landmarks::SizeType size = sizeObj->getValue< data::Landmarks::SizeType >();
 
         // get shape
         atoms::String::csptr shapeObj = atoms::String::dynamicCast(obj->getAttribute("shape"));
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                   "sub atom 'shape' stored in fwAtom::Object 'landmarks' must be atoms::String"),
-                               !shapeObj );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                      "sub atom 'shape' stored in fwAtom::Object 'landmarks' must be atoms::String"),
+                                  !shapeObj );
 
         const std::string& shapeStr = shapeObj->getValue();
         data::Landmarks::Shape shape;
@@ -161,14 +161,14 @@ data::Object::sptr Landmarks::convert(  atoms::Object::sptr atom,
         }
         else
         {
-            FW_RAISE_EXCEPTION(exception::ConversionNotManaged("'shape' value '"+ shapeStr +"' is not managed"));
+            SIGHT_THROW_EXCEPTION(exception::ConversionNotManaged("'shape' value '"+ shapeStr +"' is not managed"));
         }
 
         // get visibility
         atoms::Boolean::csptr visuObj = atoms::Boolean::dynamicCast(obj->getAttribute("visibility"));
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                   "sub atom 'visibility' stored in 'landmarks' must be atoms::Boolean"),
-                               !visuObj );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                      "sub atom 'visibility' stored in 'landmarks' must be atoms::Boolean"),
+                                  !visuObj );
         const bool visibility = visuObj->getValue();
 
         landmarks->addGroup(name, color, size, shape, visibility);
@@ -177,9 +177,9 @@ data::Object::sptr Landmarks::convert(  atoms::Object::sptr atom,
         atoms::Sequence::csptr seq = atoms::Sequence::dynamicCast(obj->getAttribute("points"));
         for (const auto& elt : seq->getValue())
         {
-            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                       "sub atoms stored in 'points' must be atoms::String"),
-                                   elt->type() != atoms::Base::STRING );
+            SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                          "sub atoms stored in 'points' must be atoms::String"),
+                                      elt->type() != atoms::Base::STRING );
 
             atoms::String::csptr ptStrObj = atoms::String::dynamicCast(elt);
             const std::string& ptStr      = ptStrObj->getValue();
@@ -187,8 +187,8 @@ data::Object::sptr Landmarks::convert(  atoms::Object::sptr atom,
             std::vector< std::string> resultPt;
             ::boost::split(resultPt, ptStr, ::boost::is_any_of(";"));
 
-            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged("point atom must be of type x;y;z"),
-                                   resultPt.size() != 3 );
+            SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged("point atom must be of type x;y;z"),
+                                      resultPt.size() != 3 );
 
             data::Landmarks::PointType pt = {{
                                                  std::stod(resultPt[0]), std::stod(resultPt[1]),

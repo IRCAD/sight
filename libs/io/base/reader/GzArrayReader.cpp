@@ -28,7 +28,7 @@
 
 #include <iostream>
 
-fwDataIOReaderRegisterMacro( ::sight::io::base::reader::GzArrayReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::GzArrayReader );
 
 namespace sight::io::base
 {

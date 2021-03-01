@@ -55,7 +55,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( core::com::exception::NoWorker("No valid worker.") );
+        SIGHT_THROW_EXCEPTION( core::com::exception::NoWorker("No valid worker.") );
     }
 
     return postWeakCall< void >(
@@ -76,7 +76,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
 
     if(!this->m_worker)
     {
-        FW_RAISE_EXCEPTION( core::com::exception::NoWorker("Slot has no worker set.") );
+        SIGHT_THROW_EXCEPTION( core::com::exception::NoWorker("Slot has no worker set.") );
     }
 
     return postWeakCall< void >(

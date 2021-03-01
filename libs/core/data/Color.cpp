@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( ::sight::data::Color );
+SIGHT_REGISTER_DATA( ::sight::data::Color );
 
 namespace sight::data
 {
@@ -60,9 +60,9 @@ Color::~Color ()
 void Color::shallowCopy(const Object::csptr& _source )
 {
     Color::csptr other = Color::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_vRGBA = other->m_vRGBA;
 }
@@ -72,9 +72,9 @@ void Color::shallowCopy(const Object::csptr& _source )
 void Color::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Color::csptr other = Color::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_vRGBA = other->m_vRGBA;
 }
@@ -90,7 +90,7 @@ void Color::setRGBA( const ColorType red, const ColorType green, const ColorType
 
 void Color::setRGBA(const std::string& hexaColor )
 {
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << hexaColor,
             hexaColor[0] == '#'

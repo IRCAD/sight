@@ -65,7 +65,7 @@ class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public service::IRegisterer
 {
 public:
 
-    fwCoreServiceMacro(SSolvePnP, sight::service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SSolvePnP, sight::service::IRegisterer)
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SSolvePnP() noexcept;

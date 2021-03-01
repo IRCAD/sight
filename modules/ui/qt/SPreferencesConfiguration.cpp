@@ -32,6 +32,9 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
+
 #include <boost/tokenizer.hpp>
 
 #include <QApplication>
@@ -42,9 +45,6 @@
 #include <QIntValidator>
 #include <QLabel>
 #include <QPushButton>
-
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -76,7 +76,7 @@ void SPreferencesConfiguration::configuring()
         PreferenceElt pref;
 
         ConfigurationType typeCfg = elt->findConfigurationElement("type");
-        SLM_ASSERT("element 'type' is missing.", typeCfg);
+        SIGHT_ASSERT("element 'type' is missing.", typeCfg);
         if(typeCfg->getValue() == "checkbox")
         {
             pref.m_type = PreferenceType::CHECKBOX;
@@ -131,19 +131,19 @@ void SPreferencesConfiguration::configuring()
         }
         else
         {
-            SLM_ERROR("Preference type "<<typeCfg->getValue()<<" is not implemented");
+            SIGHT_ERROR("Preference type "<<typeCfg->getValue()<<" is not implemented");
         }
 
         ConfigurationType nameCfg = elt->findConfigurationElement("name");
-        SLM_ASSERT("element 'name' is missing.", nameCfg);
+        SIGHT_ASSERT("element 'name' is missing.", nameCfg);
         pref.m_name = nameCfg->getValue();
 
         ConfigurationType keyCfg = elt->findConfigurationElement("key");
-        SLM_ASSERT("element 'key' is missing.", keyCfg);
+        SIGHT_ASSERT("element 'key' is missing.", keyCfg);
         pref.m_preferenceKey = keyCfg->getValue();
 
         ConfigurationType defaultValueCfg = elt->findConfigurationElement("default_value");
-        SLM_ASSERT("element 'default_value' is missing.", defaultValueCfg);
+        SIGHT_ASSERT("element 'default_value' is missing.", defaultValueCfg);
         pref.m_defaultValue = defaultValueCfg->getValue();
 
         if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH ||
@@ -169,7 +169,7 @@ void SPreferencesConfiguration::configuring()
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
             ConfigurationType valuesCfg = elt->findConfigurationElement("values");
-            SLM_ASSERT("element 'values' is missing.", valuesCfg);
+            SIGHT_ASSERT("element 'values' is missing.", valuesCfg);
 
             const ::boost::char_separator<char> sep(", ;");
             const std::string s = valuesCfg->getValue();
@@ -290,8 +290,8 @@ void SPreferencesConfiguration::updating()
             const int currentIndex = pref.m_comboBox->findText(QString::fromStdString(pref.m_dataPreference->value()));
             if(currentIndex < 0)
             {
-                SLM_WARN( "Preference '" + pref.m_dataPreference->value() +
-                          "' can't be find in combobox. The first one is selected.");
+                SIGHT_WARN( "Preference '" + pref.m_dataPreference->value() +
+                            "' can't be find in combobox. The first one is selected.");
                 pref.m_comboBox->setCurrentIndex(0);
             }
             else

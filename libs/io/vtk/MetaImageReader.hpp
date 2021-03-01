@@ -51,10 +51,10 @@ class MetaImageReader : public io::base::reader::GenericObjectReader< data::Imag
 
 public:
 
-    fwCoreClassMacro(MetaImageReader, io::base::reader::GenericObjectReader< data::Image >,
-                     io::base::reader::factory::New< MetaImageReader >);
+    SIGHT_DECLARE_CLASS(MetaImageReader, io::base::reader::GenericObjectReader< data::Image >,
+                        io::base::reader::factory::New< MetaImageReader >);
 
-    fwCoreAllowSharedFromThis();
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
     IO_VTK_API MetaImageReader(io::base::reader::IObjectReader::Key key);

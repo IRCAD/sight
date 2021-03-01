@@ -83,7 +83,7 @@ class MODULE_UI_BASE_CLASS_API SImagePicker : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SImagePicker, service::IController)
+    SIGHT_DECLARE_SERVICE(SImagePicker, service::IController)
 
     /// Creates the video reference map..
     MODULE_UI_BASE_API SImagePicker() noexcept;

@@ -32,9 +32,9 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/vtk/ModelSeriesObjWriter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/ILocationDialog.hpp>
@@ -46,7 +46,6 @@
 
 namespace sight::module::io::vtk
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -152,7 +151,7 @@ void SModelSeriesObjWriter::updating()
         // Retrieve dataStruct associated with this service
         data::ModelSeries::csptr modelSeries =
             this->getInput< data::ModelSeries >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", modelSeries);
+        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", modelSeries);
 
         auto writer = sight::io::vtk::ModelSeriesObjWriter::New();
         writer->setObject(modelSeries);

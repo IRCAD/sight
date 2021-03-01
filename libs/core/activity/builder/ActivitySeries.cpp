@@ -63,7 +63,7 @@ data::Composite::sptr vectorToComposite(const data::Vector::csptr& vector,
     namespace ActReg = activity::extension;
     data::Composite::sptr composite = data::Composite::New();
 
-    SLM_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
+    SIGHT_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
@@ -127,15 +127,15 @@ data::ActivitySeries::sptr ActivitySeries::buildData(
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)
         if(req.maxOccurs == 1 && req.minOccurs == 1)
         {
-            SLM_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
+            SIGHT_ASSERT("No param name "<<req.name<<" with type "<<req.type, !vectorType->empty());
             (*data)[req.name] = (*vectorType)[0];
         }
         else
         {
-            SLM_ASSERT("Unknown specified container: '"+req.container+"'.",
-                       req.container.empty() ||
-                       req.container == "vector" ||
-                       req.container == "composite");
+            SIGHT_ASSERT("Unknown specified container: '"+req.container+"'.",
+                         req.container.empty() ||
+                         req.container == "vector" ||
+                         req.container == "composite");
             if(req.container == "vector")
             {
                 (*data)[req.name] = vectorType;

@@ -24,11 +24,11 @@
 
 #include "modules/ui/debug/config.hpp"
 
+#include <ui/base/IAction.hpp>
+
 #include <QApplication>
 #include <QDialog>
 #include <QTreeWidget>
-
-#include <ui/base/IAction.hpp>
 
 namespace sight::module::ui::debug
 {
@@ -42,7 +42,7 @@ class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public ::sight::ui::b
 
 public:
 
-    fwCoreServiceMacro(ClassFactoryRegistryInfo, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(ClassFactoryRegistryInfo, sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_UI_DEBUG_API ClassFactoryRegistryInfo() noexcept;

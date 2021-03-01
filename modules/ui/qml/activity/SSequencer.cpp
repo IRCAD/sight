@@ -34,7 +34,6 @@
 namespace sight::module::ui::qml::activity
 {
 
-
 const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
@@ -92,7 +91,7 @@ void SSequencer::stopping()
 void SSequencer::updating()
 {
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     m_currentActivity = this->parseActivities(seriesDB);
 
@@ -118,11 +117,11 @@ void SSequencer::goTo(int index)
 {
     if (index < 0 || index >= static_cast<int>(m_activityIds.size()))
     {
-        SLM_ERROR("no activity to launch at index " << index)
+        SIGHT_ERROR("no activity to launch at index " << index)
         return;
     }
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     if (m_currentActivity >= 0)
     {
@@ -156,7 +155,7 @@ void SSequencer::goTo(int index)
 void SSequencer::checkNext()
 {
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.

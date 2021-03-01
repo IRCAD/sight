@@ -31,19 +31,18 @@
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
 
 #include <geometry/data/Matrix4.hpp>
+
+#include <service/macros.hpp>
 
 #include <functional>
 #include <numeric>
 
 namespace sight::module::filter::image
 {
-
 
 SMIPMatchingRegistration::SMIPMatchingRegistration() noexcept :
     service::IRegisterer()
@@ -81,9 +80,9 @@ void SMIPMatchingRegistration::updating()
     auto fixed     = this->getInput< data::Image>("fixed");
     auto moving    = this->getInput< data::Image>("moving");
     auto transform = this->getInOut< data::Matrix4>("transform");
-    SLM_ASSERT("Missing required input 'fixed'", fixed);
-    SLM_ASSERT("Missing required input 'moving'", moving);
-    SLM_ASSERT("Missing required inout 'transform'", transform);
+    SIGHT_ASSERT("Missing required input 'fixed'", fixed);
+    SIGHT_ASSERT("Missing required input 'moving'", moving);
+    SIGHT_ASSERT("Missing required inout 'transform'", transform);
 
     sight::filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;

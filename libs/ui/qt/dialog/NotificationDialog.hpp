@@ -26,13 +26,13 @@
 
 #include <core/macros.hpp>
 
+#include <ui/base/dialog/INotificationDialog.hpp>
+
 #include <QGraphicsOpacityEffect>
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPointer>
 #include <QPropertyAnimation>
-
-#include <ui/base/dialog/INotificationDialog.hpp>
 
 #include <string>
 
@@ -182,8 +182,8 @@ class UI_QT_CLASS_API NotificationDialog : public ui::base::dialog::INotificatio
 
 public:
 
-    fwCoreClassMacro(NotificationDialog, ui::base::dialog::INotificationDialog,
-                     ui::base::factory::New< NotificationDialog > )
+    SIGHT_DECLARE_CLASS(NotificationDialog, ui::base::dialog::INotificationDialog,
+                        ui::base::factory::New< NotificationDialog > )
 
     /// Initializes members.
     UI_QT_API NotificationDialog(ui::base::GuiBaseObject::Key key);

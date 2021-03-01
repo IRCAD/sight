@@ -68,7 +68,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SShaderParameter final : public ::sight::viz:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShaderParameter, ::sight::viz::scene3d::IParameter)
+    SIGHT_DECLARE_SERVICE(SShaderParameter, ::sight::viz::scene3d::IParameter)
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SShaderParameter() noexcept;

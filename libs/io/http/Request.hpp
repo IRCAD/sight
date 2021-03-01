@@ -38,8 +38,8 @@ class IO_HTTP_CLASS_API Request : public core::BaseObject
 {
 
 public:
-    fwCoreAllowSharedFromThis();
-    fwCoreClassMacro(Request, core::BaseObject, new Request)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_DECLARE_CLASS(Request, core::BaseObject, new Request)
 
     /// Maps header name to its value.
     typedef std::map<std::string, std::string> HeadersType;

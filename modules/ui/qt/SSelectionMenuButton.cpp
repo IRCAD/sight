@@ -38,6 +38,8 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QAction>
 #include <QMenu>
 #include <QPushButton>
@@ -45,13 +47,10 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 #include <filesystem>
 
 namespace sight::module::ui::qt
 {
-
 
 static const core::com::Signals::SignalKeyType s_SELECTED_SIG = "selected";
 
@@ -100,14 +99,14 @@ void SSelectionMenuButton::configuring()
     }
 
     Configuration itemsCfg = m_configuration->findConfigurationElement("items");
-    SLM_ASSERT("Missing 'items' config", itemsCfg);
+    SIGHT_ASSERT("Missing 'items' config", itemsCfg);
 
     std::vector < Configuration > itemCfgs = itemsCfg->find("item");
-    SLM_ASSERT("At least two items must be defined", itemCfgs.size() >= 2);
+    SIGHT_ASSERT("At least two items must be defined", itemCfgs.size() >= 2);
     for (auto itemCfg : itemCfgs)
     {
-        SLM_ASSERT("Missing 'text' attribute", itemCfg->hasAttribute("text"));
-        SLM_ASSERT("Missing 'value' attribute", itemCfg->hasAttribute("value"));
+        SIGHT_ASSERT("Missing 'text' attribute", itemCfg->hasAttribute("text"));
+        SIGHT_ASSERT("Missing 'value' attribute", itemCfg->hasAttribute("value"));
         std::string txt = itemCfg->getExistingAttributeValue("text");
         std::string val = itemCfg->getExistingAttributeValue("value");
         int value       = std::stoi(val);

@@ -56,7 +56,7 @@ class TUTO05MULTITHREADCONSOLECPP_CLASS_API SIncrementArray final : public sight
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SIncrementArray, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SIncrementArray, sight::service::IController)
 
     /// Initializes the slot.
     TUTO05MULTITHREADCONSOLECPP_API SIncrementArray() noexcept;

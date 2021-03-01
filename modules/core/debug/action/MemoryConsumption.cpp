@@ -26,9 +26,9 @@
 
 #include <service/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <ui/base/dialog/MessageDialog.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <sstream>
 
@@ -42,7 +42,6 @@ static std::vector< data::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 
 void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
@@ -53,7 +52,7 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
         data::Array::SizeType size(1, memorySizeInBytes);
         buffer->resize(size, core::tools::Type::s_UINT8_TYPENAME, true);
 
-        SLM_INFO("Creating a data::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
+        SIGHT_INFO("Creating a data::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
 
         memoryConsumer.push_back( buffer );
     }
@@ -94,7 +93,7 @@ void MemoryConsumption::updating()
     {
         if( !memoryConsumer.empty() )
         {
-            SLM_INFO("Removing one data::Array");
+            SIGHT_INFO("Removing one data::Array");
             memoryConsumer.pop_back();
         }
     }
@@ -108,11 +107,11 @@ void MemoryConsumption::configuring()
 
     core::runtime::ConfigurationElement::sptr consumptionCfg;
     consumptionCfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Missing mode tag", consumptionCfg);
+    SIGHT_ASSERT("Missing mode tag", consumptionCfg);
 
-    SLM_ASSERT("Missing attribute 'value'", consumptionCfg->hasAttribute("mode"));
+    SIGHT_ASSERT("Missing attribute 'value'", consumptionCfg->hasAttribute("mode"));
     std::string mode = consumptionCfg->getAttributeValue("mode");
-    SLM_ASSERT("Wrong value ("<< mode <<") for mode tag", mode == "increase" || mode == "decrease");
+    SIGHT_ASSERT("Wrong value ("<< mode <<") for mode tag", mode == "increase" || mode == "decrease");
     m_isIncreaseMode = (mode == "increase");
 
     if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))

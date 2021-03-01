@@ -30,7 +30,7 @@
 #include <map>
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Landmarks));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Landmarks));
 
 namespace sight::data
 {
@@ -71,9 +71,9 @@ public:
         PointContainer m_points;
     };
 
-    fwCoreClassMacro(Landmarks, data::Object, data::factory::New< Landmarks >)
+    SIGHT_DECLARE_CLASS(Landmarks, data::Object, data::factory::New< Landmarks >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Landmarks));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Landmarks));
 
     /**
      * @brief Constructor

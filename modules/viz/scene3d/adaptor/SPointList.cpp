@@ -29,8 +29,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/String.hpp>
 #include <data/fieldHelper/Image.hpp>
+#include <data/String.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
@@ -116,7 +116,7 @@ void SPointList::configuring()
     const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
     this->updateVisibility(visible);
 
-    SLM_ASSERT("Material not found", m_material);
+    SIGHT_ASSERT("Material not found", m_material);
     m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
     m_autoResetCamera = config.get<std::string>(s_AUTORESET_CAMERA_CONFIG, "yes") == "yes";
@@ -141,7 +141,7 @@ void SPointList::configuring()
     const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -193,7 +193,7 @@ void SPointList::starting()
         }
         else
         {
-            SLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
         }
     }
 }
@@ -222,7 +222,7 @@ void SPointList::stopping()
     this->unregisterServices();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
     m_meshGeometry->clearMesh(*sceneMgr);
 
     if(m_entity)
@@ -263,7 +263,7 @@ void SPointList::updating()
         }
         else
         {
-            SLM_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
+            SIGHT_ERROR("No '" + s_POINTLIST_INPUT + "' or '" + s_MESH_INPUT + "' specified.")
         }
     }
     this->requestRender();
@@ -276,7 +276,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
     ::Ogre::SceneManager* sceneMgr          = this->getSceneManager();
     ::Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
     ::Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
-    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
@@ -330,14 +330,14 @@ void SPointList::destroyLabel()
 void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
     detachAndDestroyEntity();
 
     const size_t uiNumVertices = _pointList->getPoints().size();
     if(uiNumVertices == 0)
     {
-        SLM_DEBUG("Empty mesh");
+        SIGHT_DEBUG("Empty mesh");
         m_meshGeometry->clearMesh(*sceneMgr);
 
         return;
@@ -388,14 +388,14 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
 void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 {
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    SLM_ASSERT("::Ogre::SceneManager is null", sceneMgr);
+    SIGHT_ASSERT("::Ogre::SceneManager is null", sceneMgr);
 
     detachAndDestroyEntity();
 
     const size_t uiNumVertices = _mesh->getNumberOfPoints();
     if(uiNumVertices == 0)
     {
-        SLM_DEBUG("Empty mesh");
+        SIGHT_DEBUG("Empty mesh");
 
         m_meshGeometry->clearMesh(*sceneMgr);
         return;

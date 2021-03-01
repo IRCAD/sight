@@ -41,7 +41,7 @@ class UI_BASE_CLASS_API IEditor : public ui::base::IGuiContainer
 
 public:
 
-    fwCoreServiceMacro(IEditor, ui::base::IGuiContainer)
+    SIGHT_DECLARE_SERVICE(IEditor, ui::base::IGuiContainer)
 
 protected:
 

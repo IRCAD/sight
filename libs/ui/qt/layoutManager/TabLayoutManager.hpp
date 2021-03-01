@@ -27,9 +27,9 @@
 
 #include <core/base.hpp>
 
-#include <QPointer>
-
 #include <ui/base/layoutManager/TabLayoutManagerBase.hpp>
+
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QTabWidget;
@@ -46,8 +46,8 @@ class UI_QT_CLASS_API TabLayoutManager : public ui::base::layoutManager::TabLayo
 
 public:
 
-    fwCoreClassMacro(TabLayoutManager, ui::base::layoutManager::TabLayoutManagerBase,
-                     ui::base::factory::New< TabLayoutManager >)
+    SIGHT_DECLARE_CLASS(TabLayoutManager, ui::base::layoutManager::TabLayoutManagerBase,
+                        ui::base::factory::New< TabLayoutManager >)
 
     UI_QT_API TabLayoutManager(ui::base::GuiBaseObject::Key key);
 

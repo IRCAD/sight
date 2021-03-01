@@ -79,7 +79,7 @@ class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SDistortion, sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SDistortion, sight::service::IOperator)
 
     /**
      * @name Slots API

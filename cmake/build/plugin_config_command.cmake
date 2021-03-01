@@ -16,7 +16,7 @@ foreach(LINE ${PLUGIN_CONTENT})
             set(FOUND_EXTENSION OFF)
 
             # 1. Generate an entry for one service
-            list(APPEND REGISTER_SERVICES "fwServicesRegisterMacro( ${TYPE}, ${SERVICE} )\n")
+            list(APPEND REGISTER_SERVICES "SIGHT_REGISTER_SERVICE( ${TYPE}, ${SERVICE} )\n")
 
             # 2. Generate the include for the service
             set(SERVICE_INCLUDE ${SERVICE})
@@ -35,7 +35,7 @@ foreach(LINE ${PLUGIN_CONTENT})
 
             foreach(OBJ ${OBJECTS})
                 # 3. Generate the object register macros
-                list(APPEND REGISTER_SERVICES "fwServicesRegisterObjectMacro( ${SERVICE}, ${OBJ} )\n")
+                list(APPEND REGISTER_SERVICES "SIGHT_REGISTER_SERVICE_OBJECT( ${SERVICE}, ${OBJ} )\n")
 
                 # 4. Generate the include for the data objects
                 set(OBJECT_INCLUDE ${OBJ})

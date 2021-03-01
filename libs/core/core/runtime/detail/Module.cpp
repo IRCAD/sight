@@ -67,7 +67,7 @@ Module::Module( const std::filesystem::path& location,
     m_class( c )
 {
     // Post-condition.
-    SLM_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
+    SIGHT_ASSERT( "Invalid module location.",  m_resourcesLocation.is_absolute() == true );
 
     static const std::regex expr("share/.*");
     const auto strLocation = std::regex_replace(location.string(), expr, MODULE_LIB_PREFIX);
@@ -298,7 +298,7 @@ void Module::loadLibraries()
     }
 
     // Pre-condition
-    SLM_ASSERT("Module is already loaded", m_loadingModule == nullptr );
+    SIGHT_ASSERT("Module is already loaded", m_loadingModule == nullptr );
 
     // References the current module as the loading module.
     m_loadingModule = shared_from_this();
@@ -319,7 +319,7 @@ void Module::loadLibraries()
             message += ". ";
             message += e.what();
 
-            SLM_ERROR(message);
+            SIGHT_ERROR(message);
             m_loadingModule.reset();
 
             throw RuntimeException( message );
@@ -376,7 +376,7 @@ void Module::loadRequirements()
 
 void Module::start()
 {
-    SLM_ASSERT("Module " + getModuleStr(m_identifier) + " already started.", !m_started );
+    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " already started.", !m_started );
     if( m_enabled == false )
     {
         throw RuntimeException( getModuleStr(m_identifier) + ": module is not enabled." );
@@ -395,7 +395,7 @@ void Module::start()
             throw RuntimeException( getModuleStr(m_identifier) +
                                     ": start plugin error (after load requirement) " + e.what() );
         }
-        SLM_INFO("Loaded module '" + m_identifier + "' successfully");
+        SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
     }
 }
 
@@ -403,8 +403,8 @@ void Module::start()
 
 void Module::startPlugin()
 {
-    SLM_ASSERT("Module " + getModuleStr(m_identifier) + " plugin is already started.",
-               !m_started );
+    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " plugin is already started.",
+                 !m_started );
     // Retrieves the type of the plugin.
     std::string pluginType( getClass() );
 
@@ -458,9 +458,9 @@ void Module::startPlugin()
 
 void Module::stop()
 {
-    SLM_ASSERT("Module "+ getModuleStr(m_identifier) + " not started.", m_started );
-    SLM_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an intance.", m_plugin != nullptr );
-    SLM_ASSERT("Module " + getModuleStr(m_identifier) + " not uninitialized.", !m_initialized );
+    SIGHT_ASSERT("Module "+ getModuleStr(m_identifier) + " not started.", m_started );
+    SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an intance.", m_plugin != nullptr );
+    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not uninitialized.", !m_initialized );
 
     try
     {
@@ -491,8 +491,8 @@ void Module::stop()
 //------------------------------------------------------------------------------
 void Module::initialize()
 {
-    SLM_ASSERT("Module '" + getModuleStr(m_identifier) + "' not started.", m_started );
-    SLM_ASSERT("Module '"+ getModuleStr(m_identifier) + "' already initialized.", !m_initialized );
+    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' not started.", m_started );
+    SIGHT_ASSERT("Module '"+ getModuleStr(m_identifier) + "' already initialized.", !m_initialized );
     try
     {
         m_initialized = true;
@@ -508,9 +508,9 @@ void Module::initialize()
 
 void Module::uninitialize()
 {
-    SLM_ASSERT("Module '"+ getModuleStr(m_identifier) + "' has not been started.",
-               m_plugin != nullptr);
-    SLM_ASSERT("Module '"+ getModuleStr(m_identifier) + "' not initialized.", m_initialized );
+    SIGHT_ASSERT("Module '"+ getModuleStr(m_identifier) + "' has not been started.",
+                 m_plugin != nullptr);
+    SIGHT_ASSERT("Module '"+ getModuleStr(m_identifier) + "' not initialized.", m_initialized );
     try
     {
         m_plugin->uninitialize();

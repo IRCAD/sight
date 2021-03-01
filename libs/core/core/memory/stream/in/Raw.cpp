@@ -37,8 +37,8 @@ namespace in
 
 SPTR(std::istream) Raw::get()
 {
-    FW_RAISE_IF("file "<< m_path.string() << " does not exist anymore or has been moved.",
-                !std::filesystem::exists(m_path));
+    SIGHT_THROW_IF("file "<< m_path.string() << " does not exist anymore or has been moved.",
+                   !std::filesystem::exists(m_path));
 
     SPTR(std::ifstream) fs
         = std::make_shared< std::ifstream>(m_path.string(), std::ios::in|std::ios::binary);

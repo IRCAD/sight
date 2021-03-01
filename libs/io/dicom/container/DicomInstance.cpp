@@ -80,7 +80,7 @@ DicomInstance::DicomInstance(const data::DicomSeries::csptr& dicomSeries,
     m_seriesInstanceUID(dicomSeries->getInstanceUID()),
     m_logger(logger)
 {
-    SLM_ASSERT("DicomSeries is not instantiated", dicomSeries);
+    SIGHT_ASSERT("DicomSeries is not instantiated", dicomSeries);
 
     // Get SOPClassUID
     data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
@@ -193,8 +193,8 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
         reader.SetStream(*is);
         if(!reader.ReadSelectedTags(selectedtags))
         {
-            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                     "(slice: '" << item.first << "')");
+            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                        "(slice: '" << item.first << "')");
         }
         const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
         // SOP Instance UID
@@ -210,7 +210,7 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
     else if(frameOfReferenceUIDContainer.size() > 1)
     {
         const std::string msg = "The selected DICOM series contain several Frame of Reference.";
-        SLM_WARN_IF(msg, !m_logger);
+        SIGHT_WARN_IF(msg, !m_logger);
         if(m_logger)
         {
             m_logger->critical(msg);
@@ -219,7 +219,7 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
     else
     {
         const std::string msg = "No Frame of Reference has been found in the selected series.";
-        SLM_WARN_IF(msg, !m_logger);
+        SIGHT_WARN_IF(msg, !m_logger);
         if(m_logger)
         {
             m_logger->critical(msg);

@@ -34,12 +34,14 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+#include <data/Integer.hpp>
 
 #include <service/macros.hpp>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -48,13 +50,10 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 #include <functional>
 
 namespace sight::module::ui::qt::image
 {
-
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -108,7 +107,7 @@ void SliceIndexPositionEditor::starting()
     layout->setContentsMargins(0, 0, 0, 0);
 
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
     m_helper.updateImageInfos(image);
     this->updateSliceTypeFromImg(m_helper.getOrientation());
 
@@ -134,8 +133,8 @@ void SliceIndexPositionEditor::configuring()
     if( this->m_configuration->size() > 0 )
     {
         std::vector< core::runtime::ConfigurationElement::sptr > slideIndexCfg = m_configuration->find("sliceIndex");
-        SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1 );
-        SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty() );
+        SIGHT_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1 );
+        SIGHT_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty() );
         std::string orientation = (*slideIndexCfg.begin())->getValue();
         ::boost::algorithm::trim(orientation);
         ::boost::algorithm::to_lower(orientation);
@@ -154,7 +153,7 @@ void SliceIndexPositionEditor::configuring()
         }
         else
         {
-            SLM_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
+            SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
         }
     }
 }
@@ -164,7 +163,7 @@ void SliceIndexPositionEditor::configuring()
 void SliceIndexPositionEditor::updating()
 {
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
@@ -187,7 +186,7 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
     m_helper.setSliceIndex(indexes);
 
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     data::Integer::sptr indexesPtr[3];
     m_helper.getSliceIndex(indexesPtr);
@@ -223,13 +222,13 @@ void SliceIndexPositionEditor::info( std::ostream& )
 void SliceIndexPositionEditor::updateSliceIndexFromImg()
 {
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     if (data::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
-        SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+        SIGHT_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
         const int index = static_cast<int>(image->getField< data::Integer >( fieldID )->value());
 
         // Update QSlider
@@ -251,7 +250,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
     m_sliceSelectorPanel->setTypeSelection( static_cast< int >( type ) );
 
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     this->updateSliceIndexFromImg();
 }
@@ -261,10 +260,10 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(Orientation type )
 void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 {
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_helper.getOrientation()];
-    SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
+    SIGHT_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< data::Integer >( fieldID )->value() = index;
 
     auto sig = image->signal< data::Image::SliceIndexModifiedSignalType >(
@@ -281,9 +280,9 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
 void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    SLM_ASSERT("Bad slice type "<<type, type == data::helper::MedicalImage::X_AXIS ||
-               type == data::helper::MedicalImage::Y_AXIS ||
-               type == data::helper::MedicalImage::Z_AXIS );
+    SIGHT_ASSERT("Bad slice type "<<type, type == data::helper::MedicalImage::X_AXIS ||
+                 type == data::helper::MedicalImage::Y_AXIS ||
+                 type == data::helper::MedicalImage::Z_AXIS );
 
     const int oldType = static_cast< int > (m_helper.getOrientation());
     // Change slice type
@@ -291,7 +290,7 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 
     // Fire the signal
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     auto sig = image->signal< data::Image::SliceTypeModifiedSignalType >(
         data::Image::s_SLICE_TYPE_MODIFIED_SIG);

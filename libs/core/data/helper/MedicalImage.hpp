@@ -42,7 +42,7 @@ class DATA_CLASS_API MedicalImage
 
 public:
 
-    fwCoreClassMacro(MedicalImage)
+    SIGHT_DECLARE_CLASS(MedicalImage)
 
     /// Image orientation
     typedef enum

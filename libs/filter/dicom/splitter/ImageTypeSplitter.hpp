@@ -36,7 +36,7 @@ namespace splitter
 class FILTER_DICOM_CLASS_API ImageTypeSplitter : public filter::dicom::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassMacro(ImageTypeSplitter, ISplitter, filter::dicom::factory::New< ImageTypeSplitter >)
+    SIGHT_DECLARE_CLASS(ImageTypeSplitter, ISplitter, filter::dicom::factory::New< ImageTypeSplitter >)
 
     /// Constructor
     FILTER_DICOM_API ImageTypeSplitter(filter::dicom::IFilter::Key key);

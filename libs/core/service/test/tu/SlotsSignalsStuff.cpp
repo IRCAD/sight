@@ -31,26 +31,26 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/registry/macros.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/Factory.hpp>
+#include <service/macros.hpp>
 
 namespace sight::service
 {
 namespace ut
 {
 
-fwDataRegisterMacro(Buffer);
+SIGHT_REGISTER_DATA(Buffer);
 
-fwServicesRegisterMacro( ::sight::service::ut::IBasicTest, ::sight::service::ut::SBasicTest )
-fwServicesRegisterObjectMacro(  ::sight::service::ut::SBasicTest, service::ut::Buffer );
-fwServicesRegisterMacro( ::sight::service::ut::IBasicTest, ::sight::service::ut::SReaderTest )
-fwServicesRegisterObjectMacro(  ::sight::service::ut::SReaderTest, service::ut::Buffer );
-fwServicesRegisterMacro( ::sight::service::ut::IBasicTest, ::sight::service::ut::SShowTest )
-fwServicesRegisterObjectMacro(  ::sight::service::ut::SShowTest, service::ut::Buffer );
-fwServicesRegisterMacro( ::sight::service::ut::IBasicTest, ::sight::service::ut::SReader2Test )
-fwServicesRegisterObjectMacro(  ::sight::service::ut::SReader2Test, service::ut::Buffer );
-fwServicesRegisterMacro( ::sight::service::ut::IBasicTest, ::sight::service::ut::SShow2Test )
-fwServicesRegisterObjectMacro(  ::sight::service::ut::SShow2Test, service::ut::Buffer );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SBasicTest )
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SBasicTest, service::ut::Buffer );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SReaderTest )
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SReaderTest, service::ut::Buffer );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SShowTest )
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SShowTest, service::ut::Buffer );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SReader2Test )
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SReader2Test, service::ut::Buffer );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::IBasicTest, ::sight::service::ut::SShow2Test )
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::SShow2Test, service::ut::Buffer );
 
 const service::IService::KeyType IBasicTest::s_BUFFER_INOUT = "buffer";
 

@@ -53,7 +53,7 @@ class MODULE_IO_ITK_CLASS_API SImageSeriesWriter : public sight::io::base::servi
 {
 
 public:
-    fwCoreServiceMacro(SImageSeriesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SImageSeriesWriter, sight::io::base::service::IWriter)
 
     MODULE_IO_ITK_API SImageSeriesWriter() noexcept;
 

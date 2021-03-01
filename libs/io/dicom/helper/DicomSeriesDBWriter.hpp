@@ -57,9 +57,9 @@ class IO_DICOM_CLASS_API DicomSeriesDBWriter :
 {
 public:
 
-    fwCoreClassMacro(DicomSeriesDBWriter, io::base::writer::GenericObjectWriter< data::SeriesDB>,
-                     io::base::writer::factory::New< DicomSeriesDBWriter >);
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(DicomSeriesDBWriter, io::base::writer::GenericObjectWriter< data::SeriesDB>,
+                        io::base::writer::factory::New< DicomSeriesDBWriter >);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @brief Construtor/Destructor

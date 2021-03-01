@@ -89,7 +89,7 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(
             }
             catch(filter::dicom::exceptions::FilterFailure e)
             {
-                SLM_WARN("Unable to apply the filter \"" << filter->getName() << "\".");
+                SIGHT_WARN("Unable to apply the filter \"" << filter->getName() << "\".");
                 filtered.push_back(s);
             }
         }

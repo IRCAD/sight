@@ -83,8 +83,8 @@ void processDirInformation(const std::filesystem::path& dicomdir,
                            double& p,
                            double& ptotal)
 {
-    SLM_ASSERT("You must specify a valid dicomdir.", std::filesystem::exists(dicomdir)
-               && !std::filesystem::is_directory(dicomdir));
+    SIGHT_ASSERT("You must specify a valid dicomdir.", std::filesystem::exists(dicomdir)
+                 && !std::filesystem::is_directory(dicomdir));
 
     // Try to read the file
     ::gdcm::Reader reader;
@@ -102,7 +102,7 @@ void processDirInformation(const std::filesystem::path& dicomdir,
     mediaStorage.SetFromFile(gdcmFile);
     if(mediaStorage != ::gdcm::MediaStorage::MediaStorageDirectoryStorage )
     {
-        SLM_ERROR("This file is not a DICOMDIR");
+        SIGHT_ERROR("This file is not a DICOMDIR");
         return;
     }
 
@@ -113,7 +113,7 @@ void processDirInformation(const std::filesystem::path& dicomdir,
 
     if (mediaStorageSOP != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
     {
-        SLM_ERROR("This file is not a DICOMDIR");
+        SIGHT_ERROR("This file is not a DICOMDIR");
         return;
     }
 
@@ -148,11 +148,11 @@ void processDirInformation(const std::filesystem::path& dicomdir,
                     std::string file = io::dicom::helper::DicomDataReader::getTagValue< 0x0004, 0x1500 >(
                         item.GetNestedDataSet());
                     std::replace( file.begin(), file.end(), '\\', '/');
-                    SLM_WARN_IF("Dicom instance doesn't have a referenced file id.", file.empty());
+                    SIGHT_WARN_IF("Dicom instance doesn't have a referenced file id.", file.empty());
 
                     const std::filesystem::path path = rootDicomDirPath / file;
-                    SLM_WARN_IF("Unable to find path :" << path, !std::filesystem::exists(path));
-                    SLM_WARN_IF("Dicomdir is badly formatted. Skipping path :" << path, !currentSeries);
+                    SIGHT_WARN_IF("Unable to find path :" << path, !std::filesystem::exists(path));
+                    SIGHT_WARN_IF("Dicomdir is badly formatted. Skipping path :" << path, !currentSeries);
 
                     if(!currentSeries || file.empty())
                     {
@@ -219,8 +219,8 @@ void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
                                    std::function< void(std::uint64_t) > progress,
                                    std::function< bool() > cancel)
 {
-    SLM_ASSERT("You must specify a valid dicomdir.", std::filesystem::exists(dicomdir)
-               && !std::filesystem::is_directory(dicomdir));
+    SIGHT_ASSERT("You must specify a valid dicomdir.", std::filesystem::exists(dicomdir)
+                 && !std::filesystem::is_directory(dicomdir));
 
     // Try to read the file
     ::gdcm::Reader reader;
@@ -238,7 +238,7 @@ void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
     mediaStorage.SetFromFile(gdcmFile);
     if(mediaStorage != ::gdcm::MediaStorage::MediaStorageDirectoryStorage )
     {
-        SLM_ERROR("This file is not a DICOMDIR");
+        SIGHT_ERROR("This file is not a DICOMDIR");
         return;
     }
 
@@ -249,7 +249,7 @@ void DicomDir::retrieveDicomSeries(const std::filesystem::path& dicomdir,
 
     if (mediaStorageSOP != ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MediaStorageDirectoryStorage))
     {
-        SLM_ERROR("This file is not a DICOMDIR");
+        SIGHT_ERROR("This file is not a DICOMDIR");
         return;
     }
 

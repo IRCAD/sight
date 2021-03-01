@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SImageReader, sight::io::base::service::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 

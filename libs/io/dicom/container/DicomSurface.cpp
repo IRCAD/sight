@@ -56,8 +56,8 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
 {
     // Get mesh
     data::Mesh::csptr mesh = reconstruction->getMesh();
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Can't save this mesh. It must contain only triangles !"),
-                          !geometry::data::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Can't save this mesh. It must contain only triangles !"),
+                             !geometry::data::Mesh::hasUniqueCellType(mesh, data::Mesh::CellType::TRIANGLE));
     auto itr       = mesh->begin< data::iterator::ConstPointIterator >();
     const auto end = mesh->end< data::iterator::ConstPointIterator >();
     // Coordinates

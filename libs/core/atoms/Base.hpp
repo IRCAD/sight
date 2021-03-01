@@ -71,8 +71,8 @@ public:
         BLOB
     } AtomType;
 
-    fwCoreClassMacro(Base, core::BaseObject)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(Base, core::BaseObject)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     virtual ~Base()
     {

@@ -31,7 +31,7 @@ namespace reader
 namespace registry
 {
 
-#define fwDataIOReaderRegisterMacro( classname )                                  \
+#define SIGHT_REGISTER_IO_READER( classname )                                  \
     static sight::io::base::reader::IObjectReader::Registry< classname > s__factory__record__ ## __LINE__;
 
 } // end namespace registry

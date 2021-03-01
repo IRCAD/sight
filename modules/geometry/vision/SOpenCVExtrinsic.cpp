@@ -37,16 +37,15 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 
+#include <io/opencv/Matrix.hpp>
+
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-#include <io/opencv/Matrix.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
-
-#include <ui/base/preferences/helper.hpp>
-
 
 namespace sight::module::geometry::vision
 {
@@ -85,25 +84,25 @@ void SOpenCVExtrinsic::configuring()
     if(cfgIdx)
     {
         std::string idxStr = cfgIdx->getValue();
-        SLM_ASSERT("'camIndex' is empty.", !idxStr.empty());
+        SIGHT_ASSERT("'camIndex' is empty.", !idxStr.empty());
         m_camIndex = ::boost::lexical_cast<size_t>(idxStr);
     }
 
     core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SLM_ASSERT("Tag 'board' not found.", cfgBoard);
+    SIGHT_ASSERT("Tag 'board' not found.", cfgBoard);
 
-    SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
+    SIGHT_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
     m_widthKey = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
+    SIGHT_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
-    SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
+    SIGHT_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
     m_heightKey = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
+    SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
     if( cfgBoard->hasAttribute("squareSize"))
     {
         m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
-        SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
+        SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
     }
 }
 
@@ -134,16 +133,16 @@ void SOpenCVExtrinsic::updating()
 {
     data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >(s_CAMERASERIES_INOUT);
 
-    SLM_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
-               m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
+    SIGHT_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
+                 m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
 
     data::CalibrationInfo::csptr calInfo1 = this->getInput< data::CalibrationInfo>(s_CALIBINFO1_INPUT);
     data::CalibrationInfo::csptr calInfo2 = this->getInput< data::CalibrationInfo>(s_CALIBINFO2_INPUT);
 
-    SLM_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
-    SLM_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
+    SIGHT_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
+    SIGHT_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
 
-    SLM_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
+    SIGHT_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
     if(!calInfo1->getPointListContainer().empty())
     {
         std::vector<std::vector< ::cv::Point3f > > objectPoints;
@@ -168,7 +167,7 @@ void SOpenCVExtrinsic::updating()
             data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             data::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
 
-            SLM_ERROR_IF("The two calibrationInfo do not have the same size", ptlists1.size() != ptlists2.size());
+            SIGHT_ERROR_IF("The two calibrationInfo do not have the same size", ptlists1.size() != ptlists2.size());
 
             data::CalibrationInfo::PointListContainerType::iterator itr1    = ptlists1.begin();
             data::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
@@ -184,7 +183,7 @@ void SOpenCVExtrinsic::updating()
 
                 for(data::Point::csptr point : ptList1->getPoints())
                 {
-                    SLM_ASSERT("point is null", point);
+                    SIGHT_ASSERT("point is null", point);
                     imgPoint1.push_back(::cv::Point2f(
                                             static_cast<float>(point->getCoord()[0]),
                                             static_cast<float>(point->getCoord()[1])));
@@ -192,7 +191,7 @@ void SOpenCVExtrinsic::updating()
 
                 for(data::Point::csptr point : ptList2->getPoints())
                 {
-                    SLM_ASSERT("point is null", point);
+                    SIGHT_ASSERT("point is null", point);
                     imgPoint2.push_back(::cv::Point2f(
                                             static_cast<float>(point->getCoord()[0]),
                                             static_cast<float>(point->getCoord()[1])));

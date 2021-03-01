@@ -40,7 +40,7 @@ class CORE_CLASS_API UUID
 {
 public:
 
-    fwCoreClassMacro(UUID)
+    SIGHT_DECLARE_CLASS(UUID)
 
     //------------------------------------------------------------------------------
 

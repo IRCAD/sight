@@ -29,12 +29,12 @@
 
 #include <service/helper/ConfigLauncher.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -87,7 +87,7 @@ class MODULE_UI_QT_CLASS_API SCameraConfigLauncher : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SCameraConfigLauncher, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCameraConfigLauncher, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SCameraConfigLauncher() noexcept;

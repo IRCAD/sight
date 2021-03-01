@@ -80,19 +80,19 @@ void IAction::initialize()
 {
     m_registry = ui::base::registry::Action::New(this->getID());
 
-    SLM_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", !m_configuration->hasAttribute(
-                   "name"));
-    SLM_ASSERT("Depreciated tag <shortcut> in "<< this->getID() << " configuration.",
-               !m_configuration->hasAttribute("shortcut"));
-    SLM_ASSERT("Depreciated tag <enable> in "<< this->getID() << " configuration.",
-               !m_configuration->hasAttribute("enable"));
-    SLM_ASSERT(
+    SIGHT_ASSERT("Depreciated tag <name> in "<< this->getID() << " configuration.", !m_configuration->hasAttribute(
+                     "name"));
+    SIGHT_ASSERT("Depreciated tag <shortcut> in "<< this->getID() << " configuration.",
+                 !m_configuration->hasAttribute("shortcut"));
+    SIGHT_ASSERT("Depreciated tag <enable> in "<< this->getID() << " configuration.",
+                 !m_configuration->hasAttribute("enable"));
+    SIGHT_ASSERT(
         "Depreciated tag <specialAction> in "<< this->getID() << " configuration.",
             !m_configuration->hasAttribute("specialAction"));
-    SLM_ASSERT("Depreciated tag <style> in "<< this->getID() << " configuration.",
-               !m_configuration->hasAttribute("style"));
-    SLM_ASSERT("Depreciated tag <state> in "<< this->getID() << " configuration.",
-               !m_configuration->hasAttribute("state"));
+    SIGHT_ASSERT("Depreciated tag <style> in "<< this->getID() << " configuration.",
+                 !m_configuration->hasAttribute("style"));
+    SIGHT_ASSERT("Depreciated tag <state> in "<< this->getID() << " configuration.",
+                 !m_configuration->hasAttribute("state"));
 
     core::runtime::ConfigurationElementContainer::Iterator iter;
     for( iter = m_configuration->begin(); iter != m_configuration->end(); ++iter )
@@ -104,32 +104,32 @@ void IAction::initialize()
             if( stateCfg->hasAttribute("inverse") )
             {
                 std::string invertState = stateCfg->getExistingAttributeValue("inverse");
-                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'inverse': must be 'true' or 'false'",
-                           (invertState == "true") || (invertState == "false"));
+                SIGHT_ASSERT("["+this->getID()+"'] Wrong attribute value for 'inverse': must be 'true' or 'false'",
+                             (invertState == "true") || (invertState == "false"));
                 m_isInverted = (invertState == "true");
             }
 
             if( stateCfg->hasAttribute("active") )
             {
                 std::string isActive = stateCfg->getExistingAttributeValue("active");
-                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'active': must be 'true' or 'false'",
-                           (isActive == "true") || (isActive == "false"));
+                SIGHT_ASSERT("["+this->getID()+"'] Wrong attribute value for 'active': must be 'true' or 'false'",
+                             (isActive == "true") || (isActive == "false"));
                 m_isActive = (isActive == "true");
             }
 
             if( stateCfg->hasAttribute("executable") )
             {
                 std::string isExecutable = stateCfg->getExistingAttributeValue("executable");
-                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'executable': must be 'true' or 'false'",
-                           (isExecutable == "true") || (isExecutable == "false"));
+                SIGHT_ASSERT("["+this->getID()+"'] Wrong attribute value for 'executable': must be 'true' or 'false'",
+                             (isExecutable == "true") || (isExecutable == "false"));
                 m_isExecutable = (isExecutable == "true");
             }
 
             if( stateCfg->hasAttribute("visible") )
             {
                 std::string isVisible = stateCfg->getExistingAttributeValue("visible");
-                SLM_ASSERT("["+this->getID()+"'] Wrong attribute value for 'visible': must be 'true' or 'false'",
-                           (isVisible == "true") || (isVisible == "false"));
+                SIGHT_ASSERT("["+this->getID()+"'] Wrong attribute value for 'visible': must be 'true' or 'false'",
+                             (isVisible == "true") || (isVisible == "false"));
                 m_isVisible = (isVisible == "true");
             }
         }
@@ -138,10 +138,11 @@ void IAction::initialize()
         {
             ConfigurationType cfg = *iter;
 
-            SLM_ASSERT("["+this->getID()+"'] Missing attribute 'value' for 'confirmation'", cfg->hasAttribute("value"));
+            SIGHT_ASSERT("["+this->getID()+"'] Missing attribute 'value' for 'confirmation'",
+                         cfg->hasAttribute("value"));
             std::string confirm = cfg->getExistingAttributeValue("value");
-            SLM_ASSERT("["+this->getID()+"'] Wrong attribute value  for 'confirmation': must be 'true' or 'false'",
-                       (confirm == "true") || (confirm == "false"));
+            SIGHT_ASSERT("["+this->getID()+"'] Wrong attribute value  for 'confirmation': must be 'true' or 'false'",
+                         (confirm == "true") || (confirm == "false"));
             m_confirmAction = (confirm == "true");
 
             if( cfg->hasAttribute("message") )
@@ -321,7 +322,7 @@ bool IAction::confirmAction()
         }
         else if(!m_defaultButton.empty())
         {
-            SLM_WARN("unknown button: " + m_defaultButton);
+            SIGHT_WARN("unknown button: " + m_defaultButton);
         }
 
         dialog.setIcon( ui::base::dialog::IMessageDialog::QUESTION );

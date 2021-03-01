@@ -51,10 +51,10 @@ class VtiImageReader : public io::base::reader::GenericObjectReader< data::Image
 
 public:
 
-    fwCoreClassMacro(VtiImageReader, io::base::reader::GenericObjectReader< data::Image >,
-                     io::base::reader::factory::New< VtiImageReader >);
+    SIGHT_DECLARE_CLASS(VtiImageReader, io::base::reader::GenericObjectReader< data::Image >,
+                        io::base::reader::factory::New< VtiImageReader >);
 
-    fwCoreAllowSharedFromThis();
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
     IO_VTK_API VtiImageReader(io::base::reader::IObjectReader::Key key);

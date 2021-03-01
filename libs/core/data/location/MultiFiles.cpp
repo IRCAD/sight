@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::location::MultiFiles );
+SIGHT_REGISTER_DATA( ::sight::data::location::MultiFiles );
 
 namespace sight::data
 {
@@ -63,12 +63,12 @@ ILocation::VectPathType MultiFiles::getPaths()
 void MultiFiles::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     MultiFiles::csptr other = MultiFiles::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    SLM_FATAL("Not implemented." );
+    SIGHT_FATAL("Not implemented." );
 }
 
 //------------------------------------------------------------------------------

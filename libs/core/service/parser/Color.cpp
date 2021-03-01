@@ -40,16 +40,16 @@ static const std::string s_VALUE_CONFIG = "value";
 void Color::createConfig(core::tools::Object::sptr _obj)
 {
     const data::Color::sptr color = data::Color::dynamicCast(_obj);
-    SLM_ASSERT("Color does not exist.", color);
+    SIGHT_ASSERT("Color does not exist.", color);
 
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement(s_VALUE_CONFIG);
-    SLM_ASSERT("Color config must contain at most one tag <value>...</value>", configs.size() <= 1);
+    SIGHT_ASSERT("Color config must contain at most one tag <value>...</value>", configs.size() <= 1);
 
     if(configs.size() == 1)
     {
         const core::runtime::ConfigurationElement::csptr config = *configs.begin();
         const std::string hexaColor                             = config->getValue();
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Color string should start with '#' and followed by 6 or 8 "
             "hexadecimal digits. Given color: " << hexaColor,
                 hexaColor[0] == '#'

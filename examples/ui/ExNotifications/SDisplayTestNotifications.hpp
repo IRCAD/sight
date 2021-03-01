@@ -47,7 +47,7 @@ class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public ::sight
 {
 
 public:
-    fwCoreServiceMacro(SDisplayTestNotifications, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, ::sight::ui::base::IAction)
 
     /**
      * @name Constructor/Destructor

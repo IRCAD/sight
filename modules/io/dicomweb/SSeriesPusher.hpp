@@ -27,9 +27,9 @@
 #include <core/com/Slot.hpp>
 #include <core/memory/BufferObject.hpp>
 
-#include <service/IController.hpp>
-
 #include <io/http/ClientQt.hpp>
+
+#include <service/IController.hpp>
 
 #include <vector>
 
@@ -62,7 +62,7 @@ class MODULE_IO_DICOMWEB_CLASS_API SSeriesPusher : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher, ::sight::service::IController )
+    SIGHT_DECLARE_SERVICE(SSeriesPusher, ::sight::service::IController )
 
     typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 

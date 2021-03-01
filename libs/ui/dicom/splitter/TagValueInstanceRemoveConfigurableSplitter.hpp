@@ -40,9 +40,9 @@ class UI_DICOM_CLASS_API TagValueInstanceRemoveConfigurableSplitter :
     public filter::dicom::splitter::TagValueInstanceRemoveSplitter
 {
 public:
-    fwCoreClassMacro(TagValueInstanceRemoveConfigurableSplitter,
-                     filter::dicom::splitter::TagValueInstanceRemoveSplitter,
-                     filter::dicom::factory::New< TagValueInstanceRemoveConfigurableSplitter >);
+    SIGHT_DECLARE_CLASS(TagValueInstanceRemoveConfigurableSplitter,
+                        filter::dicom::splitter::TagValueInstanceRemoveSplitter,
+                        filter::dicom::factory::New< TagValueInstanceRemoveConfigurableSplitter >);
 
     /// Constructor
     UI_DICOM_API TagValueInstanceRemoveConfigurableSplitter(filter::dicom::IFilter::Key key);

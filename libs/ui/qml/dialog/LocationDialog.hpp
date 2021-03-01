@@ -26,11 +26,11 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/dialog/ILocationDialog.hpp>
+
 #include <QObject>
 #include <QString>
 #include <QUrl>
-
-#include <ui/base/dialog/ILocationDialog.hpp>
 
 namespace sight::ui::qml
 {
@@ -48,7 +48,7 @@ Q_PROPERTY(QString filterSelected MEMBER m_filterSelected)
 
 public:
 
-    fwCoreClassMacro(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New< LocationDialog >)
+    SIGHT_DECLARE_CLASS(LocationDialog, ui::base::dialog::ILocationDialog, ui::base::factory::New< LocationDialog >)
 
     UI_QML_API LocationDialog(ui::base::GuiBaseObject::Key key);
 

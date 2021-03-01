@@ -25,7 +25,7 @@
 #include "data/config.hpp"
 #include "data/Object.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(TransferFunction))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(TransferFunction))
 
 namespace sight::data
 {
@@ -40,10 +40,10 @@ class DATA_CLASS_API TransferFunction : public Object
 
 public:
 
-    fwCoreClassMacro(TransferFunction, data::Object, data::factory::New< TransferFunction >)
+    SIGHT_DECLARE_CLASS(TransferFunction, data::Object, data::factory::New< TransferFunction >)
 
     /// Defines the deep and shallow copies.
-    fwCampMakeFriendDataMacro((sight)(data)(TransferFunction))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(TransferFunction))
 
     /// Defines color structure for TF.
     struct TFColor

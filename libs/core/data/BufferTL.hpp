@@ -29,7 +29,7 @@
 #include <boost/array.hpp>
 #include <boost/pool/poolfwd.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(BufferTL));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(BufferTL));
 
 namespace sight::data
 {
@@ -41,7 +41,7 @@ class DATA_CLASS_API BufferTL : public TimeLine
 {
 
 public:
-    fwCoreClassMacro(BufferTL, data::Object)
+    SIGHT_DECLARE_CLASS(BufferTL, data::Object)
 
     typedef core::HiResClock::HiResClockType TimestampType;
     typedef std::map< TimestampType, SPTR(data::timeline::Buffer) > TimelineType;

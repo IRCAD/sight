@@ -43,9 +43,9 @@ class JpgImageWriter :  public io::base::writer::GenericObjectWriter< data::Imag
 
 public:
 
-    fwCoreClassMacro(JpgImageWriter, io::base::writer::GenericObjectWriter< data::Image>,
-                     io::base::writer::factory::New< JpgImageWriter >);
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(JpgImageWriter, io::base::writer::GenericObjectWriter< data::Image>,
+                        io::base::writer::factory::New< JpgImageWriter >);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_ITK_API JpgImageWriter(io::base::writer::IObjectWriter::Key key);
 

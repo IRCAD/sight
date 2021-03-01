@@ -38,7 +38,6 @@ namespace adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-
 const core::com::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
 
 //---------------------------------------------------------------------------------------------------------------
@@ -69,10 +68,10 @@ void SGrid2D::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'xMin' is missing", config.count("xMin"));
-    SLM_ASSERT("Attribute 'xMax' is missing", config.count("xMax"));
-    SLM_ASSERT("Attribute 'yMin' is missing", config.count("yMin"));
-    SLM_ASSERT("Attribute 'yMax' is missing", config.count("yMax"));
+    SIGHT_ASSERT("Attribute 'xMin' is missing", config.count("xMin"));
+    SIGHT_ASSERT("Attribute 'xMax' is missing", config.count("xMax"));
+    SIGHT_ASSERT("Attribute 'yMin' is missing", config.count("yMin"));
+    SIGHT_ASSERT("Attribute 'yMax' is missing", config.count("yMax"));
 
     // Set the x/y min/max values
     m_xMin = config.get<float>("xMin");
@@ -102,8 +101,8 @@ void SGrid2D::configuring()
 
 void SGrid2D::draw()
 {
-    SLM_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.f);
-    SLM_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.f);
+    SIGHT_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.f);
+    SIGHT_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.f);
 
     // Remove all lines from the scene
     for (const auto& line : m_lines)

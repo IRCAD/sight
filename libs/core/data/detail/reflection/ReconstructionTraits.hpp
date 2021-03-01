@@ -27,5 +27,5 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampDeclareAccessor((sight)(data)(ReconstructionTraits), (sight)(data)(StructureTraits));
-fwCampDeclareAccessor((sight)(data)(ReconstructionTraits), (sight)(data)(Node));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ReconstructionTraits), (sight)(data)(StructureTraits));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ReconstructionTraits), (sight)(data)(Node));

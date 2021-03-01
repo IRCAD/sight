@@ -74,8 +74,8 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                   const ::cv::Mat& _distCoeffs, const int _flag)
 {
 
-    SLM_ASSERT("There should be the same number of 3d points than 2d points",
-               _objectPoints.size() == _imagePoints.size());
+    SIGHT_ASSERT("There should be the same number of 3d points than 2d points",
+                 _objectPoints.size() == _imagePoints.size());
 
     ::cv::Mat rvec, tvec, R, T;
     T = ::cv::Mat::eye(4, 4, CV_64F);
@@ -169,7 +169,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
     ::ceres::Solver::Summary summary;
     ::ceres::Solve(options, &problem, &summary);
 
-    SLM_DEBUG("Ceres report : "+ summary.FullReport());
+    SIGHT_DEBUG("Ceres report : "+ summary.FullReport());
 
     ::cv::Mat finalRVec = ( ::cv::Mat_<double>(3, 1) <<optimVector[0], optimVector[1], optimVector[2] );
     ::cv::Mat finalTVec = ( ::cv::Mat_<double>(3, 1) <<optimVector[3], optimVector[4], optimVector[5] );
@@ -193,7 +193,7 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
 
     if (nbrMatrices < 4)
     {
-        SLM_WARN("Number of points when computing the tool calibration should be more than 5.");
+        SIGHT_WARN("Number of points when computing the tool calibration should be more than 5.");
         return;
     }
 
@@ -205,7 +205,7 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
         data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
-        SLM_ASSERT("This element of the vector is not a data::Matrix4", m1);
+        SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = m1->getCoefficient(0, 3);
@@ -234,7 +234,7 @@ void calibratePointingTool(const data::Vector::csptr _matricesVector,
     for (size_t i = 0; i < nbrMatrices; ++i)
     {
         data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
-        SLM_ASSERT("This element of the vector is not a data::Matrix4", m1);
+        SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         const geometry::eigen::helper::EigenMatrix pointMatrix =
             geometry::eigen::helper::toEigen(m1->getCoefficients());
         geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);
@@ -363,7 +363,7 @@ data::PointList::sptr detectChessboard(const ::cv::Mat& _img,
 {
     data::PointList::sptr pointlist;
 
-    SLM_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
+    SIGHT_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
     // Ensure that we have a true depth-less 2D image.
     const ::cv::Mat img2d = _img.dims == 3 ? _img.reshape(0, 2, _img.size + 1) : _img;

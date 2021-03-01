@@ -29,19 +29,18 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
 
 static const service::IService::KeyType s_CAMERA_INPUT = "camera";
 static const service::IService::KeyType s_MATRIX_INOUT = "matrix";
-
 
 //------------------------------------------------------------------------------
 SOpticalCenterEditor::SOpticalCenterEditor() noexcept
@@ -122,11 +121,11 @@ void SOpticalCenterEditor::stopping()
 void SOpticalCenterEditor::updating()
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
-    SLM_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
+    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
+    SIGHT_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
 
     data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
-    SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
+    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     // Reset matrix if it isn't correctly formatted.
     if(matrix->getCoefficient(3, 3) == 1.)
@@ -178,9 +177,9 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 void SOpticalCenterEditor::onCxSliderChanged(int value)
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
+    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
     data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
-    SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
+    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
     data::mt::ObjectWriteLock lockMat(matrix);
@@ -201,9 +200,9 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 void SOpticalCenterEditor::onCySliderChanged(int value)
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
+    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
     data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
-    SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
+    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
     data::mt::ObjectWriteLock lockMat(matrix);
@@ -224,9 +223,9 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 void SOpticalCenterEditor::onFySliderChanged(int value)
 {
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
+    SIGHT_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);
     data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(s_MATRIX_INOUT);
-    SLM_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
+    SIGHT_ASSERT("object '" + s_MATRIX_INOUT + "' is not defined.", matrix);
 
     data::mt::ObjectReadLock lockCam(camera);
     data::mt::ObjectWriteLock lockMat(matrix);

@@ -49,7 +49,7 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
     if(_window != m_firstWindow)
     {
         ::Ogre::Root* root = viz::scene3d::Utils::getOgreRoot();
-        SLM_ASSERT("Ogre root not found", root);
+        SIGHT_ASSERT("Ogre root not found", root);
         root->destroyRenderTarget(_window);
     }
 

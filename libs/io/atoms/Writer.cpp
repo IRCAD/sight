@@ -34,11 +34,11 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/tools/UUID.hpp>
 
+#include <io/zip/IWriteArchive.hpp>
+
 #include <boost/lexical_cast.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-
-#include <io/zip/IWriteArchive.hpp>
 
 #include <filesystem>
 
@@ -229,7 +229,7 @@ struct AtomVisitor
             else
             {
                 SPTR(std::istream) is = streamInfo.stream;
-                SLM_ASSERT("no istream", is);
+                SIGHT_ASSERT("no istream", is);
 
                 SPTR(std::ostream) os = m_archive->createFile(bufFile);
                 * os << is->rdbuf();
@@ -284,7 +284,7 @@ struct AtomVisitor
                 pt = this->visit(sight::atoms::Blob::dynamicCast(atom), ptpath);
                 break;
             default:
-                FW_RAISE("Atome type '"<<atom->type()<<"' is not supported");
+                SIGHT_THROW("Atome type '"<<atom->type()<<"' is not supported");
                 break;
         }
         return pt;
@@ -324,7 +324,7 @@ std::filesystem::path Writer::write( const io::zip::IWriteArchive::sptr _archive
             break;
         }
         default:
-            FW_RAISE("Archive format '" << _format << "' is not supported");
+            SIGHT_THROW("Archive format '" << _format << "' is not supported");
             break;
     }
 

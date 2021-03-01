@@ -36,7 +36,7 @@ class CORE_CLASS_API TimeStamp : public BaseObject
 {
 
 public:
-    fwCoreClassMacro(TimeStamp, BaseObject, new TimeStamp)
+    SIGHT_DECLARE_CLASS(TimeStamp, BaseObject, new TimeStamp)
 
     /**
      * @brief Type used in logical typestamp.

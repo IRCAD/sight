@@ -51,10 +51,10 @@ class BitmapImageWriter : public io::base::writer::GenericObjectWriter< data::Im
 
 public:
 
-    fwCoreClassMacro(BitmapImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
-                     io::base::writer::factory::New< BitmapImageWriter >);
+    SIGHT_DECLARE_CLASS(BitmapImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
+                        io::base::writer::factory::New< BitmapImageWriter >);
 
-    fwCoreAllowSharedFromThis();
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
     IO_VTK_API BitmapImageWriter(io::base::writer::IObjectWriter::Key key);

@@ -56,7 +56,7 @@ class MODULE_UI_DICOM_CLASS_API SFilterSelectorDialog : public sight::ui::base::
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectorDialog,  sight::ui::base::IDialogEditor)
+    SIGHT_DECLARE_SERVICE(SFilterSelectorDialog,  sight::ui::base::IDialogEditor)
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

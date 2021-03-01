@@ -47,8 +47,8 @@ struct SharedPtrTypedef
         {
             typename X::sptr::element_type* a = 0;
             X* b                              = 0;
-            FwCoreNotUsedMacro(a);
-            FwCoreNotUsedMacro(b);
+            SIGHT_NOT_USED(a);
+            SIGHT_NOT_USED(b);
             same_type(a, b);
         }
 

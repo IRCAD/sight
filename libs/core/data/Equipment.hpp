@@ -28,7 +28,7 @@
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Equipment))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Equipment))
 
 namespace sight::data
 {
@@ -41,9 +41,9 @@ class DATA_CLASS_API Equipment : public data::Object
 
 public:
 
-    fwCoreClassMacro(Equipment, data::Object, data::factory::New< Equipment >)
+    SIGHT_DECLARE_CLASS(Equipment, data::Object, data::factory::New< Equipment >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Equipment))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Equipment))
 
     /**
      * @brief Creates the equipement.

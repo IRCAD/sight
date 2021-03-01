@@ -24,10 +24,10 @@
 
 #include "ui/qt/config.hpp"
 
+#include <ui/base/dialog/IPulseProgressDialog.hpp>
+
 #include <QPointer>
 #include <QProgressDialog>
-
-#include <ui/base/dialog/IPulseProgressDialog.hpp>
 
 #include <string>
 
@@ -46,8 +46,8 @@ class UI_QT_CLASS_API PulseProgressDialog : public ui::base::dialog::IPulseProgr
 {
 public:
 
-    fwCoreClassMacro(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog,
-                     ui::base::factory::New< PulseProgressDialog >)
+    SIGHT_DECLARE_CLASS(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog,
+                        ui::base::factory::New< PulseProgressDialog >)
 
     UI_QT_API PulseProgressDialog(ui::base::GuiBaseObject::Key key);
 

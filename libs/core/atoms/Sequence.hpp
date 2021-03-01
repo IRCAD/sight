@@ -37,7 +37,7 @@ namespace sight::atoms
 class ATOMS_CLASS_API Sequence : public Base
 {
 public:
-    fwCoreClassMacro(Sequence, atoms::Base, atoms::factory::New< Sequence >)
+    SIGHT_DECLARE_CLASS(Sequence, atoms::Base, atoms::factory::New< Sequence >)
 
     typedef std::vector<Base::sptr> SequenceType;
 

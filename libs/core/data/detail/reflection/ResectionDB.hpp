@@ -27,4 +27,4 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampDeclareAccessor((sight)(data)(ResectionDB), (sight)(data)(Resection));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ResectionDB), (sight)(data)(Resection));

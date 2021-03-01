@@ -26,7 +26,7 @@
 #include "data/location/Folder.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::location::SingleFile );
+SIGHT_REGISTER_DATA( ::sight::data::location::SingleFile );
 
 namespace sight::data
 {
@@ -50,9 +50,9 @@ SingleFile::~SingleFile()
 void SingleFile::shallowCopy(const Object::csptr& _source )
 {
     SingleFile::csptr other = SingleFile::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     this->m_path = other->m_path;
 }
@@ -62,9 +62,9 @@ void SingleFile::shallowCopy(const Object::csptr& _source )
 void SingleFile::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     SingleFile::csptr other = SingleFile::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     this->m_path = other->m_path;
 }

@@ -32,13 +32,13 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Mesh.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/vtk/MeshWriter.hpp>
 #include <io/vtk/ObjMeshWriter.hpp>
 #include <io/vtk/PlyMeshWriter.hpp>
 #include <io/vtk/StlMeshWriter.hpp>
 #include <io/vtk/VtpMeshWriter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -47,7 +47,6 @@
 
 namespace sight::module::io::vtk
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -191,8 +190,8 @@ void SMeshWriter::updating()
         }
         else
         {
-            FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ fileToWrite.extension().string() +
-                                                   "' is not managed by module::io::vtk::SMeshWriter."));
+            SIGHT_THROW_EXCEPTION(core::tools::Failed("Extension '"+ fileToWrite.extension().string() +
+                                                      "' is not managed by module::io::vtk::SMeshWriter."));
         }
 
         m_sigJobCreated->emit(meshWriter->getJob());
@@ -214,7 +213,7 @@ void SMeshWriter::updating()
                 ss.str(),
                 sight::ui::base::dialog::IMessageDialog::WARNING);
             // Raise exception  for superior level
-            FW_RAISE_EXCEPTION(e);
+            SIGHT_THROW_EXCEPTION(e);
         }
         catch (const std::exception& e)
         {

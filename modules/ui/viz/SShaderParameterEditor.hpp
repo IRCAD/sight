@@ -31,10 +31,10 @@
 
 #include <service/IService.hpp>
 
-#include <QVBoxLayout>
-
 #include <ui/base/IEditor.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QVBoxLayout>
 
 namespace sight::module::ui::viz
 {
@@ -57,7 +57,7 @@ class MODULE_UI_VIZ_CLASS_API SShaderParameterEditor : public sight::ui::base::I
 
 public:
 
-    fwCoreServiceMacro(SShaderParameterEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SShaderParameterEditor, sight::ui::base::IEditor)
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;

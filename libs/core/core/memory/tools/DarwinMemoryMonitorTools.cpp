@@ -71,7 +71,7 @@ std::uint64_t DarwinMemoryMonitorTools::estimateFreeMem()
                                   TASK_BASIC_INFO, (task_info_t)&t_info,
                                   &t_info_count))
     {
-        SLM_ASSERT("Failed to retrieve used process memory information", 0);
+        SIGHT_ASSERT("Failed to retrieve used process memory information", 0);
         return 0;
     }
 
@@ -146,7 +146,7 @@ std::uint64_t DarwinMemoryMonitorTools::getUsedSystemMemory()
 
         return used_memory;
     }
-    SLM_ASSERT("Failed to retrieve used system memory information", 0);
+    SIGHT_ASSERT("Failed to retrieve used system memory information", 0);
     return 0;
 }
 
@@ -171,7 +171,7 @@ std::uint64_t DarwinMemoryMonitorTools::getFreeSystemMemory()
             ) * (int64_t)page_size;
         return freeMemory;
     }
-    SLM_ASSERT("Failed to retrieve free system memory information", 0);
+    SIGHT_ASSERT("Failed to retrieve free system memory information", 0);
     return 0;
 }
 
@@ -186,7 +186,7 @@ std::uint64_t DarwinMemoryMonitorTools::getUsedProcessMemory()
                                   TASK_BASIC_INFO, (task_info_t)&t_info,
                                   &t_info_count))
     {
-        SLM_ASSERT("Failed to retrieve used process memory information", 0);
+        SIGHT_ASSERT("Failed to retrieve used process memory information", 0);
         return 0;
     }
 

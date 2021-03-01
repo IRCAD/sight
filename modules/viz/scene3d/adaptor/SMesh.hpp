@@ -114,7 +114,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMesh final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMesh, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMesh, ::sight::viz::scene3d::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMesh() noexcept;
@@ -241,7 +241,7 @@ private:
      * @param _mesh used to create an unique material name.
      */
     module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const data::Mesh::sptr& _mesh,
-                                                                          const std::string& _materialSuffix = "");
+                                                                         const std::string& _materialSuffix = "");
 
     /**
      * @brief Associates a new SMaterial to the managed SMesh.

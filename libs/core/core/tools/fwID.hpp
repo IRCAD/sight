@@ -42,7 +42,7 @@ class CORE_CLASS_API fwID
 {
 public:
 
-    fwCoreClassMacro(fwID)
+    SIGHT_DECLARE_CLASS(fwID)
 
     typedef std::string IDType;
 

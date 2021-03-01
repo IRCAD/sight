@@ -37,7 +37,7 @@ namespace sight::core
 class CORE_CLASS_API HiResTimer : public BaseObject
 {
 public:
-    fwCoreClassMacro(HiResTimer, BaseObject, new HiResTimer)
+    SIGHT_DECLARE_CLASS(HiResTimer, BaseObject, new HiResTimer)
 
     /**
      * @name Constructor/Destructor

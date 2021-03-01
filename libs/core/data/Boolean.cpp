@@ -26,7 +26,7 @@
 #include "data/GenericField.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::Boolean );
+SIGHT_REGISTER_DATA( ::sight::data::Boolean );
 
 namespace sight::data
 {
@@ -48,9 +48,9 @@ Boolean::~Boolean() noexcept
 void Boolean::shallowCopy(const Object::csptr& _source )
 {
     Boolean::csptr other = Boolean::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_value = other->m_value;
 }
@@ -60,9 +60,9 @@ void Boolean::shallowCopy(const Object::csptr& _source )
 void Boolean::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Boolean::csptr other = Boolean::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_value = other->m_value;
 }

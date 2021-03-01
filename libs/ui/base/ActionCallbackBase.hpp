@@ -38,7 +38,7 @@ class UI_BASE_CLASS_API ActionCallbackBase : public ui::base::IMenuItemCallback
 
 public:
 
-    fwCoreClassMacro(ActionCallbackBase, ui::base::IMenuItemCallback)
+    SIGHT_DECLARE_CLASS(ActionCallbackBase, ui::base::IMenuItemCallback)
 
     typedef std::string RegistryKeyType;
 

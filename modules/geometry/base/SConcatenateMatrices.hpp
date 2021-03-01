@@ -64,7 +64,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SConcatenateMatrices : public service::ICon
 
 public:
 
-    fwCoreServiceMacro(SConcatenateMatrices, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SConcatenateMatrices, sight::service::IController)
 
     /**
      * @brief Constructor.

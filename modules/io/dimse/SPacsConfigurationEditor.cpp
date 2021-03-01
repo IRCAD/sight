@@ -27,17 +27,17 @@
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hxx>
 
+#include <io/dimse/exceptions/Base.hpp>
+
 #include <service/macros.hpp>
 
-#include <io/dimse/exceptions/Base.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::io::dimse
 {
@@ -233,7 +233,7 @@ void SPacsConfigurationEditor::pingPACS()
             }
             catch (sight::io::dimse::exceptions::Base& _e)
             {
-                SLM_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
+                SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
             }
 
             if(seriesEnquirer->isConnectedToPacs())
@@ -259,14 +259,14 @@ void SPacsConfigurationEditor::pingPACS()
                 const auto notif = this->signal< service::IService::SuccessNotifiedSignalType >(
                     service::IService::s_SUCCESS_NOTIFIED_SIG);
                 notif->asyncEmit("Ping succeeded!");
-                SLM_INFO("Ping succeeded")
+                SIGHT_INFO("Ping succeeded")
             }
             else
             {
                 const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
                     service::IService::s_FAILURE_NOTIFIED_SIG);
                 notif->asyncEmit("Ping failed!");
-                SLM_INFO("Ping failed")
+                SIGHT_INFO("Ping failed")
             }
         });
 }

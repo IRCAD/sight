@@ -83,8 +83,8 @@ MaterialMgrListener::~MaterialMgrListener()
     ::Ogre::Technique* depthTech   = _originalMaterial->getTechnique("depth");
     if(depthTech == nullptr)
     {
-        SLM_ERROR( "Missing 'depth' technique for material '" + _originalMaterial->getName() +
-                   "' Order Independent Transparency will probably not be supported.");
+        SIGHT_ERROR( "Missing 'depth' technique for material '" + _originalMaterial->getName() +
+                     "' Order Independent Transparency will probably not be supported.");
         depthTech = defaultTech;
     }
 
@@ -167,7 +167,7 @@ MaterialMgrListener::~MaterialMgrListener()
             }
             else
             {
-                SLM_FATAL("DepthPeeling logical error");
+                SIGHT_FATAL("DepthPeeling logical error");
             }
 
             auto params = pass->getFragmentProgramParameters();
@@ -330,7 +330,7 @@ MaterialMgrListener::~MaterialMgrListener()
             }
             else
             {
-                SLM_FATAL("DualDepthPeeling logical error");
+                SIGHT_FATAL("DualDepthPeeling logical error");
             }
 
             auto numTexUnit = pass->getNumTextureUnitStates();
@@ -356,7 +356,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else
     {
-        SLM_INFO("not found : " << _schemeName );
+        SIGHT_INFO("not found : " << _schemeName );
     }
 
     return newTech;
@@ -433,7 +433,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else
     {
-        SLM_FATAL("Unreachable code");
+        SIGHT_FATAL("Unreachable code");
     }
 
     return viz::scene3d::helper::Shading::createProgramFrom(_name, sourceFileName, parameters,

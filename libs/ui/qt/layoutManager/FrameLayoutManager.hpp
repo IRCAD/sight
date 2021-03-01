@@ -27,11 +27,11 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/layoutManager/IFrameLayoutManager.hpp>
+
 #include <QObject>
 #include <QPoint>
 #include <QPointer>
-
-#include <ui/base/layoutManager/IFrameLayoutManager.hpp>
 
 QT_BEGIN_NAMESPACE
 class QMainWindow;
@@ -49,8 +49,8 @@ class UI_QT_CLASS_API FrameLayoutManager : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreClassMacro(FrameLayoutManager, ui::base::layoutManager::IFrameLayoutManager,
-                     ui::base::factory::New< FrameLayoutManager >)
+    SIGHT_DECLARE_CLASS(FrameLayoutManager, ui::base::layoutManager::IFrameLayoutManager,
+                        ui::base::factory::New< FrameLayoutManager >)
 
     UI_QT_API FrameLayoutManager(ui::base::GuiBaseObject::Key key);
 

@@ -32,7 +32,6 @@
 namespace sight::module::ui::dicom
 {
 
-
 //------------------------------------------------------------------------------
 
 SSeriesDBMerger::SSeriesDBMerger() noexcept
@@ -75,7 +74,7 @@ void SSeriesDBMerger::configuring()
 void SSeriesDBMerger::updating()
 {
     auto destinationSeriesDB = this->getInOut< data::SeriesDB>("seriesDB");
-    SLM_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
+    SIGHT_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
     data::helper::SeriesDB sDBhelper(destinationSeriesDB);
     data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();

@@ -42,12 +42,12 @@ ProgressToLogger::~ProgressToLogger()
 
 void ProgressToLogger::operator()(float percent, const std::string& msg)
 {
-#if !SLM_INFO_ENABLED
-    FwCoreNotUsedMacro(percent);
-    FwCoreNotUsedMacro(msg);
+#if !SIGHT_INFO_ENABLED
+    SIGHT_NOT_USED(percent);
+    SIGHT_NOT_USED(msg);
 #endif
     // fixme io precision
-    SLM_INFO( m_prefix << msg << " " << (int) (percent*100) << m_postfix);
+    SIGHT_INFO( m_prefix << msg << " " << (int) (percent*100) << m_postfix);
 }
 
 }

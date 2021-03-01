@@ -57,7 +57,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SDecomposeMatrix : public service::IOperato
 
 public:
 
-    fwCoreServiceMacro(SDecomposeMatrix, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SDecomposeMatrix, ::sight::service::IOperator)
 
     /**
      * @brief Constructor.

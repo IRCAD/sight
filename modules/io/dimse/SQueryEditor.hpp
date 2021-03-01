@@ -31,13 +31,13 @@
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::io::dimse
 {
@@ -78,7 +78,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SQueryEditor,  sight::ui::base::IEditor )
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SQueryEditor() noexcept;

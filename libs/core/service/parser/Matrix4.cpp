@@ -35,7 +35,7 @@ namespace parser
 
 void Matrix4::updating( )
 {
-    SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
+    SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ void Matrix4::updating( )
 void Matrix4::createConfig( core::tools::Object::sptr _obj )
 {
     data::Matrix4::sptr matrix = data::Matrix4::dynamicCast( _obj );
-    SLM_ASSERT("matrix not instanced", matrix);
+    SIGHT_ASSERT("matrix not instanced", matrix);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {

@@ -24,12 +24,11 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 
 #include <service/macros.hpp>
-
 
 namespace sight::module::geometry::base
 {
@@ -84,7 +83,7 @@ void SPointListFromMatrices::updating()
 {
 
     const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INPUT);
-    SLM_ASSERT("no matrices found", numMatrices != 0);
+    SIGHT_ASSERT("no matrices found", numMatrices != 0);
 
     auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
     if(!m_append)

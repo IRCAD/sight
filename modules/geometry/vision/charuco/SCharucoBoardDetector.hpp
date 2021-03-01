@@ -93,7 +93,7 @@ namespace sight::module::geometry::vision::charuco
 class MODULE_GEOMETRY_VISION_CLASS_API SCharucoBoardDetector : public service::IController
 {
 public:
-    fwCoreServiceMacro(SCharucoBoardDetector, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SCharucoBoardDetector, sight::service::IController)
 
     /**
      * @name Signals API

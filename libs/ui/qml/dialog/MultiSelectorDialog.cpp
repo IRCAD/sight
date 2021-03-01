@@ -27,10 +27,10 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <QGuiApplication>
-
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QGuiApplication>
 
 fwGuiRegisterMacro( ::sight::ui::qml::dialog::MultiSelectorDialog,
                     ::sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY );
@@ -85,13 +85,13 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     context->setContextProperty("multiSelectorDialog", this);
     // load the qml ui component
     QObject* window = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File MultiSelectorDialog is not found or not loaded", window);
+    SIGHT_ASSERT("The Qml File MultiSelectorDialog is not found or not loaded", window);
     // keep window to destroy it
 
     window->setProperty("title", m_title);
 
     QObject* dialog = window->findChild<QObject*>("dialog");
-    SLM_ASSERT("The dialog is not found inside the window", dialog);
+    SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // fill the repeater for each checkbox that has to be created
     model.addRole(Qt::UserRole + 1, "textOption");
@@ -107,7 +107,7 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
     {
         Q_EMIT messageChanged();
     }
-    SLM_ASSERT("The MultiSelector need at least one selection", !model.isEmpty());
+    SIGHT_ASSERT("The MultiSelector need at least one selection", !model.isEmpty());
 
     for( Selections::value_type& selection :  m_selections)
     {

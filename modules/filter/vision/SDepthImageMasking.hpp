@@ -69,7 +69,7 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public service::IOperator
 {
 public:
-    fwCoreServiceMacro(SDepthImageMasking, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SDepthImageMasking, service::IOperator)
 
     /// Initializes slots
     MODULE_FILTER_VISION_CLASS_API SDepthImageMasking() noexcept;

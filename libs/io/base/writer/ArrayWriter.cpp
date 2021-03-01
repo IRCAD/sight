@@ -28,7 +28,7 @@
 #include <fstream>
 #include <iostream>
 
-fwDataIOWriterRegisterMacro( ::sight::io::base::writer::ArrayWriter);
+SIGHT_REGISTER_IO_WRITER( ::sight::io::base::writer::ArrayWriter);
 
 namespace sight::io::base
 {
@@ -61,7 +61,7 @@ void ArrayWriter::write()
 
     std::ofstream fs(file.string().c_str(), std::ios::binary|std::ios::trunc);
 
-    FW_RAISE_IF("Unable to open " << file, !fs.good());
+    SIGHT_THROW_IF("Unable to open " << file, !fs.good());
 
     fs.write(buff, static_cast<std::streamsize>(arraySizeInBytes));
     fs.close();

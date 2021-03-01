@@ -37,9 +37,11 @@
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
+#include <geometry/data/Matrix4.hpp>
+
 #include <service/macros.hpp>
 
-#include <geometry/data/Matrix4.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -48,8 +50,6 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt::metrics
 {
@@ -78,7 +78,6 @@ static const std::string s_SIZE_CONFIG     = "size";
 static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
-
 
 //------------------------------------------------------------------------------
 
@@ -114,18 +113,18 @@ void SLandmarks::configuring()
     const service::IService::ConfigType config = this->getConfigTree();
 
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
-    SLM_FATAL_IF(
+    SIGHT_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
             m_defaultLandmarkSize <= 0.f);
 
     m_defaultLandmarkOpacity = config.get<float>(s_OPACITY_CONFIG, m_defaultLandmarkOpacity);
-    SLM_FATAL_IF(
+    SIGHT_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
             m_defaultLandmarkOpacity < 0.f || m_defaultLandmarkOpacity > 1.f);
 
     const std::string advancedMode = config.get<std::string>(s_ADVANCED_CONFIG, "no");
-    SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
-                 advancedMode != "yes" && advancedMode != "no");
+    SIGHT_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
+                   advancedMode != "yes" && advancedMode != "no");
 
     m_advancedMode = (advancedMode == "yes");
 
@@ -234,7 +233,7 @@ void SLandmarks::updating()
     m_treeWidget->blockSignals(true);
 
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
     data::mt::ObjectReadLock lock(landmarks);
 
     m_treeWidget->clear();
@@ -275,7 +274,7 @@ void SLandmarks::onColorButton()
     // Create Color choice dialog.
     auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     const QColor oldColor = sender->property("color").value<QColor>();
     const QColor colorQt  = QColorDialog::getColor(oldColor, container, "Select Color", QColorDialog::ShowAlphaChannel);
@@ -289,7 +288,7 @@ void SLandmarks::onColorButton()
         const std::string groupName = colorButton->property(s_GROUP_PROPERTY_NAME).value<QString>().toStdString();
 
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
         data::Landmarks::ColorType color = {{colorQt.red()/255.f, colorQt.green()/255.f, colorQt.blue()/255.f,
                                    colorQt.alpha()/255.f}};
@@ -314,7 +313,7 @@ void SLandmarks::onColorButton()
 
 void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
 {
-    SLM_ERROR_IF("A column different from the group's name is being edited", _column != 0);
+    SIGHT_ERROR_IF("A column different from the group's name is being edited", _column != 0);
     m_treeWidget->blockSignals(true);
 
     if(_column == 0)
@@ -336,7 +335,7 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
             try
             {
                 const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-                SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+                SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
                 data::mt::ObjectWriteLock lock(landmarks);
                 landmarks->renameGroup(oldGroupName.toStdString(), newGroupName.toStdString());
@@ -374,7 +373,7 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
 void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous)
 {
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
     if(_previous)
     {
@@ -393,8 +392,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
 
                 const size_t index = static_cast<size_t>(previousParent->indexOfChild(_previous));
 
-                SLM_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
-                           index < landmarks->getNumberOfPoints(groupName));
+                SIGHT_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
+                             index < landmarks->getNumberOfPoints(groupName));
 
                 deselectSig->asyncEmit(groupName, index);
             }
@@ -423,8 +422,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
 
                 const size_t index = static_cast<size_t>(currentParent->indexOfChild(_current));
 
-                SLM_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
-                           index < landmarks->getNumberOfPoints(groupName));
+                SIGHT_ASSERT("index must be inferior to the number of points in '" + groupName +"'.",
+                             index < landmarks->getNumberOfPoints(groupName));
 
                 const core::com::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
                 selectSig->asyncEmit(groupName, index);
@@ -473,7 +472,7 @@ void SLandmarks::onSizeChanged(int _newSize)
     if(currentSelection(groupName))
     {
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectWriteLock lock(landmarks);
 
         landmarks->setGroupSize(groupName, realSize);
@@ -499,7 +498,7 @@ void SLandmarks::onOpacityChanged(int _newOpacity)
     if(currentSelection(groupName))
     {
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectWriteLock lock(landmarks);
 
         const auto groupColor = landmarks->getGroup(groupName).m_color;
@@ -535,7 +534,7 @@ void SLandmarks::onVisibilityChanged(int _visibility)
     if(currentSelection(groupName))
     {
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectWriteLock lock(landmarks);
 
         landmarks->setGroupVisibility(groupName, static_cast<bool>(_visibility));
@@ -556,12 +555,12 @@ void SLandmarks::onShapeChanged(const QString& _shape)
     std::string groupName;
     if(currentSelection(groupName))
     {
-        SLM_ASSERT("Shape must be 'Cube' or 'Sphere'.", _shape == "Cube" || _shape == "Sphere");
+        SIGHT_ASSERT("Shape must be 'Cube' or 'Sphere'.", _shape == "Cube" || _shape == "Sphere");
         const data::Landmarks::Shape s
             = (_shape == "Cube") ? data::Landmarks::Shape::CUBE : data::Landmarks::Shape::SPHERE;
 
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectWriteLock lock(landmarks);
 
         landmarks->setGroupShape(groupName, s);
@@ -582,7 +581,7 @@ void SLandmarks::onAddNewGroup()
     const std::string groupName = this->generateNewGroupName();
 
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
     data::mt::ObjectWriteLock lock(landmarks);
     landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
@@ -612,7 +611,7 @@ void SLandmarks::onRemoveSelection()
         const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
 
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectWriteLock lock(landmarks);
 
         if(m_advancedMode && topLevelIndex == -1) // Delete point
@@ -693,7 +692,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             }
 
             const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-            SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+            SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
             std::string groupName;
             QTreeWidgetItem* item = m_treeWidget->currentItem();
@@ -746,7 +745,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             const double* const pickedPos = _info.m_worldPos;
 
             const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-            SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+            SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
             data::mt::ObjectReadToWriteLock lock(landmarks);
 
             // Find closest landmarks.
@@ -825,7 +824,7 @@ void SLandmarks::addPoint(std::string _groupName)
         m_treeWidget->blockSignals(true);
 
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectReadLock lock(landmarks);
 
         QTreeWidgetItem* const item = getGroupItem(_groupName);
@@ -853,7 +852,7 @@ void SLandmarks::addPoint(std::string _groupName)
 void SLandmarks::addGroup(std::string _name)
 {
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
     data::mt::ObjectReadLock lock(landmarks);
     const auto& group = landmarks->getGroup(_name);
@@ -911,7 +910,7 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
     QTreeWidgetItem* const item = getGroupItem(_groupName);
 
-    SLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
+    SIGHT_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
     QTreeWidgetItem* const pointItem = item->child(static_cast<int>(_index));
     item->removeChild(pointItem);
@@ -943,7 +942,7 @@ void SLandmarks::modifyGroup(std::string _name)
     item->setText(0, _name.c_str());
 
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
 
     data::mt::ObjectReadLock lock(landmarks);
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_name);
@@ -988,16 +987,16 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
     {
         auto const itemList = m_treeWidget->findItems(QString::fromStdString(_groupName), Qt::MatchExactly);
 
-        SLM_ASSERT("Only a single item can be named '" + _groupName + "'", itemList.size() == 1);
+        SIGHT_ASSERT("Only a single item can be named '" + _groupName + "'", itemList.size() == 1);
 
         QTreeWidgetItem* const item = itemList.at(0);
 
-        SLM_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
+        SIGHT_ASSERT("Index must be less than " << item->childCount(), static_cast<int>(_index) < item->childCount());
 
         QTreeWidgetItem* const pointItem = item->child(static_cast<int>(_index));
 
         const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-        SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+        SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
         const data::mt::ObjectReadLock lock(landmarks);
 
         const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
@@ -1021,7 +1020,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
     if(m_advancedMode)
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Index must be less than " << currentItem->childCount(),
                 static_cast<int>(_index) < currentItem->childCount());
 
@@ -1030,7 +1029,7 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
     m_treeWidget->setCurrentItem(currentItem);
 
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
     data::mt::ObjectReadLock lock(landmarks);
 
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
@@ -1069,7 +1068,7 @@ std::string SLandmarks::generateNewGroupName() const
     static size_t groupCount = 0;
 
     const data::Landmarks::sptr landmarks = this->getInOut< data::Landmarks >(s_LANDMARKS_INOUT);
-    SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
+    SIGHT_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
     const data::mt::ObjectReadLock lock(landmarks);
 
     const data::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
@@ -1146,7 +1145,7 @@ QTreeWidgetItem* SLandmarks::getGroupItem(const std::string& _groupName) const
 {
     const auto itemList = m_treeWidget->findItems(QString::fromStdString(_groupName), Qt::MatchExactly);
 
-    SLM_ASSERT("Only a single item can be named '" + _groupName + "'", itemList.size() == 1);
+    SIGHT_ASSERT("Only a single item can be named '" + _groupName + "'", itemList.size() == 1);
 
     return itemList.at(0);
 }

@@ -48,7 +48,7 @@ class ACTIVITY_CLASS_API IObjectValidator : public activity::IValidator
 
 public:
 
-    fwCoreClassMacro(IObjectValidator, activity::IValidator)
+    SIGHT_DECLARE_CLASS(IObjectValidator, activity::IValidator)
 
     /// Does nothing.
     ACTIVITY_API virtual ValidationType validate(

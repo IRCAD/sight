@@ -106,8 +106,8 @@ void Core::update()
 {
     m_celShadingName = "";
 
-    SLM_ERROR_IF("OIT isn't supported when stereo is enabled, falling back to mono rendering.",
-                 m_transparencyTechnique != DEFAULT && m_stereoMode != StereoModeType::NONE);
+    SIGHT_ERROR_IF("OIT isn't supported when stereo is enabled, falling back to mono rendering.",
+                   m_transparencyTechnique != DEFAULT && m_stereoMode != StereoModeType::NONE);
 
     switch (m_transparencyTechnique)
     {
@@ -222,8 +222,8 @@ void Core::setupTransparency()
 
         if(m_compositorInstance == nullptr)
         {
-            SLM_ERROR( "Compositor " + m_coreCompositorName +
-                       " script is missing in resources (check your resources' paths)");
+            SIGHT_ERROR( "Compositor " + m_coreCompositorName +
+                         " script is missing in resources (check your resources' paths)");
         }
     }
 }
@@ -595,7 +595,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
 
        if (m_useOcclusionQuery == false)
        {
-        SLM_ERROR("Error: failed to create hardware occlusion query");
+        SIGHT_ERROR("Error: failed to create hardware occlusion query");
        }
        else
        {

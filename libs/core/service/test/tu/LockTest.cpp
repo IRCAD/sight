@@ -60,7 +60,7 @@ public:
     static const service::IService::KeyType s_INOUT;
     static const service::IService::KeyType s_OUTPUT;
 
-    fwCoreServiceMacro(LockedService, service::IService)
+    SIGHT_DECLARE_SERVICE(LockedService, service::IService)
 
     LockedService() noexcept
     {
@@ -131,7 +131,7 @@ const service::IService::KeyType LockedService::s_INPUT  = "input";
 const service::IService::KeyType LockedService::s_INOUT  = "inout";
 const service::IService::KeyType LockedService::s_OUTPUT = "output";
 
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::service::ut::LockedService)
+SIGHT_REGISTER_SERVICE( ::sight::service::IService, ::sight::service::ut::LockedService)
 
 //------------------------------------------------------------------------------
 

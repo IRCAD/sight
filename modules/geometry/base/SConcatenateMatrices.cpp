@@ -29,10 +29,9 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/data/Matrix4.hpp>
 
+#include <service/macros.hpp>
 
 namespace sight::module::geometry::base
 {
@@ -52,9 +51,9 @@ void SConcatenateMatrices::configuring()
 {
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     std::vector<ConfigurationType> inCfgs = m_configuration->find("in");
-    SLM_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
+    SIGHT_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
 
-    SLM_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == s_MATRIX_GROUP_INOUT);
+    SIGHT_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == s_MATRIX_GROUP_INOUT);
 
     std::vector<ConfigurationType> matrixCfgs = inCfgs[0]->find("key");
 
@@ -87,7 +86,7 @@ void SConcatenateMatrices::stopping()
 void SConcatenateMatrices::updating()
 {
     auto outputMatrix = this->getInOut< data::Matrix4>(s_OUTPUT);
-    SLM_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
+    SIGHT_ASSERT("inout '" + s_OUTPUT + "' is not defined", outputMatrix);
     {
         data::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
 

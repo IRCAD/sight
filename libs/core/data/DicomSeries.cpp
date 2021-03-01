@@ -29,7 +29,7 @@
 
 #include <filesystem>
 
-fwDataRegisterMacro( ::sight::data::DicomSeries )
+SIGHT_REGISTER_DATA( ::sight::data::DicomSeries )
 
 namespace sight::data
 {
@@ -52,9 +52,9 @@ DicomSeries::~DicomSeries()
 void DicomSeries::shallowCopy(const data::Object::csptr& _source)
 {
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->data::Series::shallowCopy(_source);
 
@@ -70,9 +70,9 @@ void DicomSeries::shallowCopy(const data::Object::csptr& _source)
 void DicomSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     DicomSeries::csptr other = DicomSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->data::Series::cachedDeepCopy(_source, cache);
 

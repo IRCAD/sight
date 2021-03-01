@@ -36,10 +36,10 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QIcon>
 #include <QVBoxLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -47,7 +47,6 @@ namespace sight::module::ui::qt::metrics
 {
 
 //------------------------------------------------------------------------------
-
 
 const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
@@ -75,7 +74,7 @@ void Distance::starting()
 
     namespace fs = std::filesystem;
     fs::path pathImageDist = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "distance.png");
-    SLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
+    SIGHT_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
 
@@ -117,7 +116,7 @@ void Distance::updating()
 void Distance::onDistanceButton()
 {
     data::Image::sptr image = this->getInOut< data::Image >("image");
-    SLM_ASSERT("'image' key is not found.", image);
+    SIGHT_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
     image->setField("ShowDistances",  data::Boolean::New(true));

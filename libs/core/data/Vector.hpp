@@ -36,7 +36,7 @@ namespace sight::data
 class Vector;
 }
 
-fwCampAutoDeclareDataMacro((sight)(data)(Vector));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Vector));
 
 namespace sight::data
 {
@@ -51,8 +51,8 @@ class DATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassMacro(Vector, data::Object, data::factory::New< Vector >)
-    fwCampMakeFriendDataMacro((sight)(data)(Vector));
+    SIGHT_DECLARE_CLASS(Vector, data::Object, data::factory::New< Vector >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;
 
@@ -302,7 +302,7 @@ inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
     for(const data::Object::sptr& data : this->getContainer() )
     {
         castedData = std::dynamic_pointer_cast<DATATYPE>( data );
-        SLM_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castedData);
+        SIGHT_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castedData);
         vec.push_back( castedData );
     }
 

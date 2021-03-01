@@ -24,14 +24,14 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/compositor/ChainManager.hpp>
 #include <viz/scene3d/Layer.hpp>
 
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 #include <vector>
 
@@ -48,7 +48,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SStereoSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SStereoSelector, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoSelector() noexcept;

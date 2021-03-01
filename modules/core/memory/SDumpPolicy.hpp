@@ -37,7 +37,7 @@ class MODULE_MEMORY_CLASS_API SDumpPolicy : public service::IController
 
 public:
 
-    fwCoreServiceMacro(SDumpPolicy, ::sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SDumpPolicy, ::sight::service::IController)
 
     MODULE_MEMORY_API SDumpPolicy();
 

@@ -24,11 +24,11 @@
 
 #include "ui/qt/container/QtContainer.hpp"
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QApplication>
 #include <QBoxLayout>
 #include <QTimer>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::dialog::NotificationDialog,
                     ::sight::ui::base::dialog::INotificationDialog::REGISTRY_KEY)
@@ -73,7 +73,7 @@ void NotificationDialog::show()
     // If there is no parent here, we get the top one.
     if(!parent)
     {
-        SLM_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
+        SIGHT_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
         return;
     }
 

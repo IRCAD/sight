@@ -74,7 +74,7 @@ void SSignalGate::starting()
         const std::string& signal = itCfg->second.get_value<std::string>();
         if( std::regex_match(signal, match, re) )
         {
-            SLM_ASSERT("Wrong value for attribute src: " + signal, match.size() >= 3);
+            SIGHT_ASSERT("Wrong value for attribute src: " + signal, match.size() >= 3);
 
             std::string uid, signalKey;
             uid.assign(match[1].first, match[1].second);
@@ -84,7 +84,7 @@ void SSignalGate::starting()
             {
                 core::tools::Object::sptr obj             = core::tools::fwID::getObject(uid);
                 core::com::HasSignals::sptr signalsHolder = std::dynamic_pointer_cast< core::com::HasSignals >(obj);
-                SLM_ASSERT("Object with id " << uid << " is not a HasSlots", signalsHolder);
+                SIGHT_ASSERT("Object with id " << uid << " is not a HasSlots", signalsHolder);
 
                 const size_t index = m_flags.size();
                 m_flags.push_back(false);
@@ -96,7 +96,7 @@ void SSignalGate::starting()
 
                 // Connect the configured signal to this slot
                 auto sig = signalsHolder->signal(signalKey);
-                SLM_ASSERT("Object with id " + uid + " does not have a signalKey '" + signalKey + "'", sig);
+                SIGHT_ASSERT("Object with id " + uid + " does not have a signalKey '" + signalKey + "'", sig);
 
                 sig->connect(slot);
 
@@ -124,8 +124,8 @@ void SSignalGate::updating()
 
 void SSignalGate::received(size_t _index)
 {
-    SLM_DEBUG("'" << this->getID() << "' received a signal at position : " << _index);
-    SLM_ASSERT("Could not find a signal at index " <<_index, _index < m_flags.size() );
+    SIGHT_DEBUG("'" << this->getID() << "' received a signal at position : " << _index);
+    SIGHT_ASSERT("Could not find a signal at index " <<_index, _index < m_flags.size() );
 
     m_flags[_index] = true;
 
@@ -140,7 +140,7 @@ void SSignalGate::received(size_t _index)
         // Reset all flags before sending the signal
         std::fill(m_flags.begin(), m_flags.end(), false);
 
-        SLM_DEBUG("'" << this->getID() << "' received all signals, sending 'allReceived' now.");
+        SIGHT_DEBUG("'" << this->getID() << "' received all signals, sending 'allReceived' now.");
         auto sig = this->signal<AllReceivedSignalType>(s_ALL_RECEIVED_SIG);
         sig->asyncEmit();
     }

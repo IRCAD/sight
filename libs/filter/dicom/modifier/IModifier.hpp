@@ -38,7 +38,7 @@ namespace modifier
 class FILTER_DICOM_CLASS_API IModifier : public filter::dicom::IFilter
 {
 public:
-    fwCoreClassMacro(IModifier, filter::dicom::IFilter)
+    SIGHT_DECLARE_CLASS(IModifier, filter::dicom::IFilter)
 
     /// Destructor
     FILTER_DICOM_API virtual ~IModifier();

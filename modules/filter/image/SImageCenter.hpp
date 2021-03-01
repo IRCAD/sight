@@ -56,7 +56,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SImageCenter, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SImageCenter, service::IOperator)
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SImageCenter();

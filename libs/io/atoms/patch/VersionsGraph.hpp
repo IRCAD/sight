@@ -42,8 +42,8 @@ class IO_ATOMS_CLASS_API VersionsGraph : public core::BaseObject
 {
 
 public:
-    fwCoreClassMacro(VersionsGraph, io::atoms::patch::VersionsGraph, new VersionsGraph)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(VersionsGraph, io::atoms::patch::VersionsGraph, new VersionsGraph)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @name Typedefs

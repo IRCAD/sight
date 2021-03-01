@@ -38,7 +38,7 @@ namespace composite
 class FILTER_DICOM_CLASS_API IComposite : public filter::dicom::IFilter
 {
 public:
-    fwCoreClassMacro(IComposite, filter::dicom::IFilter)
+    SIGHT_DECLARE_CLASS(IComposite, filter::dicom::IFilter)
 
     typedef std::vector< filter::dicom::IFilter::sptr > FilterContainerType;
 

@@ -82,7 +82,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SModelSeries final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SModelSeries, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SModelSeries, ::sight::viz::scene3d::IAdaptor)
 
     /// Initialisa slots.
     MODULE_VIZ_SCENE3D_API SModelSeries() noexcept;

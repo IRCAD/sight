@@ -37,7 +37,7 @@ class SERVICE_CLASS_API IRGBDGrabber : public service::IGrabber
 
 public:
 
-    fwCoreServiceMacro(IRGBDGrabber, service::IGrabber)
+    SIGHT_DECLARE_SERVICE(IRGBDGrabber, service::IGrabber)
 
     /**
      * @name Data API

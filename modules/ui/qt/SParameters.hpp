@@ -24,6 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
@@ -33,8 +35,6 @@
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QSlider>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -121,7 +121,7 @@ class MODULE_UI_QT_CLASS_API SParameters : public QObject,
 {
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SParameters, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SParameters, sight::ui::base::IEditor)
 
     /// Boolean changed signal type
     typedef core::com::Signal< void (bool, std::string) > BooleanChangedSignalType;

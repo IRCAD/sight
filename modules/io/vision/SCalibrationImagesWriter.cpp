@@ -26,15 +26,15 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/opencv/Image.hpp>
 
-#include <opencv2/opencv.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
+
+#include <opencv2/opencv.hpp>
 
 #include <filesystem>
 #include <sstream>
@@ -119,7 +119,7 @@ void SCalibrationImagesWriter::updating()
     {
         data::CalibrationInfo::csptr calibInfo =
             this->getInput< data::CalibrationInfo >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("Missing calibration info input.", calibInfo);
+        SIGHT_ASSERT("Missing calibration info input.", calibInfo);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

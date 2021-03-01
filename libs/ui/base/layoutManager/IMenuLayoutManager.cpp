@@ -47,8 +47,8 @@ IMenuLayoutManager::~IMenuLayoutManager()
 
 void IMenuLayoutManager::initialize( ConfigurationType configuration)
 {
-    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-               configuration->getName() == "layout");
+    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+                 configuration->getName() == "layout");
 
     core::runtime::ConfigurationElementContainer::Iterator iter;
     for( iter = configuration->begin(); iter != configuration->end(); ++iter )
@@ -58,10 +58,10 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
             ConfigurationType menuItem = *iter;
             ActionInfo info;
 
-            SLM_ASSERT("Depreciated tag <state>", !menuItem->hasAttribute("state"));
-            SLM_ASSERT("Depreciated tag <enable>", !menuItem->hasAttribute("enable"));
+            SIGHT_ASSERT("Depreciated tag <state>", !menuItem->hasAttribute("state"));
+            SIGHT_ASSERT("Depreciated tag <enable>", !menuItem->hasAttribute("enable"));
 
-            SLM_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
+            SIGHT_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
             if( menuItem->hasAttribute("name") )
             {
                 info.m_name = menuItem->getExistingAttributeValue("name");
@@ -109,7 +109,7 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
                 }
                 else
                 {
-                    SLM_FATAL("specialAction " << specialActionName << " is unknown." );
+                    SIGHT_FATAL("specialAction " << specialActionName << " is unknown." );
                 }
             }
 

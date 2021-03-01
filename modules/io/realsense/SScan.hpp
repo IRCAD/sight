@@ -180,7 +180,7 @@ class MODULE_IO_REALSENSE_CLASS_API SScan : public service::IRGBDGrabber
 {
 public:
 
-    fwCoreServiceMacro(SScan, ::sight::service::IRGBDGrabber)
+    SIGHT_DECLARE_SERVICE(SScan, ::sight::service::IRGBDGrabber)
 
     /// Signal send when Distance is computed.
     typedef core::com::Signal< void (double) > DistanceComputedSignalType;

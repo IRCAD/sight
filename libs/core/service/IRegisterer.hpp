@@ -38,7 +38,7 @@ class SERVICE_CLASS_API IRegisterer : public service::IService
 {
 public:
 
-    fwCoreServiceMacro(IRegisterer, service::IService)
+    SIGHT_DECLARE_SERVICE(IRegisterer, service::IService)
 
     /**
      * @name Slots API

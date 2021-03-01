@@ -39,8 +39,8 @@ data::Object::sptr getObject( data::Object::csptr object,
                               const std::string& path,
                               bool raiseException )
 {
-    SLM_FATAL_IF( "Path for desired object is empty.", path.empty() );
-    SLM_FATAL_IF( "Path for desired object doesn't start with '@'.", path[0] != '@' );
+    SIGHT_FATAL_IF( "Path for desired object is empty.", path.empty() );
+    SIGHT_FATAL_IF( "Path for desired object doesn't start with '@'.", path[0] != '@' );
     const std::string objectPath = path.substr( 1 );
     data::reflection::visitor::GetObject visitor( object, objectPath );
     data::Object::sptr subObject;
@@ -53,7 +53,7 @@ data::Object::sptr getObject( data::Object::csptr object,
         FW_FORWARD_EXCEPTION_IF(np, raiseException);
     }
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::reflection::exception::ObjectNotFound("Object '" + path + "' not found."),
         !visitor.objectsFound() && raiseException);
 

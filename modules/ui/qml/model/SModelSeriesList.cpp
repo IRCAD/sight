@@ -25,9 +25,9 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Boolean.hpp>
+#include <data/helper/Field.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/helper/Field.hpp>
 
 namespace sight::module::ui::qml::model
 {
@@ -81,9 +81,9 @@ void SModelSeriesList::configuring()
 void SModelSeriesList::updating()
 {
     data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
-    SLM_ASSERT("inout 'modelSeries' is missing", modelSeries);
+    SIGHT_ASSERT("inout 'modelSeries' is missing", modelSeries);
 
-    SLM_ASSERT("list model is not defined.", m_listModel);
+    SIGHT_ASSERT("list model is not defined.", m_listModel);
     m_listModel->updateModelSeries(modelSeries);
 }
 
@@ -94,7 +94,7 @@ void SModelSeriesList::onOrganSelected(int index)
     if (index >= 0)
     {
         data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
-        SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
+        SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
 
         const auto& recs = modelSeries->getReconstructionDB();
 
@@ -112,7 +112,7 @@ void SModelSeriesList::onOrganSelected(int index)
 void SModelSeriesList::onShowReconstructions(int state )
 {
     data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
-    SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
+    SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
     data::helper::Field helper( modelSeries );
     helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
     helper.notify();
@@ -125,7 +125,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
     if (index >= 0)
     {
         data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
-        SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
+        SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
 
         const auto& recs        = modelSeries->getReconstructionDB();
         const auto& selectedRec = recs.at(static_cast<size_t>(index));
@@ -147,7 +147,7 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 void SModelSeriesList::onCheckAllBoxes( bool checked )
 {
     data::ModelSeries::sptr modelSeries = this->getInOut< data::ModelSeries >(s_MODEL_SERIES_INOUT);
-    SLM_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
+    SIGHT_ASSERT("'" + s_MODEL_SERIES_INOUT+ "' must be defined as 'inout'", modelSeries);
 
     for (const auto& rec : modelSeries->getReconstructionDB())
     {

@@ -29,11 +29,11 @@
 
 #include <service/macros.hpp>
 
-#include <pcl/common/transforms.h>
-#include <pcl/io/pcd_io.h>
-
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/preferences.hpp>
+
+#include <pcl/common/transforms.h>
+#include <pcl/io/pcd_io.h>
 
 #include <cstdint>
 #include <filesystem>
@@ -45,7 +45,6 @@ namespace sight::module::io::pcl
 static const service::IService::KeyType s_FRAMETL = "frameTL";
 
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +84,7 @@ void SFrameGrabber::configuring()
 
     m_fps = config.get<unsigned int>("fps", 30);
 
-    SLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
+    SIGHT_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
 }
 
 //------------------------------------------------------------------------------
@@ -125,7 +124,7 @@ void SFrameGrabber::startCamera()
         else
         {
             this->setStartState(false);
-            SLM_ERROR("Wrong file format. The format should be *.pcd.");
+            SIGHT_ERROR("Wrong file format. The format should be *.pcd.");
         }
     }
     else
@@ -214,7 +213,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         if (::pcl::io::loadPCDFile< ::pcl::PointXYZ> (m_imageToRead.front().string(), inputCloud) == -1)
         {
             this->setStartState(false);
-            SLM_ERROR("Couldn't read input pointcloud file " +  m_imageToRead.front().string());
+            SIGHT_ERROR("Couldn't read input pointcloud file " +  m_imageToRead.front().string());
         }
 
         const size_t width  = inputCloud.width;
@@ -227,7 +226,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         else
         {
             this->setStartState(false);
-            SLM_ERROR("Image width or height is equal to 0.");
+            SIGHT_ERROR("Image width or height is equal to 0.");
             return;
         }
         m_isInitialized = true;
@@ -267,7 +266,7 @@ void SFrameGrabber::grabImage()
         std::smatch match;
         if (!std::regex_match(imageName, match, s_TIMESTAMP))
         {
-            SLM_ERROR("Could not find a timestamp in file name: " + imageName);
+            SIGHT_ERROR("Could not find a timestamp in file name: " + imageName);
             return;
         }
         const std::string timestampStr = match[1].str();
@@ -275,7 +274,7 @@ void SFrameGrabber::grabImage()
         ::pcl::PointCloud< ::pcl::PointXYZ> inputCloud;
         if (::pcl::io::loadPCDFile< ::pcl::PointXYZ> (imagePath.string(), inputCloud) == -1)
         {
-            SLM_ERROR("Couldn't read input pointcloud file " +  imagePath.string());
+            SIGHT_ERROR("Couldn't read input pointcloud file " +  imagePath.string());
             return;
         }
 
@@ -311,7 +310,7 @@ void SFrameGrabber::grabImage()
         }
         else
         {
-            SLM_ERROR("Images don't have the same size.");
+            SIGHT_ERROR("Images don't have the same size.");
         }
     }
     else if (m_loopVideo)

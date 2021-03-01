@@ -60,7 +60,7 @@ void SShaderParameter::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_materialName = config.get<std::string>(s_MATERIAL_NAME_CONFIG, "");
-    SLM_ERROR_IF("'" + s_MATERIAL_NAME_CONFIG + "' attribute not set", m_materialName.empty());
+    SIGHT_ERROR_IF("'" + s_MATERIAL_NAME_CONFIG + "' attribute not set", m_materialName.empty());
 }
 
 //------------------------------------------------------------------------------

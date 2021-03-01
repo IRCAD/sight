@@ -92,7 +92,7 @@ void IAdaptor::initialize()
             {
                 return srv->getID() == renderServiceId;
             });
-        SLM_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
 
         m_renderService = viz::scene3d::SRender::dynamicCast(*result);
     }
@@ -116,8 +116,8 @@ const std::string& IAdaptor::getLayerID() const
 
 void IAdaptor::setRenderService( SRender::sptr _service)
 {
-    SLM_ASSERT("service not instanced", _service);
-    SLM_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
+    SIGHT_ASSERT("service not instanced", _service);
+    SIGHT_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
 
     m_renderService = _service;
 }
@@ -149,10 +149,10 @@ void IAdaptor::requestRender()
 {
     auto renderService = this->getRenderService();
     if ( (renderService->getStatus() == service::IService::STARTED ||
-        renderService->getStatus() == service::IService::SWAPPING) &&
-        renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO )
+          renderService->getStatus() == service::IService::SWAPPING) &&
+         renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO )
     {
-    this->getRenderService()->requestRender();
+        this->getRenderService()->requestRender();
     }
 }
 
@@ -188,7 +188,7 @@ void IAdaptor::hide()
 
 void IAdaptor::setVisible(bool)
 {
-    SLM_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
+    SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
 }
 
 //------------------------------------------------------------------------------

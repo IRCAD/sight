@@ -43,7 +43,7 @@ class MODULE_SYNC_CLASS_API SMatrixSynchronizer : public service::ISynchronizer
 
 public:
 
-    fwCoreServiceMacro(SMatrixSynchronizer, service::ISynchronizer)
+    SIGHT_DECLARE_SERVICE(SMatrixSynchronizer, service::ISynchronizer)
 
     /**
      * @brief Constructor.

@@ -28,13 +28,15 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
+#include <geometry/data/Matrix4.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
 
 #include <service/macros.hpp>
 
-#include <geometry/data/Matrix4.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -43,13 +45,10 @@
 #include <QString>
 #include <QVBoxLayout>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 #include <regex>
 
 namespace sight::module::ui::qt::viz
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -100,7 +99,7 @@ void STransformEditor::configuring()
     }
     else
     {
-        SLM_ERROR("Attribute 'rotation' should be 'yes', 'no' or a combination of [xyz]");
+        SIGHT_ERROR("Attribute 'rotation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
     m_rotationRange[0] = config.get< int >("rotation.<xmlattr>.min", m_rotationRange[0]);
@@ -122,7 +121,7 @@ void STransformEditor::configuring()
     }
     else
     {
-        SLM_ERROR("Attribute 'translation' should be 'yes', 'no' or a combination of [xyz]");
+        SIGHT_ERROR("Attribute 'translation' should be 'yes', 'no' or a combination of [xyz]");
     }
 
     m_translationRange[0] = config.get< int >("translation.<xmlattr>.min", m_translationRange[0]);
@@ -289,7 +288,7 @@ void STransformEditor::updateFromMatrix()
 {
     data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >("matrix");
 
-    SLM_ASSERT("Unable to get matrix", matrix);
+    SIGHT_ASSERT("Unable to get matrix", matrix);
 
     data::mt::ObjectReadLock lock(matrix);
     const ::glm::dmat4x4 mat = geometry::data::getMatrixFromTF3D(matrix);

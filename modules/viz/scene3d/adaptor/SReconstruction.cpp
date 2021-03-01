@@ -73,7 +73,7 @@ void SReconstruction::configuring()
     const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -208,7 +208,7 @@ void SReconstruction::modifyVisibility()
 adaptor::SMesh::sptr SReconstruction::getMeshAdaptor()
 {
     // Retrieves the associated mesh adaptor
-    sight::viz::scene3d::IAdaptor::sptr adaptor             = m_meshAdaptor.lock();
+    sight::viz::scene3d::IAdaptor::sptr adaptor            = m_meshAdaptor.lock();
     module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor =
         module::viz::scene3d::adaptor::SMesh::dynamicCast(adaptor);
 

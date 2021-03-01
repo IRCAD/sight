@@ -223,7 +223,7 @@ void AtomToDataMappingVisitor::visit(const camp::SimpleProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
+    SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     switch( atom->type() )
     {
@@ -252,7 +252,7 @@ void AtomToDataMappingVisitor::visit(const camp::EnumProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
+    SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     property.set( m_campDataObj, atom->getString() );
 }
@@ -272,9 +272,9 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
                 atoms::Blob::sptr blobAtom = atoms::Blob::dynamicCast(atom);
                 core::memory::BufferObject::sptr buffer;
                 buffer = ::camp_ext::ValueMapper< atoms::Blob::sptr >::to(blobAtom);
-                FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                           "A blob cannot contain a null buffer pointer"),
-                                       !buffer );
+                SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                              "A blob cannot contain a null buffer pointer"),
+                                          !buffer );
                 property.set( m_campDataObj, ::camp::UserObject(buffer) );
                 break;
             }
@@ -310,7 +310,7 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
                         break;
                 }
                 msg <<"', are not supported in the data conversion process.";
-                FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
+                SIGHT_THROW_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
                 break;
             }
         }
@@ -326,7 +326,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
+    SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     atoms::Sequence::sptr seqAtom = atoms::Sequence::dynamicCast(atom);
     unsigned int index            = 0;
@@ -334,8 +334,8 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
     {
         if (!elemAtom)
         {
-            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom sequence." ),
-                                   property.elementType() != ::camp::userType );
+            SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom sequence." ),
+                                      property.elementType() != ::camp::userType );
 
             data::Object::sptr objectData;
             if( property.dynamic() )
@@ -409,7 +409,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
                             break;
                     }
                     msg <<"', are not supported in the data conversion process.";
-                    FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
+                    SIGHT_THROW_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
                     break;
                 }
             }
@@ -427,7 +427,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
+    SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     atoms::Map::sptr mapAtom = atoms::Map::dynamicCast(atom);
 
@@ -435,8 +435,8 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
     {
         if (!elemAtom.second)
         {
-            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom map." ),
-                                   property.elementType() != ::camp::userType );
+            SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged( "Not supported null element in Atom map." ),
+                                      property.elementType() != ::camp::userType );
 
             data::Object::sptr objectData;
             property.set( m_campDataObj, elemAtom.first, objectData );
@@ -473,9 +473,9 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
                     atoms::Blob::sptr blobAtom = atoms::Blob::dynamicCast(elemAtom.second);
                     core::memory::BufferObject::sptr buffer;
                     buffer = ::camp_ext::ValueMapper< atoms::Blob::sptr >::to(blobAtom);
-                    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                               "A blob cannot contain a null buffer pointer"),
-                                           !buffer );
+                    SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                                  "A blob cannot contain a null buffer pointer"),
+                                              !buffer );
                     property.set( m_campDataObj, elemAtom.first, ::camp::UserObject(buffer) );
                     break;
                 }
@@ -495,7 +495,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
                             break;
                     }
                     msg <<"', are not supported in the data conversion process.";
-                    FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
+                    SIGHT_THROW_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
                     break;
                 }
             }

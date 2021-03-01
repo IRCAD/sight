@@ -28,18 +28,17 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QHBoxLayout>
 #include <QIntValidator>
 #include <QString>
 #include <QTime>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 #include <chrono>
 
 namespace sight::module::ui::qt
 {
-
 
 const core::com::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
@@ -139,7 +138,7 @@ void SSlider::configuring()
         {
             core::runtime::ConfigurationElement::sptr minCfg = config->findConfigurationElement("min");
             core::runtime::ConfigurationElement::sptr maxCfg = config->findConfigurationElement("max");
-            SLM_ASSERT("Missing min and max configuration", minCfg && maxCfg);
+            SIGHT_ASSERT("Missing min and max configuration", minCfg && maxCfg);
 
             m_minValue = std::stoi(minCfg->getValue());
             m_maxValue = std::stoi(maxCfg->getValue());
@@ -160,13 +159,13 @@ void SSlider::starting()
 
     QMetaObject::Connection isConnected;
     isConnected = QObject::connect(m_valueSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
-    SLM_ASSERT("sliderPressed Signal failed to connect to sliderPressed Slot.", isConnected);
+    SIGHT_ASSERT("sliderPressed Signal failed to connect to sliderPressed Slot.", isConnected);
 
     isConnected = QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
-    SLM_ASSERT("valueChanged Signal failed to connect to setValue Slot.", isConnected);
+    SIGHT_ASSERT("valueChanged Signal failed to connect to setValue Slot.", isConnected);
 
     isConnected = QObject::connect(m_valueSlider, SIGNAL(sliderReleased()), this, SLOT(changeValue()));
-    SLM_ASSERT("sliderReleased Signal failed to connect to changeValue Slot.", isConnected);
+    SIGHT_ASSERT("sliderReleased Signal failed to connect to changeValue Slot.", isConnected);
 
     m_textLabel = new QLabel();
     m_textLabel->setText(m_text);
@@ -200,7 +199,7 @@ void SSlider::starting()
         m_valueEdit->setInputMask("#0000");
 
         isConnected = QObject::connect( m_valueEdit, SIGNAL(returnPressed()), this, SLOT(editValue()) );
-        SLM_ASSERT("editingFinished Signal failed to connect to onTextChanged Slot.", isConnected);
+        SIGHT_ASSERT("editingFinished Signal failed to connect to onTextChanged Slot.", isConnected);
 
         layout->addWidget( m_valueEdit );
     }
@@ -210,7 +209,7 @@ void SSlider::starting()
         m_resetButton = new QPushButton("R");  // "R" is codename for Reset !
 
         isConnected = QObject::connect(m_resetButton, SIGNAL(clicked()), this, SLOT(resetValue()));
-        SLM_ASSERT("clicked Signal failed to connect to resetValue Slot.", isConnected);
+        SIGHT_ASSERT("clicked Signal failed to connect to resetValue Slot.", isConnected);
 
         layout->addWidget( m_resetButton );
 
@@ -258,8 +257,8 @@ void SSlider::resetValue()
 //------------------------------------------------------------------------------
 void SSlider::changeValue()
 {
-    SLM_ASSERT( "m_valueSlider must not be null",        nullptr != m_valueSlider );
-    SLM_ASSERT( "m_sigValueChanged must not be null",    nullptr != m_sigValueChanged );
+    SIGHT_ASSERT( "m_valueSlider must not be null",        nullptr != m_valueSlider );
+    SIGHT_ASSERT( "m_sigValueChanged must not be null",    nullptr != m_sigValueChanged );
 
     int value = m_valueSlider->sliderPosition();
     m_valueSlider->setSliderPosition(value);
@@ -267,13 +266,13 @@ void SSlider::changeValue()
     // we use either an edit box or a label to display the current value
     if( !m_hasEditBox )
     {
-        SLM_ASSERT("m_valueLabel must not be null", nullptr != m_valueLabel);
+        SIGHT_ASSERT("m_valueLabel must not be null", nullptr != m_valueLabel);
 
         m_valueLabel->setText(QString::number(value));
     }
     else
     {
-        SLM_ASSERT("m_valueEdit must not be null", nullptr != m_valueEdit);
+        SIGHT_ASSERT("m_valueEdit must not be null", nullptr != m_valueEdit);
 
         m_valueEdit->setText(QString::number(value));
     }
@@ -288,7 +287,7 @@ void SSlider::changeValue()
 
 void SSlider::editValue()
 {
-    SLM_ASSERT("m_valueEdit must not be null", false );// && nullptr != m_valueEdit);
+    SIGHT_ASSERT("m_valueEdit must not be null", false );// && nullptr != m_valueEdit);
 
     QString strValue = m_valueEdit->text();
 
@@ -299,18 +298,18 @@ void SSlider::editValue()
 
 void SSlider::setValue( int value, bool _bForced )
 {
-    SLM_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
+    SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
 
     // we use either an edit box or a label to display the current value
     if( !m_hasEditBox )
     {
-        SLM_ASSERT("m_valueLabel must not be null", nullptr != m_valueLabel);
+        SIGHT_ASSERT("m_valueLabel must not be null", nullptr != m_valueLabel);
 
         m_valueLabel->setText(QString::number(value));
     }
     else
     {
-        SLM_ASSERT("m_valueEdit must not be null", nullptr != m_valueEdit);
+        SIGHT_ASSERT("m_valueEdit must not be null", nullptr != m_valueEdit);
 
         m_valueEdit->setText(QString::number(value));
     }
@@ -329,8 +328,8 @@ void SSlider::setValue( int value, bool _bForced )
 
 void SSlider::setMinValue(int value)
 {
-    SLM_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
-    SLM_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
+    SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
+    SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
 
     m_minValue = value;
     m_valueSlider->setMinimum( value );
@@ -341,8 +340,8 @@ void SSlider::setMinValue(int value)
 
 void SSlider::setMaxValue(int value)
 {
-    SLM_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
-    SLM_ASSERT("m_maxValueLabel must not be null", nullptr != m_maxValueLabel);
+    SIGHT_ASSERT("m_valueSlider must not be null", nullptr != m_valueSlider);
+    SIGHT_ASSERT("m_maxValueLabel must not be null", nullptr != m_maxValueLabel);
 
     m_maxValue = value;
     m_valueSlider->setMaximum( value );

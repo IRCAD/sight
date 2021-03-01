@@ -37,7 +37,8 @@ namespace layoutManager
 {
 //-----------------------------------------------------------------------------
 
-const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY = "::sight::ui::base::LineLayoutManager";
+const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY =
+    "::sight::ui::base::LineLayoutManager";
 
 //-----------------------------------------------------------------------------
 
@@ -56,16 +57,16 @@ LineLayoutManagerBase::~LineLayoutManagerBase()
 
 void LineLayoutManagerBase::initialize( ConfigurationType configuration)
 {
-    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-               configuration->getName() == "layout");
+    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+                 configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectOrientation = configuration->find("orientation");
 
-    SLM_FATAL_IF( "missing orientation configuration", vectOrientation.empty() );
-    SLM_ASSERT("<orientation> tag must have value attribute", vectOrientation.at(0)->hasAttribute("value"));
+    SIGHT_FATAL_IF( "missing orientation configuration", vectOrientation.empty() );
+    SIGHT_ASSERT("<orientation> tag must have value attribute", vectOrientation.at(0)->hasAttribute("value"));
     std::string orientation = vectOrientation.at(0)->getExistingAttributeValue("value");
-    SLM_ASSERT("Wrong value '"<< orientation <<"' for 'orientation' attribute (require vertical or horizontal)",
-               orientation == "vertical" || orientation == "horizontal");
+    SIGHT_ASSERT("Wrong value '"<< orientation <<"' for 'orientation' attribute (require vertical or horizontal)",
+                 orientation == "vertical" || orientation == "horizontal");
     m_orientation = (orientation == "vertical") ? VERTICAL : HORIZONTAL;
 
     m_views.clear();
@@ -136,16 +137,16 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("visible") )
             {
                 const std::string visible = view->getExistingAttributeValue("visible");
-                SLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
-                           (visible == "true") || (visible == "false") ||
-                           (visible == "yes") || (visible == "no"));
+                SIGHT_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                             (visible == "true") || (visible == "false") ||
+                             (visible == "yes") || (visible == "no"));
                 vi.m_visible = ((visible == "true") || (visible == "yes"));
             }
             if( view->hasAttribute("useScrollBar") )
             {
                 const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-                SLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                           (useScrollBar == "yes") || (useScrollBar == "no"));
+                SIGHT_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                             (useScrollBar == "yes") || (useScrollBar == "no"));
                 vi.m_useScrollBar = (useScrollBar == "yes");
             }
             if( view->hasAttribute("toolTip") )
@@ -158,7 +159,7 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
                 const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
                 if(!hexaColor.empty())
                 {
-                    SLM_ASSERT(
+                    SIGHT_ASSERT(
                         "Color string should start with '#' and followed by 6 or 8 "
                         "hexadecimal digits. Given color: " << hexaColor,
                             hexaColor[0] == '#'

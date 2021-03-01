@@ -26,10 +26,10 @@
 
 #include <io/http/ClientQt.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLineEdit>
 #include <QSlider>
-
-#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -67,7 +67,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomPullerEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomPullerEditor,  sight::ui::base::IEditor )
 
     /**
      * @brief Constructor

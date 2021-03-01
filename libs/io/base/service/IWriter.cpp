@@ -60,8 +60,8 @@ IWriter::~IWriter() noexcept
 
 const std::filesystem::path& IWriter::getFile() const
 {
-    FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILE));
-    FW_RAISE_IF("Exactly one file must be define in location", m_locations.size() != 1);
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILE));
+    SIGHT_THROW_IF("Exactly one file must be define in location", m_locations.size() != 1);
 
     m_currentLocation = m_locations.front();
     if(m_useTimestampPrefix)
@@ -80,7 +80,7 @@ const std::filesystem::path& IWriter::getFile() const
 
 void IWriter::setFile( const std::filesystem::path& file)
 {
-    FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILE));
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILE));
     m_locations.clear();
     m_locations.push_back(file);
 }
@@ -89,8 +89,8 @@ void IWriter::setFile( const std::filesystem::path& file)
 
 const io::base::service::LocationsType& IWriter::getFiles() const
 {
-    FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILES));
-    FW_RAISE_IF("At least one file must be define in location", m_locations.empty() );
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILES));
+    SIGHT_THROW_IF("At least one file must be define in location", m_locations.empty() );
     return m_locations;
 }
 
@@ -98,7 +98,7 @@ const io::base::service::LocationsType& IWriter::getFiles() const
 
 void IWriter::setFiles(const io::base::service::LocationsType& files)
 {
-    FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILES));
+    SIGHT_THROW_IF("This reader doesn't manage files", !(this->getIOPathType() & io::base::service::FILES));
     m_locations = files;
 }
 
@@ -106,8 +106,8 @@ void IWriter::setFiles(const io::base::service::LocationsType& files)
 
 const std::filesystem::path& IWriter::getFolder() const
 {
-    FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::base::service::FOLDER));
-    FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
+    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::base::service::FOLDER));
+    SIGHT_THROW_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
     return m_locations.front();
 }
 
@@ -115,7 +115,7 @@ const std::filesystem::path& IWriter::getFolder() const
 
 void IWriter::setFolder(const std::filesystem::path& folder)
 {
-    FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::base::service::FOLDER));
+    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->getIOPathType() & io::base::service::FOLDER));
     m_locations.clear();
     m_locations.push_back(folder);
 }
@@ -124,9 +124,9 @@ void IWriter::setFolder(const std::filesystem::path& folder)
 
 void IWriter::setFileFolder(std::filesystem::path folder)
 {
-    FW_RAISE_IF("This reader doesn't manage file or files",
-                !(this->getIOPathType() & io::base::service::FILE) &&
-                !(this->getIOPathType() & io::base::service::FILES));
+    SIGHT_THROW_IF("This reader doesn't manage file or files",
+                   !(this->getIOPathType() & io::base::service::FILE) &&
+                   !(this->getIOPathType() & io::base::service::FILES));
 
     for(auto& file : m_locations)
     {
@@ -149,7 +149,7 @@ void IWriter::setTimestampPrefix(core::HiResClock::HiResClockType timestamp)
 
 const io::base::service::LocationsType& IWriter::getLocations() const
 {
-    FW_RAISE_IF("At least one path must be define in location", m_locations.empty() );
+    SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty() );
     return m_locations;
 }
 
@@ -164,25 +164,25 @@ void IWriter::clearLocations()
 
 void IWriter::configuring()
 {
-    SLM_ASSERT("Generic configuring method is only available for io service that uses paths.",
-               !( this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED ) );
+    SIGHT_ASSERT("Generic configuring method is only available for io service that uses paths.",
+                 !( this->getIOPathType() & io::base::service::TYPE_NOT_DEFINED ) );
 
-    SLM_ASSERT("This writer does not manage folders and a folder path is given in the configuration",
-               ( this->getIOPathType() & io::base::service::FOLDER ) ||
-               (m_configuration->find("folder").size() == 0));
+    SIGHT_ASSERT("This writer does not manage folders and a folder path is given in the configuration",
+                 ( this->getIOPathType() & io::base::service::FOLDER ) ||
+                 (m_configuration->find("folder").size() == 0));
 
-    SLM_ASSERT("This writer does not manages files and a file path is given in the configuration",
-               ( this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES ) ||
-               (m_configuration->find("file").size() == 0));
+    SIGHT_ASSERT("This writer does not manages files and a file path is given in the configuration",
+                 ( this->getIOPathType() & io::base::service::FILE || this->getIOPathType() & io::base::service::FILES ) ||
+                 (m_configuration->find("file").size() == 0));
 
     core::runtime::ConfigurationElement::sptr titleConfig = m_configuration->findConfigurationElement("windowTitle");
     m_windowTitle = titleConfig ? titleConfig->getValue() : "";
 
     if ( this->getIOPathType() & io::base::service::FILE )
     {
-        FW_RAISE_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES );
+        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES );
         std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("file");
-        FW_RAISE_IF("No more than one file must be defined in the configuration", config.size() > 1 );
+        SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.size() > 1 );
         if (config.size() == 1)
         {
             std::string file = config.at(0)->getValue();
@@ -192,7 +192,7 @@ void IWriter::configuring()
 
     if ( this->getIOPathType() & io::base::service::FILES )
     {
-        FW_RAISE_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILE );
+        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILE );
         std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("file");
         io::base::service::LocationsType locations;
         for(core::runtime::ConfigurationElement::sptr elt :  config)
@@ -206,7 +206,7 @@ void IWriter::configuring()
     if ( this->getIOPathType() & io::base::service::FOLDER )
     {
         std::vector< core::runtime::ConfigurationElement::sptr > config = m_configuration->find("folder");
-        FW_RAISE_IF("No more than one folder must be defined in configuration", config.size() > 1 );
+        SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.size() > 1 );
         if (config.size() == 1)
         {
             std::string folder = config.at(0)->getValue();

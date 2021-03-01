@@ -79,7 +79,7 @@ struct WeakCall
             m_worker.reset();
             // will throw an exception because m_weakPtr is expired
             std::shared_ptr< T const > errorPtr(this->m_weakPtr);
-            FwCoreNotUsedMacro(errorPtr);
+            SIGHT_NOT_USED(errorPtr);
         }
 
         core::mt::ReadLock lock(ptr->m_workerMutex);
@@ -89,7 +89,7 @@ struct WeakCall
         if (worker && ptr->m_worker != worker)
         {
             //Worker changed since WeakCall creation
-            FW_RAISE_EXCEPTION(core::com::exception::WorkerChanged("Worker changed since WeakCall creation"));
+            SIGHT_THROW_EXCEPTION(core::com::exception::WorkerChanged("Worker changed since WeakCall creation"));
         }
 
         this->m_weakPtr.reset();

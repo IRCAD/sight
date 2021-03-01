@@ -52,9 +52,9 @@ class IO_VTK_CLASS_API SeriesDBReader :
 
 public:
 
-    fwCoreClassMacro(SeriesDBReader, io::base::reader::GenericObjectReader< data::SeriesDB >,
-                     io::base::reader::factory::New< SeriesDBReader >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(SeriesDBReader, io::base::reader::GenericObjectReader< data::SeriesDB >,
+                        io::base::reader::factory::New< SeriesDBReader >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API SeriesDBReader(io::base::reader::IObjectReader::Key key);

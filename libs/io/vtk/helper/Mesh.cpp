@@ -154,24 +154,24 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, data::Mesh::sptr
             switch (cellType)
             {
                 case VTK_VERTEX:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(0)));
                     break;
                 case VTK_LINE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(
                                                                           0)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(1)));
                     break;
                 case VTK_TRIANGLE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(
                                                                           0)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(1)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(2)));
                     break;
                 case VTK_QUAD:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(
                                                                           0)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(1)),
@@ -186,7 +186,7 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, data::Mesh::sptr
                     }
                     break;
                 default:
-                    FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
+                    SIGHT_THROW("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
         mesh->adjustAllocatedMemory();
@@ -346,24 +346,24 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, data::Mesh::sp
             switch (cellType)
             {
                 case VTK_VERTEX:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(0)));
                     break;
                 case VTK_LINE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(
                                                                           0)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(1)));
                     break;
                 case VTK_TRIANGLE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(
                                                                           0)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(1)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(2)));
                     break;
                 case VTK_QUAD:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
+                    SIGHT_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
                     mesh->pushCell(static_cast< data::Mesh::PointId >(idList->GetId(
                                                                           0)),
                                    static_cast< data::Mesh::PointId >(idList->GetId(1)),
@@ -381,7 +381,7 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, data::Mesh::sp
                                    data::Mesh::CellType::TETRA);
                     break;
                 default:
-                    FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
+                    SIGHT_THROW("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
 
@@ -527,7 +527,7 @@ void Mesh::toVTKMesh( const data::Mesh::csptr& mesh, vtkSmartPointer<vtkPolyData
                     polyData->InsertNextCell( typeVtkCell, 2, cell );
                     break;
                 default:
-                    FW_RAISE("Mesh type "<< static_cast<int>(cellType)<< " not supported.");
+                    SIGHT_THROW("Mesh type "<< static_cast<int>(cellType)<< " not supported.");
 
             }
             if (mesh->hasCellColors() && nbColorComponents == 3)
@@ -683,7 +683,7 @@ void Mesh::toVTKGrid( const data::Mesh::csptr& mesh, vtkSmartPointer<vtkUnstruct
                     grid->InsertNextCell( typeVtkCell, 4, cell );
                     break;
                 default:
-                    FW_RAISE("Mesh type "<< static_cast<int>(cellType)<< " not supported.");
+                    SIGHT_THROW("Mesh type "<< static_cast<int>(cellType)<< " not supported.");
             }
             if (mesh->hasCellColors() && nbColorComponents == 3)
             {
@@ -876,7 +876,7 @@ void Mesh::updatePolyDataPointsAndAttributes(vtkSmartPointer<vtkPolyData> polyDa
 void Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
                                 const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     vtkPoints* polyDataPoints = polyDataDst->GetPoints();
     const vtkIdType nbPoints  = static_cast<vtkIdType>(meshSrc->getNumberOfPoints());
@@ -901,7 +901,7 @@ void Mesh::updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
 void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
                                     const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     if(meshSrc->hasPointColors())
     {
@@ -938,7 +938,7 @@ void Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
                                    const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     if(meshSrc->hasCellColors())
     {
@@ -976,7 +976,7 @@ void Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
 void Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
                                       const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     if(meshSrc->hasPointNormals())
     {
@@ -1018,7 +1018,7 @@ void Mesh::updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
 void Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
                                      const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     if(meshSrc->hasCellNormals())
     {
@@ -1060,7 +1060,7 @@ void Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
 void Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
                                         const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     if(meshSrc->hasPointTexCoords())
     {
@@ -1100,7 +1100,7 @@ void Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst
 void Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst,
                                        const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", polyDataDst);
 
     if(meshSrc->hasCellTexCoords())
     {
@@ -1166,10 +1166,10 @@ double Mesh::computeVolume( const data::Mesh::csptr& mesh )
     calculator->Update();
 
     const double volume = calculator->GetVolume();
-    SLM_DEBUG(
+    SIGHT_DEBUG(
         "GetVolume : " << volume << " vtkMassProperties::GetVolumeProjected = " <<
             calculator->GetVolumeProjected() );
-    SLM_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
+    SIGHT_DEBUG("Error : " << (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000);
     if ( (calculator->GetVolume()- fabs(calculator->GetVolumeProjected()))*10000 > calculator->GetVolume() )
     {
         std::stringstream ss;
@@ -1298,7 +1298,7 @@ void Mesh::updateGridPointsAndAttributes(vtkSmartPointer<vtkUnstructuredGrid> gr
 void Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                   const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkUnstructuredGrid should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkUnstructuredGrid should not be NULL", gridDst);
 
     if(meshSrc->hasPointNormals())
     {
@@ -1341,7 +1341,7 @@ void Mesh::updateGridPointNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                             const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
     vtkPoints* polyDataPoints = gridDst->GetPoints();
     const vtkIdType nbPoints  = static_cast<vtkIdType>(meshSrc->getNumberOfPoints());
@@ -1366,7 +1366,7 @@ void Mesh::updateGridPoints(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                 const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
     if(meshSrc->hasPointColors())
     {
@@ -1404,7 +1404,7 @@ void Mesh::updateGridPointColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
     if(meshSrc->hasCellColors())
     {
@@ -1441,7 +1441,7 @@ void Mesh::updateGridCellColor(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 void Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                  const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
     if(meshSrc->hasCellNormals())
     {
@@ -1484,7 +1484,7 @@ void Mesh::updateGridCellNormals(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
 void Mesh::updateGridPointTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                     const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
     if(meshSrc->hasPointTexCoords())
     {
@@ -1525,7 +1525,7 @@ void Mesh::updateGridPointTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst
 void Mesh::updateGridCellTexCoords(vtkSmartPointer<vtkUnstructuredGrid> gridDst,
                                    const data::Mesh::csptr& meshSrc )
 {
-    SLM_ASSERT( "vtkPolyData should not be NULL", gridDst);
+    SIGHT_ASSERT( "vtkPolyData should not be NULL", gridDst);
 
     if(meshSrc->hasCellTexCoords())
     {

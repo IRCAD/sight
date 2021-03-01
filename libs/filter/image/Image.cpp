@@ -50,12 +50,12 @@ struct RoiApplyer
         typedef IMAGE_TYPE ImgType;
         typedef ROI_TYPE RoiType;
 
-        SLM_ASSERT( "Null image pointer", p.img && p.roi);
+        SIGHT_ASSERT( "Null image pointer", p.img && p.roi);
 
         const auto imgDumpLock = p.img->lock();
         const auto roiDumpLock = p.roi->lock();
 
-        SLM_ASSERT( "Null data buffers", p.img->getBuffer() && p.roi->getBuffer());
+        SIGHT_ASSERT( "Null data buffers", p.img->getBuffer() && p.roi->getBuffer());
 
         auto imIt         = p.img->begin<ImgType>();
         const auto imEnd  = p.img->end<ImgType>();
@@ -90,8 +90,8 @@ struct RoiApplyerCaller
 
 void applyRoi( data::Image::sptr image, data::Image::sptr roi )
 {
-    SLM_ASSERT( "Null image pointers", image && roi);
-    SLM_ASSERT( "Images have different size", image->getSize2() == roi->getSize2());
+    SIGHT_ASSERT( "Null image pointers", image && roi);
+    SIGHT_ASSERT( "Images have different size", image->getSize2() == roi->getSize2());
 
     using namespace boost;
 
@@ -135,8 +135,8 @@ struct RoiTester
         const auto imgRoiAppliedDumpLock = p.imgRoiApplyed->lock();
         const auto roiDumpLock           = p.roi->lock();
 
-        SLM_ASSERT( "Null data buffers",
-                    p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplyed->getBuffer() );
+        SIGHT_ASSERT( "Null data buffers",
+                      p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplyed->getBuffer() );
 
         auto imIt        = p.img->begin<ImgType>();
         const auto imEnd = p.img->end<ImgType>();
@@ -169,9 +169,9 @@ struct RoiTesterCaller
 
 bool isRoiApplyed( data::Image::sptr image, data::Image::sptr roi, data::Image::sptr imgRoiApplyed )
 {
-    SLM_ASSERT( "Null image pointers", image && imgRoiApplyed && roi);
-    SLM_ASSERT( "Images have different size",
-                image->getSize2() == imgRoiApplyed->getSize2() && image->getSize2() == roi->getSize2());
+    SIGHT_ASSERT( "Null image pointers", image && imgRoiApplyed && roi);
+    SIGHT_ASSERT( "Images have different size",
+                  image->getSize2() == imgRoiApplyed->getSize2() && image->getSize2() == roi->getSize2());
 
     RoiTesterParam param;
     param.img           = image;

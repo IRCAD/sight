@@ -28,18 +28,18 @@
 #include <core/log/Logger.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
+#include <data/helper/SeriesDB.hpp>
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
-#include <data/helper/SeriesDB.hpp>
-
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/extension/Config.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <service/extension/Config.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -50,7 +50,6 @@
 
 namespace sight::module::io::dicom
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -117,9 +116,9 @@ void SSeriesDBReader::openLocationDialog()
         filterSelectorConfig = service::extension::Config::getDefault()->getServiceConfig(
             m_filterConfig, "::sight::module::ui::dicom::SFilterSelectorDialog");
 
-        SLM_ASSERT("Sorry, there is no service configuration "
-                   << m_filterConfig
-                   << " for module::ui::dicom::SFilterSelectorDialog", filterSelectorConfig);
+        SIGHT_ASSERT("Sorry, there is no service configuration "
+                     << m_filterConfig
+                     << " for module::ui::dicom::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
         service::IService::sptr filterSelectorSrv;
@@ -165,8 +164,8 @@ void SSeriesDBReader::configuring()
 
     // Enable dicomdir
     const std::string dicomDirStr = config.get<std::string>("dicomdirSupport", "user_selection");
-    SLM_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
-               dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
+    SIGHT_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
+                 dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
     if(dicomDirStr == "always")
     {
         m_dicomDirSupport = ALWAYS;
@@ -190,7 +189,7 @@ void SSeriesDBReader::configuring()
             const service::IService::ConfigType& sopClassConfig = sopClassIter->second;
             const service::IService::ConfigType& sopClassAttr   = sopClassConfig.get_child("<xmlattr>");
 
-            SLM_ASSERT("Missing attribute 'uid' in element '<SOPClass>'", sopClassAttr.count("uid") == 1);
+            SIGHT_ASSERT("Missing attribute 'uid' in element '<SOPClass>'", sopClassAttr.count("uid") == 1);
             m_supportedSOPClassSelection.push_back(sopClassAttr.get<std::string>("uid"));
         }
     }

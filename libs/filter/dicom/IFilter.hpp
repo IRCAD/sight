@@ -60,7 +60,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IFilter, core::tools::Object)
+    SIGHT_DECLARE_CLASS(IFilter, core::tools::Object)
 
     typedef std::vector< data::DicomSeries::sptr > DicomSeriesContainerType;
 

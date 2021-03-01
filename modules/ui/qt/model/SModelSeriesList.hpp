@@ -33,11 +33,11 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 class QTreeWidget;
 class QCheckBox;
@@ -104,7 +104,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SModelSeriesList, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::base::IEditor)
 
     /// Initializes the slot and signals.
     MODULE_UI_QT_API SModelSeriesList() noexcept;

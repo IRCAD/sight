@@ -107,14 +107,14 @@ public:
 
     T operator()( ::boost::blank& ) const
     {
-        FW_RAISE_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
+        SIGHT_THROW_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
         return T();
     }
     //------------------------------------------------------------------------------
 
     T operator()( const ::boost::blank& ) const
     {
-        FW_RAISE_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
+        SIGHT_THROW_EXCEPTION(atoms::Exception("Unable to get value of an empty numeric"));
         return T();
     }
 

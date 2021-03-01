@@ -39,7 +39,7 @@ namespace modifier
 class FILTER_DICOM_CLASS_API SliceThicknessModifier : public IModifier
 {
 public:
-    fwCoreClassMacro(SliceThicknessModifier, IModifier, filter::dicom::factory::New< SliceThicknessModifier >)
+    SIGHT_DECLARE_CLASS(SliceThicknessModifier, IModifier, filter::dicom::factory::New< SliceThicknessModifier >)
 
     /// Constructor
     FILTER_DICOM_API SliceThicknessModifier(filter::dicom::IFilter::Key key);

@@ -26,14 +26,12 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Camera.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
@@ -42,11 +40,12 @@
 #include <io/opencv/Matrix.hpp>
 #include <io/opencv/PointList.hpp>
 
-#include <opencv2/calib3d.hpp>
-#include <opencv2/opencv.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/preferences/helper.hpp>
 
+#include <opencv2/calib3d.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -89,11 +88,11 @@ void SChessboardReprojection::configuring()
     const ConfigType config      = configTree.get_child("config.<xmlattr>");
 
     m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");
-    SLM_ASSERT("Missing board width preference key.", !m_widthKey.empty());
+    SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
     m_heightKey = boardConfig.get<std::string>("<xmlattr>.height");
-    SLM_ASSERT("Missing board height preference key.", !m_heightKey.empty());
+    SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
     m_squareSizeKey = boardConfig.get<std::string>("<xmlattr>.squareSize");
-    SLM_ASSERT("Missing board square size preference key.", !m_squareSizeKey.empty());
+    SIGHT_ASSERT("Missing board square size preference key.", !m_squareSizeKey.empty());
 
     const std::string outputKey = configTree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
     if(outputKey == s_CHESSBOARD_MODEL_OUTPUT)
@@ -118,7 +117,7 @@ void SChessboardReprojection::starting()
 void SChessboardReprojection::updating()
 {
     data::PointList::csptr detectedChessboard = this->getInput< data::PointList >(s_DETECTED_CHESSBOARD_INPUT);
-    SLM_ASSERT("Missing 'detectedChessboard'.", detectedChessboard);
+    SIGHT_ASSERT("Missing 'detectedChessboard'.", detectedChessboard);
     data::mt::ObjectReadLock detectedPtsLock(detectedChessboard);
 
     if(detectedChessboard->getPoints().empty())
@@ -127,7 +126,7 @@ void SChessboardReprojection::updating()
     }
 
     data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("Missing 'camera'.", camera);
+    SIGHT_ASSERT("Missing 'camera'.", camera);
     data::mt::ObjectReadLock cameraLock(camera);
 
     ::cv::Size imgSize;
@@ -150,7 +149,7 @@ void SChessboardReprojection::updating()
     {
         data::Matrix4::csptr transform =
             this->getInput< data::Matrix4 >(s_TRANSFORM_INPUT);
-        SLM_ASSERT("Missing 'transform'.", transform);
+        SIGHT_ASSERT("Missing 'transform'.", transform);
         data::mt::ObjectReadLock trfLock(transform);
 
         io::opencv::Matrix::copyToCv(transform, rvec, tvec);
@@ -164,8 +163,8 @@ void SChessboardReprojection::updating()
     }
 
     data::Image::sptr videoImage = this->getInOut< data::Image >(s_VIDEO_IMAGE_INOUT);
-    SLM_ERROR_IF("Drawing is enabled in the configuration but there is no 'videoImage' to draw onto.",
-                 !videoImage && (m_drawDetected || m_drawReprojection || m_drawReprojectionError));
+    SIGHT_ERROR_IF("Drawing is enabled in the configuration but there is no 'videoImage' to draw onto.",
+                   !videoImage && (m_drawDetected || m_drawReprojection || m_drawReprojectionError));
 
     if(videoImage)
     {
@@ -182,8 +181,8 @@ void SChessboardReprojection::updating()
         ::cv::Mat img = io::opencv::Image::moveToCv(videoImage);
 
         const bool drawingEnabled = m_drawReprojection || m_drawReprojection || m_drawReprojectionError;
-        SLM_WARN_IF("An inout 'videoImage' was given to the service but no drawing operation was enabled.",
-                    !drawingEnabled);
+        SIGHT_WARN_IF("An inout 'videoImage' was given to the service but no drawing operation was enabled.",
+                      !drawingEnabled);
 
         if (m_drawReprojection)
         {

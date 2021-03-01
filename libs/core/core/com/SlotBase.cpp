@@ -40,8 +40,8 @@ void SlotBase::run() const
     }
     else
     {
-        SLM_ERROR( "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
-        FW_RAISE_EXCEPTION( core::com::exception::BadRun( "Failed to find right signature for run"  ) );
+        SIGHT_ERROR( "failed to run : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
+        SIGHT_THROW_EXCEPTION( core::com::exception::BadRun( "Failed to find right signature for run"  ) );
     }
 }
 
@@ -57,8 +57,8 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun() const
     }
     else
     {
-        SLM_ERROR( "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
-        FW_RAISE_EXCEPTION( core::com::exception::BadRun( "Failed to find right signature for asyncRun"  ) );
+        SIGHT_ERROR( "failed to asyncRun : " + m_signature + " with " + SlotBase::getTypeName< void() >() );
+        SIGHT_THROW_EXCEPTION( core::com::exception::BadRun( "Failed to find right signature for asyncRun"  ) );
     }
 }
 

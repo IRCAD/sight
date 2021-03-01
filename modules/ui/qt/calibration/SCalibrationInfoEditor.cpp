@@ -32,17 +32,17 @@
 
 #include <service/macros.hpp>
 
-#include <QHBoxLayout>
-
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QHBoxLayout>
 
 #include <map>
 
 namespace sight::module::ui::qt::calibration
 {
 
-const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT = "remove";
+const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT        = "remove";
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
 const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
 
@@ -63,7 +63,7 @@ SCalibrationInfoEditor::SCalibrationInfoEditor() noexcept
 void SCalibrationInfoEditor::updating()
 {
     data::CalibrationInfo::sptr calInfo1 = this->getInOut< data::CalibrationInfo >(s_CALIBRATION_INFO_1);
-    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
+    SIGHT_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
     data::mt::ObjectReadLock calib1Lock(calInfo1);
 
     data::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
@@ -183,7 +183,7 @@ void SCalibrationInfoEditor::remove()
         const size_t idx = static_cast<size_t>(row);
 
         data::CalibrationInfo::sptr calInfo1 = this->getInOut< data::CalibrationInfo >(s_CALIBRATION_INFO_1);
-        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
+        SIGHT_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
         data::CalibrationInfo::sptr calInfo2 = this->getInOut< data::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
@@ -219,7 +219,7 @@ void SCalibrationInfoEditor::remove()
 void SCalibrationInfoEditor::reset()
 {
     data::CalibrationInfo::sptr calInfo1 = this->getInOut< data::CalibrationInfo >(s_CALIBRATION_INFO_1);
-    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
+    SIGHT_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
     data::CalibrationInfo::sptr calInfo2 = this->getInOut< data::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
@@ -261,7 +261,7 @@ void SCalibrationInfoEditor::getSelection()
         const size_t idx = static_cast<size_t>(row);
 
         data::CalibrationInfo::sptr calInfo1 = this->getInOut< data::CalibrationInfo >(s_CALIBRATION_INFO_1);
-        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
+        SIGHT_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
         //Notify
         {

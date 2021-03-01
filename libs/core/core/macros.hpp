@@ -36,7 +36,7 @@
 #include <string>
 #include <type_traits>
 
-#define FwCoreNotUsedMacro(x) ((void) x )
+#define SIGHT_NOT_USED(x) ((void) x )
 
 /**
  * @name Smart pointers macro
@@ -236,7 +236,7 @@
  *
  * These methods use 'shared_from_this' to get a shared pointer and cast it to required type
  */
-#define fwCoreAllowSharedFromThis()                                              \
+#define SIGHT_ALLOW_SHARED_FROM_THIS()                                              \
     /** @brief return a casted const shared ptr from this object */              \
     csptr getConstSptr() const                                                   \
     {                                                                            \
@@ -249,10 +249,10 @@
     }
 
 #if !BOOST_PP_VARIADICS_MSVC
-    #define fwCoreClassMacro(...) \
+    #define SIGHT_DECLARE_CLASS(...) \
     BOOST_PP_OVERLOAD(__FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 #else
-    #define fwCoreClassMacro(...) \
+    #define SIGHT_DECLARE_CLASS(...) \
     BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 #endif
 
@@ -278,5 +278,5 @@
 /**
  * @brief Generate common code for services classes
  */
-#define fwCoreServiceMacro(_class, _parentClass) \
+#define SIGHT_DECLARE_SERVICE(_class, _parentClass) \
     __FWCORE_CLASS_MACRO_2(_class, _parentClass)

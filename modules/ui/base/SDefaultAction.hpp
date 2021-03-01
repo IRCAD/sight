@@ -39,7 +39,7 @@ class MODULE_UI_BASE_CLASS_API SDefaultAction : public ::sight::ui::base::IActio
 
 public:
 
-    fwCoreServiceMacro(SDefaultAction, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SDefaultAction, ::sight::ui::base::IAction)
 
     /**
      * @brief Constructor. Do nothing.

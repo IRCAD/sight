@@ -44,8 +44,8 @@ class IO_DIMSE_CLASS_API SeriesRetriever : public core::BaseObject,
 {
 
 public:
-    fwCoreClassMacro(SeriesRetriever, io::dimse::SeriesRetriever, new SeriesRetriever)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(SeriesRetriever, io::dimse::SeriesRetriever, new SeriesRetriever)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_DIMSE_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
     typedef core::com::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;

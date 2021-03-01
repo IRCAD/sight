@@ -34,21 +34,20 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
-
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
 namespace sight::module::io::video
 {
 
-
-static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
+static const core::com::Slots::SlotKeyType s_SAVE_FRAME           = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
 static const core::com::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
 static const core::com::Slots::SlotKeyType s_RECORD               = "record";
@@ -243,8 +242,8 @@ void SFrameWriter::startRecord()
         }
         else
         {
-            SLM_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
-                      std::to_string(frameTL->getNumberOfComponents()) + " is not supported");
+            SIGHT_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
+                        std::to_string(frameTL->getNumberOfComponents()) + " is not supported");
             return;
         }
 
@@ -296,12 +295,12 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
         }
         else
         {
-            SLM_ERROR("Value : '"+ val + "' is not supported");
+            SIGHT_ERROR("Value : '"+ val + "' is not supported");
         }
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ key + "' is not handled");
     }
 }
 

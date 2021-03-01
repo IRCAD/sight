@@ -139,7 +139,7 @@ std::string formatTime(const std::string& _time)
     if( std::regex_match(formatTime, match, re) )
     {
         std::string year, month, day, hour, min, sec;
-        SLM_ASSERT("Wrong match for "<<formatTime, match.size() >= 4);
+        SIGHT_ASSERT("Wrong match for "<<formatTime, match.size() >= 4);
         hour.assign(match[1].first, match[1].second);
         min.assign(match[2].first, match[2].second);
         sec.assign(match[3].first, match[3].second);
@@ -223,7 +223,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
             this->setItem(m_studyRowCount, int(ColumnSeriesType::REMOVE), new QStandardItem(QString("")));
 
             QTreeView* const selector = static_cast< QTreeView* >(this->parent());
-            SLM_ASSERT("The QTreeView parent must be given to the constructor", selector);
+            SIGHT_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
             QPushButton* const removeButton = new QPushButton(QIcon(m_removeStudyIcon.string().c_str()), "");
             selector->setIndexWidget(this->index(m_studyRowCount, int(ColumnSeriesType::REMOVE)), removeButton);
@@ -281,7 +281,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
         studyRootItem->setChild(nbRow, int(ColumnSeriesType::REMOVE), removeItem);
 
         QTreeView* const selector = static_cast< QTreeView* >(this->parent());
-        SLM_ASSERT("The QTreeView parent must be given to the constructor", selector);
+        SIGHT_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
         QPushButton* const removeButton = new QPushButton(QIcon(m_removeSerieIcon.string().c_str()), "");
         selector->setIndexWidget(this->indexFromItem(removeItem), removeButton);
@@ -457,8 +457,8 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         else if (activitySeries)
         {
             activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
-            std::string id                              = activitySeries->getActivityConfigId();
-            SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+            std::string id                               = activitySeries->getActivityConfigId();
+            SIGHT_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
             activity::extension::ActivityInfo activityInfo;
             activityInfo = registry->getInfo(id);
@@ -466,7 +466,7 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
         }
         else
         {
-            SLM_WARN("This type of series is not defined (" << _series->getClassname() << ")");
+            SIGHT_WARN("This type of series is not defined (" << _series->getClassname() << ")");
         }
     }
 }
@@ -496,7 +496,7 @@ void SelectorModel::removeRows(const QModelIndexList _indexes)
 
     for(QModelIndex index : _indexes)
     {
-        SLM_ASSERT("Index must be in the name column.", index.column() == int(ColumnSeriesType::NAME));
+        SIGHT_ASSERT("Index must be in the name column.", index.column() == int(ColumnSeriesType::NAME));
         QStandardItem* item = this->itemFromIndex(index);
         if (item->data(Role::ITEM_TYPE) == ItemType::STUDY)
         {
@@ -532,12 +532,12 @@ void SelectorModel::removeRows(const QModelIndexList _indexes)
 bool SelectorModel::removeStudyItem(QStandardItem* _item)
 {
     bool isRemoved = false;
-    SLM_ASSERT("Index must represent a study.", _item->data(Role::ITEM_TYPE) == ItemType::STUDY);
+    SIGHT_ASSERT("Index must represent a study.", _item->data(Role::ITEM_TYPE) == ItemType::STUDY);
     QString uid                      = _item->data(Role::UID).toString();
     data::DicomValueType instanceUID = uid.toStdString();
 
     isRemoved = this->QStandardItemModel::removeRow(_item->row());
-    SLM_ASSERT("Remove can not be done!", isRemoved);
+    SIGHT_ASSERT("Remove can not be done!", isRemoved);
     m_items.erase(instanceUID);
     --m_studyRowCount;
 
@@ -550,10 +550,10 @@ bool SelectorModel::removeSeriesItem(QStandardItem* _item)
 {
     bool isRemoved = false;
 
-    SLM_ASSERT("Index must represent series", _item->data(Role::ITEM_TYPE) == ItemType::SERIES);
+    SIGHT_ASSERT("Index must represent series", _item->data(Role::ITEM_TYPE) == ItemType::SERIES);
     QStandardItem* parent = _item->parent();
     isRemoved = this->QStandardItemModel::removeRow(_item->row(), this->indexFromItem(parent));
-    SLM_ASSERT("Remove can not be done!", isRemoved);
+    SIGHT_ASSERT("Remove can not be done!", isRemoved);
     if(parent && parent->rowCount() == 0)
     {
         this->removeStudyItem(parent);

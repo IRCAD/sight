@@ -28,10 +28,10 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
+#include <io/base/writer/registry/macros.hpp>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
-
-#include <io/base/writer/registry/macros.hpp>
 
 #include <vtkBMPWriter.h>
 #include <vtkImageData.h>
@@ -42,7 +42,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkTIFFWriter.h>
 
-fwDataIOWriterRegisterMacro( sight::io::vtk::BitmapImageWriter );
+SIGHT_REGISTER_IO_WRITER( sight::io::vtk::BitmapImageWriter );
 
 namespace sight::io::vtk
 {
@@ -64,8 +64,8 @@ BitmapImageWriter::~BitmapImageWriter()
 
 void BitmapImageWriter::write()
 {
-    SLM_ASSERT("The current object has expired.", !m_object.expired() );
-    SLM_ASSERT("Unable to lock object", m_object.lock() );
+    SIGHT_ASSERT("The current object has expired.", !m_object.expired() );
+    SIGHT_ASSERT("Unable to lock object", m_object.lock() );
 
     const data::Image::csptr pImage = getConcreteObject();
 

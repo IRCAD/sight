@@ -88,7 +88,7 @@ struct SpheroidExtractor
 
         typename LabelStatsFilterType::LabelsType labels = labelGeometryFilter->GetLabels();
 
-        SLM_DEBUG( "Number of labels : " << labelGeometryFilter->GetNumberOfLabels() );
+        SIGHT_DEBUG( "Number of labels : " << labelGeometryFilter->GetNumberOfLabels() );
 
         typename LabelStatsFilterType::LabelsType::iterator labelsIt;
         for(labelsIt = labels.begin(); labelsIt != labels.end(); labelsIt++)
@@ -103,8 +103,8 @@ struct SpheroidExtractor
             const double e        = labelGeometryFilter->GetElongation(labelValue);
             const auto axesLength = labelGeometryFilter->GetAxesLength(labelValue);
 
-            SLM_DEBUG( "Elongation" << e );
-            SLM_DEBUG( "Axes length" << axesLength );
+            SIGHT_DEBUG( "Elongation" << e );
+            SIGHT_DEBUG( "Axes length" << axesLength );
 
             const double ge  = std::pow(e - meanElongation, 2.) / std::pow(elongationSTD, 2.);
             const double gr0 = std::pow(axesLength[0] - radiusMean, 2.) / std::pow(radiusSTD, 2.);
@@ -113,7 +113,7 @@ struct SpheroidExtractor
 
             const double mahalanobisDistance = std::sqrt(ge + gr0 + gr1 + gr2);
 
-            SLM_DEBUG( "Mahalanobis distance : " << mahalanobisDistance );
+            SIGHT_DEBUG( "Mahalanobis distance : " << mahalanobisDistance );
 
             // Empirical value. You shouldn't have to change it.
             // If you believe the detection wrongly failed/succeeded, please consider changing your radius

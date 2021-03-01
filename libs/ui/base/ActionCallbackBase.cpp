@@ -60,9 +60,9 @@ void ActionCallbackBase::setSID(std::string sid)
 
 void ActionCallbackBase::execute()
 {
-    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
+    SIGHT_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
     service::IService::sptr service = service::get( m_sid );
-    SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
+    SIGHT_ASSERT("Service "<<m_sid<<" not instanced.", service);
     service->update();
 }
 
@@ -70,11 +70,11 @@ void ActionCallbackBase::execute()
 
 void ActionCallbackBase::check(bool checked)
 {
-    SLM_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
+    SIGHT_ASSERT("Service "<<m_sid<<" doesn't exist.", core::tools::fwID::exist(m_sid ));
     service::IService::sptr service = service::get( m_sid );
-    SLM_ASSERT("Service "<<m_sid<<" not instanced.", service);
+    SIGHT_ASSERT("Service "<<m_sid<<" not instanced.", service);
     ui::base::IAction::sptr action = ui::base::IAction::dynamicCast(service);
-    SLM_ASSERT("Service "<<m_sid<<" is not an action.", action);
+    SIGHT_ASSERT("Service "<<m_sid<<" is not an action.", action);
     checked = (action->isInverted() ? !checked : checked);
     if (action->getIsActive() != checked)
     {

@@ -33,7 +33,7 @@
 
 #include <boost/multi_array.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Mesh));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Mesh));
 
 namespace sight::data
 {
@@ -267,7 +267,7 @@ namespace sight::data
  * @code{.cpp}
     void copyPoints(const data::Mesh::csptr& origin, const data::Mesh::sptr& dest)
     {
-        SLM_ASSERT("Meshes must have the same number of points",
+        SIGHT_ASSERT("Meshes must have the same number of points",
                    origin->getNumberOfPoints() == dest->getNumberOfPoints());
 
         auto origIt = origin->begin< data::Mesh::ConstPointIterator >();
@@ -283,9 +283,9 @@ class DATA_CLASS_API Mesh : public data::Object,
 
 public:
 
-    fwCoreClassMacro(Mesh, data::Object, data::factory::New< Mesh >)
+    SIGHT_DECLARE_CLASS(Mesh, data::Object, data::factory::New< Mesh >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Mesh))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Mesh))
 
     typedef std::map< std::string, data::Array::sptr > ArrayMapType;
 

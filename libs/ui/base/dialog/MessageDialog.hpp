@@ -40,7 +40,7 @@ class UI_BASE_CLASS_API MessageDialog : public ui::base::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassMacro(MessageDialog, ui::base::dialog::IMessageDialog, new MessageDialog)
+    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, new MessageDialog)
 
     /**
      * Opens a default message box with the specified title, text and icon.

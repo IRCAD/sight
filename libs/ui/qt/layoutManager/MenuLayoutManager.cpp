@@ -26,11 +26,11 @@
 #include "ui/qt/container/QtMenuContainer.hpp"
 #include "ui/qt/container/QtMenuItemContainer.hpp"
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
-
-#include <ui/base/registry/macros.hpp>
 
 #include <functional>
 
@@ -60,7 +60,7 @@ void MenuLayoutManager::createLayout( ui::base::container::fwMenu::sptr parent )
 {
 
     m_parent = ui::qt::container::QtMenuContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);
+    SIGHT_ASSERT("dynamicCast fwMenu to QtMenuContainer failed", m_parent);
 
     QMenu* menu = m_parent->getQtMenu();
 
@@ -76,7 +76,7 @@ void MenuLayoutManager::createLayout( ui::base::container::fwMenu::sptr parent )
 
         if (!actionInfo.m_icon.empty())
         {
-            SLM_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + actionInfo.m_icon.string());
+            SIGHT_DEBUG(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + actionInfo.m_icon.string());
             QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
             action->setIcon(icon);
         }
@@ -124,11 +124,11 @@ void MenuLayoutManager::createLayout( ui::base::container::fwMenu::sptr parent )
         if(!actionInfo.m_isSeparator && !actionInfo.m_isMenu )
         {
             m_menuItems.push_back(menuItem);
-            SLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            SIGHT_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
             ui::base::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
             ui::qt::ActionCallback::sptr qtCallback = ui::qt::ActionCallback::dynamicCast(callback);
-            SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
+            SIGHT_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
 
             QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
             QObject::connect( action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));

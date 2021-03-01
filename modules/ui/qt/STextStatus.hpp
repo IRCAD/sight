@@ -24,9 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <QPointer>
-
 #include <ui/base/IEditor.hpp>
+
+#include <QPointer>
 
 class QLabel;
 
@@ -67,7 +67,7 @@ class MODULE_UI_QT_CLASS_API STextStatus final : public QObject,
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STextStatus, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STextStatus, sight::ui::base::IEditor)
 
     /// Initializes slots and member.
     MODULE_UI_QT_API STextStatus();

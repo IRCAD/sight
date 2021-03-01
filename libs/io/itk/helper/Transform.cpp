@@ -48,7 +48,7 @@ Transform::MatrixType Transform::convertToITK(const data::Matrix4::csptr& _inTrf
 
 void Transform::convertFromITK(const MatrixType& _inTrf, data::Matrix4::sptr& _outTrf)
 {
-    SLM_ASSERT("Input itk Matrix should be 4x4", _inTrf.ColumnDimensions == 4 && _inTrf.RowDimensions == 4);
+    SIGHT_ASSERT("Input itk Matrix should be 4x4", _inTrf.ColumnDimensions == 4 && _inTrf.RowDimensions == 4);
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {

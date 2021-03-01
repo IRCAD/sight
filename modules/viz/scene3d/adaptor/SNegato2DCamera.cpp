@@ -78,9 +78,9 @@ void SNegato2DCamera::configuring()
 
     const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
 
-    SLM_ERROR_IF("Unknown orientation: '" + orientation +
-                 "'. Orientation can be either 'axial', 'frontal' or 'sagittal'.",
-                 orientation != "axial" && orientation != "frontal" && orientation != "sagittal");
+    SIGHT_ERROR_IF("Unknown orientation: '" + orientation +
+                   "'. Orientation can be either 'axial', 'frontal' or 'sagittal'.",
+                   orientation != "axial" && orientation != "frontal" && orientation != "sagittal");
 
     if(orientation == "axial")
     {

@@ -65,7 +65,6 @@ SImageSignalForwarder::AvailableConnectionMapType SImageSignalForwarder::m_avail
 
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 
 SImageSignalForwarder::SImageSignalForwarder() noexcept
@@ -118,8 +117,8 @@ void SImageSignalForwarder::configuring()
     for (auto cfg : configs)
     {
         std::string signal = cfg->getValue();
-        SLM_ASSERT("Signal '" + signal + "' is unknown.",
-                   m_availableConnection.find(signal) != m_availableConnection.end());
+        SIGHT_ASSERT("Signal '" + signal + "' is unknown.",
+                     m_availableConnection.find(signal) != m_availableConnection.end());
         m_managedSignals.push_back(signal);
     }
 }

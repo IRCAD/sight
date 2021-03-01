@@ -55,7 +55,7 @@ void BufferTL::allocPoolSize(std::size_t size)
     this->clearTimeline();
     core::mt::WriteLock lock(m_tlMutex);
 
-    SLM_ASSERT( "Allocation size must be greater than 0", size > 0 );
+    SIGHT_ASSERT( "Allocation size must be greater than 0", size > 0 );
     m_pool = std::make_shared< PoolType >(size);
 }
 
@@ -64,7 +64,7 @@ void BufferTL::allocPoolSize(std::size_t size)
 void BufferTL::pushObject(const SPTR(data::timeline::Object)& obj)
 {
     // This check is important for inherited classes
-    SLM_ASSERT("Trying to push not compatible Object in the BufferTL.", isObjectValid(obj));
+    SIGHT_ASSERT("Trying to push not compatible Object in the BufferTL.", isObjectValid(obj));
 
     core::mt::WriteLock writeLock(m_tlMutex);
     if(m_timeline.size() >= m_maximumSize)
@@ -84,7 +84,7 @@ SPTR(data::timeline::Object) BufferTL::popObject(TimestampType timestamp)
     const auto itFind = m_timeline.find(timestamp);
 
     // Check if timestamp exists
-    SLM_ASSERT("Trying to erase not existing timestamp", itFind != m_timeline.end());
+    SIGHT_ASSERT("Trying to erase not existing timestamp", itFind != m_timeline.end());
 
     SPTR(data::timeline::Object) object = itFind->second;
 
@@ -102,10 +102,10 @@ void BufferTL::modifyTime(TimestampType timestamp, TimestampType newTimestamp)
     const auto itFind = m_timeline.find(timestamp);
 
     // Check if timestamp exists
-    SLM_ASSERT("Trying to swap at non-existing timestamp", itFind != m_timeline.end());
+    SIGHT_ASSERT("Trying to swap at non-existing timestamp", itFind != m_timeline.end());
 
     // Check if newTimestamp is not already used
-    SLM_ASSERT("New timestamp already used by an other object", m_timeline.find(newTimestamp) == m_timeline.end());
+    SIGHT_ASSERT("New timestamp already used by an other object", m_timeline.find(newTimestamp) == m_timeline.end());
 
     core::mt::WriteLock writeLock(m_tlMutex);
 
@@ -118,7 +118,7 @@ void BufferTL::modifyTime(TimestampType timestamp, TimestampType newTimestamp)
 void BufferTL::setObject(TimestampType timestamp, const SPTR(data::timeline::Object)& obj)
 {
     // Check if timestamp exists
-    SLM_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.find(timestamp) != m_timeline.end());
+    SIGHT_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.find(timestamp) != m_timeline.end());
 
     core::mt::WriteLock writeLock(m_tlMutex);
 
@@ -199,8 +199,8 @@ CSPTR(data::timeline::Object) BufferTL::getObject(core::HiResClock::HiResClockTy
         result = iter->second;
     }
 
-    SLM_WARN_IF("There is no object in the timeline matching the timestamp: " << timestamp << ".",
-                iter == m_timeline.end());
+    SIGHT_WARN_IF("There is no object in the timeline matching the timestamp: " << timestamp << ".",
+                  iter == m_timeline.end());
 
     return result;
 }

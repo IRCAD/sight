@@ -32,17 +32,16 @@
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QAbstractButton>
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QVBoxLayout>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt::reconstruction
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -182,12 +181,12 @@ void RepresentationEditor::configuring()
 void RepresentationEditor::updating()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     m_material = reconstruction->getMaterial();
     container->setEnabled(!reconstruction->getOrganName().empty());
@@ -359,7 +358,7 @@ void RepresentationEditor::refreshNormals()
 void RepresentationEditor::onShowNormals(int state )
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     switch(state)
     {
@@ -387,7 +386,7 @@ void RepresentationEditor::onShowNormals(int state )
 void RepresentationEditor::notifyMaterial()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
+    SIGHT_ASSERT("The inout key '" + s_RECONSTRUCTION_INOUT + "' is not defined.", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(

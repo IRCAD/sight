@@ -96,7 +96,7 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
                     info.m_eventId = _pressed ? PickingEventType::MOUSE_MIDDLE_DOWN : PickingEventType::MOUSE_MIDDLE_UP;
                     break;
                 default:
-                    SLM_ERROR("Unknow button");
+                    SIGHT_ERROR("Unknow button");
                     break;
             }
 
@@ -115,14 +115,14 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
             }
             else
             {
-                SLM_ERROR("You must first set the signal sent using 'MeshPickerInteractor::setPointClickedSig'"
-                          " for this interactor to work.");
+                SIGHT_ERROR("You must first set the signal sent using 'MeshPickerInteractor::setPointClickedSig'"
+                            " for this interactor to work.");
             }
         }
     }
     else
     {
-        SLM_ERROR("The picker scene hasn't been initialized, you are not using this interactor correctly");
+        SIGHT_ERROR("The picker scene hasn't been initialized, you are not using this interactor correctly");
     }
 }
 

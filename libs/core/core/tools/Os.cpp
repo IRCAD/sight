@@ -115,13 +115,13 @@ std::string getUserDataDir( std::string company, std::string appName, bool creat
         {
             if ( !std::filesystem::is_directory(dataDir) )
             {
-                SLM_ERROR( dataDir << " already exists and is not a directory." );
+                SIGHT_ERROR( dataDir << " already exists and is not a directory." );
                 dataDir = "";
             }
         }
         else if (createDirectory)
         {
-            SLM_INFO("Creating application data directory: "<< dataDir);
+            SIGHT_INFO("Creating application data directory: "<< dataDir);
             std::filesystem::create_directories(dataDir);
         }
     }
@@ -151,7 +151,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         std::stringstream err;
         err << "Could not find shared library path, see error below." << std::endl;
         err << "GetModuleHandle failed, error = " << ret << std::endl;
-        FW_RAISE_EXCEPTION(core::tools::Exception(err.str()));
+        SIGHT_THROW_EXCEPTION(core::tools::Exception(err.str()));
     }
 
     if (GetModuleFileName(hm, path, sizeof(path)) == NULL)
@@ -160,7 +160,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         std::stringstream err;
         err << "Could not get shared library path, see error below." << std::endl;
         err << "GetModuleFileName failed, error = " << ret << std::endl;
-        FW_RAISE_EXCEPTION(core::tools::Exception(err.str()));
+        SIGHT_THROW_EXCEPTION(core::tools::Exception(err.str()));
     }
     return path;
 }
@@ -195,7 +195,8 @@ static std::string _getMacOsSharedLibraryPath(const std::string& _libName)
     }
     if(path.empty())
     {
-        FW_RAISE_EXCEPTION(core::tools::Exception(std::string("Could not find shared library path for ") + _libName));
+        SIGHT_THROW_EXCEPTION(core::tools::Exception(std::string("Could not find shared library path for ") +
+                                                     _libName));
     }
     return path;
 }
@@ -241,7 +242,8 @@ std::filesystem::path getSharedLibraryPath(const std::string& _libName)
 
     if(functor.s_location.empty())
     {
-        FW_RAISE_EXCEPTION(core::tools::Exception(std::string("Could not find shared library path for ") + _libName));
+        SIGHT_THROW_EXCEPTION(core::tools::Exception(std::string("Could not find shared library path for ") +
+                                                     _libName));
     }
     return functor.s_location;
 #endif

@@ -70,7 +70,7 @@ void ShadingTest::tearDown()
 void ShadingTest::isColorTechnique()
 {
     ::Ogre::Technique* tech = m_material->getTechnique(0);
-    SLM_ASSERT("Technique is not set", tech);
+    SIGHT_ASSERT("Technique is not set", tech);
 
     tech->setName("DepthPeeling/depthMap");
     CPPUNIT_ASSERT_EQUAL(false, Shading::isColorTechnique(*tech));
@@ -113,7 +113,7 @@ void ShadingTest::isColorTechnique()
 void ShadingTest::isPeelTechnique()
 {
     ::Ogre::Technique* tech = m_material->getTechnique(0);
-    SLM_ASSERT("Technique is not set", tech);
+    SIGHT_ASSERT("Technique is not set", tech);
 
     tech->setName("");
     CPPUNIT_ASSERT_EQUAL(false, Shading::isPeelTechnique(*tech));
@@ -155,7 +155,7 @@ void ShadingTest::isPeelTechnique()
 void ShadingTest::isGeometricTechnique()
 {
     ::Ogre::Technique* tech = m_material->getTechnique(0);
-    SLM_ASSERT("Technique is not set", tech);
+    SIGHT_ASSERT("Technique is not set", tech);
 
     tech->setName("");
     CPPUNIT_ASSERT_EQUAL(true, Shading::isGeometricTechnique(*tech));
@@ -196,7 +196,7 @@ void ShadingTest::isGeometricTechnique()
 void ShadingTest::isDepthOnlyTechnique()
 {
     ::Ogre::Technique* tech = m_material->getTechnique(0);
-    SLM_ASSERT("Technique is not set", tech);
+    SIGHT_ASSERT("Technique is not set", tech);
 
     tech->setName("");
     CPPUNIT_ASSERT_EQUAL(false, Shading::isDepthOnlyTechnique(*tech));

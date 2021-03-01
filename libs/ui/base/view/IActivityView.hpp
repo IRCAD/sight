@@ -72,7 +72,7 @@ class UI_BASE_CLASS_API IActivityView : public ui::base::IGuiContainer,
 {
 public:
 
-    fwCoreClassMacro(IActivityView, ui::base::IGuiContainer)
+    SIGHT_DECLARE_CLASS(IActivityView, ui::base::IGuiContainer)
 
     UI_BASE_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
     UI_BASE_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;

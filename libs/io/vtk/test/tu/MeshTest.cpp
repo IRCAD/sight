@@ -27,9 +27,6 @@
 
 #include <data/reflection/visitor/CompareObjects.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/generator/Mesh.hpp>
-
 #include <geometry/data/Mesh.hpp>
 
 #include <io/vtk/helper/Mesh.hpp>
@@ -43,6 +40,9 @@
 #include <io/vtk/StlMeshWriter.hpp>
 #include <io/vtk/VtpMeshReader.hpp>
 #include <io/vtk/VtpMeshWriter.hpp>
+
+#include <utestData/Data.hpp>
+#include <utestData/generator/Mesh.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -69,7 +69,7 @@ void compare(data::Object::sptr objRef, data::Object::sptr objComp)
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        SIGHT_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
     CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }

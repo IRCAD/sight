@@ -25,12 +25,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Vector.hpp>
 
 #include <ui/base/dialog/SelectorDialog.hpp>
@@ -88,7 +88,7 @@ void SRemoveDistance::updating( )
 
         if(distToRemove)
         {
-            SLM_ASSERT("No field image distances id", vectDist);
+            SIGHT_ASSERT("No field image distances id", vectDist);
             const data::Vector::ConstIteratorType newEnd = std::remove(vectDist->begin(),
                                                                        vectDist->end(), distToRemove);
             vectDist->getContainer().erase(newEnd, vectDist->end());
@@ -143,8 +143,8 @@ data::PointList::sptr SRemoveDistance::getDistanceToRemove(const data::Image::cs
         for(const data::Object::sptr& obj : *vectDist)
         {
             const data::PointList::sptr pl = data::PointList::dynamicCast(obj);
-            SLM_ASSERT("The distance should be a point list", pl);
-            SLM_ASSERT("The distance must contains two points", pl->getPoints().size() == 2);
+            SIGHT_ASSERT("The distance should be a point list", pl);
+            SIGHT_ASSERT("The distance must contains two points", pl->getPoints().size() == 2);
 
             const data::Point::sptr pt1 = pl->getPoints().front();
             const data::Point::sptr pt2 = pl->getPoints().back();

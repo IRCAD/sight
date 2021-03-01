@@ -25,10 +25,10 @@
 #include <core/data/Point.hpp>
 #include <core/data/PointList.hpp>
 
+#include <geometry/data/Matrix4.hpp>
+
 #include <glm/geometric.hpp>
 #include <glm/vec3.hpp>
-
-#include <geometry/data/Matrix4.hpp>
 
 #include <list>
 
@@ -53,8 +53,8 @@ PointList::~PointList()
 PointList::computeDistance(::sight::data::PointList::sptr _pointList1,
                            ::sight::data::PointList::sptr _pointList2)
 {
-    SLM_ASSERT("the 2 pointLists must have the same number of points",
-               _pointList1->getPoints().size() == _pointList2->getPoints().size() );
+    SIGHT_ASSERT("the 2 pointLists must have the same number of points",
+                 _pointList1->getPoints().size() == _pointList2->getPoints().size() );
 
     const ::sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
     const ::sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
@@ -100,8 +100,8 @@ void PointList::transform(::sight::data::PointList::sptr& _pointList,
 void PointList::associate(const ::sight::data::PointList::csptr& _pointList1,
                           ::sight::data::PointList::sptr _pointList2)
 {
-    SLM_ASSERT("the 2 pointLists must have the same number of points",
-               _pointList1->getPoints().size() == _pointList2->getPoints().size() );
+    SIGHT_ASSERT("the 2 pointLists must have the same number of points",
+                 _pointList1->getPoints().size() == _pointList2->getPoints().size() );
 
     ::sight::data::PointList::PointListContainer points1 = _pointList1->getPoints();
     ::sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();

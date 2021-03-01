@@ -28,10 +28,10 @@
 
 #include <data/ActivitySeries.hpp>
 
+#include <ui/qml/IQmlEditor.hpp>
+
 #include <QUrl>
 #include <QVariantMap>
-
-#include <ui/qml/IQmlEditor.hpp>
 
 namespace sight::module::ui::qml::activity
 {
@@ -107,7 +107,7 @@ class MODULE_UI_QML_CLASS_API SView : public sight::ui::qml::IQmlEditor,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SView, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SView, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SView();

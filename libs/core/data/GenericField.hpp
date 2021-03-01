@@ -47,7 +47,7 @@ class DATA_CLASS_API GenericField : public GenericFieldBase
 {
 
 public:
-    fwCoreClassMacro(GenericField<T>, data::Object)
+    SIGHT_DECLARE_CLASS(GenericField<T>, data::Object)
 
     typedef T ValueType;
 
@@ -91,9 +91,9 @@ public:
         catch(const std::bad_cast& exp)
         {
 #ifndef _DEBUG
-            FwCoreNotUsedMacro(exp);
+            SIGHT_NOT_USED(exp);
 #endif
-            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -111,9 +111,9 @@ public:
         catch(const std::bad_cast& exp)
         {
 #ifndef _DEBUG
-            FwCoreNotUsedMacro(exp);
+            SIGHT_NOT_USED(exp);
 #endif
-            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -131,9 +131,9 @@ public:
         catch(const std::bad_cast& exp)
         {
 #ifndef _DEBUG
-            FwCoreNotUsedMacro(exp);
+            SIGHT_NOT_USED(exp);
 #endif
-            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -151,9 +151,9 @@ public:
         catch(const std::bad_cast& exp)
         {
 #ifndef _DEBUG
-            FwCoreNotUsedMacro(exp);
+            SIGHT_NOT_USED(exp);
 #endif
-            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -171,9 +171,9 @@ public:
         catch(const std::bad_cast& exp)
         {
 #ifndef _DEBUG
-            FwCoreNotUsedMacro(exp);
+            SIGHT_NOT_USED(exp);
 #endif
-            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }
@@ -191,9 +191,9 @@ public:
         catch(const std::bad_cast& exp)
         {
 #ifndef _DEBUG
-            FwCoreNotUsedMacro(exp);
+            SIGHT_NOT_USED(exp);
 #endif
-            SLM_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
+            SIGHT_ASSERT("GenericField must have same ValueType: " << exp.what(), false );
         }
         return result;
     }

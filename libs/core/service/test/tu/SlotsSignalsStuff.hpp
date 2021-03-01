@@ -59,7 +59,7 @@ public:
 class Buffer : public data::Object
 {
 public:
-    fwCoreClassMacro(Buffer, data::Object, data::factory::New< Buffer >)
+    SIGHT_DECLARE_CLASS(Buffer, data::Object, data::factory::New< Buffer >)
 
     Buffer( data::Object::Key )
     {
@@ -80,7 +80,7 @@ public:
 class IBasicTest : public service::IService
 {
 public:
-    fwCoreServiceMacro(IBasicTest, service::IService)
+    SIGHT_DECLARE_SERVICE(IBasicTest, service::IService)
 
     static const KeyType s_BUFFER_INOUT;
 };
@@ -90,7 +90,7 @@ class SBasicTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceMacro(SBasicTest, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SBasicTest, IBasicTest)
 
     bool m_updateFinished;
     bool m_swapFinished;
@@ -116,7 +116,7 @@ class SReaderTest : public IBasicTest
 {
 public:
 
-    fwCoreServiceMacro(SReaderTest, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SReaderTest, IBasicTest)
 
     SReaderTest()
     {
@@ -155,7 +155,7 @@ public:
 
     typedef core::com::Signal< void () > ChangedSignalType;
 
-    fwCoreServiceMacro(SReader2Test, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SReader2Test, IBasicTest)
 
     SReader2Test();
 
@@ -195,7 +195,7 @@ class SShowTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceMacro(SShowTest, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SShowTest, IBasicTest)
 
     SShowTest();
 
@@ -245,7 +245,7 @@ class SShow2Test : public IBasicTest,
 {
 public:
 
-    fwCoreServiceMacro(SShow2Test, IBasicTest)
+    SIGHT_DECLARE_SERVICE(SShow2Test, IBasicTest)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 

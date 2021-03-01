@@ -50,7 +50,7 @@ class MODULE_IO_MATRIX_CLASS_API Matrix4ReaderService : public sight::io::base::
 {
 
 public:
-    fwCoreServiceMacro(Matrix4ReaderService, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(Matrix4ReaderService, sight::io::base::service::IReader)
 
     /// Super class of reader services
     typedef sight::io::base::service::IReader SuperClass;

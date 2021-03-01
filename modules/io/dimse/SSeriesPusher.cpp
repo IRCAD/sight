@@ -31,18 +31,17 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <service/macros.hpp>
-
-#include <dcmtk/dcmdata/dcistrmb.h>
-
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/helper/Series.hpp>
 
+#include <service/macros.hpp>
+
 #include <ui/base/dialog/MessageDialog.hpp>
+
+#include <dcmtk/dcmdata/dcistrmb.h>
 
 namespace sight::module::io::dimse
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -99,7 +98,7 @@ void SSeriesPusher::starting()
 
     // Get pacs configuration
     m_pacsConfiguration = this->getInput< sight::io::dimse::data::PacsConfiguration>("pacsConfig");
-    SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
+    SIGHT_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +181,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
         for(; it != seriesVector->end(); ++it)
         {
             data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(*it);
-            SLM_ASSERT("The SeriesDB should contain only DicomSeries.", series);
+            SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", series);
 
             // Try to find series on PACS
             OFList< QRResponse* > responses;
@@ -237,7 +236,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
            << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
            << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->asyncRun(ss.str(), true);
-        SLM_WARN(exception.what());
+        SIGHT_WARN(exception.what());
         result = false;
 
         // Set pushing boolean to false
@@ -264,7 +263,7 @@ void SSeriesPusher::pushSeries()
         for(const auto& series : *seriesVector)
         {
             data::DicomSeries::csptr dicomSeries = data::DicomSeries::dynamicCast(series);
-            SLM_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
+            SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
 
             for(const auto& item : dicomSeries->getDicomContainer())
             {
@@ -281,7 +280,7 @@ void SSeriesPusher::pushSeries()
                 fileFormat.transferInit();
                 if (!fileFormat.read(is).good())
                 {
-                    FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+                    SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
                 }
 
                 fileFormat.loadAllDataIntoMemory();
@@ -314,7 +313,7 @@ void SSeriesPusher::pushSeries()
            << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
            << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->asyncRun(ss.str(), true);
-        SLM_WARN(exception.what());
+        SIGHT_WARN(exception.what());
     }
 
     // Set pushing boolean to false
@@ -342,7 +341,7 @@ void SSeriesPusher::progressCallback(const std::string& seriesInstanceUID, unsig
 
 void SSeriesPusher::displayMessage(const ::std::string& message, bool error) const
 {
-    SLM_WARN_IF("Error: " + message, error);
+    SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage( message );

@@ -31,23 +31,22 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/helper/SeriesDB.hpp>
-
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
+
+#include <io/base/reader/registry/macros.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDirectory.h>
 #include <gdcmMediaStorage.h>
 #include <gdcmUIDs.h>
 
-#include <io/base/reader/registry/macros.hpp>
-
-fwDataIOReaderRegisterMacro( ::sight::io::dicom::reader::SeriesDB );
+SIGHT_REGISTER_IO_READER( ::sight::io::dicom::reader::SeriesDB );
 
 namespace sight::io::dicom
 {
@@ -217,8 +216,8 @@ void SeriesDB::readDicomSeries()
 
 void SeriesDB::readDicom()
 {
-    SLM_ASSERT("This reader only work on folder selection.",
-               (data::location::have < data::location::Folder, io::base::reader::IObjectReader > (this)));
+    SIGHT_ASSERT("This reader only work on folder selection.",
+                 (data::location::have < data::location::Folder, io::base::reader::IObjectReader > (this)));
 
     // DICOMDIR
     auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->getFolder());
@@ -284,7 +283,7 @@ void SeriesDB::readFromDicomSeriesDB(const data::SeriesDB::csptr& dicomSeriesDB,
     for(data::Series::sptr series : dicomSeriesDB->getContainer())
     {
         data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series);
-        SLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
+        SIGHT_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
         m_dicomSeriesContainer.push_back(dicomSeries);
     }
 
@@ -367,8 +366,8 @@ void SeriesDB::convertDicomSeries(const service::IService::sptr& notifier)
     for(const data::DicomSeries::csptr& dicomSeries : m_dicomSeriesContainer)
     {
         data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
-        FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
-                    sopClassUIDContainer.size() != 1);
+        SIGHT_THROW_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
+                       sopClassUIDContainer.size() != 1);
         const std::string sopClassUID = sopClassUIDContainer.begin()->c_str();
 
         const SupportedSOPClassContainerType::iterator bIt = m_supportedSOPClassContainer.begin();

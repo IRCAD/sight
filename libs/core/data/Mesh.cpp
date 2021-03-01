@@ -38,7 +38,7 @@ namespace sight::data
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-fwDataRegisterMacro( ::sight::data::Mesh );
+SIGHT_REGISTER_DATA( ::sight::data::Mesh );
 
 //------------------------------------------------------------------------------
 
@@ -94,9 +94,9 @@ Mesh::~Mesh()
 void Mesh::shallowCopy(const Object::csptr& _source )
 {
     Mesh::csptr other = Mesh::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_nbPoints      = other->m_nbPoints;
@@ -125,9 +125,9 @@ void Mesh::shallowCopy(const Object::csptr& _source )
 void Mesh::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Mesh::csptr other = Mesh::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !other );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !other );
     this->fieldDeepCopy( _source, cache );
 
     m_nbPoints      = other->m_nbPoints;
@@ -180,8 +180,8 @@ size_t Mesh::reserve(Size nbPts, Size nbCells, CellType cellType, Attributes arr
             nbCellsData = 4 * nbCells;
             break;
         default:
-            SLM_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
-                      "resize(size_t nbPts, size_t nbCells, Attribute arrayMask, size_t nbCellsData)")
+            SIGHT_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
+                        "resize(size_t nbPts, size_t nbCells, Attribute arrayMask, size_t nbCellsData)")
             nbCellsData = 3 * nbCells;
             break;
     }
@@ -193,8 +193,8 @@ size_t Mesh::reserve(Size nbPts, Size nbCells, CellType cellType, Attributes arr
 
 size_t Mesh::reserve(Size nbPts, Size nbCells, Size nbCellsData, Attributes arrayMask)
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("Cannot not allocate empty size"), nbPts == 0 ||
-                          nbCells == 0 || nbCellsData == 0);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Cannot not allocate empty size"), nbPts == 0 ||
+                             nbCells == 0 || nbCellsData == 0);
 
     m_points->resizeTMP( {nbPts}, 3 );
 
@@ -260,8 +260,8 @@ size_t Mesh::resize(Size nbPts, Size nbCells, CellType cellType, Attributes arra
             nbCellsData = 4 * nbCells;
             break;
         default:
-            SLM_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
-                      "resize(size_t nbPts, size_t nbCells, Attribute arrayMask, size_t nbCellsData)")
+            SIGHT_ERROR("Cannot determine the cell data size to allocate for this type of cell, please use "
+                        "resize(size_t nbPts, size_t nbCells, Attribute arrayMask, size_t nbCellsData)")
             nbCellsData = 3 * nbCells;
             break;
     }
@@ -322,9 +322,9 @@ bool Mesh::adjustAllocatedMemory()
     }
 
     size_t newAllocatedSize = this->getAllocatedSizeInBytes();
-    SLM_ASSERT("Error adjusting memory : allocated size: " << newAllocatedSize
-                                                           << " != data size : " << this->getDataSizeInBytes(),
-               newAllocatedSize == this->getDataSizeInBytes());
+    SIGHT_ASSERT("Error adjusting memory : allocated size: " << newAllocatedSize
+                                                             << " != data size : " << this->getDataSizeInBytes(),
+                 newAllocatedSize == this->getDataSizeInBytes());
     return oldAllocatedSize != newAllocatedSize;
 }
 
@@ -645,20 +645,20 @@ Mesh::CellId Mesh::pushCell(CellType type,
                             const PointId* pointIds,
                             Size nbPoints )
 {
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
-               type != data::Mesh::CellType::NO_CELL || nbPoints == 0);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
-               type != data::Mesh::CellType::POINT || nbPoints == 1);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
-               type != data::Mesh::CellType::EDGE || nbPoints == 2);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
-               type != data::Mesh::CellType::TRIANGLE || nbPoints == 3);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
-               type != data::Mesh::CellType::QUAD || nbPoints == 4);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
-               type != data::Mesh::CellType::TETRA || nbPoints == 4);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
-               type != data::Mesh::CellType::POLY || nbPoints > 4);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
+                 type != data::Mesh::CellType::NO_CELL || nbPoints == 0);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
+                 type != data::Mesh::CellType::POINT || nbPoints == 1);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
+                 type != data::Mesh::CellType::EDGE || nbPoints == 2);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
+                 type != data::Mesh::CellType::TRIANGLE || nbPoints == 3);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
+                 type != data::Mesh::CellType::QUAD || nbPoints == 4);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
+                 type != data::Mesh::CellType::TETRA || nbPoints == 4);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
+                 type != data::Mesh::CellType::POLY || nbPoints > 4);
 
     Size nbCells = m_nbCells;
 
@@ -757,20 +757,20 @@ void Mesh::setCell(CellId id, CellType type, const std::vector<PointId>& pointId
 
 void Mesh::setCell(CellId id, CellType type, const PointId* pointIds, Size nbPoints )
 {
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
-               type != data::Mesh::CellType::NO_CELL || nbPoints == 0);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
-               type != data::Mesh::CellType::POINT || nbPoints == 1);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
-               type != data::Mesh::CellType::EDGE || nbPoints == 2);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
-               type != data::Mesh::CellType::TRIANGLE || nbPoints == 3);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
-               type != data::Mesh::CellType::QUAD || nbPoints == 4);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
-               type != data::Mesh::CellType::TETRA || nbPoints == 4);
-    SLM_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
-               type != data::Mesh::CellType::POLY || nbPoints > 4);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'NO_CELL'",
+                 type != data::Mesh::CellType::NO_CELL || nbPoints == 0);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POINT'",
+                 type != data::Mesh::CellType::POINT || nbPoints == 1);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'EDGE'",
+                 type != data::Mesh::CellType::EDGE || nbPoints == 2);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TRIANGLE'",
+                 type != data::Mesh::CellType::TRIANGLE || nbPoints == 3);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'QUAD'",
+                 type != data::Mesh::CellType::QUAD || nbPoints == 4);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'TETRA'",
+                 type != data::Mesh::CellType::TETRA || nbPoints == 4);
+    SIGHT_ASSERT("Bad number of points ("<< nbPoints << ") for cell type: 'POLY'",
+                 type != data::Mesh::CellType::POLY || nbPoints > 4);
 
     m_cellTypes->at< CellTypes >(id) = static_cast< CellTypes >(type);
 
@@ -969,7 +969,7 @@ size_t Mesh::allocatePointNormals()
 
 size_t Mesh::allocatePointColors(ColorArrayTypes t)
 {
-    SLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    SIGHT_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
 
     m_attributes = m_attributes | Attributes::POINT_COLORS;
 
@@ -999,7 +999,7 @@ size_t Mesh::allocateCellNormals()
 
 size_t Mesh::allocateCellColors(ColorArrayTypes t)
 {
-    OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
+    OSIGHT_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
     if (!m_cellColors )
     {

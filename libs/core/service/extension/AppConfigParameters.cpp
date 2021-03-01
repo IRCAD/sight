@@ -77,9 +77,9 @@ void AppConfigParameters::parseBundleInformation()
 #ifdef _DEBUG
         Registry::const_iterator iter = m_reg.find( extensionId );
 #endif
-        SLM_ASSERT("The id " <<  extensionId
-                             << " already exists in the application configuration parameter registry",
-                   iter == m_reg.end());
+        SIGHT_ASSERT("The id " <<  extensionId
+                               << " already exists in the application configuration parameter registry",
+                     iter == m_reg.end());
         m_reg[extensionId] = parameters;
     }
 }
@@ -104,8 +104,8 @@ const FieldAdaptorType& AppConfigParameters::getParameters( const std::string& e
 {
     core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
-    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
-               iter != m_reg.end());
+    SIGHT_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
+                 iter != m_reg.end());
     return iter->second;
 }
 

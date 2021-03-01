@@ -29,7 +29,6 @@
 
 #include <sstream>
 
-
 namespace Tuto05MultithreadConsoleCpp
 {
 
@@ -73,7 +72,7 @@ void SShowArray::updating()
     std::stringstream str;
     std::ostream_iterator<unsigned int> coutIter(str, ", ");
     std::copy(itr, end, coutIter );
-    SLM_INFO("Buffer : " + str.str());
+    SIGHT_INFO("Buffer : " + str.str());
 }
 
 //------------------------------------------------------------------------------

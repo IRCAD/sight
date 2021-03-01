@@ -59,7 +59,7 @@ void Config::parseBundleInformation()
     for(ExtensionType ext :  extElements)
     {
         // Get id
-        SLM_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
+        SIGHT_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
         std::string id = ext->findConfigurationElement("id")->getValue();
 
         // Get service
@@ -94,14 +94,14 @@ void Config::addServiceConfigInfo
 {
     core::mt::WriteLock lock(m_registryMutex);
 
-    SLM_DEBUG( "New service config registering : "
-               << " configId = " << configId
-               << " service = " << service
-               << " desc = " << desc
-               );
+    SIGHT_DEBUG( "New service config registering : "
+                 << " configId = " << configId
+                 << " service = " << service
+                 << " desc = " << desc
+                 );
 
-    SLM_ASSERT("The service config with the id "<< configId <<" already exists.",
-               m_reg.find( configId ) == m_reg.end() );
+    SIGHT_ASSERT("The service config with the id "<< configId <<" already exists.",
+                 m_reg.find( configId ) == m_reg.end() );
 
     ServiceConfigInfo::sptr info = ServiceConfigInfo::New();
     info->service   = service;
@@ -127,17 +127,17 @@ void Config::clearRegistry()
 //-----------------------------------------------------------------------------
 
 core::runtime::ConfigurationElement::csptr Config::getServiceConfig( const std::string& configId,
-                                                                            const std::string& serviceImpl ) const
+                                                                     const std::string& serviceImpl ) const
 {
 #ifndef _DEBUG
-    FwCoreNotUsedMacro(serviceImpl);
+    SIGHT_NOT_USED(serviceImpl);
 #endif
     core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
-               iter != m_reg.end());
-    SLM_ASSERT("The id " <<  configId << " is not allowed for this service " << serviceImpl,
-               serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl);
+    SIGHT_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
+                 iter != m_reg.end());
+    SIGHT_ASSERT("The id " <<  configId << " is not allowed for this service " << serviceImpl,
+                 serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl);
     return iter->second->config;
 }
 
@@ -147,8 +147,8 @@ const std::string& Config::getConfigDesc( const std::string& configId ) const
 {
     core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
-               iter != m_reg.end());
+    SIGHT_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
+                 iter != m_reg.end());
     return iter->second->desc;
 }
 

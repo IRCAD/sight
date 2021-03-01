@@ -68,10 +68,10 @@ class DicomSeriesWriter : public io::base::writer::GenericObjectWriter< data::Di
 
 public:
 
-    fwCoreClassMacro(DicomSeriesWriter, io::base::writer::GenericObjectWriter< data::DicomSeries>,
-                     io::base::writer::factory::New< DicomSeriesWriter >);
+    SIGHT_DECLARE_CLASS(DicomSeriesWriter, io::base::writer::GenericObjectWriter< data::DicomSeries>,
+                        io::base::writer::factory::New< DicomSeriesWriter >);
 
-    fwCoreAllowSharedFromThis();
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor. Does nothing
     IO_DICOM_API DicomSeriesWriter(io::base::writer::IObjectWriter::Key key);

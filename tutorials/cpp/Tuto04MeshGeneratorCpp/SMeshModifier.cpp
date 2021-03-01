@@ -26,9 +26,9 @@
 
 #include <data/Mesh.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/data/Mesh.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -36,7 +36,6 @@ using namespace sight;
 
 namespace Tuto04MeshGeneratorCpp
 {
-
 
 static const service::IService::KeyType s_MESH_INOUT = "mesh";
 
@@ -64,16 +63,16 @@ void SMeshModifier::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_functor = config.get<std::string>(s_FUNCTOR_CONFIG);
-    OSLM_ASSERT("Wrong functor name",
-                m_functor == "ShakeMeshPoint"
-                || m_functor == "ColorizeMeshPoints"
-                || m_functor == "ColorizeMeshCells"
-                || m_functor == "ComputePointNormals"
-                || m_functor == "ComputeCellNormals"
-                || m_functor == "ShakePointNormals"
-                || m_functor == "ShakeCellNormals"
-                || m_functor == "MeshDeformation"
-                );
+    OSIGHT_ASSERT("Wrong functor name",
+                  m_functor == "ShakeMeshPoint"
+                  || m_functor == "ColorizeMeshPoints"
+                  || m_functor == "ColorizeMeshCells"
+                  || m_functor == "ComputePointNormals"
+                  || m_functor == "ComputeCellNormals"
+                  || m_functor == "ShakePointNormals"
+                  || m_functor == "ShakeCellNormals"
+                  || m_functor == "MeshDeformation"
+                  );
 }
 
 //-----------------------------------------------------------------------------

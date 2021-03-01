@@ -81,9 +81,9 @@ void ModelSeries::addReconstruction( const data::ModelSeries::sptr& _modelSeries
 {
     data::ModelSeries::ReconstructionVectorType recDB = _modelSeries->getReconstructionDB();
 
-    FW_RAISE_IF("Reconstruction is invalid.", _rec == nullptr);
-    FW_RAISE_IF("Reconstruction already exists in ModelSeries.",
-                std::find(recDB.begin(), recDB.end(), _rec) != recDB.end());
+    SIGHT_THROW_IF("Reconstruction is invalid.", _rec == nullptr);
+    SIGHT_THROW_IF("Reconstruction already exists in ModelSeries.",
+                   std::find(recDB.begin(), recDB.end(), _rec) != recDB.end());
 
     recDB.push_back(_rec);
     _modelSeries->setReconstructionDB(recDB);

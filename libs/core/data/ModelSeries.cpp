@@ -31,7 +31,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( ::sight::data::ModelSeries )
+SIGHT_REGISTER_DATA( ::sight::data::ModelSeries )
 
 namespace sight::data
 {
@@ -60,9 +60,9 @@ ModelSeries::~ModelSeries()
 void ModelSeries::shallowCopy(const data::Object::csptr& _source)
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->data::Series::shallowCopy(_source);
 
@@ -75,9 +75,9 @@ void ModelSeries::shallowCopy(const data::Object::csptr& _source)
 void ModelSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->data::Series::cachedDeepCopy(_source, cache);
 

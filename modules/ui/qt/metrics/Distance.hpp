@@ -26,11 +26,11 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::metrics
 {
@@ -61,7 +61,7 @@ class MODULE_UI_QT_CLASS_API Distance : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(Distance, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(Distance, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API Distance() noexcept;

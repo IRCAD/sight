@@ -35,7 +35,7 @@
 #include <vtkMetaImageWriter.h>
 #include <vtkSmartPointer.h>
 
-fwDataIOWriterRegisterMacro( ::sight::io::vtk::MetaImageWriter );
+SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::MetaImageWriter );
 
 namespace sight::io::vtk
 {

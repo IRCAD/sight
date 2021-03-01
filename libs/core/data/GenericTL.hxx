@@ -52,9 +52,9 @@ template < class BUFFER_TYPE >
 void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( _source );
     this->clearTimeline();

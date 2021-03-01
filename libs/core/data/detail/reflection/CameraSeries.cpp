@@ -29,7 +29,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(CameraSeries))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(CameraSeries))
 {
     builder
     .tag("object_version", "3")

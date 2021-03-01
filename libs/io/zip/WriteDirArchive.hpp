@@ -41,7 +41,7 @@ class IO_ZIP_CLASS_API WriteDirArchive : public IWriteArchive
 
 public:
 
-    fwCoreClassMacro(WriteDirArchive, IWriteArchive)
+    SIGHT_DECLARE_CLASS(WriteDirArchive, IWriteArchive)
 
     //------------------------------------------------------------------------------
 

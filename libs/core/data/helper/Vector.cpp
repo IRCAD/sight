@@ -55,8 +55,8 @@ Vector::~Vector()
 void Vector::add( data::Object::sptr _newObject )
 {
     data::Vector::sptr vector = m_vector.lock();
-    SLM_ASSERT( "The object " << _newObject->getID() << " must not exist in vector.",
-                std::find(vector->begin(), vector->end(), _newObject) == vector->end());
+    SIGHT_ASSERT( "The object " << _newObject->getID() << " must not exist in vector.",
+                  std::find(vector->begin(), vector->end(), _newObject) == vector->end());
 
     // Modify vector
     vector->getContainer().push_back(_newObject );
@@ -70,8 +70,8 @@ void Vector::remove( data::Object::sptr _oldObject )
 {
     data::Vector::sptr vector   = m_vector.lock();
     data::Vector::iterator iter = std::find(vector->begin(), vector->end(), _oldObject);
-    SLM_ASSERT( "The object " << _oldObject->getID() << " must exist in vector.",
-                iter != vector->end());
+    SIGHT_ASSERT( "The object " << _oldObject->getID() << " must exist in vector.",
+                  iter != vector->end());
 
     // Modify vector
     vector->getContainer().erase( iter );
@@ -108,8 +108,8 @@ void Vector::notify()
             data::Vector::s_ADDED_OBJECTS_SIG);
         sig->asyncEmit(m_addedObjects);
     }
-    SLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
-                m_addedObjects.empty() && m_removedObjects.empty());
+    SIGHT_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
+                  m_addedObjects.empty() && m_removedObjects.empty());
 
     m_removedObjects.clear();
     m_addedObjects.clear();

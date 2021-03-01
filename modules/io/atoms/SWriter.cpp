@@ -36,10 +36,6 @@
 #include <data/location/SingleFile.hpp>
 #include <data/reflection/visitor/RecursiveLock.hpp>
 
-#include <service/macros.hpp>
-
-#include <boost/algorithm/string/join.hpp>
-
 #include <io/atoms/patch/PatchingManager.hpp>
 #include <io/atoms/patch/VersionsGraph.hpp>
 #include <io/atoms/patch/VersionsManager.hpp>
@@ -49,11 +45,15 @@
 #include <io/zip/WriteDirArchive.hpp>
 #include <io/zip/WriteZipArchive.hpp>
 
+#include <service/macros.hpp>
+
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
+
+#include <boost/algorithm/string/join.hpp>
 
 #include <filesystem>
 #include <regex>
@@ -62,7 +62,6 @@ namespace sight::module::io::atoms
 {
 
 //-----------------------------------------------------------------------------
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -110,17 +109,17 @@ void SWriter::configuring()
     for (auto it = archiveCfgs.first; it != archiveCfgs.second; ++it)
     {
         const std::string backend = it->second.get<std::string>("<xmlattr>.backend");
-        SLM_ASSERT("No backend attribute given in archive tag", backend != "");
-        SLM_ASSERT("Unsupported backend '" + backend + "'",
-                   SReader::s_EXTENSIONS.find("." + backend) != SReader::s_EXTENSIONS.end());
+        SIGHT_ASSERT("No backend attribute given in archive tag", backend != "");
+        SIGHT_ASSERT("Unsupported backend '" + backend + "'",
+                     SReader::s_EXTENSIONS.find("." + backend) != SReader::s_EXTENSIONS.end());
 
         const auto extCfgs = it->second.equal_range("extension");
 
         for (auto itExt = extCfgs.first; itExt != extCfgs.second; ++itExt)
         {
             const std::string extension = itExt->second.get<std::string>("");
-            SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
-            SLM_ASSERT("Extension must begin with '.'", extension[0] == '.');
+            SIGHT_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
+            SIGHT_ASSERT("Extension must begin with '.'", extension[0] == '.');
 
             m_customExts[extension]       = backend;
             m_allowedExtLabels[extension] = itExt->second.get("<xmlattr>.label", "");
@@ -143,13 +142,13 @@ void SWriter::configuring()
             FileExtension2NameType::const_iterator itCustom = m_customExts.find(ext);
 
             const bool extIsKnown = (itKnown != SReader::s_EXTENSIONS.end() || itCustom != m_customExts.end());
-            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", extIsKnown);
+            SIGHT_ASSERT("Extension '" + ext + "' is not allowed in configuration", extIsKnown);
 
             if(extIsKnown)
             {
                 m_allowedExts.insert(m_allowedExts.end(), ext);
                 m_allowedExtLabels[ext] = it->second.get("<xmlattr>.label", "");
-                SLM_ASSERT("No label given for extension '" + ext + "'", !m_allowedExtLabels[ext].empty());
+                SIGHT_ASSERT("No label given for extension '" + ext + "'", !m_allowedExtLabels[ext].empty());
             }
         }
     }
@@ -226,7 +225,7 @@ bool SWriter::versionSelection()
                     }
                     catch ( std::out_of_range e)
                     {
-                        SLM_ERROR("Bad version format: either " + _a + " or " + _b);
+                        SIGHT_ERROR("Bad version format: either " + _a + " or " + _b);
                         return false;
                     }
                 });
@@ -248,7 +247,7 @@ bool SWriter::versionSelection()
                 }
                 catch ( std::out_of_range e)
                 {
-                    SLM_ERROR("Bad version format: " + v);
+                    SIGHT_ERROR("Bad version format: " + v);
 
                     prettyVersionsAll.push_back(v);
                     prettyVersionsToVersions[ v ] = v;
@@ -321,7 +320,7 @@ void SWriter::updating()
     }
 
     data::Object::csptr obj = this->getInput< data::Object >(sight::io::base::service::s_DATA_KEY);
-    SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
+    SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
 
     sight::ui::base::Cursor cursor;
     cursor.setCursor(ui::base::ICursor::BUSY);
@@ -352,9 +351,9 @@ void SWriter::updating()
     std::filesystem::path filePath = requestedFilePath;
     if( std::filesystem::exists( requestedFilePath ) )
     {
-        FW_RAISE_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
-                     std::filesystem::is_directory(requestedFilePath)
-                     );
+        SIGHT_THROW_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
+                        std::filesystem::is_directory(requestedFilePath)
+                        );
     }
 
     const std::filesystem::path folderPath = filePath.parent_path();
@@ -368,10 +367,10 @@ void SWriter::updating()
         filePath += extension;
     }
 
-    FW_RAISE_IF( "Extension is empty", extension.empty() );
+    SIGHT_THROW_IF( "Extension is empty", extension.empty() );
 
-    FW_RAISE_IF("The file extension '" << extension << "' is not managed",
-                m_allowedExts.find(extension) == m_allowedExts.end());
+    SIGHT_THROW_IF("The file extension '" << extension << "' is not managed",
+                   m_allowedExts.find(extension) == m_allowedExts.end());
 
     // Find in custom extensions if our extension exists.
     if (m_customExts.find(extension) != m_customExts.end())
@@ -469,7 +468,7 @@ void SWriter::updating()
             }
             else
             {
-                FW_RAISE( "This file extension '" << extension << "' is not managed" );
+                SIGHT_THROW( "This file extension '" << extension << "' is not managed" );
             }
 
             const std::filesystem::path folderDirName =
@@ -515,7 +514,7 @@ void SWriter::updating()
         }
 
         // Handle the error.
-        SLM_ERROR(_e.what());
+        SIGHT_ERROR(_e.what());
         sight::ui::base::dialog::MessageDialog::show("Medical data writer failed",
                                                      _e.what(),
                                                      sight::ui::base::dialog::IMessageDialog::CRITICAL);

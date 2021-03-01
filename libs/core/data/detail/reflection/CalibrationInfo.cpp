@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(CalibrationInfo))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(CalibrationInfo))
 {
     builder
     .tag("object_version", "1")

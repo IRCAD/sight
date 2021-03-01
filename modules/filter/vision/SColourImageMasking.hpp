@@ -26,9 +26,9 @@
 
 #include <data/Image.hpp>
 
-#include <service/IOperator.hpp>
-
 #include <filter/vision/Masker.hpp>
+
+#include <service/IOperator.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -87,7 +87,7 @@ class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SColourImageMasking, sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::IOperator)
 
     /// Initializes the slots and member variables.
     MODULE_FILTER_VISION_API SColourImageMasking() noexcept;

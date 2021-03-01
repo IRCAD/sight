@@ -48,21 +48,21 @@ FilterUnknownActivities::~FilterUnknownActivities()
 
 void FilterUnknownActivities::apply(const SPTR(sight::atoms::Object)& atom)
 {
-    SLM_ASSERT("Unable to filter atom : invalid object", atom);
+    SIGHT_ASSERT("Unable to filter atom : invalid object", atom);
 
     const std::string expName    = "::sight::data::SeriesDB"; // expected classname
     const std::string& classname = sight::io::atoms::patch::helper::getClassname(atom);
-    FW_RAISE_IF("Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
-                classname != expName);
+    SIGHT_THROW_IF("Unable to filter atom of class '" << classname << "'. Expected class is '" + expName + "'",
+                   classname != expName);
 
     auto series = atom->getAttribute< sight::atoms::Sequence >("values");
-    SLM_ASSERT("Failed to retrieve 'values' attribute as atoms::Sequence", series);
+    SIGHT_ASSERT("Failed to retrieve 'values' attribute as atoms::Sequence", series);
 
     auto knownSeries = sight::atoms::Sequence::New();
     for(auto serie :  series->getValue())
     {
         auto obj = sight::atoms::Object::dynamicCast(serie);
-        SLM_ASSERT("Failed to cast sequence element as atoms::Object", obj);
+        SIGHT_ASSERT("Failed to cast sequence element as atoms::Object", obj);
 
         if(sight::io::atoms::filter::isSeriesKnown(obj))
         {

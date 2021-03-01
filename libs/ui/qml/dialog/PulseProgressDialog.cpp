@@ -25,15 +25,15 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <ui/base/registry/macros.hpp>
+#include <ui/qml/QmlEngine.hpp>
+
 #include <QFutureWatcher>
 #include <QGuiApplication>
 #include <QKeyEvent>
 #include <QString>
 #include <QtConcurrent>
 #include <QtCore>
-
-#include <ui/base/registry/macros.hpp>
-#include <ui/qml/QmlEngine.hpp>
 
 fwGuiRegisterMacro(::sight::ui::qml::dialog::PulseProgressDialog,
                    ::sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY );
@@ -83,7 +83,7 @@ void PulseProgressDialog::show()
     context->setContextProperty("pulseProgressDialog", this);
     // load the qml ui component
     QObject* window = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File PulseProgressDialog is not found or not loaded", window);
+    SIGHT_ASSERT("The Qml File PulseProgressDialog is not found or not loaded", window);
     // keep window to destroy it
 
     // Create a QFutureWatcher and connect signals and slots.
@@ -91,7 +91,7 @@ void PulseProgressDialog::show()
 
     window->setProperty("title", m_title);
     QObject* dialog = window->findChild<QObject*>("dialog");
-    SLM_ASSERT("The dialog is not found inside the window", dialog);
+    SIGHT_ASSERT("The dialog is not found inside the window", dialog);
     Q_EMIT messageChanged();
     // Start the computation.
 

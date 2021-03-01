@@ -33,16 +33,15 @@
 #include <data/MatrixTL.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/Image.hpp>
 
+#include <service/macros.hpp>
+
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
-
 
 namespace sight::module::geometry::vision
 {
@@ -90,7 +89,7 @@ void SReprojectionError::configuring()
 {
     service::IService::ConfigType config = this->getConfigTree();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
-    SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
+    SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
     auto inCfg = config.equal_range("in");
     for (auto itCfg = inCfg.first; itCfg != inCfg.second; ++itCfg)
@@ -125,7 +124,7 @@ void SReprojectionError::starting()
     // --> configure height, width and square size(in mm)
 
     auto camera = this->getInput< data::Camera >(s_CAMERA_INPUT);
-    SLM_ASSERT("Camera is not found", camera);
+    SIGHT_ASSERT("Camera is not found", camera);
 
     ::cv::Size imgSize;
     std::tie(m_cameraMatrix, imgSize, m_distorsionCoef) = io::opencv::Camera::copyToCv(camera);
@@ -170,7 +169,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
             core::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
             if(ts <= 0)
             {
-                SLM_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
+                SIGHT_WARN("No matrix found in a timeline for timestamp '"<<ts<<"'.");
                 return;
             }
 
@@ -185,7 +184,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
             const size_t nbMatrices = matBuff->getMaxElementNum();
             const size_t nbMarkers  = buffer->getMaxElementNum();
 
-            SLM_ASSERT("Number of matrices should be equal to the number of marker", nbMatrices == nbMarkers);
+            SIGHT_ASSERT("Number of matrices should be equal to the number of marker", nbMatrices == nbMarkers);
 
             for(unsigned int i = 0; i < nbMatrices; ++i)
             {
@@ -231,7 +230,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
                 if(m_display) //draw reprojected points
                 {
                     auto frameTL = this->getInOut< data::FrameTL >(s_FRAMETL_INOUT);
-                    SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frameTL);
+                    SIGHT_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frameTL);
 
                     CSPTR(data::FrameTL::BufferType) bufferFrame = frameTL->getClosestBuffer(ts);
 
@@ -307,7 +306,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
                     if(m_display) //draw reprojected points
                     {
                         auto frame = this->getInOut< data::Image >(s_FRAME_INOUT);
-                        SLM_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frame);
+                        SIGHT_ASSERT("The input "+ s_FRAMETL_INOUT +" is not valid.", frame);
 
                         data::mt::ObjectWriteLock lock(frame);
 
@@ -340,7 +339,7 @@ void SReprojectionError::setBoolParameter(bool _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("the key '" + _key + "' is not handled");
+        SIGHT_ERROR("the key '" + _key + "' is not handled");
     }
 }
 
@@ -354,7 +353,7 @@ void SReprojectionError::setColorParameter(std::array<uint8_t, 4> _val, std::str
     }
     else
     {
-        SLM_ERROR("the key '" + _key + "' is not handled");
+        SIGHT_ERROR("the key '" + _key + "' is not handled");
     }
 }
 

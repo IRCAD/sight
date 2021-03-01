@@ -35,20 +35,20 @@ TypeInfo::TypeInfo()
     {
     };
     pInfo_ = &typeid(Nil);
-    SLM_ASSERT("pInfo_ not instanced", pInfo_);
+    SIGHT_ASSERT("pInfo_ not instanced", pInfo_);
 }
 
 TypeInfo::TypeInfo(const std::type_info& ti) :
     pInfo_(&ti)
 {
-    SLM_ASSERT("pInfo_ not instanced", pInfo_);
+    SIGHT_ASSERT("pInfo_ not instanced", pInfo_);
 }
 
 //------------------------------------------------------------------------------
 
 bool TypeInfo::before(const TypeInfo& rhs) const
 {
-    SLM_ASSERT("pInfo_ not instanced", pInfo_);
+    SIGHT_ASSERT("pInfo_ not instanced", pInfo_);
     // type_info::before return type is int in some VC libraries
     return pInfo_->before(*rhs.pInfo_) != 0;
 }
@@ -57,7 +57,7 @@ bool TypeInfo::before(const TypeInfo& rhs) const
 
 const std::type_info& TypeInfo::type_info() const
 {
-    SLM_ASSERT("pInfo_ not instanced", pInfo_);
+    SIGHT_ASSERT("pInfo_ not instanced", pInfo_);
     return *pInfo_;
 }
 
@@ -65,7 +65,7 @@ const std::type_info& TypeInfo::type_info() const
 
 const char* TypeInfo::name() const
 {
-    SLM_ASSERT("pInfo_ not instanced", pInfo_);
+    SIGHT_ASSERT("pInfo_ not instanced", pInfo_);
     return pInfo_->name();
 }
 

@@ -297,9 +297,9 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                     positiveSide = false;
                     negativeSide = false;
                     const auto* tech = material->getBestTechnique();
-                    SLM_ASSERT("'" + material->getName() + "' does not have any suitable technique.", tech);
+                    SIGHT_ASSERT("'" + material->getName() + "' does not have any suitable technique.", tech);
                     const auto& passes = tech->getPasses();
-                    SLM_ASSERT(
+                    SIGHT_ASSERT(
                         "'" + material->getName() + "' technique '" + tech->getName() + "' does not define any passes.",
                         passes.size() > 0);
                     for(const ::Ogre::Pass* pass : passes)
@@ -318,7 +318,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                                 negativeSide = true;
                                 break;
                             default:
-                                SLM_ERROR("Unsuported culling mode");
+                                SIGHT_ERROR("Unsuported culling mode");
                                 break;
                         }
                     }
@@ -453,7 +453,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
                         }
                         break;
                     default:
-                        SLM_ERROR("Unsuported operation type");
+                        SIGHT_ERROR("Unsuported operation type");
                         break;
                 }
 

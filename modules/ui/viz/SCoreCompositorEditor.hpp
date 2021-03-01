@@ -24,13 +24,13 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/Layer.hpp>
 
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QAbstractButton;
 class QButtonGroup;
@@ -58,7 +58,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCoreCompositorEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCoreCompositorEditor, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SCoreCompositorEditor() noexcept;

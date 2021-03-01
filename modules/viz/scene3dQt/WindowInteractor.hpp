@@ -27,12 +27,12 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/container/fwContainer.hpp>
+
 #include <viz/scene3d/IWindowInteractor.hpp>
 
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/container/fwContainer.hpp>
 
 namespace sight::ui::qt
 {
@@ -54,7 +54,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(WindowInteractor, sight::viz::scene3d::IWindowInteractor)
+    SIGHT_DECLARE_CLASS(WindowInteractor, sight::viz::scene3d::IWindowInteractor)
 
     /// Initialize members.
     MODULE_VIZ_SCENE3DQT_API WindowInteractor(sight::viz::scene3d::IWindowInteractor::Key key);
@@ -141,7 +141,7 @@ private:
 
 inline ::Ogre::TexturePtr WindowInteractor::getRenderTexture()
 {
-    SLM_ERROR("'WindowInteractor' doesn't render in a texture.");
+    SIGHT_ERROR("'WindowInteractor' doesn't render in a texture.");
     return ::Ogre::TexturePtr();
 }
 

@@ -53,7 +53,7 @@ class MODULE_UI_BASE_CLASS_API SShowDistance final : public ::sight::ui::base::I
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SShowDistance, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SShowDistance, sight::ui::base::IAction)
 
     /// Initialize slots.
     MODULE_UI_BASE_API SShowDistance() noexcept;

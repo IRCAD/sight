@@ -34,7 +34,7 @@
 
 #include <utility>
 
-fwDataRegisterMacro( ::sight::data::Graph );
+SIGHT_REGISTER_DATA( ::sight::data::Graph );
 
 namespace sight::data
 {
@@ -237,10 +237,10 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr& node, bool upStrea
                                            const std::string& portID
                                            )
 {
-    SLM_ASSERT("Node " + node->getID()  + " not found in graph", m_nodes.find( Node::constCast(node) ) !=
-               m_nodes.end());
-    SLM_ASSERT("Port " + portID  + " not found on node" + node->getID(),
-               portID.empty() || node->findPort(portID, upStream));
+    SIGHT_ASSERT("Node " + node->getID()  + " not found in graph", m_nodes.find( Node::constCast(node) ) !=
+                 m_nodes.end());
+    SIGHT_ASSERT("Port " + portID  + " not found on node" + node->getID(),
+                 portID.empty() || node->findPort(portID, upStream));
 
     std::vector< Edge::sptr > result;
     result.reserve(4);
@@ -333,9 +333,9 @@ Graph::ConnectionContainer& Graph::getConnections()
 void Graph::shallowCopy(const Object::csptr& _source )
 {
     Graph::csptr other = Graph::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_nodes       = other->m_nodes;
     m_connections = other->m_connections;
@@ -346,9 +346,9 @@ void Graph::shallowCopy(const Object::csptr& _source )
 void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Graph::csptr other = Graph::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     std::map< data::Node::sptr, data::Node::sptr > correspondenceBetweenNodes;
@@ -358,8 +358,8 @@ void Graph::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cach
     {
         data::Node::sptr newNode = data::Object::copy(node, cache);
         bool addOK               = this->addNode(newNode);
-        SLM_ASSERT("Node "<<newNode->getID() <<" can't be added ", addOK );
-        FwCoreNotUsedMacro(addOK);
+        SIGHT_ASSERT("Node "<<newNode->getID() <<" can't be added ", addOK );
+        SIGHT_NOT_USED(addOK);
         correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
     }
 

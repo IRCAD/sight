@@ -30,7 +30,6 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
-
 namespace sight::module::io::igtl
 {
 
@@ -56,8 +55,8 @@ void SClientSender::configuring()
 
     const ConfigType configIn = config.get_child("in");
 
-    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
-               configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+    SIGHT_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+                 configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
 
     const auto keyCfg = configIn.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
@@ -71,7 +70,7 @@ void SClientSender::configuring()
     if(!serverInfo.empty())
     {
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_hostnameConfig = serverInfo.substr(0, splitPosition);
         m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -99,7 +98,7 @@ void SClientSender::starting()
         catch (core::Exception& ex)
         {
             sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-            SLM_ERROR(ex.what());
+            SIGHT_ERROR(ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
     }
@@ -120,7 +119,7 @@ void SClientSender::stopping()
     catch (core::Exception& e)
     {
         sight::ui::base::dialog::MessageDialog::show("Error", e.what());
-        SLM_ERROR(e.what());
+        SIGHT_ERROR(e.what());
     }
 }
 
@@ -128,7 +127,7 @@ void SClientSender::stopping()
 
 void SClientSender::sendObject(const data::Object::csptr& obj, const size_t index)
 {
-    SLM_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
+    SIGHT_ASSERT("No device name associated with object index " << index, index < m_deviceNames.size());
 
     if (m_client.isConnected())
     {

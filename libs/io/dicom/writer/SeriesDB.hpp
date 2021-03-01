@@ -49,8 +49,8 @@ class SeriesDB : public io::base::writer::GenericObjectWriter< data::SeriesDB >,
 
 public:
 
-    fwCoreClassMacro(SeriesDB, io::base::writer::GenericObjectWriter< data::SeriesDB >,
-                     io::base::writer::factory::New< SeriesDB >);
+    SIGHT_DECLARE_CLASS(SeriesDB, io::base::writer::GenericObjectWriter< data::SeriesDB >,
+                        io::base::writer::factory::New< SeriesDB >);
 
     /// Constructor
     IO_DICOM_API SeriesDB(io::base::writer::IObjectWriter::Key key);

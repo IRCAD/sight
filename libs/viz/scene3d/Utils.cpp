@@ -76,7 +76,7 @@ void Utils::loadResources()
             // Check file existence
             if(!std::filesystem::exists(path))
             {
-                SLM_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
+                SIGHT_FATAL("File '" + path +"' doesn't exist. Ogre needs it to load resources");
             }
 
             const auto tmpPath = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
@@ -84,7 +84,7 @@ void Utils::loadResources()
 
             if(!std::filesystem::exists(tmpPath))
             {
-                SLM_FATAL("Can't create the file '" + tmpPath.string() + "'");
+                SIGHT_FATAL("Can't create the file '" + tmpPath.string() + "'");
             }
 
             // Copy the resource file and make paths absolute.
@@ -115,11 +115,11 @@ void Utils::loadResources()
         }
         catch ( ::Ogre::FileNotFoundException& )
         {
-            SLM_ERROR("Unable to find Ogre resources path : " + path);
+            SIGHT_ERROR("Unable to find Ogre resources path : " + path);
         }
         catch (...)
         {
-            SLM_ERROR("Unable to load resource from " + path);
+            SIGHT_ERROR("Unable to load resource from " + path);
         }
     }
 }
@@ -128,7 +128,7 @@ void Utils::loadResources()
 
 void Utils::addResourcesPath(const std::filesystem::path& path)
 {
-    SLM_ASSERT("Empty resource path", !path.empty());
+    SIGHT_ASSERT("Empty resource path", !path.empty());
     s_resourcesPath.insert(path.string());
 }
 
@@ -152,7 +152,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
         // Check file existence
         if(!std::filesystem::exists(confPath))
         {
-            SLM_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
+            SIGHT_FATAL("File '" + confPath.string() +"' doesn't exist. Ogre needs it to be configured");
         }
 
         const auto tmpPluginCfg = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
@@ -163,7 +163,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
 
         if(!std::filesystem::exists(tmpPluginCfg))
         {
-            SLM_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
+            SIGHT_FATAL("Can't create temporary config file'" + tmpPluginCfg.string() + "'");
         }
 
         const bool tokenFound = makePathsAbsolute("PluginFolder", pluginCfg, newPlugin);
@@ -171,7 +171,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
         pluginCfg.close();
         newPlugin.close();
 
-        SLM_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), !tokenFound);
+        SIGHT_FATAL_IF("No 'PluginFolder' folder set in " + confPath.string(), !tokenFound);
 
         root = new ::Ogre::Root(tmpPluginCfg.string().c_str());
 
@@ -210,7 +210,7 @@ void Utils::addResourcesPath(const std::filesystem::path& path)
                 break;
             }
         }
-        SLM_ASSERT("Abort render system configuration, no render system found", rs);
+        SIGHT_ASSERT("Abort render system configuration, no render system found", rs);
 
         rs->setConfigOption("Full Screen", "No");
         rs->setConfigOption("VSync", "No");
@@ -281,7 +281,7 @@ void Utils::destroyOgreRoot()
 
 ::Ogre::Image Utils::convertToOgreImage( const data::Image::csptr imageFw)
 {
-    SLM_ASSERT("Image is null", imageFw);
+    SIGHT_ASSERT("Image is null", imageFw);
 
     ::Ogre::Image imageOgre;
 
@@ -315,8 +315,8 @@ void Utils::destroyOgreRoot()
 
 void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const data::Image::sptr _imageFw, bool flip)
 {
-    SLM_ASSERT("Texture is null", _texture);
-    SLM_ASSERT("Image is null", _imageFw);
+    SIGHT_ASSERT("Texture is null", _texture);
+    SIGHT_ASSERT("Image is null", _imageFw);
 
     data::Image::Size imageSize = {_texture->getWidth(), 0, 0};
 
@@ -415,7 +415,7 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const data::Ima
             // int32
             return ::Ogre::PF_R32_SINT;
         }
-        FW_RAISE("Format '" + pixelType.string() + "' not handled");
+        SIGHT_THROW("Format '" + pixelType.string() + "' not handled");
     }
 
     if(numberOfComponent == 2)
@@ -435,7 +435,7 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const data::Ima
             // float
             return ::Ogre::PF_FLOAT32_GR;
         }
-        FW_RAISE("Format '" + pixelType.string() + "' not handled");
+        SIGHT_THROW("Format '" + pixelType.string() + "' not handled");
     }
 
     // PixelFormat in little endian
@@ -475,9 +475,9 @@ void Utils::convertFromOgreTexture( ::Ogre::TexturePtr _texture, const data::Ima
     }
     else if (pixelType == core::tools::Type::s_DOUBLE)
     {
-        SLM_FATAL("Pixel format not handled.");
+        SIGHT_FATAL("Pixel format not handled.");
     }
-    SLM_WARN("Pixel format not found, trying with the default 8-bits RGBA.");
+    SIGHT_WARN("Pixel format not found, trying with the default 8-bits RGBA.");
     return ::Ogre::PF_BYTE_RGBA;
 }
 
@@ -534,7 +534,7 @@ void Utils::setPixelFormatFromOgre( data::Image::sptr _image, ::Ogre::PixelForma
             break;
 
         default:
-            SLM_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
+            SIGHT_ERROR("Pixel format " << _format << " not found, defaults to 4 components.");
             numComponents = 4;
     }
     _image->setNumberOfComponents(numComponents);
@@ -582,7 +582,7 @@ void Utils::setPixelFormatFromOgre( data::Image::sptr _image, ::Ogre::PixelForma
         case ::Ogre::PF_FLOAT32_RGBA: pixelType = core::tools::Type::s_FLOAT; break;
 
         default:
-            SLM_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
+            SIGHT_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
             pixelType = core::tools::Type::s_UINT8;
     }
     _image->setType(pixelType);
@@ -609,7 +609,7 @@ void Utils::loadOgreTexture(const data::Image::csptr& _image, ::Ogre::TexturePtr
             _texture->getFormat() != pixelFormat )
         {
             const auto& size = _image->getSize2();
-            SLM_ASSERT("Only handle 2D and 3D textures", _image->getNumberOfDimensions() >= 2);
+            SIGHT_ASSERT("Only handle 2D and 3D textures", _image->getNumberOfDimensions() >= 2);
             const size_t depth = _image->getNumberOfDimensions() == 2 ? 1 : size[2];
 
             viz::scene3d::Utils::allocateTexture(_texture.get(), size[0], size[1], depth,
@@ -649,9 +649,9 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const data::Image::sptr& _image
 #pragma omp parallel for shared(pDest, srcBuffer)
         for(::Ogre::int32 i = 0; i < size; ++i)
         {
-            SLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
-                       *srcBuffer >= std::numeric_limits< DST_TYPE >::min() &&
-                       *srcBuffer <= std::numeric_limits< DST_TYPE >::max());
+            SIGHT_ASSERT("Pixel value '" << *srcBuffer << "' doesn't fit in texture range.",
+                         *srcBuffer >= std::numeric_limits< DST_TYPE >::min() &&
+                         *srcBuffer <= std::numeric_limits< DST_TYPE >::max());
             pDest[i] = static_cast< unsignedType >(srcBuffer[i] - lowBound);
         }
 
@@ -693,7 +693,7 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const data::Image:
     }
     else
     {
-        SLM_FATAL("Image format not supported.");
+        SIGHT_FATAL("Image format not supported.");
     }
 }
 
@@ -789,7 +789,7 @@ bool Utils::makePathsAbsolute(const std::string& key, std::istream& input, std::
         {
             if(line.substr(0, keySize) == key)
             {
-                SLM_FATAL_IF("Key '" + key + "' has no value bound to it.", line.size() < keySize + 1 );
+                SIGHT_FATAL_IF("Key '" + key + "' has no value bound to it.", line.size() < keySize + 1 );
 
                 const auto currentPath = std::filesystem::path(line.substr(keySize + 1));
 

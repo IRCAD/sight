@@ -28,14 +28,14 @@
 #include <core/memory/BufferManager.hpp>
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QFutureWatcher>
 #include <QPointer>
 #include <QPushButton>
 #include <QSignalMapper>
 #include <QTableView>
 #include <QTableWidget>
-
-#include <ui/base/IEditor.hpp>
 
 #include <vector>
 
@@ -60,7 +60,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(DumpEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(DumpEditor, sight::ui::base::IEditor)
 
     /// Constructor. Does nothing.
     MODULE_UI_DEBUG_API DumpEditor() noexcept;

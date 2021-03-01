@@ -39,7 +39,7 @@ class IO_PATCH_CLASS_API Study1 : public io::atoms::patch::IStructuralCreator
 
 public:
 
-    fwCoreClassMacro(Study1, io::atoms::patch::IStructuralCreator, new Study1)
+    SIGHT_DECLARE_CLASS(Study1, io::atoms::patch::IStructuralCreator, new Study1)
 
     /// Constructor
     IO_PATCH_API Study1();

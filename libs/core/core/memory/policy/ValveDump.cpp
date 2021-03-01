@@ -57,7 +57,7 @@ ValveDump::ValveDump() :
 void ValveDump::allocationRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                    BufferInfo::SizeType size )
 {
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(buffer);
     this->apply((size > info.size) ? size - info.size : 0);
 }
 
@@ -66,9 +66,9 @@ void ValveDump::allocationRequest( BufferInfo& info, core::memory::BufferManager
 void ValveDump::setRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                             BufferInfo::SizeType size )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
     this->apply();
 }
 
@@ -77,7 +77,7 @@ void ValveDump::setRequest( BufferInfo& info, core::memory::BufferManager::Const
 void ValveDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                    BufferInfo::SizeType newSize )
 {
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(buffer);
     this->apply((newSize > info.size) ? newSize - info.size : 0);
 }
 
@@ -85,24 +85,24 @@ void ValveDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager
 
 void ValveDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void ValveDump::lockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void ValveDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
     this->apply();
 }
 
@@ -110,16 +110,16 @@ void ValveDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::Co
 
 void ValveDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void ValveDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -199,7 +199,7 @@ void ValveDump::refresh()
 
 bool ValveDump::setParam(const std::string& name, const std::string& value)
 {
-    SLM_INFO("Set " << name << " to " << value);
+    SIGHT_INFO("Set " << name << " to " << value);
     try
     {
         if(name == "min_free_mem")
@@ -216,10 +216,10 @@ bool ValveDump::setParam(const std::string& name, const std::string& value)
     }
     catch( core::memory::exception::BadCast const& )
     {
-        SLM_ERROR("Bad value for " << name << " : " << value);
+        SIGHT_ERROR("Bad value for " << name << " : " << value);
         return false;
     }
-    SLM_ERROR("Bad parameter name " << name );
+    SIGHT_ERROR("Bad parameter name " << name );
     return false;
 }
 

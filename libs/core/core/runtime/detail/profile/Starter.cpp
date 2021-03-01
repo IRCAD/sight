@@ -51,7 +51,7 @@ Starter::Starter( const std::string& identifier ) :
 void Starter::apply()
 {
     auto module = detail::Runtime::get().findEnabledModule(m_identifier);
-    SLM_FATAL_IF("Unable to start module " + m_identifier + ": not found.", module == nullptr);
+    SIGHT_FATAL_IF("Unable to start module " + m_identifier + ": not found.", module == nullptr);
     try
     {
         if(!module->isStarted())
@@ -60,12 +60,12 @@ void Starter::apply()
         }
         else
         {
-            SLM_WARN("module " + m_identifier + " already started");
+            SIGHT_WARN("module " + m_identifier + " already started");
         }
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to start module " + m_identifier + ". " + e.what());
+        SIGHT_FATAL("Unable to start module " + m_identifier + ". " + e.what());
     }
 }
 

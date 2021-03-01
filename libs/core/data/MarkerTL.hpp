@@ -37,7 +37,7 @@ namespace sight::data
 class DATA_CLASS_API MarkerTL : public data::GenericTL< float[8] >
 {
 public:
-    fwCoreClassMacro(MarkerTL, data::TimeLine, data::factory::New< MarkerTL >)
+    SIGHT_DECLARE_CLASS(MarkerTL, data::TimeLine, data::factory::New< MarkerTL >)
 
     /**
      * @brief Constructor

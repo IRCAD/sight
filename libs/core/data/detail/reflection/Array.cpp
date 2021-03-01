@@ -30,7 +30,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(Array))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Array))
 {
     builder.base< ::sight::data::Object>()
     .tag("object_version", "1")

@@ -39,7 +39,7 @@ class IO_PATCH_CLASS_API V3ToV2 : public io::atoms::patch::IStructuralPatch
 
 public:
 
-    fwCoreClassMacro(V3ToV2, patch::structural::data::ImageSeries::V3ToV2, new V3ToV2)
+    SIGHT_DECLARE_CLASS(V3ToV2, patch::structural::data::ImageSeries::V3ToV2, new V3ToV2)
 
     /// Initialiaze members.
     IO_PATCH_API V3ToV2();

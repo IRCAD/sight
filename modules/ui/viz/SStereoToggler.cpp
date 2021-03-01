@@ -53,7 +53,7 @@ void SStereoToggler::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_layerId = config.get<std::string>("layer");
-    SLM_ASSERT("Empty layer ID.", !m_layerId.empty());
+    SIGHT_ASSERT("Empty layer ID.", !m_layerId.empty());
 
     const std::string stereoMode = config.get<std::string>("stereoMode", "");
 
@@ -71,7 +71,7 @@ void SStereoToggler::configuring()
     }
     else
     {
-        SLM_ERROR("Unknown stereo mode: '" + stereoMode + "'. SStereoToggler will do nothing.");
+        SIGHT_ERROR("Unknown stereo mode: '" + stereoMode + "'. SStereoToggler will do nothing.");
     }
 }
 
@@ -109,7 +109,7 @@ void SStereoToggler::updating()
             }
             else
             {
-                SLM_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->getID() + "'.");
+                SIGHT_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->getID() + "'.");
             }
         }
 

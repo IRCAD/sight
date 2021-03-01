@@ -36,7 +36,7 @@ namespace sight::data
 class DATA_CLASS_API MatrixTL : public GenericTL< float[16] >
 {
 public:
-    fwCoreClassMacro(MatrixTL, data::TimeLine, data::factory::New< MatrixTL >)
+    SIGHT_DECLARE_CLASS(MatrixTL, data::TimeLine, data::factory::New< MatrixTL >)
 
     /**
      * @brief Constructor

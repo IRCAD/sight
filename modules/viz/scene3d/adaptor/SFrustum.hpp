@@ -72,7 +72,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SFrustum final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SFrustum, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SFrustum, ::sight::viz::scene3d::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SFrustum() noexcept;

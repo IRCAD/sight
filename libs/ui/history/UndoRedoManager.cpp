@@ -35,7 +35,7 @@ UndoRedoManager::UndoRedoManager(size_t maxMemory, size_t maxCommands) :
     m_usedMemory(0),
     m_commandIndex(-1)
 {
-    SLM_ASSERT("The number of commands must be greater than 0", maxCommands > 0);
+    SIGHT_ASSERT("The number of commands must be greater than 0", maxCommands > 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -44,13 +44,13 @@ bool UndoRedoManager::enqueue(ICommand::sptr cmd)
 {
     if(m_maxMemory == 0)
     {
-        SLM_WARN("Cannot add a command because maxMemory is 0.");
+        SIGHT_WARN("Cannot add a command because maxMemory is 0.");
         return false;
     }
 
     if(cmd->getSize() > m_maxMemory)
     {
-        SLM_WARN("The current command is bigger than the maximum history size");
+        SIGHT_WARN("The current command is bigger than the maximum history size");
         return false;
     }
 

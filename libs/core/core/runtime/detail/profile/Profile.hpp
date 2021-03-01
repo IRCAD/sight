@@ -54,7 +54,7 @@ public:
     typedef std::vector< std::string >  ParamsContainer;
     typedef std::function< int () > RunCallbackType;
 
-    fwCoreClassMacro(Profile, BaseObject, std::make_shared< Profile >)
+    SIGHT_DECLARE_CLASS(Profile, BaseObject, std::make_shared< Profile >)
 
     /**
      * @brief   Constructor : does nothing.

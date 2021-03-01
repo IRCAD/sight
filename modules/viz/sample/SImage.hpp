@@ -47,7 +47,7 @@ class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::base::IGuiContainer
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImage, sight::ui::base::IGuiContainer)
+    SIGHT_DECLARE_SERVICE(SImage, sight::ui::base::IGuiContainer)
 
     /// Creates the service.
     MODULE_VIZ_SAMPLE_API SImage() noexcept;

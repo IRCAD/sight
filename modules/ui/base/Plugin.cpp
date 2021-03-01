@@ -75,7 +75,7 @@ void Plugin::start()
     }
     catch(core::Exception& e)
     {
-        SLM_ERROR("Preferences service not started. " << e.what());
+        SIGHT_ERROR("Preferences service not started. " << e.what());
     }
 }
 

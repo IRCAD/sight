@@ -26,7 +26,7 @@
 #include "data/Image.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::Histogram );
+SIGHT_REGISTER_DATA( ::sight::data::Histogram );
 
 namespace sight::data
 {
@@ -49,9 +49,9 @@ Histogram::~Histogram()
 void Histogram::shallowCopy(const Object::csptr& _source )
 {
     Histogram::csptr other = Histogram::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_values    = other->m_values;
     m_minValue  = other->m_minValue;
@@ -64,9 +64,9 @@ void Histogram::shallowCopy(const Object::csptr& _source )
 void Histogram::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Histogram::csptr other = Histogram::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_minValue  = other->m_minValue;
@@ -96,7 +96,7 @@ void Histogram::addPixel( float _pixel )
 
 void Histogram::initialize( float _min, float _max, float _binsWidth )
 {
-    SLM_ASSERT("The minimum value can't be greater than the maximum value", _min <= _max);
+    SIGHT_ASSERT("The minimum value can't be greater than the maximum value", _min <= _max);
 
     m_minValue  = _min;
     m_maxValue  = _max;
@@ -115,7 +115,7 @@ void Histogram::initialize( float _min, float _max, float _binsWidth )
 
 long Histogram::getNbPixels( float _min, float _max )
 {
-    SLM_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
+    SIGHT_ASSERT("The minimum value can't be greater than the maximum value", _min < _max);
 
     size_t indexMin = 0;
     if( _min >= m_minValue )

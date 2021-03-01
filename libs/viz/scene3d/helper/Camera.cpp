@@ -50,11 +50,11 @@ Ogre::Matrix4 Camera::computeFrustumShearTransform(const ::Ogre::Camera& _camera
 Ogre::Matrix4 Camera::computeProjectionMatrix(const data::Camera& _calibration, float _width,
                                               float _height, float _near, float _far)
 {
-    SLM_ASSERT("camera width should be > 0.", _width > 0.0f);
-    SLM_ASSERT("height width should be > 0.", _height > 0.0f);
-    SLM_ASSERT("near width should be > 0.", _near > 0.0f);
-    SLM_ASSERT("far width should be > 0.", _far > 0.0f);
-    SLM_ASSERT("far width should be > near.", _far > _near);
+    SIGHT_ASSERT("camera width should be > 0.", _width > 0.0f);
+    SIGHT_ASSERT("height width should be > 0.", _height > 0.0f);
+    SIGHT_ASSERT("near width should be > 0.", _near > 0.0f);
+    SIGHT_ASSERT("far width should be > 0.", _far > 0.0f);
+    SIGHT_ASSERT("far width should be > near.", _far > _near);
     const float fx = static_cast< float >(_calibration.getFx());
     const float fy = static_cast< float >(_calibration.getFy());
 

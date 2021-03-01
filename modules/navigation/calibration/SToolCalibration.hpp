@@ -54,7 +54,7 @@ class MODULE_NAVIGATION_CALIBRATION_CLASS_API SToolCalibration : public service:
 {
 
 public:
-    fwCoreServiceMacro(SToolCalibration, ::sight::service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SToolCalibration, ::sight::service::IRegisterer)
 
     /**
      * @brief Constructor.

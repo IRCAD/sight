@@ -71,7 +71,7 @@ void SStringEditor::stopping()
 void SStringEditor::updating()
 {
     auto sstr = this->getInOut< data::String >(s_STRING_INOUT);
-    SLM_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
+    SIGHT_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
     const std::string value = sstr->value();
 
     Q_EMIT edited(QString::fromStdString(value));
@@ -82,7 +82,7 @@ void SStringEditor::updating()
 void SStringEditor::updateString(const QString& str)
 {
     auto sstr = this->getInOut< data::String >(s_STRING_INOUT);
-    SLM_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
+    SIGHT_ASSERT("'" + s_STRING_INOUT + "' data must be set as 'inout'", sstr);
 
     sstr->value() = str.toStdString();
 

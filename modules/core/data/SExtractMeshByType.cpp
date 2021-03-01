@@ -37,7 +37,6 @@
 namespace sight::module::data
 {
 
-
 //-----------------------------------------------------------------------------
 
 SExtractMeshByType::SExtractMeshByType()
@@ -57,10 +56,10 @@ void SExtractMeshByType::configuring()
     typedef core::runtime::ConfigurationElement::sptr ConfigType;
 
     const ConfigType inoutCfg = m_configuration->findConfigurationElement("inout");
-    SLM_ASSERT("At one 'inout' tag is required.", inoutCfg);
+    SIGHT_ASSERT("At one 'inout' tag is required.", inoutCfg);
 
     const std::vector< ConfigType > extractCfg = inoutCfg->find("extract");
-    SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
+    SIGHT_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
     bool ok = false;
 
@@ -72,14 +71,14 @@ void SExtractMeshByType::configuring()
             if(cfg->getAttributeValue("group") == "target")
             {
                 const std::vector< ConfigType > keyCfg = cfg->find("key");
-                SLM_ASSERT(
+                SIGHT_ASSERT(
                     "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " <<  keyCfg.size(),
                         extractCfg.size() == keyCfg.size());
                 ok = true;
             }
         }
     }
-    SLM_ASSERT("Missing 'target' output keys", ok);
+    SIGHT_ASSERT("Missing 'target' output keys", ok);
 
     for(ConfigType cfg : extractCfg)
     {
@@ -101,7 +100,7 @@ void SExtractMeshByType::starting()
 void SExtractMeshByType::updating()
 {
     sight::data::ModelSeries::sptr modelSeries = this->getInOut< sight::data::ModelSeries>("source");
-    SLM_ASSERT("ModelSeries not found", modelSeries);
+    SIGHT_ASSERT("ModelSeries not found", modelSeries);
 
     sight::data::mt::ObjectReadLock lock(modelSeries);
 
@@ -133,7 +132,7 @@ void SExtractMeshByType::updating()
                 }
             }
         }
-        SLM_ERROR_IF(
+        SIGHT_ERROR_IF(
             "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
                 !found);
     }

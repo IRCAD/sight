@@ -39,7 +39,7 @@ class EXTIMELINE_CLASS_API SMain final : public sight::service::IService
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMain, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(SMain, sight::service::IService)
 
     /// Creates the service.
     EXTIMELINE_API SMain() noexcept;

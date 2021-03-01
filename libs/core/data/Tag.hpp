@@ -29,7 +29,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Tag), DATA_API);
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Tag), DATA_API);
 
 namespace sight::data
 {
@@ -42,7 +42,7 @@ class DATA_CLASS_API Tag : public Object
 {
 
 public:
-    fwCoreClassMacro(Tag, data::Object, data::factory::New< Tag >)
+    SIGHT_DECLARE_CLASS(Tag, data::Object, data::factory::New< Tag >)
 
     /**
      * @brief Constructor
@@ -53,7 +53,7 @@ public:
     /// Destructor
     DATA_API virtual ~Tag();
 
-    fwCampMakeFriendDataMacro((sight)(data)(Tag));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Tag));
 
     /**
      * @{

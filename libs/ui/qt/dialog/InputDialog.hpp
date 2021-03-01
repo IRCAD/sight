@@ -51,7 +51,7 @@ class UI_QT_CLASS_API InputDialog : public ui::base::dialog::IInputDialog
 
 public:
 
-    fwCoreClassMacro(InputDialog, ui::base::dialog::IInputDialog, ui::base::factory::New< InputDialog >)
+    SIGHT_DECLARE_CLASS(InputDialog, ui::base::dialog::IInputDialog, ui::base::factory::New< InputDialog >)
 
     UI_QT_API InputDialog(ui::base::GuiBaseObject::Key key);
 

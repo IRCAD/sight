@@ -47,7 +47,7 @@ typedef Module Bundle;
 struct CORE_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
                                                public std::enable_shared_from_this< ConfigurationElement >
 {
-    fwCoreClassMacro(ConfigurationElement)
+    SIGHT_DECLARE_CLASS(ConfigurationElement)
 
     /**
      * @brief       ConfigurationElement factory.

@@ -41,13 +41,13 @@ namespace sight::data
 class Float3TL : public GenericTL< float[3] >
 {
 public:
-    fwCoreClassMacro(Float3TL, data::TimeLine, data::factory::New< Float3TL >)
+    SIGHT_DECLARE_CLASS(Float3TL, data::TimeLine, data::factory::New< Float3TL >)
     Float3TL( data::Object::Key key ) :
         GenericTL< float[3] >(key)
     {
     }
 };
-fwDataRegisterMacro( ::sight::data::Float3TL )
+SIGHT_REGISTER_DATA( ::sight::data::Float3TL )
 
 typedef float float4[4];
 
@@ -56,13 +56,13 @@ typedef float float4[4];
 class Float4TL : public GenericTL< float4 >
 {
 public:
-    fwCoreClassMacro(Float4TL, data::TimeLine, data::factory::New< Float4TL >)
+    SIGHT_DECLARE_CLASS(Float4TL, data::TimeLine, data::factory::New< Float4TL >)
     Float4TL( data::Object::Key key ) :
         GenericTL< float4 >(key)
     {
     }
 };
-fwDataRegisterMacro( ::sight::data::Float4TL )
+SIGHT_REGISTER_DATA( ::sight::data::Float4TL )
 
 //------------------------------------------------------------------------------
 
@@ -77,14 +77,14 @@ public:
 class TestClassTL : public GenericTL< TestContained >
 {
 public:
-    fwCoreClassMacro(TestClassTL, data::TimeLine, data::factory::New< TestClassTL >)
+    SIGHT_DECLARE_CLASS(TestClassTL, data::TimeLine, data::factory::New< TestClassTL >)
 
     TestClassTL( data::Object::Key key ) :
         GenericTL< TestContained >(key)
     {
     }
 };
-fwDataRegisterMacro( ::sight::data::TestClassTL )
+SIGHT_REGISTER_DATA( ::sight::data::TestClassTL )
 
 namespace ut
 {

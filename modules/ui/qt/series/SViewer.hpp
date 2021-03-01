@@ -70,7 +70,7 @@ class MODULE_UI_QT_CLASS_API SViewer : public service::IController
 {
 
 public:
-    fwCoreServiceMacro(SViewer, service::IController)
+    SIGHT_DECLARE_SERVICE(SViewer, service::IController)
 
     /// Constructor
     MODULE_UI_QT_API SViewer();

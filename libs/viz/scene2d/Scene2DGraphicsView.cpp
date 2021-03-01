@@ -240,7 +240,7 @@ void Scene2DGraphicsView::setViewport( scene2d::data::Viewport::sptr viewport )
 
 void Scene2DGraphicsView::updateFromViewport()
 {
-    SLM_ASSERT("Viewport is not set", m_viewport);
+    SIGHT_ASSERT("Viewport is not set", m_viewport);
 
     this->fitInView(m_viewport->getX(), m_viewport->getY(),
                     m_viewport->getWidth(), m_viewport->getHeight(),

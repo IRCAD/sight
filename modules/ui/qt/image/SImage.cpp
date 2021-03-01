@@ -26,17 +26,16 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QIcon>
 #include <QLabel>
 #include <QVBoxLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt
 {
 namespace image
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -67,7 +66,7 @@ void SImage::starting()
 
     if(pixmap->isNull())
     {
-        SLM_ERROR("Image could not be found: " << m_path);
+        SIGHT_ERROR("Image could not be found: " << m_path);
     }
 
     if(m_width != -1 && m_height != -1)

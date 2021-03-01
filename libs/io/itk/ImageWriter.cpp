@@ -35,7 +35,7 @@
 
 #include <filesystem>
 
-fwDataIOWriterRegisterMacro( ::sight::io::itk::ImageWriter );
+SIGHT_REGISTER_IO_WRITER( ::sight::io::itk::ImageWriter );
 
 namespace sight::io::itk
 {
@@ -67,7 +67,7 @@ struct ITKSaverFunctor
     template<class PIXELTYPE>
     void operator()( const Parameter& param )
     {
-        SLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
+        SIGHT_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  core::tools::Type::create<PIXELTYPE>().string() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre

@@ -37,8 +37,8 @@ GenericObjectBase::GenericObjectBase(unsigned int maxElementNum, core::HiResCloc
     m_presenceMask(0),
     m_maxElementNum(maxElementNum)
 {
-    SLM_ASSERT("m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
-               m_maxElementNum < sizeof(uint64_t) * 8);
+    SIGHT_ASSERT("m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
+                 m_maxElementNum < sizeof(uint64_t) * 8);
 }
 
 //-----------------------------------------------------------------------------

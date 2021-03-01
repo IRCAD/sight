@@ -44,7 +44,7 @@ class SERVICE_CLASS_API Composite : public service::IXMLParser
 {
 public:
 
-    fwCoreServiceMacro(Composite, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Composite, service::IXMLParser)
 
     /**
      * @brief   Constructor : does nothing.

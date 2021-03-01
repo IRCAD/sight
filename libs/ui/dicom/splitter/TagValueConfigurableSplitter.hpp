@@ -39,8 +39,8 @@ namespace splitter
 class UI_DICOM_CLASS_API TagValueConfigurableSplitter : public filter::dicom::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassMacro(TagValueConfigurableSplitter, filter::dicom::splitter::TagValueSplitter,
-                     filter::dicom::factory::New< TagValueConfigurableSplitter >);
+    SIGHT_DECLARE_CLASS(TagValueConfigurableSplitter, filter::dicom::splitter::TagValueSplitter,
+                        filter::dicom::factory::New< TagValueConfigurableSplitter >);
 
     /// Constructor
     UI_DICOM_API TagValueConfigurableSplitter(filter::dicom::IFilter::Key key);

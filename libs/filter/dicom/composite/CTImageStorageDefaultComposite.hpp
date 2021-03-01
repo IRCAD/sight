@@ -38,8 +38,8 @@ namespace composite
 class FILTER_DICOM_CLASS_API CTImageStorageDefaultComposite : public IComposite
 {
 public:
-    fwCoreClassMacro(CTImageStorageDefaultComposite, IComposite,
-                     filter::dicom::factory::New< CTImageStorageDefaultComposite >);
+    SIGHT_DECLARE_CLASS(CTImageStorageDefaultComposite, IComposite,
+                        filter::dicom::factory::New< CTImageStorageDefaultComposite >);
 
     /// Constructor
     FILTER_DICOM_API CTImageStorageDefaultComposite(filter::dicom::IFilter::Key key);

@@ -54,7 +54,7 @@ class MODULE_SYNC_CLASS_API SSignalGate : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSignalGate, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SSignalGate, sight::service::IController)
 
     /**
      * @name Signals API

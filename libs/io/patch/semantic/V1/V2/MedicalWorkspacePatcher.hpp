@@ -56,8 +56,8 @@ class IO_PATCH_CLASS_API MedicalWorkspacePatcher : public io::atoms::patch::patc
 
 public:
 
-    fwCoreClassMacro(MedicalWorkspacePatcher, io::atoms::patch::patcher::DefaultPatcher,
-                     io::atoms::patch::patcher::factory::New< MedicalWorkspacePatcher >)
+    SIGHT_DECLARE_CLASS(MedicalWorkspacePatcher, io::atoms::patch::patcher::DefaultPatcher,
+                        io::atoms::patch::patcher::factory::New< MedicalWorkspacePatcher >)
 
     /// Constructor
     IO_PATCH_API MedicalWorkspacePatcher(io::atoms::patch::patcher::IPatcher::Key key);

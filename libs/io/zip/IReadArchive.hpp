@@ -38,7 +38,7 @@ class IReadArchive
 
 public:
 
-    fwCoreClassMacro(IReadArchive)
+    SIGHT_DECLARE_CLASS(IReadArchive)
 
     virtual ~IReadArchive()
     {

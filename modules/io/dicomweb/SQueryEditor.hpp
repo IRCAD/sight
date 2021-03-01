@@ -28,14 +28,14 @@
 
 #include <io/http/ClientQt.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QDateEdit>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QWidget>
-
-#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -71,7 +71,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SQueryEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SQueryEditor,  sight::ui::base::IEditor )
 
     /// Constructor
     MODULE_IO_DICOMWEB_API SQueryEditor() noexcept;

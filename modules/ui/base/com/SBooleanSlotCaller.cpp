@@ -33,7 +33,6 @@ namespace sight::module::ui::base
 namespace com
 {
 
-
 //-----------------------------------------------------------------------------
 
 SBooleanSlotCaller::SBooleanSlotCaller() noexcept
@@ -59,7 +58,7 @@ void SBooleanSlotCaller::updating()
         {
             core::tools::Object::sptr obj      = core::tools::fwID::getObject(HasSlotId);
             core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(obj);
-            SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
+            SIGHT_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
 

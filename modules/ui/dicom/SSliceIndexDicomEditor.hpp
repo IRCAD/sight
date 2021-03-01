@@ -28,13 +28,13 @@
 
 #include <io/base/service/IReader.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
 #include <QWidget>
-
-#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -97,7 +97,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor,  sight::ui::base::IEditor )
 
     MODULE_UI_DICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
     typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;

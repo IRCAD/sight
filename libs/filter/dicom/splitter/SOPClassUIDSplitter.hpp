@@ -38,8 +38,8 @@ namespace splitter
 class FILTER_DICOM_CLASS_API SOPClassUIDSplitter : public filter::dicom::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassMacro(SOPClassUIDSplitter, filter::dicom::splitter::TagValueSplitter,
-                     filter::dicom::factory::New< SOPClassUIDSplitter >);
+    SIGHT_DECLARE_CLASS(SOPClassUIDSplitter, filter::dicom::splitter::TagValueSplitter,
+                        filter::dicom::factory::New< SOPClassUIDSplitter >);
 
     /// Constructor
     FILTER_DICOM_API SOPClassUIDSplitter(filter::dicom::IFilter::Key key);

@@ -67,7 +67,7 @@ class MODULE_UI_HISTORY_CLASS_API SCommandHistory : public service::IService
 {
 public:
 
-    fwCoreServiceMacro(SCommandHistory, service::IService)
+    SIGHT_DECLARE_SERVICE(SCommandHistory, service::IService)
 
     /// Constructor.
     MODULE_UI_HISTORY_API SCommandHistory();

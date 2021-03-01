@@ -140,7 +140,7 @@ void Mesh::bindLayer(const data::Mesh::csptr& _mesh, BufferBinding _binding,
                      ::Ogre::VertexElementSemantic _semantic, ::Ogre::VertexElementType _type)
 {
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    SLM_ASSERT("Invalid vertex buffer binding", bind);
+    SIGHT_ASSERT("Invalid vertex buffer binding", bind);
 
     ::Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
 
@@ -203,7 +203,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
 
     /// The values in this table refer to vertices in the above table
     const size_t numVertices = _mesh->getNumberOfPoints();
-    SLM_DEBUG("Vertices #" << numVertices);
+    SIGHT_DEBUG("Vertices #" << numVertices);
 
     // Check if the mesh has normals - we assume we should have as many normals as points
     // If this is not the case, normals will be ignored or regenerated if needed and if the number of vertices changed
@@ -333,7 +333,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
         }
         else
         {
-            SLM_ERROR("Unhandled cell type in Ogre mesh: " << static_cast<int>(cellType));
+            SIGHT_ERROR("Unhandled cell type in Ogre mesh: " << static_cast<int>(cellType));
         }
     }
 
@@ -420,7 +420,7 @@ void Mesh::updateMesh(const data::Mesh::sptr& _mesh, bool _pointsOnly)
                         m_subMeshes[i]->indexData->indexBuffer = ibuf;
                     }
                     m_subMeshes[i]->indexData->indexCount = numIndices[i];
-                    SLM_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
+                    SIGHT_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
 
                     // Lock index data, we are going to write into it in the next loop
                     indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
@@ -486,7 +486,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = points.size();
-    SLM_DEBUG("Vertices #" << uiNumVertices);
+    SIGHT_DEBUG("Vertices #" << uiNumVertices);
 
     // Check if mesh attributes
     m_hasNormal = false;
@@ -735,7 +735,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
-        SLM_ASSERT("Invalid bounds found...", valid);
+        SIGHT_ASSERT("Invalid bounds found...", valid);
 
         if(valid)
         {
@@ -745,7 +745,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
         }
         else
         {
-            SLM_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+            SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
 
             // This silent the problem so there is no crash in Ogre
             m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
@@ -843,7 +843,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
         const bool valid = this->areBoundsValid(m_ogreMesh);
-        SLM_ASSERT("Invalid bounds found...", valid);
+        SIGHT_ASSERT("Invalid bounds found...", valid);
 
         if(valid)
         {
@@ -858,7 +858,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
         }
         else
         {
-            SLM_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
+            SIGHT_ERROR("Infinite or NaN values for the bounding box. Check the mesh validity.");
 
             // This silent the problem so there is no crash in Ogre
             m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox::EXTENT_NULL );
@@ -881,7 +881,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    SLM_ASSERT("Invalid vertex buffer binding", bind);
+    SIGHT_ASSERT("Invalid vertex buffer binding", bind);
 
     const bool hasVertexColor    = _mesh->hasPointColors();
     const bool hasPrimitiveColor = _mesh->hasCellColors();

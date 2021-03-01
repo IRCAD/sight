@@ -47,7 +47,7 @@ class IO_BASE_CLASS_API ArrayReader :  public GenericObjectReader< data::Array >
 
 public:
 
-    fwCoreClassMacro(ArrayReader, GenericObjectReader< data::Array>, io::base::reader::factory::New<ArrayReader>)
+    SIGHT_DECLARE_CLASS(ArrayReader, GenericObjectReader< data::Array>, io::base::reader::factory::New<ArrayReader>)
 
     /// Constructor. Do nothing.
     IO_BASE_API ArrayReader(io::base::reader::IObjectReader::Key key);

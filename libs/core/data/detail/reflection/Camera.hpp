@@ -27,5 +27,5 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampAutoDeclareEnumMacro((sight)(data)(Camera)(SourceType));
-fwCampAutoDeclareEnumMacro((sight)(data)(Camera)(PixelFormat));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Camera)(SourceType));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Camera)(PixelFormat));

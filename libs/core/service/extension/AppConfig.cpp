@@ -129,8 +129,9 @@ void AppConfig::addAppInfo( const std::string& configId,
 {
     core::mt::WriteLock lock(m_registryMutex);
 
-    SLM_DEBUG( "New app config registering : configId = " + configId );
-    SLM_ASSERT("The app config with the id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
+    SIGHT_DEBUG( "New app config registering : configId = " + configId );
+    SIGHT_ASSERT("The app config with the id = "<< configId <<" already exist.",
+                 m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
     info->group      = group;
@@ -165,8 +166,8 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
     core::mt::ReadLock lock(m_registryMutex);
     // Get config template
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
-               iter != m_reg.end());
+    SIGHT_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
+                 iter != m_reg.end());
 
     // Adapt config
     core::runtime::ConfigurationElement::sptr newConfig;
@@ -188,7 +189,8 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
         }
         else
         {
-            FW_RAISE("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<"'.");
+            SIGHT_THROW("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<
+                    "'.");
         }
     }
 
@@ -221,8 +223,8 @@ const
 std::shared_ptr< core::runtime::Module > AppConfig::getModule(const std::string& _configId)
 {
     Registry::const_iterator iter = m_reg.find( _configId );
-    SLM_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
-               iter != m_reg.end());
+    SIGHT_ASSERT("The id " <<  _configId << " is not found in the application configuration registry",
+                 iter != m_reg.end());
 
     auto module = core::runtime::findModule(iter->second->moduleId);
 

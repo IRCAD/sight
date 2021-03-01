@@ -55,7 +55,7 @@ class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::base::service::
 
 public:
 
-    fwCoreServiceMacro(SVideoWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SVideoWriter, sight::io::base::service::IWriter)
 
     /// Constructor.
     MODULE_IO_VIDEO_API SVideoWriter() noexcept;

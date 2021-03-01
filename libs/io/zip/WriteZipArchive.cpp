@@ -50,7 +50,7 @@ zipFile openWriteZipArchive( const std::filesystem::path& archive )
     int append  = (std::filesystem::exists(archive)) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
     zipFile zip = zipOpen(archive.string().c_str(), append);
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::Write("Archive '" + archive.string() + "' cannot be opened."),
         zip == NULL);
 
@@ -144,7 +144,7 @@ public:
         m_path(parameter.m_path)
     {
         const std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path, parameter.m_key);
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Write(
                 "Cannot open file '"
                 + m_path.string()
@@ -160,7 +160,7 @@ public:
     std::streamsize write(const char* s, std::streamsize n)
     {
         std::streamsize nRet = zipWriteInFileInZip(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Write("Error occurred while writing archive '" + m_archive.string()
                                       + ":" + m_path.string() + "'."),
             nRet < 0);
@@ -201,8 +201,8 @@ SPTR(std::ostream) WriteZipArchive::createFile(const std::filesystem::path& path
 void WriteZipArchive::putFile(const std::filesystem::path& sourceFile, const std::filesystem::path& path)
 {
     std::ifstream is(sourceFile.string().c_str(), std::ios::binary);
-    FW_RAISE_EXCEPTION_IF(io::zip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
-                          !is.good());
+    SIGHT_THROW_EXCEPTION_IF(io::zip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
+                             !is.good());
 
     {
         SPTR(std::ostream) os = this->createFile(path);

@@ -27,9 +27,9 @@
 #include <core/base.hpp>
 #include <core/tools/Object.hpp>
 
-#include <QPointer>
-
 #include <ui/base/container/fwContainer.hpp>
+
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QLayout;
@@ -51,7 +51,7 @@ class UI_QT_CLASS_API QtContainer : public ui::base::container::fwContainer
 
 public:
 
-    fwCoreClassMacro(QtContainer, ui::base::container::fwContainer, ui::base::factory::New< QtContainer >)
+    SIGHT_DECLARE_CLASS(QtContainer, ui::base::container::fwContainer, ui::base::factory::New< QtContainer >)
 
     UI_QT_API QtContainer(ui::base::GuiBaseObject::Key key) noexcept;
 

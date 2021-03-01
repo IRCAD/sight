@@ -60,7 +60,7 @@ public:
     void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mat)
     {
         auto adaptor = m_adaptor.lock();
-        SLM_ASSERT("Adaptor has expired.", adaptor);
+        SIGHT_ASSERT("Adaptor has expired.", adaptor);
         adaptor->updateValue(mat);
     }
 
@@ -69,7 +69,7 @@ public:
     virtual void notifyResourcesCreated(bool)
     {
         auto adaptor = m_adaptor.lock();
-        SLM_ASSERT("Adaptor has expired.", adaptor);
+        SIGHT_ASSERT("Adaptor has expired.", adaptor);
         adaptor->setDirty();
     }
 
@@ -102,7 +102,7 @@ void SCompositorParameter::configuring()
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
-    SLM_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
+    SIGHT_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void SCompositorParameter::starting()
     this->getRenderService()->makeCurrent();
 
     m_compositor = compChain->getCompositor(m_compositorName);
-    SLM_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", m_compositor);
+    SIGHT_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", m_compositor);
 
     // Association of a listener attached to this adaptor to the configured compositor
     m_listener = new CompositorListener(layer->getViewport(), SCompositorParameter::dynamicCast(this->getSptr()));

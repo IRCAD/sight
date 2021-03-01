@@ -29,21 +29,20 @@
 #include <core/tools/DynamicTypeKeyTypeMapping.hpp>
 #include <core/tools/IntrinsicTypes.hpp>
 
-#include <data/Image.hpp>
-#include <data/String.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/Image.hpp>
+#include <data/Image.hpp>
+#include <data/String.hpp>
+
+#include <filter/image/Labeling.hpp>
 
 #include <service/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
-#include <filter/image/Labeling.hpp>
-
 namespace sight::module::filter::image
 {
-
 
 const core::com::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
 
@@ -67,10 +66,10 @@ void SLabelGeometryImage::configuring()
     const core::runtime::ConfigurationElement::sptr clusters = m_configuration->findConfigurationElement("clusters");
     if(clusters)
     {
-        SLM_ASSERT("pointList is needed in output key", m_configuration->findConfigurationElement("out"));
+        SIGHT_ASSERT("pointList is needed in output key", m_configuration->findConfigurationElement("out"));
         std::vector< core::runtime::ConfigurationElement::sptr> clusterVect = clusters->find("cluster");
 
-        SLM_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
+        SIGHT_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
 
         for(size_t i = 0; i < clusterVect.size(); ++i)
         {
@@ -105,7 +104,7 @@ void SLabelGeometryImage::updating()
     data::helper::Image imageHelper(image.get_shared());
     if (!imageHelper.getBuffer())
     {
-        SLM_INFO("Image is not set.");
+        SIGHT_INFO("Image is not set.");
         return;
     }
 
@@ -118,7 +117,7 @@ void SLabelGeometryImage::updating()
         data::fieldHelper::MedicalImageHelpers::checkLandmarks( image.get_shared() );
         data::PointList::sptr landmarks =
             image->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
-        SLM_ASSERT("landmarks not instanced", landmarks);
+        SIGHT_ASSERT("landmarks not instanced", landmarks);
 
         for(const auto& point : landmarks->getPoints())
         {
@@ -145,8 +144,8 @@ void SLabelGeometryImage::stopping()
 
 void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string key)
 {
-    SLM_ASSERT("value: " << value << "should end by a number between 0 and 9",
-               value.back() >= '0' && value.back() <= '9');
+    SIGHT_ASSERT("value: " << value << "should end by a number between 0 and 9",
+                 value.back() >= '0' && value.back() <= '9');
     int indexPlane = std::stoi(value);
     // if the XML enum is between 1 and n, instead of 0 and n-1
     if(indexPlane > 0)

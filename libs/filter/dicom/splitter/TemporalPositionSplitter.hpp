@@ -36,7 +36,7 @@ namespace splitter
 class FILTER_DICOM_CLASS_API TemporalPositionSplitter : public filter::dicom::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassMacro(TemporalPositionSplitter, ISplitter, filter::dicom::factory::New< TemporalPositionSplitter >)
+    SIGHT_DECLARE_CLASS(TemporalPositionSplitter, ISplitter, filter::dicom::factory::New< TemporalPositionSplitter >)
 
     /// Constructor
     FILTER_DICOM_API TemporalPositionSplitter(filter::dicom::IFilter::Key key);

@@ -34,7 +34,7 @@
 namespace sight::data
 {
 
-fwDataRegisterMacro( ::sight::data::CalibrationInfo );
+SIGHT_REGISTER_DATA( ::sight::data::CalibrationInfo );
 
 const core::com::Signals::SignalKeyType CalibrationInfo::s_ADDED_RECORD_SIG   = "addedRecord";
 const core::com::Signals::SignalKeyType CalibrationInfo::s_REMOVED_RECORD_SIG = "removedRecord";
@@ -68,9 +68,9 @@ CalibrationInfo::~CalibrationInfo()
 void CalibrationInfo::shallowCopy( const data::Object::csptr& _source )
 {
     CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy(other);
 
@@ -83,14 +83,14 @@ void CalibrationInfo::shallowCopy( const data::Object::csptr& _source )
 void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other );
 
     this->resetRecords();
-    SLM_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
+    SIGHT_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
 
     ImageContainerType::const_iterator imgIter = other->m_imageContainer.begin();
     for(const data::PointList::sptr& pl : other->m_pointListContainer)
@@ -115,7 +115,7 @@ void CalibrationInfo::addRecord( const data::Image::sptr& img, const data::Point
 
 void CalibrationInfo::removeRecord(size_t idx)
 {
-    SLM_ASSERT("index out of bound ", idx < m_pointListContainer.size() );
+    SIGHT_ASSERT("index out of bound ", idx < m_pointListContainer.size() );
 
     PointListContainerType::iterator plIt = m_pointListContainer.begin();
     ImageContainerType::iterator imgIt    = m_imageContainer.begin();
@@ -155,7 +155,7 @@ data::PointList::sptr CalibrationInfo::getPointList( const data::Image::sptr& im
 {
     data::PointList::sptr pl;
 
-    SLM_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size() );
+    SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size() );
     size_t dist = 0;
     ImageContainerType::const_iterator it;
     for(it = m_imageContainer.begin(); it != m_imageContainer.end() && *(it) != img; ++it, ++dist)
@@ -179,7 +179,7 @@ data::Image::sptr CalibrationInfo::getImage( const data::PointList::sptr& pl) co
 {
     data::Image::sptr img;
 
-    SLM_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size() );
+    SIGHT_ASSERT("Lists have not the same size", m_imageContainer.size() == m_pointListContainer.size() );
 
     size_t dist = 0;
     PointListContainerType::const_iterator it;
@@ -202,7 +202,7 @@ data::Image::sptr CalibrationInfo::getImage( const data::PointList::sptr& pl) co
 
 data::Image::sptr CalibrationInfo::getImage(size_t idx) const
 {
-    SLM_ASSERT("index out of bound ", idx < m_imageContainer.size() );
+    SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size() );
 
     ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
 

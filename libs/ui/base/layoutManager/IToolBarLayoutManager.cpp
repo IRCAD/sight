@@ -31,7 +31,8 @@ namespace sight::ui::base
 namespace layoutManager
 {
 
-const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY = "::sight::ui::base::ToolBarLayoutManager";
+const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY =
+    "::sight::ui::base::ToolBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 
@@ -49,8 +50,8 @@ IToolBarLayoutManager::~IToolBarLayoutManager()
 
 void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 {
-    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-               configuration->getName() == "layout");
+    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+                 configuration->getName() == "layout");
 
     if(configuration->hasAttribute("style"))
     {
@@ -62,7 +63,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
         }
         else
         {
-            SLM_ERROR(
+            SIGHT_ERROR(
                 "`Style` attribute value must be `ToolButtonIconOnly` or `ToolButtonTextOnly` or `ToolButtonTextBesideIcon` or `ToolButtonTextUnderIcon` or `ToolButtonFollowStyle`");
         }
     }
@@ -74,10 +75,10 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
         {
             ConfigurationType toolBarItem = *iter;
             ActionInfo info;
-            SLM_ASSERT("Depreciated tag <state>", !toolBarItem->hasAttribute("state"));
-            SLM_ASSERT("Depreciated tag <enable>", !toolBarItem->hasAttribute("enable"));
+            SIGHT_ASSERT("Depreciated tag <state>", !toolBarItem->hasAttribute("state"));
+            SIGHT_ASSERT("Depreciated tag <enable>", !toolBarItem->hasAttribute("enable"));
 
-            SLM_ASSERT("missing <name> attribute", toolBarItem->hasAttribute("name"));
+            SIGHT_ASSERT("missing <name> attribute", toolBarItem->hasAttribute("name"));
             if( toolBarItem->hasAttribute("name") )
             {
                 info.m_name = toolBarItem->getExistingAttributeValue("name");
@@ -90,7 +91,7 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
             if( toolBarItem->hasAttribute("icon2") )
             {
-                SLM_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
+                SIGHT_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
                 info.m_icon2 = core::runtime::getModuleResourceFilePath(toolBarItem->getAttributeValue("icon2"));
             }
 

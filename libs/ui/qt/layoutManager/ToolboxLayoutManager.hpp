@@ -40,8 +40,8 @@ class UI_QT_CLASS_API ToolboxLayoutManager : public ui::base::layoutManager::Too
 
 public:
 
-    fwCoreClassMacro(ToolboxLayoutManager, ui::base::layoutManager::ToolboxLayoutManagerBase,
-                     ui::base::factory::New< ToolboxLayoutManager >)
+    SIGHT_DECLARE_CLASS(ToolboxLayoutManager, ui::base::layoutManager::ToolboxLayoutManagerBase,
+                        ui::base::factory::New< ToolboxLayoutManager >)
 
     UI_QT_API ToolboxLayoutManager(ui::base::GuiBaseObject::Key key);
 

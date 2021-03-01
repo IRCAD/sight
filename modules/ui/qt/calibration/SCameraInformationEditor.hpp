@@ -27,11 +27,11 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 #include <list>
 
@@ -59,7 +59,7 @@ class MODULE_UI_QT_CLASS_API SCameraInformationEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCameraInformationEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCameraInformationEditor, sight::ui::base::IEditor)
 
     static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
     typedef core::com::Slot<void ()> UpdateInfosSlotType;

@@ -24,11 +24,11 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <QGuiApplication>
-#include <QVector>
-
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QGuiApplication>
+#include <QVector>
 
 #include <filesystem>
 
@@ -121,7 +121,7 @@ void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons b
 ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     MessageDialogQmlIconsType::const_iterator iterIcon = messageDialogQmlIcons.find(m_icon);
-    SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
+    SIGHT_ASSERT("Unknown Icon", iterIcon != messageDialogQmlIcons.end());
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
     std::string icon = iterIcon->second;
@@ -134,12 +134,12 @@ ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
     context->setContextProperty("messageDialog", this);
     // load the qml ui component
     QObject* window = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File MessageDialog is not found or not loaded", window);
+    SIGHT_ASSERT("The Qml File MessageDialog is not found or not loaded", window);
     // keep window to destroy it
 
     window->setProperty("title", m_title);
     QObject* dialog = window->findChild<QObject*>("dialog");
-    SLM_ASSERT("The dialog is not found inside the window", dialog);
+    SIGHT_ASSERT("The dialog is not found inside the window", dialog);
     StandardButton* buttonSetting = qobject_cast<StandardButton*>(dialog->findChild<QObject*>("standardButton"));
     Q_EMIT messageChanged();
     //set icon

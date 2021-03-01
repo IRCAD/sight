@@ -24,11 +24,11 @@
 
 #include "ui/qt/container/QtMenuContainer.hpp"
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QMenu>
 #include <QMenuBar>
 #include <QString>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::MenuBarLayoutManager,
                     ::sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
@@ -56,7 +56,7 @@ void MenuBarLayoutManager::createLayout( ui::base::container::fwMenuBar::sptr pa
 {
 
     m_parent = ui::qt::container::QtMenuBarContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwMenuBar to QtMenuBarContainer failed", m_parent);
+    SIGHT_ASSERT("dynamicCast fwMenuBar to QtMenuBarContainer failed", m_parent);
 
     QMenuBar* menuBar = m_parent->getQtMenuBar();
 

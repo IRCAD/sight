@@ -27,16 +27,18 @@
 #include <core/tools/fwID.hpp>
 
 #include <data/Composite.hpp>
+#include <data/helper/Composite.hpp>
+#include <data/helper/Field.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/helper/Composite.hpp>
-#include <data/helper/Field.hpp>
+
+#include <geometry/data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
-#include <geometry/data/Matrix4.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -48,8 +50,6 @@
 #include <QStringList>
 #include <QVBoxLayout>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 #include <map>
 
 namespace sight::module::ui::qt
@@ -57,9 +57,8 @@ namespace sight::module::ui::qt
 namespace model
 {
 
-
 static const service::IService::KeyType s_MODEL_SERIES_INOUT = "modelSeries";
-static const service::IService::KeyType s_COMPOSITE_INOUT = "composite";
+static const service::IService::KeyType s_COMPOSITE_INOUT    = "composite";
 
 static const std::string s_MATRIX_FIELD_NAME = "TransformMatrix";
 
@@ -176,7 +175,7 @@ void SOrganTransformation::refresh()
 
     auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     bool hasReconstructions = !series->getReconstructionDB().empty();
     container->setEnabled( hasReconstructions );

@@ -24,10 +24,10 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <QListWidget>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -56,7 +56,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SListView, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SListView, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SListView() noexcept;

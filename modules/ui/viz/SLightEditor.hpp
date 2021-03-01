@@ -24,6 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/ILight.hpp>
 
 #include <OGRE/OgreColourValue.h>
@@ -35,8 +37,6 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QSpinBox>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -59,7 +59,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SLightEditor, sight::ui::base::IEditor)
 
     /// Creates the service.
     MODULE_UI_VIZ_API SLightEditor() noexcept;

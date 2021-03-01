@@ -180,8 +180,8 @@ WorkerAsio::~WorkerAsio()
 {
     std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
 
-    SLM_ASSERT("Worker must be properly stopped. Try to call stop() from the caller thread before.",
-               !m_thread->joinable());
+    SIGHT_ASSERT("Worker must be properly stopped. Try to call stop() from the caller thread before.",
+                 !m_thread->joinable());
 }
 
 //------------------------------------------------------------------------------
@@ -191,9 +191,9 @@ void WorkerAsio::stop()
     // stop() is also called in the destructor, so we need to put a critical section here
     std::unique_lock<std::recursive_mutex> lock(m_stopMutex);
 
-    SLM_ASSERT("Thread is not joinable", m_thread->joinable());
-    SLM_ASSERT("Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
-               m_thread->get_id() != core::thread::getCurrentThreadId());
+    SIGHT_ASSERT("Thread is not joinable", m_thread->joinable());
+    SIGHT_ASSERT("Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
+                 m_thread->get_id() != core::thread::getCurrentThreadId());
 
     m_work.reset();
     m_thread->join();

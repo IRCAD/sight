@@ -114,7 +114,7 @@ class MODULE_UI_BASE_CLASS_API SStarter : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SStarter, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SStarter, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**

@@ -42,7 +42,7 @@ class VIZ_QT3D_CLASS_API IAdaptor : public service::IService
 
 public:
 
-    fwCoreClassMacro(IAdaptor, sight::service::IService)
+    SIGHT_DECLARE_CLASS(IAdaptor, sight::service::IService)
 
     /// Gets the render service using this adaptor.
     VIZ_QT3D_API SRender::sptr getRenderService() const;

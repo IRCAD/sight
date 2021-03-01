@@ -46,14 +46,14 @@ QtMenuItemContainer::~QtMenuItemContainer() noexcept
 
 void QtMenuItemContainer::clean()
 {
-    SLM_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
+    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
 }
 
 //-----------------------------------------------------------------------------
 
 void QtMenuItemContainer::destroyContainer()
 {
-    SLM_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
+    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menuItem);
 }
 
 //-----------------------------------------------------------------------------

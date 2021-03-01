@@ -38,7 +38,7 @@ inline CSPTR(DATATYPE) IService::getInput(const KeyType& key) const
     if(iterator != m_inputsMap.end())
     {
         input = std::dynamic_pointer_cast<const DATATYPE>( iterator->second.getShared() );
-        SLM_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", input);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", input);
     }
 
     return input;
@@ -54,7 +54,7 @@ inline SPTR(DATATYPE) IService::getInOut(const KeyType& key) const
     if(iterator != m_inOutsMap.end())
     {
         inout = std::dynamic_pointer_cast<DATATYPE>( iterator->second.getShared() );
-        SLM_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", inout);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", inout);
     }
 
     return inout;
@@ -70,7 +70,7 @@ inline SPTR(DATATYPE) IService::getOutput(const KeyType& key) const
     if(iterator != m_outputsMap.end())
     {
         output = std::dynamic_pointer_cast<DATATYPE>( iterator->second.get_shared() );
-        SLM_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler<DATATYPE>().getClassname() << " failed", output);
     }
 
     return output;
@@ -84,9 +84,9 @@ inline CSPTR(DATATYPE) IService::getInput(const KeyType& keybase, size_t index) 
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
 #endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    SLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-               index < it->second);
+    SIGHT_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    SIGHT_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                 index < it->second);
     return this->getInput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
@@ -98,9 +98,9 @@ inline SPTR(DATATYPE) IService::getInOut(const KeyType& keybase, size_t index) c
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
 #endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    SLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-               index < it->second);
+    SIGHT_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    SIGHT_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                 index < it->second);
     return this->getInOut< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 //------------------------------------------------------------------------------
@@ -111,9 +111,9 @@ inline SPTR(DATATYPE) IService::getOutput(const KeyType& keybase, size_t index) 
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
 #endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    SLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-               index < it->second);
+    SIGHT_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    SIGHT_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                 index < it->second);
     return this->getOutput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
@@ -130,8 +130,8 @@ inline data::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const KeyType
     {
         // The Key has been found, we can cast it to the right type
         input = iterator->second.dynamicPointerCast< CONST_DATATYPE >();
-        SLM_ASSERT("DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed",
-                   !input.expired());
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed",
+                     !input.expired());
     }
 
     return input;
@@ -150,8 +150,8 @@ inline data::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& key)
     {
         // The Key has been found, we can cast it to the right type
         inout = iterator->second.dynamicPointerCast< DATATYPE >();
-        SLM_ASSERT("DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed",
-                   !inout.expired());
+        SIGHT_ASSERT("DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed",
+                     !inout.expired());
     }
 
     return inout;
@@ -170,7 +170,7 @@ inline data::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType& key
     {
         // The Key has been found, we can cast it to the right type
         output = std::dynamic_pointer_cast< DATATYPE >(iterator->second.get_shared());
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "DynamicCast " << core::TypeDemangler< DATATYPE >().getClassname() << " failed", !output.expired());
     }
 
@@ -185,9 +185,9 @@ inline data::mt::weak_ptr< CONST_DATATYPE > IService::getWeakInput(const KeyType
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
 #endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    SLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-               index < it->second);
+    SIGHT_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    SIGHT_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                 index < it->second);
     return this->getWeakInput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
@@ -199,9 +199,9 @@ inline data::mt::weak_ptr< DATATYPE > IService::getWeakInOut(const KeyType& keyb
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
 #endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    SLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-               index < it->second);
+    SIGHT_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    SIGHT_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                 index < it->second);
     return this->getWeakInOut< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
@@ -213,9 +213,9 @@ inline data::mt::weak_ptr< DATATYPE > IService::getWeakOutput(const KeyType& key
 #ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
 #endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    SLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-               index < it->second);
+    SIGHT_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
+    SIGHT_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
+                 index < it->second);
     return this->getWeakOutput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
@@ -226,7 +226,7 @@ inline data::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const Key
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(key).lock();
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Service with ID '" + this->getID() + "' cannot acquire a locked input with key '" + key + "'."
             ),
@@ -243,7 +243,7 @@ inline data::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& 
 {
     auto lockedInOut = getWeakInOut< DATATYPE >(key).lock();
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Service with ID '" + this->getID() + "' cannot acquire a locked inout with key '" + key + "'."
             ),
@@ -260,7 +260,7 @@ inline data::mt::locked_ptr< DATATYPE > IService::getLockedOutput(const KeyType&
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(key).lock();
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Service with ID '" + this->getID() + "' cannot acquire a locked output with key '" + key + "'."
             ),
@@ -278,7 +278,7 @@ inline data::mt::locked_ptr< CONST_DATATYPE > IService::getLockedInput(const Key
 {
     auto lockedInput = this->getWeakInput< DATATYPE >(keybase, index).lock();
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Service with ID '"
             + this->getID()
@@ -301,7 +301,7 @@ inline data::mt::locked_ptr< DATATYPE > IService::getLockedInOut(const KeyType& 
 {
     auto lockedInOut = this->getWeakInOut< DATATYPE >(keybase, index).lock();
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Service with ID '"
             + this->getID()
@@ -324,7 +324,7 @@ inline data::mt::locked_ptr< DATATYPE > IService::geLockedOutput(const KeyType& 
 {
     auto lockedOutput = this->getWeakOutput< DATATYPE >(keybase, index).lock();
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception(
             "Service with ID '"
             + this->getID()

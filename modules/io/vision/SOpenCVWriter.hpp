@@ -78,7 +78,7 @@ namespace sight::module::io::vision
 class MODULE_IO_VISION_CLASS_API SOpenCVWriter : public sight::io::base::service::IWriter
 {
 public:
-    fwCoreServiceMacro(SOpenCVWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SOpenCVWriter, sight::io::base::service::IWriter)
 
     ///Constructor
     MODULE_IO_VISION_API SOpenCVWriter();

@@ -62,7 +62,7 @@ struct RemoveTemporaryFolder
     {
         std::error_code er;
         std::filesystem::remove_all(m_path, er);
-        SLM_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
+        SIGHT_ERROR_IF( "Failed to remove " << m_path << " : " << er.message(), er.value() != 0);
     }
     std::filesystem::path m_path;
 };
@@ -112,7 +112,7 @@ const std::filesystem::path& System::getTempPath() noexcept
 #else
         fs::path fallback("/tmp");
 #endif
-        SLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
+        SIGHT_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
         sysTmp = fallback;
     }
     return sysTmp;
@@ -202,7 +202,7 @@ const std::filesystem::path System::getTemporaryFolder(const std::string& subFol
         tmpDir = createUniqueFolder(tmpDir/subDirName);
     }
 
-    SLM_INFO("Temporary folder is : " << tmpDirPath);
+    SIGHT_INFO("Temporary folder is : " << tmpDirPath);
     return tmpDir;
 }
 
@@ -316,12 +316,12 @@ void System::cleanAllTempFolders(const std::filesystem::path& dir) noexcept
 
         if(pid && !isProcessRunning(pid))
         {
-            SLM_INFO("Removing old temp dir : " << foundTmpDir);
+            SIGHT_INFO("Removing old temp dir : " << foundTmpDir);
 
             std::error_code er;
             fs::remove_all(foundTmpDir, er);
 
-            SLM_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
+            SIGHT_WARN_IF( "Failed to remove " << foundTmpDir << " : " << er.message(), er.value() != 0);
         }
     }
 

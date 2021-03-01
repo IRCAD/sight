@@ -32,11 +32,11 @@
 #include <data/Color.hpp>
 #include <data/Matrix4.hpp>
 
+#include <ui/base/container/fwContainer.hpp>
+
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreLight.h>
-#include <OGRE/Ogre.h>
-
-#include <ui/base/container/fwContainer.hpp>
 
 #include <string>
 
@@ -73,7 +73,7 @@ public:
 
     typedef viz::scene3d::lightFactory::Key Key;
 
-    fwCoreClassMacro(ILight, viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_CLASS(ILight, viz::scene3d::IAdaptor)
 
     /// Defines point type light.
     VIZ_SCENE3D_API static const std::string s_POINT_LIGHT;

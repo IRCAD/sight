@@ -38,7 +38,7 @@ namespace parser
 
 void TransferFunction::updating( )
 {
-    SLM_FATAL("This method is deprecated, and this shouldn't be used.");
+    SIGHT_FATAL("This method is deprecated, and this shouldn't be used.");
 }
 
 // ------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ void TransferFunction::updating( )
 void TransferFunction::createConfig( core::tools::Object::sptr _obj )
 {
     data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast( _obj );
-    SLM_ASSERT("TransferFunction not instanced", tf);
+    SIGHT_ASSERT("TransferFunction not instanced", tf);
 
     const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
     if(config.count("colors"))

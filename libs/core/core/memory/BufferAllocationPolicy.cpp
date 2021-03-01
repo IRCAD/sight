@@ -46,9 +46,9 @@ void BufferMallocPolicy::allocate(BufferType& buffer,
 
         if (buffer == nullptr)
         {
-            FW_RAISE_EXCEPTION_MSG( core::memory::exception::Memory,
-                                    "Cannot allocate memory ("
-                                    << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) <<").");
+            SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
+                                       "Cannot allocate memory ("
+                                       << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) <<").");
         }
     }
 }
@@ -70,9 +70,9 @@ void BufferMallocPolicy::reallocate(BufferType& buffer,
     }
     if (newBuffer == NULL && size > 0)
     {
-        FW_RAISE_EXCEPTION_MSG( core::memory::exception::Memory,
-                                "Cannot allocate memory ("
-                                << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) <<").");
+        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
+                                   "Cannot allocate memory ("
+                                   << core::memory::ByteSize(core::memory::ByteSize::SizeType(size)) <<").");
     }
     buffer = newBuffer;
 }
@@ -106,8 +106,8 @@ void BufferNewPolicy::allocate(BufferType& buffer,
     }
     catch (std::bad_alloc& ba)
     {
-        FW_RAISE_EXCEPTION_MSG( core::memory::exception::Memory,
-                                "bad_alloc caught: " << ba.what());
+        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
+                                   "bad_alloc caught: " << ba.what());
     }
 }
 
@@ -116,10 +116,10 @@ void BufferNewPolicy::allocate(BufferType& buffer,
 void BufferNewPolicy::reallocate(BufferType& buffer,
                                  BufferAllocationPolicy::SizeType size)
 {
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
-    FW_RAISE_EXCEPTION_MSG( core::memory::exception::Memory,
-                            "Reallocation not managed for buffer allocated with 'new' operator.");
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
+    SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
+                               "Reallocation not managed for buffer allocated with 'new' operator.");
 }
 
 //------------------------------------------------------------------------------
@@ -142,10 +142,10 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 void BufferNoAllocPolicy::allocate(BufferType& buffer,
                                    BufferAllocationPolicy::SizeType size)
 {
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
-    FW_RAISE_EXCEPTION_MSG( core::memory::exception::Memory,
-                            "No Allocation Policy should not be called.");
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
+    SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
+                               "No Allocation Policy should not be called.");
 }
 
 //------------------------------------------------------------------------------
@@ -153,18 +153,18 @@ void BufferNoAllocPolicy::allocate(BufferType& buffer,
 void BufferNoAllocPolicy::reallocate(BufferType& buffer,
                                      BufferAllocationPolicy::SizeType size)
 {
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
-    FW_RAISE_EXCEPTION_MSG( core::memory::exception::Memory,
-                            "No Allocation Policy should not be called.");
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
+    SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::Memory,
+                               "No Allocation Policy should not be called.");
 }
 
 //------------------------------------------------------------------------------
 
 void BufferNoAllocPolicy::destroy(BufferType& buffer)
 {
-    FwCoreNotUsedMacro(buffer);
-    SLM_ASSERT("No Alloc Policy should not be called", 0);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_ASSERT("No Alloc Policy should not be called", 0);
 }
 
 //------------------------------------------------------------------------------

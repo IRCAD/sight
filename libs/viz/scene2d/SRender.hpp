@@ -100,7 +100,7 @@ class VIZ_SCENE2D_CLASS_API SRender : public viz::base::IRender
 
 public:
 
-    fwCoreServiceMacro(SRender, viz::base::IRender)
+    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender)
 
     /// A string type representing adaptors id.
     typedef std::string AdaptorIDType;

@@ -27,9 +27,9 @@
 #include <core/base.hpp>
 #include <core/tools/Object.hpp>
 
-#include <QPointer>
-
 #include <ui/base/container/fwToolBar.hpp>
+
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QToolBar;
@@ -49,7 +49,8 @@ class UI_QT_CLASS_API QtToolBarContainer : public ui::base::container::fwToolBar
 
 public:
 
-    fwCoreClassMacro(QtToolBarContainer, ui::base::container::fwToolBar, ui::base::factory::New< QtToolBarContainer >)
+    SIGHT_DECLARE_CLASS(QtToolBarContainer, ui::base::container::fwToolBar,
+                        ui::base::factory::New< QtToolBarContainer >)
 
     UI_QT_API QtToolBarContainer(ui::base::GuiBaseObject::Key key) noexcept;
 

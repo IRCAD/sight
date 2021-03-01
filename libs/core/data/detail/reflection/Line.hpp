@@ -27,4 +27,4 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampDeclareAccessor((sight)(data)(Line), (sight)(data)(Point));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Line), (sight)(data)(Point));

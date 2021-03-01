@@ -44,7 +44,6 @@ const service::IService::KeyType s_SELECTED_INOUT = "selectedMatrix";
 
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 
 SMatrixList::SMatrixList() noexcept
@@ -75,10 +74,10 @@ void SMatrixList::starting()
     const size_t numOutput   = this->getKeyGroupSize(s_VECTOR_INOUT);
     const size_t numSelected = this->getKeyGroupSize(s_SELECTED_INOUT);
 
-    SLM_ASSERT("the numbers of matrices, vectors and selected matrices should be the same",
-               numMatrices == numOutput && numMatrices == numSelected );
-    SLM_ASSERT("the numbers of matrices, vectors and selected matrices should be superior to one",
-               numMatrices > 0 && numOutput > 0 && numSelected > 0 );
+    SIGHT_ASSERT("the numbers of matrices, vectors and selected matrices should be the same",
+                 numMatrices == numOutput && numMatrices == numSelected );
+    SIGHT_ASSERT("the numbers of matrices, vectors and selected matrices should be superior to one",
+                 numMatrices > 0 && numOutput > 0 && numSelected > 0 );
 
     for(size_t j = 0; j < numMatrices; ++j)
     {
@@ -92,7 +91,7 @@ void SMatrixList::starting()
 
     if(m_inputVector.empty() || m_selectedVector.empty() || m_outputVector.empty() )
     {
-        SLM_ERROR("No input matrices found!");
+        SIGHT_ERROR("No input matrices found!");
         return;
     }
 }

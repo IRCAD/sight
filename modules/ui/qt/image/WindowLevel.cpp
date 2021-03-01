@@ -29,15 +29,18 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
-#include <data/Image.hpp>
-#include <data/mt/ObjectReadLock.hpp>
-#include <data/mt/ObjectWriteLock.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/Composite.hpp>
+#include <data/Image.hpp>
+#include <data/mt/ObjectReadLock.hpp>
+#include <data/mt/ObjectWriteLock.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <service/macros.hpp>
+
+#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/widget/QRangeSlider.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
@@ -52,17 +55,13 @@
 #include <QToolButton>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-#include <ui/qt/widget/QRangeSlider.hpp>
-
 #include <functional>
 
 namespace sight::module::ui::qt::image
 {
 
-
 static const service::IService::KeyType s_IMAGE_INOUT = "image";
-static const service::IService::KeyType s_TF_INOUT = "tf";
+static const service::IService::KeyType s_TF_INOUT    = "tf";
 
 static const std::string s_AUTO_WINDOWING_CONFIG   = "autoWindowing";
 static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
@@ -97,13 +96,13 @@ void WindowLevel::configuring()
         const ConfigType config = srvConfig.get_child("config.<xmlattr>");
 
         const std::string autoWindowing = config.get(s_AUTO_WINDOWING_CONFIG, "no");
-        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
-                   autoWindowing == "yes" || autoWindowing == "no");
+        SIGHT_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
+                     autoWindowing == "yes" || autoWindowing == "no");
         m_autoWindowing = (autoWindowing == "yes");
 
         const std::string enableSquareTF = config.get(s_ENABLE_SQUARE_TF_CONFIG, "yes");
-        SLM_ASSERT("Bad value for 'enableSquareTF' attribute. It must be 'yes' or 'no'!",
-                   enableSquareTF == "yes" || enableSquareTF == "no");
+        SIGHT_ASSERT("Bad value for 'enableSquareTF' attribute. It must be 'yes' or 'no'!",
+                     enableSquareTF == "yes" || enableSquareTF == "no");
         m_enableSquareTF = (enableSquareTF == "yes");
     }
 }
@@ -113,7 +112,7 @@ void WindowLevel::configuring()
 void WindowLevel::starting()
 {
     const data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
+    SIGHT_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
 
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
@@ -203,7 +202,7 @@ void WindowLevel::starting()
 void WindowLevel::updating()
 {
     const data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+    SIGHT_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
     const data::mt::ObjectReadLock imgLock(image);
 
     const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
@@ -219,7 +218,7 @@ void WindowLevel::updating()
         }
 
         const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-        SLM_ASSERT("TransferFunction null pointer", tf);
+        SIGHT_ASSERT("TransferFunction null pointer", tf);
         const data::mt::ObjectReadLock tfLock(tf);
         data::TransferFunction::TFValuePairType minMax = tf->getWLMinMax();
         this->onImageWindowLevelChanged( minMax.first, minMax.second );
@@ -252,7 +251,7 @@ void WindowLevel::swapping(const KeyType& key)
     {
         {
             const data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
+            SIGHT_ASSERT("'" + s_IMAGE_INOUT + "' does not exist.", image);
 
             const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
             m_helperTF.setOrCreateTF(tf, image);
@@ -280,7 +279,7 @@ void WindowLevel::info( std::ostream& _sstream )
 WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 {
     const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    SLM_ASSERT("TransferFunction null pointer", tf);
+    SIGHT_ASSERT("TransferFunction null pointer", tf);
     const data::mt::ObjectReadLock tfLock(tf);
     return tf->getWLMinMax();
 }
@@ -353,7 +352,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
     int index                = action->data().toInt();
 
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
+    SIGHT_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     switch (index)
     {
@@ -380,7 +379,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
         case 5:         // Custom : TODO
             break;
         default:
-            SLM_ASSERT("Unknown range selector index", 0);
+            SIGHT_ASSERT("Unknown range selector index", 0);
     }
 
     this->setWidgetDynamicRange(min, max);
@@ -458,7 +457,7 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
     if (m_autoWindowing)
     {
         data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
+        SIGHT_ASSERT("inout '" + s_IMAGE_INOUT + "' is not defined.", image);
         double min, max;
         data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         this->updateImageWindowLevel(min, max);

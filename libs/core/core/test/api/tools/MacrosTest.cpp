@@ -38,7 +38,7 @@ class ClassTest
 
 public:
 
-    fwCoreClassMacro(ClassTest)
+    SIGHT_DECLARE_CLASS(ClassTest)
 
     //------------------------------------------------------------------------------
 

@@ -66,7 +66,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SPointListFromMatrices final : public sight
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPointListFromMatrices, sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SPointListFromMatrices, sight::service::IOperator)
 
     /// Initializes a member variable
     MODULE_GEOMETRY_BASE_API SPointListFromMatrices();

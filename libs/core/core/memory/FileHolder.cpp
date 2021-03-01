@@ -42,7 +42,7 @@ struct FileAutoDelete
         {
             std::error_code ec;
             std::filesystem::remove(m_path, ec);
-            SLM_ERROR_IF("file remove failed : " << ec.message(), ec.value() != 0);
+            SIGHT_ERROR_IF("file remove failed : " << ec.message(), ec.value() != 0);
         }
     }
 

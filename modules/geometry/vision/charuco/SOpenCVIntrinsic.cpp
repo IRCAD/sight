@@ -36,20 +36,20 @@
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Matrix.hpp>
+
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+
+#include <ui/base/preferences/helper.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
-
-#include <ui/base/preferences/helper.hpp>
 
 namespace sight::module::geometry::vision::charuco
 {
@@ -121,9 +121,9 @@ void SOpenCVIntrinsic::updating()
     data::Camera::sptr cam               = this->getInOut< data::Camera >("camera");
     data::Vector::sptr poseCamera        = this->getInOut< data::Vector >("poseVector");
 
-    SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
-    SLM_ASSERT("'camera' should not be null", cam);
-    SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
+    SIGHT_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
+    SIGHT_ASSERT("'camera' should not be null", cam);
+    SIGHT_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
 
     if(!calInfo->getPointListContainer().empty())
     {
@@ -139,7 +139,7 @@ void SOpenCVIntrinsic::updating()
 
                 for(data::Point::csptr point : capture->getPoints())
                 {
-                    SLM_ASSERT("point is null", point);
+                    SIGHT_ASSERT("point is null", point);
                     cdst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
                                                  static_cast<float>(point->getCoord()[1])));
                     idst.push_back(static_cast<int>(point->getCoord()[2]));
@@ -242,7 +242,7 @@ void SOpenCVIntrinsic::updateCharucoBoardSize()
     {
         // Warn user that something went wrong with dictionary generation.
         // We are not using dialog here since SCharucoDetector already displays one.
-        SLM_ERROR("Error when generating dictionary: " + std::string(e.what()));
+        SIGHT_ERROR("Error when generating dictionary: " + std::string(e.what()));
 
         // Exit the function.
         return;

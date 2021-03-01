@@ -36,9 +36,9 @@
 
 #include <service/macros.hpp>
 
-#include <QVBoxLayout>
-
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QVBoxLayout>
 
 #include <string>
 
@@ -97,16 +97,16 @@ void SSignalButton::configuring()
         core::runtime::ConfigurationElement::sptr checkableCfg = config->findConfigurationElement("checkable");
         if(checkableCfg)
         {
-            SLM_ASSERT("'checkable' value must be 'true' or 'false'",
-                       checkableCfg->getValue() == "true" || checkableCfg->getValue() == "false");
+            SIGHT_ASSERT("'checkable' value must be 'true' or 'false'",
+                         checkableCfg->getValue() == "true" || checkableCfg->getValue() == "false");
             m_checkable = (checkableCfg->getValue() == "true");
         }
 
         core::runtime::ConfigurationElement::sptr executableCfg = config->findConfigurationElement("executable");
         if(executableCfg)
         {
-            SLM_ASSERT("'executable' value must be 'true' or 'false'",
-                       executableCfg->getValue() == "true" || executableCfg->getValue() == "false");
+            SIGHT_ASSERT("'executable' value must be 'true' or 'false'",
+                         executableCfg->getValue() == "true" || executableCfg->getValue() == "false");
             m_executable = (executableCfg->getValue() == "true");
         }
 
@@ -124,25 +124,25 @@ void SSignalButton::configuring()
         core::runtime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
         if(txt2Cfg)
         {
-            SLM_ASSERT("Button must be 'checkable' in order to defined 'text2'", m_checkable);
-            SLM_ASSERT("'text' tag must be defined in order to specify 'text2'", !m_text.empty());
+            SIGHT_ASSERT("Button must be 'checkable' in order to defined 'text2'", m_checkable);
+            SIGHT_ASSERT("'text' tag must be defined in order to specify 'text2'", !m_text.empty());
             m_text2 = txt2Cfg->getValue();
         }
 
         core::runtime::ConfigurationElement::sptr icon2Cfg = config->findConfigurationElement("icon2");
         if(icon2Cfg)
         {
-            SLM_ASSERT("Button must be 'checkable' in order to defined 'icon2'", m_checkable);
-            SLM_ASSERT("'icon' tag must be defined in order to specify 'icon2'", iconCfg);
+            SIGHT_ASSERT("Button must be 'checkable' in order to defined 'icon2'", m_checkable);
+            SIGHT_ASSERT("'icon' tag must be defined in order to specify 'icon2'", iconCfg);
             m_icon2 = core::runtime::getModuleResourceFilePath(icon2Cfg->getValue());
         }
 
         core::runtime::ConfigurationElement::sptr checkedCfg = config->findConfigurationElement("checked");
         if(checkedCfg)
         {
-            SLM_ASSERT("Button must be 'checkable' in order to defined 'checked'", m_checkable);
-            SLM_ASSERT("'checked' value must be 'true' or 'false'",
-                       checkedCfg->getValue() == "true" || checkedCfg->getValue() == "false");
+            SIGHT_ASSERT("Button must be 'checkable' in order to defined 'checked'", m_checkable);
+            SIGHT_ASSERT("'checked' value must be 'true' or 'false'",
+                         checkedCfg->getValue() == "true" || checkedCfg->getValue() == "false");
             m_checkAtStart = (checkedCfg->getValue() == "true");
         }
 

@@ -64,8 +64,8 @@ ClippingBox::ClippingBox(const std::string& id,
 {
     m_boxMtl    = ::Ogre::MaterialManager::getSingleton().getByName(boxMtlName, RESOURCE_GROUP);
     m_handleMtl = ::Ogre::MaterialManager::getSingleton().getByName(handleMtlName, RESOURCE_GROUP);
-    SLM_ASSERT("Missing '" + boxMtlName + "' material.", m_boxMtl);
-    SLM_ASSERT("Missing '" + handleMtlName + "' material.", m_handleMtl);
+    SIGHT_ASSERT("Missing '" + boxMtlName + "' material.", m_boxMtl);
+    SIGHT_ASSERT("Missing '" + handleMtlName + "' material.", m_handleMtl);
 
     this->initWidgets();
     this->applyTransform(clippingMatrix);
@@ -319,7 +319,7 @@ void ClippingBox::deselectFace()
 
 void ClippingBox::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY)
 {
-    SLM_ASSERT("The picked widget does not belong to this widget.", this->belongsToWidget(_pickedWidget));
+    SIGHT_ASSERT("The picked widget does not belong to this widget.", this->belongsToWidget(_pickedWidget));
     const auto face = m_widgets.at(_pickedWidget);
 
     this->deselectFace();

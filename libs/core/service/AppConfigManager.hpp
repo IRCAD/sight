@@ -23,12 +23,12 @@
 #pragma once
 
 #include "service/config.hpp"
+#include "service/extension/AppConfig.hpp"
 #include "service/helper/Config.hpp"
 #include "service/helper/ProxyConnections.hpp"
 #include "service/IAppConfigManager.hpp"
 #include "service/IService.hpp"
 #include "service/IXMLParser.hpp"
-#include "service/extension/AppConfig.hpp"
 
 #include <core/com/HasSlots.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
@@ -58,9 +58,9 @@ class SERVICE_CLASS_API AppConfigManager :  public service::IAppConfigManager,
 {
 public:
 
-    fwCoreClassMacro(AppConfigManager, service::IAppConfigManager, std::make_shared< AppConfigManager >)
+    SIGHT_DECLARE_CLASS(AppConfigManager, service::IAppConfigManager, std::make_shared< AppConfigManager >)
 
-    fwCoreAllowSharedFromThis()
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Creates slots.
     SERVICE_API AppConfigManager();

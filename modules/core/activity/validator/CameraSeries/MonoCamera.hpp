@@ -37,8 +37,8 @@ namespace CameraSeries
 class MODULE_ACTIVITY_CLASS_API MonoCamera : public sight::activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(MonoCamera, sight::activity::IObjectValidator,
-                     sight::activity::validator::factory::New< MonoCamera >)
+    SIGHT_DECLARE_CLASS(MonoCamera, sight::activity::IObjectValidator,
+                        sight::activity::validator::factory::New< MonoCamera >)
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API MonoCamera(sight::activity::IValidator::Key key);

@@ -64,8 +64,8 @@ Series::~Series()
 
 data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
 {
-    SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
-    SLM_ASSERT("Logger should not be null.", m_logger);
+    SIGHT_ASSERT("DicomSeries should not be null.", dicomSeries);
+    SIGHT_ASSERT("Logger should not be null.", m_logger);
 
     // Create instance
     SPTR(io::dicom::container::DicomInstance) instance =

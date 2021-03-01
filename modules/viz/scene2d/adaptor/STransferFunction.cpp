@@ -38,7 +38,6 @@
 #include <QMenu>
 #include <QPoint>
 
-
 namespace sight::module::viz::scene2d
 {
 namespace adaptor
@@ -174,7 +173,7 @@ void STransferFunction::createTFPoints()
 
     // Get the TF.
     const data::TransferFunction::csptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     const data::mt::ObjectReadLock tfLock(tf);
 
     // Gets window/level informations to change TF value from TF space to window/level space.
@@ -257,7 +256,7 @@ void STransferFunction::createTFPolygon()
 
     // Get the TF.
     const data::TransferFunction::csptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     const data::mt::ObjectReadLock tfLock(tf);
 
     if(tf->getIsClamped())
@@ -559,10 +558,10 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
 {
     // m_capturedTFPoint must be previously sets by
     // leftButtonClickOnPointEvent(std::pair< Point2DType, QGraphicsEllipseItem* >&)
-    SLM_ASSERT("The captured TF point must exist", m_capturedTFPoint);
+    SIGHT_ASSERT("The captured TF point must exist", m_capturedTFPoint);
 
     const auto pointIt = std::find(m_TFPoints.begin(), m_TFPoints.end(), *m_capturedTFPoint);
-    SLM_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
+    SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
 
     // Gets the previous point of the TF.
     auto previousPoint = pointIt;
@@ -641,7 +640,7 @@ void STransferFunction::mouseMoveOnPointEvent(const sight::viz::scene2d::data::E
 
     // Get the TF.
     const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     const data::mt::ObjectWriteLock tfLock(tf);
 
     // If the window is negative, the TF point list is reversed compared to the TF data.
@@ -735,12 +734,12 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(std::pair< Point2DType
         // Updates the TF.
         auto pointIt =
             std::find(m_TFPoints.begin(), m_TFPoints.end(), _TFPoint);
-        SLM_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
+        SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
         size_t pointIndex = pointIt - m_TFPoints.begin();
 
         // Get the TF.
         const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-        SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
         {
             // If the window is negative, the TF point list is reversed compared to the TF data.
@@ -801,12 +800,12 @@ void STransferFunction::rightButtonClickOnPointEvent(std::pair< Point2DType, QGr
     // Updates the TF.
     auto pointIt =
         std::find(m_TFPoints.begin(), m_TFPoints.end(), _TFPoint);
-    SLM_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
+    SIGHT_ASSERT("The captured point is not found", pointIt != m_TFPoints.end());
     size_t pointIndex = pointIt - m_TFPoints.begin();
 
     // Get the TF.
     const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
     {
         // If the window is negative, the TF point list is reversed compared to the TF data.
@@ -893,7 +892,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
 
     // Get the TF.
     const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
     {
         const data::mt::ObjectWriteLock tfLock(tf);
 
@@ -995,7 +994,7 @@ void STransferFunction::midButtonClickEvent(sight::viz::scene2d::data::Event& _e
 
         // Get the TF.
         const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-        SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
         // Stores the level in window/level space and the window in screen space.
         m_capturedTF =
@@ -1010,7 +1009,7 @@ void STransferFunction::midButtonClickEvent(sight::viz::scene2d::data::Event& _e
 void STransferFunction::mouseMoveOnTFEvent(const sight::viz::scene2d::data::Event& _event)
 {
     // m_capturedTF must be previously sets by midButtonClickEvent(const sight::viz::scene2d::data::Event& _event)
-    SLM_ASSERT("The captured subTF must exist", m_capturedTF.first);
+    SIGHT_ASSERT("The captured subTF must exist", m_capturedTF.first);
 
     const sight::viz::scene2d::data::Coord windowLevelCoord = this->getScene2DRender()->mapToScene(_event.getCoord());
 
@@ -1064,7 +1063,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
     {
         // Get the TF.
         const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-        SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+        SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
         // Creates the menu.
         QMenu* const contextMenu = new QMenu();
@@ -1167,7 +1166,7 @@ void STransferFunction::clampTF(bool _clamp)
 {
     // Get the TF.
     const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
     // Set the clamp status.
     {
@@ -1195,7 +1194,7 @@ void STransferFunction::toggleLinearTF(bool _linear)
 {
     // Get the TF.
     const data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
+    SIGHT_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", tf);
 
     // Set the interpolation mode.
     {

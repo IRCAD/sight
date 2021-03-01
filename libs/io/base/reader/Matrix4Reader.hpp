@@ -48,8 +48,8 @@ class IO_BASE_CLASS_API Matrix4Reader :
 
 public:
 
-    fwCoreClassMacro(Matrix4Reader, GenericObjectReader< data::Matrix4 >,
-                     io::base::reader::factory::New< Matrix4Reader >)
+    SIGHT_DECLARE_CLASS(Matrix4Reader, GenericObjectReader< data::Matrix4 >,
+                        io::base::reader::factory::New< Matrix4Reader >)
 
     /// Constructor. Do nothing.
     IO_BASE_API Matrix4Reader(io::base::reader::IObjectReader::Key key);

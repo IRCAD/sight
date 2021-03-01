@@ -31,7 +31,7 @@ namespace sight::core::runtime
 ExecutableFactoryRegistry::ExecutableFactoryRegistry( std::shared_ptr< ExecutableFactory > factory )
 {
     // Pre-condition
-    SLM_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
+    SIGHT_ASSERT("No module module currently loaded", detail::Module::getLoadingModule() != nullptr);
 
     // Retrieves the module that is currently loading.
     std::shared_ptr< detail::Module >  loadingModule( detail::Module::getLoadingModule() );

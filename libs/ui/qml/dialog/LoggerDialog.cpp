@@ -26,10 +26,10 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <QGuiApplication>
-
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QGuiApplication>
 
 #include <filesystem>
 
@@ -93,23 +93,23 @@ bool LoggerDialog::show()
     context->setContextProperty("loggerDialog", this);
     // load the qml ui component
     QObject* window = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File LoggerDialog is not found or not loaded", window);
+    SIGHT_ASSERT("The Qml File LoggerDialog is not found or not loaded", window);
     // keep window to destroy it
     window->setProperty("title", m_title);
 
     QObject* dialog = window->findChild<QObject*>("dialog");
-    SLM_ASSERT("The dialog is not found inside the window", dialog);
+    SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // set the icon of the biggest type of error
     auto information =
         core::runtime::getLibraryResourceFilePath("fwGuiQml/information.svg");
-    SLM_ASSERT("The information svg is not found", std::filesystem::exists(information));
+    SIGHT_ASSERT("The information svg is not found", std::filesystem::exists(information));
     auto warning =
         core::runtime::getLibraryResourceFilePath("fwGuiQml/warning.svg");
-    SLM_ASSERT("The warning svg is not found", std::filesystem::exists(warning));
+    SIGHT_ASSERT("The warning svg is not found", std::filesystem::exists(warning));
     auto critical =
         core::runtime::getLibraryResourceFilePath("fwGuiQml/critical.svg");
-    SLM_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
+    SIGHT_ASSERT("The critical svg is not found", std::filesystem::exists(critical));
     if (m_logger->count(core::log::Log::CRITICAL) > 0)
     {
         emitIcon(QUrl::fromLocalFile(QString::fromStdString(critical.string())));
@@ -133,10 +133,10 @@ bool LoggerDialog::show()
     // get the icon of the details checkbox
     auto detailshidden =
         core::runtime::getLibraryResourceFilePath("fwGuiQml/details-hidden.svg");
-    SLM_ASSERT("The details-hidden svg is not found", std::filesystem::exists(detailshidden));
+    SIGHT_ASSERT("The details-hidden svg is not found", std::filesystem::exists(detailshidden));
     auto detailsshown =
         core::runtime::getLibraryResourceFilePath("fwGuiQml/details-shown.svg");
-    SLM_ASSERT("The details-shown svg is not found", std::filesystem::exists(detailsshown));
+    SIGHT_ASSERT("The details-shown svg is not found", std::filesystem::exists(detailsshown));
     emitHidden(QUrl::fromLocalFile(QString::fromStdString(detailshidden.string())));
     emitShown(QUrl::fromLocalFile(QString::fromStdString(detailsshown.string())));
 
@@ -169,7 +169,7 @@ bool LoggerDialog::show()
         data.insert("message", QString::fromStdString(it->getMessage()));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
-    SLM_ASSERT("The Logger need at least one error", !model.isEmpty());
+    SIGHT_ASSERT("The Logger need at least one error", !model.isEmpty());
 
     m_isOk = false;
     QEventLoop loop;

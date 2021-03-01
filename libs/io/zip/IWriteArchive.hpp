@@ -38,7 +38,7 @@ class IWriteArchive
 
 public:
 
-    fwCoreClassMacro(IWriteArchive)
+    SIGHT_DECLARE_CLASS(IWriteArchive)
 
     virtual ~IWriteArchive()
     {

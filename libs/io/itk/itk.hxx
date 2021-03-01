@@ -34,7 +34,7 @@ template< class ITKIMAGE>
 void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, data::Image::sptr _dataImage,
                        bool _bufferManagerIsDataImage )
 {
-    SLM_ASSERT("_dataImage not instanced", _dataImage);
+    SIGHT_ASSERT("_dataImage not instanced", _dataImage);
 
     // Add by arnaud
     std::uint8_t dim              = ITKIMAGE::ImageDimension;
@@ -60,8 +60,8 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, data::Image::sptr _
     const auto dumpLock = _dataImage->lock();
     if( _bufferManagerIsDataImage )
     {
-        SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",
-                   _itkImage->GetPixelContainer()->GetContainerManageMemory() );
+        SIGHT_ASSERT("Sorry, this method requires that itkImage manages its buffer.",
+                     _itkImage->GetPixelContainer()->GetContainerManageMemory() );
         _dataImage->setBuffer(
             static_cast<void*>(_itkImage->GetBufferPointer()), true, _dataImage->getType(), vSize,
             core::memory::BufferNewPolicy::New());
@@ -75,7 +75,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer _itkImage, data::Image::sptr _
     }
 
     // Post Condition correct PixelType
-    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
 }
 
 //------------------------------------------------------------------------------
@@ -102,8 +102,8 @@ template< class ITKIMAGE>
 typename ITKIMAGE::Pointer fwDataImageToItkImage( data::Image::csptr imageData, bool bufferManagerIsDataImage )
 {
     // Pre Condition
-    SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image",
-               imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
+    SIGHT_ASSERT("Sorry, itk image dimension not correspond to fwData image",
+                 imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
     const auto dumpLock = imageData->lock();
 
@@ -143,8 +143,8 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( data::Image::csptr imageData, 
     else
     {
         FW_DEPRECATED_MSG("Image should no longer change buffer ownership", "22.0");
-        SLM_ASSERT("Sorry, this method requires that imageData manages its buffer.",
-                   imageData->getDataArray()->getIsBufferOwner() );
+        SIGHT_ASSERT("Sorry, this method requires that imageData manages its buffer.",
+                     imageData->getDataArray()->getIsBufferOwner() );
         itkImage->GetPixelContainer()->SetImportPointer(
             static_cast< typename ITKIMAGE::PixelType*>( imageData->getBuffer() ), nbpixels, true );
         imageData->getDataArray()->setIsBufferOwner( false );

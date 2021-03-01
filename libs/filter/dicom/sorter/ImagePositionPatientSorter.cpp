@@ -25,14 +25,14 @@
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
+#include <geometry/data/VectorFunctions.hpp>
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
-
-#include <geometry/data/VectorFunctions.hpp>
 
 fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::sorter::ImagePositionPatientSorter );
 
@@ -102,8 +102,8 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {
-            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                     "(slice: '" << item.first << "')");
+            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                        "(slice: '" << item.first << "')");
         }
 
         fileFormat.loadAllDataIntoMemory();

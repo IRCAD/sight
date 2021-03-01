@@ -48,7 +48,7 @@ class UI_BASE_CLASS_API InputDialog : public ui::base::dialog::IInputDialog
 
 public:
 
-    fwCoreClassMacro(InputDialog, ui::base::dialog::IInputDialog, new InputDialog)
+    SIGHT_DECLARE_CLASS(InputDialog, ui::base::dialog::IInputDialog, new InputDialog)
 
     /**
      * Opens a default input box with the specified title and message.

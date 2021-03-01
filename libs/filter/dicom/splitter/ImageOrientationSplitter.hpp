@@ -36,7 +36,7 @@ namespace splitter
 class FILTER_DICOM_CLASS_API ImageOrientationSplitter : public filter::dicom::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassMacro(ImageOrientationSplitter, ISplitter, filter::dicom::factory::New< ImageOrientationSplitter >)
+    SIGHT_DECLARE_CLASS(ImageOrientationSplitter, ISplitter, filter::dicom::factory::New< ImageOrientationSplitter >)
 
     /// Constructor
     FILTER_DICOM_API ImageOrientationSplitter(filter::dicom::IFilter::Key key);

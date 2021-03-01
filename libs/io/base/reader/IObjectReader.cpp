@@ -54,7 +54,7 @@ void IObjectReader::setObject( core::tools::Object::sptr _pObject )
 core::tools::Object::sptr IObjectReader::getObject()
 {
     auto object = m_object.lock();
-    SLM_ASSERT( "Object is null", object );
+    SIGHT_ASSERT( "Object is null", object );
     return object;
 }
 

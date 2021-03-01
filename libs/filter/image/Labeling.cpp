@@ -32,10 +32,10 @@
 #include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/Image.hpp>
-#include <data/String.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+#include <data/String.hpp>
 
 #include <itkLabelImageToShapeLabelMapFilter.h>
 
@@ -110,7 +110,7 @@ struct LabelImageFilter
     {
         data::Image::sptr image      = params.i_image;
         const unsigned int dimension = 3;
-        SLM_ASSERT("Only image dimension 3 managed.", image->getNumberOfDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", image->getNumberOfDimensions() == dimension);
         typedef typename ::itk::Image<PIXELTYPE, dimension>  InputImageType;
         typename InputImageType::Pointer itkInputImage = io::itk::itkImageFactory<InputImageType>( image );
 
@@ -186,7 +186,7 @@ struct LabelImageFilter
             data::PointList::sptr landmarks =
                 image->getField< data::PointList >( data::fieldHelper::Image::m_imageLandmarksId);
 
-            SLM_ASSERT("landmarks not instanced", landmarks);
+            SIGHT_ASSERT("landmarks not instanced", landmarks);
             landmarks->getPoints().clear();
 
             LabelMapType* labelMap = i2l->GetOutput();

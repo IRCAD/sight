@@ -40,7 +40,7 @@ class VIZ_SCENE2D_CLASS_API Viewport : public sight::data::Object
 
 public:
 
-    fwCoreClassMacro(Viewport, sight::data::Object, sight::data::factory::New< Viewport >)
+    SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New< Viewport >)
 
     /**
      * @brief Constructor

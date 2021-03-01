@@ -28,10 +28,10 @@
 #include <core/com/Signals.hpp>
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -52,7 +52,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SnapshotEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SnapshotEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SnapshotEditor() noexcept;

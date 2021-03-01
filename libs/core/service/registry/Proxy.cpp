@@ -41,7 +41,7 @@ Proxy::Proxy()
 
 Proxy::~Proxy()
 {
-    SLM_ASSERT("There are still " << m_channels.size() << " channel(s) in the Proxy", m_channels.empty());
+    SIGHT_ASSERT("There are still " << m_channels.size() << " channel(s) in the Proxy", m_channels.empty());
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signa
     core::mt::ReadToWriteLock lock(m_channelMutex);
     ChannelMapType::iterator iter = m_channels.find(channel);
 
-    SLM_ASSERT("channel '" << channel << "' doesn't exist in Proxy.", iter != m_channels.end());
+    SIGHT_ASSERT("channel '" << channel << "' doesn't exist in Proxy.", iter != m_channels.end());
     SPTR(SigSlots) sigslots = iter->second;
 
     core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
@@ -142,7 +142,7 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signa
 
     SigSlots::SignalContainerType::iterator sigIter;
     sigIter = std::find(sigslots->m_signals.begin(), sigslots->m_signals.end(), signal);
-    SLM_ASSERT("Signal is not found", sigIter != sigslots->m_signals.end());
+    SIGHT_ASSERT("Signal is not found", sigIter != sigslots->m_signals.end());
     sigslots->m_signals.erase(sigIter);
 
     if (sigslots->m_signals.empty() && sigslots->m_slots.empty())
@@ -159,7 +159,7 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
     core::mt::ReadToWriteLock lock(m_channelMutex);
     ChannelMapType::iterator iter = m_channels.find(channel);
 
-    SLM_ASSERT("channel '" << channel << "' doesn't exist in Proxy.", iter != m_channels.end());
+    SIGHT_ASSERT("channel '" << channel << "' doesn't exist in Proxy.", iter != m_channels.end());
     SPTR(SigSlots) sigslots = iter->second;
 
     core::mt::WriteLock sigSlotLock(sigslots->m_mutex);
@@ -171,7 +171,7 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
 
     SigSlots::SlotContainerType::iterator slotIter;
     slotIter = std::find(sigslots->m_slots.begin(), sigslots->m_slots.end(), slot);
-    SLM_ASSERT("Slot is not found", slotIter != sigslots->m_slots.end());
+    SIGHT_ASSERT("Slot is not found", slotIter != sigslots->m_slots.end());
     sigslots->m_slots.erase(slotIter);
 
     if (sigslots->m_signals.empty() && sigslots->m_slots.empty())

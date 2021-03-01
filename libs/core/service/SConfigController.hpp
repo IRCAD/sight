@@ -65,7 +65,7 @@ class SERVICE_CLASS_API SConfigController : public service::IController
 
 public:
 
-    fwCoreServiceMacro(SConfigController, service::IController)
+    SIGHT_DECLARE_SERVICE(SConfigController, service::IController)
 
     /// Constructor. Does nothing.
     SERVICE_API SConfigController() noexcept;

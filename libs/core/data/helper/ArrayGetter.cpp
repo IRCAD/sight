@@ -33,7 +33,7 @@ ArrayGetter::ArrayGetter(const data::Array::csptr& array ) :
 {
     FW_DEPRECATED_MSG("::data::helper::ArrayGetter is no longer supported, the methods have been moved to "
                       "::sight::data::Array", "22.0")
-    SLM_ASSERT("Array ptr is null.", array);
+    SIGHT_ASSERT("Array ptr is null.", array);
     m_lock = array->getBufferObject()->lock();
 }
 

@@ -41,7 +41,7 @@ class SERVICE_CLASS_API ServiceConfigInfo : public core::BaseObject
 {
 public:
 
-    fwCoreClassMacro(ServiceConfigInfo, core::BaseObject, new ServiceConfigInfo)
+    SIGHT_DECLARE_CLASS(ServiceConfigInfo, core::BaseObject, new ServiceConfigInfo)
 
     /// Constructor, do nothing.
     ServiceConfigInfo()
@@ -82,7 +82,7 @@ class SERVICE_CLASS_API Config : public core::BaseObject
 
 public:
 
-    fwCoreClassMacro(Config, core::BaseObject, new Config)
+    SIGHT_DECLARE_CLASS(Config, core::BaseObject, new Config)
 
     /// Return the default global instance of Config
     SERVICE_API static Config::sptr getDefault();

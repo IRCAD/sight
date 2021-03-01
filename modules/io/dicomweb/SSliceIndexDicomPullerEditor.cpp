@@ -28,35 +28,35 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Timer.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
 #include <data/DicomSeries.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/helper/Composite.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/helper/Composite.hpp>
-#include <data/helper/SeriesDB.hpp>
-
-#include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
-#include <service/registry/ObjectService.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/http/exceptions/Base.hpp>
+
+#include <service/macros.hpp>
+#include <service/registry/ObjectService.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QMouseEvent>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -85,15 +85,15 @@ void SSliceIndexDicomPullerEditor::configuring()
     sight::ui::base::IGuiContainer::initialize();
 
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service module::io::dicomweb::SPacsConfigurationInitializer must have "
-               "a \"config\" element.", config);
+    SIGHT_ASSERT("The service module::io::dicomweb::SPacsConfigurationInitializer must have "
+                 "a \"config\" element.", config);
 
     bool success;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the module::io::dicomweb::SSliceIndexDicomPullerEditor "
-               "config element.", success);
+    SIGHT_ASSERT("It should be a \"dicomReader\" tag in the module::io::dicomweb::SSliceIndexDicomPullerEditor "
+                 "config element.", success);
 
     // Reader configuration
     core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
@@ -133,7 +133,7 @@ void SSliceIndexDicomPullerEditor::starting()
     QHBoxLayout* layout = new QHBoxLayout();
 
     data::DicomSeries::csptr dicomSeries = this->getInOut< data::DicomSeries >("series");
-    SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
     // Slider
@@ -165,8 +165,8 @@ void SSliceIndexDicomPullerEditor::starting()
 
     sight::io::base::service::IReader::sptr dicomReader;
     dicomReader = sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
-    SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
-               "::sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.", dicomReader);
+    SIGHT_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in "
+                 "::sight::module::io::dicomweb::SSliceIndexDicomPullerEditor.", dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
                                   service::IService::AccessType::INOUT, dicomReader);
     if(m_readerConfig)
@@ -257,7 +257,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 {
     // DicomSeries
     data::DicomSeries::csptr dicomSeries = this->getInOut< data::DicomSeries >("series");
-    SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
     const size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
@@ -278,7 +278,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 {
     // DicomSeries
     data::DicomSeries::csptr dicomSeries = this->getInOut< data::DicomSeries >("series");
-    SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+    SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
     if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR" && dicomSeries->getModality() != "XA")
     {
         return;
@@ -288,12 +288,12 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
     std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
     std::filesystem::path tmpPath = path / "tmp";
 
-    SLM_INFO("Create " + tmpPath.string());
+    SIGHT_INFO("Create " + tmpPath.string());
     std::filesystem::create_directories(tmpPath);
 
     const auto& binaries = dicomSeries->getDicomContainer();
     auto iter            = binaries.find(selectedSliceIndex);
-    SLM_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
+    SIGHT_ASSERT("Index '"<<selectedSliceIndex<<"' is not found in DicomSeries", iter != binaries.end());
 
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
@@ -302,7 +302,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
     std::filesystem::path dest = tmpPath / std::to_string(selectedSliceIndex);
     std::ofstream fs(dest, std::ios::binary|std::ios::trunc);
-    FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
+    SIGHT_THROW_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
     fs.write(buffer, size);
     fs.close();
@@ -347,7 +347,7 @@ void SSliceIndexDicomPullerEditor::readImage(size_t selectedSliceIndex)
 
     std::error_code ec;
     std::filesystem::remove_all(path, ec);
-    SLM_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
+    SIGHT_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
 }
 
 //------------------------------------------------------------------------------
@@ -360,7 +360,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_serverHostnameKey = serverInfo.substr(0, splitPosition);
         m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -387,7 +387,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
     {
         // DicomSeries
         data::DicomSeries::sptr dicomSeries = this->getInOut< data::DicomSeries >("series");
-        SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
+        SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
 
         // Get selected slice
         size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
@@ -424,7 +424,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
                << "Pacs port: " << m_serverPort << "\n";
 
             this->displayErrorMessage(ss.str());
-            SLM_WARN(exception.what());
+            SIGHT_WARN(exception.what());
         }
         QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
         const QJsonArray& seriesArray = jsonResponse.array();
@@ -456,7 +456,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
                << "Unable download the DICOM instance. \n";
 
             this->displayErrorMessage(ss.str());
-            SLM_WARN(exception.what());
+            SIGHT_WARN(exception.what());
         }
 
         // Add path and trigger reading
@@ -468,7 +468,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         std::stringstream ss;
         ss << "Unknown error.";
         this->displayErrorMessage(ss.str());
-        SLM_WARN(exception.what());
+        SIGHT_WARN(exception.what());
     }
 }
 
@@ -476,7 +476,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
 
 void SSliceIndexDicomPullerEditor::displayErrorMessage(const std::string& message) const
 {
-    SLM_WARN("Error: " + message);
+    SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );

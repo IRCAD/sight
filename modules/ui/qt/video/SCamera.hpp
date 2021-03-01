@@ -29,11 +29,11 @@
 
 #include <data/Camera.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -97,7 +97,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCamera, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCamera, sight::ui::base::IEditor)
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API SCamera();

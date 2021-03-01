@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/extension/Activity.hpp>
 #include <activity/ActivityMsg.hpp>
+#include <activity/extension/Activity.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/EConfigurationElement.hpp>
@@ -134,7 +134,7 @@ class MODULE_UI_QT_CLASS_API SLauncher : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SLauncher, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SLauncher, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLauncher() noexcept;

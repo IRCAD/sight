@@ -24,9 +24,9 @@
 
 #ifndef CAMP_COMPILATION
 
-#define fwCampAutoDeclareMacro( desc, ...)
-#define fwCampAutoDeclareDataMacro( desc, ...)
-#define fwCampMakeFriendDataMacro(desc)
+#define SIGHT_DECLARE_REFLECTION( desc, ...)
+#define SIGHT_DECLARE_DATA_REFLECTION( desc, ...)
+#define SIGHT_MAKE_FRIEND_REFLECTION(desc)
 
 #else
 
@@ -90,22 +90,12 @@
  * fwCampMakeFriendMacro((a)(b)(c)) expands to : Friend void ::fwCampDeclareabc(camp::ClassBuilder< ::a::b::c >
  *&builder)
  */
-#define fwCampMakeFriendDataMacro(desc) \
+#define SIGHT_MAKE_FRIEND_REFLECTION(desc) \
     friend void ::__FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder); \
 
 //----------------------------------------------------------------------------
 
-#define fwCampMakeFriendMacro(desc) \
-    friend void ::__FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder); \
-
-//----------------------------------------------------------------------------
-
-#define fwCampDeclareMacro(classname) \
-    CAMP_TYPE_NONCOPYABLE(classname)
-
-//----------------------------------------------------------------------------
-
-#define fwCampAutoDeclareDataMacro( desc, ...) \
+#define SIGHT_DECLARE_DATA_REFLECTION( desc, ...) \
     namespace sight::core::reflection \
     { \
     template<typename T> \
@@ -116,13 +106,13 @@
 
 //----------------------------------------------------------------------------
 
-#define fwCampAutoDeclareMacro( desc, ...) \
+#define SIGHT_DECLARE_REFLECTION( desc, ...) \
     __FWCAMP_PREDECLARE_MACRO(desc) \
     __FWCAMP__AUTO__DECLARE__MACRO(desc)
 
 //----------------------------------------------------------------------------
 
-#define fwCampAutoDeclareEnumMacro(desc) \
+#define SIGHT_DECLARE_ENUM_REFLECTION(desc) \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder&); \
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
     { \
@@ -134,12 +124,12 @@
 
 //----------------------------------------------------------------------------
 
-#define fwCampImplementMacro(desc) \
+#define SIGHT_IMPLEMENT_REFLECTION(desc) \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder)
 
 //----------------------------------------------------------------------------
 
-#define fwCampImplementDataMacro(desc) \
+#define SIGHT_IMPLEMENT_DATA_REFLECTION(desc) \
     static __FWCAMP__USEROBJREG(desc) __FWCAMP__REG_NAME(desc)(BOOST_PP_STRINGIZE( __FWCAMP_NAMESPACE_NAME(desc) )); \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder)
 
@@ -147,9 +137,9 @@
 
 /**
  * @brief Implementation of enumeration into camp introspection
- * @see fwCampAutoDeclareEnumMacro
+ * @see SIGHT_DECLARE_ENUM_REFLECTION
  */
-#define fwCampImplementEnumMacro(desc) \
+#define SIGHT_IMPLEMENT_ENUM_REFLECTION(desc) \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder& builder)
 
 /**
@@ -157,7 +147,7 @@
  * @param object the type of the main object ex: (sight)(data)(Mesh)
  * @param attribut the type of smart pointer attribut ex: (sight)(data)(Array)
  */
-#define fwCampDeclareAccessor(object, attribut) \
+#define SIGHT_DECLARE_REFLECTION_ACCESSOR(object, attribut) \
     namespace camp { \
     namespace detail { \
 \

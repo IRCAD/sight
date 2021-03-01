@@ -55,22 +55,22 @@ IActivityLauncher::~IActivityLauncher()
 void IActivityLauncher::parseConfiguration(const ConfigurationType& config, const InOutMapType& inouts)
 {
     m_mainActivityId = config.get<std::string>("mainActivity.<xmlattr>.id", "");
-    SLM_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
+    SIGHT_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
 
     const auto inoutsCfg = config.equal_range("inout");
     for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
     {
         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
-        SLM_ASSERT("Missing 'key' tag.", !key.empty());
+        SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
         const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
-        SLM_ASSERT("Missing 'uid' tag.", !uid.empty());
+        SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
         const std::string strOptional = itCfg->second.get<std::string>("<xmlattr>.optional", "no");
         const bool optional           = (strOptional == "yes");
 
         const auto it = inouts.find(key);
-        SLM_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
+        SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
         data::Object::csptr obj = it->second.getShared();
         ParameterType param;
         param.replace = key;
@@ -80,7 +80,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         }
         else
         {
-            SLM_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
+            SIGHT_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
             param.by = obj->getID();
         }
         m_parameters.push_back(param);
@@ -97,12 +97,12 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         {
             by = itParams->second.get<std::string>("<xmlattr>.uid");
         }
-        SLM_ASSERT("'parameter' tag must contain valid 'replace' and 'by' attributes.",
-                   !replace.empty() && !by.empty());
+        SIGHT_ASSERT("'parameter' tag must contain valid 'replace' and 'by' attributes.",
+                     !replace.empty() && !by.empty());
         ParameterType param;
         param.replace = replace;
         param.by      = by;
-        SLM_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isSeshat());
+        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.isSeshat());
         m_parameters.push_back(param);
     }
 }
@@ -132,7 +132,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
         activity::IActivityValidator::sptr activityValidator =
             activity::IActivityValidator::dynamicCast(validator);
-        SLM_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
+        SIGHT_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
 
         activity::IValidator::ValidationType validation = activityValidator->validate(activitySeries);
         if(!validation.first)
@@ -204,7 +204,7 @@ void IActivityLauncher::translateParameters( const data::Object::csptr& sourceOb
             }
 
             data::Object::sptr obj = data::reflection::getObject(sourceObj, parameterToReplace);
-            SLM_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
+            SIGHT_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 

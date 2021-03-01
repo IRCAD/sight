@@ -58,14 +58,14 @@ void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask,
 {
     typedef IMG_DEST_TYPE ImgDestType;
     typedef MASK_TYPE MaskType;
-    SLM_ASSERT( "Image dest has not correct type", imgDest->getType().isOfType< ImgDestType >());
-    SLM_ASSERT( "Image mask has not correct type", mask->getType().isOfType< MaskType >());
+    SIGHT_ASSERT( "Image dest has not correct type", imgDest->getType().isOfType< ImgDestType >());
+    SIGHT_ASSERT( "Image mask has not correct type", mask->getType().isOfType< MaskType >());
 
-    SLM_ASSERT( "Images have not the same size", imgDest->getSize2() == mask->getSize2() );
-    SLM_ASSERT( "Images have not the same spacing",
-                geometry::data::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2()) );
-    SLM_ASSERT( "Images have not the same origin",
-                geometry::data::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2()) );
+    SIGHT_ASSERT( "Images have not the same size", imgDest->getSize2() == mask->getSize2() );
+    SIGHT_ASSERT( "Images have not the same spacing",
+                  geometry::data::isContainerEqual(imgDest->getSpacing2(), mask->getSpacing2()) );
+    SIGHT_ASSERT( "Images have not the same origin",
+                  geometry::data::isContainerEqual(imgDest->getOrigin2(), mask->getOrigin2()) );
 
     const auto imgDumpLock  = imgDest->lock();
     const auto maskDumpLock = mask->lock();

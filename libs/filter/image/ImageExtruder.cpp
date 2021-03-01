@@ -35,7 +35,7 @@ namespace sight::filter::image
 
 void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh)
 {
-    SLM_ASSERT("The image must be in 3 dimensions", _image->getNumberOfDimensions() == 3);
+    SIGHT_ASSERT("The image must be in 3 dimensions", _image->getNumberOfDimensions() == 3);
 
     Parameters param;
     param.m_image = _image;
@@ -98,7 +98,7 @@ void ImageExtruder::operator()(Parameters& _param)
     {
         if(itCell->nbPoints < 3)
         {
-            SLM_FATAL("The extrusion works only with meshes of at least three points per cells");
+            SIGHT_FATAL("The extrusion works only with meshes of at least three points per cells");
         }
         else if(itCell->nbPoints == 3)
         {
@@ -120,7 +120,7 @@ void ImageExtruder::operator()(Parameters& _param)
         }
         else
         {
-            SLM_FATAL("The extrusion works only with meshes of at most four points per cells");
+            SIGHT_FATAL("The extrusion works only with meshes of at most four points per cells");
         }
     }
 

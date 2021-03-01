@@ -23,6 +23,7 @@
 #include "service/IService.hpp"
 
 #include "core/thread/ActiveWorkers.hpp"
+
 #include "service/registry/ObjectService.hpp"
 #include "service/registry/Proxy.hpp"
 
@@ -97,7 +98,7 @@ IService::~IService()
                 objectKeys += "'" + obj.first + "'(nbRef: " + std::to_string(output.use_count()) + ")";
             }
         }
-        SLM_WARN_IF(
+        SIGHT_WARN_IF(
             "Service "+ this->getID() + " still contains registered outputs: " + objectKeys + ". They will no "
             "longer be maintained. You should call setOutput(key, nullptr) before stopping the service to inform "
             "AppManager and other services that the object will be destroyed.", !objectKeys.empty());
@@ -194,7 +195,7 @@ void IService::registerObject(const std::string& objId,
                               const bool autoConnect, const bool optional)
 {
     this->registerObject(key, access, autoConnect, optional);
-    SLM_ASSERT("Object id must be defined", !objId.empty());
+    SIGHT_ASSERT("Object id must be defined", !objId.empty());
     this->setObjectId(key, objId);
 }
 
@@ -229,7 +230,7 @@ void IService::unregisterObject(const std::string& objId)
 
     if (itr == m_serviceConfig.m_objects.end())
     {
-        SLM_ERROR("object '" + objId + "' is not registered");
+        SIGHT_ERROR("object '" + objId + "' is not registered");
         return;
     }
 
@@ -260,7 +261,7 @@ bool IService::hasObjectId(const KeyType& _key) const
 IService::IdType IService::getObjectId(const IService::KeyType& _key) const
 {
     const ObjectServiceConfig& cfg = this->getObjInfoFromKey(_key);
-    FW_RAISE_IF("Object key '" + _key + "' is not found for service '" + this->getID() + "'", cfg.m_uid.empty());
+    SIGHT_THROW_IF("Object key '" + _key + "' is not found for service '" + this->getID() + "'", cfg.m_uid.empty());
     return cfg.m_uid;
 }
 
@@ -273,8 +274,8 @@ void IService::setObjectId(const IService::KeyType& _key, const IService::IdType
         {
             return (objCfg.m_key == _key);
         });
-    FW_RAISE_IF("key '" + _key + "' is not regisreted for '" + this->getID() + "'.",
-                keyItr == m_serviceConfig.m_objects.end());
+    SIGHT_THROW_IF("key '" + _key + "' is not regisreted for '" + this->getID() + "'.",
+                   keyItr == m_serviceConfig.m_objects.end());
     ObjectServiceConfig& cfg = *keyItr;
     cfg.m_uid = _id;
 }
@@ -296,11 +297,11 @@ void IService::setObjectId(const IService::KeyType& _key, const size_t index, co
 
 void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
 {
-    SLM_ERROR(indent << " data : '" << pt.data() << "'" );
+    SIGHT_ERROR(indent << " data : '" << pt.data() << "'" );
 
     for( ::boost::property_tree::ptree::value_type& v :  pt)
     {
-        SLM_ERROR((indent + "  '") << v.first << "':" );
+        SIGHT_ERROR((indent + "  '") << v.first << "':" );
         displayPt(v.second, indent + "      ");
 
     }
@@ -310,7 +311,7 @@ void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
 
 void IService::setConfiguration(const core::runtime::ConfigurationElement::sptr _cfgElement)
 {
-    SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement );
+    SIGHT_ASSERT( "Invalid ConfigurationElement", _cfgElement );
     m_configuration      = _cfgElement;
     m_configurationState = UNCONFIGURED;
 }
@@ -319,7 +320,7 @@ void IService::setConfiguration(const core::runtime::ConfigurationElement::sptr 
 
 void IService::setConfiguration(const Config& _configuration)
 {
-    SLM_ASSERT( "Invalid ConfigurationElement", _configuration.m_config );
+    SIGHT_ASSERT( "Invalid ConfigurationElement", _configuration.m_config );
 
     // TODO: Remove this ugly const_cast
     m_configuration      = core::runtime::ConfigurationElement::constCast(_configuration.m_config);
@@ -339,7 +340,7 @@ void IService::setConfiguration( const ConfigType& ptree )
 
     ce = core::runtime::Convert::fromPropertyTree(serviceConfig);
 
-    SLM_ASSERT( "Invalid ConfigurationElement", ce );
+    SIGHT_ASSERT( "Invalid ConfigurationElement", ce );
 
     this->setConfiguration(ce);
 }
@@ -390,7 +391,7 @@ void IService::configure()
             }
             catch (std::exception& e)
             {
-                SLM_ERROR("Error while configuring service '" + this->getID() + "' : " + e.what());
+                SIGHT_ERROR("Error while configuring service '" + this->getID() + "' : " + e.what());
             }
         }
         else if( m_globalState == STARTED )
@@ -412,7 +413,7 @@ void IService::configure(const ConfigType& ptree)
 
     ce = core::runtime::Convert::fromPropertyTree(serviceConfig);
 
-    SLM_ASSERT( "Invalid ConfigurationElement", ce );
+    SIGHT_ASSERT( "Invalid ConfigurationElement", ce );
 
     this->setConfiguration(ce);
     this->configure();
@@ -422,7 +423,7 @@ void IService::configure(const ConfigType& ptree)
 
 void IService::reconfiguring()
 {
-    SLM_FATAL(
+    SIGHT_FATAL(
         "If this method (reconfiguring) is called, it must be overridden in the implementation ("
             << this->getClassname() <<", "<< this->getID() << ")" );
 }
@@ -552,7 +553,7 @@ IService::SharedFutureType IService::startSlot()
 
 IService::SharedFutureType IService::internalStart(bool _async)
 {
-    SLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
+    SIGHT_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
 
     this->connectToConfig();
 
@@ -569,8 +570,8 @@ IService::SharedFutureType IService::internalStart(bool _async)
     }
     catch (const std::exception& e)
     {
-        SLM_ERROR("Error while STARTING service '" + this->getID() + "' : " + e.what());
-        SLM_ERROR("Service '" + this->getID() + "' is still STOPPED.");
+        SIGHT_ERROR("Error while STARTING service '" + this->getID() + "' : " + e.what());
+        SIGHT_ERROR("Service '" + this->getID() + "' is still STOPPED.");
         m_globalState = STOPPED;
         this->disconnectFromConfig();
 
@@ -607,7 +608,7 @@ IService::SharedFutureType IService::stopSlot()
 
 IService::SharedFutureType IService::internalStop(bool _async)
 {
-    SLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
+    SIGHT_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
     this->autoDisconnect();
 
@@ -624,8 +625,8 @@ IService::SharedFutureType IService::internalStop(bool _async)
     }
     catch (std::exception& e)
     {
-        SLM_ERROR("Error while STOPPING service '" + this->getID() + "' : " + e.what());
-        SLM_ERROR("Service '" + this->getID() + "' is still STARTED.");
+        SIGHT_ERROR("Error while STOPPING service '" + this->getID() + "' : " + e.what());
+        SIGHT_ERROR("Service '" + this->getID() + "' is still STARTED.");
         m_globalState = STARTED;
         this->autoConnect();
 
@@ -662,9 +663,9 @@ IService::SharedFutureType IService::swapKeySlot(const KeyType& _key, data::Obje
 
 IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, data::Object::sptr _obj, bool _async)
 {
-    SLM_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
-                 (_obj ? _obj->getID() : "nullptr"),
-                 m_globalState != STARTED);
+    SIGHT_FATAL_IF("Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
+                   (_obj ? _obj->getID() : "nullptr"),
+                   m_globalState != STARTED);
 
     auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
     PackagedTaskType task( fn );
@@ -683,7 +684,7 @@ IService::SharedFutureType IService::internalSwapKey(const KeyType& _key, data::
     }
     catch (std::exception& e)
     {
-        SLM_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
+        SIGHT_ERROR("Error while SWAPPING service '" + this->getID() + "' : " + e.what());
 
         if(!_async)
         {
@@ -716,12 +717,12 @@ IService::SharedFutureType IService::internalUpdate(bool _async)
 {
     if(m_globalState != STARTED)
     {
-        SLM_WARN("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
-                 "' of type '" << this->getClassname() << "': update is discarded." );
+        SIGHT_WARN("INVOKING update WHILE STOPPED ("<<m_globalState<<") on service '" << this->getID() <<
+                   "' of type '" << this->getClassname() << "': update is discarded." );
         return SharedFutureType();
     }
-    SLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
-               "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
+    SIGHT_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
+                 "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
     PackagedTaskType task( std::bind(&IService::updating, this) );
     SharedFutureType future = task.get_future();
@@ -735,7 +736,7 @@ IService::SharedFutureType IService::internalUpdate(bool _async)
     }
     catch (std::exception& e)
     {
-        SLM_ERROR("Error while UPDATING service '" + this->getID() + "' : " + e.what());
+        SIGHT_ERROR("Error while UPDATING service '" + this->getID() + "' : " + e.what());
 
         m_updatingState = NOTUPDATING;
         if(!_async)
@@ -767,10 +768,10 @@ void IService::connectToConfig()
     {
         for(const auto& signalCfg : proxyCfg.second.m_signals)
         {
-            SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
+            SIGHT_ASSERT("Invalid signal source", signalCfg.first == this->getID());
 
             core::com::SignalBase::sptr sig = this->signal(signalCfg.second);
-            SLM_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
+            SIGHT_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
             try
             {
                 proxy->connect(proxyCfg.second.m_channel, sig);
@@ -778,17 +779,18 @@ void IService::connectToConfig()
             }
             catch (const std::exception& e)
             {
-                SLM_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the"
-                          " channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+                SIGHT_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the"
+                            " channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                                e.what()));
             }
         }
 
         for(const auto& slotCfg : proxyCfg.second.m_slots)
         {
-            SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
+            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
 
             core::com::SlotBase::sptr slot = this->slot(slotCfg.second);
-            SLM_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
+            SIGHT_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
 
             try
             {
@@ -796,8 +798,8 @@ void IService::connectToConfig()
             }
             catch (const std::exception& e)
             {
-                SLM_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
-                          "channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+                SIGHT_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be connected to the "
+                            "channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
             }
         }
     }
@@ -809,9 +811,9 @@ void IService::autoConnect()
 {
     service::IService::KeyConnectionsMap connectionMap = this->getAutoConnections();
 
-    SLM_ERROR_IF("The service '" + this->getID() + "'(" + this->getClassname() +
-                 ") is set to 'autoConnect=\"yes\"' but is has no object to connect",
-                 m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
+    SIGHT_ERROR_IF("The service '" + this->getID() + "'(" + this->getClassname() +
+                   ") is set to 'autoConnect=\"yes\"' but is has no object to connect",
+                   m_serviceConfig.m_globalAutoConnect && m_serviceConfig.m_objects.empty());
 
     for(const auto& objectCfg : m_serviceConfig.m_objects)
     {
@@ -840,14 +842,14 @@ void IService::autoConnect()
                         }
                     }
                 }
-                SLM_ERROR_IF("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
-                             ") is set to 'autoConnect=\"yes\"' but there is no connection available.",
-                             connections.empty() && objectCfg.m_autoConnect);
+                SIGHT_ERROR_IF("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
+                               ") is set to 'autoConnect=\"yes\"' but there is no connection available.",
+                               connections.empty() && objectCfg.m_autoConnect);
             }
             else
             {
-                SLM_ERROR("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
-                          ") is set to 'autoConnect=\"yes\"' but there is no connection available.");
+                SIGHT_ERROR("Object '" + objectCfg.m_key + "' of '" + this->getID() + "'(" + this->getClassname() +
+                            ") is set to 'autoConnect=\"yes\"' but there is no connection available.");
             }
 
             data::Object::csptr obj;
@@ -874,7 +876,7 @@ void IService::autoConnect()
                 }
                 case AccessType::OUTPUT:
                 {
-                    SLM_WARN("Can't autoConnect to an output for now");
+                    SIGHT_WARN("Can't autoConnect to an output for now");
                     auto itObj = m_outputsMap.find(objectCfg.m_key);
                     if(itObj != m_outputsMap.end())
                     {
@@ -884,9 +886,9 @@ void IService::autoConnect()
                 }
             }
 
-            SLM_ASSERT("Object '" + objectCfg.m_key +
-                       "' has not been found when autoConnecting service '" + m_serviceConfig.m_uid + "'.",
-                       (!objectCfg.m_optional && obj) || objectCfg.m_optional);
+            SIGHT_ASSERT("Object '" + objectCfg.m_key +
+                         "' has not been found when autoConnecting service '" + m_serviceConfig.m_uid + "'.",
+                         (!objectCfg.m_optional && obj) || objectCfg.m_optional);
 
             if(obj)
             {
@@ -906,7 +908,7 @@ void IService::disconnectFromConfig()
     {
         for(const auto& signalCfg : proxyCfg.second.m_signals)
         {
-            SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
+            SIGHT_ASSERT("Invalid signal source", signalCfg.first == this->getID());
 
             core::com::SignalBase::sptr sig = this->signal(signalCfg.second);
 
@@ -916,13 +918,13 @@ void IService::disconnectFromConfig()
             }
             catch (const std::exception& e)
             {
-                SLM_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be disconnected "
-                          "from the channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+                SIGHT_ERROR("Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be disconnected "
+                            "from the channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
             }
         }
         for(const auto& slotCfg : proxyCfg.second.m_slots)
         {
-            SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
+            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
 
             core::com::SlotBase::sptr slot = this->slot(slotCfg.second);
             try
@@ -931,8 +933,9 @@ void IService::disconnectFromConfig()
             }
             catch (const std::exception& e)
             {
-                SLM_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be disconnected from the "
-                          "channel '" + proxyCfg.second.m_channel + "': " + std::string(e.what()));
+                SIGHT_ERROR("Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be disconnected from the "
+                            "channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                                e.what()));
             }
         }
     }
@@ -980,8 +983,8 @@ bool IService::hasAllRequiredObjects() const
             {
                 if (nullptr == this->getInput< data::Object >(objectCfg.m_key))
                 {
-                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
-                              + "'");
+                    SIGHT_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
+                                + "'");
                     hasAllObjects = false;
                     break;
                 }
@@ -990,8 +993,8 @@ bool IService::hasAllRequiredObjects() const
             {
                 if (nullptr == this->getInOut< data::Object >(objectCfg.m_key))
                 {
-                    SLM_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
-                              + "'");
+                    SIGHT_DEBUG("The 'input' object with key '" + objectCfg.m_key + "' is missing for '" + this->getID()
+                                + "'");
                     hasAllObjects = false;
                     break;
                 }
@@ -1010,8 +1013,8 @@ const IService::ObjectServiceConfig& IService::getObjInfoFromId(const std::strin
         {
             return (objCfg.m_uid == objId);
         });
-    FW_RAISE_IF("Object '" + objId + "' is not regisreted for '" + this->getID() + "'.",
-                idItr == m_serviceConfig.m_objects.end());
+    SIGHT_THROW_IF("Object '" + objId + "' is not regisreted for '" + this->getID() + "'.",
+                   idItr == m_serviceConfig.m_objects.end());
 
     return *idItr;
 }
@@ -1024,8 +1027,8 @@ const IService::ObjectServiceConfig& IService::getObjInfoFromKey(const std::stri
         {
             return (objCfg.m_key == key);
         });
-    FW_RAISE_IF("key '" + key + "' is not regisreted for '" + this->getID() + "'.",
-                keyItr == m_serviceConfig.m_objects.end());
+    SIGHT_THROW_IF("key '" + key + "' is not regisreted for '" + this->getID() + "'.",
+                   keyItr == m_serviceConfig.m_objects.end());
 
     return *keyItr;
 }
@@ -1054,7 +1057,7 @@ void IService::registerObject(const service::IService::KeyType& key,
     }
     else
     {
-        SLM_WARN("object '" + key + "' is already registered, it will be overridden");
+        SIGHT_WARN("object '" + key + "' is already registered, it will be overridden");
 
         ObjectServiceConfig& objConfig = *itr;
         objConfig.m_key         = key;

@@ -28,7 +28,7 @@
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Patient))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Patient))
 
 namespace sight::data
 {
@@ -40,9 +40,9 @@ class DATA_CLASS_API Patient : public data::Object
 {
 
 public:
-    fwCoreClassMacro(Patient, data::Object, data::factory::New< Patient >)
+    SIGHT_DECLARE_CLASS(Patient, data::Object, data::factory::New< Patient >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Patient))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Patient))
 
     /**
      * @brief Creates the patient.

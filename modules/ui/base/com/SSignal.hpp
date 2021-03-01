@@ -53,7 +53,7 @@ class MODULE_UI_BASE_CLASS_API SSignal : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SSignal, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SSignal, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal

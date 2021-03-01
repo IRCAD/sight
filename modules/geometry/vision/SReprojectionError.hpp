@@ -85,7 +85,7 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SReprojectionError : public service::IController
 {
 public:
-    fwCoreServiceMacro(SReprojectionError, service::IController)
+    SIGHT_DECLARE_SERVICE(SReprojectionError, service::IController)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;

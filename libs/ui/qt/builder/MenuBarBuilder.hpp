@@ -43,7 +43,7 @@ namespace builder
 class UI_QT_CLASS_API MenuBarBuilder : public ui::base::builder::IMenuBarBuilder
 {
 public:
-    fwCoreClassMacro(MenuBarBuilder, ui::base::builder::IMenuBarBuilder, ui::base::factory::New< MenuBarBuilder >)
+    SIGHT_DECLARE_CLASS(MenuBarBuilder, ui::base::builder::IMenuBarBuilder, ui::base::factory::New< MenuBarBuilder >)
 
     UI_QT_API MenuBarBuilder(ui::base::GuiBaseObject::Key key);
 

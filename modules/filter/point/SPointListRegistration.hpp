@@ -64,7 +64,7 @@ class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public service::IRe
 
 public:
 
-    fwCoreServiceMacro(SPointListRegistration, service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SPointListRegistration, service::IRegisterer)
 
     /**
      * @name Slots API

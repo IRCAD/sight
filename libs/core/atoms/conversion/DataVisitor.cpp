@@ -70,8 +70,8 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< atoms::Base::sp
 
     atoms::Base::sptr operator()(camp::NoType value)
     {
-        FW_RAISE_EXCEPTION( exception::ConversionNotManaged(
-                                "Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed" ) );
+        SIGHT_THROW_EXCEPTION( exception::ConversionNotManaged(
+                                   "Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed" ) );
         atoms::Base::sptr val;
         return val;
     }
@@ -229,7 +229,7 @@ void DataVisitor::visit(const camp::MapProperty& property)
         DataConversionValueVisitor valVisitor(m_cache);
         valAtom = second.visit( valVisitor );
 
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             exception::ConversionNotManaged("Not managed type for map key (only support string, int and real)"),
             first.type() != ::camp::stringType &&
             first.type() != ::camp::intType &&

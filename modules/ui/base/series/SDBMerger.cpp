@@ -27,14 +27,14 @@
 #include <core/com/Slots.hxx>
 #include <core/jobs/IJob.hpp>
 
-#include <data/Series.hpp>
 #include <data/helper/SeriesDB.hpp>
-
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/extension/Config.hpp>
+#include <data/Series.hpp>
 
 #include <io/base/service/ioTypes.hpp>
+
+#include <service/extension/Config.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -43,9 +43,8 @@ namespace sight::module::ui::base
 namespace series
 {
 
-
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
+static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
 static const service::IService::KeyType s_SERIES_INOUT = "seriesDB";
 
@@ -81,7 +80,7 @@ void SDBMerger::configuring()
     if(!vectConfig.empty())
     {
         ConfigurationType selectorConfig = vectConfig.at(0);
-        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
+        SIGHT_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
         m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
     }
 }
@@ -93,7 +92,7 @@ void SDBMerger::updating( )
     sight::ui::base::LockAction lock(this->getSptr());
 
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIES_INOUT);
-    SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
+    SIGHT_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", seriesDB);
 
     // Create a new SeriesDB
     data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
@@ -103,10 +102,10 @@ void SDBMerger::updating( )
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                             "::sight::module::ui::base::io::SSelector");
-    SLM_ASSERT("There is no service configuration "
-               << m_ioSelectorSrvConfig
-               << " for module::ui::base::editor::SSelector", ioCfg);
+                                                                       "::sight::module::ui::base::io::SSelector");
+    SIGHT_ASSERT("There is no service configuration "
+                 << m_ioSelectorSrvConfig
+                 << " for module::ui::base::editor::SSelector", ioCfg);
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;

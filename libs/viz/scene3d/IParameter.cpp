@@ -123,7 +123,7 @@ void IParameter::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     m_paramName = config.get<std::string>("parameter", "");
-    SLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
+    SIGHT_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
     m_techniqueName = config.get<std::string>("technique", "");
 
@@ -144,7 +144,7 @@ void IParameter::configuring()
         }
         else
         {
-            SLM_ERROR("This shader type " << shaderType << " isn't supported yet");
+            SIGHT_ERROR("This shader type " << shaderType << " isn't supported yet");
         }
     }
 }
@@ -165,15 +165,15 @@ void IParameter::updating()
 
         for(const auto tech : techniques)
         {
-            SLM_ASSERT("Technique is not set", tech);
+            SIGHT_ASSERT("Technique is not set", tech);
 
             bSet |= this->setParameter(*tech);
         }
 
         if( !bSet )
         {
-            SLM_DEBUG("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
-                      + m_material->getName() + "'");
+            SIGHT_DEBUG("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
+                        + m_material->getName() + "'");
         }
         else
         {
@@ -183,12 +183,12 @@ void IParameter::updating()
     else
     {
         ::Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
-        SLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
+        SIGHT_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
         if( this->setParameter(*tech) )
         {
-            SLM_DEBUG("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
-                      "' from material '" + m_material->getName() + "'");
+            SIGHT_DEBUG("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
+                        "' from material '" + m_material->getName() + "'");
         }
         else
         {
@@ -250,28 +250,28 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     if(objClass == "::sight::data::Integer")
     {
         data::Integer::sptr intValue = data::Integer::dynamicCast(obj);
-        SLM_ASSERT("The given integer object is null", intValue);
+        SIGHT_ASSERT("The given integer object is null", intValue);
 
         params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
     }
     else if(objClass == "::sight::data::Float")
     {
         data::Float::sptr floatValue = data::Float::dynamicCast(obj);
-        SLM_ASSERT("The given float object is null", floatValue);
+        SIGHT_ASSERT("The given float object is null", floatValue);
 
         params->setNamedConstant(m_paramName,  floatValue->value());
     }
     else if(objClass == "::sight::data::Boolean")
     {
         data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj);
-        SLM_ASSERT("The given boolean object is null", booleanValue);
+        SIGHT_ASSERT("The given boolean object is null", booleanValue);
 
         params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
     }
     else if(objClass == "::sight::data::Color")
     {
         data::Color::sptr colorValue = data::Color::dynamicCast(obj);
-        SLM_ASSERT("The given color object is null", colorValue);
+        SIGHT_ASSERT("The given color object is null", colorValue);
 
         float paramValues[4];
 
@@ -287,7 +287,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     else if(objClass == "::sight::data::PointList")
     {
         data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj);
-        SLM_ASSERT("The given pointList object is null", pointListValue);
+        SIGHT_ASSERT("The given pointList object is null", pointListValue);
 
         std::vector< data::Point::sptr > points = pointListValue->getPoints();
         int nbPoints                            = static_cast<int>(points.size());
@@ -313,7 +313,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     else if(objClass == "::sight::data::Matrix4")
     {
         data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj);
-        SLM_ASSERT("The given Matrix4 object is null", transValue);
+        SIGHT_ASSERT("The given Matrix4 object is null", transValue);
 
         float paramValues[16];
 
@@ -327,7 +327,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     else if(objClass == "::sight::data::Array")
     {
         data::Array::sptr arrayObject = data::Array::dynamicCast(obj);
-        SLM_ASSERT("The object is nullptr", arrayObject);
+        SIGHT_ASSERT("The object is nullptr", arrayObject);
 
         const size_t numComponents = arrayObject->getSize()[0];
         if(numComponents <= 3)
@@ -351,18 +351,18 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
             }
             else
             {
-                SLM_ERROR("Array type not handled: " << arrayObject->getType());
+                SIGHT_ERROR("Array type not handled: " << arrayObject->getType());
             }
         }
         else
         {
-            SLM_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
+            SIGHT_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
         }
     }
     else if(objClass == "::sight::data::Image")
     {
         data::Image::sptr image = data::Image::dynamicCast(obj);
-        SLM_ASSERT("The object is nullptr", image);
+        SIGHT_ASSERT("The object is nullptr", image);
 
         data::mt::ObjectReadLock lock(image);
 
@@ -390,7 +390,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     // We allow to work on the SRender composite and interact with slots instead
     else if(objClass != "::sight::data::Composite")
     {
-        SLM_ERROR("This Type " << objClass << " isn't supported.");
+        SIGHT_ERROR("This Type " << objClass << " isn't supported.");
     }
 
     return true;

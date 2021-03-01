@@ -62,7 +62,7 @@ class MODULE_DATA_CLASS_API SImageSignalForwarder : public module::data::IWrappe
 
 public:
 
-    fwCoreServiceMacro(SImageSignalForwarder, ::sight::module::data::IWrapperSrv)
+    SIGHT_DECLARE_SERVICE(SImageSignalForwarder, ::sight::module::data::IWrapperSrv)
 
     MODULE_DATA_API SImageSignalForwarder() noexcept;
 

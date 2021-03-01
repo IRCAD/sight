@@ -45,14 +45,14 @@ DicomSRSCoord3DNode::DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribu
     m_graphicType(graphicType),
     m_graphicDataContainer(graphicDataContainer)
 {
-    SLM_ASSERT("Only POINT and POLYLINE are supported by SCoord3D node for now.",
-               graphicType == "POINT" || graphicType == "POLYLINE");
+    SIGHT_ASSERT("Only POINT and POLYLINE are supported by SCoord3D node for now.",
+                 graphicType == "POINT" || graphicType == "POLYLINE");
 
-    SLM_ASSERT("Graphic data doesn't match graphic type POINT.",
-               m_graphicType != "POINT" || m_graphicDataContainer.size() == 3);
+    SIGHT_ASSERT("Graphic data doesn't match graphic type POINT.",
+                 m_graphicType != "POINT" || m_graphicDataContainer.size() == 3);
 
-    SLM_ASSERT("Graphic data doesn't match graphic type POLYLINE.",
-               m_graphicType != "POLYLINE" || m_graphicDataContainer.size() == 6);
+    SIGHT_ASSERT("Graphic data doesn't match graphic type POLYLINE.",
+                 m_graphicType != "POLYLINE" || m_graphicDataContainer.size() == 6);
 
 }
 

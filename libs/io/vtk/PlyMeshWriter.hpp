@@ -51,9 +51,9 @@ class IO_VTK_CLASS_API PlyMeshWriter :
 
 public:
 
-    fwCoreClassMacro(PlyMeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
-                     io::base::writer::factory::New< PlyMeshWriter >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(PlyMeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
+                        io::base::writer::factory::New< PlyMeshWriter >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API PlyMeshWriter(io::base::writer::IObjectWriter::Key key);

@@ -165,7 +165,7 @@ void DynamicType::registerNewType(const std::string& newKey)
 template<class T>
 std::pair<T, T> DynamicType::minMax()
 {
-    SLM_ASSERT("Unable to have minMax for UnSpecifiedType", this->string() != DynamicType::m_unSpecifiedType);
+    SIGHT_ASSERT("Unable to have minMax for UnSpecifiedType", this->string() != DynamicType::m_unSpecifiedType);
     std::pair<T, T> minMax;
     Dispatcher<DynamicType::SupportedTypes, MinMaxFunctor<T> >::invoke(*this, minMax);
     return minMax;

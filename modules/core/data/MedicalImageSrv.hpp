@@ -48,7 +48,7 @@ class MODULE_DATA_CLASS_API MedicalImageSrv : public service::IController
 
 public:
 
-    fwCoreServiceMacro(MedicalImageSrv, service::IController)
+    SIGHT_DECLARE_SERVICE(MedicalImageSrv, service::IController)
 
     MODULE_DATA_API MedicalImageSrv() noexcept;
 

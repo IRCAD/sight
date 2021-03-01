@@ -29,9 +29,9 @@
 
 #include <service/macros.hpp>
 
-#include <opencv2/core.hpp>
-
 #include <ui/base/dialog/LocationDialog.hpp>
+
+#include <opencv2/core.hpp>
 
 #include <sstream>
 
@@ -132,7 +132,7 @@ void SOpenCVWriter::updating()
         m_writeFailed = true;
     }
 
-    SLM_ASSERT("CameraSeries is null", camSeries);
+    SIGHT_ASSERT("CameraSeries is null", camSeries);
 
     bool use_dialog = false;
     if(!this->hasLocationDefined())

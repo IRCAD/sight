@@ -32,7 +32,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(PointList));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(PointList));
 
 namespace sight::data
 {
@@ -44,9 +44,9 @@ class DATA_CLASS_API PointList : public Object
 {
 
 public:
-    fwCoreClassMacro(PointList, data::Object, data::factory::New< PointList >)
+    SIGHT_DECLARE_CLASS(PointList, data::Object, data::factory::New< PointList >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(PointList));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(PointList));
 
     typedef std::vector< data::Point::sptr > PointListContainer;
 

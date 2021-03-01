@@ -30,9 +30,9 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/writer/Matrix4Writer.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -44,7 +44,6 @@ namespace sight::module::io::matrix
 {
 
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 
@@ -123,7 +122,7 @@ void Matrix4WriterService::updating()
         // Retrieve object
         data::Matrix4::csptr matrix =
             this->getInput< data::Matrix4 >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
+        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
 
         sight::io::base::writer::Matrix4Writer::sptr writer =
             sight::io::base::writer::Matrix4Writer::New();

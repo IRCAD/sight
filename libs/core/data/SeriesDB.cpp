@@ -30,7 +30,7 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( ::sight::data::SeriesDB )
+SIGHT_REGISTER_DATA( ::sight::data::SeriesDB )
 
 namespace sight::data
 {
@@ -57,9 +57,9 @@ SeriesDB::~SeriesDB()
 void SeriesDB::shallowCopy(const data::Object::csptr& _source)
 {
     SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( other );
 
@@ -71,9 +71,9 @@ void SeriesDB::shallowCopy(const data::Object::csptr& _source)
 void SeriesDB::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     SeriesDB::csptr other = SeriesDB::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
     m_container.clear();

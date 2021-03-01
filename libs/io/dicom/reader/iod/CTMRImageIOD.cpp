@@ -64,7 +64,7 @@ void CTMRImageIOD::read(data::Series::sptr series)
 {
     // Retrieve image series
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
-    SLM_ASSERT("Image series should not be null.", imageSeries);
+    SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
     SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
@@ -76,9 +76,9 @@ void CTMRImageIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
 
     const bool success = reader->Read();
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                       bufferObj->getStreamInfo().fsFile.string()+
-                                                       "\" using the GDCM Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
+                                                          bufferObj->getStreamInfo().fsFile.string()+
+                                                          "\" using the GDCM Reader."), !success);
 
     // Create Information Entity helpers
     io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,

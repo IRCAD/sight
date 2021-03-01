@@ -34,15 +34,15 @@
 #include <data/Series.hpp>
 #include <data/types.hpp>
 
+#include <geometry/data/Mesh.hpp>
+
+#include <io/base/reader/DictionaryReader.hpp>
+
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <gdcmSurfaceHelper.h>
 #include <gdcmSurfaceWriter.h>
 #include <gdcmUIDGenerator.h>
-
-#include <geometry/data/Mesh.hpp>
-
-#include <io/base/reader/DictionaryReader.hpp>
 
 #include <sstream>
 
@@ -66,7 +66,7 @@ Surface::Surface(const SPTR(::gdcm::Writer)& writer,
                                                                   logger, progress, cancel),
     m_imageInstance(imageInstance)
 {
-    SLM_ASSERT("Image instance should not be null.", imageInstance);
+    SIGHT_ASSERT("Image instance should not be null.", imageInstance);
 }
 
 //------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ void writeSegmentIdentification(const std::string& structureType,
     if(!registry.hasEntry(structureType))
     {
         const std::string msg = "No match in segmented property registry for structure '" + structureType + "'";
-        SLM_WARN_IF(msg, !logger);
+        SIGHT_WARN_IF(msg, !logger);
         if(logger)
         {
             logger->warning(msg);

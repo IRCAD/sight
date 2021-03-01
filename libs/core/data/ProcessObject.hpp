@@ -33,7 +33,7 @@ namespace sight::data
 class Field;
 }
 
-fwCampAutoDeclareDataMacro((sight)(data)(ProcessObject));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ProcessObject));
 
 namespace sight::data
 {
@@ -44,9 +44,9 @@ namespace sight::data
 class DATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassMacro(ProcessObject, data::Object, data::factory::New< ProcessObject >)
+    SIGHT_DECLARE_CLASS(ProcessObject, data::Object, data::factory::New< ProcessObject >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(ProcessObject));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ProcessObject));
 
     typedef std::string ParamNameType;
     typedef std::vector<std::string> ParamNameVectorType;

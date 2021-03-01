@@ -59,16 +59,16 @@ ui::base::container::fwContainer::sptr View::getParent()
     if(!m_parentWid.empty())
     {
         parentContainer = ui::base::GuiRegistry::getWIDContainer(m_parentWid);
-        SLM_ASSERT("The parent view of the wid container '"+ m_parentWid +"' is not found. Check that the view is "
-                   "properly declared and the service is started.",
-                   parentContainer);
+        SIGHT_ASSERT("The parent view of the wid container '"+ m_parentWid +"' is not found. Check that the view is "
+                     "properly declared and the service is started.",
+                     parentContainer);
     }
     else
     {
         parentContainer = ui::base::GuiRegistry::getSIDContainer(m_sid);
-        SLM_ASSERT("The parent view of the service '"+ m_sid +"' is not found. Check that the view is "
-                   "properly declared and the service is started.",
-                   parentContainer );
+        SIGHT_ASSERT("The parent view of the service '"+ m_sid +"' is not found. Check that the view is "
+                     "properly declared and the service is started.",
+                     parentContainer );
     }
     return parentContainer;
 }
@@ -77,8 +77,9 @@ ui::base::container::fwContainer::sptr View::getParent()
 
 void View::setParent(std::string wid)
 {
-    SLM_ASSERT("The method 'setParent()' is available only if this service declares its parent container with a 'wid'.",
-               !m_parentWid.empty());
+    SIGHT_ASSERT(
+        "The method 'setParent()' is available only if this service declares its parent container with a 'wid'.",
+        !m_parentWid.empty());
     m_parentWid = wid;
 }
 
@@ -86,7 +87,7 @@ void View::setParent(std::string wid)
 
 void View::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",
         configuration->getName() == "registry");
 
@@ -95,7 +96,7 @@ void View::initialize( core::runtime::ConfigurationElement::sptr configuration)
     if(!vectParent.empty())
     {
         ConfigurationType parent = vectParent.at(0);
-        SLM_ASSERT("<parent> tag must have a 'wid' attribute", parent->hasAttribute("wid"));
+        SIGHT_ASSERT("<parent> tag must have a 'wid' attribute", parent->hasAttribute("wid"));
         m_parentWid = parent->getAttributeValue("wid");
     }
 
@@ -108,16 +109,16 @@ void View::initialize( core::runtime::ConfigurationElement::sptr configuration)
 
     for( ConfigurationType view :  vectViews)
     {
-        SLM_ASSERT("<view> tag must have sid or wid attribute",
-                   view->hasAttribute("sid") || view->hasAttribute("wid"));
+        SIGHT_ASSERT("<view> tag must have sid or wid attribute",
+                     view->hasAttribute("sid") || view->hasAttribute("wid"));
         if(view->hasAttribute("sid"))
         {
             bool start = false;
             if(view->hasAttribute("start"))
             {
                 std::string startValue = view->getAttributeValue("start");
-                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
-                           startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                             startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = view->getAttributeValue("sid");
@@ -142,8 +143,8 @@ void View::initialize( core::runtime::ConfigurationElement::sptr configuration)
             if (menuBarCfg->hasAttribute("start"))
             {
                 std::string startValue = menuBarCfg->getAttributeValue("start");
-                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
-                           startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                             startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = menuBarCfg->getAttributeValue("sid");
@@ -162,8 +163,8 @@ void View::initialize( core::runtime::ConfigurationElement::sptr configuration)
             if (toolBarCfg->hasAttribute("start"))
             {
                 std::string startValue = toolBarCfg->getAttributeValue("start");
-                SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
-                           startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
+                             startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = toolBarCfg->getAttributeValue("sid");
@@ -179,29 +180,30 @@ void View::manage(std::vector< ui::base::container::fwContainer::sptr > subViews
     ui::base::container::fwContainer::sptr container;
     for( SIDContainerMapType::value_type sid :  m_sids)
     {
-        SLM_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
-                                << (sid.second.first+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
-                   sid.second.first < subViews.size());
+        SIGHT_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
+                                  << (sid.second.first+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
+                     sid.second.first < subViews.size());
         container = subViews.at( sid.second.first );
         ui::base::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' view, "
-                       "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
-                       "it at the end of the configuration",
-                       core::tools::fwID::exist(sid.first ) );
+            SIGHT_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' view, "
+                         "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
+                         "it at the end of the configuration",
+                         core::tools::fwID::exist(
+                             sid.first ) );
             service::IService::sptr service = service::get( sid.first );
-            SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
-                       , service->isStopped() );
+            SIGHT_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
+                         , service->isStopped() );
             service->start();
         }
     }
 
     for( WIDContainerMapType::value_type wid :  m_wids)
     {
-        SLM_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
-                                << (wid.second+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
-                   wid.second < subViews.size());
+        SIGHT_ASSERT("The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
+                                  << (wid.second+1) << " views in <registry>, but only " << subViews.size() <<" in <layout>.",
+                     wid.second < subViews.size());
         container = subViews.at( wid.second );
         ui::base::GuiRegistry::registerWIDContainer(wid.first, container);
     }
@@ -214,8 +216,8 @@ void View::manageMenuBar(ui::base::container::fwMenuBar::sptr menuBar )
     ui::base::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, menuBar);
     if(m_menuBarSid.second) //service is auto started?
     {
-        SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                   core::tools::fwID::exist(m_menuBarSid.first ) );
+        SIGHT_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
+                     core::tools::fwID::exist(m_menuBarSid.first ) );
         service::IService::sptr service = service::get( m_menuBarSid.first );
         service->start();
     }
@@ -228,8 +230,8 @@ void View::manageToolBar(ui::base::container::fwToolBar::sptr toolBar )
     ui::base::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, toolBar);
     if(m_toolBarSid.second) //service is auto started?
     {
-        SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                   core::tools::fwID::exist(m_toolBarSid.first ) );
+        SIGHT_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
+                     core::tools::fwID::exist(m_toolBarSid.first ) );
         service::IService::sptr service = service::get( m_toolBarSid.first );
         service->start();
     }
@@ -243,9 +245,9 @@ void View::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                       core::tools::fwID::exist(sid.first ) );
+            SIGHT_ASSERT("The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                         "It may have been destroyed by the configuration if it uses deferred objects.",
+                         core::tools::fwID::exist(sid.first ) );
             service::IService::sptr service = service::get( sid.first );
             service->stop().wait();
         }
@@ -266,8 +268,8 @@ void View::unmanageToolBar()
     {
         if(m_toolBarSid.second) //service is auto started?
         {
-            SLM_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                       core::tools::fwID::exist(m_toolBarSid.first ) );
+            SIGHT_ASSERT("The toolBar service '"+m_toolBarSid.first +"' declared by '" + m_sid + "' does not exist.",
+                         core::tools::fwID::exist(m_toolBarSid.first ) );
             service::IService::sptr service = service::get( m_toolBarSid.first );
             service->stop().wait();
         }
@@ -283,8 +285,8 @@ void View::unmanageMenuBar()
     {
         if(m_menuBarSid.second) //service is auto started?
         {
-            SLM_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
-                       core::tools::fwID::exist(m_menuBarSid.first ) );
+            SIGHT_ASSERT("The menuBar service '"+m_menuBarSid.first +"' declared by '" + m_sid + "' does not exist.",
+                         core::tools::fwID::exist(m_menuBarSid.first ) );
             service::IService::sptr service = service::get( m_menuBarSid.first );
             service->stop().wait();
         }

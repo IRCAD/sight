@@ -157,7 +157,7 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset,
         }
         else
         {
-            SLM_WARN("Graphic type is not handled or data size doesn't match type. The SR node has been ignored.");
+            SIGHT_WARN("Graphic type is not handled or data size doesn't match type. The SR node has been ignored.");
         }
 
     }
@@ -191,7 +191,7 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset,
         }
         else
         {
-            SLM_WARN("Graphic type is not handled or data size doesn't match type. The SR node has been ignored.");
+            SIGHT_WARN("Graphic type is not handled or data size doesn't match type. The SR node has been ignored.");
         }
 
     }

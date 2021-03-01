@@ -38,7 +38,7 @@ namespace custom
 class FILTER_DICOM_CLASS_API NoFilter : public ICustom
 {
 public:
-    fwCoreClassMacro(NoFilter, ICustom, filter::dicom::factory::New< NoFilter >)
+    SIGHT_DECLARE_CLASS(NoFilter, ICustom, filter::dicom::factory::New< NoFilter >)
 
     /// Constructor
     FILTER_DICOM_API NoFilter(filter::dicom::IFilter::Key key);

@@ -42,7 +42,7 @@ class UI_BASE_CLASS_API LoggerDialog : public ILoggerDialog
 
 public:
 
-    fwCoreClassMacro(LoggerDialog, ui::base::dialog::ILoggerDialog, new LoggerDialog)
+    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, new LoggerDialog)
 
     /**
      * Opens a default logger dialog with the specified title, message and logs.

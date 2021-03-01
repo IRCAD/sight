@@ -151,7 +151,7 @@ ImageDiff LineDrawer::draw(const OrientationType orientation, const CoordinatesT
             dim1 = 2;
             break;
         default:
-            SLM_ASSERT("Unknown axis", false);
+            SIGHT_ASSERT("Unknown axis", false);
             dim0 = 0;
             dim1 = 1;
     }

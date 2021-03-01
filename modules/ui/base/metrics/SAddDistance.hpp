@@ -50,7 +50,7 @@ class MODULE_UI_BASE_CLASS_API SAddDistance final : public ::sight::ui::base::IA
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SAddDistance, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SAddDistance, sight::ui::base::IAction)
 
     /// Creates the service.
     MODULE_UI_BASE_API SAddDistance() noexcept;

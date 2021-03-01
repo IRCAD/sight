@@ -40,7 +40,7 @@ static ::cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     const auto dumpLock = _image->lock();
 
-    SLM_ASSERT("Empty image buffer", _image->getBuffer());
+    SIGHT_ASSERT("Empty image buffer", _image->getBuffer());
 
     const auto imageSize = _image->getSize2();
     std::vector<int> cvSize;
@@ -93,8 +93,8 @@ void Image::copyFromCv(data::Image::sptr& _image, const ::cv::Mat& _cvImage)
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;
     const auto imageComp   = imageFormat.second;
-    SLM_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
-    SLM_ASSERT("Number of dimension should be between 1 and 3", _cvImage.dims >= 1 && _cvImage.dims <= 3);
+    SIGHT_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
+    SIGHT_ASSERT("Number of dimension should be between 1 and 3", _cvImage.dims >= 1 && _cvImage.dims <= 3);
 
     data::Image::Size imageSize = {0, 0, 0};
 
@@ -131,7 +131,7 @@ void Image::copyFromCv(data::Image::sptr& _image, const ::cv::Mat& _cvImage)
     }
 
     const auto dumpLock = _image->lock();
-    SLM_ASSERT("Empty image buffer", _image->getAllocatedSizeInBytes() > 0);
+    SIGHT_ASSERT("Empty image buffer", _image->getAllocatedSizeInBytes() > 0);
 
     auto buffer = _image->begin< std::uint8_t >();
     std::copy(_cvImage.data, _cvImage.data+_image->getSizeInBytes(), buffer);

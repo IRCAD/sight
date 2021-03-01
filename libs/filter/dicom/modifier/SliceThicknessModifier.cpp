@@ -25,14 +25,14 @@
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
+#include <geometry/data/VectorFunctions.hpp>
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
-
-#include <geometry/data/VectorFunctions.hpp>
 
 fwDicomIOFilterRegisterMacro( ::sight::filter::dicom::modifier::SliceThicknessModifier );
 
@@ -83,7 +83,7 @@ SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
 
     if(series->getDicomContainer().size() < 2)
     {
-        SLM_WARN("SliceThicknessModifier is being applied on a series containing only one slice.");
+        SIGHT_WARN("SliceThicknessModifier is being applied on a series containing only one slice.");
         result.push_back(series);
         return result;
     }
@@ -132,7 +132,7 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
     fileFormat.transferInit();
     if (!fileFormat.read(is).good())
     {
-        FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+        SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
     }
 
     fileFormat.loadAllDataIntoMemory();
@@ -188,7 +188,7 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
     fileFormat.transferInit();
     if (!fileFormat.read(is).good())
     {
-        FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
+        SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"'");
     }
 
     fileFormat.loadAllDataIntoMemory();

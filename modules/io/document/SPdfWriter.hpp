@@ -28,10 +28,10 @@
 
 #include <io/base/service/IWriter.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QPdfWriter>
 #include <QtWidgets>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::io::document
 {
@@ -76,7 +76,7 @@ public:
     typedef std::vector< QWidget* > ContainersListType;
     typedef std::vector< std::string > ContainersIDsType;
 
-    fwCoreServiceMacro(SPdfWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SPdfWriter, sight::io::base::service::IWriter)
     /**
      * @brief Constructor : does nothing
      */

@@ -42,9 +42,9 @@ InformationObjectDefinition::InformationObjectDefinition(const data::DicomSeries
     m_progressCallback(progress),
     m_cancelRequestedCallback(cancel)
 {
-    SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
-    SLM_ASSERT("Instance should not be null.", instance);
-    SLM_ASSERT("Logger should not be null.", logger);
+    SIGHT_ASSERT("DicomSeries should not be null.", dicomSeries);
+    SIGHT_ASSERT("Instance should not be null.", instance);
+    SIGHT_ASSERT("Logger should not be null.", logger);
 }
 
 //------------------------------------------------------------------------------

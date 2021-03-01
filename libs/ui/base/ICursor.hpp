@@ -34,7 +34,7 @@ namespace sight::ui::base
 class UI_BASE_CLASS_API ICursor : public ui::base::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(ICursor, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ICursor, ui::base::GuiBaseObject)
 
     /// Cursor type
     typedef enum

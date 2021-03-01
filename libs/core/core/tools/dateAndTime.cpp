@@ -38,13 +38,13 @@ namespace sight::core::tools
     ::boost::gregorian::date resDate( ::boost::gregorian::from_undelimited_string( "19000101" ) );
     if ( dateStr.size() < 8 )
     {
-        SLM_WARN(
+        SIGHT_WARN(
             "The string length is too short (<8) : " << dateStr <<
                 ". The string is initialized with \"19000101\".");
     }
     else if ( dateStr.size() > 8 )
     {
-        SLM_WARN("The string length is too long (>8) : " << dateStr << ".. The string is trunked to 8 characters.");
+        SIGHT_WARN("The string length is too long (>8) : " << dateStr << ".. The string is trunked to 8 characters.");
         resDate = strToBoostDate( dateStr.substr(0, 8) );
     }
     else
@@ -57,7 +57,7 @@ namespace sight::core::tools
         }
         else
         {
-            SLM_WARN(
+            SIGHT_WARN(
                 "The string not contains 8 numbers : " << dateStr <<
                     ". The string is initialized with \"19000101\".");
         }
@@ -77,13 +77,13 @@ namespace sight::core::tools
     time_duration td;
     if ( timeStr.size() < 6 )
     {
-        SLM_WARN("The string length is too short (<6) : " << timeStr <<
-                 ".  The string is initialized with \"000000\".");
+        SIGHT_WARN("The string length is too short (<6) : " << timeStr <<
+                   ".  The string is initialized with \"000000\".");
         td = hours(0) + minutes(0) + seconds(0);
     }
     else if ( timeStr.size() > 6 )
     {
-        SLM_WARN("The string length is too short (>6) : " << timeStr << ". This string is trunked.");
+        SIGHT_WARN("The string length is too short (>6) : " << timeStr << ". This string is trunked.");
         td = strToBoostTime( timeStr.substr(0, 6) );
     }
     else
@@ -98,8 +98,8 @@ namespace sight::core::tools
         }
         else
         {
-            SLM_WARN("The string not contains 6 numbers : " << timeStr <<
-                     ". The string is initialized with \"000000\".");
+            SIGHT_WARN("The string not contains 6 numbers : " << timeStr <<
+                       ". The string is initialized with \"000000\".");
             td = hours(0) + minutes(0) + seconds(0);
         }
     }

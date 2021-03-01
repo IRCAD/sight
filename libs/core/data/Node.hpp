@@ -29,7 +29,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Node));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Node));
 
 namespace sight::data
 {
@@ -42,8 +42,8 @@ class DATA_CLASS_API Node : public data::Object
 {
 public:
 
-    fwCoreClassMacro(Node, data::Object, data::factory::New< Node >)
-    fwCampMakeFriendDataMacro((sight)(data)(Node));
+    SIGHT_DECLARE_CLASS(Node, data::Object, data::factory::New< Node >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Node));
 
     /// Port container
     typedef std::vector< data::Port::sptr > PortContainer;

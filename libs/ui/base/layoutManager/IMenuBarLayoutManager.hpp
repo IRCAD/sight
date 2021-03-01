@@ -44,7 +44,7 @@ namespace layoutManager
 class UI_BASE_CLASS_API IMenuBarLayoutManager : public ui::base::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IMenuBarLayoutManager, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMenuBarLayoutManager, ui::base::GuiBaseObject)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;

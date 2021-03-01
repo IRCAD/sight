@@ -27,11 +27,11 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampAutoDeclareEnumMacro((sight)(data)(Material)(ShadingType));
-fwCampAutoDeclareEnumMacro((sight)(data)(Material)(RepresentationType));
-fwCampAutoDeclareEnumMacro((sight)(data)(Material)(OptionsType));
-fwCampAutoDeclareEnumMacro((sight)(data)(Material)(FilteringType));
-fwCampAutoDeclareEnumMacro((sight)(data)(Material)(WrappingType));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Material)(ShadingType));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Material)(RepresentationType));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Material)(OptionsType));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Material)(FilteringType));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Material)(WrappingType));
 
-fwCampDeclareAccessor((sight)(data)(Material), (sight)(data)(Color));
-fwCampDeclareAccessor((sight)(data)(Material), (sight)(data)(Image));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Material), (sight)(data)(Color));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Material), (sight)(data)(Image));

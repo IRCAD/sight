@@ -30,9 +30,9 @@
 
 #include <data/helper/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/LoggerDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -40,7 +40,6 @@
 
 namespace sight::module::io::dicom
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -87,7 +86,7 @@ void SDicomSeriesConverter::updating()
 {
     // Get Destination SeriesDB
     data::SeriesDB::sptr destinationSeriesDB = this->getInOut< data::SeriesDB>("target");
-    SLM_ASSERT("The 'target' key doesn't exist.", destinationSeriesDB);
+    SIGHT_ASSERT("The 'target' key doesn't exist.", destinationSeriesDB);
 
     data::SeriesDB::csptr dicomSeriesDB = this->getInput< data::SeriesDB >("source");
     data::SeriesDB::sptr dummy          = data::SeriesDB::New();

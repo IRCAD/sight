@@ -52,9 +52,9 @@ class ImageWriter : public io::base::writer::GenericObjectWriter< data::Image >,
 
 public:
 
-    fwCoreClassMacro(ImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
-                     io::base::writer::factory::New< ImageWriter >);
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(ImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
+                        io::base::writer::factory::New< ImageWriter >);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
     IO_VTK_API ImageWriter(io::base::writer::IObjectWriter::Key key);

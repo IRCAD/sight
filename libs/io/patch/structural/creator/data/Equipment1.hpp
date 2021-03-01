@@ -37,7 +37,7 @@ namespace data
 class IO_PATCH_CLASS_API Equipment1 : public io::atoms::patch::IStructuralCreator
 {
 public:
-    fwCoreClassMacro(Equipment1, io::atoms::patch::IStructuralCreator, new Equipment1)
+    SIGHT_DECLARE_CLASS(Equipment1, io::atoms::patch::IStructuralCreator, new Equipment1)
 
     /// Constructor
     IO_PATCH_API Equipment1();

@@ -31,7 +31,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Plane));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Plane));
 namespace sight::data
 {
 /**
@@ -42,9 +42,9 @@ class DATA_CLASS_API Plane : public Object
 {
 
 public:
-    fwCoreClassMacro(Plane, data::Object, data::factory::New< Plane >)
+    SIGHT_DECLARE_CLASS(Plane, data::Object, data::factory::New< Plane >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Plane));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Plane));
 
     typedef std::array< data::Point::sptr, 3> PointContainer;
 

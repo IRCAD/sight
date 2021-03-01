@@ -27,18 +27,17 @@
 
 #include <data/FrameTL.hpp>
 
+#include <io/opencv/FrameTL.hpp>
+#include <io/opencv/Image.hpp>
+
 #include <service/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
-#include <io/opencv/FrameTL.hpp>
-#include <io/opencv/Image.hpp>
-
 namespace sight::module::filter::vision
 {
 
-
-const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
+const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT            = "setBackground";
 const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
 const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT             = "setThreshold";
 const core::com::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
@@ -88,13 +87,15 @@ void SColourImageMasking::configuring()
     m_foregroundComponents = config.get<int>("foregroundComponents", 5);
     m_backgroundComponents = config.get<int>("backgroundComponents", 5);
 
-    SLM_ASSERT("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
-               (m_scaleFactor > 0 && m_scaleFactor <= 1));
-    SLM_ASSERT("The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
-               m_backgroundComponents > 0);
-    SLM_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
-    SLM_ASSERT("The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
-               m_foregroundComponents > 0);
+    SIGHT_ASSERT("Scale factor must be between 0 and 1. Current value: " << m_scaleFactor,
+                 (m_scaleFactor > 0 && m_scaleFactor <= 1));
+    SIGHT_ASSERT(
+        "The number of background components must be greater than 0. Current value: " << m_backgroundComponents,
+            m_backgroundComponents > 0);
+    SIGHT_ASSERT("Noise value must be >= 0. Current value:" << m_noise, m_noise >= 0);
+    SIGHT_ASSERT(
+        "The number of foreground components must be greater than 0. Current value: " << m_foregroundComponents,
+            m_foregroundComponents > 0);
 
     m_lowerColor = ::cv::Scalar(0, 0, 0);
     m_upperColor = ::cv::Scalar(255, 255, 255);
@@ -111,7 +112,7 @@ void SColourImageMasking::configuring()
         int i = 0;
         for(const auto& it : tokLower)
         {
-            SLM_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
+            SIGHT_ASSERT("Only 3 integers needed to define lower HSV value", i < 3);
             m_lowerColor[i++] = ::boost::lexical_cast< double >(it);
         }
     }
@@ -122,7 +123,7 @@ void SColourImageMasking::configuring()
         int i = 0;
         for(const auto& it : tokUpper)
         {
-            SLM_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
+            SIGHT_ASSERT("Only 3 integers needed to define upper HSV value", i < 3);
             m_upperColor[i++] = ::boost::lexical_cast< double >(it);
         }
     }
@@ -168,15 +169,15 @@ void SColourImageMasking::updating()
         auto videoMaskTL   = this->getLockedInOut< data::FrameTL >(s_VIDEO_MASK_TL_KEY);
 
         // Sanity checks
-        SLM_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
-        SLM_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
-        SLM_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
+        SIGHT_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
+        SIGHT_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
+        SIGHT_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
         const auto maskSize = mask->getSize2();
         if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
         {
-            SLM_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]
-                                         << ") has different size as the video timeline (" << videoTL->getWidth() << ", "
-                                         << videoTL->getHeight() << ").");
+            SIGHT_ERROR("Reference mask (" << maskSize[0] << ", " << maskSize[1]
+                                           << ") has different size as the video timeline (" << videoTL->getWidth() << ", "
+                                           << videoTL->getHeight() << ").");
         }
 
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
@@ -193,7 +194,7 @@ void SColourImageMasking::updating()
 
         if(!videoBuffer)
         {
-            SLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
+            SIGHT_ERROR("Buffer not found with timestamp "<< currentTimestamp);
             return;
         }
 
@@ -202,8 +203,8 @@ void SColourImageMasking::updating()
         core::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
         if(videoTimestamp <= m_lastVideoTimestamp)
         {
-            SLM_WARN("Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
-                                                      << m_lastVideoTimestamp << ")");
+            SIGHT_WARN("Dropping frame with timestamp " << videoTimestamp << " (previous frame had timestamp "
+                                                        << m_lastVideoTimestamp << ")");
             return;
         }
 
@@ -251,7 +252,7 @@ void SColourImageMasking::setBackground()
     CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
-        SLM_ERROR("Buffer not found with timestamp " << currentTimestamp);
+        SIGHT_ERROR("Buffer not found with timestamp " << currentTimestamp);
         return;
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
@@ -301,7 +302,7 @@ void SColourImageMasking::setForeground()
     CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
-        SLM_ERROR("Buffer not found with timestamp "<< currentTimestamp);
+        SIGHT_ERROR("Buffer not found with timestamp "<< currentTimestamp);
         return;
     }
     const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);

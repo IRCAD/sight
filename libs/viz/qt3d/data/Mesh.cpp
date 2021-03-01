@@ -89,7 +89,7 @@ sight::viz::qt3d::core::GenericScene* const Mesh::getScene() const
 
 void Mesh::setMaterial(viz::qt3d::data::Material* _material)
 {
-    SLM_ASSERT("Material can't be set to null value.", _material);
+    SIGHT_ASSERT("Material can't be set to null value.", _material);
     this->removeComponent(m_material);
     m_material = _material;
     this->addComponent(m_material);
@@ -99,7 +99,7 @@ void Mesh::setMaterial(viz::qt3d::data::Material* _material)
 
 void Mesh::setScene(sight::viz::qt3d::core::GenericScene* _scene)
 {
-    SLM_ASSERT("Scene can't be set to null value.", _scene);
+    SIGHT_ASSERT("Scene can't be set to null value.", _scene);
     m_scene = _scene;
 }
 
@@ -107,7 +107,7 @@ void Mesh::setScene(sight::viz::qt3d::core::GenericScene* _scene)
 
 void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
 {
-    SLM_ASSERT("::sight::data::Mesh pointer does not exist.", _mesh);
+    SIGHT_ASSERT("::sight::data::Mesh pointer does not exist.", _mesh);
 
     // Sets the number of points (for a mesh of triangles).
     m_numberOfPoints = static_cast<unsigned int>(_mesh->getNumberOfPoints());
@@ -173,7 +173,7 @@ void Mesh::centerCameraOnMesh()
 
 void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
 {
-    SLM_ASSERT("::sight::data::Mesh pointer does not exist.", _mesh);
+    SIGHT_ASSERT("::sight::data::Mesh pointer does not exist.", _mesh);
 
     // Returns if _mesh is empty.
     if(static_cast<int>(_mesh->getNumberOfCells()) == 0 || static_cast<int>(_mesh->getNumberOfPoints()) == 0)

@@ -84,7 +84,7 @@ void FrameTL::copyFromCv(const data::FrameTL::csptr& _timeline,
     const auto imageFormat = io::opencv::Type::fromCv(_cvImage.type());
     const auto imageType   = imageFormat.first;
     const auto imageComp   = imageFormat.second;
-    SLM_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
+    SIGHT_ASSERT("Number of components should be between 1 and 4", imageComp >= 1 && imageComp <= 4);
 
     std::vector<size_t> cvImageSize;
     for(int i = _cvImage.dims - 1; i >= 0; --i)
@@ -95,7 +95,7 @@ void FrameTL::copyFromCv(const data::FrameTL::csptr& _timeline,
 
     if(prevImageComp != imageComp || prevImageType != imageType || cvImageSize != imageSize)
     {
-        SLM_ERROR("Cannot copy OpenCV image into this timeline buffer because their format or size differ.");
+        SIGHT_ERROR("Cannot copy OpenCV image into this timeline buffer because their format or size differ.");
     }
 
     const size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.sizeOf();

@@ -37,7 +37,7 @@ class UI_BASE_CLASS_API fwMenuBar : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(fwMenuBar, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(fwMenuBar, ui::base::GuiBaseObject)
 
     UI_BASE_API virtual void clean()            = 0;
     UI_BASE_API virtual void destroyContainer() = 0;

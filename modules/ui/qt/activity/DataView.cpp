@@ -43,12 +43,12 @@
 #include <data/Study.hpp>
 #include <data/Vector.hpp>
 
+#include <io/base/service/ioTypes.hpp>
+
+#include <service/extension/Config.hpp>
 #include <service/IService.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
-#include <service/extension/Config.hpp>
-
-#include <io/base/service/ioTypes.hpp>
 
 #include <QApplication>
 #include <QDropEvent>
@@ -386,7 +386,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
                     }
                     else
                     {
-                        SLM_ERROR("Object param '" + req.name + "' must be a 'data::Vector'");
+                        SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::Vector'");
                     }
                 }
                 else // container == composite
@@ -401,7 +401,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
                     }
                     else
                     {
-                        SLM_ERROR("Object param '" + req.name + "' must be a 'data::Composite'");
+                        SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::Composite'");
                     }
                 }
             }
@@ -543,7 +543,7 @@ data::Object::sptr DataView::checkData(size_t _index, std::string& _errorMsg)
         /// Process object validator
         auto validator     = sight::activity::validator::factory::New(req.validator);
         auto dataValidator = sight::activity::IObjectValidator::dynamicCast(validator);
-        SLM_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
+        SIGHT_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
 
         sight::activity::IValidator::ValidationType validation = dataValidator->validate(object);
         if(!validation.first)
@@ -588,7 +588,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
         auto validator         = sight::activity::validator::factory::New(validatotImpl);
         auto activityValidator = sight::activity::IActivityValidator::dynamicCast(validator);
 
-        SLM_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
+        SIGHT_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
 
         sight::activity::IValidator::ValidationType validation = activityValidator->validate(actSeries);
         if(!validation.first)
@@ -715,7 +715,7 @@ void DataView::importObjectFromSDB()
     data::Object::sptr newObject = data::factory::New(type);
     if (newObject)
     {
-        SLM_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
+        SIGHT_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
         // We use the SeriesDB reader and then extract the object of this type.
         auto obj      = this->readObject("::sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
@@ -743,7 +743,7 @@ void DataView::importObjectFromSDB()
     else
     {
         std::string msg = "Can not create object '" + type + "'";
-        SLM_ERROR(msg);
+        SIGHT_ERROR(msg);
         QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg), QMessageBox::Ok);
     }
 }
@@ -759,7 +759,7 @@ data::Object::sptr DataView::readObject(const std::string& _classname,
 
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(_ioSelectorSrvConfig,
-                                                                             "::sight::module::ui::base::io::SSelector");
+                                                                       "::sight::module::ui::base::io::SSelector");
 
     auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
     auto srvConfig = ioConfig.get_child("config");
@@ -780,7 +780,7 @@ data::Object::sptr DataView::readObject(const std::string& _classname,
     {
         std::stringstream msg;
         msg << "The object can not be imported: " << e.what();
-        SLM_ERROR(msg.str());
+        SIGHT_ERROR(msg.str());
 
         QMessageBox messageBox(QMessageBox::Warning, "Error", QString::fromStdString(msg.str()), QMessageBox::Ok);
         if (ioSelectorSrv->isStarted())
@@ -1102,7 +1102,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                 }
                 else
                 {
-                    SLM_DEBUG("Object of type '" + obj->classname() + "' can not yet be editted");
+                    SIGHT_DEBUG("Object of type '" + obj->classname() + "' can not yet be editted");
                 }
             }
         }

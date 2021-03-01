@@ -25,23 +25,22 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <service/macros.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
+#include <service/macros.hpp>
+
 namespace sight::module::filter::image
 {
 
-
-static const service::IService::KeyType s_IMAGE_IN = "image";
+static const service::IService::KeyType s_IMAGE_IN        = "image";
 static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
 
 //------------------------------------------------------------------------------
@@ -79,20 +78,20 @@ void SImageCenter::updating()
     data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_IN);
     data::mt::ObjectReadLock imLock(image);
 
-    SLM_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
+    SIGHT_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
 
     const bool imageValidity = data::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
 
     if(!imageValidity)
     {
-        SLM_WARN("Can not compute center of a invalid image.");
+        SIGHT_WARN("Can not compute center of a invalid image.");
         return;
     }
 
     data::Matrix4::sptr matrix =
         this->getInOut< data::Matrix4 >(s_TRANSFORM_INOUT);
 
-    SLM_ASSERT("Missing matrix '"+ s_TRANSFORM_INOUT +"'", matrix);
+    SIGHT_ASSERT("Missing matrix '"+ s_TRANSFORM_INOUT +"'", matrix);
 
     data::mt::ObjectWriteLock matLock(matrix);
 
@@ -103,7 +102,7 @@ void SImageCenter::updating()
     const data::Image::Spacing spacing = image->getSpacing2();
     const data::Image::Origin origin   = image->getOrigin2();
 
-    SLM_ASSERT("Image should be in 3 Dimensions", size.size() == 3);
+    SIGHT_ASSERT("Image should be in 3 Dimensions", size.size() == 3);
 
     std::vector<double> center(3, 0.);
 

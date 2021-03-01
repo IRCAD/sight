@@ -65,7 +65,7 @@ class MODULE_IO_DICOM_CLASS_API SDicomSeriesWriter : public sight::io::base::ser
 public:
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SDicomSeriesWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief   constructor

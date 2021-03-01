@@ -57,7 +57,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SLine : public sight::viz::scene2d::IAdaptor
 {
 
 public:
-    fwCoreServiceMacro(SLine, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SLine, ::sight::viz::scene2d::IAdaptor)
 
     /// Basic constructor, do nothing.
     MODULE_VIZ_SCENE2D_API SLine() noexcept;

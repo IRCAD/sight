@@ -24,11 +24,11 @@
 
 #include "ui/qt/config.hpp"
 
+#include <ui/base/dialog/ILoggerDialog.hpp>
+
 #include <QDialog>
 #include <QPointer>
 #include <QTableWidget>
-
-#include <ui/base/dialog/ILoggerDialog.hpp>
 
 #include <vector>
 
@@ -48,7 +48,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New< LoggerDialog >)
+    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New< LoggerDialog >)
 
     /// Constructor
     UI_QT_API LoggerDialog(ui::base::GuiBaseObject::Key key);

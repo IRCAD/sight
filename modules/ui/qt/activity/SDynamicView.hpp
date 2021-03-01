@@ -37,11 +37,11 @@
 
 #include <service/IAppConfigManager.hpp>
 
-#include <QObject>
-#include <QPointer>
-
 #include <ui/base/view/IActivityView.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QObject>
+#include <QPointer>
 
 #include <map>
 #include <set>
@@ -110,7 +110,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SDynamicView, sight::ui::base::view::IActivityView)
+    SIGHT_DECLARE_SERVICE(SDynamicView, sight::ui::base::view::IActivityView)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SDynamicView() noexcept;

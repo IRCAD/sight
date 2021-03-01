@@ -29,18 +29,18 @@
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Image.hpp>
 
-#include <opencv2/opencv.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
+
+#include <opencv2/opencv.hpp>
 
 namespace sight::module::io::vision
 {
@@ -111,9 +111,9 @@ void SCalibrationInfoReader::configuring()
     const ConfigType boardConfig = config.get_child("board");
 
     m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");
-    SLM_ASSERT("Missing board width preference key.", !m_widthKey.empty());
+    SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
     m_heightKey = boardConfig.get<std::string>("<xmlattr>.height");
-    SLM_ASSERT("Missing board height preference key.", !m_heightKey.empty());
+    SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
     m_scaleKey = boardConfig.get<std::string>("<xmlattr>.scale", "");
 }
 
@@ -132,7 +132,7 @@ void SCalibrationInfoReader::updating()
     {
         data::CalibrationInfo::sptr calibInfo =
             this->getInOut< data::CalibrationInfo >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("Missing calibration info.", calibInfo);
+        SIGHT_ASSERT("Missing calibration info.", calibInfo);
 
         data::mt::ObjectWriteLock calibInfoLock(calibInfo);
 
@@ -253,7 +253,7 @@ void SCalibrationInfoReader::updateChessboardSize()
         if(m_scale > 1.f)
         {
             m_scale = 1.f;
-            SLM_ERROR("It is pointless to upscale the image for chessboard detection.");
+            SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
     }
 }

@@ -54,7 +54,7 @@ class MODULE_IO_DIMSE_CLASS_API SProgressBarController : public service::IContro
 
 public:
 
-    fwCoreServiceMacro(SProgressBarController,  service::IController)
+    SIGHT_DECLARE_SERVICE(SProgressBarController,  service::IController)
 
     /// Initializes slots.
     MODULE_IO_DIMSE_API SProgressBarController() noexcept;

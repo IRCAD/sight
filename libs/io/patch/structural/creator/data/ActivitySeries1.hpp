@@ -40,7 +40,7 @@ class IO_PATCH_CLASS_API ActivitySeries1 : public io::patch::structural::creator
 
 public:
 
-    fwCoreClassMacro(ActivitySeries1, io::patch::structural::creator::data::Series1, new ActivitySeries1)
+    SIGHT_DECLARE_CLASS(ActivitySeries1, io::patch::structural::creator::data::Series1, new ActivitySeries1)
 
     /// Constructor
     IO_PATCH_API ActivitySeries1();

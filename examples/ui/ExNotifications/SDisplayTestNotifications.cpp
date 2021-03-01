@@ -90,7 +90,7 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
         }
         else
         {
-            SLM_ERROR("Value '" + _val + "' is not handled for key " + _key);
+            SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
         }
     }
     else if(_key == "type")
@@ -109,12 +109,12 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
         }
         else
         {
-            SLM_ERROR("Value '" + _val + "' is not handled for key " + _key);
+            SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
         }
     }
     else
     {
-        SLM_ERROR("Key '" + _key + "' is not handled." );
+        SIGHT_ERROR("Key '" + _key + "' is not handled." );
     }
 }
 
@@ -128,7 +128,7 @@ void SDisplayTestNotifications::setBoolParameter(bool _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("Key '" + _key + "' is not handled." );
+        SIGHT_ERROR("Key '" + _key + "' is not handled." );
     }
 }
 

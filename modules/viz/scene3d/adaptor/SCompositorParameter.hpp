@@ -75,7 +75,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SCompositorParameter final : public ::sight::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SCompositorParameter, ::sight::viz::scene3d::IParameter)
+    SIGHT_DECLARE_SERVICE(SCompositorParameter, ::sight::viz::scene3d::IParameter)
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept;

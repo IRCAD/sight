@@ -64,8 +64,8 @@ class SERVICE_CLASS_API ObjectService : public core::BaseObject,
 {
 public:
 
-    fwCoreClassMacro(ObjectService, core::BaseObject)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(ObjectService, core::BaseObject)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @brief Service container

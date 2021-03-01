@@ -59,7 +59,7 @@ class MODULE_VIZ_QT3D_CLASS_API SMaterial : public sight::viz::qt3d::IAdaptor
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMaterial, sight::viz::qt3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::qt3d::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_QT3D_API SMaterial() noexcept;

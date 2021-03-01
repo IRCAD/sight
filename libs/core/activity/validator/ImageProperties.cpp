@@ -64,9 +64,9 @@ IValidator::ValidationType ImageProperties::validate(
         validation.second = "Input images have the same properties.";
 
         data::ImageSeries::sptr imgSeries0 = data::ImageSeries::dynamicCast((*currentSelection)[0]);
-        SLM_ASSERT("Failed to retrieve an image series", imgSeries0);
+        SIGHT_ASSERT("Failed to retrieve an image series", imgSeries0);
         data::Image::sptr img0 = imgSeries0->getImage();
-        SLM_ASSERT("Failed to retrieve image from image series", img0);
+        SIGHT_ASSERT("Failed to retrieve image from image series", img0);
 
         data::Image::Size size       = img0->getSize2();
         data::Image::Spacing spacing = img0->getSpacing2();
@@ -76,9 +76,9 @@ IValidator::ValidationType ImageProperties::validate(
         for(it = currentSelection->begin() + 1; it != currentSelection->end(); ++it)
         {
             data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(*it);
-            SLM_ASSERT("Failed to retrieve an image series", imgSeries);
+            SIGHT_ASSERT("Failed to retrieve an image series", imgSeries);
             data::Image::sptr img = imgSeries->getImage();
-            SLM_ASSERT("Failed to retrieve an image data", img);
+            SIGHT_ASSERT("Failed to retrieve an image data", img);
 
             if (  size != img->getSize2() ||
                   !std::equal(spacing.begin(), spacing.end(), img->getSpacing2().begin(), fCompare) ||

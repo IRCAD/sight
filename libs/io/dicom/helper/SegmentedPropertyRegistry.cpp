@@ -58,7 +58,7 @@ bool checkAndFormatEntry(const std::string& structureType,
                           {
                               result &= condition;
 
-                              SLM_ERROR_IF(msg, !condition && !logger);
+                              SIGHT_ERROR_IF(msg, !condition && !logger);
                               if(!condition && logger)
                               {
                                   logger->critical(msg);
@@ -179,7 +179,7 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(std::istream& 
                                     entry.second[3] + ";" +
                                     entry.second[4] + "}";
 
-            SLM_ERROR_IF(msg, !logger);
+            SIGHT_ERROR_IF(msg, !logger);
             if(logger)
             {
                 logger->critical(msg);

@@ -29,9 +29,9 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/Convert.hpp>
 
+#include <data/helper/Field.hpp>
 #include <data/Matrix4.hpp>
 #include <data/String.hpp>
-#include <data/helper/Field.hpp>
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
@@ -99,9 +99,9 @@ void SMaterial::configuring()
     auto it = m_representationDict.find(m_representationMode);
     if(it == m_representationDict.end())
     {
-        SLM_ERROR("Value: " + m_representationMode + " is not valid for 'representationMode'."
-                  " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
-                  "'representationMode' is reset to default value (SURFACE). ");
+        SIGHT_ERROR("Value: " + m_representationMode + " is not valid for 'representationMode'."
+                    " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
+                    "'representationMode' is reset to default value (SURFACE). ");
         m_representationMode = "SURFACE";
     }
 }
@@ -241,7 +241,7 @@ void SMaterial::createShaderParameterAdaptors()
 {
     auto material = this->getMaterial();
 
-    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
+    SIGHT_ASSERT( "Material '" + m_materialTemplateName + "'' not found", material );
 
     const auto constants = sight::viz::scene3d::helper::Shading::findMaterialConstants(*material);
     for(const auto& constant : constants)
@@ -307,8 +307,8 @@ void SMaterial::setTextureName(const std::string& _textureName)
                 return srv->getTextureName() == _textureName;
             });
 
-        SLM_ASSERT("STexture adaptor managing texture '" + _textureName + "' is not found",
-                   result != textureAdaptors.end());
+        SIGHT_ASSERT("STexture adaptor managing texture '" + _textureName + "' is not found",
+                     result != textureAdaptors.end());
         m_texAdaptor = *result;
     }
 
@@ -347,10 +347,10 @@ void SMaterial::updateField( data::Object::FieldsContainerType _fields)
 
 void SMaterial::swapTexture()
 {
-    SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
+    SIGHT_ASSERT("Missing texture adaptor", m_texAdaptor);
 
     ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
-    SLM_ASSERT("Texture not set in Texture adaptor", currentTexture);
+    SIGHT_ASSERT("Texture not set in Texture adaptor", currentTexture);
 
     m_materialFw->setDiffuseTexture(currentTexture);
 
@@ -367,7 +367,7 @@ void SMaterial::swapTexture()
 
 void SMaterial::createTextureAdaptor()
 {
-    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
+    SIGHT_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
     const auto material = this->getLockedInOut< data::Material >(s_MATERIAL_INOUT);
 
@@ -399,8 +399,8 @@ void SMaterial::createTextureAdaptor()
 
 void SMaterial::removeTextureAdaptor()
 {
-    SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
-    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
+    SIGHT_ASSERT("Missing texture adaptor", m_texAdaptor);
+    SIGHT_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
     this->getRenderService()->makeCurrent();
 

@@ -108,8 +108,8 @@ void Window::initialize()
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
-    SLM_ASSERT("OpenGL RenderSystem not found",
-               m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
+    SIGHT_ASSERT("OpenGL RenderSystem not found",
+                 m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
 
     Ogre::NameValuePairList parameters;
 
@@ -263,7 +263,7 @@ void Window::render()
     }
     catch (const std::exception& e)
     {
-        SLM_ERROR("Exception occured during Ogre rendering" << e.what());
+        SIGHT_ERROR("Exception occured during Ogre rendering" << e.what());
     }
 }
 

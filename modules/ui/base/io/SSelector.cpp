@@ -31,13 +31,13 @@
 #include <data/Composite.hpp>
 #include <data/helper/Composite.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/extension/Config.hpp>
-#include <service/extension/Factory.hpp>
-
 #include <io/base/service/IReader.hpp>
 #include <io/base/service/IWriter.hpp>
+
+#include <service/extension/Config.hpp>
+#include <service/extension/Factory.hpp>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -56,8 +56,7 @@ using namespace sight::io;
 
 //------------------------------------------------------------------------------
 
-
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL   = "jobCreated";
 static const core::com::Signals::SignalKeyType JOB_FAILED_SIGNAL    = "jobFailed";
 static const core::com::Signals::SignalKeyType JOB_SUCCEEDED_SIGNAL = "jobSucceeded";
 
@@ -89,32 +88,32 @@ void SSelector::configuring()
     const ConfigType srvConfig = this->getConfigTree();
 
     const std::string mode = srvConfig.get<std::string>("type.<xmlattr>.mode", "reader");
-    SLM_ASSERT("The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
-               mode == "writer" || mode == "reader" );
+    SIGHT_ASSERT("The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
+                 mode == "writer" || mode == "reader" );
     m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
-    SLM_DEBUG( "mode => " + mode );
+    SIGHT_DEBUG( "mode => " + mode );
 
     m_dataClassname = srvConfig.get<std::string>("type.<xmlattr>.class", "");
 
     const std::string selectionMode = srvConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
-    SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
-                "'exclude' (to exclude the selection of the selector list).",
-                selectionMode == "exclude" || selectionMode == "include" );
+    SIGHT_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+                  "'exclude' (to exclude the selection of the selector list).",
+                  selectionMode == "exclude" || selectionMode == "include" );
     m_servicesAreExcluded = ( selectionMode == "exclude" );
-    SLM_DEBUG( "selection mode => " + selectionMode );
+    SIGHT_DEBUG( "selection mode => " + selectionMode );
 
     const auto selectionCfg = srvConfig.equal_range("addSelection");
     for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
     {
         const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
         m_selectedServices.push_back(service);
-        SLM_DEBUG( "add selection => " + service );
+        SIGHT_DEBUG( "add selection => " + service );
 
         const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
         if(!configId.empty())
         {
             m_serviceToConfig[service] = configId;
-            SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG( "add config '" + configId + "' for service '" + service + "'");
         }
     }
 
@@ -125,7 +124,7 @@ void SSelector::configuring()
         const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
         m_serviceToConfig[service] = configId;
-        SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+        SIGHT_DEBUG( "add config '" + configId + "' for service '" + service + "'");
     }
 
     if (m_mode == WRITER_MODE)
@@ -167,14 +166,15 @@ void SSelector::updating()
     {
         std::string classname = m_dataClassname;
 
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "An inout key '" + io::base::service::s_DATA_KEY + "' must be defined if 'class' attribute is not defined.",
             obj || !classname.empty());
 
         if (obj)
         {
-            SLM_WARN_IF("The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
-                        "is used", !classname.empty())
+            SIGHT_WARN_IF("The 'class' attribute is defined, but the object is set as 'inout', only the object classname "
+                          "is used",
+                          !classname.empty())
             classname = obj->getClassname();
         }
         createOutput          = (!obj && !m_dataClassname.empty());
@@ -184,7 +184,7 @@ void SSelector::updating()
     }
     else // m_mode == WRITER_MODE
     {
-        SLM_ASSERT("The inout key '" + io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
+        SIGHT_ASSERT("The inout key '" + io::base::service::s_DATA_KEY + "' is not correctly set.", obj);
 
         availableExtensionsId =
             service::extension::Factory::getDefault()->getImplementationIdFromObjectAndType(
@@ -271,7 +271,7 @@ void SSelector::updating()
                 {
                     m_sigJobFailed->asyncEmit();
                 }
-                SLM_ASSERT("Problem to find the selected string.", extensionIdFound );
+                SIGHT_ASSERT("Problem to find the selected string.", extensionIdFound );
             }
             else
             {
@@ -290,7 +290,7 @@ void SSelector::updating()
                 hasConfigForService = true;
                 srvCfg              = service::extension::Config::getDefault()->getServiceConfig(
                     m_serviceToConfig[extensionId], extensionId );
-                SLM_ASSERT(
+                SIGHT_ASSERT(
                     "No service configuration of type service::extension::Config was found",
                     srvCfg );
             }
@@ -301,7 +301,7 @@ void SSelector::updating()
                 if(createOutput)
                 {
                     obj = data::factory::New(m_dataClassname);
-                    SLM_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
+                    SIGHT_ASSERT("Cannot create object with classname='" + m_dataClassname + "'", obj);
                 }
 
                 io::base::service::IReader::sptr reader = service::add< io::base::service::IReader >( extensionId );
@@ -417,7 +417,7 @@ void SSelector::updating()
     }
     else
     {
-        SLM_WARN("SSelector::load : availableExtensions is empty.");
+        SIGHT_WARN("SSelector::load : availableExtensions is empty.");
         if ( m_mode == READER_MODE )
         {
             sight::ui::base::dialog::MessageDialog messageBox;

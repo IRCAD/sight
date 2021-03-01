@@ -26,10 +26,10 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QSlider;
 class QPushButton;
@@ -59,7 +59,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SOrganMaterialEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, sight::ui::base::IEditor)
 
     /// Creates the service.
     MODULE_UI_QT_API SOrganMaterialEditor() noexcept;

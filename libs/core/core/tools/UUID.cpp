@@ -65,7 +65,7 @@ bool UUID::exist( const UUID::UUIDType& uuid)
 
 const UUID::UUIDType& UUID::get(core::tools::Object::sptr object)
 {
-    SLM_ASSERT("Object expired", object);
+    SIGHT_ASSERT("Object expired", object);
 
     UUID::sptr uuidObject = object->m_uuid;
     core::mt::ReadToWriteLock uuidLock(uuidObject->m_uuidMutex);

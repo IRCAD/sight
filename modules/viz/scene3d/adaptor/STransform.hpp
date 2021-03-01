@@ -60,7 +60,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API STransform final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STransform, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(STransform, ::sight::viz::scene3d::IAdaptor)
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API STransform() noexcept;

@@ -77,7 +77,7 @@ void SFlip::updating()
 {
     data::Image::csptr inImg = this->getInput< data::Image >(s_IMAGE_IN);
 
-    SLM_ASSERT("No 'imageIn' found !", inImg);
+    SIGHT_ASSERT("No 'imageIn' found !", inImg);
     if (inImg)
     {
         data::mt::ObjectReadLock inImLock(inImg);
@@ -92,7 +92,7 @@ void SFlip::updating()
     }
     else
     {
-        SLM_ERROR("An update was triggered with an empty image as input. No output image was created.");
+        SIGHT_ERROR("An update was triggered with an empty image as input. No output image was created.");
     }
 }
 

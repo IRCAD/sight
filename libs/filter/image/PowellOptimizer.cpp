@@ -160,7 +160,7 @@ PowellOptimizer::FunctionParametersType PowellOptimizer::optimize(
     }
     catch (::itk::ExceptionObject& e)
     {
-        SLM_ERROR("Powell optimizer exception : " << e );
+        SIGHT_ERROR("Powell optimizer exception : " << e );
     }
 
     return metric->GetParameters();

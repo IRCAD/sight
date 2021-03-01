@@ -56,7 +56,7 @@ class MODULE_UI_VIZ_CLASS_API SScreenSelector : public ::sight::ui::base::IActio
 {
 public:
 
-    fwCoreServiceMacro(SScreenSelector, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SScreenSelector, ::sight::ui::base::IAction)
 
     /// Constructor.
     MODULE_UI_VIZ_API SScreenSelector();

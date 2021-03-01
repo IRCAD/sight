@@ -72,7 +72,7 @@ void ILocationDialog::setDefaultLocation( data::location::ILocation::sptr loc)
 {
     data::location::SingleFile::csptr singleFile = data::location::SingleFile::dynamicConstCast(loc);
     data::location::Folder::csptr folder         = data::location::Folder::dynamicConstCast(loc);
-    SLM_FATAL_IF( "Unsupported location",  !singleFile && !folder );
+    SIGHT_FATAL_IF( "Unsupported location",  !singleFile && !folder );
     m_defaultLocaction = loc;
 }
 
@@ -88,7 +88,7 @@ const std::filesystem::path ILocationDialog::getDefaultLocation()
         if ( prefUI->find( ILocationDialog::DLG_DEFAULT_LOCATION ) != prefUI->end() )
         {
             location = data::location::ILocation::dynamicCast( (*prefUI)[ ILocationDialog::DLG_DEFAULT_LOCATION ] );
-            SLM_ASSERT("LOCATION not correct", location);
+            SIGHT_ASSERT("LOCATION not correct", location);
         }
     }
 

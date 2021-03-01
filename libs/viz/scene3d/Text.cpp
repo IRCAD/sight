@@ -218,14 +218,14 @@ void Text::setTextColor(const Ogre::ColourValue& _color)
     m_textColor = _color;
 
     auto material = m_overlayText->getMaterial();
-    SLM_ASSERT("No material set for this Text.", material);
+    SIGHT_ASSERT("No material set for this Text.", material);
     ::Ogre::Technique* fontRenderTechnique = material->getTechnique(0);
-    SLM_ASSERT("This Text's material has no technique.", fontRenderTechnique);
+    SIGHT_ASSERT("This Text's material has no technique.", fontRenderTechnique);
     ::Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
-    SLM_ASSERT("This Text's material has no pass.", fontRenderPass);
+    SIGHT_ASSERT("This Text's material has no pass.", fontRenderPass);
 
     ::Ogre::GpuProgramParametersSharedPtr passParams = fontRenderPass->getFragmentProgramParameters();
-    SLM_ASSERT("The Text's material pass has no fragment shader attached.", passParams);
+    SIGHT_ASSERT("The Text's material pass has no fragment shader attached.", passParams);
 
     passParams->setNamedConstant("u_textColor", m_textColor);
 }

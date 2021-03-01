@@ -31,7 +31,7 @@
 #include <map>
 #include <set>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Graph));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Graph));
 
 namespace sight::data
 {
@@ -46,9 +46,9 @@ class DATA_CLASS_API Graph : public data::Object
 {
 
 public:
-    fwCoreClassMacro(Graph, data::Object, data::factory::New< Graph >)
+    SIGHT_DECLARE_CLASS(Graph, data::Object, data::factory::New< Graph >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Graph));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Graph));
 
     DATA_API static const bool UP_STREAM;
     DATA_API static const bool DOWN_STREAM;

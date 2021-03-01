@@ -81,7 +81,7 @@ void SAxis::configuring()
     m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
 
     m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << m_originColor,
             m_originColor[0] == '#'
@@ -288,7 +288,7 @@ void SAxis::stopping()
     {
         for(sight::viz::scene3d::Text* label : m_axisLabels)
         {
-            SLM_ASSERT("label should not be null", label);
+            SIGHT_ASSERT("label should not be null", label);
             label->detachFromParent();
             sceneMgr->destroyMovableObject(label);
             label = nullptr;
@@ -327,7 +327,7 @@ void SAxis::setVisible(bool _visible)
         {
             for(sight::viz::scene3d::Text* const label : m_axisLabels)
             {
-                SLM_ASSERT("label should not be null", label);
+                SIGHT_ASSERT("label should not be null", label);
                 label->setVisible(_visible);
             }
         }

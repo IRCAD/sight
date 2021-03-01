@@ -30,9 +30,9 @@
 #include <data/ImageSeries.hpp>
 #include <data/location/Folder.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/service/IWriter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -41,7 +41,6 @@
 
 namespace sight::module::io::itk
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -150,9 +149,9 @@ void SJpgImageSeriesWriter::updating()
         // Retrieve dataStruct associated with this service
         data::ImageSeries::csptr imageSeries =
             this->getInput< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
+        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
-        SLM_ASSERT("Image from image series is not instanced", imageSeries->getImage());
+        SIGHT_ASSERT("Image from image series is not instanced", imageSeries->getImage());
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

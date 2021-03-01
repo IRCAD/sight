@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Plane))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Plane))
 {
     builder
     .tag("object_version", "1")

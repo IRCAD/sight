@@ -56,7 +56,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< data::Object::sptr >
 
     data::Object::sptr operator()(camp::NoType )
     {
-        SLM_FATAL("Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed");
+        SIGHT_FATAL("Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed");
         data::Object::sptr val;
         return val;
     }
@@ -93,7 +93,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< data::Object::sptr >
 
     data::Object::sptr operator()(const camp::EnumObject& )
     {
-        SLM_FATAL("Enter in void GetCampValueVisitor()(camp::EnumObject value) : case not managed");
+        SIGHT_FATAL("Enter in void GetCampValueVisitor()(camp::EnumObject value) : case not managed");
         data::Object::sptr val;
         return val;
     }
@@ -108,8 +108,8 @@ struct GetCampValueVisitor : public camp::ValueVisitor< data::Object::sptr >
         {
             if ( !m_subObjPath.empty() )
             {
-                SLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
-                               "classname") <<"' )" );
+                SIGHT_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
+                                 "classname") <<"' )" );
                 data::Object* ptr = value.get< data::Object* >();
                 data::reflection::visitor::GetObject visitor( ptr->getSptr(), m_subObjPath );
                 val = visitor.get();
@@ -123,9 +123,9 @@ struct GetCampValueVisitor : public camp::ValueVisitor< data::Object::sptr >
         }
         else
         {
-            FW_RAISE_EXCEPTION( data::reflection::exception::NullPointer(
-                                    "Object '" + metaclass.name() + "' not instanced.")
-                                );
+            SIGHT_THROW_EXCEPTION( data::reflection::exception::NullPointer(
+                                       "Object '" + metaclass.name() + "' not instanced.")
+                                   );
         }
 
         return val;
@@ -140,7 +140,7 @@ GetObject::GetObject( data::Object::csptr object, const std::string& subObjPath 
     m_newSubObjPath(subObjPath),
     m_pathVisitor(std::make_shared<PathVisitor>(subObjPath))
 {
-    SLM_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
+    SIGHT_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
     m_campObj      = camp::UserObject( *object );
     m_propertyName = this->getNextPropertyName();
 }
@@ -156,11 +156,11 @@ GetObject::~GetObject()
 void GetObject::visit(const camp::SimpleProperty& property)
 {
     const std::string name( property.name() );
-    SLM_DEBUG( "SimpleProperty name =" << name );
+    SIGHT_DEBUG( "SimpleProperty name =" << name );
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        SLM_DEBUG( "Ok SimpleProperty name =" << name );
+        SIGHT_DEBUG( "Ok SimpleProperty name =" << name );
         ::camp::Value elemValue = property.get( m_campObj );
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
@@ -171,8 +171,8 @@ void GetObject::visit(const camp::SimpleProperty& property)
 
 void GetObject::visit(const camp::EnumProperty& property)
 {
-    SLM_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
-                  property.name() == m_propertyName );
+    SIGHT_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
+                    property.name() == m_propertyName );
 }
 
 //-----------------------------------------------------------------------------
@@ -180,11 +180,11 @@ void GetObject::visit(const camp::EnumProperty& property)
 void GetObject::visit(const camp::MapProperty& property)
 {
     const std::string name( property.name() );
-    SLM_DEBUG( "MapProperty name =" << name);
+    SIGHT_DEBUG( "MapProperty name =" << name);
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        SLM_DEBUG( "Ok MapProperty name =" << name );
+        SIGHT_DEBUG( "Ok MapProperty name =" << name );
         std::string key = this->getNextPropertyName();
 
         std::pair< ::camp::Value, ::camp::Value > value;
@@ -208,11 +208,11 @@ void GetObject::visit(const camp::MapProperty& property)
 void GetObject::visit(const camp::ArrayProperty& property)
 {
     const std::string name( property.name() );
-    SLM_DEBUG( "ArrayProperty name =" << name );
+    SIGHT_DEBUG( "ArrayProperty name =" << name );
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        SLM_DEBUG( "Ok ArrayProperty name =" << name );
+        SIGHT_DEBUG( "Ok ArrayProperty name =" << name );
         std::string key = this->getNextPropertyName();
 
         size_t index = ::boost::lexical_cast< size_t >( key );
@@ -228,8 +228,8 @@ void GetObject::visit(const camp::ArrayProperty& property)
         }
         catch(const ::camp::OutOfRange& )
         {
-            FW_RAISE_EXCEPTION_MSG( data::reflection::exception::NullPointer,
-                                    "Index '" << index << "' not found in array property '" << name << "'.");
+            SIGHT_THROW_EXCEPTION_MSG( data::reflection::exception::NullPointer,
+                                       "Index '" << index << "' not found in array property '" << name << "'.");
         }
 
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
@@ -242,11 +242,11 @@ void GetObject::visit(const camp::ArrayProperty& property)
 void GetObject::visit(const camp::UserProperty& property)
 {
     const std::string name( property.name() );
-    SLM_DEBUG( "UserProperty name =" << name );
+    SIGHT_DEBUG( "UserProperty name =" << name );
     if( name == m_propertyName )
     {
         m_pathVisitor->addObject(name);
-        SLM_DEBUG( "Ok UserProperty name =" << name );
+        SIGHT_DEBUG( "Ok UserProperty name =" << name );
         ::camp::Value elemValue = property.get( m_campObj );
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
@@ -263,7 +263,7 @@ void GetObject::visit(const camp::Function& )
 
 std::string GetObject::getNextPropertyName()
 {
-    SLM_FATAL_IF( "Path is empty.", m_newSubObjPath.empty() );
+    SIGHT_FATAL_IF( "Path is empty.", m_newSubObjPath.empty() );
     size_t dotPos = m_newSubObjPath.find(".");
     std::string nextItem;
     if ( dotPos != std::string::npos )
@@ -276,8 +276,8 @@ std::string GetObject::getNextPropertyName()
         nextItem        = m_newSubObjPath;
         m_newSubObjPath = "";
     }
-    SLM_DEBUG( "nextItem = " << nextItem );
-    SLM_DEBUG( "m_newSubObjPath = " << m_newSubObjPath );
+    SIGHT_DEBUG( "nextItem = " << nextItem );
+    SIGHT_DEBUG( "m_newSubObjPath = " << m_newSubObjPath );
     return nextItem;
 }
 

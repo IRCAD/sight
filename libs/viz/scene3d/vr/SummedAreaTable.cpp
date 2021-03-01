@@ -147,7 +147,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture,
     ::Ogre::Pass* satInitPass = initPassMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = satInitPass->getTextureUnitState("image");
-    SLM_ASSERT("'image' texture unit is not found", tex3DState);
+    SIGHT_ASSERT("'image' texture unit is not found", tex3DState);
     tex3DState->setTexture(_imgTexture);
 
     auto fpParams = satInitPass->getFragmentProgramParameters();

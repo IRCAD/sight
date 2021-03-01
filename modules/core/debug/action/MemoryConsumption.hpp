@@ -37,7 +37,7 @@ class MODULE_DEBUG_CLASS_API MemoryConsumption : public ::sight::ui::base::IActi
 
 public:
 
-    fwCoreServiceMacro(MemoryConsumption,   sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(MemoryConsumption,   sight::ui::base::IAction )
 
     /// Does nothing
     MODULE_DEBUG_API MemoryConsumption() noexcept;

@@ -42,8 +42,7 @@
 namespace sight::module::io::matrix
 {
 
-
-static const core::com::Slots::SlotKeyType s_SAVE_MATRIX = "saveMatrix";
+static const core::com::Slots::SlotKeyType s_SAVE_MATRIX  = "saveMatrix";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 static const core::com::Slots::SlotKeyType s_WRITE        = "write";
@@ -210,7 +209,7 @@ void SMatrixWriter::startRecord()
         }
         else
         {
-            SLM_WARN(
+            SIGHT_WARN(
                 "The file " + this->getFile().string() +
                 " can't be open. Please check if it is already open in another program.");
         }

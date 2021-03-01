@@ -24,10 +24,10 @@
 
 #include "ui/qt/container/QtContainer.hpp"
 
-#include <QWidget>
-
 #include <ui/base/registry/macros.hpp>
 #include <ui/qt/widget/SlideBar.hpp>
+
+#include <QWidget>
 
 fwGuiRegisterMacro( ::sight::ui::base::builder::SlideViewBuilder,
                     ::sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY)
@@ -54,7 +54,7 @@ SlideViewBuilder::~SlideViewBuilder()
 void SlideViewBuilder::createContainer( ui::base::container::fwContainer::sptr parent )
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
 
     QWidget* qtParent = m_parent->getQtContainer();
 
@@ -118,7 +118,7 @@ void SlideViewBuilder::createContainer( ui::base::container::fwContainer::sptr p
 
 void SlideViewBuilder::destroyContainer()
 {
-    SLM_ASSERT("The Container is not initialized", m_container);
+    SIGHT_ASSERT("The Container is not initialized", m_container);
 
     m_container->destroyContainer();
 }

@@ -102,7 +102,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SPointList final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPointList, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SPointList, ::sight::viz::scene3d::IAdaptor)
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SPointList() noexcept;

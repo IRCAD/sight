@@ -28,8 +28,8 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/AppConfig.hpp>
+#include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
 namespace sight::module::ui::base
@@ -42,7 +42,6 @@ static const std::string s_SOURCE_KEY      = "source";
 static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +64,7 @@ void SPushField::configuring()
 
     const ConfigurationType pushCfg = m_configuration->findConfigurationElement("push");
 
-    SLM_ASSERT("<push> tag must have one attribute 'field'.", pushCfg->hasAttribute("field"));
+    SIGHT_ASSERT("<push> tag must have one attribute 'field'.", pushCfg->hasAttribute("field"));
     m_field = pushCfg->getAttributeValue("field");
 }
 
@@ -89,11 +88,11 @@ void SPushField::stopping()
 void SPushField::updating()
 {
     data::Object::sptr objectSrc = this->getInOut< data::Object >(s_SOURCE_KEY);
-    SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    SIGHT_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
     data::Object::sptr obj = objectSrc->getField(m_field);
 
-    SLM_WARN_IF("'" + m_field + "' not found in object '" + objectSrc->getID() + "'", obj == nullptr);
+    SIGHT_WARN_IF("'" + m_field + "' not found in object '" + objectSrc->getID() + "'", obj == nullptr);
     if (obj)
     {
         this->setOutput(s_DESTINATION_KEY, obj);
@@ -105,7 +104,7 @@ void SPushField::updating()
 void SPushField::updateObjects()
 {
     data::Object::sptr objectSrc = this->getInOut< data::Object >(s_SOURCE_KEY);
-    SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
+    SIGHT_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", objectSrc);
 
     const bool executable = (objectSrc->getField(m_field) != nullptr);
 

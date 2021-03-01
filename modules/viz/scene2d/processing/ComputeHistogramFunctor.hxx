@@ -58,7 +58,7 @@ struct ComputeHistogramFunctor
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
 
         data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-        SLM_ASSERT("Wrong image", max > min);
+        SIGHT_ASSERT("Wrong image", max > min);
         if( max > min )
         {
             histogram->initialize( static_cast<float>(min), static_cast<float>(max),

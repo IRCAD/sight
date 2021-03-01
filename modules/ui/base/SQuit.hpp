@@ -39,7 +39,7 @@ class MODULE_UI_BASE_CLASS_API SQuit : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SQuit, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SQuit, ::sight::ui::base::IAction)
 
     /**
      * @brief Constructor. Do nothing.

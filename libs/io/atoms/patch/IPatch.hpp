@@ -43,8 +43,8 @@ class IO_ATOMS_CLASS_API IPatch : public core::BaseObject
 {
 
 public:
-    fwCoreClassMacro(IPatch)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(IPatch)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @name Typedefs

@@ -29,7 +29,7 @@
 #include <iostream>
 #include <vector>
 
-fwDataIOWriterRegisterMacro( ::sight::io::base::writer::Matrix4Writer);
+SIGHT_REGISTER_IO_WRITER( ::sight::io::base::writer::Matrix4Writer);
 
 namespace sight::io::base
 {
@@ -58,7 +58,7 @@ void Matrix4Writer::write()
     file.open(getFile().string().c_str(), std::fstream::out);
     if (!file.is_open())
     {
-        SLM_ERROR( "Trf file writing error for " << getFile());
+        SIGHT_ERROR( "Trf file writing error for " << getFile());
         return;
     }
     data::Matrix4::TMCoefArray mat = this->getConcreteObject()->getCoefficients();

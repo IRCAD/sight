@@ -50,7 +50,7 @@ GenericObject<TYPE>::~GenericObject()
 template< typename TYPE >
 const TYPE& GenericObject<TYPE>::getElement(unsigned int index) const
 {
-    SLM_ASSERT("Index out of bounds", index < m_maxElementNum);
+    SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
 
     return *(reinterpret_cast<const ElementType*>(m_buffer + index * getElementSize()));
 }
@@ -60,7 +60,7 @@ const TYPE& GenericObject<TYPE>::getElement(unsigned int index) const
 template< typename TYPE >
 void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int index)
 {
-    SLM_ASSERT("Index out of bounds", index < m_maxElementNum);
+    SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
 
     // store floating point values
     ElementType* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
@@ -81,7 +81,7 @@ void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int in
 template< typename TYPE >
 TYPE* GenericObject<TYPE>::addElement(unsigned int index)
 {
-    SLM_ASSERT("Index out of bounds", index < m_maxElementNum);
+    SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
 
     // update presence mask
     uint64_t oldMask = m_presenceMask;
@@ -126,7 +126,7 @@ GenericObject<TYPE>::iterator::iterator(const GenericObjectBase& object) :
 template< typename TYPE >
 void GenericObject<TYPE>::iterator::operator++()
 {
-    SLM_ASSERT("Iterator out of bounds", m_currentIndex < m_maxElement);
+    SIGHT_ASSERT("Iterator out of bounds", m_currentIndex < m_maxElement);
     while(++m_currentIndex < m_maxElement && !m_object->isPresent(m_currentIndex))
     {
     }

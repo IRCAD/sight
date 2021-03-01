@@ -27,17 +27,17 @@
 #include "io/dicom/writer/iod/SpatialFiducialsIOD.hpp"
 #include "io/dicom/writer/iod/SurfaceSegmentationIOD.hpp"
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
 
-fwDataIOWriterRegisterMacro(::sight::io::dicom::writer::Series);
+SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::Series);
 
 namespace sight::io::dicom
 {
@@ -63,7 +63,7 @@ Series::~Series()
 void Series::write()
 {
     data::Series::csptr series = this->getConcreteObject();
-    SLM_ASSERT("::sight::data::Series not instanced", series);
+    SIGHT_ASSERT("::sight::data::Series not instanced", series);
 
     // TODO: Make the user choose this value and implement EnhancedCTImageIOD/EnhancedMRImageIOD
     bool multiFiles = true;
@@ -79,9 +79,9 @@ void Series::write()
        sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
         data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-        SLM_ASSERT("::sight::data::ImageSeries not instanced", imageSeries);
+        SIGHT_ASSERT("::sight::data::ImageSeries not instanced", imageSeries);
         data::Image::sptr image = imageSeries->getImage();
-        SLM_ASSERT("::sight::data::Image not instanced", image);
+        SIGHT_ASSERT("::sight::data::Image not instanced", image);
 
         // Write image
         io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");
@@ -115,7 +115,7 @@ void Series::write()
     }
     else
     {
-        SLM_WARN("Series type not supported.");
+        SIGHT_WARN("Series type not supported.");
     }
 
     // Push instance into container
@@ -128,7 +128,7 @@ void Series::write()
 bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
 {
     data::Image::csptr image = imageSeries->getImage();
-    SLM_ASSERT("Image not instanced", image);
+    SIGHT_ASSERT("Image not instanced", image);
 
     data::PointList::sptr pl;
     pl = image->getField< data::PointList >(data::fieldHelper::Image::m_imageLandmarksId);
@@ -141,7 +141,7 @@ bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
 
 SPTR(io::dicom::container::DicomInstance) Series::getImageInstance()
 {
-    SLM_ASSERT("You must have created an image instance before trying to access it.", !m_dicomInstanceMap.empty());
+    SIGHT_ASSERT("You must have created an image instance before trying to access it.", !m_dicomInstanceMap.empty());
     return m_dicomInstanceMap.begin()->second;
 }
 

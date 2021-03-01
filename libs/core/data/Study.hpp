@@ -28,7 +28,7 @@
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Study))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Study))
 
 namespace sight::data
 {
@@ -41,9 +41,9 @@ class DATA_CLASS_API Study : public data::Object
 
 public:
 
-    fwCoreClassMacro(Study, data::Object, data::factory::New< Study >)
+    SIGHT_DECLARE_CLASS(Study, data::Object, data::factory::New< Study >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Study))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Study))
 
     /**
      * @brief Creates the study.

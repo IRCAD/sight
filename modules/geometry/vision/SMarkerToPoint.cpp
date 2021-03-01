@@ -40,7 +40,7 @@ namespace sight::module::geometry::vision
 {
 
 const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
-const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT = "clear";
+const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT     = "clear";
 
 const service::IService::KeyType SMarkerToPoint::s_MATRIXTL_INPUT  = "matrixTL";
 const service::IService::KeyType SMarkerToPoint::s_POINTLIST_INOUT = "pointList";
@@ -100,7 +100,7 @@ void SMarkerToPoint::addPoint()
 
     core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
     CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
-    SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
+    SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
     const float* values = buffer->getElement(0);
 
@@ -112,9 +112,9 @@ void SMarkerToPoint::addPoint()
         }
     }
 
-    SLM_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0, 3)<<" , "
-                                         <<matrix3D->getCoefficient(1, 3)<<" , "
-                                         <<matrix3D->getCoefficient(2, 3));
+    SIGHT_DEBUG("Marker Center Position : "<< matrix3D->getCoefficient(0, 3)<<" , "
+                                           <<matrix3D->getCoefficient(1, 3)<<" , "
+                                           <<matrix3D->getCoefficient(2, 3));
 
     //Save the position and drop the orientation
     data::Point::sptr p = data::Point::New(matrix3D->getCoefficient(0, 3),

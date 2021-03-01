@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Color))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Color))
 {
     builder
     .tag("object_version", "1")

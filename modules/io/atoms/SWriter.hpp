@@ -91,7 +91,7 @@ class MODULE_IO_ATOMS_CLASS_API SWriter : public sight::io::base::service::IWrit
 
 public:
 
-    fwCoreServiceMacro(SWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SWriter, sight::io::base::service::IWriter)
 
     /// Signal type for job creation.
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;

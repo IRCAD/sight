@@ -38,7 +38,6 @@
 #include <functional>
 #include <string>
 
-
 namespace sight::module::io::igtl
 {
 
@@ -65,8 +64,8 @@ void SClientListener::configuring()
 
     const ConfigType configInOut = config.get_child("inout");
 
-    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
-               configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+    SIGHT_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+                 configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
 
     const auto keyCfg = configInOut.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
@@ -82,7 +81,7 @@ void SClientListener::configuring()
     if(!serverInfo.empty())
     {
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_hostnameConfig = serverInfo.substr(0, splitPosition);
         m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -119,7 +118,7 @@ void SClientListener::runClient()
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            SLM_ERROR(ex.what());
+            SIGHT_ERROR(ex.what());
         }
         return;
     }
@@ -171,7 +170,7 @@ void SClientListener::runClient()
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            SLM_ERROR(ex.what());
+            SIGHT_ERROR(ex.what());
         }
     }
 }
@@ -200,7 +199,7 @@ void SClientListener::stopping()
     catch (core::Exception& ex)
     {
         sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-        SLM_ERROR(ex.what());
+        SIGHT_ERROR(ex.what());
     }
 }
 

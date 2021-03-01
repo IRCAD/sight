@@ -29,7 +29,7 @@
 
 #include <boost/pool/pool.hpp>
 
-fwDataRegisterMacro( ::sight::data::FrameTL );
+SIGHT_REGISTER_DATA( ::sight::data::FrameTL );
 
 namespace sight::data
 {
@@ -58,9 +58,9 @@ FrameTL::~FrameTL ()
 void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
     this->clearTimeline();
@@ -113,7 +113,7 @@ void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type&
 
     std::size_t size = width * height * numberOfComponents * type.sizeOf();
 
-    SLM_ASSERT("width or height or numberOfComponents is null", size != 0);
+    SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 
     m_maxElementNum = maxElementNum;
     this->allocPoolSize(size * m_maxElementNum);
@@ -147,7 +147,7 @@ void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type&
 
     std::size_t size = width * height * m_numberOfComponents * type.sizeOf();
 
-    SLM_ASSERT("width or height or numberOfComponents is null", size != 0);
+    SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 
     m_maxElementNum = maxElementNum;
     this->allocPoolSize(size * m_maxElementNum);
@@ -157,7 +157,7 @@ void FrameTL::initPoolSize(size_t width, size_t height, const core::tools::Type&
 
 void FrameTL::initPoolSize(unsigned int)
 {
-    SLM_ERROR("This function should not be called");
+    SIGHT_ERROR("This function should not be called");
 }
 
 } // namespace sight::data

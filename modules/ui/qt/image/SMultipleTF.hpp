@@ -28,11 +28,11 @@
 
 #include <data/Composite.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QObject>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(module::ui::qt::image::SMultipleTF, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(module::ui::qt::image::SMultipleTF, sight::ui::base::IEditor)
 
     /// Creates the editor.
     MODULE_UI_QT_API SMultipleTF();

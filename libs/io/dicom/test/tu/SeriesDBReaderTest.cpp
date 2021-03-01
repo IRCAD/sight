@@ -28,6 +28,7 @@
 #include <data/Color.hpp>
 #include <data/DicomSeries.hpp>
 #include <data/Equipment.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
@@ -39,8 +40,9 @@
 #include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 #include <data/Study.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
+
+#include <io/dicom/reader/SeriesDB.hpp>
 
 #include <utest/Slow.hpp>
 
@@ -56,8 +58,6 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <io/dicom/reader/SeriesDB.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::sight::io::dicom::ut::SeriesDBReaderTest );
 
@@ -86,7 +86,7 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
     }
     catch( ::boost::property_tree::ptree_bad_path& )
     {
-        SLM_WARN(name + " information are missing in '"+ filePath.string() +"'.");
+        SIGHT_WARN(name + " information are missing in '"+ filePath.string() +"'.");
         value = "";
     }
 
@@ -550,7 +550,7 @@ void SeriesDBReaderTest::readMRSeries()
 
     // Check origin
     const data::Image::Origin origin = image->getOrigin2();
-    SLM_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
+    SIGHT_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -112.828 ), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( -180.058 ), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 97.1478 ), origin[2], delta);

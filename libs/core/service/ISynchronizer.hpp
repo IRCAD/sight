@@ -36,7 +36,7 @@ class SERVICE_CLASS_API ISynchronizer : public service::IService
 
 public:
 
-    fwCoreServiceMacro(ISynchronizer, service::IService)
+    SIGHT_DECLARE_SERVICE(ISynchronizer, service::IService)
 
     /**
      * @brief Constructor.

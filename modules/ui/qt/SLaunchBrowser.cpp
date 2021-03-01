@@ -37,7 +37,6 @@ namespace sight::module::ui::qt
 
 //------------------------------------------------------------------------------
 
-
 //------------------------------------------------------------------------------
 
 SLaunchBrowser::SLaunchBrowser( ) noexcept
@@ -76,7 +75,7 @@ void SLaunchBrowser::configuring()
 void SLaunchBrowser::updating()
 {
 
-    SLM_WARN_IF("URL is empty.", m_url.empty());
+    SIGHT_WARN_IF("URL is empty.", m_url.empty());
     QUrl url(QString::fromStdString(m_url), QUrl::TolerantMode);
 
     if(url.isRelative()) // no scheme
@@ -90,7 +89,7 @@ void SLaunchBrowser::updating()
     }
 
     bool isSuccess = QDesktopServices::openUrl(url);
-    SLM_WARN_IF("Browser wasn't successfully launched.", !isSuccess);
+    SIGHT_WARN_IF("Browser wasn't successfully launched.", !isSuccess);
 }
 
 //------------------------------------------------------------------------------

@@ -35,7 +35,7 @@
 namespace sight::data
 {
 
-fwDataRegisterMacro( ::sight::data::CameraSeries );
+SIGHT_REGISTER_DATA( ::sight::data::CameraSeries );
 
 const core::com::Signals::SignalKeyType CameraSeries::s_ADDED_CAMERA_SIG         = "addedCamera";
 const core::com::Signals::SignalKeyType CameraSeries::s_REMOVED_CAMERA_SIG       = "removedCamera";
@@ -67,9 +67,9 @@ CameraSeries::~CameraSeries()
 void CameraSeries::shallowCopy( const data::Object::csptr& _source )
 {
     CameraSeries::csptr other = CameraSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->data::Series::shallowCopy(_source);
 
@@ -82,9 +82,9 @@ void CameraSeries::shallowCopy( const data::Object::csptr& _source )
 void CameraSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     CameraSeries::csptr other = CameraSeries::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->data::Series::cachedDeepCopy( _source, cache );
 
@@ -110,8 +110,8 @@ void CameraSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCa
 
 void CameraSeries::addCamera(const data::Camera::sptr& camera)
 {
-    FW_RAISE_IF("Camera already exists in CameraSeries.",
-                std::find(m_cameras.begin(), m_cameras.end(), camera) != m_cameras.end());
+    SIGHT_THROW_IF("Camera already exists in CameraSeries.",
+                   std::find(m_cameras.begin(), m_cameras.end(), camera) != m_cameras.end());
     m_cameras.push_back(camera);
     data::Matrix4::sptr matrix;
     if (m_extrinsicMatrices.empty())
@@ -125,7 +125,7 @@ void CameraSeries::addCamera(const data::Camera::sptr& camera)
 
 data::Camera::sptr CameraSeries::getCamera(size_t index) const
 {
-    FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
 
     return m_cameras[index];
 }
@@ -135,7 +135,7 @@ data::Camera::sptr CameraSeries::getCamera(size_t index) const
 void CameraSeries::removeCamera(const data::Camera::sptr& camera)
 {
     CameraContainerType::iterator iter = std::find(m_cameras.begin(), m_cameras.end(), camera);
-    FW_RAISE_IF("Camera not found in CameraSeries.", iter == m_cameras.end());
+    SIGHT_THROW_IF("Camera not found in CameraSeries.", iter == m_cameras.end());
 
     const auto index                    = std::distance(m_cameras.begin(), iter);
     MatricesContainer::iterator matIter = m_extrinsicMatrices.begin() + index;
@@ -147,7 +147,7 @@ void CameraSeries::removeCamera(const data::Camera::sptr& camera)
 
 void CameraSeries::setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix)
 {
-    FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     m_extrinsicMatrices[index] = matrix;
 }
 
@@ -155,7 +155,7 @@ void CameraSeries::setExtrinsicMatrix(size_t index, data::Matrix4::sptr matrix)
 
 data::Matrix4::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
 {
-    FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
+    SIGHT_THROW_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     return m_extrinsicMatrices[index];
 }
 

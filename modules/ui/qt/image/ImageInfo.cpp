@@ -28,23 +28,22 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
-#include <data/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+
+#include <geometry/data/IntrasecTypes.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-#include <geometry/data/IntrasecTypes.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt::image
 {
-
 
 static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
@@ -100,7 +99,7 @@ void ImageInfo::configuring()
 void ImageInfo::updating()
 {
     data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
-    SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
+    SIGHT_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
     const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
 }
@@ -112,7 +111,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
     if (info.m_eventId == data::tools::PickingInfo::Event::MOUSE_MOVE)
     {
         data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_INPUT);
-        SLM_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
+        SIGHT_ASSERT("The input '" + s_IMAGE_INPUT + "' is not defined", image);
 
         const bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
@@ -123,8 +122,8 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
 
             if (point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
-                SLM_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
-                          "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
+                SIGHT_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
+                            "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
                 return;
             }
 
@@ -145,8 +144,8 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
 
             if (!isInside)
             {
-                SLM_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
-                          "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
+                SIGHT_ERROR("The received coordinates are not in image space, maybe you used the wrong picker "
+                            "interactor (see ::visuVTKAdaptor::SImagePickerInteractor)");
                 return;
             }
 

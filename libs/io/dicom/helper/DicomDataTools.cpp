@@ -87,7 +87,7 @@ DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
             pi = ::gdcm::PhotometricInterpretation::ARGB;
             break;
         default:
-            SLM_ERROR("Photometric interpretation not found");
+            SIGHT_ERROR("Photometric interpretation not found");
             pi = ::gdcm::PhotometricInterpretation::UNKNOWN;
             break;
     }
@@ -109,7 +109,7 @@ DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
         case data::Material::WIREFRAME:
             return ::gdcm::Surface::WIREFRAME;
         default:
-            SLM_WARN("Representation type not handle (changed to : SURFACE)");
+            SIGHT_WARN("Representation type not handle (changed to : SURFACE)");
             return ::gdcm::Surface::SURFACE;
     }
 }
@@ -128,7 +128,7 @@ data::Material::RepresentationType DicomDataTools::convertToRepresentationMode(
         case ::gdcm::Surface::POINTS:
             return data::Material::POINT;
         default:
-            SLM_WARN("Presentation type not handle (changed to : SURFACE)");
+            SIGHT_WARN("Presentation type not handle (changed to : SURFACE)");
             return data::Material::SURFACE;
     }
 }
@@ -149,8 +149,8 @@ std::size_t DicomDataTools::convertPointToFrameNumber(const data::Image::csptr& 
 
     // Compute frame number
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Coordinates out of image bounds."),
-                          frameNumber < 1 || frameNumber > image->getSize2()[2]);
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Coordinates out of image bounds."),
+                             frameNumber < 1 || frameNumber > image->getSize2()[2]);
 
     return frameNumber;
 }
@@ -168,8 +168,8 @@ double DicomDataTools::convertFrameNumberToZCoordinate(const data::Image::csptr&
 
     // Compute coordinate
     const std::size_t frameIndex = (frameNumber-1);
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Coordinates out of image bounds."),
-                          frameIndex >= image->getSize2()[2]);
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Coordinates out of image bounds."),
+                             frameIndex >= image->getSize2()[2]);
     const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 
     return zCoordinate;

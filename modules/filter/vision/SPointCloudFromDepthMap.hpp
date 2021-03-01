@@ -71,7 +71,7 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API SPointCloudFromDepthMap : public service::IOperator
 {
 public:
-    fwCoreServiceMacro(SPointCloudFromDepthMap, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SPointCloudFromDepthMap, service::IOperator)
 
     /**
      * @brief SPointCloudFromDepthMap constructor.

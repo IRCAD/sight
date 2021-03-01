@@ -37,7 +37,7 @@ class GenericTL : public BufferTL
 {
 
 public:
-    fwCoreClassMacro(GenericTL<BUFFER_TYPE>, data::Object)
+    SIGHT_DECLARE_CLASS(GenericTL<BUFFER_TYPE>, data::Object)
 
     typedef data::timeline::GenericObject< BUFFER_TYPE > BufferType;
     /**

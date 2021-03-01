@@ -77,7 +77,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SPointToLandmarkVector final : public servi
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro(SPointToLandmarkVector, service::IService)
+    SIGHT_DECLARE_SERVICE(SPointToLandmarkVector, service::IService)
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API SPointToLandmarkVector() noexcept;

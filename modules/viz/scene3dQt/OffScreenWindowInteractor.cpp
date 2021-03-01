@@ -84,8 +84,8 @@ void OffScreenWindowInteractor::createContainer( sight::ui::base::container::fwC
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
-    SLM_ASSERT("OpenGL RenderSystem not found",
-               m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
+    SIGHT_ASSERT("OpenGL RenderSystem not found",
+                 m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos);
 
     Ogre::NameValuePairList parameters;
 

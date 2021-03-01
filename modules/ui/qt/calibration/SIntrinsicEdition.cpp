@@ -71,7 +71,7 @@ void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
 void SIntrinsicEdition::updateCalibration()
 {
     data::Camera::sptr camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
-    SLM_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
+    SIGHT_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     camera->setWidth( m_calibration[0]);
     camera->setHeight(m_calibration[1]);
@@ -108,7 +108,7 @@ void SIntrinsicEdition::configuring()
 void SIntrinsicEdition::readCalibration()
 {
     data::Camera::sptr camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
-    SLM_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
+    SIGHT_ASSERT("The inout key '" + s_CAMERA_INOUT + "' is not correctly set.", camera);
 
     m_calibration[0] = camera->getWidth();
     m_calibration[1] = camera->getHeight();

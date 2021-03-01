@@ -35,7 +35,7 @@ namespace helper
 ::Ogre::SceneNode* Scene::getNodeById(viz::scene3d::SRender::OgreObjectIdType _nodeId,
                                       ::Ogre::SceneNode* _sceneNode)
 {
-    SLM_ASSERT("Scene node is null", _sceneNode);
+    SIGHT_ASSERT("Scene node is null", _sceneNode);
 
     ::Ogre::SceneNode* foundNode = nullptr;
 
@@ -51,7 +51,7 @@ namespace helper
         if (topNode->getName() == _nodeId)
         {
             foundNode = dynamic_cast< ::Ogre::SceneNode* >(topNode);
-            SLM_ASSERT("'" + _nodeId + "' is not a scene node.", foundNode);
+            SIGHT_ASSERT("'" + _nodeId + "' is not a scene node.", foundNode);
             break;
         }
 

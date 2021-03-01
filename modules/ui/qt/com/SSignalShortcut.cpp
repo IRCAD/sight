@@ -28,13 +28,13 @@
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
-#include <QKeySequence>
-#include <QWidget>
-
 #include <ui/base/container/fwContainer.hpp>
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/base/IGuiContainer.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QKeySequence>
+#include <QWidget>
 
 #include <memory>
 
@@ -42,7 +42,6 @@ namespace sight::module::ui::qt::com
 {
 
 static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
-
 
 //-----------------------------------------------------------------------------
 
@@ -68,11 +67,11 @@ void SSignalShortcut::configuring()
     const auto configTree     = this->getConfigTree();
     const auto configShortcut = configTree.get_child("config.<xmlattr>");
     m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
-    SLM_ASSERT("Shortcut must not be empty", m_shortcut != "");
+    SIGHT_ASSERT("Shortcut must not be empty", m_shortcut != "");
 
     m_wid = configShortcut.get<std::string>("wid", m_wid);
     m_sid = configShortcut.get<std::string>("sid", m_sid);
-    SLM_ASSERT("Either The wid or sid attribute must be specified for SSignalShortcut", m_wid != "" || m_sid != "");
+    SIGHT_ASSERT("Either The wid or sid attribute must be specified for SSignalShortcut", m_wid != "" || m_sid != "");
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +93,7 @@ void SSignalShortcut::starting()
         }
         else
         {
-            SLM_ERROR("Invalid service id " << m_sid);
+            SIGHT_ERROR("Invalid service id " << m_sid);
         }
     }
     // or a window id
@@ -103,7 +102,7 @@ void SSignalShortcut::starting()
         fwc = ::sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
         if(!fwc)
         {
-            SLM_ERROR("Invalid window id " << m_wid);
+            SIGHT_ERROR("Invalid window id " << m_wid);
         }
     }
 
@@ -128,8 +127,8 @@ void SSignalShortcut::starting()
     }
     else
     {
-        SLM_ERROR("Cannot setup shortcut " << m_shortcut << " on invalid "
-                                           << (m_wid != "" ? "wid " + m_wid : "sid " + m_sid));
+        SIGHT_ERROR("Cannot setup shortcut " << m_shortcut << " on invalid "
+                                             << (m_wid != "" ? "wid " + m_wid : "sid " + m_sid));
     }
 }
 

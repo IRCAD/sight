@@ -99,7 +99,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceMacro(SSelector,  sight::ui::base::IDialogEditor)
+    SIGHT_DECLARE_SERVICE(SSelector,  sight::ui::base::IDialogEditor)
 
     typedef core::com::Signal< void ( core::jobs::IJob::sptr ) > JobCreatedSignalType;
     typedef core::com::Signal< void ( ) > JobFailedSignalType;

@@ -33,7 +33,7 @@
 #include <boost/assign.hpp>
 #include <boost/bimap/bimap.hpp>
 
-fwDataRegisterMacro( ::sight::data::Camera );
+SIGHT_REGISTER_DATA( ::sight::data::Camera );
 
 namespace sight::data
 {
@@ -139,9 +139,9 @@ std::string Camera::getPixelFormatName(PixelFormat format)
 void Camera::shallowCopy( const data::Object::csptr& _source )
 {
     Camera::csptr other = Camera::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( _source );
 
@@ -166,9 +166,9 @@ void Camera::shallowCopy( const data::Object::csptr& _source )
 void Camera::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Camera::csptr other = Camera::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
     m_intrinsic[0] = other->m_intrinsic[0];

@@ -38,8 +38,8 @@ namespace ModelSeries
 class MODULE_ACTIVITY_CLASS_API ContainOneSkin : public sight::activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(ContainOneSkin, ::sight::activity::IObjectValidator,
-                     ::sight::activity::validator::factory::New< ContainOneSkin >)
+    SIGHT_DECLARE_CLASS(ContainOneSkin, ::sight::activity::IObjectValidator,
+                        ::sight::activity::validator::factory::New< ContainOneSkin >)
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API ContainOneSkin(::sight::activity::IValidator::Key key);

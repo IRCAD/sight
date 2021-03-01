@@ -43,7 +43,7 @@ class SERVICE_CLASS_API List : public service::IXMLParser
 {
 public:
 
-    fwCoreServiceMacro(List, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(List, service::IXMLParser)
 
     /**
      * @brief   Constructor : does nothing.

@@ -177,7 +177,7 @@ void SVideo::starting()
         m_pointListAdaptor->configure();
         m_pointListAdaptor->start();
 
-        SLM_ASSERT("SPointList is not started", m_pointListAdaptor->isStarted());
+        SIGHT_ASSERT("SPointList is not started", m_pointListAdaptor->isStarted());
 
     }
 }
@@ -308,7 +308,7 @@ void SVideo::updating()
         m_sceneNode->setVisible(m_isVisible);
 
         ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
-        SLM_ASSERT("Default camera not found", cam);
+        SIGHT_ASSERT("Default camera not found", cam);
         cam->setProjectionType(::Ogre::PT_ORTHOGRAPHIC);
         cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]));
 

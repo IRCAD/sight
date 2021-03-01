@@ -42,8 +42,8 @@ namespace layoutManager
 class UI_QT_CLASS_API ToolBarLayoutManager : public ui::base::layoutManager::IToolBarLayoutManager
 {
 public:
-    fwCoreClassMacro(ToolBarLayoutManager, ui::base::layoutManager::IToolBarLayoutManager,
-                     ui::base::factory::New< ToolBarLayoutManager >)
+    SIGHT_DECLARE_CLASS(ToolBarLayoutManager, ui::base::layoutManager::IToolBarLayoutManager,
+                        ui::base::factory::New< ToolBarLayoutManager >)
 
     UI_QT_API ToolBarLayoutManager(ui::base::GuiBaseObject::Key key);
 

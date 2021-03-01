@@ -57,7 +57,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(GuiBaseObject, core::BaseObject)
+    SIGHT_DECLARE_CLASS(GuiBaseObject, core::BaseObject)
 
 protected:
     /**

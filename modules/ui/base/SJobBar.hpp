@@ -55,7 +55,7 @@ class MODULE_UI_BASE_CLASS_API SJobBar : public ::sight::ui::base::IDialogEditor
 
 public:
 
-    fwCoreServiceMacro(SJobBar, ::sight::ui::base::IDialogEditor)
+    SIGHT_DECLARE_SERVICE(SJobBar, ::sight::ui::base::IDialogEditor)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 

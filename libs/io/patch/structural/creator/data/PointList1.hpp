@@ -37,7 +37,7 @@ namespace data
 class IO_PATCH_CLASS_API PointList1 : public io::atoms::patch::IStructuralCreator
 {
 public:
-    fwCoreClassMacro(PointList1, io::atoms::patch::IStructuralCreator, new PointList1)
+    SIGHT_DECLARE_CLASS(PointList1, io::atoms::patch::IStructuralCreator, new PointList1)
 
     /// Constructor
     IO_PATCH_API PointList1();

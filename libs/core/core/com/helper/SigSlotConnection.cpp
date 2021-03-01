@@ -61,7 +61,7 @@ void SigSlotConnection::connect(const core::com::HasSignals::csptr& hasSignals,
     }
     catch (core::com::exception::BadSlot& e)
     {
-        SLM_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
+        SIGHT_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
     }
     catch (core::com::exception::AlreadyConnected& e)
     {
@@ -71,8 +71,8 @@ void SigSlotConnection::connect(const core::com::HasSignals::csptr& hasSignals,
         const core::tools::Object::csptr target = core::tools::Object::dynamicCast(hasSlots);
         auto targetID                           = target ? target->getID() : "";
 
-        SLM_ERROR("Can't connect signal '" + sourceID + "/" + signalKey + "' with slot '"
-                  + targetID + "/" + slotKey + "' : " << e.what() << ".");
+        SIGHT_ERROR("Can't connect signal '" + sourceID + "/" + signalKey + "' with slot '"
+                    + targetID + "/" + slotKey + "' : " << e.what() << ".");
     }
 }
 
@@ -82,15 +82,15 @@ void SigSlotConnection::connect(const core::com::HasSignals::csptr& hasSignals,
                                 const core::com::HasSlots::csptr& hasSlots,
                                 const KeyConnectionsType& keyConnections )
 {
-    SLM_ASSERT("Signal source is NULL", hasSignals);
-    SLM_ASSERT("Slot destination is NULL", hasSlots);
+    SIGHT_ASSERT("Signal source is NULL", hasSignals);
+    SIGHT_ASSERT("Slot destination is NULL", hasSlots);
 
     for( const KeyConnectionType& keys : keyConnections )
     {
         auto signal = hasSignals->signal( keys.first );
-        SLM_ASSERT("Signal '" + keys.first + "' not found.", signal);
+        SIGHT_ASSERT("Signal '" + keys.first + "' not found.", signal);
         auto slot = hasSlots->slot( keys.second );
-        SLM_ASSERT("Slot '" + keys.second + "' not found.", slot);
+        SIGHT_ASSERT("Slot '" + keys.second + "' not found.", slot);
 
         try
         {
@@ -99,8 +99,8 @@ void SigSlotConnection::connect(const core::com::HasSignals::csptr& hasSignals,
         }
         catch (core::com::exception::BadSlot& e)
         {
-            SLM_ERROR("Can't connect signal '" + keys.first + "' with slot '" + keys.second + "' : "
-                      << e.what() << ".");
+            SIGHT_ERROR("Can't connect signal '" + keys.first + "' with slot '" + keys.second + "' : "
+                        << e.what() << ".");
         }
         catch (core::com::exception::AlreadyConnected& e)
         {
@@ -110,8 +110,8 @@ void SigSlotConnection::connect(const core::com::HasSignals::csptr& hasSignals,
             const core::tools::Object::csptr target = core::tools::Object::dynamicCast(hasSlots);
             auto targetID                           = target ? target->getID() : "";
 
-            SLM_ERROR("Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"
-                      + targetID + "/" + keys.second + "' : " << e.what() << ".");
+            SIGHT_ERROR("Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"
+                        + targetID + "/" + keys.second + "' : " << e.what() << ".");
         }
     }
 }

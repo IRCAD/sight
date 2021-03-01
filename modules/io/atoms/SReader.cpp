@@ -30,13 +30,9 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
+#include <data/helper/Composite.hpp>
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
-#include <data/helper/Composite.hpp>
-
-#include <service/macros.hpp>
-
-#include <boost/algorithm/string/join.hpp>
 
 #include <io/atoms/filter/factory/new.hpp>
 #include <io/atoms/filter/IFilter.hpp>
@@ -47,16 +43,19 @@
 #include <io/zip/ReadDirArchive.hpp>
 #include <io/zip/ReadZipArchive.hpp>
 
+#include <service/macros.hpp>
+
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
+#include <boost/algorithm/string/join.hpp>
+
 #include <filesystem>
 
 namespace sight::module::io::atoms
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -116,16 +115,16 @@ void SReader::configuring()
     for (auto it = archiveCfgs.first; it != archiveCfgs.second; ++it)
     {
         const std::string backend = it->second.get<std::string>("<xmlattr>.backend");
-        SLM_ASSERT("No backend attribute given in archive tag", backend != "");
-        SLM_ASSERT("Unsupported backend '" + backend + "'", s_EXTENSIONS.find("." + backend) != s_EXTENSIONS.end());
+        SIGHT_ASSERT("No backend attribute given in archive tag", backend != "");
+        SIGHT_ASSERT("Unsupported backend '" + backend + "'", s_EXTENSIONS.find("." + backend) != s_EXTENSIONS.end());
 
         const auto extCfgs = it->second.equal_range("extension");
 
         for (auto itExt = extCfgs.first; itExt != extCfgs.second; ++itExt)
         {
             const std::string extension = itExt->second.get<std::string>("");
-            SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
-            SLM_ASSERT("Extension must begin with '.'", extension[0] == '.');
+            SIGHT_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
+            SIGHT_ASSERT("Extension must begin with '.'", extension[0] == '.');
 
             m_customExts[extension]       = backend;
             m_allowedExtLabels[extension] = itExt->second.get("<xmlattr>.label", "");
@@ -148,7 +147,7 @@ void SReader::configuring()
             FileExtension2NameType::const_iterator itCustom = m_customExts.find(ext);
 
             const bool extIsKnown = (itKnown != SReader::s_EXTENSIONS.end() || itCustom != m_customExts.end());
-            SLM_ASSERT("Extension '" + ext + "' is not allowed in configuration", extIsKnown);
+            SIGHT_ASSERT("Extension '" + ext + "' is not allowed in configuration", extIsKnown);
 
             if(extIsKnown)
             {
@@ -176,10 +175,10 @@ void SReader::configuring()
     m_filter     = config.get("filter", "");
     m_uuidPolicy = config.get("uuidPolicy", m_uuidPolicy);
 
-    SLM_ASSERT("Unknown policy : '"
-               + m_uuidPolicy +
-               "', available policies : 'Strict','Change' or 'Reuse'.",
-               "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy );
+    SIGHT_ASSERT("Unknown policy : '"
+                 + m_uuidPolicy +
+                 "', available policies : 'Strict','Change' or 'Reuse'.",
+                 "Strict" == m_uuidPolicy || "Change" == m_uuidPolicy || "Reuse" == m_uuidPolicy );
 
     const auto patcherCfg = config.get_child_optional("patcher");
 
@@ -197,7 +196,7 @@ void SReader::configuring()
         m_outputMode = true;
     }
 
-    SLM_ASSERT("'Reuse' policy is only available when data is set as 'out'", m_outputMode || "Reuse" != m_uuidPolicy);
+    SIGHT_ASSERT("'Reuse' policy is only available when data is set as 'out'", m_outputMode || "Reuse" != m_uuidPolicy);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,8 +206,8 @@ void SReader::updating()
     if(this->hasLocationDefined())
     {
         data::Object::sptr data = this->getInOut< data::Object >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
-                   m_outputMode || data);
+        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
+                     m_outputMode || data);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -220,7 +219,7 @@ void SReader::updating()
             const std::filesystem::path filename   = filePath.filename();
             std::string extension                  = filePath.extension().string();
 
-            FW_RAISE_IF( "Unable to guess file format (missing extension)", extension.empty() );
+            SIGHT_THROW_IF( "Unable to guess file format (missing extension)", extension.empty() );
 
             if(m_customExts.find(extension) != m_customExts.end())
             {
@@ -275,13 +274,13 @@ void SReader::updating()
                     }
                     else
                     {
-                        FW_RAISE( "This file extension '" << extension << "' is not managed" );
+                        SIGHT_THROW( "This file extension '" << extension << "' is not managed" );
                     }
 
                     sight::io::atoms::Reader reader;
                     atom = sight::atoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
 
-                    FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", !atom );
+                    SIGHT_THROW_IF( "Invalid atoms file :'" << filePath << "'", !atom );
 
                     runningJob.doneWork(progressBarOffset);
 
@@ -304,10 +303,10 @@ void SReader::updating()
                     /// patch atom
                     if ( m_useAtomsPatcher )
                     {
-                        FW_RAISE_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
-                                                                    << "' context, but '" << m_context <<
-                                     "' was excepted.",
-                                     atom->getMetaInfo("context") != m_context);
+                        SIGHT_THROW_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
+                                                                       << "' context, but '" << m_context <<
+                                        "' was excepted.",
+                                        atom->getMetaInfo("context") != m_context);
 
                         sight::io::atoms::patch::PatchingManager globalPatcher(atom);
                         atom = globalPatcher.transformTo( m_version );
@@ -316,7 +315,7 @@ void SReader::updating()
                     if(!m_filter.empty())
                     {
                         auto filter = sight:: io::atoms::filter::factory::New(m_filter);
-                        SLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
+                        SIGHT_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
                         filter->apply(atom);
                     }
                     runningJob.done();
@@ -371,7 +370,7 @@ void SReader::updating()
                 return;
             }
 
-            FW_RAISE_IF( "Unable to load '" << filePath << "' : invalid data.", !newData );
+            SIGHT_THROW_IF( "Unable to load '" << filePath << "' : invalid data.", !newData );
 
             if (m_outputMode)
             {
@@ -383,12 +382,12 @@ void SReader::updating()
                 {
                     m_readFailed = true;
                 }
-                SLM_ASSERT("'" + sight::io::base::service::s_DATA_KEY + "' key is not defined", data);
+                SIGHT_ASSERT("'" + sight::io::base::service::s_DATA_KEY + "' key is not defined", data);
 
-                FW_RAISE_IF( "Unable to load '" << filePath
-                                                << "' : trying to load a '" << newData->getClassname()
-                                                << "' where a '" << data->getClassname() << "' was expected",
-                             newData->getClassname() != data->getClassname() );
+                SIGHT_THROW_IF( "Unable to load '" << filePath
+                                                   << "' : trying to load a '" << newData->getClassname()
+                                                   << "' where a '" << data->getClassname() << "' was expected",
+                                newData->getClassname() != data->getClassname() );
 
                 // Workaround to read a data::Array.
                 // The shallowCopy of a data::Array is not allowed due to unknown buffer owner.
@@ -408,7 +407,7 @@ void SReader::updating()
         catch( std::exception& e )
         {
             m_readFailed = true;
-            SLM_ERROR( e.what() );
+            SIGHT_ERROR( e.what() );
             sight::ui::base::dialog::MessageDialog::show("Atoms reader failed", e.what(),
                                                          sight::ui::base::dialog::MessageDialog::CRITICAL);
         }
@@ -440,7 +439,7 @@ sight::io::base::service::IOPathType SReader::getIOPathType() const
 void SReader::notificationOfUpdate()
 {
     data::Object::sptr object = this->getInOut< data::Object >(sight::io::base::service::s_DATA_KEY);
-    SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", object);
+    SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", object);
 
     auto sig = object->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

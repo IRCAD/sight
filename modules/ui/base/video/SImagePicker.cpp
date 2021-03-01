@@ -79,7 +79,7 @@ void SImagePicker::configuring()
 
     if(it == m_videoRefMap.end())
     {
-        SLM_WARN("'videoReference' of value '" + videoRef + "' is not handled.");
+        SIGHT_WARN("'videoReference' of value '" + videoRef + "' is not handled.");
     }
     else
     {
@@ -151,7 +151,7 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint )
         }
         break;
         default:
-            SLM_ERROR("Only video reference CENTER and TOP_LEFT are handled");
+            SIGHT_ERROR("Only video reference CENTER and TOP_LEFT are handled");
             break;
     }
 

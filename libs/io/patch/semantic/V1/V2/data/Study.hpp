@@ -39,7 +39,7 @@ namespace data
 class IO_PATCH_CLASS_API Study : public io::atoms::patch::ISemanticPatch
 {
 public:
-    fwCoreClassMacro(Study, io::atoms::patch::ISemanticPatch, new Study)
+    SIGHT_DECLARE_CLASS(Study, io::atoms::patch::ISemanticPatch, new Study)
 
     /// Constructor
     IO_PATCH_API Study();

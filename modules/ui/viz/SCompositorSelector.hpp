@@ -24,6 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/compositor/ChainManager.hpp>
 #include <viz/scene3d/Layer.hpp>
 
@@ -34,8 +36,6 @@
 #include <QObject>
 #include <QPointer>
 #include <QVBoxLayout>
-
-#include <ui/base/IEditor.hpp>
 
 #include <vector>
 
@@ -52,7 +52,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SCompositorSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCompositorSelector, sight::ui::base::IEditor)
 
     /** @} */
 

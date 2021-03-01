@@ -27,10 +27,10 @@
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/service/IWriter.hpp>
 #include <io/itk/JpgImageWriter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -39,7 +39,6 @@
 
 namespace sight::module::io::itk
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -162,7 +161,7 @@ void JpgImageWriterService::updating()
     {
         // Retrieve dataStruct associated with this service
         data::Image::csptr image = this->getInput< data::Image >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

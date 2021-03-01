@@ -30,7 +30,7 @@
 
 #include <algorithm>
 
-fwDataRegisterMacro( ::sight::data::Composite );
+SIGHT_REGISTER_DATA( ::sight::data::Composite );
 
 namespace sight::data
 {
@@ -59,9 +59,9 @@ Composite::~Composite()
 void Composite::shallowCopy(const Object::csptr& _source )
 {
     Composite::csptr other = Composite::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_container.clear();
 
@@ -73,9 +73,9 @@ void Composite::shallowCopy(const Object::csptr& _source )
 void Composite::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Composite::csptr other = Composite::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_container.clear();

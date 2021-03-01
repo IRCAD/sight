@@ -24,9 +24,9 @@
 
 #include "Tuto05EditorQml/config.hpp"
 
-#include <QObject>
-
 #include <ui/qml/IQmlEditor.hpp>
+
+#include <QObject>
 
 namespace Tuto05EditorQml
 {
@@ -40,7 +40,7 @@ class TUTO05EDITORQML_CLASS_API SStringEditor : public sight::ui::qml::IQmlEdito
 Q_OBJECT;
 public:
 
-    fwCoreServiceMacro(SStringEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SStringEditor, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor.
     TUTO05EDITORQML_API SStringEditor() noexcept;

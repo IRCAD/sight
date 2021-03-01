@@ -67,8 +67,8 @@ public:
         }
     };
 
-    fwCoreClassMacro(IFilter)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(IFilter)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor.
     IO_ATOMS_API IFilter();

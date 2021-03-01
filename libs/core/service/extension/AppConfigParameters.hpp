@@ -47,7 +47,7 @@ class SERVICE_CLASS_API AppConfigParameters : public core::BaseObject
 
 public:
 
-    fwCoreClassMacro(AppConfigParameters, core::BaseObject, new AppConfigParameters)
+    SIGHT_DECLARE_CLASS(AppConfigParameters, core::BaseObject, new AppConfigParameters)
 
     /// Return the default global instance of AppConfigParameters
     SERVICE_API static AppConfigParameters::sptr getDefault();

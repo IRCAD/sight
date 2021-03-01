@@ -40,7 +40,7 @@ class UI_BASE_CLASS_API PulseProgressDialog : public IPulseProgressDialog
 {
 public:
 
-    fwCoreClassMacro(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog)
+    SIGHT_DECLARE_CLASS(PulseProgressDialog, ui::base::dialog::IPulseProgressDialog)
 
     //------------------------------------------------------------------------------
 

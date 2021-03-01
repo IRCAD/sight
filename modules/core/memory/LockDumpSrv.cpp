@@ -31,7 +31,6 @@ static const service::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
-
 //-----------------------------------------------------------------------------
 
 LockDumpSrv::LockDumpSrv() noexcept
@@ -49,7 +48,7 @@ LockDumpSrv::~LockDumpSrv() noexcept
 void LockDumpSrv::starting()
 {
     data::Object::sptr object = this->getInOut< data::Object >(s_TARGET_INOUT);
-    SLM_ASSERT("The inout key '" + s_TARGET_INOUT + "' is not correctly set.", object);
+    SIGHT_ASSERT("The inout key '" + s_TARGET_INOUT + "' is not correctly set.", object);
 
     m_objLock = data::ObjectLock( object );
 }

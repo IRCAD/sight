@@ -32,8 +32,8 @@
 #include <core/tools/Os.hpp>
 
 #include <data/ActivitySeries.hpp>
-#include <data/SeriesDB.hpp>
 #include <data/helper/SeriesDB.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
@@ -46,8 +46,7 @@ namespace series
 {
 //------------------------------------------------------------------------------
 
-
-const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT = "checkAddedSeries";
+const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
 const core::com::Slots::SlotKeyType SExport::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
 
 const static std::string s_SERIESDB_INOUT = "seriesDB";
@@ -120,8 +119,8 @@ void SExport::updating()
     if (activitySeries)
     {
         activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
-        std::string id                              = activitySeries->getActivityConfigId();
-        SLM_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
+        std::string id                               = activitySeries->getActivityConfigId();
+        SIGHT_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
 
         activity::extension::ActivityInfo activityInfo;
         activityInfo = registry->getInfo(id);

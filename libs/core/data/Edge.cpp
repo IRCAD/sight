@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::Edge );
+SIGHT_REGISTER_DATA( ::sight::data::Edge );
 
 namespace sight::data
 {
@@ -102,9 +102,9 @@ const std::string& Edge::getNature() const
 void Edge::shallowCopy(const Object::csptr& _source )
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( _source );
     m_fromPortIdentifier = other->m_fromPortIdentifier;
@@ -117,9 +117,9 @@ void Edge::shallowCopy(const Object::csptr& _source )
 void Edge::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Edge::csptr other = Edge::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_fromPortIdentifier = other->m_fromPortIdentifier;
     m_toPortIdentifier   = other->m_toPortIdentifier;

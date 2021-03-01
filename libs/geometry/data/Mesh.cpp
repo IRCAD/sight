@@ -29,11 +29,11 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/NumericRoundCast.hxx>
 
+#include <geometry/data/MeshFunctions.hpp>
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-
-#include <geometry/data/MeshFunctions.hpp>
 
 #include <cstdlib>
 #include <ctime>
@@ -483,11 +483,11 @@ void Mesh::transform( sight::data::Mesh::csptr inMesh, sight::data::Mesh::sptr o
     const ::glm::dmat4x4 matrix = sight::geometry::data::getMatrixFromTF3D(t);
 
     [[maybe_unused]] const size_t numPts = inMesh->getNumberOfPoints();
-    SLM_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
+    SIGHT_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
 
-    SLM_ASSERT("in and out meshes must have the same point normals attribute",
-               (inMesh->hasPointNormals() && outMesh->hasPointNormals()) ||
-               (!inMesh->hasPointNormals() && !outMesh->hasPointNormals()));
+    SIGHT_ASSERT("in and out meshes must have the same point normals attribute",
+                 (inMesh->hasPointNormals() && outMesh->hasPointNormals()) ||
+                 (!inMesh->hasPointNormals() && !outMesh->hasPointNormals()));
 
     for (; itr != itrEnd; ++itr, ++inItr)
     {
@@ -511,7 +511,7 @@ void Mesh::transform( sight::data::Mesh::csptr inMesh, sight::data::Mesh::sptr o
 
     if(inMesh->hasCellNormals())
     {
-        SLM_ASSERT("out mesh must have normals", outMesh->hasCellNormals());
+        SIGHT_ASSERT("out mesh must have normals", outMesh->hasCellNormals());
 
         auto inCellItr = inMesh->begin< sight::data::iterator::ConstCellIterator >();
 
@@ -545,7 +545,7 @@ void Mesh::colorizeMeshPoints( const sight::data::Mesh::sptr& mesh, const std::u
 {
     const auto dumpLock = mesh->lock();
 
-    SLM_ASSERT("color array must be allocated", mesh->hasPointColors());
+    SIGHT_ASSERT("color array must be allocated", mesh->hasPointColors());
 
     auto itr          = mesh->begin< sight::data::iterator::PointIterator >();
     const auto itrEnd = mesh->end< sight::data::iterator::PointIterator >();
@@ -620,7 +620,7 @@ void Mesh::colorizeMeshCells(
 {
     const auto dumpLock = mesh->lock();
 
-    SLM_ASSERT("color array must be allocated", mesh->hasCellColors());
+    SIGHT_ASSERT("color array must be allocated", mesh->hasCellColors());
 
     auto itr          = mesh->begin< sight::data::iterator::CellIterator >();
     const auto itrEnd = mesh->end< sight::data::iterator::CellIterator >();

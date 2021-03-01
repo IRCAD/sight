@@ -42,8 +42,8 @@ class CORE_CLASS_API Object  : public core::BaseObject,
                                protected core::tools::fwID
 {
 public:
-    fwCoreClassMacro(Object, core::BaseObject)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(Object, core::BaseObject)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     friend class core::tools::UUID;
 

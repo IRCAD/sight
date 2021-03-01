@@ -24,9 +24,9 @@
 
 #include <core/com/Slots.hxx>
 
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <filter/image/ImageExtruder.hpp>
 
@@ -93,7 +93,7 @@ void SImageExtruder::updating()
         // Copy the image into the output.
         {
             const auto imageOut = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
-            SLM_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
+            SIGHT_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
 
             imageOut->deepCopy(image.get_shared());
 

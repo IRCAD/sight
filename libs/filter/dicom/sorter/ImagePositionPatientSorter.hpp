@@ -39,8 +39,8 @@ namespace sorter
 class FILTER_DICOM_CLASS_API ImagePositionPatientSorter : public ISorter
 {
 public:
-    fwCoreClassMacro(ImagePositionPatientSorter, ISorter,
-                     filter::dicom::factory::New< ImagePositionPatientSorter >);
+    SIGHT_DECLARE_CLASS(ImagePositionPatientSorter, ISorter,
+                        filter::dicom::factory::New< ImagePositionPatientSorter >);
 
     /// Constructor
     FILTER_DICOM_API ImagePositionPatientSorter(filter::dicom::IFilter::Key key);

@@ -28,9 +28,9 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <filter/image/AutomaticRegistration.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/ProgressDialog.hpp>
 
@@ -41,8 +41,7 @@
 namespace sight::module::filter::image
 {
 
-
-static const service::IService::KeyType s_TARGET_IN = "target";
+static const service::IService::KeyType s_TARGET_IN    = "target";
 static const service::IService::KeyType s_REFERENCE_IN = "reference";
 
 static const service::IService::KeyType s_TRANSFORM_INOUT = "transform";
@@ -69,11 +68,11 @@ void SAutomaticRegistration::configuring()
 
     m_minStep = config.get< double >("minStep", -1.);
 
-    SLM_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
+    SIGHT_FATAL_IF("Invalid or missing minStep.", m_minStep <= 0);
 
     m_maxIterations = config.get< unsigned long >("maxIterations", 0);
 
-    SLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
+    SIGHT_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("metric", "");
     this->setMetric(metric);
@@ -93,7 +92,7 @@ void SAutomaticRegistration::configuring()
             parameters.push_back(token);
         }
 
-        SLM_ASSERT("There must be two parameters: shrink and sigma.", parameters.size() == 2);
+        SIGHT_ASSERT("There must be two parameters: shrink and sigma.", parameters.size() == 2);
 
         const unsigned long shrink = std::stoul(parameters[0]);
         const double sigma         = std::stod(parameters[1]);
@@ -135,9 +134,9 @@ void SAutomaticRegistration::updating()
 
     data::mt::ObjectWriteLock trfLock(transform);
 
-    SLM_ASSERT("No 'target' found !", target);
-    SLM_ASSERT("No 'reference' found !", reference);
-    SLM_ASSERT("No 'transform' found !", transform);
+    SIGHT_ASSERT("No 'target' found !", target);
+    SIGHT_ASSERT("No 'reference' found !", reference);
+    SIGHT_ASSERT("No 'transform' found !", transform);
 
     // Create a copy of m_multiResolutionParameters without empty values
     AutomaticRegistration::MultiResolutionParametersType
@@ -258,7 +257,7 @@ void SAutomaticRegistration::updating()
     }
     catch(::itk::ExceptionObject& e)
     {
-        SLM_ERROR("[ITK EXCEPTION]" << e.GetDescription());
+        SIGHT_ERROR("[ITK EXCEPTION]" << e.GetDescription());
     }
 
     m_sigComputed->asyncEmit();
@@ -295,7 +294,7 @@ void SAutomaticRegistration::setEnumParameter(std::string val, std::string key)
     }
     else
     {
-        SLM_FATAL("Key must be 'metric', unknown key :" << key);
+        SIGHT_FATAL("Key must be 'metric', unknown key :" << key);
     }
 }
 
@@ -318,7 +317,7 @@ void SAutomaticRegistration::setDoubleParameter(double val, std::string key)
     }
     else
     {
-        SLM_FATAL("Unknown key : " << key);
+        SIGHT_FATAL("Unknown key : " << key);
     }
 }
 
@@ -328,7 +327,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
 {
     if(key == "maxIterations")
     {
-        SLM_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
+        SIGHT_FATAL_IF("The number of iterations must be greater than 0 !!", val <= 0);
         m_maxIterations = static_cast<unsigned long>(val);
     }
     else if(key.find("shrink_") != std::string::npos )
@@ -338,7 +337,7 @@ void SAutomaticRegistration::setIntParameter(int val, std::string key)
     }
     else
     {
-        SLM_FATAL("Unknown key : " << key);
+        SIGHT_FATAL("Unknown key : " << key);
     }
 }
 
@@ -375,7 +374,7 @@ void SAutomaticRegistration::setMetric(const std::string& metricName)
     }
     else
     {
-        SLM_FATAL("Unknown metric: " << metricName);
+        SIGHT_FATAL("Unknown metric: " << metricName);
     }
 }
 

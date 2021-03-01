@@ -92,7 +92,7 @@ void SMesh::starting()
 
     // Read the mesh from the input as sight data.
     auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
+    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
 
     // Create a Qt3D mesh from sight data.
     m_mesh = new sight::viz::qt3d::data::Mesh(this->getRenderService()->getScene());
@@ -110,8 +110,8 @@ void SMesh::starting()
                 return srv->getMaterialName() == m_materialName;
             });
 
-        SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
-                   result != mtlAdaptors.end());
+        SIGHT_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
+                     result != mtlAdaptors.end());
 
         const module::viz::qt3d::adaptor::SMaterial::sptr materialAdaptor = *result;
 
@@ -144,7 +144,7 @@ void SMesh::updating()
 {
     // Read the mesh from the input as sight data.
     auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
+    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
 
     // Update the mesh and center camera if necessary.
     m_mesh->setMesh(mesh.get_shared());
@@ -170,8 +170,8 @@ void SMesh::updating()
 
         auto materialAdaptor = *result;
 
-        SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
-                   result != mtlAdaptors.end());
+        SIGHT_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
+                     result != mtlAdaptors.end());
         m_mesh->setMaterial(materialAdaptor->getMaterial());
     }
 }
@@ -197,7 +197,7 @@ void SMesh::modifyVertices()
 {
     // Read the mesh from the input as sight data.
     auto mesh = this->getLockedInOut< data::Mesh >(s_MESH_INOUT);
-    SLM_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
+    SIGHT_ASSERT("input '" + s_MESH_INOUT + "' does not exist.", mesh.get_shared());
 
     // Update mesh position and normal buffers.
     m_mesh->buildBuffers(mesh.get_shared());

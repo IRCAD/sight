@@ -37,7 +37,7 @@ class MODULE_DATA_CLASS_API ICamp : public service::IService
 {
 public:
 
-    fwCoreServiceMacro(ICamp, service::IService)
+    SIGHT_DECLARE_SERVICE(ICamp, service::IService)
 
     /// Constructor
     MODULE_DATA_API ICamp();

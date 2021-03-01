@@ -36,7 +36,7 @@ namespace parser
 class String : public GenericField
 {
 public:
-    fwCoreServiceMacro(String, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(String, service::IXMLParser)
 };
 
 } //namespace parser

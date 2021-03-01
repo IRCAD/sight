@@ -40,7 +40,7 @@ class CORE_CLASS_API Logger : public core::tools::Object
 
 public:
 
-    fwCoreClassMacro(Logger, core::tools::Object, new Logger)
+    SIGHT_DECLARE_CLASS(Logger, core::tools::Object, new Logger)
 
     typedef std::vector< core::log::Log > LogContainerType;
     typedef LogContainerType::iterator IteratorType;

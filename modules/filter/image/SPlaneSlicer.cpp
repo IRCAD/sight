@@ -26,20 +26,19 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Image.hpp>
-#include <data/Point.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <service/macros.hpp>
+#include <data/Image.hpp>
+#include <data/Point.hpp>
 
 #include <io/vtk/vtk.hpp>
+
+#include <service/macros.hpp>
 
 #include <vtkImageData.h>
 #include <vtkImageReslice.h>
 
 #include <algorithm>
-
 
 namespace sight::module::filter::image
 {
@@ -144,7 +143,7 @@ void SPlaneSlicer::configuring()
     }
     else
     {
-        SLM_FATAL("Unknown orientation: '" + orientation + "'.");
+        SIGHT_FATAL("Unknown orientation: '" + orientation + "'.");
     }
 }
 
@@ -170,7 +169,7 @@ void SPlaneSlicer::setReslicerExtent()
 {
     data::Image::csptr extentImg = this->getInput< data::Image >(s_EXTENT_IN);
 
-    SLM_ASSERT("No extentImg.", extentImg);
+    SIGHT_ASSERT("No extentImg.", extentImg);
 
     const auto& size    = extentImg->getSize2();
     const auto& origin  = extentImg->getOrigin2();
@@ -209,7 +208,7 @@ void SPlaneSlicer::setReslicerAxes()
 {
     data::Matrix4::csptr axes = this->getInput< data::Matrix4>(s_AXES_IN);
 
-    SLM_ASSERT("No axes found.", axes);
+    SIGHT_ASSERT("No axes found.", axes);
 
     vtkSmartPointer<vtkMatrix4x4> axesMatrix = io::vtk::toVTKMatrix(axes);
 
@@ -303,7 +302,7 @@ void SPlaneSlicer::updateSliceOrientation(int from, int to)
 void SPlaneSlicer::updateDefaultValue()
 {
     data::Image::csptr image = this->getInput< data::Image >(s_IMAGE_IN);
-    SLM_ASSERT("No 'image' found.", image);
+    SIGHT_ASSERT("No 'image' found.", image);
 
     double min, max;
     data::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);

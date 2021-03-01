@@ -46,7 +46,7 @@ namespace sight::atoms
 class ATOMS_CLASS_API Map : public Base
 {
 public:
-    fwCoreClassMacro(Map, atoms::Base, atoms::factory::New< Map >)
+    SIGHT_DECLARE_CLASS(Map, atoms::Base, atoms::factory::New< Map >)
 
     typedef std::map<std::string, Base::sptr> MapType;
 

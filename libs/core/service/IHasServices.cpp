@@ -39,9 +39,9 @@ IHasServices::IHasServices() noexcept
 
 IHasServices::~IHasServices() noexcept
 {
-    SLM_ASSERT("Some sub-services were not unregistered, something is probably wrong. "
-               "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
-               m_subServices.empty());
+    SIGHT_ASSERT("Some sub-services were not unregistered, something is probably wrong. "
+                 "Please use unregisterService() or unregisterServices() before destroying the sub-services owner.",
+                 m_subServices.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void IHasServices::unregisterService(const IService::sptr& _service)
             return adaptor.lock() == _service;
         });
 
-    SLM_ASSERT("service '" + _service->getID() + "' is not registered", iter != m_subServices.end());
+    SIGHT_ASSERT("service '" + _service->getID() + "' is not registered", iter != m_subServices.end());
     m_subServices.erase(iter);
 
     _service->stop().wait();

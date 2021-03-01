@@ -38,7 +38,7 @@ void LogicStamp::modified()
 
     m_modifiedLogicalTime = ++globalLogicStamp;
 
-    SLM_ASSERT("globalLogicStamp not instanced", globalLogicStamp); // detects overflow
+    SIGHT_ASSERT("globalLogicStamp not instanced", globalLogicStamp); // detects overflow
 }
 
 } //namespace sight::core

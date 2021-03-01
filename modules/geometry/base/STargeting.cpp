@@ -53,7 +53,6 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
 
 // -----------------------------------------------------------------------------
 
-
 // -----------------------------------------------------------------------------
 
 STargeting::STargeting() noexcept :
@@ -105,7 +104,7 @@ void STargeting::updating()
     if(m_landmarkSelected)
     {
         const auto landmark = this->getLockedInput< data::Landmarks >(s_LANDMARK_INPUT);
-        SLM_ASSERT("Input \"landmark\" is missing.", landmark);
+        SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
         if(landmark->getGroup(m_label).m_points.size() > 0)
         {
             const data::Landmarks::PointType point = landmark->getPoint(m_label, m_index);
@@ -122,7 +121,7 @@ void STargeting::updating()
     // Get the input matrix for the needle tip
     const auto matrix =
         this->getLockedInput< data::Matrix4 >( s_MATRIX_INPUT );
-    SLM_ASSERT("Input \"matrix\" is missing.", matrix);
+    SIGHT_ASSERT("Input \"matrix\" is missing.", matrix);
 
     const ::glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(matrix.get_shared());
 
@@ -193,7 +192,7 @@ void STargeting::updating()
         transformedNeedleIntersection = transformedNeedleIntersection * scale;
 
         auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
-        SLM_ASSERT("InOut \"pointList\" is missing.", pointList);
+        SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
         if(pointList->getPoints().size() > 0)
         {
             pointList->clear();
@@ -238,7 +237,7 @@ void STargeting::updatePoint(std::string name)
     m_label            = name;
     m_landmarkSelected = true;
     const auto landmark = this->getLockedInput< data::Landmarks >(s_LANDMARK_INPUT);
-    SLM_ASSERT("Input \"landmark\" is missing.", landmark);
+    SIGHT_ASSERT("Input \"landmark\" is missing.", landmark);
 
     const size_t size = landmark->getGroup(m_label).m_points.size();
     m_index = size -1;
@@ -253,7 +252,7 @@ void STargeting::removePoint()
     m_landmarkSelected = false;
 
     auto pointList = this->getLockedInOut< data::PointList >(s_POINTLIST_INOUT);
-    SLM_ASSERT("InOut \"pointList\" is missing.", pointList);
+    SIGHT_ASSERT("InOut \"pointList\" is missing.", pointList);
     auto points = pointList->getPoints(); // copy the points.
     pointList->clear();
     for(const auto& pt : points)

@@ -78,7 +78,7 @@ class MODULE_FILTER_MESH_CLASS_API SUltrasoundMesh final : public service::ISimu
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SUltrasoundMesh, service::IService)
+    SIGHT_DECLARE_SERVICE(SUltrasoundMesh, service::IService)
 
     /// Create slots.
     MODULE_FILTER_MESH_API SUltrasoundMesh() noexcept;

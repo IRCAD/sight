@@ -39,7 +39,7 @@ class UI_BASE_CLASS_API SelectorDialog : public ISelectorDialog
 
 public:
 
-    fwCoreClassMacro(SelectorDialog, ui::base::dialog::ISelectorDialog, new SelectorDialog)
+    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, new SelectorDialog)
 
     /**
      * Opens a default selector with the specified title, message and choices.

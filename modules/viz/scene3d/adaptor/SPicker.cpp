@@ -62,7 +62,7 @@ void SPicker::configuring()
     const std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&

@@ -50,8 +50,8 @@ class IO_BASE_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< data:
 
 public:
 
-    fwCoreClassMacro(GzBufferImageWriter, GenericObjectWriter< data::Image>,
-                     io::base::writer::factory::New< GzBufferImageWriter >)
+    SIGHT_DECLARE_CLASS(GzBufferImageWriter, GenericObjectWriter< data::Image>,
+                        io::base::writer::factory::New< GzBufferImageWriter >)
 
     /// Constructor. Do nothing.
     IO_BASE_API GzBufferImageWriter(io::base::writer::IObjectWriter::Key key);

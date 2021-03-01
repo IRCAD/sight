@@ -25,10 +25,10 @@
 #include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
 
+#include <data/helper/Composite.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -340,7 +340,7 @@ void SMultipleTF::initializePools()
             {
                 data::Composite::sptr composite = data::Composite::New();
 
-                SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+                SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
                 for(std::filesystem::directory_iterator it(dirPath);
                     it != std::filesystem::directory_iterator();
                     ++it )
@@ -409,7 +409,7 @@ void SMultipleTF::initializePools()
             for(std::filesystem::path dirPath : m_paths)
             {
 
-                SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+                SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
                 for(std::filesystem::directory_iterator it(dirPath);
                     it != std::filesystem::directory_iterator();
                     ++it )
@@ -530,7 +530,7 @@ void SMultipleTF::setCurrentPool()
 
     const data::Object::sptr newSelectedObject    = (*tfPools)[newSelectedTFPoolKey];
     const data::Composite::sptr newSelectedTFPool = data::Composite::dynamicCast(newSelectedObject);
-    SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", newSelectedTFPool);
+    SIGHT_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", newSelectedTFPool);
 
     if(newSelectedTFPool && newSelectedTFPool != m_currentTFPool)
     {
@@ -662,7 +662,7 @@ void SMultipleTF::copyPool()
             {
                 data::Object::sptr object                 = (*tfPools)[str];
                 const data::Composite::sptr currentTFPool = data::Composite::dynamicCast(object);
-                SLM_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
+                SIGHT_ASSERT("inout '" + s_TF_POOLS_INOUT + "' must contain only Composite.", currentTFPool);
 
                 // Copy the composite.
                 data::helper::Composite compositeHelper(sTFPools);

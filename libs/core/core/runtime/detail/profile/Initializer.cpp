@@ -50,8 +50,8 @@ Initializer::Initializer( const std::string& identifier) :
 void Initializer::apply()
 {
     auto module = detail::Runtime::get().findEnabledModule(m_identifier);
-    SLM_FATAL_IF("Unable to initialize module " + m_identifier + ". Not found.",
-                 module == nullptr);
+    SIGHT_FATAL_IF("Unable to initialize module " + m_identifier + ". Not found.",
+                   module == nullptr);
     try
     {
         if (!module->isInitialized())
@@ -62,7 +62,7 @@ void Initializer::apply()
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to initialize module " + m_identifier + ". " + e.what());
+        SIGHT_FATAL("Unable to initialize module " + m_identifier + ". " + e.what());
     }
 }
 

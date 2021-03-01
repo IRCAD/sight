@@ -71,7 +71,7 @@ void SRepresentationEditor::stopping()
 void SRepresentationEditor::updating()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
     m_material = reconstruction->getMaterial();
 
     int representationMode = m_material->getRepresentationMode();
@@ -158,7 +158,7 @@ void SRepresentationEditor::onChangeShading(  int id )
 void SRepresentationEditor::onShowNormals(int state )
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SIGHT_ASSERT("No Reconstruction!", reconstruction);
 
     switch(state)
     {
@@ -188,7 +188,7 @@ void SRepresentationEditor::onShowNormals(int state )
 void SRepresentationEditor::notifyMaterial()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("No Reconstruction!", reconstruction);
+    SIGHT_ASSERT("No Reconstruction!", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(

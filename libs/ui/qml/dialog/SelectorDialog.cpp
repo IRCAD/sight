@@ -27,10 +27,10 @@
 #include <core/base.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <QGuiApplication>
-
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QGuiApplication>
 
 fwGuiRegisterMacro( ::sight::ui::qml::dialog::SelectorDialog,
                     ::sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY );
@@ -85,12 +85,12 @@ std::string SelectorDialog::show()
     context->setContextProperty("selectorDialog", this);
     // load the qml ui component
     QObject* window = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File SelectorDialog is not found or not loaded", window);
+    SIGHT_ASSERT("The Qml File SelectorDialog is not found or not loaded", window);
     // keep window to destroy it
 
     window->setProperty("title", m_title);
     QObject* dialog = window->findChild<QObject*>("dialog");
-    SLM_ASSERT("The dialog is not found inside the window", dialog);
+    SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // create all radiobutton
     model.addRole(Qt::UserRole + 1, "textOption");
@@ -102,7 +102,7 @@ std::string SelectorDialog::show()
         data.insert("textOption", QString::fromStdString(selection));
         model.addData(QHash<QByteArray, QVariant>(data));
     }
-    SLM_ASSERT("The SelectorDialog need at least one option", !model.isEmpty());
+    SIGHT_ASSERT("The SelectorDialog need at least one option", !model.isEmpty());
 
     if(!m_message.isEmpty())
     {

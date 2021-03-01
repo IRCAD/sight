@@ -85,10 +85,10 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
     this->setPeerPort(_peerPort);
     this->setPeerAETitle(_peerApplicationTitle.c_str());
 
-    SLM_INFO("Initialize connection to (" +
-             std::string(this->getPeerAETitle().c_str()) + ") " +
-             std::string(this->getPeerHostName().c_str()) + ":" +
-             std::to_string(this->getPeerPort()))
+    SIGHT_INFO("Initialize connection to (" +
+               std::string(this->getPeerAETitle().c_str()) + ") " +
+               std::string(this->getPeerHostName().c_str()) + ":" +
+               std::to_string(this->getPeerPort()))
 
     // Clear presentation context.
     this->clearPresentationContexts();
@@ -150,10 +150,10 @@ void SeriesEnquirer::initialize(const std::string& _applicationTitle,
 
 bool SeriesEnquirer::connect()
 {
-    SLM_INFO("Connect to (" +
-             std::string(this->getPeerAETitle().c_str()) + ") " +
-             std::string(this->getPeerHostName().c_str()) + ":" +
-             std::to_string(this->getPeerPort()))
+    SIGHT_INFO("Connect to (" +
+               std::string(this->getPeerAETitle().c_str()) + ") " +
+               std::string(this->getPeerHostName().c_str()) + ":" +
+               std::to_string(this->getPeerPort()))
 
     // Initialize network.
     OFCondition result = this->initNetwork();
@@ -186,7 +186,7 @@ bool SeriesEnquirer::isConnectedToPacs() const
 
 bool SeriesEnquirer::pingPacs()
 {
-    SLM_INFO("Send C-ECHO request")
+    SIGHT_INFO("Send C-ECHO request")
     return this->sendECHORequest(0).good();
 }
 
@@ -194,10 +194,10 @@ bool SeriesEnquirer::pingPacs()
 
 void SeriesEnquirer::disconnect()
 {
-    SLM_INFO("Disconnect from (" +
-             std::string(this->getPeerAETitle().c_str()) + ") " +
-             std::string(this->getPeerHostName().c_str()) + ":" +
-             std::to_string(this->getPeerPort()))
+    SIGHT_INFO("Disconnect from (" +
+               std::string(this->getPeerAETitle().c_str()) + ") " +
+               std::string(this->getPeerHostName().c_str()) + ":" +
+               std::to_string(this->getPeerPort()))
     this->releaseAssociation();
 }
 
@@ -218,7 +218,7 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
     // Send the request
     std::ostringstream stream;
     _dataset.print(stream);
-    SLM_INFO("Send C-FIND request : " + stream.str())
+    SIGHT_INFO("Send C-FIND request : " + stream.str())
     this->sendFINDRequest(presID, &_dataset, &findResponses);
 
     return findResponses;
@@ -229,18 +229,18 @@ OFList< QRResponse* > SeriesEnquirer::sendFindRequest(DcmDataset _dataset)
 OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 {
     // Be sure that the needed informations are set.
-    SLM_ASSERT("The path where to store the series is not set.", !m_path.empty());
-    SLM_ASSERT("The move application title is not set.", !m_moveApplicationTitle.empty());
+    SIGHT_ASSERT("The path where to store the series is not set.", !m_path.empty());
+    SIGHT_ASSERT("The move application title is not set.", !m_moveApplicationTitle.empty());
 
     // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_MOVEStudyRootQueryRetrieveInformationModel);
-    SLM_WARN_IF("There is no uncompressed presentation context for Study Root MOVE", presID == 0);
+    SIGHT_WARN_IF("There is no uncompressed presentation context for Study Root MOVE", presID == 0);
 
     // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
     std::ostringstream stream;
     _dataset.print(stream);
-    SLM_INFO("Send C-MOVE request : " + stream.str())
+    SIGHT_INFO("Send C-MOVE request : " + stream.str())
     return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &_dataset, &dataResponse);
 }
 
@@ -249,21 +249,21 @@ OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset _dataset)
 OFCondition SeriesEnquirer::sendGetRequest(DcmDataset _dataset)
 {
     // Be sure that the needed informations are set.
-    SLM_ASSERT("The path where to store the series is not set.", !m_path.empty());
+    SIGHT_ASSERT("The path where to store the series is not set.", !m_path.empty());
 
     // Try to find a presentation context.
     T_ASC_PresentationContextID presID = this->findUncompressedPC(UID_GETStudyRootQueryRetrieveInformationModel);
 
     if (presID == 0)
     {
-        SLM_WARN("There is no uncompressed presentation context for Study Root GET");
+        SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
     // Fetches all images of this particular study.
     OFList< RetrieveResponse* > dataResponse;
     std::ostringstream stream;
     _dataset.print(stream);
-    SLM_INFO("Send C-GET request : " + stream.str())
+    SIGHT_INFO("Send C-GET request : " + stream.str())
     return this->sendCGETRequest(presID, &_dataset, &dataResponse);
 }
 
@@ -276,11 +276,11 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
 
     if (presID == 0)
     {
-        SLM_WARN("There is no uncompressed presentation context for Study Root GET");
+        SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
     Uint16 rspStatusCode;
-    SLM_INFO("Send C-STORE request")
+    SIGHT_INFO("Send C-STORE request")
     OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), 0, rspStatusCode);
     return result;
 }
@@ -294,13 +294,13 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
 
     if (presID == 0)
     {
-        SLM_WARN("There is no uncompressed presentation context for Study Root GET");
+        SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
     Uint16 rspStatusCode;
     // const_cast required to use bad DCMTK sendSTORERequest API
     DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
-    SLM_INFO("Send C-STORE request")
+    SIGHT_INFO("Send C-STORE request")
     OFCondition result = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
     return result;
 }

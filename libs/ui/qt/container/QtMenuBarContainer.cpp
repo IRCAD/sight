@@ -46,7 +46,7 @@ QtMenuBarContainer::~QtMenuBarContainer() noexcept
 
 void QtMenuBarContainer::clean()
 {
-    SLM_ASSERT("The Qt MenuBar is not yet initialized, cleaning is thus impossible", m_menuBar);
+    SIGHT_ASSERT("The Qt MenuBar is not yet initialized, cleaning is thus impossible", m_menuBar);
 
     m_menuBar->clear();
 
@@ -62,10 +62,10 @@ void QtMenuBarContainer::clean()
 
 void QtMenuBarContainer::destroyContainer()
 {
-    SLM_ASSERT("The Qt MenuBar is not yet initialized", m_menuBar);
+    SIGHT_ASSERT("The Qt MenuBar is not yet initialized", m_menuBar);
 
     QList<QMenu*> allMenu = m_menuBar->findChildren<QMenu*>();
-    SLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
+    SIGHT_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());
 
     m_menuBar->hide();
     delete m_menuBar;

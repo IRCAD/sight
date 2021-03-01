@@ -36,6 +36,8 @@
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QColor>
 #include <QColorDialog>
 #include <QHBoxLayout>
@@ -46,11 +48,8 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt::reconstruction
 {
-
 
 static const service::IService::KeyType s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -153,7 +152,7 @@ void SOrganMaterialEditor::stopping()
 void SOrganMaterialEditor::onDiffuseColorButton()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::mt::ObjectWriteLock lock(material);
@@ -165,7 +164,7 @@ void SOrganMaterialEditor::onDiffuseColorButton()
     // Create Color choice dialog.
     auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     const QColor oldColor(red, green, blue);
     const QColor color = QColorDialog::getColor(oldColor, container);
@@ -185,7 +184,7 @@ void SOrganMaterialEditor::onDiffuseColorButton()
 void SOrganMaterialEditor::onAmbientColorButton()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::mt::ObjectWriteLock lock(material);
@@ -197,7 +196,7 @@ void SOrganMaterialEditor::onAmbientColorButton()
     // Create Color choice dialog.
     auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     const QColor oldColor(red, green, blue);
     const QColor color = QColorDialog::getColor(oldColor, container);
@@ -217,7 +216,7 @@ void SOrganMaterialEditor::onAmbientColorButton()
 void SOrganMaterialEditor::onOpacitySlider(int _value)
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::mt::ObjectWriteLock lock(material);
@@ -235,12 +234,12 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 void SOrganMaterialEditor::refreshMaterial()
 {
     data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     container->setEnabled(!reconstruction->getOrganName().empty());
 
@@ -288,7 +287,7 @@ void SOrganMaterialEditor::refreshMaterial()
 void SOrganMaterialEditor::materialNotification()
 {
     data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
+    SIGHT_ASSERT("inout '" + s_RECONSTRUCTION_INOUT + "' does not exist.", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig
         = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(

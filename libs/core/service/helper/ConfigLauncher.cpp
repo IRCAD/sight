@@ -64,7 +64,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
     const service::IService::ConfigType* curConfig = &_config;
 
     const service::IService::ConfigType& oldConfig = _config;
-    SLM_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1 );
+    SIGHT_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1 );
 
     const service::IService::ConfigType& appConfig = oldConfig.get_child("appConfig");
     const std::string appCfgId                     = appConfig.get<std::string>("<xmlattr>.id");
@@ -79,10 +79,10 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
         service::IService::ConfigType parameterCfg;
 
         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
-        SLM_ASSERT("[" + appCfgId + "] Missing 'key' tag.", !key.empty());
+        SIGHT_ASSERT("[" + appCfgId + "] Missing 'key' tag.", !key.empty());
 
         const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
-        SLM_ASSERT("[" + appCfgId + "] Missing 'uid' tag.", !uid.empty());
+        SIGHT_ASSERT("[" + appCfgId + "] Missing 'uid' tag.", !uid.empty());
 
         parameterCfg.add("<xmlattr>.replace", key);
 
@@ -97,7 +97,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
         }
         else
         {
-            SLM_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exist.", obj);
+            SIGHT_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exist.", obj);
             parameterCfg.add("<xmlattr>.uid", obj->getID());
         }
 
@@ -112,7 +112,7 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
         service::IService::ConfigType parameterCfg;
 
         const std::string replace = itCfg->second.get<std::string>("<xmlattr>.replace");
-        SLM_ASSERT("[" + appCfgId + "] Missing 'replace' tag.", !replace.empty());
+        SIGHT_ASSERT("[" + appCfgId + "] Missing 'replace' tag.", !replace.empty());
 
         parameterCfg.add("<xmlattr>.replace", replace);
 
@@ -131,11 +131,11 @@ void ConfigLauncher::parseConfig(const service::IService::ConfigType& _config,
         newCfg.add_child("parameters.parameter", parameterCfg);
     }
 
-    SLM_ASSERT("There must be only one <config/> element.", curConfig->count("config") == 1 );
+    SIGHT_ASSERT("There must be only one <config/> element.", curConfig->count("config") == 1 );
 
     const service::IService::ConfigType& srvconfig = curConfig->get_child("config");
 
-    SLM_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1 );
+    SIGHT_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1 );
 
     const service::IService::ConfigType& appConfigCfg = srvconfig.get_child("appConfig");
     m_appConfig = activity::extension::ActivityAppConfig(appConfigCfg);

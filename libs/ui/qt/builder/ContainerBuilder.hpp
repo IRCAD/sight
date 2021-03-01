@@ -43,7 +43,8 @@ namespace builder
 class UI_QT_CLASS_API ContainerBuilder : public ui::base::builder::IContainerBuilder
 {
 public:
-    fwCoreClassMacro(ContainerBuilder, ui::base::builder::IContainerBuilder, ui::base::factory::New< ContainerBuilder >)
+    SIGHT_DECLARE_CLASS(ContainerBuilder, ui::base::builder::IContainerBuilder,
+                        ui::base::factory::New< ContainerBuilder >)
 
     UI_QT_API ContainerBuilder(ui::base::GuiBaseObject::Key key);
 

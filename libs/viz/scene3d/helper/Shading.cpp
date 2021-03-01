@@ -278,11 +278,11 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
         }
         if (pass->hasTessellationHullProgram())
         {
-            SLM_WARN("Tessellation Hull Program in Material not supported yet");
+            SIGHT_WARN("Tessellation Hull Program in Material not supported yet");
         }
         if (pass->hasTessellationDomainProgram())
         {
-            SLM_WARN("Tessellation Domain Program in Material not supported yet");
+            SIGHT_WARN("Tessellation Domain Program in Material not supported yet");
         }
     }
 
@@ -557,7 +557,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantT
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            SLM_WARN("Object type "+GpuConstantTypeNames[_type-1]+" not supported yet");
+            SIGHT_WARN("Object type "+GpuConstantTypeNames[_type-1]+" not supported yet");
 
             (void)GpuConstantTypeNames; // Only there to avoid the 'unused' warning.
     }

@@ -160,7 +160,7 @@ std::shared_ptr< ::openvslam::config > Helper::readOpenvslamConfig(const std::st
     }
     catch (std::exception& e)
     {
-        SLM_ERROR("Something went wrong when tying to load '" + _filepath + "'. Error: " + e.what());
+        SIGHT_ERROR("Something went wrong when tying to load '" + _filepath + "'. Error: " + e.what());
         return nullptr;
     }
 

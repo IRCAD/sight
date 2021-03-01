@@ -24,4 +24,4 @@
 
 #include <data/registry/macros.hpp>
 
-fwDataRegisterMacro( ::ExTimeLine::MessageTL )
+SIGHT_REGISTER_DATA( ::ExTimeLine::MessageTL )

@@ -57,7 +57,7 @@ class MODULE_UI_BASE_CLASS_API SSlotCaller : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SSlotCaller, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SSlotCaller, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;

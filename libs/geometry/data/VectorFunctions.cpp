@@ -106,7 +106,7 @@ fwVec3d& operator*=(fwVec3d& vec1, double val)
 
 fwVec3d& operator/=(fwVec3d& vec, double val )
 {
-    FW_RAISE_IF("Division by 0 not possible.", val == 0.0);
+    SIGHT_THROW_IF("Division by 0 not possible.", val == 0.0);
 
     ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec.data());
     vecGlm1             /= val;
@@ -160,7 +160,7 @@ fwVec3d operator*(const double val, const fwVec3d& vec)
 
 fwVec3d operator/(const fwVec3d& vec, double val)
 {
-    FW_RAISE_IF("Division by 0 not possible.", val == 0.0);
+    SIGHT_THROW_IF("Division by 0 not possible.", val == 0.0);
 
     ::glm::dvec3 vecGlm1(vec[0], vec[1], vec[2]);
     ::glm::dvec3 vecGlm = vecGlm1 / val;

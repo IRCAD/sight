@@ -44,7 +44,7 @@ class UI_BASE_CLASS_API CardinalLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreClassMacro(CardinalLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
+    SIGHT_DECLARE_CLASS(CardinalLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
 
     /// Defines all possible position for a CardinalLayout
     typedef enum

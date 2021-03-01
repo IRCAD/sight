@@ -35,7 +35,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSTLWriter.h>
 
-fwDataIOWriterRegisterMacro( ::sight::io::vtk::StlMeshWriter );
+SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::StlMeshWriter );
 
 namespace sight::io::vtk
 {
@@ -59,11 +59,11 @@ void StlMeshWriter::write()
 {
     using namespace sight::io::vtk::helper;
 
-    SLM_ASSERT("Object pointer expired", !m_object.expired());
+    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SLM_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock );
 
     const data::Mesh::csptr pMesh = getConcreteObject();
 

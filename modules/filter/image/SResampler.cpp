@@ -28,15 +28,14 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <service/macros.hpp>
-
 #include <filter/image/Resampler.hpp>
+
+#include <service/macros.hpp>
 
 namespace sight::module::filter::image
 {
 
-
-static const service::IService::KeyType s_IMAGE_IN = "imageIn";
+static const service::IService::KeyType s_IMAGE_IN    = "imageIn";
 static const service::IService::KeyType s_IMAGE_INOUT = "imageOut";
 
 static const service::IService::KeyType s_TARGET_IN    = "target";
@@ -89,9 +88,9 @@ void SResampler::updating()
     data::Matrix4::csptr transform =
         this->getInput< data::Matrix4 >(s_TRANSFORM_IN);
 
-    SLM_ASSERT("No 'imageIn' found !", inImg);
-    SLM_ASSERT("No 'imageOut' found !", outImg);
-    SLM_ASSERT("No 'transform' found !", transform);
+    SIGHT_ASSERT("No 'imageIn' found !", inImg);
+    SIGHT_ASSERT("No 'imageOut' found !", outImg);
+    SIGHT_ASSERT("No 'transform' found !", transform);
 
     sight::filter::image::Resampler::resample(inImg, outImg, transform, target);
 

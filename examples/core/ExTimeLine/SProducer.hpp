@@ -55,7 +55,7 @@ class EXTIMELINE_CLASS_API SProducer : public sight::service::IService
 {
 public:
 
-    fwCoreServiceMacro(SProducer, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(SProducer, sight::service::IService)
 
     EXTIMELINE_API SProducer() noexcept;
     EXTIMELINE_API virtual ~SProducer() noexcept;

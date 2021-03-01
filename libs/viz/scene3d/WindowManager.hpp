@@ -43,9 +43,9 @@ class VIZ_SCENE3D_CLASS_API WindowManager : public core::BaseObject
 
 public:
 
-    fwCoreClassMacro(WindowManager, viz::scene3d::WindowManager, new WindowManager)
+    SIGHT_DECLARE_CLASS(WindowManager, viz::scene3d::WindowManager, new WindowManager)
 
-    fwCoreAllowSharedFromThis()
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Registers an Ogre window.
     VIZ_SCENE3D_API void registerWindow(::Ogre::RenderWindow* _window);

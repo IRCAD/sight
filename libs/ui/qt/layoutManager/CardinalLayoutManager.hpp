@@ -27,9 +27,9 @@
 
 #include <core/base.hpp>
 
-#include <QPointer>
-
 #include <ui/base/layoutManager/CardinalLayoutManagerBase.hpp>
+
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QMainWindow;
@@ -46,8 +46,8 @@ class UI_QT_CLASS_API CardinalLayoutManager : public ui::base::layoutManager::Ca
 
 public:
 
-    fwCoreClassMacro(CardinalLayoutManager, ui::base::layoutManager::CardinalLayoutManagerBase,
-                     ui::base::factory::New< CardinalLayoutManager >)
+    SIGHT_DECLARE_CLASS(CardinalLayoutManager, ui::base::layoutManager::CardinalLayoutManagerBase,
+                        ui::base::factory::New< CardinalLayoutManager >)
 
     UI_QT_API CardinalLayoutManager(ui::base::GuiBaseObject::Key key);
 

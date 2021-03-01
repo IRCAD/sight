@@ -27,7 +27,7 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(Integer));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Integer));
 
 namespace sight::data
 {
@@ -40,7 +40,7 @@ class DATA_CLASS_API Integer : public GenericField< std::int64_t >
 {
 public:
 
-    fwCoreClassMacro(Integer, data::Object)
+    SIGHT_DECLARE_CLASS(Integer, data::Object)
 
     //------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ public:
         return GenericFieldFactory< Integer >(val);
     }
 
-    fwCampMakeFriendDataMacro((sight)(data)(Integer));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Integer));
 
     /**
      * @brief Constructor

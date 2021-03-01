@@ -29,4 +29,4 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampDeclareAccessor((sight)(data)(Mesh), (sight)(data)(Array));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Mesh), (sight)(data)(Array));

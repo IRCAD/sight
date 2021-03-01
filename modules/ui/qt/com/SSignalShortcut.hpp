@@ -53,7 +53,7 @@ class MODULE_UI_QT_CLASS_API SSignalShortcut : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SSignalShortcut, service::IService)
+    SIGHT_DECLARE_SERVICE(SSignalShortcut, service::IService)
 
     /// Signal emitted when the shortcut is received.
     typedef core::com::Signal< void () > ActivatedShortcutSignalType;

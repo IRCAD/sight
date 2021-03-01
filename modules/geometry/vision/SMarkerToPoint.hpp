@@ -61,7 +61,7 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public service::IController
 {
 public:
-    fwCoreServiceMacro(SMarkerToPoint, service::IController)
+    SIGHT_DECLARE_SERVICE(SMarkerToPoint, service::IController)
 
     /// Data xml keys
     static const service::IService::KeyType s_MATRIXTL_INPUT;

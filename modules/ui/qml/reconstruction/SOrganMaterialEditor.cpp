@@ -69,7 +69,7 @@ void SOrganMaterialEditor::stopping()
 void SOrganMaterialEditor::updating()
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
 
@@ -85,7 +85,7 @@ void SOrganMaterialEditor::updating()
 void SOrganMaterialEditor::onColor(QColor color)
 {
     data::Reconstruction::sptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     material->diffuse()->red()   = static_cast<float>(color.redF());
@@ -100,7 +100,7 @@ void SOrganMaterialEditor::onOpacitySlider(int value )
 {
 
     data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     material->diffuse()->alpha() = value/100.0f;
@@ -112,7 +112,7 @@ void SOrganMaterialEditor::onOpacitySlider(int value )
 void SOrganMaterialEditor::materialNotification()
 {
     data::Reconstruction::csptr reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
+    SIGHT_ASSERT("'" + s_RECONSTRUCTION_INOUT + "' must be set as 'inout'", reconstruction);
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal< data::Object::ModifiedSignalType >(

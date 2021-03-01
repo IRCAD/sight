@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( ::sight::data::ReconstructionTraits );
+SIGHT_REGISTER_DATA( ::sight::data::ReconstructionTraits );
 
 namespace sight::data
 {
@@ -92,12 +92,12 @@ ReconstructionTraits::~ReconstructionTraits()
 void ReconstructionTraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    SLM_FATAL("Not implemented." );
+    SIGHT_FATAL("Not implemented." );
 }
 
 } // namespace sight::data

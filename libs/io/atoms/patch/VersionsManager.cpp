@@ -52,8 +52,8 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
     }
     catch( ::boost::property_tree::ptree_bad_path& )
     {
-        FW_RAISE_EXCEPTION(io::atoms::patch::exceptions::MissingInformation(
-                               name + " information are missing in '"+ filePath.string() +"'."));
+        SIGHT_THROW_EXCEPTION(io::atoms::patch::exceptions::MissingInformation(
+                                  name + " information are missing in '"+ filePath.string() +"'."));
     }
 
     return value;
@@ -109,8 +109,8 @@ void VersionsManager::buildLinkTable(const std::string& dirPath)
 void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
                                       const std::string& context, const std::string& versionName)
 {
-    FW_RAISE_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".versions file required"),
-                           filePath.extension() != ".versions");
+    SIGHT_THROW_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".versions file required"),
+                              filePath.extension() != ".versions");
 
     namespace pt = ::boost::property_tree;
     std::size_t classCount = ::camp::classCount();
@@ -140,8 +140,8 @@ void VersionsManager::generateNewFile(const std::filesystem::path& filePath,
 
 io::atoms::patch::VersionDescriptor VersionsManager::getVersion(const std::filesystem::path& filePath)
 {
-    FW_RAISE_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".versions file required"),
-                           filePath.extension() != ".versions");
+    SIGHT_THROW_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".versions file required"),
+                              filePath.extension() != ".versions");
 
     namespace pt = ::boost::property_tree;
     pt::ptree root;
@@ -168,8 +168,8 @@ io::atoms::patch::VersionDescriptor VersionsManager::getVersion(const std::files
 
 io::atoms::patch::LinkDescriptor VersionsManager::getLink(const std::filesystem::path& filePath)
 {
-    FW_RAISE_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".graphlink file required"),
-                           filePath.extension() != ".graphlink");
+    SIGHT_THROW_EXCEPTION_IF( io::atoms::patch::exceptions::BadExtension(".graphlink file required"),
+                              filePath.extension() != ".graphlink");
 
     namespace pt = ::boost::property_tree;
     typedef std::vector< std::pair< std::string, std::string > > LinkType;
@@ -195,8 +195,9 @@ io::atoms::patch::LinkDescriptor VersionsManager::getLink(const std::filesystem:
             link.push_back(std::make_pair(node.first, node.second.data()));
         }
 
-        FW_RAISE_EXCEPTION_IF(io::atoms::patch::exceptions::MissingInformation(
-                                  "A link should contain an origin version and a target version."), link.size() != 2);
+        SIGHT_THROW_EXCEPTION_IF(io::atoms::patch::exceptions::MissingInformation(
+                                     "A link should contain an origin version and a target version."),
+                                 link.size() != 2);
 
         links[link[0]] = link[1];
 
@@ -236,8 +237,8 @@ void VersionsManager::generateVersionsGraph()
         {
             io::atoms::patch::LinkDescriptor link = VersionsManager::getLink(elt);
 
-            SLM_ASSERT("There is no graph created for the context \"" << link.getContext() << "\".",
-                       m_versionsGraphMap.find(link.getContext()) != m_versionsGraphMap.end());
+            SIGHT_ASSERT("There is no graph created for the context \"" << link.getContext() << "\".",
+                         m_versionsGraphMap.find(link.getContext()) != m_versionsGraphMap.end());
 
             m_versionsGraphMap[link.getContext()]->addEdge(link);
         }

@@ -83,7 +83,7 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection : public service::IService
 {
 public:
-    fwCoreServiceMacro(SChessboardReprojection, service::IService)
+    SIGHT_DECLARE_SERVICE(SChessboardReprojection, service::IService)
 
     ///Constructor
     MODULE_GEOMETRY_VISION_API SChessboardReprojection();

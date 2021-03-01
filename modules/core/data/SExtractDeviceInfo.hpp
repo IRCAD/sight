@@ -79,7 +79,7 @@ class MODULE_DATA_CLASS_API SExtractDeviceInfo : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SExtractDeviceInfo, service::IController)
+    SIGHT_DECLARE_SERVICE(SExtractDeviceInfo, service::IController)
 
     /// Constructor
     MODULE_DATA_API SExtractDeviceInfo();

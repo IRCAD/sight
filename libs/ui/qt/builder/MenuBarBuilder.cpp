@@ -28,10 +28,10 @@
 
 #include <data/tools/Color.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QMainWindow>
 #include <QMenuBar>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::base::builder::MenuBarBuilder,
                     ::sight::ui::base::builder::IMenuBarBuilder::REGISTRY_KEY);
@@ -58,13 +58,13 @@ MenuBarBuilder::~MenuBarBuilder()
 void MenuBarBuilder::createMenuBar( ui::base::container::fwContainer::sptr parent )
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
     QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
     if ( !window )
     {
         window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() );
     }
-    SLM_ASSERT("The parent container must be a QMainWindow", window );
+    SIGHT_ASSERT("The parent container must be a QMainWindow", window );
     if (window)
     {
         ui::qt::container::QtMenuBarContainer::sptr menuBarContainer =
@@ -94,14 +94,14 @@ void MenuBarBuilder::createMenuBar( ui::base::container::fwContainer::sptr paren
 
 void MenuBarBuilder::destroyMenuBar()
 {
-    SLM_ASSERT("The menu is not initialized", m_menuBar);
-    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The menu is not initialized", m_menuBar);
+    SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
     QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
     if ( !window )
     {
         window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer()->parent() );
     }
-    SLM_ASSERT("The parent container must be a QMainWindow", window );
+    SIGHT_ASSERT("The parent container must be a QMainWindow", window );
     if (window)
     {
         window->setMenuBar( NULL );

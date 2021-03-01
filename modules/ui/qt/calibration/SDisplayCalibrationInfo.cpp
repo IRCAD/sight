@@ -30,8 +30,8 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/String.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/AppConfig.hpp>
+#include <service/macros.hpp>
 #include <service/registry/Proxy.hpp>
 
 #include <sstream>
@@ -41,9 +41,8 @@ namespace sight::module::ui::qt::calibration
 
 //------------------------------------------------------------------------------
 
-
 static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
-static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT = "stopConfig";
+static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
@@ -114,7 +113,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
     {
         // Grab images from our composite data
         data::CalibrationInfo::csptr calInfo1 = this->getInput< data::CalibrationInfo >(s_CALIBRATION_INFO_1);
-        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
+        SIGHT_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
         data::CalibrationInfo::csptr calInfo2 = this->getInput< data::CalibrationInfo >(s_CALIBRATION_INFO_2);
 

@@ -37,7 +37,7 @@ namespace data
 class IO_PATCH_CLASS_API Landmarks1 : public io::atoms::patch::IStructuralCreator
 {
 public:
-    fwCoreClassMacro(Landmarks1, io::atoms::patch::IStructuralCreator, new Landmarks1)
+    SIGHT_DECLARE_CLASS(Landmarks1, io::atoms::patch::IStructuralCreator, new Landmarks1)
 
     /// Constructor
     IO_PATCH_API Landmarks1();

@@ -26,11 +26,11 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QAction>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QMenu;
 class QActionGroup;
@@ -85,7 +85,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSelectionMenuButton, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSelectionMenuButton, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSelectionMenuButton() noexcept;

@@ -43,7 +43,7 @@ void Logger::information(const std::string& message)
 {
     core::log::Log log(core::log::Log::INFORMATION, message);
     m_logContainer.push_back(log);
-    SLM_INFO(message);
+    SIGHT_INFO(message);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ void Logger::warning(const std::string& message)
 {
     core::log::Log log(core::log::Log::WARNING, message);
     m_logContainer.push_back(log);
-    SLM_WARN(message);
+    SIGHT_WARN(message);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,14 +61,14 @@ void Logger::critical(const std::string& message)
 {
     core::log::Log log(core::log::Log::CRITICAL, message);
     m_logContainer.push_back(log);
-    SLM_ERROR(message);
+    SIGHT_ERROR(message);
 }
 
 //-----------------------------------------------------------------------------
 
 core::log::Log Logger::getLog(unsigned int index)
 {
-    SLM_ASSERT("Please be sure to provide an index lower than the number of items.", index < this->count());
+    SIGHT_ASSERT("Please be sure to provide an index lower than the number of items.", index < this->count());
     return m_logContainer[index];
 }
 

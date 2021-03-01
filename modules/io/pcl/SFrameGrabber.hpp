@@ -79,7 +79,7 @@ class MODULE_IO_PCL_CLASS_API SFrameGrabber : public service::IGrabber
 
 public:
 
-    fwCoreServiceMacro(SFrameGrabber, service::IGrabber)
+    SIGHT_DECLARE_SERVICE(SFrameGrabber, service::IGrabber)
 
     /// Constructor. Do nothing.
     MODULE_IO_PCL_API SFrameGrabber() noexcept;

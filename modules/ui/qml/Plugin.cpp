@@ -30,6 +30,12 @@
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
+#include <ui/base/IGuiContainer.hpp>
+#include <ui/qml/App.hpp>
+#include <ui/qml/IQmlAppManager.hpp>
+#include <ui/qml/QmlEngine.hpp>
+#include <ui/qt/WorkerQt.hpp>
+
 #include <modules/ui/qml/activity/ActivityLauncherManager.hpp>
 #include <modules/ui/qml/activity/SSequencer.hpp>
 #include <modules/ui/qml/activity/SView.hpp>
@@ -43,12 +49,6 @@
 #include <QQuickStyle>
 #include <QSharedPointer>
 #include <QtQml>
-
-#include <ui/base/IGuiContainer.hpp>
-#include <ui/qml/App.hpp>
-#include <ui/qml/IQmlAppManager.hpp>
-#include <ui/qml/QmlEngine.hpp>
-#include <ui/qt/WorkerQt.hpp>
 
 #include <functional>
 
@@ -71,7 +71,7 @@ void Plugin::start()
     qmlRegisterType< sight::ui::qml::IQmlAppManager >("sight::ui::qml", 1, 0, "IQmlAppManager");
 
     core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
-    SLM_ASSERT("Profile is not initialized", profile);
+    SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 

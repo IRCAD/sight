@@ -38,7 +38,7 @@ class IO_PATCH_CLASS_API ImageSeries1 : public io::patch::structural::creator::d
 
 public:
 
-    fwCoreClassMacro(ImageSeries1, io::patch::structural::creator::data::Series1, new ImageSeries1)
+    SIGHT_DECLARE_CLASS(ImageSeries1, io::patch::structural::creator::data::Series1, new ImageSeries1)
 
     /// Constructor
     IO_PATCH_API ImageSeries1();

@@ -67,7 +67,7 @@ Runtime::~Runtime()
 
 void Runtime::addModule( std::shared_ptr< Module > module )
 {
-    SLM_DEBUG("Module " + module->getIdentifier() + " added.")
+    SIGHT_DEBUG("Module " + module->getIdentifier() + " added.")
     m_modules.insert( module );
     std::for_each( module->extensionsBegin(), module->extensionsEnd(),
                    std::bind(&Runtime::addExtension, this, std::placeholders::_1));
@@ -128,7 +128,7 @@ void Runtime::unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > 
 {
     // Ensures no registered factory has the same identifier.
     const std::string type( factory->getType() );
-    SLM_WARN_IF("ExecutableFactory Type " + type + " not found.", this->findExecutableFactory(type) == 0 );
+    SIGHT_WARN_IF("ExecutableFactory Type " + type + " not found.", this->findExecutableFactory(type) == 0 );
     // Removes the executable factory.
     m_executableFactories.erase(factory);
 }
@@ -169,8 +169,8 @@ void Runtime::unregisterExtension( std::shared_ptr<Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(extension->getIdentifier());
-    SLM_WARN_IF("Extension " + identifier + " not found.",
-                !identifier.empty() && this->findExtension(identifier) == 0 );
+    SIGHT_WARN_IF("Extension " + identifier + " not found.",
+                  !identifier.empty() && this->findExtension(identifier) == 0 );
     // Removes the extension.
     m_extensions.erase( extension );
 }
@@ -216,7 +216,7 @@ void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 {
     // Asserts no registered extension point has the same identifier.
     const std::string identifier(point->getIdentifier());
-    SLM_WARN_IF("ExtensionPoint " + identifier + " not found.", this->findExtensionPoint(identifier) == 0);
+    SIGHT_WARN_IF("ExtensionPoint " + identifier + " not found.", this->findExtensionPoint(identifier) == 0);
 
     m_extensionPoints.erase(point);
 }
@@ -226,7 +226,7 @@ void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 std::shared_ptr< core::runtime::Module >
 Runtime::findModule( const std::string& identifier ) const
 {
-    SLM_ASSERT("Module identifier should not be empty", !identifier.empty());
+    SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
 
     const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
 
@@ -247,7 +247,7 @@ Runtime::findModule( const std::string& identifier ) const
 
 std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identifier ) const
 {
-    SLM_ASSERT("Module identifier should not be empty", !identifier.empty());
+    SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
 
     const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
 

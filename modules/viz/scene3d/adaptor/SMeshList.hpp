@@ -76,7 +76,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMeshList final : public sight::viz::scene3d:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMeshList, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMeshList, ::sight::viz::scene3d::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMeshList() noexcept;

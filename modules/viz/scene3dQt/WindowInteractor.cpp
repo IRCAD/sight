@@ -27,6 +27,8 @@
 
 #include <core/com/Slots.hxx>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
 
@@ -36,8 +38,6 @@
 #include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ void WindowInteractor::createContainer( sight::ui::base::container::fwContainer:
                                         bool _renderOnDemand,
                                         bool _fullscreen)
 {
-    SLM_ASSERT("Invalid parent.", _parent );
+    SIGHT_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast( _parent );
 
     QVBoxLayout* layout = new QVBoxLayout();
@@ -133,7 +133,7 @@ void WindowInteractor::connectToContainer()
 
     if( !ogreRenderService )
     {
-        SLM_ERROR("RenderService wrongly instantiated. ");
+        SIGHT_ERROR("RenderService wrongly instantiated. ");
     }
 
     QObject::connect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
@@ -187,7 +187,7 @@ int WindowInteractor::getFrameId() const
 
 float WindowInteractor::getLogicalDotsPerInch() const
 {
-    SLM_ASSERT("Trying to query dots per inch on a non-existing windows.", m_qOgreWidget);
+    SIGHT_ASSERT("Trying to query dots per inch on a non-existing windows.", m_qOgreWidget);
     return static_cast<float>(m_qOgreWidget->screen()->logicalDotsPerInchY());
 }
 

@@ -23,12 +23,12 @@
 #include "ui/base/IMenuBar.hpp"
 
 #include <core/base.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
 
 #include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 
 namespace sight::ui::base
 {
@@ -52,7 +52,7 @@ void IMenuBar::initialize()
     m_registry = ui::base::registry::MenuBar::New(this->getID());
     // find ViewRegistryManager configuration
     std::vector < ConfigurationType > vectRegistry = m_configuration->find("registry");
-    SLM_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistry.empty() );
+    SIGHT_ASSERT("["+this->getID()+"'] <registry> section is mandatory.", !vectRegistry.empty() );
 
     if(!vectRegistry.empty())
     {
@@ -62,13 +62,13 @@ void IMenuBar::initialize()
 
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    SLM_ASSERT("["+this->getID()+"'] <gui> section is mandatory.", !vectGui.empty() );
+    SIGHT_ASSERT("["+this->getID()+"'] <gui> section is mandatory.", !vectGui.empty() );
 
     if(!vectGui.empty())
     {
         // find LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        SLM_ASSERT("["+this->getID()+"'] <layout> section is mandatory.", !vectLayoutMng.empty() );
+        SIGHT_ASSERT("["+this->getID()+"'] <layout> section is mandatory.", !vectLayoutMng.empty() );
         if(!vectLayoutMng.empty())
         {
             m_layoutConfig = vectLayoutMng.at(0);
@@ -82,7 +82,7 @@ void IMenuBar::initialize()
 void IMenuBar::create()
 {
     ui::base::container::fwMenuBar::sptr menuBar = m_registry->getParent();
-    SLM_ASSERT("Parent menuBar is unknown.", menuBar);
+    SIGHT_ASSERT("Parent menuBar is unknown.", menuBar);
 
     core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >( [&]
         {
@@ -120,7 +120,7 @@ void IMenuBar::menuServiceStopping(std::string menuSrvSID)
     else
     {
         core::thread::ActiveWorkers::getDefaultWorker()->postTask<void>(std::function< void() >(
-                                                                                 [&]
+                                                                            [&]
             {
                 m_layoutManager->menuIsEnabled(menu, false);
             })).wait();
@@ -153,14 +153,15 @@ void IMenuBar::menuServiceStarting(std::string menuSrvSID)
 
 void IMenuBar::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    SLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-               layoutConfig->getName() == "layout");
+    SIGHT_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
+                 layoutConfig->getName() == "layout");
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY);
     m_layoutManager = ui::base::layoutManager::IMenuBarLayoutManager::dynamicCast(guiObj);
-    SLM_ASSERT("ClassFactoryRegistry failed for class "<< ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY,
-               m_layoutManager);
+    SIGHT_ASSERT(
+        "ClassFactoryRegistry failed for class "<< ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY,
+            m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

@@ -41,13 +41,13 @@ namespace sight::io::zip
 
 void* openReadZipArchive( const std::filesystem::path& archive )
 {
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::Read("Archive '" + archive.string() + "' doesn't exist."),
         !std::filesystem::exists(archive));
 
     void* zip = unzOpen(archive.string().c_str());
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         io::zip::exception::Read("Archive '" + archive.string() + "' cannot be opened."),
         zip == NULL);
 
@@ -77,7 +77,7 @@ public:
     {
         int nRet = unzLocateFile(m_zipDescriptor.get(), m_path.string().c_str(), 0);
 
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "File '"
                 + m_path.string()
@@ -96,7 +96,7 @@ public:
             nRet = unzOpenCurrentFilePassword(m_zipDescriptor.get(), m_key.c_str());
         }
 
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "Cannot retrieve file '"
                 + m_path.string()
@@ -112,7 +112,7 @@ public:
     std::streamsize read(char* s, std::streamsize n)
     {
         const int nRet = unzReadCurrentFile(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "Error occurred while reading archive '"
                 + m_archive.string()
@@ -132,7 +132,7 @@ public:
 
         int nRet = unzGetGlobalInfo(m_zipDescriptor.get(), &info);
 
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "Error occurred while reading information archive '"
                 + m_archive.string()
@@ -144,7 +144,7 @@ public:
 
         nRet = unzGetGlobalComment(m_zipDescriptor.get(), comment.data(), static_cast<uint16_t>(comment.size()));
 
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             io::zip::exception::Read(
                 "Error occurred while reading archive's global comment '"
                 + m_archive.string()

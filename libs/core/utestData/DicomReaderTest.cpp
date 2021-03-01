@@ -40,7 +40,7 @@ namespace sight::utestData
 #define CHECK_VALUE(check, message, val1, val2)                                \
     {                                                                           \
         check &= (val1 == val2);                                                \
-        SLM_ERROR_IF(message << " <"<< val1 << "> != <" << val2 << ">", val1 != val2 );        \
+        SIGHT_ERROR_IF(message << " <"<< val1 << "> != <" << val2 << ">", val1 != val2 );        \
     }                                                                           \
 
 //------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ namespace sight::utestData
 #define CHECK_VALUE_WITH_TOLERANCE(check, message, val1, val2, tol)                                 \
     {                                                                                               \
         check &= ( val1 - tol <= val2 &&  val2 <= val1 + tol );                                    \
-        SLM_ERROR_IF(message << val1 << " != " << val2, val1 - tol > val2 ||  val2 > val1 + tol ); \
+        SIGHT_ERROR_IF(message << val1 << " != " << val2, val1 - tol > val2 ||  val2 > val1 + tol ); \
     }
 
 //------------------------------------------------------------------------------
@@ -115,8 +115,8 @@ bool DicomReaderTest::checkSeriesJMSGenou( const data::ImageSeries::sptr& series
     {
         data::DicomValuesType physiciansName;
         ok &= (physiciansName == series->getPerformingPhysiciansName());
-        SLM_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
-                     (physiciansName == series->getPerformingPhysiciansName()));
+        SIGHT_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
+                       (physiciansName == series->getPerformingPhysiciansName()));
     }
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
@@ -168,7 +168,7 @@ bool DicomReaderTest::checkSeriesJMSGenou( const data::ImageSeries::sptr& series
 
     if(!img)
     {
-        SLM_ERROR( "Missing image." );
+        SIGHT_ERROR( "Missing image." );
         return false;
     }
 
@@ -309,8 +309,8 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const data::ImageSeries::sptr&
     {
         data::DicomValuesType physiciansName;
         ok &= (physiciansName == series->getPerformingPhysiciansName());
-        SLM_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
-                     (physiciansName == series->getPerformingPhysiciansName()));
+        SIGHT_ERROR_IF("Name of the physician(s) administering the Series doesn't match : ",
+                       (physiciansName == series->getPerformingPhysiciansName()));
     }
     //(0008,1090) LO [Aquilion]                                         # 8,1 Manufacturer's Model Name
     //(0010,0000) UL 104                                                # 4,1 Generic Group Length
@@ -362,7 +362,7 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed( const data::ImageSeries::sptr&
 
     if(!img)
     {
-        SLM_ERROR( "Missing image." );
+        SIGHT_ERROR( "Missing image." );
         return false;
     }
 

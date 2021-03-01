@@ -29,10 +29,13 @@
 #include <data/Material.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
+#include <io/base/service/ioTypes.hpp>
+
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
-#include <io/base/service/ioTypes.hpp>
+#include <ui/base/IDialogEditor.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -40,12 +43,8 @@
 #include <QString>
 #include <QVBoxLayout>
 
-#include <ui/base/IDialogEditor.hpp>
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -120,7 +119,7 @@ void STextureSelector::updating()
 void STextureSelector::onLoadButton()
 {
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("No associated Reconstruction", reconstruction);
+    SIGHT_ASSERT("No associated Reconstruction", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::Image::sptr image       = material->getDiffuseTexture();
@@ -162,7 +161,7 @@ void STextureSelector::onLoadButton()
 void STextureSelector::onDeleteButton()
 {
     auto reconstruction = this->getInOut< data::Reconstruction >(s_RECONSTRUCTION_INOUT);
-    SLM_ASSERT("No associated Reconstruction", reconstruction);
+    SIGHT_ASSERT("No associated Reconstruction", reconstruction);
 
     data::Material::sptr material = reconstruction->getMaterial();
     data::Image::sptr image       = material->getDiffuseTexture();

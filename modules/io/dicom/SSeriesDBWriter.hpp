@@ -56,7 +56,7 @@ class MODULE_IO_DICOM_CLASS_API SSeriesDBWriter : public sight::io::base::servic
 {
 
 public:
-    fwCoreServiceMacro(SSeriesDBWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SSeriesDBWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief Constructor

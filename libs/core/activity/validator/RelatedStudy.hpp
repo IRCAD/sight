@@ -39,7 +39,7 @@ namespace validator
 class ACTIVITY_CLASS_API RelatedStudy : public activity::IValidator
 {
 public:
-    fwCoreClassMacro(RelatedStudy, activity::IValidator, activity::validator::factory::New< RelatedStudy >)
+    SIGHT_DECLARE_CLASS(RelatedStudy, activity::IValidator, activity::validator::factory::New< RelatedStudy >)
 
     /// Constructor. Do nothing.
     ACTIVITY_API RelatedStudy(activity::IValidator::Key key);

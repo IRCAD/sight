@@ -52,7 +52,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::I
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SBitwiseAnd, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SBitwiseAnd, ::sight::service::IOperator)
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SBitwiseAnd();

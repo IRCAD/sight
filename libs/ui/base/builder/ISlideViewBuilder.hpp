@@ -61,7 +61,7 @@ class UI_BASE_CLASS_API ISlideViewBuilder : public ui::base::GuiBaseObject
 {
 public:
 
-    fwCoreClassMacro(ISlideViewBuilder, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ISlideViewBuilder, ui::base::GuiBaseObject)
 
     UI_BASE_API const static std::string REGISTRY_KEY;
 

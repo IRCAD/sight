@@ -32,7 +32,7 @@
 #include <istream>
 #include <type_traits>
 
-fwCampAutoDeclareMacro((sight)(core)(memory)(BufferObject), CORE_API);
+SIGHT_DECLARE_REFLECTION((sight)(core)(memory)(BufferObject), CORE_API);
 
 namespace sight::core::memory
 {
@@ -73,8 +73,8 @@ public:
 
     typedef size_t SizeType;
 
-    fwCoreClassMacro(BufferObject, core::BaseObject, new BufferObject)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(BufferObject, core::BaseObject, new BufferObject)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// return the sub class classname : an alias of this->getClassname
     std::string className() const
@@ -123,7 +123,7 @@ public:
         LockBase( const SPTR(T)& bo ) :
             m_bufferObject(bo)
         {
-            SLM_ASSERT("Can't lock NULL object", bo);
+            SIGHT_ASSERT("Can't lock NULL object", bo);
 
             core::mt::ScopedLock lock(bo->m_lockDumpMutex);
             m_count = bo->m_count.lock();

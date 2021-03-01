@@ -31,9 +31,9 @@
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <ui/base/preferences/helper.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
@@ -71,8 +71,8 @@ IFrameLayoutManager::~IFrameLayoutManager()
 
 void IFrameLayoutManager::initialize( ConfigurationType configuration)
 {
-    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be frame",
-               configuration->getName() == "frame");
+    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be frame",
+                 configuration->getName() == "frame");
 
     std::vector < ConfigurationType > name       = configuration->find("name");
     std::vector < ConfigurationType > icon       = configuration->find("icon");
@@ -93,8 +93,8 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     if(!icon.empty())
     {
         m_frameInfo.m_iconPath = core::runtime::getModuleResourceFilePath(icon.at(0)->getValue());
-        SLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
-                   std::filesystem::exists(m_frameInfo.m_iconPath));
+        SIGHT_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
+                     std::filesystem::exists(m_frameInfo.m_iconPath));
     }
 
     if(!minSize.empty())
@@ -114,7 +114,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     if(!styles.empty())
     {
         core::runtime::ConfigurationElement::sptr stylesCfgElt = styles.at(0);
-        SLM_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode") );
+        SIGHT_FATAL_IF("<style> node must contain mode attribute", !stylesCfgElt->hasAttribute("mode") );
         const std::string style = stylesCfgElt->getExistingAttributeValue("mode");
 
         if (style == "DEFAULT")
@@ -131,7 +131,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
         }
         else
         {
-            SLM_FATAL("The style "<<style<< " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
+            SIGHT_FATAL("The style "<<style<< " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
         }
     }
     this->readConfig();
@@ -148,7 +148,7 @@ void IFrameLayoutManager::setCloseCallback(CloseCallback fct)
 
 void IFrameLayoutManager::defaultCloseCallback()
 {
-    SLM_WARN("No specific close callback defined");
+    SIGHT_WARN("No specific close callback defined");
 }
 
 //-----------------------------------------------------------------------------
@@ -162,35 +162,35 @@ void IFrameLayoutManager::readConfig()
         {
             data::Integer::sptr state =
                 data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_STATE_UI ] );
-            SLM_ASSERT("UI state not correct", state);
+            SIGHT_ASSERT("UI state not correct", state);
             m_frameInfo.m_state = (FrameState) state->value();
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_SIZE_W_UI ) != prefUI->end() )
         {
             data::Integer::sptr sizew =
                 data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_W_UI ] );
-            SLM_ASSERT("UI sizeW not correct", sizew);
+            SIGHT_ASSERT("UI sizeW not correct", sizew);
             m_frameInfo.m_size.first = *sizew;
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_SIZE_H_UI ) != prefUI->end() )
         {
             data::Integer::sptr sizeh =
                 data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_SIZE_H_UI ] );
-            SLM_ASSERT("UI sizeH not correct", sizeh);
+            SIGHT_ASSERT("UI sizeH not correct", sizeh);
             m_frameInfo.m_size.second = *sizeh;
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_POSITION_X_UI ) != prefUI->end() )
         {
             data::Integer::sptr posx =
                 data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_X_UI ] );
-            SLM_ASSERT("UI posX not correct", posx);
+            SIGHT_ASSERT("UI posX not correct", posx);
             m_frameInfo.m_position.first = *posx;
         }
         if ( prefUI->find( IFrameLayoutManager::FRAME_POSITION_Y_UI ) != prefUI->end() )
         {
             data::Integer::sptr posy =
                 data::Integer::dynamicCast( (*prefUI)[ IFrameLayoutManager::FRAME_POSITION_Y_UI ] );
-            SLM_ASSERT("UI posY not correct", posy);
+            SIGHT_ASSERT("UI posY not correct", posy);
             m_frameInfo.m_position.second = *posy;
         }
     }

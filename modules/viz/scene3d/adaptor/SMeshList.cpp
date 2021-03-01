@@ -65,8 +65,8 @@ void SMeshList::configuring()
 
     m_capacity = config.get(s_CAPACITY_CONFIG, m_capacity);
     m_dropData = config.get(s_DROPPING_CONFIG, m_dropData);
-    SLM_ASSERT("Capacity must be > 0", m_capacity > 0);
-    SLM_ASSERT("Drop ratio must be > 0", m_dropData > 0);
+    SIGHT_ASSERT("Capacity must be > 0", m_capacity > 0);
+    SIGHT_ASSERT("Drop ratio must be > 0", m_dropData > 0);
     m_generateAlpha = config.get(s_TEXTURE_ALPHA_CONFIG, m_generateAlpha);
 }
 
@@ -109,7 +109,7 @@ void SMeshList::starting()
         transformAdaptor->configure(config);
         transformAdaptor->start();
 
-        SLM_ASSERT("STransform is not started", transformAdaptor->isStarted());
+        SIGHT_ASSERT("STransform is not started", transformAdaptor->isStarted());
 
         // Create the texture adaptor
         const sight::viz::scene3d::IAdaptor::sptr textureAdaptor =
@@ -126,7 +126,7 @@ void SMeshList::starting()
 
         textureAdaptor->configure(textureConfig);
         textureAdaptor->start();
-        SLM_ASSERT("STexture is not started", textureAdaptor->isStarted());
+        SIGHT_ASSERT("STexture is not started", textureAdaptor->isStarted());
 
         // Creates the mesh adaptor.
         const sight::viz::scene3d::IAdaptor::sptr meshAdaptor =
@@ -143,7 +143,7 @@ void SMeshList::starting()
         meshAdaptor->configure(meshConfig);
         meshAdaptor->updateVisibility(false);
         meshAdaptor->start();
-        SLM_ASSERT("SMesh is not started", meshAdaptor->isStarted());
+        SIGHT_ASSERT("SMesh is not started", meshAdaptor->isStarted());
 
         // Store data.
         MeshInstance instance {transform, image, transformAdaptor, meshAdaptor, textureAdaptor};

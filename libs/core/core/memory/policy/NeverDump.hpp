@@ -46,7 +46,7 @@ class CORE_CLASS_API NeverDump : public core::memory::IPolicy
 {
 public:
 
-    fwCoreClassMacro(NeverDump, core::memory::IPolicy, core::memory::policy::factory::New< NeverDump >)
+    SIGHT_DECLARE_CLASS(NeverDump, core::memory::IPolicy, core::memory::policy::factory::New< NeverDump >)
 
     CORE_API virtual void allocationRequest( BufferInfo& info,
                                              core::memory::BufferManager::ConstBufferPtrType buffer,
@@ -79,8 +79,8 @@ public:
 
     bool setParam(const std::string& name, const std::string& value) override
     {
-        FwCoreNotUsedMacro(name);
-        FwCoreNotUsedMacro(value);
+        SIGHT_NOT_USED(name);
+        SIGHT_NOT_USED(value);
         return false;
     }
 

@@ -36,7 +36,7 @@ namespace sight::atoms
 class ATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassMacro(Object, atoms::Base, atoms::factory::New< Object >)
+    SIGHT_DECLARE_CLASS(Object, atoms::Base, atoms::factory::New< Object >)
 
     typedef std::map<std::string, Base::sptr> AttributesType;
     typedef std::map<std::string, std::string> MetaInfosType;

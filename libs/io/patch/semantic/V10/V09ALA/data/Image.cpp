@@ -32,10 +32,10 @@
 
 #include <core/tools/UUID.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/StructuralCreatorDB.hpp>
+
+#include <boost/algorithm/string.hpp>
 
 namespace sight::io::patch::semantic
 {
@@ -79,7 +79,7 @@ void Image::apply(
     io::atoms::patch::helper::Object helper( current );
 
     sight::atoms::Map::csptr previousFieldMap = sight::atoms::Map::dynamicCast(previous->getAttribute("fields"));
-    SLM_ASSERT("Image does not have field map", previousFieldMap);
+    SIGHT_ASSERT("Image does not have field map", previousFieldMap);
 
     const auto& iter = previousFieldMap->find("m_landmarksId");
     if (iter != previousFieldMap->end())

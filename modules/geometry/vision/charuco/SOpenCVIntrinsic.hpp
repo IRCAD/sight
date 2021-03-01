@@ -65,7 +65,7 @@ public:
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;
 
-    fwCoreServiceMacro(SOpenCVIntrinsic, sight::service::ICalibration)
+    SIGHT_DECLARE_SERVICE(SOpenCVIntrinsic, sight::service::ICalibration)
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SOpenCVIntrinsic() noexcept;

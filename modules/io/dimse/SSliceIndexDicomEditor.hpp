@@ -30,16 +30,16 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
+#include <io/base/service/IReader.hpp>
+
 #include <service/IHasServices.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <ui/base/IEditor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::io::dimse
 {
@@ -81,7 +81,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSliceIndexDicomEditor,  sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor,  sight::ui::base::IEditor)
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SSliceIndexDicomEditor() noexcept;

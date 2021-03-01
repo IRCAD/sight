@@ -45,7 +45,7 @@ namespace parser
 class SERVICE_CLASS_API Object : public service::IXMLParser
 {
 public:
-    fwCoreServiceMacro(Object, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Object, service::IXMLParser)
 
     SERVICE_API Object( );
     SERVICE_API virtual ~Object();

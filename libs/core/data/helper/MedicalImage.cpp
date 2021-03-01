@@ -130,8 +130,8 @@ void MedicalImage::setOrientation( MedicalImage::Orientation orientation )
 
 void MedicalImage::setOrientation( int orientation )
 {
-    SLM_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
-               orientation == 0 || orientation == 1 || orientation == 2);
+    SIGHT_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
+                 orientation == 0 || orientation == 1 || orientation == 2);
     this->setOrientation(static_cast< data::helper::MedicalImage::Orientation >(orientation));
 }
 
@@ -268,7 +268,7 @@ void MedicalImage::updateImageInfos( data::Image::sptr image )
 
 data::Image::sptr MedicalImage::getImage() const
 {
-    SLM_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
+    SIGHT_ASSERT("Image weak pointer empty !", !m_weakImage.expired());
     return m_weakImage.lock();
 }
 

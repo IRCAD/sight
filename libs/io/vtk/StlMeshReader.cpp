@@ -35,7 +35,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSTLReader.h>
 
-fwDataIOReaderRegisterMacro( ::sight::io::vtk::StlMeshReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::vtk::StlMeshReader );
 
 namespace sight::io::vtk
 {
@@ -57,11 +57,11 @@ StlMeshReader::~StlMeshReader()
 
 void StlMeshReader::read()
 {
-    SLM_ASSERT("Object pointer expired", !m_object.expired());
+    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SLM_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock );
 
     const data::Mesh::sptr pMesh = getConcreteObject();
 
@@ -88,7 +88,7 @@ void StlMeshReader::read()
 
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
-    FW_RAISE_IF("StlMeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
+    SIGHT_THROW_IF("StlMeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
     io::vtk::helper::Mesh::fromVTKMesh(mesh, pMesh);
 
     m_job->finish();

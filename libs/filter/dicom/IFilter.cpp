@@ -53,7 +53,7 @@ bool IFilter::isConfigurableWithGUI() const
 
 void IFilter::configureWithGUI()
 {
-    SLM_WARN("You should override this function in order to configure your filter using a GUI frame.");
+    SIGHT_WARN("You should override this function in order to configure your filter using a GUI frame.");
 }
 
 } // namespace sight::filter::dicom

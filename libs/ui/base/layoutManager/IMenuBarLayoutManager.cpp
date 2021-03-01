@@ -33,7 +33,8 @@ namespace sight::ui::base
 namespace layoutManager
 {
 
-const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY = "::sight::ui::base::MenuBarLayoutManager";
+const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY =
+    "::sight::ui::base::MenuBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 
@@ -51,14 +52,14 @@ IMenuBarLayoutManager::~IMenuBarLayoutManager()
 
 void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
 {
-    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-               configuration->getName() == "layout");
+    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+                 configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     m_menus.clear();
     for (ConfigurationType menu : vectMenus)
     {
-        SLM_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
+        SIGHT_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
         if( menu->hasAttribute("name") )
         {
             std::string name = menu->getExistingAttributeValue("name");

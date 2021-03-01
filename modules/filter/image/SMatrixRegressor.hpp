@@ -26,9 +26,9 @@
 
 #include <core/base.hpp>
 
-#include <service/IOperator.hpp>
-
 #include <filter/image/MatrixRegressor.hpp>
+
+#include <service/IOperator.hpp>
 
 namespace sight::module::filter::image
 {
@@ -61,7 +61,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public service::IOperator
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMatrixRegressor, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SMatrixRegressor, service::IOperator)
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SMatrixRegressor();

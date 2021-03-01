@@ -79,7 +79,7 @@ void fwID::setID( IDType newID )
 
 void fwID::addIDInDictionary( IDType newID )
 {
-    SLM_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
+    SIGHT_FATAL_IF("Try to set an existing fwID = " << newID, isIdFound(newID));
 
     core::mt::WriteLock lock(s_dictionaryMutex);
     fwID::removeIDfromDictionary(m_id);
@@ -136,7 +136,7 @@ core::tools::Object::sptr fwID::getObject( fwID::IDType requestID )
     Dictionary::iterator it = m_dictionary.find(requestID);
     if ( it != m_dictionary.end() )
     {
-        SLM_ASSERT(  "expired object in fwID::Dictionary for id=" + requestID,  !it->second.expired() );
+        SIGHT_ASSERT(  "expired object in fwID::Dictionary for id=" + requestID,  !it->second.expired() );
         return it->second.lock();
     }
     else

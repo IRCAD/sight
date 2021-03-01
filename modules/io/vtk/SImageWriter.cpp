@@ -31,10 +31,6 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <service/macros.hpp>
-
-#include <boost/algorithm/string.hpp>
-
 #include <io/base/reader/IObjectReader.hpp>
 #include <io/base/service/IWriter.hpp>
 #include <io/vtk/BitmapImageWriter.hpp>
@@ -42,14 +38,17 @@
 #include <io/vtk/MetaImageWriter.hpp>
 #include <io/vtk/VtiImageWriter.hpp>
 
+#include <service/macros.hpp>
+
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 namespace sight::module::io::vtk
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -222,8 +221,8 @@ bool SImageWriter::saveImage( const std::filesystem::path& imgFile,
     }
     else
     {
-        FW_RAISE_EXCEPTION(core::tools::Failed("Unsupported " + ext + " format (Available formats: " +
-                                               ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .pnm, .tiff)"));
+        SIGHT_THROW_EXCEPTION(core::tools::Failed("Unsupported " + ext + " format (Available formats: " +
+                                                  ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .pnm, .tiff)"));
     }
 
     myWriter->setObject(image);
@@ -266,7 +265,7 @@ void SImageWriter::updating()
     {
         // Retrieve dataStruct associated with this service
         data::Image::csptr pImage = this->getInput< data::Image >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", pImage);
+        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", pImage);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -277,7 +276,7 @@ void SImageWriter::updating()
         }
         catch(core::tools::Failed& e)
         {
-            FW_RAISE_EXCEPTION(e);
+            SIGHT_THROW_EXCEPTION(e);
         }
         cursor.setDefaultCursor();
     }

@@ -50,8 +50,8 @@ class IO_DICOM_CLASS_API Series : public io::base::writer::GenericObjectWriter< 
 
 public:
 
-    fwCoreClassMacro(Series, io::base::writer::GenericObjectWriter< data::Series >,
-                     io::base::writer::factory::New< Series >);
+    SIGHT_DECLARE_CLASS(Series, io::base::writer::GenericObjectWriter< data::Series >,
+                        io::base::writer::factory::New< Series >);
 
     typedef enum
     {

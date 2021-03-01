@@ -27,7 +27,7 @@
 #include "data/Image.hpp"
 #include "data/Object.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(Material));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Material));
 
 namespace sight::data
 {
@@ -41,8 +41,8 @@ class DATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassMacro(Material, data::Object, data::factory::New< Material >)
-    fwCampMakeFriendDataMacro((sight)(data)(Material));
+    SIGHT_DECLARE_CLASS(Material, data::Object, data::factory::New< Material >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Material));
 
     /**
      * @brief Constructor

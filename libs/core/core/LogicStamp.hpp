@@ -37,7 +37,7 @@ class CORE_CLASS_API LogicStamp : public BaseObject
 {
 
 public:
-    fwCoreClassMacro(LogicStamp, BaseObject, new LogicStamp)
+    SIGHT_DECLARE_CLASS(LogicStamp, BaseObject, new LogicStamp)
 
     /**
      * @brief Type used in logical typestamp.

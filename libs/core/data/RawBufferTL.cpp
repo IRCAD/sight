@@ -32,7 +32,7 @@
 
 #include <functional>
 
-fwDataRegisterMacro( ::sight::data::RawBufferTL );
+SIGHT_REGISTER_DATA( ::sight::data::RawBufferTL );
 
 namespace sight::data
 {
@@ -55,9 +55,9 @@ RawBufferTL::~RawBufferTL ()
 void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 {
     RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source );
 
     this->clearTimeline();

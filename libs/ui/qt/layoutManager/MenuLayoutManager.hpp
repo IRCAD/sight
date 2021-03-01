@@ -42,8 +42,8 @@ namespace layoutManager
 class UI_QT_CLASS_API MenuLayoutManager : public ui::base::layoutManager::IMenuLayoutManager
 {
 public:
-    fwCoreClassMacro(MenuLayoutManager, ui::base::layoutManager::IMenuLayoutManager,
-                     ui::base::factory::New< MenuLayoutManager >)
+    SIGHT_DECLARE_CLASS(MenuLayoutManager, ui::base::layoutManager::IMenuLayoutManager,
+                        ui::base::factory::New< MenuLayoutManager >)
 
     UI_QT_API MenuLayoutManager(ui::base::GuiBaseObject::Key key);
 

@@ -125,8 +125,8 @@ void IVolumeRenderer::resizeViewport(int /*w*/, int /*h*/)
 void IVolumeRenderer::scaleTranslateCube(const data::Image::SpacingType& spacing,
                                          const data::Image::OriginType& origin)
 {
-    SLM_ASSERT("Image origin and spacing must be three-dimensional for volume rendering.",
-               spacing.size() == 3 && origin.size() == 3);
+    SIGHT_ASSERT("Image origin and spacing must be three-dimensional for volume rendering.",
+                 spacing.size() == 3 && origin.size() == 3);
 
     m_volumeSceneNode->resetToInitialState();
 

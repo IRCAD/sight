@@ -38,17 +38,17 @@
 
 #include <service/macros.hpp>
 
-#include <QByteArray>
-#include <QCamera>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QByteArray>
+#include <QCamera>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 namespace sight::module::ui::qt
 {
@@ -70,7 +70,6 @@ static const service::IService::KeyType s_CAMERA_INOUT        = "camera";
 static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string s_LABEL_CONFIG                = "label";
-
 
 //------------------------------------------------------------------------------
 
@@ -147,7 +146,7 @@ void SCamera::starting()
         const size_t numCameras = cameraSeries->getNumberOfCameras();
         if(numCameras == 0)
         {
-            SLM_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
+            SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
 
             for(size_t i = 0; i < m_numCreateCameras; ++i)
             {
@@ -159,12 +158,12 @@ void SCamera::starting()
                     data::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);
             }
-            SLM_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
+            SIGHT_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
         }
         else
         {
-            SLM_WARN_IF("CameraSeries contains camera data but the service is configured to create " <<
-                        m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
+            SIGHT_WARN_IF("CameraSeries contains camera data but the service is configured to create " <<
+                          m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
         }
     }
 }
@@ -312,12 +311,13 @@ void SCamera::onChooseFile()
                 }
                 else
                 {
-                    SLM_WARN("Relative path '"+videoRelativePath.string()+"' genrerated with preference is not valid.");
+                    SIGHT_WARN("Relative path '"+videoRelativePath.string()+
+                               "' genrerated with preference is not valid.");
                 }
             }
             else
             {
-                SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
+                SIGHT_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
             }
 
             data::mt::ObjectWriteLock lock(camera);
@@ -417,7 +417,7 @@ std::vector< data::Camera::sptr > SCamera::getCameras() const
     else
     {
         const auto camera = this->getInOut< data::Camera >(s_CAMERA_INOUT);
-        SLM_ASSERT("'" + s_CAMERA_INOUT + "' does not exist.", camera);
+        SIGHT_ASSERT("'" + s_CAMERA_INOUT + "' does not exist.", camera);
         cameras.push_back(camera);
     }
 

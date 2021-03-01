@@ -39,7 +39,7 @@ class MODULE_UI_QT_CLASS_API InsertSeries : public data::Series
 {
 
 public:
-    fwCoreClassMacro(InsertSeries, data::Object, data::factory::New< InsertSeries >)
+    SIGHT_DECLARE_CLASS(InsertSeries, data::Object, data::factory::New< InsertSeries >)
 
     /**
      * @brief Constructor

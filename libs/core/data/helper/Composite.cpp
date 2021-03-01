@@ -53,9 +53,9 @@ Composite::~Composite()
 
 void Composite::add( std::string _compositeKey, data::Object::sptr _newObject )
 {
-    SLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                  "object to be added.",
-                  m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
+    SIGHT_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                    "object to be added.",
+                    m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
 
     // Modify composite
     m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
@@ -68,9 +68,9 @@ void Composite::add( std::string _compositeKey, data::Object::sptr _newObject )
 
 void Composite::remove( std::string _compositeKey )
 {
-    SLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                  "object to be removed.",
-                  m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    SIGHT_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                    "object to be removed.",
+                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
     // Get old object
     data::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
@@ -102,9 +102,9 @@ void Composite::clear()
 
 void Composite::swap( std::string _compositeKey, data::Object::sptr _newObject )
 {
-    SLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
-                  "object to be swapped.",
-                  m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    SIGHT_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                    "object to be swapped.",
+                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
     // Get old object
     data::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
@@ -119,7 +119,7 @@ void Composite::swap( std::string _compositeKey, data::Object::sptr _newObject )
     }
     else
     {
-        SLM_INFO(
+        SIGHT_INFO(
             "Cannot swap this object ( "<< _compositeKey <<
                 " ) in composite because it is the same object. Do nothing (not notification)");
     }
@@ -150,8 +150,8 @@ void Composite::notify()
 
         sig->asyncEmit(m_addedObjects);
     }
-    SLM_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
-                m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
+    SIGHT_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
+                  m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
 
     m_removedObjects.clear();
     m_newChangedObjects.clear();

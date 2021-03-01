@@ -27,15 +27,14 @@
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include <ui/base/dialog/MessageDialog.hpp>
+
+#include <boost/range/adaptor/reversed.hpp>
 
 namespace sight::module::ui::base
 {
 namespace com
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -126,7 +125,7 @@ void SStarter::updating()
             ::sight::ui::base::LockAction lock(this->getSptr());
 
             service::IService::sptr service = service::get( uid );
-            SLM_ASSERT("service not found", service);
+            SIGHT_ASSERT("service not found", service);
             switch ( action )
             {
                 case START_OR_STOP:
@@ -167,7 +166,7 @@ void SStarter::updating()
                     }
                     else
                     {
-                        SLM_WARN("Service " << service->getID() << " is not stopped");
+                        SIGHT_WARN("Service " << service->getID() << " is not stopped");
                     }
                     service->update();
                     break;
@@ -180,7 +179,7 @@ void SStarter::updating()
                     }
                     else
                     {
-                        SLM_WARN("Service " << service->getID() << " is not started");
+                        SIGHT_WARN("Service " << service->getID() << " is not started");
                     }
                     break;
                 }
@@ -193,15 +192,15 @@ void SStarter::updating()
                     }
                     else
                     {
-                        SLM_WARN("Service " << service->getID() << " is not stopped");
+                        SIGHT_WARN("Service " << service->getID() << " is not stopped");
                     }
                     break;
                 }
                 default:
                 {
-                    SLM_FATAL("There is no action ("<< action
-                                                    <<") type corresponding to the action id requested for " << uid <<
-                              ".");
+                    SIGHT_FATAL("There is no action ("<< action
+                                                      <<") type corresponding to the action id requested for " << uid <<
+                                ".");
                     break;
                 }
             }
@@ -213,7 +212,7 @@ void SStarter::updating()
                 "The service is unavailable.",
                 ::sight::ui::base::dialog::IMessageDialog::WARNING);
 
-            SLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
+            SIGHT_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
         }
     }
 }
@@ -226,7 +225,7 @@ void SStarter::configuring()
 
     for(ConfigurationType actionCfg :  m_configuration->getElements() )
     {
-        SLM_INFO( "SStarter " << actionCfg->getName());
+        SIGHT_INFO( "SStarter " << actionCfg->getName());
 
         std::string actionType = actionCfg->getName();
         ActionType action;
@@ -260,10 +259,10 @@ void SStarter::configuring()
         }
         else
         {
-            SLM_WARN("The \"actionType\":" << actionType <<" is not managed by SStarter");
+            SIGHT_WARN("The \"actionType\":" << actionType <<" is not managed by SStarter");
             continue;
         }
-        SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
+        SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
         IDSrvType uuid = actionCfg->getExistingAttributeValue("uid");
 
         m_uuidServices.push_back( std::make_pair(uuid, action) );

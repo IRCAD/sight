@@ -77,7 +77,7 @@ void STransform::starting()
     ::Ogre::SceneManager* const sceneManager = this->getSceneManager();
 
     ::Ogre::SceneNode* const rootSceneNode = sceneManager->getRootSceneNode();
-    SLM_ASSERT("Root scene node not found", rootSceneNode);
+    SIGHT_ASSERT("Root scene node not found", rootSceneNode);
 
     if (!m_parentTransformId.empty())
     {

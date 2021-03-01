@@ -81,7 +81,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SImageSeriesWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief Configure the image path.

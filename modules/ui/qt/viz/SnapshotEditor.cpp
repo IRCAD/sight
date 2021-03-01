@@ -33,15 +33,15 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
-
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <filesystem>
 
@@ -51,7 +51,6 @@ namespace sight::module::ui::qt::viz
 //------------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
-
 
 //------------------------------------------------------------------------------
 
@@ -129,7 +128,7 @@ void SnapshotEditor::onSnapButton()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
     if( container->isVisible() )
     {
         std::string filename = this->requestFileName();

@@ -77,7 +77,7 @@ void SRender::configuring()
     // Get scene configuration
     const ConfigType config = this->getConfigTree();
     const auto sceneCfg     = config.get_child_optional(s_SCENE_CONFIG);
-    SLM_ASSERT("One scene must be configured.", sceneCfg);
+    SIGHT_ASSERT("One scene must be configured.", sceneCfg);
 
     // Get background tag and its attributes if it is defined.
     const auto backgroundAttr = sceneCfg->get_child_optional(s_BACKGROUND_CONFIG + ".<xmlattr>");

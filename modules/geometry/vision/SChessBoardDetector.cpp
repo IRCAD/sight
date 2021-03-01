@@ -26,21 +26,21 @@
 #include <core/com/Slots.hxx>
 
 #include <data/CalibrationInfo.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Image.hpp>
 
-#include <opencv2/calib3d.hpp>
-#include <opencv2/imgproc.hpp>
+#include <service/IService.hpp>
+#include <service/macros.hpp>
 
 #include <ui/base/preferences/helper.hpp>
+
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include <thread>
 
@@ -78,16 +78,16 @@ SChessBoardDetector::~SChessBoardDetector() noexcept
 
 void SChessBoardDetector::configuring()
 {
-    SLM_ASSERT("This service must have the same number of 'image' keys and 'calInfo' keys",
-               this->getKeyGroupSize(s_IMAGE_INPUT) == this->getKeyGroupSize(s_CALINFO_INOUT));
+    SIGHT_ASSERT("This service must have the same number of 'image' keys and 'calInfo' keys",
+                 this->getKeyGroupSize(s_IMAGE_INPUT) == this->getKeyGroupSize(s_CALINFO_INOUT));
 
     const ConfigType config      = this->getConfigTree();
     const ConfigType boardConfig = config.get_child("board");
 
     m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");
-    SLM_ASSERT("Missing board width preference key.", !m_widthKey.empty());
+    SIGHT_ASSERT("Missing board width preference key.", !m_widthKey.empty());
     m_heightKey = boardConfig.get<std::string>("<xmlattr>.height");
-    SLM_ASSERT("Missing board height preference key.", !m_heightKey.empty());
+    SIGHT_ASSERT("Missing board height preference key.", !m_heightKey.empty());
     m_scaleKey = boardConfig.get<std::string>("<xmlattr>.scale");
 }
 
@@ -166,7 +166,7 @@ void SChessBoardDetector::recordPoints()
         for(size_t i = 0; i < calibGroupSize; ++i)
         {
             auto calInfo = this->getInOut< data::CalibrationInfo >(s_CALINFO_INOUT, i);
-            SLM_ASSERT("Missing 'calibInfo' in-out.", calInfo);
+            SIGHT_ASSERT("Missing 'calibInfo' in-out.", calInfo);
             data::mt::ObjectWriteLock calInfoLock(calInfo);
 
             if(m_pointLists[i])
@@ -212,7 +212,7 @@ void SChessBoardDetector::updateChessboardSize()
         if(m_scale > 1.f)
         {
             m_scale = 1.f;
-            SLM_ERROR("It is pointless to upscale the image for chessboard detection.");
+            SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
     }
 }
@@ -222,7 +222,7 @@ void SChessBoardDetector::updateChessboardSize()
 void SChessBoardDetector::doDetection(size_t _imageIndex)
 {
     const auto img = this->getInput< data::Image >(s_IMAGE_INPUT, _imageIndex);
-    SLM_ASSERT("Missing 'image' input.", img);
+    SIGHT_ASSERT("Missing 'image' input.", img);
 
     data::mt::ObjectReadLock imgLock(img);
     const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(img);

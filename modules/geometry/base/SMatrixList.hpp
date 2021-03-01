@@ -85,7 +85,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API SMatrixList final : public service::IServic
 public:
 
     /// Generates default methods like New, dynamicCast,...
-    fwCoreServiceMacro(SMatrixList, service::IService)
+    SIGHT_DECLARE_SERVICE(SMatrixList, service::IService)
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API SMatrixList() noexcept;

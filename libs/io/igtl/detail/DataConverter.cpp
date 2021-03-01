@@ -100,7 +100,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
         }
     }
 
-    SLM_WARN("Message type not supported : " + std::string(src->GetDeviceType()));
+    SIGHT_WARN("Message type not supported : " + std::string(src->GetDeviceType()));
     return obj;
 }
 

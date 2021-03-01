@@ -25,13 +25,13 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
-#include <service/macros.hpp>
-
-#include <boost/math/constants/constants.hpp>
-
 #include <geometry/data/IntrasecTypes.hpp>
 #include <geometry/data/Mesh.hpp>
 #include <geometry/data/VectorFunctions.hpp>
+
+#include <service/macros.hpp>
+
+#include <boost/math/constants/constants.hpp>
 
 namespace sight::module::filter::mesh
 {
@@ -57,7 +57,6 @@ static const std::string s_ANGLE_CONFIG        = "angle";
 static const std::string s_DELTA_DEPTH_CONFIG  = "deltaDepth";
 
 static const service::IService::KeyType s_MESH_INOUT = "mesh";
-
 
 // -----------------------------------------------------------------------------
 
@@ -258,7 +257,7 @@ void SUltrasoundMesh::updateQuadMesh(const data::Mesh::sptr& _mesh)
     const int height = static_cast<int>(m_meshPositionArray.shape()[1]);
 
     // check that values describe a matrix
-    SLM_ASSERT("At least 2*2 points are needed", width > 1 && height > 2);
+    SIGHT_ASSERT("At least 2*2 points are needed", width > 1 && height > 2);
 
     // Copy new positions inside the mesh
     auto pointsItr = _mesh->begin< data::iterator::PointIterator >();

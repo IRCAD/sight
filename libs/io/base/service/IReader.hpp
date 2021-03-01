@@ -51,7 +51,7 @@ class IO_BASE_CLASS_API IReader : public sight::service::IService
 {
 
 public:
-    fwCoreServiceMacro(IReader, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(IReader, sight::service::IService)
 
     /**
      * @name Slots API

@@ -41,7 +41,7 @@ class ATOMS_CLASS_API Numeric : public Base
 {
 public:
 
-    fwCoreClassMacro(Numeric, atoms::Base, atoms::factory::New< Numeric >)
+    SIGHT_DECLARE_CLASS(Numeric, atoms::Base, atoms::factory::New< Numeric >)
 
     typedef enum
     {

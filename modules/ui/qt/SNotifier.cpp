@@ -29,7 +29,6 @@
 
 #include <ui/base/GuiRegistry.hpp>
 
-
 namespace sight::module::ui::qt
 {
 
@@ -79,8 +78,8 @@ void SNotifier::configuring()
     }
     else
     {
-        SLM_ERROR("Position '" + position + "' isn't a valid position value, accepted values are:"
-                  "TOP_RIGHT, TOP_LEFT, CENTERED_TOP, CENTERED, BOTTOM_RIGHT, BOTTOM_LEFT, CENTERED_BOTTOM.")
+        SIGHT_ERROR("Position '" + position + "' isn't a valid position value, accepted values are:"
+                    "TOP_RIGHT, TOP_LEFT, CENTERED_TOP, CENTERED, BOTTOM_RIGHT, BOTTOM_LEFT, CENTERED_BOTTOM.")
     }
 
     m_durationInMs = configTree.get<int>("duration", m_durationInMs);
@@ -140,12 +139,12 @@ void SNotifier::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SLM_ERROR("Value '" + _val + "' is not handled for key " + _key);
+            SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
         }
     }
     else
     {
-        SLM_ERROR("Value '" + _val + "' is not handled for key " + _key);
+        SIGHT_ERROR("Value '" + _val + "' is not handled for key " + _key);
     }
 
 }

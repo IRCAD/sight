@@ -39,7 +39,7 @@ namespace parser
 
 void GenericField::updating( )
 {
-    SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
+    SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
@@ -47,10 +47,10 @@ void GenericField::updating( )
 void GenericField::createConfig( core::tools::Object::sptr _obj )
 {
     data::GenericFieldBase::sptr field = data::GenericFieldBase::dynamicCast( _obj );
-    SLM_ASSERT("GenericField not instanced", field);
+    SIGHT_ASSERT("GenericField not instanced", field);
 
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");
-    SLM_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
+    SIGHT_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
 
     if ( configs.size() >= 1 )
     {

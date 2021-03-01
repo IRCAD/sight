@@ -20,8 +20,8 @@
  *
  ***********************************************************************/
 
-#include "service/helper/Config.hpp"
 #include "service/extension/Config.hpp"
+#include "service/helper/Config.hpp"
 
 #include "service/registry/Proxy.hpp"
 
@@ -58,15 +58,15 @@ void Config::createConnections( const core::runtime::ConfigurationElement::csptr
     core::tools::Object::sptr sigSource    = core::tools::fwID::getObject(info.m_signal.first);
     core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(sigSource);
 
-    SLM_ASSERT("Signal source not found '" + info.m_signal.first + "'", sigSource);
-    SLM_ASSERT("invalid signal source '" + info.m_signal.first + "'", hasSignals);
+    SIGHT_ASSERT("Signal source not found '" + info.m_signal.first + "'", sigSource);
+    SIGHT_ASSERT("invalid signal source '" + info.m_signal.first + "'", hasSignals);
 
     for(SlotInfoType slotInfo : info.m_slots)
     {
         core::tools::Object::sptr slotObj = core::tools::fwID::getObject(slotInfo.first);
-        SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", slotObj);
+        SIGHT_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", slotObj);
         core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(slotObj);
-        SLM_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
+        SIGHT_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
 
         connections.connect(hasSignals, info.m_signal.second, hasSlots, slotInfo.second);
     }
@@ -88,17 +88,17 @@ Config::ConnectionInfo Config::parseConnections( const core::runtime::Configurat
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            SLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            SIGHT_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            SLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
-                       !uid.empty() && !key.empty());
+            SIGHT_ASSERT(src << " configuration is not correct for "<< elem->getName(),
+                         !uid.empty() && !key.empty());
 
             if (elem->getName() == "signal")
             {
-                SLM_ASSERT("There must be only one signal by connection",
-                           info.m_signal.first.empty() && info.m_signal.second.empty());
+                SIGHT_ASSERT("There must be only one signal by connection",
+                             info.m_signal.first.empty() && info.m_signal.second.empty());
                 info.m_signal = std::make_pair(uid, key);
             }
             else if (elem->getName() == "slot")
@@ -108,12 +108,12 @@ Config::ConnectionInfo Config::parseConnections( const core::runtime::Configurat
         }
         else
         {
-            SLM_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", obj);
+            SIGHT_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", obj);
             uid = obj->getID();
             key = src;
-            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
-            SLM_ASSERT("There must be only one signal by connection",
-                       info.m_signal.first.empty() && info.m_signal.second.empty());
+            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            SIGHT_ASSERT("There must be only one signal by connection",
+                         info.m_signal.first.empty() && info.m_signal.second.empty());
             info.m_signal = std::make_pair(uid, key);
         }
     }
@@ -129,7 +129,7 @@ ProxyConnections Config::parseConnections2(const core::runtime::ConfigurationEle
                                            std::function<std::string()> generateChannelNameFn)
 {
 #ifndef _DEBUG
-    FwCoreNotUsedMacro(errMsgHead);
+    SIGHT_NOT_USED(errMsgHead);
 #endif
     std::regex re("(.*)/(.*)");
     std::smatch match;
@@ -139,7 +139,7 @@ ProxyConnections Config::parseConnections2(const core::runtime::ConfigurationEle
     if(connectionCfg->hasAttribute("channel"))
     {
         channel = connectionCfg->getAttributeValue("channel");
-        SLM_ASSERT(errMsgHead + "Empty 'channel' attribute", !channel.empty());
+        SIGHT_ASSERT(errMsgHead + "Empty 'channel' attribute", !channel.empty());
     }
     else
     {
@@ -154,12 +154,12 @@ ProxyConnections Config::parseConnections2(const core::runtime::ConfigurationEle
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            SLM_ASSERT("errMsgHead + Wrong value for attribute src: "<<src, match.size() >= 3);
+            SIGHT_ASSERT("errMsgHead + Wrong value for attribute src: "<<src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            SLM_ASSERT(errMsgHead + src << " configuration is not correct for "<< elem->getName(),
-                       !uid.empty() && !key.empty());
+            SIGHT_ASSERT(errMsgHead + src << " configuration is not correct for "<< elem->getName(),
+                         !uid.empty() && !key.empty());
 
             if (elem->getName() == "signal")
             {
@@ -172,8 +172,8 @@ ProxyConnections Config::parseConnections2(const core::runtime::ConfigurationEle
         }
         else
         {
-            SLM_ASSERT(errMsgHead + "Signal or slot must be written as <signal>fwID/Key</signal> or "
-                       "<slot>fwID/Key</slot>", false);
+            SIGHT_ASSERT(errMsgHead + "Signal or slot must be written as <signal>fwID/Key</signal> or "
+                         "<slot>fwID/Key</slot>", false);
         }
     }
 
@@ -190,7 +190,7 @@ void Config::createProxy( const std::string& objectKey,
 {
     service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
 
-    SLM_ASSERT("Missing 'channel' attribute", cfg->hasAttribute("channel"));
+    SIGHT_ASSERT("Missing 'channel' attribute", cfg->hasAttribute("channel"));
     const std::string channel = cfg->getExistingAttributeValue("channel");
     ProxyConnections proxyCnt(channel);
 
@@ -202,18 +202,18 @@ void Config::createProxy( const std::string& objectKey,
         src = elem->getValue();
         if( std::regex_match(src, match, re) )
         {
-            SLM_ASSERT("Wrong value for attribute src: " + src, match.size() >= 3);
+            SIGHT_ASSERT("Wrong value for attribute src: " + src, match.size() >= 3);
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            SLM_ASSERT(src + " configuration is not correct for " + elem->getName(), !uid.empty() && !key.empty());
+            SIGHT_ASSERT(src + " configuration is not correct for " + elem->getName(), !uid.empty() && !key.empty());
 
             core::tools::Object::sptr channelObj = core::tools::fwID::getObject(uid);
 
             if (elem->getName() == "signal")
             {
                 core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< core::com::HasSignals >(channelObj);
-                SLM_ASSERT("Can't find the holder of signal '" + key + "'", hasSignals);
+                SIGHT_ASSERT("Can't find the holder of signal '" + key + "'", hasSignals);
                 core::com::SignalBase::sptr sig = hasSignals->signal(key);
                 proxy->connect(channel, sig);
                 proxyCnt.addSignalConnection(uid, key);
@@ -221,7 +221,7 @@ void Config::createProxy( const std::string& objectKey,
             else if (elem->getName() == "slot")
             {
                 core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< core::com::HasSlots >(channelObj);
-                SLM_ASSERT("Can't find the holder of slot '" + key + "'", hasSlots);
+                SIGHT_ASSERT("Can't find the holder of slot '" + key + "'", hasSlots);
                 core::com::SlotBase::sptr slot = hasSlots->slot(key);
                 proxy->connect(channel, slot);
                 proxyCnt.addSlotConnection(uid, key);
@@ -231,7 +231,7 @@ void Config::createProxy( const std::string& objectKey,
         {
             uid = obj->getID();
             key = src;
-            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
             core::com::SignalBase::sptr sig = obj->signal(key);
             proxy->connect(channel, sig);
             proxyCnt.addSignalConnection(uid, key);
@@ -279,9 +279,9 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
                                                const std::string& errMsgHead)
 {
 #ifndef _DEBUG
-    FwCoreNotUsedMacro(errMsgHead);
+    SIGHT_NOT_USED(errMsgHead);
 #endif
-    SLM_ASSERT("Configuration element is not a \"service\" node.", srvElem->getName() == "service");
+    SIGHT_ASSERT("Configuration element is not a \"service\" node.", srvElem->getName() == "service");
 
     // Get attributes
     service::IService::Config srvConfig;
@@ -290,7 +290,7 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
     if (srvElem->hasAttribute("uid"))
     {
         srvConfig.m_uid = srvElem->getAttributeValue("uid");
-        SLM_ASSERT(errMsgHead + "'uid' attribute is empty.", !srvConfig.m_uid.empty());
+        SIGHT_ASSERT(errMsgHead + "'uid' attribute is empty.", !srvConfig.m_uid.empty());
     }
 
     std::string errMsgTail = " when parsing service '" + srvConfig.m_uid + "'.";
@@ -300,14 +300,14 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
     if (srvElem->hasAttribute("config"))
     {
         config = srvElem->getAttributeValue("config");
-        SLM_ASSERT(errMsgHead + "\"config\" attribute is empty" + errMsgTail, !config.empty());
+        SIGHT_ASSERT(errMsgHead + "\"config\" attribute is empty" + errMsgTail, !config.empty());
     }
 
     // Type
-    SLM_ASSERT(errMsgHead + "'type'' attribute is empty" + errMsgTail, srvElem->hasAttribute("type"));
+    SIGHT_ASSERT(errMsgHead + "'type'' attribute is empty" + errMsgTail, srvElem->hasAttribute("type"));
     srvConfig.m_type = srvElem->getAttributeValue("type");
-    SLM_ASSERT(errMsgHead + "Attribute \"type\" is required " + errMsgTail,
-               !srvConfig.m_type.empty());
+    SIGHT_ASSERT(errMsgHead + "Attribute \"type\" is required " + errMsgTail,
+                 !srvConfig.m_type.empty());
 
     // AutoConnect
     srvConfig.m_globalAutoConnect = false;
@@ -315,8 +315,9 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
         srvElem->getSafeAttributeValue("autoConnect");
     if(attribAutoConnect.first)
     {
-        SLM_ASSERT("'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
-                   (!attribAutoConnect.first) || attribAutoConnect.second == "yes" || attribAutoConnect.second == "no");
+        SIGHT_ASSERT("'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
+                     (!attribAutoConnect.first) || attribAutoConnect.second == "yes" ||
+                     attribAutoConnect.second == "no");
         srvConfig.m_globalAutoConnect = (attribAutoConnect.second == "yes");
     }
 
@@ -335,9 +336,9 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
     // Check if user did not bind a service to another service
     for(core::runtime::ConfigurationElement::csptr elem :  cfgElem->getElements())
     {
-        SLM_ASSERT(errMsgHead + "Cannot bind a service to another service" + errMsgTail,
-                   elem->getName() != "service" &&
-                   elem->getName() != "serviceList");
+        SIGHT_ASSERT(errMsgHead + "Cannot bind a service to another service" + errMsgTail,
+                     elem->getName() != "service" &&
+                     elem->getName() != "serviceList");
     }
 
     // Check first if we can create this service
@@ -371,7 +372,7 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
         }
         else
         {
-            SLM_FATAL("Unreachable code");
+            SIGHT_FATAL("Unreachable code");
         }
 
         // AutoConnect
@@ -379,8 +380,8 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
         objConfig.m_autoConnect = false;
         if(autoConnect.first)
         {
-            SLM_ASSERT(errMsgHead + "'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
-                       autoConnect.second == "yes" || autoConnect.second == "no" );
+            SIGHT_ASSERT(errMsgHead + "'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
+                         autoConnect.second == "yes" || autoConnect.second == "no" );
             objConfig.m_autoConnect = (autoConnect.second == "yes");
         }
 
@@ -392,8 +393,8 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
             objConfig.m_optional = false;
             if(!optionalStr.empty())
             {
-                SLM_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
-                           optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
+                SIGHT_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
+                             optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
                 objConfig.m_optional = optionalStr == "yes" ? true : false;
             }
         }
@@ -415,7 +416,7 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
 
                 // Identifier
                 grouObjConfig.m_uid = groupCfg->getAttributeValue("uid");
-                SLM_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
+                SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
 
                 grouObjConfig.m_key = KEY_GROUP_NAME(group, count++);
 
@@ -423,8 +424,8 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
                 auto autoConnectPeyKey = groupCfg->getSafeAttributeValue("autoConnect");
                 if(autoConnectPeyKey.first)
                 {
-                    SLM_ASSERT(errMsgHead + "'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
-                               autoConnectPeyKey.second == "yes" || autoConnectPeyKey.second == "no" );
+                    SIGHT_ASSERT(errMsgHead + "'autoConnect' attribute must be either 'yes' or 'no'" + errMsgTail,
+                                 autoConnectPeyKey.second == "yes" || autoConnectPeyKey.second == "no" );
                     grouObjConfig.m_autoConnect = (autoConnectPeyKey.second == "yes");
                 }
                 // Optional
@@ -434,8 +435,8 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
 
                     if(!optionalStr.empty())
                     {
-                        SLM_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
-                                   optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
+                        SIGHT_ASSERT("'optional' attribute must be either 'yes' or 'no'" + errMsgTail,
+                                     optionalStr == "" || optionalStr == "yes" || optionalStr == "no");
                         grouObjConfig.m_optional = optionalStr == "yes" ? true : false;
                     }
                 }
@@ -448,11 +449,11 @@ service::IService::Config Config::parseService(const core::runtime::Configuratio
         {
             // Identifier
             objConfig.m_uid = cfg->getAttributeValue("uid");
-            SLM_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !objConfig.m_uid.empty());
+            SIGHT_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !objConfig.m_uid.empty());
 
             // Key inside the service
             objConfig.m_key = cfg->getAttributeValue("key");
-            SLM_ASSERT(errMsgHead + "Missing object attribute 'key'" + errMsgTail, !objConfig.m_key.empty());
+            SIGHT_ASSERT(errMsgHead + "Missing object attribute 'key'" + errMsgTail, !objConfig.m_key.empty());
 
             srvConfig.m_objects.emplace_back(objConfig);
         }

@@ -36,7 +36,7 @@ class UI_BASE_CLASS_API IMenuItemCallback : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(IMenuItemCallback, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMenuItemCallback, ui::base::GuiBaseObject)
 
     /**
      * @brief  Called method when callback is executed.

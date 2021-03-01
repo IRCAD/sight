@@ -38,7 +38,7 @@ namespace splitter
 class FILTER_DICOM_CLASS_API ImageDimensionsSplitter : public ISplitter
 {
 public:
-    fwCoreClassMacro(ImageDimensionsSplitter, ISplitter, filter::dicom::factory::New< ImageDimensionsSplitter >)
+    SIGHT_DECLARE_CLASS(ImageDimensionsSplitter, ISplitter, filter::dicom::factory::New< ImageDimensionsSplitter >)
 
     /// Constructor
     FILTER_DICOM_API ImageDimensionsSplitter(filter::dicom::IFilter::Key key);

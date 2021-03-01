@@ -26,15 +26,15 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/AppConfig.hpp>
-
-#include <QVBoxLayout>
-#include <QWidget>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace sight::module::ui::qt
 {
@@ -44,7 +44,6 @@ namespace activity
 const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 static const std::string s_BORDER_CONFIG = "border";
-
 
 //------------------------------------------------------------------------------
 
@@ -166,7 +165,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             sight::ui::base::dialog::MessageDialog::show("Activity launch failed",
                                                          e.what(),
                                                          sight::ui::base::dialog::IMessageDialog::CRITICAL);
-            SLM_ERROR(e.what());
+            SIGHT_ERROR(e.what());
         }
     }
 }

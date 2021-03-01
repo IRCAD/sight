@@ -64,7 +64,7 @@ class MODULE_VIZ_QT3D_CLASS_API SMesh : public sight::viz::qt3d::IAdaptor
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMesh, sight::viz::qt3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::qt3d::IAdaptor)
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_QT3D_API SMesh() noexcept;

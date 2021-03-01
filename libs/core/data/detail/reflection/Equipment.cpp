@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(Equipment))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Equipment))
 {
     builder
     .tag("object_version", "1")

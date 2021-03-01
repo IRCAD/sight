@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Port))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Port))
 {
     builder
     .tag("object_version", "1")

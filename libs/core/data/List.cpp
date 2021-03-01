@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::List );
+SIGHT_REGISTER_DATA( ::sight::data::List );
 
 namespace sight::data
 {
@@ -47,9 +47,9 @@ List::~List()
 void List::shallowCopy(const Object::csptr& _source )
 {
     List::csptr other = List::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_container = other->m_container;
 }
@@ -59,9 +59,9 @@ void List::shallowCopy(const Object::csptr& _source )
 void List::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     List::csptr other = List::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_container.clear();

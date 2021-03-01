@@ -37,21 +37,21 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Matrix.hpp>
+
+#include <service/IService.hpp>
+#include <service/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/aruco/charuco.hpp>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/helper.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -125,16 +125,16 @@ void SOpenCVExtrinsic::updating()
 {
     data::CameraSeries::sptr camSeries = this->getInOut< data::CameraSeries >("cameraSeries");
 
-    SLM_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
-               m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
+    SIGHT_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
+                 m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
 
     data::CalibrationInfo::csptr calInfo1 = this->getInput< data::CalibrationInfo>("calibrationInfo1");
     data::CalibrationInfo::csptr calInfo2 = this->getInput< data::CalibrationInfo>("calibrationInfo2");
 
-    SLM_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
-    SLM_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
+    SIGHT_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
+    SIGHT_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
 
-    SLM_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
+    SIGHT_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
     if(!(calInfo1->getPointListContainer().empty()))
     {
         std::vector<std::vector< ::cv::Point3f > > objectPoints;
@@ -163,7 +163,7 @@ void SOpenCVExtrinsic::updating()
             data::CalibrationInfo::PointListContainerType ptlists1 = calInfo1->getPointListContainer();
             data::CalibrationInfo::PointListContainerType ptlists2 = calInfo2->getPointListContainer();
 
-            SLM_ASSERT("The two calibrationInfo have not the same size", ptlists1.size() == ptlists2.size());
+            SIGHT_ASSERT("The two calibrationInfo have not the same size", ptlists1.size() == ptlists2.size());
 
             data::CalibrationInfo::PointListContainerType::iterator itr1    = ptlists1.begin();
             data::CalibrationInfo::PointListContainerType::iterator itr2    = ptlists2.begin();
@@ -191,7 +191,7 @@ void SOpenCVExtrinsic::updating()
 
                 for(data::Point::csptr point : ptList1->getPoints())
                 {
-                    SLM_ASSERT("point is null", point);
+                    SIGHT_ASSERT("point is null", point);
                     imgPoint1.push_back(::cv::Point2f(
                                             static_cast<float>(point->getCoord()[0]),
                                             static_cast<float>(point->getCoord()[1])));
@@ -202,7 +202,7 @@ void SOpenCVExtrinsic::updating()
 
                 for(data::Point::csptr point : ptList2->getPoints())
                 {
-                    SLM_ASSERT("point is null", point);
+                    SIGHT_ASSERT("point is null", point);
                     imgPoint2.push_back(::cv::Point2f(
                                             static_cast<float>(point->getCoord()[0]),
                                             static_cast<float>(point->getCoord()[1])));

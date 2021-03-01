@@ -38,7 +38,7 @@ namespace sight::atoms
 class ATOMS_CLASS_API Blob : public Base
 {
 public:
-    fwCoreClassMacro(Blob, atoms::Base, atoms::factory::New< Blob >)
+    SIGHT_DECLARE_CLASS(Blob, atoms::Base, atoms::factory::New< Blob >)
 
     /**
      * @brief Constructor

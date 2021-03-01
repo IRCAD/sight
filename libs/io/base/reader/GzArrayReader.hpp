@@ -48,8 +48,8 @@ class IO_BASE_CLASS_API GzArrayReader :  public GenericObjectReader< data::Array
 
 public:
 
-    fwCoreClassMacro(GzArrayReader, GenericObjectReader< data::Array>,
-                     io::base::reader::factory::New< GzArrayReader >)
+    SIGHT_DECLARE_CLASS(GzArrayReader, GenericObjectReader< data::Array>,
+                        io::base::reader::factory::New< GzArrayReader >)
 
     /// Constructor. Do nothing.
     IO_BASE_API GzArrayReader(io::base::reader::IObjectReader::Key key);

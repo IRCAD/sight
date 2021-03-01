@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( ::sight::data::Point );
+SIGHT_REGISTER_DATA( ::sight::data::Point );
 
 namespace sight::data
 {
@@ -94,9 +94,9 @@ Point::~Point ()
 void Point::shallowCopy(const Object::csptr& _source )
 {
     Point::csptr other = Point::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_vCoord = other->m_vCoord;
 }
@@ -106,9 +106,9 @@ void Point::shallowCopy(const Object::csptr& _source )
 void Point::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Point::csptr other = Point::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_vCoord = other->m_vCoord;
 }

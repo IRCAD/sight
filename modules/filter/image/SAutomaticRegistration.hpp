@@ -24,10 +24,10 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <service/IOperator.hpp>
-
 #include <filter/image/AutomaticRegistration.hpp>
 #include <filter/image/Metric.hpp>
+
+#include <service/IOperator.hpp>
 
 namespace sight::module::filter::image
 {
@@ -78,7 +78,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public service::IOp
 {
 public:
 
-    fwCoreServiceMacro(SAutomaticRegistration, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::IOperator)
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SAutomaticRegistration();

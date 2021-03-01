@@ -50,7 +50,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    SLM_FATAL_IF("Module appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
+    SIGHT_FATAL_IF("Module appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
     m_configurationName = this->getModule()->getParameterValue("config");
     if( this->getModule()->hasParameter("parameters") )
     {
@@ -62,8 +62,8 @@ void Plugin::start()
 
 void Plugin::initialize()
 {
-    SLM_ASSERT("The OSR is already initialized.", !m_appConfigMng );
-    SLM_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
+    SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng );
+    SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
     m_appConfigMng = service::AppConfigManager::New();
 
@@ -92,7 +92,7 @@ void Plugin::stop() noexcept
 
 void Plugin::uninitialize() noexcept
 {
-    SLM_ASSERT("The OSR is not initialized.", m_appConfigMng );
+    SIGHT_ASSERT("The OSR is not initialized.", m_appConfigMng );
     m_appConfigMng->stopAndDestroy();
     m_appConfigMng.reset();
 }

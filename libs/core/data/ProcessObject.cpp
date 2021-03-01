@@ -29,7 +29,7 @@
 
 #include <functional>
 
-fwDataRegisterMacro( ::sight::data::ProcessObject );
+SIGHT_REGISTER_DATA( ::sight::data::ProcessObject );
 
 namespace sight::data
 {
@@ -150,9 +150,9 @@ void ProcessObject::clearParams(ProcessObjectMapType& params)
 void ProcessObject::shallowCopy(const Object::csptr& source )
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( source );
 
     m_inputs  = other->m_inputs;
@@ -164,9 +164,9 @@ void ProcessObject::shallowCopy(const Object::csptr& source )
 void ProcessObject::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ProcessObject::csptr other = ProcessObject::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
     this->clearInputs();

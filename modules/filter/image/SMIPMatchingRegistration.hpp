@@ -61,7 +61,7 @@ namespace sight::module::filter::image
 class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public service::IRegisterer
 {
 public:
-    fwCoreServiceMacro(SMIPMatchingRegistration, service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SMIPMatchingRegistration, service::IRegisterer)
 
     /**
      * @brief Constructor

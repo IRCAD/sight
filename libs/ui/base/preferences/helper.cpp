@@ -226,21 +226,21 @@ std::filesystem::path getPreferencesFile()
     namespace bfile = std::filesystem;
 
     core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
-    FW_RAISE_IF("No current profile set.", !profile);
+    SIGHT_THROW_IF("No current profile set.", !profile);
 
     const std::string appName     = profile->getName();
     const bfile::path appPrefDir  = core::tools::os::getUserDataDir("sight", appName, true);
     const bfile::path appPrefFile = appPrefDir / "preferences.json";
 
-    FW_RAISE_IF("Unable to define user data directory", appPrefDir.empty());
+    SIGHT_THROW_IF("Unable to define user data directory", appPrefDir.empty());
 
     if (!bfile::exists(appPrefDir))
     {
         bfile::create_directories(appPrefDir);
     }
 
-    FW_RAISE_IF("Preferences file '"+appPrefFile.string()+"' already exists and is not a regular file.",
-                bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile));
+    SIGHT_THROW_IF("Preferences file '"+appPrefFile.string()+"' already exists and is not a regular file.",
+                   bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile));
 
     return appPrefFile;
 }
@@ -258,7 +258,7 @@ ui::base::preferences::IPreferences::sptr getPreferencesSrv()
         service::IService::sptr prefService = *preferencesServicesList.begin();
         srv = ui::base::preferences::IPreferences::dynamicCast(prefService);
     }
-    SLM_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);
+    SIGHT_DEBUG_IF("The preferences service is not found, the preferences can not be used", !srv);
 
     return srv;
 }
@@ -275,7 +275,7 @@ data::Composite::sptr getPreferences()
     {
         prefs = prefService->getInOut< data::Composite >(s_PREFERENCES_KEY);
     }
-    SLM_DEBUG_IF("The preferences are not found", !prefs);
+    SIGHT_DEBUG_IF("The preferences are not found", !prefs);
 
     return prefs;
 }
@@ -285,9 +285,9 @@ data::Composite::sptr getPreferences()
 void savePreferences()
 {
     const auto prefService = getPreferencesSrv();
-    SLM_WARN_IF("The preferences service is not found, the preferences can not be saved", !prefService);
-    SLM_WARN_IF("The preferences service is not started, the preferences can not be saved",
-                prefService && !prefService->isStarted());
+    SIGHT_WARN_IF("The preferences service is not found, the preferences can not be saved", !prefService);
+    SIGHT_WARN_IF("The preferences service is not started, the preferences can not be saved",
+                  prefService && !prefService->isStarted());
     if(prefService && prefService->isStarted())
     {
         prefService->update();

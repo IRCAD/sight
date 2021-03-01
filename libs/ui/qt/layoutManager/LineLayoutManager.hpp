@@ -40,8 +40,8 @@ class UI_QT_CLASS_API LineLayoutManager : public ui::base::layoutManager::LineLa
 
 public:
 
-    fwCoreClassMacro(LineLayoutManager, ui::base::layoutManager::LineLayoutManagerBase,
-                     ui::base::factory::New< LineLayoutManager >)
+    SIGHT_DECLARE_CLASS(LineLayoutManager, ui::base::layoutManager::LineLayoutManagerBase,
+                        ui::base::factory::New< LineLayoutManager >)
 
     UI_QT_API LineLayoutManager(ui::base::GuiBaseObject::Key key);
 

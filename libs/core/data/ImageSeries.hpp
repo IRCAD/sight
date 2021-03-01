@@ -29,7 +29,7 @@
 
 #include <data/factory/new.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(ImageSeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ImageSeries))
 
 namespace sight::data
 {
@@ -47,9 +47,9 @@ class DATA_CLASS_API ImageSeries : public data::Series
 
 public:
 
-    fwCoreClassMacro(ImageSeries, data::Object, data::factory::New< ImageSeries >)
+    SIGHT_DECLARE_CLASS(ImageSeries, data::Object, data::factory::New< ImageSeries >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(ImageSeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ImageSeries))
 
     /**
      * @brief Creates the series.

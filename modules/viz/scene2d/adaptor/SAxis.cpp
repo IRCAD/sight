@@ -28,7 +28,6 @@
 
 #include <QGraphicsItemGroup>
 
-
 namespace sight::module::viz::scene2d
 {
 
@@ -86,14 +85,14 @@ void SAxis::configuring()
 
     // 'align' attribute configuration
     m_align = config.get<std::string>("align");
-    SLM_ASSERT("'align' attribute is missing. Please add an 'align' attribute "
-               "with value 'left', 'right', 'top' or 'bottom'", !m_align.empty());
-    SLM_ASSERT("Unsupported value for 'align' attribute.",
-               m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
+    SIGHT_ASSERT("'align' attribute is missing. Please add an 'align' attribute "
+                 "with value 'left', 'right', 'top' or 'bottom'", !m_align.empty());
+    SIGHT_ASSERT("Unsupported value for 'align' attribute.",
+                 m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 
     // SAxis bounds
-    SLM_ASSERT("'min' attribute is missing.", config.count("min"));
-    SLM_ASSERT("'max' attribute is missing.", config.count("max"));
+    SIGHT_ASSERT("'min' attribute is missing.", config.count("min"));
+    SIGHT_ASSERT("'max' attribute is missing.", config.count("max"));
     m_min = config.get<float>("min");
     m_max = config.get<float>("max");
 

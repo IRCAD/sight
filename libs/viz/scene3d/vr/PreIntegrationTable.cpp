@@ -114,7 +114,7 @@ void PreIntegrationTable::imageUpdate(const data::Image::sptr& _img, const data:
                 break;
             }
             default:
-                SLM_FATAL("Invalid pixel format for pre-integration, pixels must be integers");
+                SIGHT_FATAL("Invalid pixel format for pre-integration, pixels must be integers");
         }
 
         unsigned textureSize = static_cast<unsigned>(m_valueInterval.second - m_valueInterval.first);

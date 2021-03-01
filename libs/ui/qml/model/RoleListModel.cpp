@@ -77,7 +77,7 @@ QHash<int, QByteArray> RoleListModel::roleNames() const
 
 void RoleListModel::addData(const QHash<QByteArray, QVariant>& data)
 {
-    SLM_ASSERT("RoleListModel must have role to add Data", !m_roles.empty());
+    SIGHT_ASSERT("RoleListModel must have role to add Data", !m_roles.empty());
     m_data.push_back(data);
     // the function that emits that data has changed it's structure
     QAbstractListModel::endResetModel();

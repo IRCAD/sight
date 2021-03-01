@@ -38,7 +38,7 @@ namespace sight::atoms
 class ATOMS_CLASS_API Boolean : public Base
 {
 public:
-    fwCoreClassMacro(Boolean, atoms::Base, atoms::factory::New< Boolean >)
+    SIGHT_DECLARE_CLASS(Boolean, atoms::Base, atoms::factory::New< Boolean >)
 
     /**
      * @brief Constructor

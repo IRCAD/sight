@@ -30,7 +30,7 @@
 #include <utility>
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Line));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Line));
 
 namespace sight::data
 {
@@ -41,7 +41,7 @@ class DATA_CLASS_API Line : public Object
 {
 
 public:
-    fwCoreClassMacro(Line, data::Object, data::factory::New< Line >)
+    SIGHT_DECLARE_CLASS(Line, data::Object, data::factory::New< Line >)
 
     /**
      * @brief Constructor
@@ -52,7 +52,7 @@ public:
     /// Destructor
     DATA_API virtual ~Line();
 
-    fwCampMakeFriendDataMacro((sight)(data)(Line));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Line));
 
     /// Defines shallow copy
     DATA_API void shallowCopy( const Object::csptr& _source ) override;

@@ -162,7 +162,7 @@ void BoostIOTest::cleanSequence(sight::atoms::Sequence& seq)
 {
     // Break the reference cycles in the atom sequence
     auto blob = std::dynamic_pointer_cast< sight::atoms::Blob>(seq[2]);
-    FW_RAISE_IF("That's not a blob!", !blob);
+    SIGHT_THROW_IF("That's not a blob!", !blob);
     auto bo = blob->getBufferObject();
     if(bo)
     {
@@ -170,7 +170,7 @@ void BoostIOTest::cleanSequence(sight::atoms::Sequence& seq)
     }
     blob->setBufferObject(nullptr);
     auto map = std::dynamic_pointer_cast< sight::atoms::Map>(seq[3]);
-    FW_RAISE_IF("That's not a map!", !map);
+    SIGHT_THROW_IF("That's not a map!", !map);
     map->clear();
     seq.clear();
 }

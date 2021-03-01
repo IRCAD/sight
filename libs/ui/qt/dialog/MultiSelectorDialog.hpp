@@ -24,11 +24,11 @@
 
 #include "ui/qt/config.hpp"
 
+#include <ui/base/dialog/IMultiSelectorDialog.hpp>
+
 #include <QDialog>
 #include <QString>
 #include <QWidget>
-
-#include <ui/base/dialog/IMultiSelectorDialog.hpp>
 
 #include <vector>
 
@@ -47,8 +47,8 @@ class UI_QT_CLASS_API MultiSelectorDialog : public ui::base::dialog::IMultiSelec
 {
 public:
 
-    fwCoreClassMacro(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
-                     ui::base::factory::New< MultiSelectorDialog >)
+    SIGHT_DECLARE_CLASS(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
+                        ui::base::factory::New< MultiSelectorDialog >)
 
     UI_QT_API MultiSelectorDialog(ui::base::GuiBaseObject::Key key);
 

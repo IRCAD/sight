@@ -41,8 +41,8 @@ class IO_ATOMS_CLASS_API IStructuralCreator : public core::BaseObject
 {
 
 public:
-    fwCoreClassMacro(IStructuralCreator)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(IStructuralCreator)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor
     IO_ATOMS_API IStructuralCreator();

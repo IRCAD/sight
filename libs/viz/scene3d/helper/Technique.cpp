@@ -40,7 +40,7 @@ namespace helper
     newTech->setName(_schemeName);
     newTech->setSchemeName(_schemeName);
 
-    SLM_ASSERT("Empty pass", newTech->getPass(0));
+    SIGHT_ASSERT("Empty pass", newTech->getPass(0));
 
     return newTech;
 }

@@ -37,17 +37,17 @@
 #include <data/reflection/getObject.hpp>
 #include <data/String.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/AppConfig.hpp>
+#include <service/macros.hpp>
+
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/GuiRegistry.hpp>
 
 #include <boost/foreach.hpp>
 
 #include <QBoxLayout>
 #include <QTabWidget>
 #include <QtGui>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/GuiRegistry.hpp>
 
 #include <regex>
 
@@ -60,7 +60,6 @@ static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 
 static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
-
 
 using sight::activity::extension::Activity;
 using sight::activity::extension::ActivityInfo;
@@ -96,9 +95,9 @@ void SDynamicView::configuring()
     if (config_ui_activity)
     {
         const std::string closableStr = config_ui_activity->getAttributeValue("closable");
-        SLM_ASSERT("main activity 'closable' attribute value must be 'yes', 'true', 'no' or 'false'",
-                   closableStr == "yes" || closableStr == "true" ||
-                   closableStr == "no" || closableStr == "false");
+        SIGHT_ASSERT("main activity 'closable' attribute value must be 'yes', 'true', 'no' or 'false'",
+                     closableStr == "yes" || closableStr == "true" ||
+                     closableStr == "no" || closableStr == "false");
         const bool closable = (closableStr == "yes" || closableStr == "true");
         m_mainActivityClosable = closable;
     }
@@ -108,8 +107,8 @@ void SDynamicView::configuring()
         const std::string documentStr = config->getAttributeValue("document");
         if(!documentStr.empty())
         {
-            SLM_ASSERT("'document' attribute value must be 'true' or 'false'",
-                       documentStr == "true" || documentStr == "false");
+            SIGHT_ASSERT("'document' attribute value must be 'true' or 'false'",
+                         documentStr == "true" || documentStr == "false");
             const bool document = documentStr == "true";
             m_documentMode = document;
         }
@@ -257,7 +256,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
         sight::ui::base::dialog::MessageDialog::show("Activity launch failed",
                                                      e.what(),
                                                      sight::ui::base::dialog::IMessageDialog::CRITICAL);
-        SLM_ERROR(e.what());
+        SIGHT_ERROR(e.what());
         return;
     }
 
@@ -299,7 +298,7 @@ void SDynamicView::closeTab( int index, bool forceClose )
 {
     QWidget* widget = m_tabWidget->widget(index);
 
-    SLM_ASSERT("Widget is not in dynamicInfoMap", m_dynamicInfoMap.find(widget) != m_dynamicInfoMap.end());
+    SIGHT_ASSERT("Widget is not in dynamicInfoMap", m_dynamicInfoMap.find(widget) != m_dynamicInfoMap.end());
     SDynamicViewInfo info = m_dynamicInfoMap[widget];
     if ( info.closable || forceClose )
     {
@@ -417,7 +416,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
             submatch.replace(0, 1, "@");
 
             data::Object::sptr obj = data::reflection::getObject(activitySeries->getData(), submatch);
-            SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
+            SIGHT_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
@@ -429,7 +428,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(data::ActivitySeries
             }
             else
             {
-                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
+                SIGHT_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
             }
 
             submatch.replace(0, 1, "!");

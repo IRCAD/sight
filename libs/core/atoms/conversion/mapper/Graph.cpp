@@ -92,9 +92,9 @@ data::Object::sptr Graph::convert(  atoms::Object::sptr atom,
     atoms::Sequence::sptr seqAtom = atoms::Sequence::dynamicCast( atom->getAttribute("connections") );
     for( atoms::Base::sptr elemAtom  :  seqAtom->getValue() )
     {
-        FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                                   "sub atoms stored in fwAtom::Sequence 'connections' must be atom objects"),
-                               elemAtom->type() != atoms::Base::OBJECT );
+        SIGHT_THROW_EXCEPTION_IF( exception::ConversionNotManaged(
+                                      "sub atoms stored in fwAtom::Sequence 'connections' must be atom objects"),
+                                  elemAtom->type() != atoms::Base::OBJECT );
 
         atoms::Object::sptr objectAtom = atoms::Object::dynamicCast( elemAtom );
         atoms::Object::sptr edgeAtom   = atoms::Object::dynamicCast( objectAtom->getAttribute("edge") );

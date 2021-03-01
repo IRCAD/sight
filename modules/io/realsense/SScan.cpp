@@ -39,11 +39,11 @@
 
 #include <service/macros.hpp>
 
-#include <librealsense2/rs_advanced_mode.hpp>
-
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
+
+#include <librealsense2/rs_advanced_mode.hpp>
 
 #include <algorithm>
 #include <fstream>
@@ -221,7 +221,7 @@ std::string SScan::selectDevice()
         // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
 
-        SLM_DEBUG("selecting camera: "<< index);
+        SIGHT_DEBUG("selecting camera: "<< index);
     }
 
     return selectedDevice;
@@ -244,7 +244,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     str << "-- color h : " << colorStream.height() << std::endl;
     str << "-- color format : " << colorStream.format() << std::endl;
 
-    SLM_DEBUG("Actual mode : \n" + str.str());
+    SIGHT_DEBUG("Actual mode : \n" + str.str());
 
     const size_t depthStreamW = static_cast<size_t>(depthStream.width());
     const size_t depthStreamH = static_cast<size_t>(depthStream.height());
@@ -368,7 +368,7 @@ void SScan::initialize(const ::rs2::pipeline_profile& _profile)
     }
 
     // Re-init the pointcloud.
-    SLM_ASSERT("Cannot create pointcloud output", m_pointcloud);
+    SIGHT_ASSERT("Cannot create pointcloud output", m_pointcloud);
     const size_t nbPoints = depthStreamW * depthStreamH;
 
     data::mt::ObjectWriteLock meshLock(m_pointcloud);
@@ -400,7 +400,7 @@ void SScan::startCamera()
 {
     if (m_running)
     {
-        SLM_WARN("Camera is still running. Nothing is done.");
+        SIGHT_WARN("Camera is still running. Nothing is done.");
         return;
     }
 
@@ -417,8 +417,8 @@ void SScan::startCamera()
         camera = data::Camera::dynamicConstCast(obj);
     }
 
-    SLM_ASSERT("Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
-               + "' or '" + s_CAMERA_INPUT + "' is present.", camera );
+    SIGHT_ASSERT("Camera should not be null, check if  '" + s_CAMERA_SERIES_INOUT
+                 + "' or '" + s_CAMERA_INPUT + "' is present.", camera );
 
     //const auto camera = cameraSeries->getCamera(0);
     if (camera->getCameraSource() == data::Camera::FILE)
@@ -499,7 +499,7 @@ void SScan::startCamera()
             {
                 // Enable advanced-mode.
                 advanced_mode_dev.toggle_advanced_mode(true);
-                SLM_DEBUG("Enable avdanced mode on realsense device.");
+                SIGHT_DEBUG("Enable avdanced mode on realsense device.");
             }
         }
         else
@@ -766,7 +766,7 @@ void SScan::setBoolParameter(bool _value, std::string _key)
     }
     else
     {
-        SLM_ERROR("Key '" +_key+"' is not recognized.");
+        SIGHT_ERROR("Key '" +_key+"' is not recognized.");
     }
 }
 
@@ -796,7 +796,7 @@ void SScan::setEnumParameter(std::string _value, std::string _key)
         }
         else
         {
-            SLM_ERROR("Cannot load preset named: " + _value + ". Nothing append");
+            SIGHT_ERROR("Cannot load preset named: " + _value + ". Nothing append");
         }
     }
     if(_key == s_ALIGNMENT)
@@ -885,7 +885,7 @@ void SScan::setIntParameter(int _value, std::string _key)
         }
         else
         {
-            SLM_ERROR("Key '" +_key+"' is not recognized.");
+            SIGHT_ERROR("Key '" +_key+"' is not recognized.");
         }
 
         // Change parameters live if grabber is running, otherwise it will be changed on next call to startCamera.
@@ -927,7 +927,7 @@ void SScan::setDoubleParameter(double _value, std::string _key)
         }
         else
         {
-            SLM_ERROR("Key '" +_key+"' is not recognized.");
+            SIGHT_ERROR("Key '" +_key+"' is not recognized.");
         }
     }
     catch(const std::exception& e)
@@ -1125,7 +1125,7 @@ bool SScan::updateAlignment(const std::string& _alignTo)
     }
     else
     {
-        SLM_ERROR("'" + _alignTo + "' is not a valid alignment option (None, Color, Depth or Infrared).");
+        SIGHT_ERROR("'" + _alignTo + "' is not a valid alignment option (None, Color, Depth or Infrared).");
         return false;
     }
     return true;

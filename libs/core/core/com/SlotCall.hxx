@@ -56,7 +56,7 @@ typename SlotCall< R(A ...) >::SharedFutureType SlotCall< R(A ...) >::asyncCall(
 {
     if(!worker)
     {
-        FW_RAISE_EXCEPTION( core::com::exception::NoWorker("No valid worker.") );
+        SIGHT_THROW_EXCEPTION( core::com::exception::NoWorker("No valid worker.") );
     }
 
     return postWeakCall(
@@ -77,7 +77,7 @@ typename SlotCall< R(A ...) >::SharedFutureType SlotCall< R(A ...) >::asyncCall(
 
     if(!this->m_worker)
     {
-        FW_RAISE_EXCEPTION( core::com::exception::NoWorker("Slot has no worker set.") );
+        SIGHT_THROW_EXCEPTION( core::com::exception::NoWorker("Slot has no worker set.") );
     }
 
     return postWeakCall(

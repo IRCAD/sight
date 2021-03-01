@@ -321,7 +321,7 @@ bool SlideBar::eventFilter(QObject* _obj, QEvent* _event)
     else if(_event->type() == QEvent::WindowActivate)
     {
         auto activeWindow = qApp->activeWindow();
-        SLM_ASSERT("No active window", activeWindow);
+        SIGHT_ASSERT("No active window", activeWindow);
         activeWindow->installEventFilter(this);
         this->updatePosition();
     }

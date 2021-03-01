@@ -52,7 +52,7 @@ class IO_BASE_CLASS_API IWriter : public sight::service::IService
 {
 
 public:
-    fwCoreServiceMacro(IWriter, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(IWriter, sight::service::IService)
 
     /**
      * @name Slots API

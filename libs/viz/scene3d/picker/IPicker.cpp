@@ -84,11 +84,11 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
         m_selectedObject->getParentSceneNode()->showBoundingBox(true);
 #endif
 
-        SLM_DEBUG("Entity find and intersect at " << getIntersectionInWorldSpace() << "(WS)");
+        SIGHT_DEBUG("Entity find and intersect at " << getIntersectionInWorldSpace() << "(WS)");
 
-        SLM_DEBUG("Entity find and intersect at " << getIntersectionInViewSpace() << "(VS)");
+        SIGHT_DEBUG("Entity find and intersect at " << getIntersectionInViewSpace() << "(VS)");
 
-        SLM_DEBUG("Entity find and intersect at " << getIntersectionInPixel() << "(Px)");
+        SIGHT_DEBUG("Entity find and intersect at " << getIntersectionInPixel() << "(Px)");
 
     }
     else
@@ -103,7 +103,7 @@ bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 
 ::Ogre::SceneNode* IPicker::getCameraSceneNode() const
 {
-    SLM_ASSERT("The associated SceneManager is not instanciated", m_sceneManager);
+    SIGHT_ASSERT("The associated SceneManager is not instanciated", m_sceneManager);
     return m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)->getParentSceneNode();
 }
 

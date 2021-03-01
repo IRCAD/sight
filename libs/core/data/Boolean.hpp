@@ -27,7 +27,7 @@
 #include "data/GenericField.hpp"
 #include "data/Object.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(Boolean));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Boolean));
 namespace sight::data
 {
 
@@ -39,7 +39,7 @@ namespace sight::data
 class DATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
-    fwCoreClassMacro(Boolean, data::Object)
+    SIGHT_DECLARE_CLASS(Boolean, data::Object)
 
     //------------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ public:
         return GenericFieldFactory< Boolean >(val);
     }
 
-    fwCampMakeFriendDataMacro((sight)(data)(Boolean));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Boolean));
 
     /**
      * @brief Constructor

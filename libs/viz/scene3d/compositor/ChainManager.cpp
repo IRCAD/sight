@@ -169,7 +169,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
         }
         else
         {
-            SLM_ERROR("'" + compositorName + "' does not refer to an existing compositor");
+            SIGHT_ERROR("'" + compositorName + "' does not refer to an existing compositor");
         }
     }
 
@@ -193,7 +193,7 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     ::Ogre::CompositorChain* compChain           = compositorManager.getCompositorChain(m_ogreViewport);
     ::Ogre::CompositorInstance* compositor       = compChain->getCompositor(_compositorName);
-    SLM_ASSERT("The given compositor '" + _compositorName + "' doesn't exist in the compositor chain", compositor);
+    SIGHT_ASSERT("The given compositor '" + _compositorName + "' doesn't exist in the compositor chain", compositor);
 
     ::Ogre::CompositionTechnique* tech = compositor->getTechnique();
 

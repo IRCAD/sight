@@ -26,10 +26,10 @@
 
 #include <data/Reconstruction.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -57,7 +57,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(STextureSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STextureSelector, sight::ui::base::IEditor)
 
     MODULE_UI_VIZ_API STextureSelector() noexcept;
     MODULE_UI_VIZ_API virtual ~STextureSelector() noexcept;

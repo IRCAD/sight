@@ -79,7 +79,7 @@ void SProducer::starting()
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
-        SLM_ASSERT("Timeline initialized twice", timeline->getMaxElementNum() == ~0u);
+        SIGHT_ASSERT("Timeline initialized twice", timeline->getMaxElementNum() == ~0u);
 
         timeline->setMaximumSize(m_timelineSize);
 

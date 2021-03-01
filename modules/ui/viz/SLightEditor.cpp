@@ -30,6 +30,8 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <viz/scene3d/helper/Scene.hpp>
 
 #include <QColorDialog>
@@ -38,14 +40,11 @@
 #include <QStringList>
 #include <QVBoxLayout>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
 
 using sight::viz::scene3d::ILight;
 using sight::viz::scene3d::Layer;
-
 
 //------------------------------------------------------------------------------
 
@@ -309,7 +308,7 @@ void SLightEditor::onEditType(const QString& _type)
     }
     else
     {
-        SLM_ASSERT("Unknow type for light", false);
+        SIGHT_ASSERT("Unknow type for light", false);
     }
     m_currentLight->update();
 }
@@ -414,7 +413,7 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
     m_currentLight = _lightAdaptor;
     if(_lightAdaptor)
     {
-        SLM_ASSERT("The selected light adaptor doesn't exist.", _lightAdaptor);
+        SIGHT_ASSERT("The selected light adaptor doesn't exist.", _lightAdaptor);
 
         m_lightNameLabel->setText(m_currentLight->getName().c_str());
         m_lightTypeBox->setCurrentIndex(static_cast<int>(m_currentLight->getType()));
@@ -442,7 +441,7 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
             }
             else
             {
-                SLM_ASSERT("Unknow type for light", false);
+                SIGHT_ASSERT("Unknow type for light", false);
             }
         }
         else

@@ -29,15 +29,15 @@
 #include <data/CameraSeries.hpp>
 #include <data/FrameTL.hpp>
 
+#include <service/extension/Config.hpp>
 #include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
-#include <service/extension/Config.hpp>
-
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/tokenizer.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
+
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/tokenizer.hpp>
 
 namespace sight::module::io::video
 {
@@ -53,7 +53,6 @@ const core::com::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamer
 const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
-
 
 //-----------------------------------------------------------------------------
 
@@ -117,24 +116,24 @@ void SGrabberProxy::configuring()
                  CameraType::RGBD;
 
         const std::string mode = subConfig.get<std::string>("selection.<xmlattr>.mode", "exclude");
-        SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
-                    "'exclude' (to exclude the selection of the selector list).",
-                    mode == "exclude" || mode == "include" );
+        SIGHT_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+                      "'exclude' (to exclude the selection of the selector list).",
+                      mode == "exclude" || mode == "include" );
         m_exclude = ( mode == "exclude" );
-        SLM_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
+        SIGHT_DEBUG( "selection mode => " << (m_exclude ? "Exclude" : "Include") );
 
         const auto selectionCfg = subConfig.equal_range("addSelection");
         for (auto itSelection = selectionCfg.first; itSelection != selectionCfg.second; ++itSelection)
         {
             const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
             m_selectedServices.insert(service);
-            SLM_DEBUG( "add selection => " + service );
+            SIGHT_DEBUG( "add selection => " + service );
 
             const std::string configId = itSelection->second.get<std::string>("<xmlattr>.config", "");
             // Check if service is not empty.
-            SLM_ASSERT("add selection with config but service is missing", !service.empty());
+            SIGHT_ASSERT("add selection with config but service is missing", !service.empty());
             m_serviceToConfig[service].push_back(configId);
-            SLM_DEBUG("add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
         }
 
         const auto configCfg = subConfig.equal_range("config");
@@ -144,7 +143,7 @@ void SGrabberProxy::configuring()
             const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
             m_serviceToConfig[service].push_back(configId);
-            SLM_DEBUG( "add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG( "add config '" + configId + "' for service '" + service + "'");
         }
 
         m_guiTitle = subConfig.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
@@ -193,7 +192,7 @@ void SGrabberProxy::startCamera()
                 if(cameraSeries)
                 {
                     numCamerasInSeries = cameraSeries->getNumberOfCameras();
-                    SLM_ASSERT("Camera Series is empty", numCamerasInSeries);
+                    SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
 
                     // Assume same source on all cameras
                     sourceType = cameraSeries->getCamera(0)->getCameraSource();
@@ -207,7 +206,7 @@ void SGrabberProxy::startCamera()
             {
                 if(srvImpl != "::sight::module::io::video::SGrabberProxy")
                 {
-                    SLM_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
+                    SIGHT_DEBUG( "Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);
                     const auto config = this->getConfigTree();
 
@@ -225,9 +224,9 @@ void SGrabberProxy::startCamera()
                         service::IService::ConfigType parameterCfg;
 
                         const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
-                        SLM_DEBUG( "Evaluating if key '" + key + "' is suitable...");
+                        SIGHT_DEBUG( "Evaluating if key '" + key + "' is suitable...");
                         const auto obj = this->getInOut< data::Object >(key);
-                        SLM_ASSERT("Object key '" + key + "' not found", obj);
+                        SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "data::FrameTL")
                         {
                             ++numTL;
@@ -401,8 +400,8 @@ void SGrabberProxy::startCamera()
                     if(cameraSeries)
                     {
                         const size_t numCamerasInSeries = cameraSeries->getNumberOfCameras();
-                        SLM_ASSERT("Not enough cameras in series to emulate the grabber",
-                                   srvCount < numCamerasInSeries);
+                        SIGHT_ASSERT("Not enough cameras in series to emulate the grabber",
+                                     srvCount < numCamerasInSeries);
 
                         srv->registerInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
                     }
@@ -414,7 +413,7 @@ void SGrabberProxy::startCamera()
                 for (auto itCfg = inoutsCfg.first; itCfg != inoutsCfg.second; ++itCfg)
                 {
                     const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
-                    SLM_ASSERT("Missing 'key' tag.", !key.empty());
+                    SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
                     auto frameTL = this->getInOut< data::FrameTL >(key);
                     if(frameTL)

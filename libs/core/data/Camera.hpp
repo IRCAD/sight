@@ -35,7 +35,7 @@
 #include <string>
 #include <utility>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Camera));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Camera));
 
 namespace sight::data
 {
@@ -45,8 +45,8 @@ namespace sight::data
 class DATA_CLASS_API Camera : public data::Object
 {
 public:
-    fwCampMakeFriendDataMacro((sight)(data)(Camera));
-    fwCoreClassMacro(Camera, data::Object, data::factory::New< Camera >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Camera));
+    SIGHT_DECLARE_CLASS(Camera, data::Object, data::factory::New< Camera >)
 
     typedef std::array<double, 5> DistArrayType;
     typedef std::array<double, 4> IntrinsecType;
@@ -431,7 +431,7 @@ inline int Camera::getIndex() const
         }
         catch (std::exception& _e)
         {
-            SLM_ERROR("Cannot get index of: " + m_description + " " + _e.what());
+            SIGHT_ERROR("Cannot get index of: " + m_description + " " + _e.what());
         }
     }
 

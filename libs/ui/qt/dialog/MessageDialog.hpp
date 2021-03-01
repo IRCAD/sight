@@ -24,9 +24,9 @@
 
 #include "ui/qt/config.hpp"
 
-#include <QVector>
-
 #include <ui/base/dialog/IMessageDialog.hpp>
+
+#include <QVector>
 
 #include <string>
 
@@ -45,7 +45,7 @@ class UI_QT_CLASS_API MessageDialog : public ui::base::dialog::IMessageDialog
 
 public:
 
-    fwCoreClassMacro(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
+    SIGHT_DECLARE_CLASS(MessageDialog, ui::base::dialog::IMessageDialog, ui::base::factory::New< MessageDialog > )
 
     UI_QT_API MessageDialog(ui::base::GuiBaseObject::Key key);
 

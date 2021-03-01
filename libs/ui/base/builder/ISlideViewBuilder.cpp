@@ -58,8 +58,8 @@ ISlideViewBuilder::~ISlideViewBuilder()
 
 void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _config)
 {
-    SLM_ASSERT("Bad configuration name " + _config->getName() + ", must be 'slideView'",
-               _config->getName() == "slideView");
+    SIGHT_ASSERT("Bad configuration name " + _config->getName() + ", must be 'slideView'",
+                 _config->getName() == "slideView");
 
     if(_config->hasAttribute(s_H_ALIGN_CONFIG))
     {
@@ -74,8 +74,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         }
         else
         {
-            SLM_FATAL("Wrong value '"+ hAlign +"' for '" + s_H_ALIGN_CONFIG +
-                      "' attribute (require 'left' or 'right')");
+            SIGHT_FATAL("Wrong value '"+ hAlign +"' for '" + s_H_ALIGN_CONFIG +
+                        "' attribute (require 'left' or 'right')");
         }
     }
     if(_config->hasAttribute(s_V_ALIGN_CONFIG))
@@ -91,8 +91,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         }
         else
         {
-            SLM_FATAL("Wrong value '"+ vAlign +"' for '" + s_V_ALIGN_CONFIG +
-                      "' attribute (require 'top' or 'bottom')");
+            SIGHT_FATAL("Wrong value '"+ vAlign +"' for '" + s_V_ALIGN_CONFIG +
+                        "' attribute (require 'top' or 'bottom')");
         }
     }
 
@@ -108,7 +108,7 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
             m_percentWidth = false;
         }
         m_width = std::stoi(width);
-        SLM_ASSERT("Height must be upper to 0", m_width >= 0);
+        SIGHT_ASSERT("Height must be upper to 0", m_width >= 0);
     }
 
     if(_config->hasAttribute(s_HEIGHT_CONFIG))
@@ -123,7 +123,7 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
             m_percentHeight = false;
         }
         m_height = std::stoi(height);
-        SLM_ASSERT("Height must be upper to 0", m_height >= 0);
+        SIGHT_ASSERT("Height must be upper to 0", m_height >= 0);
     }
 
     if(_config->hasAttribute(s_H_OFFSET_CONFIG))
@@ -151,8 +151,8 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
     if(_config->hasAttribute(s_OPACITY_CONFIG))
     {
         m_opacity = std::stod(_config->getExistingAttributeValue(s_OPACITY_CONFIG));
-        SLM_ASSERT("Opacity must be in [0 - 1]; actual: " + std::to_string(
-                       m_opacity), m_opacity >= 0. && m_opacity <= 1.);
+        SIGHT_ASSERT("Opacity must be in [0 - 1]; actual: " + std::to_string(
+                         m_opacity), m_opacity >= 0. && m_opacity <= 1.);
     }
 
     if(_config->hasAttribute(s_ANIMATABLE_CONFIG))
@@ -168,7 +168,7 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         }
         else
         {
-            SLM_FATAL(
+            SIGHT_FATAL(
                 "Wrong value '"+ animatable +"' for '" + s_ANIMATABLE_CONFIG +
                 "' attribute (require 'true' or 'false')");
         }
@@ -195,7 +195,7 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         }
         else
         {
-            SLM_FATAL(
+            SIGHT_FATAL(
                 "Wrong value '"+ align +"' for '" + s_ANIMATABLE_ALIGN_CONFIG +
                 "' attribute (require 'left', 'right', 'top' or 'bottom')");
         }

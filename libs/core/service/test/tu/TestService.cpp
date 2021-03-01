@@ -28,11 +28,11 @@
 
 #include <service/macros.hpp>
 
-fwServicesRegisterMacro( ::sight::service::ut::TestService, ::sight::service::ut::TestServiceImplementation)
-fwServicesRegisterObjectMacro( ::sight::service::ut::TestServiceImplementation, ::sight::data::Object);
-fwServicesRegisterMacro( ::sight::service::ut::TestService, ::sight::service::ut::TestServiceImplementation2 )
-fwServicesRegisterMacro( ::sight::service::ut::TestService, ::sight::service::ut::TestSrvAutoconnect )
-fwServicesRegisterMacro( ::sight::service::IService, ::sight::service::ut::TestServiceWithData )
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::TestService, ::sight::service::ut::TestServiceImplementation)
+SIGHT_REGISTER_SERVICE_OBJECT( ::sight::service::ut::TestServiceImplementation, ::sight::data::Object);
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::TestService, ::sight::service::ut::TestServiceImplementation2 )
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::TestService, ::sight::service::ut::TestSrvAutoconnect )
+SIGHT_REGISTER_SERVICE( ::sight::service::IService, ::sight::service::ut::TestServiceWithData )
 
 namespace sight::service
 {

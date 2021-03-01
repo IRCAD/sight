@@ -22,6 +22,8 @@
 
 #include "WindowInteractor.hpp"
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <viz/qt3d/registry/macros.hpp>
 #include <viz/qt3d/SRender.hpp>
 
@@ -29,8 +31,6 @@
 
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ WindowInteractor::~WindowInteractor()
 
 void WindowInteractor::createContainer(ui::base::container::fwContainer::sptr _parent)
 {
-    SLM_ASSERT("Invalid parent.", _parent);
+    SIGHT_ASSERT("Invalid parent.", _parent);
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast( _parent );
 
     auto view3D = new Qt3DExtras::Qt3DWindow();

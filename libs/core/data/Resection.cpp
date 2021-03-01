@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( ::sight::data::Resection );
+SIGHT_REGISTER_DATA( ::sight::data::Resection );
 
 namespace sight::data
 {
@@ -63,9 +63,9 @@ Resection::~Resection ()
 void Resection::shallowCopy(const Object::csptr& _source )
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_name       = other->m_name;
@@ -82,9 +82,9 @@ void Resection::shallowCopy(const Object::csptr& _source )
 void Resection::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Resection::csptr other = Resection::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_name       = other->m_name;

@@ -24,10 +24,10 @@
 
 #include "ui/qml/config.hpp"
 
+#include <ui/base/dialog/ILoggerDialog.hpp>
+
 #include <QObject>
 #include <QUrl>
-
-#include <ui/base/dialog/ILoggerDialog.hpp>
 
 #include <vector>
 
@@ -51,7 +51,7 @@ Q_PROPERTY(QUrl shown MEMBER m_shown WRITE emitShown NOTIFY shownChanged)
 
 public:
 
-    fwCoreClassMacro(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New< LoggerDialog >)
+    SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New< LoggerDialog >)
 
     /// Constructor
     UI_QML_API LoggerDialog(ui::base::GuiBaseObject::Key key);

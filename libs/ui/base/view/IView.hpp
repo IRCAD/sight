@@ -41,7 +41,7 @@ class UI_BASE_CLASS_API IView : public ui::base::IGuiContainer
 
 public:
 
-    fwCoreClassMacro(IView, ui::base::IGuiContainer)
+    SIGHT_DECLARE_CLASS(IView, ui::base::IGuiContainer)
 
 protected:
 

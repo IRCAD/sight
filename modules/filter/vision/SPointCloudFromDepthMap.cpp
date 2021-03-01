@@ -30,17 +30,16 @@
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 
-#include <glm/glm.hpp>
-
-#include <service/macros.hpp>
-
 #include <filter/vision/Projection.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
+#include <glm/glm.hpp>
+
+#include <service/macros.hpp>
+
 namespace sight::module::filter::vision
 {
-
 
 const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
 
@@ -85,9 +84,9 @@ void SPointCloudFromDepthMap::updating()
     auto calibration = this->getInput< data::CameraSeries>("calibration");
     auto depthMap    = this->getInput< data::Image>("depthMap");
     auto pointCloud  = this->getInOut< data::Mesh >("pointCloud");
-    SLM_ASSERT("Missing 'pointCloud' inout", pointCloud);
-    SLM_ASSERT("Missing 'calibration' input", calibration);
-    SLM_ASSERT("Missing 'depthMap' input", depthMap);
+    SIGHT_ASSERT("Missing 'pointCloud' inout", pointCloud);
+    SIGHT_ASSERT("Missing 'calibration' input", calibration);
+    SIGHT_ASSERT("Missing 'depthMap' input", depthMap);
 
     auto depthCalibration = calibration->getCamera(0);
 
@@ -98,7 +97,7 @@ void SPointCloudFromDepthMap::updating()
     {
         colorCalibration = calibration->getCamera(1);
         extrinsicMatrix  = calibration->getExtrinsicMatrix(1);
-        SLM_ASSERT("Missing extrinsic matrix", extrinsicMatrix);
+        SIGHT_ASSERT("Missing extrinsic matrix", extrinsicMatrix);
     }
 
     // Initialize mesh points memory one time in order to increase performances
@@ -171,7 +170,7 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
         }
         else
         {
-            SLM_ERROR("min Depth should be between [0; 65536]");
+            SIGHT_ERROR("min Depth should be between [0; 65536]");
         }
 
     }
@@ -183,12 +182,12 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
         }
         else
         {
-            SLM_ERROR("min Depth should be between [0; 65536]");
+            SIGHT_ERROR("min Depth should be between [0; 65536]");
         }
     }
     else
     {
-        SLM_ERROR("unknown key '" + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'" );
+        SIGHT_ERROR("unknown key '" + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'" );
     }
 }
 
@@ -199,12 +198,12 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     const data::Image::csptr& depthMap,
     const data::Mesh::sptr& pointCloud)
 {
-    SLM_INFO("Input RGB map was empty, skipping colors");
+    SIGHT_INFO("Input RGB map was empty, skipping colors");
 
     const auto type = depthMap->getType();
     if(type != core::tools::Type::s_UINT16)
     {
-        SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
+        SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
@@ -263,12 +262,12 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const data::Matrix4::csptr& extrinsic,
     const data::Mesh::sptr& pointCloud)
 {
-    SLM_INFO("Input RGB map was supplied, including colors");
+    SIGHT_INFO("Input RGB map was supplied, including colors");
 
     const auto type = depthMap->getType();
     if(type != core::tools::Type::s_UINT16)
     {
-        SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
+        SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
@@ -280,12 +279,12 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     const auto rgbType = colorMap->getType();
     if(rgbType != core::tools::Type::s_UINT8)
     {
-        SLM_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
+        SIGHT_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
         return;
     }
     if(4 != colorMap->getNumberOfComponents())
     {
-        SLM_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
+        SIGHT_ERROR("Wrong number of components in rgb : " << colorMap->getNumberOfComponents() << ", 4 is expected.");
         return;
     }
 
@@ -295,7 +294,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
 
     if(rgbWidth != width || rgbHeight != height)
     {
-        SLM_ERROR("RGB and depth maps must have the same size");
+        SIGHT_ERROR("RGB and depth maps must have the same size");
         return;
     }
 

@@ -47,7 +47,7 @@ QtToolBarContainer::~QtToolBarContainer() noexcept
 
 void QtToolBarContainer::clean()
 {
-    SLM_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
+    SIGHT_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
 
     m_toolBar->clear();
 }
@@ -56,7 +56,7 @@ void QtToolBarContainer::clean()
 
 void QtToolBarContainer::destroyContainer()
 {
-    SLM_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
+    SIGHT_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
 
     delete m_toolBar;
 }

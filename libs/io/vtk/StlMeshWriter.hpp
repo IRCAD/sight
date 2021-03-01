@@ -51,9 +51,9 @@ class IO_VTK_CLASS_API StlMeshWriter :
 
 public:
 
-    fwCoreClassMacro(StlMeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
-                     io::base::writer::factory::New< StlMeshWriter >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(StlMeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
+                        io::base::writer::factory::New< StlMeshWriter >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API StlMeshWriter(io::base::writer::IObjectWriter::Key key);

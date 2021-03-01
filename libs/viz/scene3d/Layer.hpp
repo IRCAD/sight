@@ -35,10 +35,10 @@
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
-#include <OGRE/Ogre.h>
 #include <OGRE/OgreViewport.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 
@@ -80,9 +80,9 @@ class VIZ_SCENE3D_CLASS_API Layer :
 public:
 
     /// Generates default methods.
-    fwCoreClassMacro(Layer, viz::scene3d::Layer, new Layer)
+    SIGHT_DECLARE_CLASS(Layer, viz::scene3d::Layer, new Layer)
 
-    fwCoreAllowSharedFromThis()
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Defines the extrinsic x Intrinsic camera calibrations.
     using CameraCalibrationsType = std::vector< ::Ogre::Matrix4 >;

@@ -31,6 +31,8 @@
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <boost/foreach.hpp>
 
 #include <QColor>
@@ -40,13 +42,10 @@
 #include <QVector>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt
 {
 
-
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT = "changeToGreen";
+const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT      = "changeToGreen";
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
 const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
 const core::com::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
@@ -131,11 +130,11 @@ void SStatus::configuring()
     m_redTooltip    = config.get<std::string>("red", "");
     m_orangeTooltip = config.get<std::string>("orange", "");
     m_layout        = config.get<std::string>("layout", "horizontal");
-    SLM_ASSERT("Value for element 'layout' should be 'horizontal' or 'vertical'.",
-               m_layout == "horizontal" || m_layout == "vertical");
+    SIGHT_ASSERT("Value for element 'layout' should be 'horizontal' or 'vertical'.",
+                 m_layout == "horizontal" || m_layout == "vertical");
 
     const std::string form = config.get<std::string>("form", "square");
-    SLM_ASSERT("Value for element 'form' should be 'circle' or 'square'.", form == "circle" || form == "square");
+    SIGHT_ASSERT("Value for element 'form' should be 'circle' or 'square'.", form == "circle" || form == "square");
     m_isCircular = (form == "circle");
 
     m_width  = config.get<size_t>("size.width", 20);
@@ -158,11 +157,11 @@ void SStatus::configuring()
         {
             const size_t countLabelStatus = configLabels.get().count("labelStatus");
 
-            SLM_WARN_IF(
+            SIGHT_WARN_IF(
                 "Number of 'labelStatus' (" << countLabelStatus << ") is different from needed status (" << m_count << ").",
                     countLabelStatus != m_count);
-            SLM_WARN_IF("'labelStatus' from " << m_count+1 << " to " << countLabelStatus << " will be lost.",
-                        countLabelStatus > m_count);
+            SIGHT_WARN_IF("'labelStatus' from " << m_count+1 << " to " << countLabelStatus << " will be lost.",
+                          countLabelStatus > m_count);
 
             const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
@@ -178,7 +177,7 @@ void SStatus::configuring()
             // If there is less labelStatus than needed ones, fill with empty strings
             if(countLabelStatus < m_count)
             {
-                SLM_WARN("'labelStatus' from " << countLabelStatus+1 << " to " << m_count << " will be empty.");
+                SIGHT_WARN("'labelStatus' from " << countLabelStatus+1 << " to " << m_count << " will be empty.");
                 for(size_t i = countLabelStatus; i < m_count; ++i)
                 {
                     QPointer < QLabel > qLab = new QLabel();
@@ -270,7 +269,7 @@ void SStatus::toggleGreenRed(const bool green)
 
 void SStatus::changeNthToGreen(const int index)
 {
-    SLM_INFO_IF(
+    SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
             index < 0 || index >= m_count);
 
@@ -286,7 +285,7 @@ void SStatus::changeNthToGreen(const int index)
 
 void SStatus::changeNthToRed(const int index)
 {
-    SLM_INFO_IF(
+    SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 <<"]",
             index < 0 || index >= m_count);
 
@@ -302,7 +301,7 @@ void SStatus::changeNthToRed(const int index)
 
 void SStatus::changeNthToOrange(const int index)
 {
-    SLM_INFO_IF(
+    SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
             index < 0 || index >= m_count);
 
@@ -318,7 +317,7 @@ void SStatus::changeNthToOrange(const int index)
 
 void SStatus::toggleNthGreenRed(const int index, const bool green)
 {
-    SLM_INFO_IF(
+    SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 <<"]",
             index < 0 || index >= m_count);
 

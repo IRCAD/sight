@@ -28,15 +28,14 @@
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
-#include <service/macros.hpp>
-
 #include <filter/image/MatrixRegressor.hpp>
+
+#include <service/macros.hpp>
 
 namespace sight::module::filter::image
 {
 
-
-static const service::IService::KeyType s_MATRIX_LIST_IN = "matrixList";
+static const service::IService::KeyType s_MATRIX_LIST_IN       = "matrixList";
 static const service::IService::KeyType s_POINT_LIST_IN        = "pointList";
 static const service::IService::KeyType s_OPTIMAL_MATRIX_INOUT = "optimalMatrix";
 
@@ -75,12 +74,12 @@ void SMatrixRegressor::updating()
     const auto matrixList = this->getLockedInput< data::Vector >(s_MATRIX_LIST_IN);
     const auto pointList  = this->getLockedInput< data::PointList >(s_POINT_LIST_IN);
 
-    SLM_ASSERT("'matrixList' does not exist", matrixList);
-    SLM_ASSERT("'pointList' does not exist", pointList);
+    SIGHT_ASSERT("'matrixList' does not exist", matrixList);
+    SIGHT_ASSERT("'pointList' does not exist", pointList);
 
     const auto optimalMatrix = this->getLockedInOut< data::Matrix4 >(s_OPTIMAL_MATRIX_INOUT);
 
-    SLM_ASSERT("'optimalMatrix' does not exist", optimalMatrix);
+    SIGHT_ASSERT("'optimalMatrix' does not exist", optimalMatrix);
 
     std::vector< sight::filter::image::MatrixRegressor::PointType > ptList;
 

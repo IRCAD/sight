@@ -41,7 +41,7 @@ class UI_BASE_CLASS_API INotificationDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(INotificationDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(INotificationDialog, ui::base::GuiBaseObject)
 
     /// Notification Type (changes Qss style).
     enum class Type

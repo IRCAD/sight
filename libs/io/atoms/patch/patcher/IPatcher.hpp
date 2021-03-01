@@ -71,8 +71,8 @@ public:
 
 public:
 
-    fwCoreClassMacro(IPatcher, core::tools::Object)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(IPatcher, core::tools::Object)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor
     IO_ATOMS_API IPatcher();

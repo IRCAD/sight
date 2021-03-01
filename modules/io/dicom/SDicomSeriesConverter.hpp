@@ -62,7 +62,7 @@ class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public ::sight::ui::base
 {
 public:
 
-    fwCoreServiceMacro(SDicomSeriesConverter, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(SDicomSeriesConverter, sight::ui::base::IAction )
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 

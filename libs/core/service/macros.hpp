@@ -76,16 +76,16 @@ namespace sight::service
  */
 #if !BOOST_PP_VARIADICS_MSVC
 
-#define fwServicesRegisterMacro(...) BOOST_PP_OVERLOAD(__FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__)
+#define SIGHT_REGISTER_SERVICE(...) BOOST_PP_OVERLOAD(__FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 
 #else
 
-#define fwServicesRegisterMacro(...) \
+#define SIGHT_REGISTER_SERVICE(...) \
     BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 
 #endif
 
-#define fwServicesRegisterObjectMacro(ServiceImpl, ServiceObject) \
+#define SIGHT_REGISTER_SERVICE_OBJECT(ServiceImpl, ServiceObject) \
     __FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
 
 //@}

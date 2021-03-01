@@ -120,11 +120,11 @@ InformationEntity<DATATYPE>::InformationEntity(const CSPTR(data::DicomSeries)& d
     m_progressCallback(progress),
     m_cancelRequestedCallback(cancel)
 {
-    SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
-    SLM_ASSERT("Reader should not be null.", reader);
-    SLM_ASSERT("Instance should not be null.", instance);
-    SLM_ASSERT("Object should not be null.", object);
-    SLM_ASSERT("Logger should not be null.", logger);
+    SIGHT_ASSERT("DicomSeries should not be null.", dicomSeries);
+    SIGHT_ASSERT("Reader should not be null.", reader);
+    SIGHT_ASSERT("Instance should not be null.", instance);
+    SIGHT_ASSERT("Object should not be null.", object);
+    SIGHT_ASSERT("Logger should not be null.", logger);
 }
 
 //------------------------------------------------------------------------------

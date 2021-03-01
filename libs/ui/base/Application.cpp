@@ -31,7 +31,7 @@ Application::sptr Application::factory()
 {
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(IApplication::REGISTRY_KEY);
     static Application::sptr app         = ui::base::Application::dynamicCast(guiObj);
-    SLM_ASSERT("no implementation of " << ui::base::IApplication::REGISTRY_KEY, app );
+    SIGHT_ASSERT("no implementation of " << ui::base::IApplication::REGISTRY_KEY, app );
     return app;
 }
 

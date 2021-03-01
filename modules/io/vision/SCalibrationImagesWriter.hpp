@@ -54,7 +54,7 @@ class MODULE_IO_VISION_CLASS_API SCalibrationImagesWriter : public sight::io::ba
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationImagesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SCalibrationImagesWriter, sight::io::base::service::IWriter)
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationImagesWriter() noexcept;

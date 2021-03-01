@@ -36,7 +36,7 @@
 #include <map>
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(CameraSeries));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(CameraSeries));
 
 namespace sight::data
 {
@@ -47,9 +47,9 @@ namespace sight::data
 class DATA_CLASS_API CameraSeries : public data::Series
 {
 public:
-    fwCoreClassMacro(CameraSeries, data::Object, data::factory::New< CameraSeries >)
+    SIGHT_DECLARE_CLASS(CameraSeries, data::Object, data::factory::New< CameraSeries >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(CameraSeries));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(CameraSeries));
 
     typedef std::vector< data::Camera::sptr > CameraContainerType;
 

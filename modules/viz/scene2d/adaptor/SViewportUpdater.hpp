@@ -61,7 +61,7 @@ class MODULE_VIZ_SCENE2D_CLASS_API SViewportUpdater : public sight::viz::scene2d
 {
 
 public:
-    fwCoreServiceMacro(SViewportUpdater, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SViewportUpdater, ::sight::viz::scene2d::IAdaptor)
     MODULE_VIZ_SCENE2D_API SViewportUpdater() noexcept;
     MODULE_VIZ_SCENE2D_API ~SViewportUpdater() noexcept;
 

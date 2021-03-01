@@ -29,9 +29,9 @@
 #include <data/Reconstruction.hpp>
 #include <data/tools/Color.hpp>
 
-#include <viz/scene3d/ogre.hpp>
-
 #include <geometry/data/Mesh.hpp>
+
+#include <viz/scene3d/ogre.hpp>
 
 #include <OgreCamera.h>
 
@@ -336,7 +336,7 @@ std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3 > SShapeExtruder::
 
     // Compute the intersection between the ray and the far working plane.
     std::pair< bool, ::Ogre::Real > farHit = ::Ogre::Math::intersects(ray, m_lassoFarPlane);
-    SLM_ASSERT("The ray must hit the plane", farHit.first);
+    SIGHT_ASSERT("The ray must hit the plane", farHit.first);
     const ::Ogre::Vector3 farPosition = ray.getPoint(farHit.second);
 
     // Launch the ray on the near plane after since the ray must be in front or behind it due to the frustum curve.
@@ -346,7 +346,7 @@ std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3 > SShapeExtruder::
         ray.setDirection(-ray.getDirection());
         nearHit = ::Ogre::Math::intersects(ray, m_lassoNearPlane);
     }
-    SLM_ASSERT("The ray must hit the plane", nearHit.first);
+    SIGHT_ASSERT("The ray must hit the plane", nearHit.first);
     const ::Ogre::Vector3 nearPosition = ray.getPoint(nearHit.second);
 
     // Launch the ray on the tool plane.
@@ -356,7 +356,7 @@ std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3 > SShapeExtruder::
         ray.setDirection(-ray.getDirection());
         toolHit = ::Ogre::Math::intersects(ray, m_lassoToolPlane);
     }
-    SLM_ASSERT("The ray must hit the plane", toolHit.first);
+    SIGHT_ASSERT("The ray must hit the plane", toolHit.first);
     const ::Ogre::Vector3 toolPosition = ray.getPoint(toolHit.second);
 
     return { toolPosition, nearPosition, farPosition };
@@ -466,7 +466,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
         // Draw the last lasso line.
         m_lastLassoLine->clear();
 
-        SLM_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
+        SIGHT_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
 
         m_lastLassoLine->begin(
             m_materialAdaptor->getMaterialName(), ::Ogre::RenderOperation::OT_LINE_STRIP,
@@ -555,7 +555,7 @@ void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _
         }
 
         // Draw the last lasso line.
-        SLM_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
+        SIGHT_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
 
         m_lastLassoLine->beginUpdate(0);
 
@@ -659,8 +659,8 @@ void SShapeExtruder::drawLasso()
 
 void SShapeExtruder::triangulatePoints() const
 {
-    SLM_ASSERT("Lasso near and far positions must have the same size",
-               m_lassoNearPositions.size() == m_lassoFarPositions.size());
+    SIGHT_ASSERT("Lasso near and far positions must have the same size",
+                 m_lassoNearPositions.size() == m_lassoFarPositions.size());
 
     // Generate triangles from the point list with the constrained Browyer-Watson algorithm.
     std::vector< Triangle3D > triangulation;

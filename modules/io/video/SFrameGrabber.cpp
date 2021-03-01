@@ -34,11 +34,11 @@
 
 #include <service/macros.hpp>
 
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
-
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/preferences.hpp>
+
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include <chrono>
 #include <filesystem>
@@ -109,10 +109,10 @@ void SFrameGrabber::configuring()
 
     m_defaultDuration = config.get<double>("defaultDuration", m_defaultDuration);
 
-    SLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
+    SIGHT_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 
     m_step = config.get<unsigned long>("step", m_step);
-    SLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    SIGHT_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
 
@@ -437,9 +437,9 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             }
             else
             {
-                SLM_WARN("Could not find a timestamp in file name: " + imageName
-                         + ". Generating a timestamp duration of: " + std::to_string(m_defaultDuration)
-                         + "ms.");
+                SIGHT_WARN("Could not find a timestamp in file name: " + imageName
+                           + ". Generating a timestamp duration of: " + std::to_string(m_defaultDuration)
+                           + "ms.");
 
                 m_imageTimestamps.push_back(stubTimestamp);
 
@@ -527,7 +527,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
             }
             else
             {
-                SLM_ERROR("Only one image to read, set 'oneShot' mode to true.");
+                SIGHT_ERROR("Only one image to read, set 'oneShot' mode to true.");
                 return;
             }
 
@@ -571,8 +571,8 @@ void SFrameGrabber::grabVideo()
 
                 if (width != w || height != h)
                 {
-                    SLM_ERROR("This video cannot be read, the frame size is not expected. expected: "
-                              << width << " x " << height << ", actual: " << w << " x " << h);
+                    SIGHT_ERROR("This video cannot be read, the frame size is not expected. expected: "
+                                << width << " x " << height << ", actual: " << w << " x " << h);
                     return;
                 }
 
@@ -676,7 +676,7 @@ void SFrameGrabber::grabImage()
             timestamp = m_imageTimestamps[m_imageCount];
         }
 
-        SLM_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
+        SIGHT_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
 
         const size_t width  = static_cast<size_t>(image.size().width);
         const size_t height = static_cast<size_t>(image.size().height);
@@ -760,7 +760,7 @@ void SFrameGrabber::grabImage()
         }
         else
         {
-            SLM_ERROR("Images doesn't have the same size.");
+            SIGHT_ERROR("Images doesn't have the same size.");
         }
     }
     else if (!m_isPaused && m_loopVideo)
@@ -857,13 +857,13 @@ void SFrameGrabber::setStep(int step, std::string key)
 {
     if(key == "step")
     {
-        SLM_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
+        SIGHT_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<unsigned long>(step);
     }
     else
     {
-        SLM_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
+        SIGHT_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
     }
 }
 

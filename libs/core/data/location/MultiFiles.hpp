@@ -38,7 +38,7 @@ namespace location
 class DATA_CLASS_API MultiFiles  : public ILocation
 {
 public:
-    fwCoreClassMacro(MultiFiles, ILocation, data::factory::New< MultiFiles >)
+    SIGHT_DECLARE_CLASS(MultiFiles, ILocation, data::factory::New< MultiFiles >)
 
     /// Constructor
     DATA_API MultiFiles( data::Object::Key key );
@@ -78,7 +78,7 @@ struct enableMultiFiles
     enableMultiFiles(RW* rw) :
         m_rw(rw)
     {
-        SLM_ASSERT("m_rw not instanced", m_rw);
+        SIGHT_ASSERT("m_rw not instanced", m_rw);
     }
 
     /// Set file system paths

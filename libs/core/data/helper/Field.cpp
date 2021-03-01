@@ -64,7 +64,7 @@ void Field::setField(const data::Object::FieldNameType& name, data::Object::sptr
 void Field::setFields( const data::Object::FieldMapType& newFields)
 {
     data::Object::sptr object = m_object.lock();
-    SLM_ASSERT("Field helper need a non-null object pointer", object);
+    SIGHT_ASSERT("Field helper need a non-null object pointer", object);
     const data::Object::FieldMapType oldFields = object->getFields();
     this->buildMessage(oldFields, newFields);
     object->setFields(newFields);
@@ -82,10 +82,10 @@ void Field::removeField(const data::Object::FieldNameType& name)
 void Field::add(const data::Object::FieldNameType& _name, data::Object::sptr _obj)
 {
     data::Object::sptr object = m_object.lock();
-    SLM_ASSERT("Field helper need a non-null object pointer", object);
+    SIGHT_ASSERT("Field helper need a non-null object pointer", object);
 
     data::Object::sptr field = object->getField(_name);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Field already exists"), field);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Field already exists"), field);
 
     m_addedFields[_name] = _obj;
 
@@ -96,11 +96,11 @@ void Field::add(const data::Object::FieldNameType& _name, data::Object::sptr _ob
 
 void Field::swap(const data::Object::FieldNameType& _name, data::Object::sptr _obj)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     data::Object::sptr object = m_object.lock();
 
     data::Object::sptr field = object->getField(_name);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Field does not exist"), !field);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Field does not exist"), !field);
 
     m_newChangedFields[_name] = _obj;
     m_oldChangedFields[_name] = field;
@@ -112,7 +112,7 @@ void Field::swap(const data::Object::FieldNameType& _name, data::Object::sptr _o
 
 void Field::addOrSwap(const data::Object::FieldNameType& _name, data::Object::sptr _obj)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     data::Object::sptr object = m_object.lock();
 
     data::Object::sptr field = object->getField(_name);
@@ -133,11 +133,11 @@ void Field::addOrSwap(const data::Object::FieldNameType& _name, data::Object::sp
 
 void Field::remove(const data::Object::FieldNameType& _name)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     data::Object::sptr object = m_object.lock();
     data::Object::sptr field  = object->getField(_name);
 
-    FW_RAISE_EXCEPTION_IF(data::Exception("Field does not exist"), !field);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Field does not exist"), !field);
 
     m_removedFields[_name] = field;
     object->removeField(_name);
@@ -147,7 +147,7 @@ void Field::remove(const data::Object::FieldNameType& _name)
 
 void Field::clear()
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     data::Object::sptr object = m_object.lock();
 
     auto fieldNames = object->getFieldNames();
@@ -163,7 +163,7 @@ void Field::clear()
 
 void Field::notify()
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
 
     if ( !m_removedFields.empty() )
     {
@@ -186,9 +186,9 @@ void Field::notify()
 
         sig->asyncEmit(m_addedFields);
     }
-    SLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
-                + "', nothing to notify.",
-                m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
+    SIGHT_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
+                  + "', nothing to notify.",
+                  m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
 
     m_removedFields.clear();
     m_newChangedFields.clear();

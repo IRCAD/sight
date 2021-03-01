@@ -38,7 +38,7 @@ namespace custom
 class FILTER_DICOM_CLASS_API ICustom : public filter::dicom::IFilter
 {
 public:
-    fwCoreClassMacro(ICustom, filter::dicom::IFilter)
+    SIGHT_DECLARE_CLASS(ICustom, filter::dicom::IFilter)
 
     /// Destructor
     FILTER_DICOM_API virtual ~ICustom();

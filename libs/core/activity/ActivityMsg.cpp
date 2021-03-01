@@ -41,7 +41,7 @@ ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
                          const activity::extension::ActivityInfo& info,
                          const ParametersType& parameters)
 {
-    SLM_ASSERT("ActivitySeries instantiation failed", series);
+    SIGHT_ASSERT("ActivitySeries instantiation failed", series);
 
     const std::string asUID = "AS_UID";
 
@@ -66,7 +66,7 @@ ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
             submatch.replace(0, 1, "@");
 
             data::Object::sptr obj = data::reflection::getObject(series->getData(), submatch);
-            SLM_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
+            SIGHT_ASSERT("Invalid seshat path : '" << submatch <<"'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 
@@ -78,7 +78,7 @@ ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
             }
             else
             {
-                SLM_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
+                SIGHT_WARN("Seshat path '" << submatch << "' doesn't reference an data::String");
             }
 
             submatch.replace(0, 1, "!");
@@ -114,7 +114,7 @@ ActivityMsg::ActivityMsg(const data::ActivitySeries::sptr& series,
             }
 
             data::Object::sptr obj = data::reflection::getObject(series->getData(), parameterToReplace);
-            SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
+            SIGHT_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 

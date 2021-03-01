@@ -38,8 +38,8 @@ namespace splitter
 class FILTER_DICOM_CLASS_API AcquisitionNumberSplitter : public filter::dicom::splitter::TagValueSplitter
 {
 public:
-    fwCoreClassMacro(AcquisitionNumberSplitter, ISplitter,
-                     filter::dicom::factory::New< AcquisitionNumberSplitter >);
+    SIGHT_DECLARE_CLASS(AcquisitionNumberSplitter, ISplitter,
+                        filter::dicom::factory::New< AcquisitionNumberSplitter >);
 
     /// Constructor
     FILTER_DICOM_API AcquisitionNumberSplitter(filter::dicom::IFilter::Key key);

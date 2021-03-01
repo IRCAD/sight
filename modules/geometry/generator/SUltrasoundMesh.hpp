@@ -76,7 +76,7 @@ class MODULE_GEOMETRY_GENERATOR_CLASS_API SUltrasoundMesh final : public sight::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SUltrasoundMesh, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(SUltrasoundMesh, sight::service::IService)
 
     /// Create slots.
     MODULE_GEOMETRY_GENERATOR_API SUltrasoundMesh() noexcept;

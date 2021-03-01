@@ -28,23 +28,22 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Boolean.hpp>
-#include <data/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
+
+#include <geometry/data/IntrasecTypes.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-#include <geometry/data/IntrasecTypes.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt::image
 {
-
 
 static const service::IService::KeyType s_IMAGE_INOUT = "image";
 
@@ -118,7 +117,7 @@ void ImageTransparency::configuring()
     if(!vectCfg.empty())
     {
         ConfigurationType config = vectCfg.at(0);
-        SLM_ASSERT("Missing attribute value", config->hasAttribute("value"));
+        SIGHT_ASSERT("Missing attribute value", config->hasAttribute("value"));
         m_shortcut = config->getAttributeValue("value");
     }
 }
@@ -128,7 +127,7 @@ void ImageTransparency::configuring()
 void ImageTransparency::updating()
 {
     data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
     bool imageIsValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
     m_valueSlider->setEnabled(imageIsValid);
@@ -186,7 +185,7 @@ void ImageTransparency::info( std::ostream& _sstream )
 void ImageTransparency::onModifyTransparency(int value)
 {
     data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
     img->setField( "TRANSPARENCY",  data::Integer::New(value) );
 
@@ -220,7 +219,7 @@ void ImageTransparency::onModifyVisibility(int value)
 void ImageTransparency::notifyVisibility(bool isVisible)
 {
     data::Image::sptr img = this->getInOut< data::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
+    SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", img);
 
     img->setField( "VISIBILITY",  data::Boolean::New(isVisible) );
 

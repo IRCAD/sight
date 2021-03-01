@@ -35,7 +35,7 @@ namespace sight::data::tools
 
 void Color::hexaStringToRGBA( const std::string& _hexaColor, std::uint8_t _rgba[4] )
 {
-    FW_RAISE_IF(
+    SIGHT_THROW_IF(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " + _hexaColor,
         _hexaColor[0] != '#'

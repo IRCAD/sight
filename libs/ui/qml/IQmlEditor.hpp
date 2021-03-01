@@ -46,7 +46,7 @@ class UI_QML_CLASS_QT_API IQmlEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(IQmlEditor, service::IService)
+    SIGHT_DECLARE_SERVICE(IQmlEditor, service::IService)
 
     /// Constructor. Do nothing.
     UI_QML_QT_API IQmlEditor() noexcept;

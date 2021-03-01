@@ -74,7 +74,7 @@ void SVector::configuring()
     this->setTransformId(transformId);
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_color  = config.get<std::string>(s_COLOR_CONFIG, m_color);
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << m_color,
             m_color[0] == '#'

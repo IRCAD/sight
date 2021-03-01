@@ -27,9 +27,9 @@
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <QObject>
-
 #include <ui/base/IEditor.hpp>
+
+#include <QObject>
 
 #include <filesystem>
 
@@ -95,7 +95,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STransferFunction, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(STransferFunction, sight::ui::base::IEditor)
 
     /// Does nothing.
     MODULE_UI_QT_API STransferFunction();

@@ -22,9 +22,9 @@
 
 #include "service/op/Add.hpp"
 
+#include "service/extension/Factory.hpp"
 #include "service/IService.hpp"
 #include "service/macros.hpp"
-#include "service/extension/Factory.hpp"
 
 #include <core/tools/fwID.hpp>
 
@@ -42,10 +42,10 @@ service::IService::sptr add( const std::string& _implType, const std::string& _u
     service::IService::sptr srv;
     srv = service::extension::Factory::getDefault()->create( _implType );
     service::OSR::registerService( srv );
-    FW_RAISE_IF("Failed to add " + _implType, !srv );
+    SIGHT_THROW_IF("Failed to add " + _implType, !srv );
     if(!_uid.empty())
     {
-        SLM_ASSERT( "Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID() );
+        SIGHT_ASSERT( "Try to set ID: " + _uid + " but already has an ID: " + srv->getID(), !srv->hasID() );
         srv->setID( _uid );
     }
     return srv;

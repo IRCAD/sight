@@ -86,7 +86,7 @@ void SModelSeries::configuring()
     if(config.count(s_QUERY_CONFIG))
     {
         const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG);
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -156,7 +156,7 @@ void SModelSeries::updating()
         if(m_isVisibleTag)
         {
             adaptor->updateVisibility(!m_isVisible);
-            SLM_WARN("The value of the modelSeries field will not be taken into account");
+            SIGHT_WARN("The value of the modelSeries field will not be taken into account");
         }
         else
         {

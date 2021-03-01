@@ -36,7 +36,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
 
-fwDataIOReaderRegisterMacro( ::sight::io::vtk::VtiImageReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::vtk::VtiImageReader );
 
 namespace sight::io::vtk
 {
@@ -90,14 +90,14 @@ void VtiImageReader::read()
 
     m_job->finish();
 
-    FW_RAISE_IF("VtiImageReader cannot read Vti image file :"<<this->getFile().string(), !img);
+    SIGHT_THROW_IF("VtiImageReader cannot read Vti image file :"<<this->getFile().string(), !img);
     try
     {
         io::vtk::fromVTKImage( img, pImage);
     }
     catch( std::exception& e)
     {
-        FW_RAISE("VTIImage to data::Image failed "<<e.what());
+        SIGHT_THROW("VTIImage to data::Image failed "<<e.what());
     }
 }
 

@@ -120,9 +120,9 @@ void Profile::start()
     {
         auto bundle = std::dynamic_pointer_cast< detail::Module >(extension->getModule());
 
-        SLM_FATAL_IF( "Validation not ok for bundle = '" << extension->getModule()->getIdentifier() <<
-                      "'  (extension id = '" << extension->getIdentifier() << "' )",
-                      bundle->isEnabled() && extension->validate() == Extension::Invalid );
+        SIGHT_FATAL_IF( "Validation not ok for bundle = '" << extension->getModule()->getIdentifier() <<
+                        "'  (extension id = '" << extension->getIdentifier() << "' )",
+                        bundle->isEnabled() && extension->validate() == Extension::Invalid );
     }
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
@@ -132,7 +132,7 @@ void Profile::start()
 
 int Profile::run()
 {
-    SLM_ASSERT("the 'run' callback is missing", m_run);
+    SIGHT_ASSERT("the 'run' callback is missing", m_run);
     int result;
     result = m_run();
     return result;

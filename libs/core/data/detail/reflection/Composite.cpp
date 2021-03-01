@@ -29,7 +29,7 @@
 #include <core/reflection/Mapper/ValueMapper.hpp>
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(Composite))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Composite))
 {
     builder
     .tag("object_version", "1")

@@ -41,7 +41,7 @@ namespace sight::module::sync
 
 // -----------------------------------------------------------------------------
 
-static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG = "matrixSynchronized";
+static const core::com::Signals::SignalKeyType MATRIX_SYNCHRONIZED_SIG   = "matrixSynchronized";
 static const core::com::Signals::SignalKeyType MATRIX_UNSYNCHRONIZED_SIG = "matrixUnsynchronized";
 
 static const service::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
@@ -105,7 +105,7 @@ void SMatrixTLSynchronizer::synchronize()
 
                 {
                     data::mt::ObjectWriteLock lock(matrix);
-                    SLM_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
+                    SIGHT_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
 
                     matrixPrint << std::endl << "Matrix[" << matrixIndex << "]" << std::endl;
 
@@ -131,7 +131,7 @@ void SMatrixTLSynchronizer::synchronize()
             }
         }
 
-        SLM_DEBUG( std::endl <<matrixPrint.str());
+        SIGHT_DEBUG( std::endl <<matrixPrint.str());
     }
 }
 

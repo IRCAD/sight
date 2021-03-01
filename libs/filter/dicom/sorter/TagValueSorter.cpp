@@ -111,8 +111,8 @@ const
         fileFormat.transferInit();
         if (!fileFormat.read(is).good())
         {
-            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                     "(slice: '" << item.first << "')");
+            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                        "(slice: '" << item.first << "')");
         }
 
         fileFormat.loadAllDataIntoMemory();

@@ -27,7 +27,7 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampAutoDeclareEnumMacro((sight)(data)(StructureTraits)(Category));
-fwCampAutoDeclareEnumMacro((sight)(data)(StructureTraits)(StructureClass));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(StructureTraits)(Category));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(StructureTraits)(StructureClass));
 
-fwCampDeclareAccessor((sight)(data)(StructureTraits), (sight)(data)(Color));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(StructureTraits), (sight)(data)(Color));

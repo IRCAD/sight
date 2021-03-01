@@ -48,7 +48,7 @@ public:
     /// the object type related
     typedef DATATYPE DataType;
 
-    fwCoreClassMacro(GenericObjectWriter<DATATYPE>, io::base::writer::IObjectWriter)
+    SIGHT_DECLARE_CLASS(GenericObjectWriter<DATATYPE>, io::base::writer::IObjectWriter)
 
     /// Constructor. Do nothing.
     GenericObjectWriter()
@@ -68,9 +68,9 @@ public:
      */
     virtual void setObject( core::tools::Object::csptr obj) override
     {
-        SLM_ASSERT("Object type: '" << std::string(typeid(obj).name())
-                                    << "' is not a '" << typeid(DataType()).name()<<"'",
-                   std::dynamic_pointer_cast< const DataType >(obj));
+        SIGHT_ASSERT("Object type: '" << std::string(typeid(obj).name())
+                                      << "' is not a '" << typeid(DataType()).name()<<"'",
+                     std::dynamic_pointer_cast< const DataType >(obj));
         IObjectWriter::setObject(obj);
     }
 

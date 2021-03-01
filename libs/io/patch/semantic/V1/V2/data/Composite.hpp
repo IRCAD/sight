@@ -39,7 +39,7 @@ namespace data
 class IO_PATCH_CLASS_API Composite : public io::atoms::patch::ISemanticPatch
 {
 public:
-    fwCoreClassMacro(Composite, io::atoms::patch::ISemanticPatch, new Composite)
+    SIGHT_DECLARE_CLASS(Composite, io::atoms::patch::ISemanticPatch, new Composite)
 
     /// Constructor
     IO_PATCH_API Composite();

@@ -70,7 +70,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API STexture final : public sight::viz::scene3d::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STexture, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(STexture, ::sight::viz::scene3d::IAdaptor)
 
     /// Defines the keys of the slot @ref textureSwapped().
     MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;

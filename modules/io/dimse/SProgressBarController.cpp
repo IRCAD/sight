@@ -35,7 +35,6 @@ static const core::com::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgre
 static const core::com::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
 static const core::com::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
-
 //------------------------------------------------------------------------------
 
 SProgressBarController::SProgressBarController() noexcept
@@ -94,7 +93,7 @@ void SProgressBarController::updateProgress(std::string _id, float _percentage, 
     }
     else
     {
-        SLM_WARN("Trying to update a progress bar which is not started !");
+        SIGHT_WARN("Trying to update a progress bar which is not started !");
     }
 }
 

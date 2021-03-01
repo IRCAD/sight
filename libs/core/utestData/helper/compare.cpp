@@ -62,7 +62,7 @@ bool compare(
             }
         }
 
-        SLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
+        SIGHT_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
     }
 
     for(const data::reflection::visitor::CompareObjects::PropsMapType::key_type& key: propsKey)

@@ -27,9 +27,9 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
 
-#include <data/Image.hpp>
 #include <data/fieldHelper/Image.hpp>
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
+#include <data/Image.hpp>
 
 #include <functional>
 
@@ -148,7 +148,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
     {
         // Get Index
         const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-        SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
+        SIGHT_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ) );
         const int index = static_cast<int>(image->getField< data::Integer >( fieldID )->value());
 
         // Update QSlider
@@ -181,7 +181,7 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
     data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
 
     const std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];
-    SLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
+    SIGHT_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< data::Integer >( fieldID )->value() = index;
 
     auto sig = image->signal< data::Image::SliceIndexModifiedSignalType >(
@@ -196,9 +196,9 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
 void SSliceIndexPositionEditor::onSliceType( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
-    SLM_ASSERT("Bad slice type "<<type, type == X_AXIS ||
-               type == Y_AXIS ||
-               type == Z_AXIS );
+    SIGHT_ASSERT("Bad slice type "<<type, type == X_AXIS ||
+                 type == Y_AXIS ||
+                 type == Z_AXIS );
 
     const int oldType = static_cast< int > ( m_orientation );
     // Change slice type

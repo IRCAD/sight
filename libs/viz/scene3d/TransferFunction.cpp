@@ -59,7 +59,7 @@ TransferFunction::TransferFunction()
     TEXTURE_SIZE        = static_cast<std::uint32_t>(max);
     TEXTURE_PIXEL_COUNT = static_cast<std::uint32_t>(max);
 
-    SLM_INFO("Use a 1D texture of size : " << TEXTURE_SIZE);
+    SIGHT_INFO("Use a 1D texture of size : " << TEXTURE_SIZE);
 }
 
 //-----------------------------------------------------------------------------

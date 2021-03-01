@@ -28,7 +28,7 @@
 
 #include <array>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Color));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Color));
 
 namespace sight::data
 {
@@ -44,9 +44,9 @@ public:
     typedef float ColorType;
     typedef std::array<ColorType, 4> ColorArray;
 
-    fwCoreClassMacro(Color, data::Object, data::factory::New< Color >)
+    SIGHT_DECLARE_CLASS(Color, data::Object, data::factory::New< Color >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Color));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Color));
 
     DATA_API static sptr New(ColorType red, ColorType green = 1.f, ColorType blue = 1.f, ColorType alpha = 1.f);
 

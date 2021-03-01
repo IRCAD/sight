@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API ILocationDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(ILocationDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(ILocationDialog, ui::base::GuiBaseObject)
 
     typedef enum
     {

@@ -42,7 +42,6 @@ namespace sight::module::data
 
 //------------------------------------------------------------------------------
 
-
 //------------------------------------------------------------------------------
 
 const core::com::Slots::SlotKeyType SSeriesSignal::s_REPORT_SERIES_SLOT = "reportSeries";
@@ -88,11 +87,11 @@ void SSeriesSignal::configuring()
     if(srvconfig.count("filter") == 1 )
     {
         const service::IService::ConfigType& configFilter = srvconfig.get_child("filter");
-        SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+        SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
-        SLM_ASSERT("'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
-                   mode == "include" || mode == "exclude");
+        SIGHT_ASSERT("'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
+                     mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
         BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("type") )
@@ -100,7 +99,7 @@ void SSeriesSignal::configuring()
             m_types.push_back(v.second.get<std::string>(""));
         }
     }
-    SLM_ASSERT("A maximum of 1 <filter> tag is allowed", srvconfig.count("filter") < 2);
+    SIGHT_ASSERT("A maximum of 1 <filter> tag is allowed", srvconfig.count("filter") < 2);
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +129,7 @@ void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSerie
 void SSeriesSignal::updating()
 {
     const auto seriesDB = this->getInput< sight::data::SeriesDB >(s_SERIES_DB_INPUT);
-    SLM_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
+    SIGHT_ASSERT("input '" + s_SERIES_DB_INPUT + "' does not exist.", seriesDB);
     sight::data::mt::ObjectReadLock lock(seriesDB);
 
     this->reportSeries(seriesDB->getContainer());

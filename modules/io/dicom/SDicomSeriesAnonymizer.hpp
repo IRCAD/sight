@@ -63,7 +63,7 @@ class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public service::IContro
 public:
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesAnonymizer,  service::IController)
+    SIGHT_DECLARE_SERVICE(SDicomSeriesAnonymizer,  service::IController)
 
     /// Constructor
     MODULE_IO_DICOM_API SDicomSeriesAnonymizer() noexcept;

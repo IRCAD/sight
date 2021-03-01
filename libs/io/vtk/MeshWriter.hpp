@@ -53,9 +53,9 @@ class IO_VTK_CLASS_API MeshWriter :
 
 public:
 
-    fwCoreClassMacro(MeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
-                     io::base::writer::factory::New< MeshWriter >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(MeshWriter, io::base::writer::GenericObjectWriter< data::Mesh >,
+                        io::base::writer::factory::New< MeshWriter >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API MeshWriter(io::base::writer::IObjectWriter::Key key);

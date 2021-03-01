@@ -28,12 +28,12 @@
 
 #include <data/tools/Color.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QScrollArea>
 #include <QStyle>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::LineLayoutManager,
                     ::sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY )
@@ -58,7 +58,7 @@ LineLayoutManager::~LineLayoutManager()
 void LineLayoutManager::createLayout( ui::base::container::fwContainer::sptr parent )
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_parentContainer->setLayout(layout);

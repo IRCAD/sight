@@ -28,7 +28,7 @@
 namespace sight::data
 {
 
-fwDataRegisterMacro( ::sight::data::MarkerMap )
+SIGHT_REGISTER_DATA( ::sight::data::MarkerMap )
 
 //------------------------------------------------------------------------------
 
@@ -49,9 +49,9 @@ MarkerMap::~MarkerMap()
 void MarkerMap::shallowCopy(const data::Object::csptr& _source)
 {
     MarkerMap::csptr other = MarkerMap::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_markers = other->m_markers;
@@ -63,9 +63,9 @@ void MarkerMap::shallowCopy(const data::Object::csptr& _source)
 void MarkerMap::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
 {
     MarkerMap::csptr other = MarkerMap::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, _cache );
 
     m_markers = other->m_markers;
@@ -101,8 +101,8 @@ MarkerMap::MarkerType* MarkerMap::getMarker(const KeyType& _id)
 
 const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
 {
-    SLM_ASSERT("Marker map is empty", !m_markers.empty());
-    SLM_ASSERT("Index is bigger than map's size", index < m_markers.size() );
+    SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
+    SIGHT_ASSERT("Index is bigger than map's size", index < m_markers.size() );
 
     auto it = m_markers.begin();
     std::advance(it, static_cast<ContainerType::iterator::difference_type>(index));
@@ -113,8 +113,8 @@ const MarkerMap::MarkerType& MarkerMap::getMarker(size_t index) const
 
 MarkerMap::MarkerType& MarkerMap::getMarker(size_t index)
 {
-    SLM_ASSERT("Marker map is empty", !m_markers.empty());
-    SLM_ASSERT("Index is bigger than map's size", index < m_markers.size() );
+    SIGHT_ASSERT("Marker map is empty", !m_markers.empty());
+    SIGHT_ASSERT("Index is bigger than map's size", index < m_markers.size() );
 
     auto it = m_markers.begin();
     std::advance(it, static_cast<ContainerType::iterator::difference_type>(index));

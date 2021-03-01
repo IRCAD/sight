@@ -28,16 +28,15 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/preferences/helper.hpp>
+
 #include <QApplication>
 #include <QFile>
 #include <QResource>
 #include <QTextStream>
 
-#include <ui/base/preferences/helper.hpp>
-
 #include <algorithm>
 #include <filesystem>
-
 
 namespace sight::module::ui::qt
 {
@@ -124,7 +123,7 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 
     // Load ressources
     const bool resourceLoaded = QResource::registerResource(path.replace_extension(".rcc").string().c_str());
-    SLM_ASSERT("Cannot load resources '"+path.replace_extension(".rcc").string() + "'.", resourceLoaded);
+    SIGHT_ASSERT("Cannot load resources '"+path.replace_extension(".rcc").string() + "'.", resourceLoaded);
 
     // Load stylesheet.
     QFile data(QString::fromStdString(path.replace_extension(".qss").string()));

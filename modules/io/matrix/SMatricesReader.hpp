@@ -88,7 +88,7 @@ class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::servi
 
 public:
 
-    fwCoreServiceMacro(SMatricesReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SMatricesReader, sight::io::base::service::IReader)
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatricesReader() noexcept;

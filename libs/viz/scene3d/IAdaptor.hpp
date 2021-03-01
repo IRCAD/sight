@@ -67,7 +67,7 @@ friend class SRender;
 public:
 
     /// Generates default methods.
-    fwCoreClassMacro(IAdaptor, service::IService)
+    SIGHT_DECLARE_CLASS(IAdaptor, service::IService)
 
     /// Sets the layer ID.
     VIZ_SCENE3D_API void setLayerID(const std::string& _id);

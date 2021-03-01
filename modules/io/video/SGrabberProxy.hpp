@@ -101,7 +101,7 @@ class MODULE_IO_VIDEO_CLASS_API SGrabberProxy :  public service::IGrabber,
 {
 public:
 
-    fwCoreServiceMacro(SGrabberProxy, service::IGrabber)
+    SIGHT_DECLARE_SERVICE(SGrabberProxy, service::IGrabber)
 
     /// Constructor. Initialize slots and signals
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;

@@ -52,7 +52,7 @@ Material::Material(const std::string& _name, const std::string& _templateName) :
     const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName,
                                                                                                RESOURCE_GROUP);
 
-    SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
+    SIGHT_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -82,7 +82,7 @@ void Material::updateOptionsMode(int _optionsMode)
         {
             // We need the first pass of the current technique in order to copy its rendering states in the normals pass
             ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
-            SLM_ASSERT("Pass is null", firstPass);
+            SIGHT_ASSERT("Pass is null", firstPass);
 
             const bool depthOnly = viz::scene3d::helper::Shading::isDepthOnlyTechnique(*currentTechnique);
 
@@ -121,7 +121,7 @@ void Material::updateOptionsMode(int _optionsMode)
         {
             // We need the first pass of the current technique in order to copy its rendering states in the normals pass
             const ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
-            SLM_ASSERT("Pass is null", firstPass);
+            SIGHT_ASSERT("Pass is null", firstPass);
 
             if(firstPass->hasGeometryProgram())
             {
@@ -155,10 +155,10 @@ void Material::updatePolygonMode(int _polygonMode)
     {
         for(const auto tech : techniques)
         {
-            SLM_ASSERT("Technique is not set", tech);
+            SIGHT_ASSERT("Technique is not set", tech);
 
             ::Ogre::Pass* firstPass = tech->getPass(0);
-            SLM_ASSERT("No pass found", firstPass);
+            SIGHT_ASSERT("No pass found", firstPass);
 
             firstPass->setPolygonMode(::Ogre::PM_SOLID);
             firstPass->setPointSpritesEnabled(false);
@@ -187,7 +187,7 @@ void Material::updatePolygonMode(int _polygonMode)
     {
         for(const auto tech : techniques)
         {
-            SLM_ASSERT("Technique is not set", tech);
+            SIGHT_ASSERT("Technique is not set", tech);
 
             const ::Ogre::Technique::Passes& passes = tech->getPasses();
 
@@ -213,7 +213,7 @@ void Material::updatePolygonMode(int _polygonMode)
                     default:
                         if( _polygonMode != data::Material::EDGE )
                         {
-                            SLM_ASSERT("Unhandled material representation mode : " << _polygonMode, false );
+                            SIGHT_ASSERT("Unhandled material representation mode : " << _polygonMode, false );
                         }
                 }
             }
@@ -246,7 +246,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
     for(const auto tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         const ::Ogre::Technique::Passes& passes = tech->getPasses();
 
@@ -273,7 +273,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
                         m_perPrimitiveColorTextureName,
                         viz::scene3d::RESOURCE_GROUP, true);
 
-                    SLM_ASSERT("Texture should have been created before in SMesh", !result.second);
+                    SIGHT_ASSERT("Texture should have been created before in SMesh", !result.second);
 
                     const ::Ogre::TexturePtr tex = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( result.first );
 
@@ -282,7 +282,7 @@ void Material::updateShadingMode( int _shadingMode, int _numLights, bool _hasDif
 
                     if(texUnitState == nullptr)
                     {
-                        SLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
+                        SIGHT_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
 
                         texUnitState = ogrePass->createTextureUnitState();
                         texUnitState->setName(texUnitName);
@@ -380,7 +380,7 @@ void Material::setDiffuseTexture(const ::Ogre::TexturePtr& _texture)
 
     for(const auto technique : techniques)
     {
-        SLM_ASSERT("Technique is not set", technique);
+        SIGHT_ASSERT("Technique is not set", technique);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*technique))
         {
@@ -418,7 +418,7 @@ void Material::setTemplate(const std::string& _templateName)
     const ::Ogre::MaterialPtr ogreMaterial = ::Ogre::MaterialManager::getSingleton().getByName(_templateName,
                                                                                                RESOURCE_GROUP);
 
-    SLM_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
+    SIGHT_ASSERT( "Material '" + _templateName + "'' not found", ogreMaterial );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -429,12 +429,12 @@ void Material::setTemplate(const std::string& _templateName)
 
 void Material::removePass(const std::string& _name)
 {
-    SLM_ASSERT("Material is not set", m_material);
+    SIGHT_ASSERT("Material is not set", m_material);
 
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
     for(const auto technique : techniques)
     {
-        SLM_ASSERT("Technique is not set", technique);
+        SIGHT_ASSERT("Technique is not set", technique);
 
         const ::Ogre::Technique::Passes& passes = technique->getPasses();
         std::vector< ::Ogre::Pass* > removePassVector;
@@ -461,7 +461,7 @@ void Material::removePass(const std::string& _name)
 
 void Material::cleanTransparencyTechniques()
 {
-    SLM_ASSERT("Material is not set", m_material);
+    SIGHT_ASSERT("Material is not set", m_material);
 
     const ::Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
@@ -471,7 +471,7 @@ void Material::cleanTransparencyTechniques()
 
     for(const auto technique : techniques)
     {
-        SLM_ASSERT("Technique is not set", technique);
+        SIGHT_ASSERT("Technique is not set", technique);
 
         auto scheme = technique->getSchemeName();
         if( ::Ogre::StringUtil::startsWith( scheme, "CelShadingDepthPeeling", false) ||

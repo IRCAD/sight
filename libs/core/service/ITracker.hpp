@@ -56,7 +56,7 @@ class SERVICE_CLASS_API ITracker : public service::IService
 
 public:
 
-    fwCoreServiceMacro(ITracker, service::IService)
+    SIGHT_DECLARE_SERVICE(ITracker, service::IService)
 
     SERVICE_API static const core::com::Slots::SlotKeyType s_TRACK_SLOT;
     SERVICE_API static const core::com::Slots::SlotKeyType s_START_TRACKING_SLOT;

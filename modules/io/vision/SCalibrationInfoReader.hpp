@@ -55,7 +55,7 @@ class MODULE_IO_VISION_CLASS_API SCalibrationInfoReader : public sight::io::base
 {
 public:
 
-    fwCoreServiceMacro(SCalibrationInfoReader, sight::io::base::service::IReader )
+    SIGHT_DECLARE_SERVICE(SCalibrationInfoReader, sight::io::base::service::IReader )
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationInfoReader() noexcept;

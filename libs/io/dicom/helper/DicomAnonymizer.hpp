@@ -25,13 +25,13 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/helper/tags.hpp"
 
+#include <io/zip/WriteZipArchive.hpp>
+
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
 #include <gdcmAnonymizer.h>
 #include <gdcmDicts.h>
 #include <gdcmStringFilter.h>
-
-#include <io/zip/WriteZipArchive.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -58,7 +58,7 @@ class IO_DICOM_CLASS_API DicomAnonymizer
 {
 public:
 
-    fwCoreClassMacro(DicomAnonymizer)
+    SIGHT_DECLARE_CLASS(DicomAnonymizer)
 
     //------------------------------------------------------------------------------
 

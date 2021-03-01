@@ -68,8 +68,8 @@ void IQmlAppManager::uninitialize()
 
 void IQmlAppManager::onServiceCreated(const QVariant& )
 {
-    SLM_ASSERT("The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
-               "in Qml", false);
+    SIGHT_ASSERT("The method 'onServiceCreated(srv)' must be implemented to properly register the service instantiated "
+                 "in Qml", false);
 }
 
 //------------------------------------------------------------------------------

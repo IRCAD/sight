@@ -27,6 +27,6 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-fwServicesRegisterMacro( ::sight::service::ut::TestConfigService,
-                         ::sight::service::ut::TestServiceImplementationImage,
-                         ::sight::data::Image );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::TestConfigService,
+                        ::sight::service::ut::TestServiceImplementationImage,
+                        ::sight::data::Image );

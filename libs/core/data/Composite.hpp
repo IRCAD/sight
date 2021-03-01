@@ -36,7 +36,7 @@ namespace sight::data
 class Composite;
 }
 
-fwCampAutoDeclareDataMacro((sight)(data)(Composite));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Composite));
 
 namespace sight::data
 {
@@ -50,8 +50,8 @@ namespace sight::data
 class DATA_CLASS_API Composite : public Object
 {
 public:
-    fwCoreClassMacro(Composite, data::Object, data::factory::New< Composite >)
-    fwCampMakeFriendDataMacro((sight)(data)(Composite));
+    SIGHT_DECLARE_CLASS(Composite, data::Object, data::factory::New< Composite >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Composite));
 
     typedef std::map< std::string, data::Object::sptr > ContainerType;
 
@@ -309,7 +309,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
     for( data::Composite::value_type elem : *this )
     {
         castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
-        SLM_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
+        SIGHT_ASSERT("DynamicCast "<< core::TypeDemangler<DATATYPE>().getClassname()<<" failed", castData);
         map[elem.first] = castData;
     }
 

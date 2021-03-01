@@ -62,7 +62,7 @@ int slotsTestSum (int a, int b)
 
 void slotsTestPrint(const std::string& str)
 {
-    SLM_DEBUG(str);
+    SIGHT_DEBUG(str);
 }
 
 struct SlotsTestBasic

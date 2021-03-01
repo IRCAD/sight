@@ -38,9 +38,9 @@ fwMemoryPolicyRegisterMacro(core::memory::policy::AlwaysDump);
 void AlwaysDump::allocationRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                     BufferInfo::SizeType size )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
     this->apply();
 }
 
@@ -49,9 +49,9 @@ void AlwaysDump::allocationRequest( BufferInfo& info, core::memory::BufferManage
 void AlwaysDump::setRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                              BufferInfo::SizeType size )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(size);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(size);
     this->apply();
 }
 
@@ -60,9 +60,9 @@ void AlwaysDump::setRequest( BufferInfo& info, core::memory::BufferManager::Cons
 void AlwaysDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                     BufferInfo::SizeType newSize )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
-    FwCoreNotUsedMacro(newSize);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
+    SIGHT_NOT_USED(newSize);
     this->apply();
 }
 
@@ -70,8 +70,8 @@ void AlwaysDump::reallocateRequest( BufferInfo& info, core::memory::BufferManage
 
 void AlwaysDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
     this->apply();
 }
 
@@ -79,8 +79,8 @@ void AlwaysDump::destroyRequest( BufferInfo& info, core::memory::BufferManager::
 
 void AlwaysDump::lockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
     this->apply();
 }
 
@@ -88,8 +88,8 @@ void AlwaysDump::lockRequest( BufferInfo& info, core::memory::BufferManager::Con
 
 void AlwaysDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
     this->apply();
 }
 
@@ -97,16 +97,16 @@ void AlwaysDump::unlockRequest( BufferInfo& info, core::memory::BufferManager::C
 
 void AlwaysDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
 
 void AlwaysDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    FwCoreNotUsedMacro(info);
-    FwCoreNotUsedMacro(buffer);
+    SIGHT_NOT_USED(info);
+    SIGHT_NOT_USED(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void AlwaysDump::refresh()
 
 std::string AlwaysDump::getParam(const std::string& name, bool* ok  ) const
 {
-    FwCoreNotUsedMacro(name);
+    SIGHT_NOT_USED(name);
     if (ok)
     {
         *ok = false;

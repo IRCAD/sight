@@ -44,7 +44,7 @@ class SERVICE_CLASS_API GenericField  : public service::IXMLParser
 
 public:
 
-    fwCoreServiceMacro(GenericField, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(GenericField, service::IXMLParser)
 
     /// Constructor : does nothing.
     GenericField()

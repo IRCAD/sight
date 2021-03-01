@@ -32,7 +32,7 @@
 
 #include <filesystem>
 
-fwCampAutoDeclareDataMacro((sight)(data)(DicomSeries))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(DicomSeries))
 
 namespace sight::data
 {
@@ -45,9 +45,9 @@ class DATA_CLASS_API DicomSeries : public data::Series
 
 public:
 
-    fwCoreClassMacro(DicomSeries, data::Object, data::factory::New< DicomSeries >)
+    SIGHT_DECLARE_CLASS(DicomSeries, data::Object, data::factory::New< DicomSeries >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(DicomSeries))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(DicomSeries))
 
     typedef std::map < std::size_t, core::memory::BufferObject::sptr > DicomContainerType;
 

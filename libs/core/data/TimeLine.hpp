@@ -38,7 +38,7 @@ class DATA_CLASS_API TimeLine : public data::Object
 {
 
 public:
-    fwCoreClassMacro(TimeLine, data::Object)
+    SIGHT_DECLARE_CLASS(TimeLine, data::Object)
 
     typedef enum
     {

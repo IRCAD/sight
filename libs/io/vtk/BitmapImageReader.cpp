@@ -28,9 +28,9 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <boost/tokenizer.hpp>
-
 #include <io/base/reader/registry/macros.hpp>
+
+#include <boost/tokenizer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -39,7 +39,7 @@
 #include <vtkImageReader2Factory.h>
 #include <vtkSmartPointer.h>
 
-fwDataIOReaderRegisterMacro( sight::io::vtk::BitmapImageReader );
+SIGHT_REGISTER_IO_READER( sight::io::vtk::BitmapImageReader );
 
 namespace sight::io::vtk
 {
@@ -73,8 +73,8 @@ BitmapImageReader::~BitmapImageReader()
 
 void BitmapImageReader::read()
 {
-    SLM_ASSERT("The current object has expired.", !m_object.expired() );
-    SLM_ASSERT("Unable to lock object", m_object.lock() );
+    SIGHT_ASSERT("The current object has expired.", !m_object.expired() );
+    SIGHT_ASSERT("Unable to lock object", m_object.lock() );
 
     data::Image::sptr pImage = getConcreteObject();
 
@@ -83,7 +83,7 @@ void BitmapImageReader::read()
     vtkSmartPointer<vtkImageReader2Factory> factory = vtkSmartPointer< vtkImageReader2Factory >::New();
     vtkImageReader2* reader                         = factory->CreateImageReader2( this->getFile().string().c_str() );
 
-    FW_RAISE_IF("BitmapImageReader cannot read Bitmap image file :" << this->getFile().string(), !reader);
+    SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->getFile().string(), !reader);
 
     reader->SetFileName(this->getFile().string().c_str());
 
@@ -108,14 +108,14 @@ void BitmapImageReader::read()
 
     m_job->finish();
 
-    FW_RAISE_IF("BitmapImageReader cannot read Bitmap image file :"<<this->getFile().string(), !img);
+    SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :"<<this->getFile().string(), !img);
     try
     {
         io::vtk::fromVTKImage( img, pImage);
     }
     catch( std::exception& e)
     {
-        FW_RAISE("BitmapImage to data::Image failed "<<e.what());
+        SIGHT_THROW("BitmapImage to data::Image failed "<<e.what());
     }
 }
 

@@ -36,7 +36,7 @@ namespace sight::module::ui::qt
 class MODULE_UI_QT_CLASS_API SShowHelp : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SShowHelp, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::base::IAction)
     MODULE_UI_QT_API SShowHelp() noexcept;
 
     MODULE_UI_QT_API virtual ~SShowHelp() noexcept;

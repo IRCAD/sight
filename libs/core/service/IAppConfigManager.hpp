@@ -38,7 +38,7 @@ namespace sight::service
 class SERVICE_CLASS_API IAppConfigManager : public core::tools::Object
 {
 public:
-    fwCoreClassMacro(IAppConfigManager, core::tools::Object)
+    SIGHT_DECLARE_CLASS(IAppConfigManager, core::tools::Object)
 
     /// Constructor. Do nothing.
 

@@ -39,7 +39,7 @@ class UI_BASE_CLASS_API IInputDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(IInputDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IInputDialog, ui::base::GuiBaseObject)
 
     /// Constructor. Do nothing.
     UI_BASE_API IInputDialog();

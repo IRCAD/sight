@@ -39,8 +39,8 @@ namespace Patient
 class IO_PATCH_CLASS_API V1ToFwMedDataPatientV1 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToFwMedDataPatientV1, patch::structural::data::Patient::V1ToFwMedDataPatientV1,
-                     new V1ToFwMedDataPatientV1)
+    SIGHT_DECLARE_CLASS(V1ToFwMedDataPatientV1, patch::structural::data::Patient::V1ToFwMedDataPatientV1,
+                        new V1ToFwMedDataPatientV1)
 
     /// Constructor
     IO_PATCH_API V1ToFwMedDataPatientV1();

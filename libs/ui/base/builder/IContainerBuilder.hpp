@@ -39,7 +39,7 @@ namespace builder
 class UI_BASE_CLASS_API IContainerBuilder : public ui::base::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IContainerBuilder, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IContainerBuilder, ui::base::GuiBaseObject)
 
     typedef std::string RegistryKeyType;
 

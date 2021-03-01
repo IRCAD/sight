@@ -98,7 +98,7 @@ ImageDiff& ImageDiff::operator=(ImageDiff&& other)
 
 void ImageDiff::addDiff(const ImageDiff& diff)
 {
-    SLM_ASSERT("Diff elements must be the same size.", m_eltSize == diff.m_eltSize);
+    SIGHT_ASSERT("Diff elements must be the same size.", m_eltSize == diff.m_eltSize);
 
     const size_t oldSize = this->getSize();
     const size_t newSize = oldSize + diff.getSize();
@@ -109,7 +109,7 @@ void ImageDiff::addDiff(const ImageDiff& diff)
         m_reservedSize = newSize + m_reservedSize * 2;
         m_buffer       = reinterpret_cast<std::uint8_t*>(realloc(m_buffer, m_reservedSize));
 
-        SLM_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
+        SIGHT_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
     }
 
     std::uint8_t* eltPtr = (m_buffer + oldSize);
@@ -132,7 +132,7 @@ void ImageDiff::addDiff(const data::Image::IndexType index, const data::Image::B
         m_reservedSize = m_reservedSize * 2 + m_eltSize;
         m_buffer       = reinterpret_cast<std::uint8_t*>(realloc(m_buffer, m_reservedSize));
 
-        SLM_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
+        SIGHT_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
     }
 
     std::uint8_t* eltPtr = (m_buffer + oldSize);
@@ -198,7 +198,7 @@ void ImageDiff::shrink()
     m_reservedSize = this->getSize();
     m_buffer       = reinterpret_cast<std::uint8_t*>(realloc(m_buffer, m_reservedSize));
 
-    SLM_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
+    SIGHT_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
 }
 
 //------------------------------------------------------------------------------

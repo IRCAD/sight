@@ -24,10 +24,10 @@
 
 #include "ui/qt/config.hpp"
 
+#include <ui/base/dialog/ISelectorDialog.hpp>
+
 #include <QPushButton>
 #include <QVector>
-
-#include <ui/base/dialog/ISelectorDialog.hpp>
 
 #include <vector>
 
@@ -44,7 +44,7 @@ class UI_QT_CLASS_API SelectorDialog : public ui::base::dialog::ISelectorDialog
 {
 public:
 
-    fwCoreClassMacro(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
+    SIGHT_DECLARE_CLASS(SelectorDialog, ui::base::dialog::ISelectorDialog, ui::base::factory::New< SelectorDialog >)
 
     UI_QT_API SelectorDialog(ui::base::GuiBaseObject::Key key);
 

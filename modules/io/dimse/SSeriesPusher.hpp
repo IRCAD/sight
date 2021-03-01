@@ -27,10 +27,10 @@
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 
-#include <service/IController.hpp>
-
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
+
+#include <service/IController.hpp>
 
 #include <vector>
 
@@ -66,7 +66,7 @@ class MODULE_IO_DIMSE_CLASS_API SSeriesPusher : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPusher,  service::IController )
+    SIGHT_DECLARE_SERVICE(SSeriesPusher,  service::IController )
 
     typedef std::vector< CSPTR(data::Series) > DicomSeriesContainerType;
 

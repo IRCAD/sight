@@ -34,7 +34,7 @@
 
 #include <list>
 
-fwCampAutoDeclareDataMacro((sight)(data)(CalibrationInfo));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(CalibrationInfo));
 
 namespace sight::data
 {
@@ -47,9 +47,9 @@ class DATA_CLASS_API CalibrationInfo : public data::Object
 {
 public:
 
-    fwCoreClassMacro(CalibrationInfo, data::Object, data::factory::New< CalibrationInfo >)
+    SIGHT_DECLARE_CLASS(CalibrationInfo, data::Object, data::factory::New< CalibrationInfo >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(CalibrationInfo));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(CalibrationInfo));
 
     ///typedefs
     typedef std::list< data::Image::sptr > ImageContainerType;

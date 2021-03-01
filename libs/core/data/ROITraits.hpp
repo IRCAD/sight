@@ -26,7 +26,7 @@
 #include "data/Node.hpp"
 #include "data/StructureTraits.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(ROITraits));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(ROITraits));
 
 namespace sight::data
 {
@@ -46,8 +46,8 @@ namespace sight::data
 class DATA_CLASS_API ROITraits : public data::Object
 {
 public:
-    fwCoreClassMacro(ROITraits, data::Object, data::factory::New< ROITraits >)
-    fwCampMakeFriendDataMacro((sight)(data)(ROITraits));
+    SIGHT_DECLARE_CLASS(ROITraits, data::Object, data::factory::New< ROITraits >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(ROITraits));
 
     /**
      * @brief Constructor

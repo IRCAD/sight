@@ -26,11 +26,11 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Composite.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 
 #include <service/macros.hpp>
 
@@ -40,7 +40,6 @@
 #include <vtkMatrix4x4.h>
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
-
 
 namespace sight::module::filter::point
 {
@@ -86,8 +85,8 @@ void SPointListRegistration::configuring()
         }
         else
         {
-            SLM_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
-                      " Defaulting to 'rigid'.");
+            SIGHT_ERROR("Unknown registration mode: '" + mode + "', it must be 'rigid', 'similarity' or 'affine'."
+                        " Defaulting to 'rigid'.");
         }
     }
     else
@@ -286,7 +285,7 @@ void SPointListRegistration::changeMode(std::string _value)
     }
     else
     {
-        SLM_ERROR("key "+ _value +" is not handled.");
+        SIGHT_ERROR("key "+ _value +" is not handled.");
     }
 }
 

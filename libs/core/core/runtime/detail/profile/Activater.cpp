@@ -77,9 +77,9 @@ void Activater::apply()
     {
         const auto identifier = boost::algorithm::replace_first_copy(m_identifier, "sight_", "");
         module = std::dynamic_pointer_cast< detail::Module >(Runtime::get().findModule(identifier));
-        SLM_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == 0);
+        SIGHT_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == 0);
     }
-    SLM_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == 0);
+    SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == 0);
     module->setEnable( true );
 
     // Managment of parameter configuration
@@ -101,7 +101,7 @@ void Activater::apply()
         }
         else
         {
-            SLM_ERROR(
+            SIGHT_ERROR(
                 "Unable to disable Extension Point " << *id << " defined in the Module " << m_identifier <<
                     ". Not found.");
         }
@@ -118,7 +118,7 @@ void Activater::apply()
         }
         else
         {
-            SLM_ERROR(
+            SIGHT_ERROR(
                 "Unable to disable Extension " << *id << " defined in the Module " << m_identifier <<
                     ". Not found.");
         }

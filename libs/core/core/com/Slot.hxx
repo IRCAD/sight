@@ -115,7 +115,7 @@ SPTR(Slot< typename core::com::util::convert_function_type< F >::type >) newSlot
 {
 #ifdef _DEBUG
     constexpr bool hasValidNbArgs = (sizeof ... (binding) < 2);
-    SLM_ASSERT( "Too many arguments", hasValidNbArgs );
+    SIGHT_ASSERT( "Too many arguments", hasValidNbArgs );
 #endif
     typedef std::function< typename core::com::util::convert_function_type< F >::type > FunctionType;
     FunctionType func = core::com::util::autobind(f, binding ...);

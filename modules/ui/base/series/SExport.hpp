@@ -63,7 +63,7 @@ namespace series
 class MODULE_UI_BASE_CLASS_API SExport : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SExport, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SExport, ::sight::ui::base::IAction)
 
     /// Constructor
     MODULE_UI_BASE_API SExport();

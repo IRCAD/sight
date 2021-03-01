@@ -32,18 +32,17 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-
 namespace sight::module::io::video
 {
 
-
-static const core::com::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
+static const core::com::Slots::SlotKeyType s_SAVE_FRAME   = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 static const core::com::Slots::SlotKeyType s_RECORD       = "record";
@@ -138,7 +137,7 @@ void SVideoWriter::updating()
 
 void SVideoWriter::writeBuffer(int width, int height, CSPTR(data::FrameTL::BufferType)buffer)
 {
-    SLM_ASSERT("OpenCV video writer not initialized", m_writer);
+    SIGHT_ASSERT("OpenCV video writer not initialized", m_writer);
     const std::uint8_t* imageBuffer = &buffer->getElement(0);
 
     const ::cv::Mat image(
@@ -294,8 +293,8 @@ void SVideoWriter::startRecord()
         }
         else
         {
-            SLM_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
-                      std::to_string(frameTL->getNumberOfComponents()) + " components is not supported");
+            SIGHT_ERROR("This type of frame : " + frameTL->getType().string() + " with " +
+                        std::to_string(frameTL->getNumberOfComponents()) + " components is not supported");
             return;
         }
         m_isRecording = true;

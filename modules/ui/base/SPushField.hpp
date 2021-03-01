@@ -51,7 +51,7 @@ class MODULE_UI_BASE_CLASS_API SPushField : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SPushField, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SPushField, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SPushField() noexcept;

@@ -44,7 +44,7 @@ namespace sight::module::io::vision
 class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::base::service::IReader
 {
 public:
-    fwCoreServiceMacro(SOpenCVReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SOpenCVReader, sight::io::base::service::IReader)
 
     ///Constructor
     MODULE_IO_VISION_API SOpenCVReader();

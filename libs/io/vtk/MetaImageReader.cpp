@@ -35,7 +35,7 @@
 #include <vtkMetaImageReader.h>
 #include <vtkSmartPointer.h>
 
-fwDataIOReaderRegisterMacro( ::sight::io::vtk::MetaImageReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::vtk::MetaImageReader );
 
 namespace sight::io::vtk
 {
@@ -89,14 +89,14 @@ void MetaImageReader::read()
 
     m_job->finish();
 
-    FW_RAISE_IF("MetaImageReader cannot read mhd image file :"<<this->getFile().string(), !img);
+    SIGHT_THROW_IF("MetaImageReader cannot read mhd image file :"<<this->getFile().string(), !img);
     try
     {
         io::vtk::fromVTKImage( img, pImage);
     }
     catch( std::exception& e)
     {
-        FW_RAISE("MetaImage to data::Image failed : "<<e.what());
+        SIGHT_THROW("MetaImage to data::Image failed : "<<e.what());
     }
 }
 

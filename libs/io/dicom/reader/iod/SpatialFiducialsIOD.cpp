@@ -25,9 +25,9 @@
 #include "io/dicom/helper/DicomDataReader.hxx"
 #include "io/dicom/reader/ie/SpatialFiducials.hpp"
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/PointList.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 namespace sight::io::dicom
@@ -60,9 +60,9 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
 {
     // Retrieve images
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
-    SLM_ASSERT("ImageSeries should not be null.", imageSeries);
+    SIGHT_ASSERT("ImageSeries should not be null.", imageSeries);
     data::Image::sptr image = imageSeries->getImage();
-    SLM_ASSERT("::sight::data::Image not instanced", image);
+    SIGHT_ASSERT("::sight::data::Image not instanced", image);
 
     // Create GDCM Reader
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
@@ -82,9 +82,9 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
 
     const bool success = reader->Read();
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                       bufferObj->getStreamInfo().fsFile.string()+
-                                                       "\" using the GDCM Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
+                                                          bufferObj->getStreamInfo().fsFile.string()+
+                                                          "\" using the GDCM Reader."), !success);
 
     // Create Information Entity helpers
     io::dicom::reader::ie::SpatialFiducials spatialFiducialsIE(

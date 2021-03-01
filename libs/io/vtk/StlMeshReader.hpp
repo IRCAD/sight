@@ -51,9 +51,9 @@ class StlMeshReader : public io::base::reader::GenericObjectReader< data::Mesh >
 
 public:
 
-    fwCoreClassMacro(StlMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
-                     io::base::reader::factory::New< StlMeshReader >)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(StlMeshReader, io::base::reader::GenericObjectReader< data::Mesh >,
+                        io::base::reader::factory::New< StlMeshReader >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
     IO_VTK_API StlMeshReader(io::base::reader::IObjectReader::Key key);

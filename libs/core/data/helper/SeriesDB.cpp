@@ -51,8 +51,8 @@ SeriesDB::~SeriesDB()
 void SeriesDB::add( data::Series::sptr newSeries )
 {
     data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
-    SLM_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB.",
-                std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end());
+    SIGHT_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB.",
+                  std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end());
 
     // Modify SeriesDB
     seriesDB->getContainer().push_back( newSeries );
@@ -67,8 +67,8 @@ void SeriesDB::remove( data::Series::sptr oldSeries )
 {
     data::SeriesDB::sptr seriesDB = m_seriesDB.lock();
     data::SeriesDB::iterator iter = std::find(seriesDB->begin(), seriesDB->end(), oldSeries);
-    SLM_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB.",
-                iter != seriesDB->end());
+    SIGHT_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB.",
+                  iter != seriesDB->end());
 
     // Modify SeriesDB
     seriesDB->getContainer().erase( iter );
@@ -120,8 +120,8 @@ void SeriesDB::notify()
 
     }
 
-    SLM_INFO_IF("No changes were found on the SeriesDB '" + m_seriesDB.lock()->getID() + "', nothing to notify.",
-                m_addedSeries.empty() && m_removedSeries.empty());
+    SIGHT_INFO_IF("No changes were found on the SeriesDB '" + m_seriesDB.lock()->getID() + "', nothing to notify.",
+                  m_addedSeries.empty() && m_removedSeries.empty());
 }
 
 //-----------------------------------------------------------------------------

@@ -56,8 +56,8 @@ ToolboxLayoutManagerBase::~ToolboxLayoutManagerBase()
 
 void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
 {
-    SLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-               configuration->getName() == "layout");
+    SIGHT_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
+                 configuration->getName() == "layout");
     m_views.clear();
     for (ConfigurationType view : configuration->getElements())
     {
@@ -109,24 +109,24 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
             if( view->hasAttribute("visible") )
             {
                 std::string visible = view->getExistingAttributeValue("visible");
-                SLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
-                           (visible == "true") || (visible == "false") ||
-                           (visible == "yes") || (visible == "no"));
+                SIGHT_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
+                             (visible == "true") || (visible == "false") ||
+                             (visible == "yes") || (visible == "no"));
                 vi.m_visible = ((visible == "true") || (visible == "yes"));
             }
             if( view->hasAttribute("expanded") )
             {
                 std::string expanded = view->getExistingAttributeValue("expanded");
-                SLM_ASSERT("Incorrect value for \"expanded\" attribute "<<expanded,
-                           (expanded == "true") || (expanded == "false") ||
-                           (expanded == "yes") || (expanded == "no"));
+                SIGHT_ASSERT("Incorrect value for \"expanded\" attribute "<<expanded,
+                             (expanded == "true") || (expanded == "false") ||
+                             (expanded == "yes") || (expanded == "no"));
                 vi.m_expanded = ((expanded == "true") || (expanded == "yes"));
             }
             if( view->hasAttribute("useScrollBar") )
             {
                 std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-                SLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                           (useScrollBar == "yes") || (useScrollBar == "no"));
+                SIGHT_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
+                             (useScrollBar == "yes") || (useScrollBar == "no"));
                 vi.m_useScrollBar = (useScrollBar == "yes");
             }
             if( view->hasAttribute("backgroundColor") )
@@ -134,7 +134,7 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
                 const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
                 if(!hexaColor.empty())
                 {
-                    SLM_ASSERT(
+                    SIGHT_ASSERT(
                         "Color string should start with '#' and followed by 6 or 8 "
                         "hexadecimal digits. Given color: " << hexaColor,
                             hexaColor[0] == '#'

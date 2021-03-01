@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API Menu : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(Menu, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(Menu, ui::base::GuiBaseObject)
 
     //------------------------------------------------------------------------------
 

@@ -33,25 +33,24 @@
 #include <data/Composite.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
-
 #include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
 
-#include <QHBoxLayout>
-#include <QInputDialog>
-#include <QStringList>
+#include <service/macros.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QStringList>
+
 namespace sight::module::ui::qt::calibration
 {
-
 
 SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
@@ -70,8 +69,8 @@ void SCameraConfigLauncher::configuring()
     this->initialize();
     service::IService::ConfigType configuration = this->getConfigTree();
 
-    SLM_ASSERT("There must be one (and only one) <config/> element.",
-               configuration.count("config") == 1 );
+    SIGHT_ASSERT("There must be one (and only one) <config/> element.",
+                 configuration.count("config") == 1 );
     const service::IService::ConfigType& srvconfig = configuration;
     const service::IService::ConfigType& config    = srvconfig.get_child("config");
 
@@ -89,10 +88,10 @@ void SCameraConfigLauncher::starting()
     this->create();
 
     m_cameraSeries = this->getInOut< data::CameraSeries >("cameraSeries");
-    SLM_ASSERT("Missing cameraSeries.", m_cameraSeries);
+    SIGHT_ASSERT("Missing cameraSeries.", m_cameraSeries);
 
     m_activitySeries = this->getInOut< data::ActivitySeries >("activitySeries");
-    SLM_ASSERT("Missing activitySeries.", m_activitySeries);
+    SIGHT_ASSERT("Missing activitySeries.", m_activitySeries);
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
 
@@ -182,8 +181,8 @@ void SCameraConfigLauncher::swapping()
 
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
-    SLM_ASSERT("Bad index: " << index,
-               index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
+    SIGHT_ASSERT("Bad index: " << index,
+                 index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
 
     if (index == 0)
     {
@@ -238,7 +237,7 @@ void SCameraConfigLauncher::onImportClicked()
         dlg.setTitle("Read error");
         dlg.setMessage(msg);
         dlg.setIcon(sight::ui::base::dialog::IMessageDialog::Icons::CRITICAL);
-        SLM_ERROR(msg);
+        SIGHT_ERROR(msg);
 
         throw;
     }
@@ -357,7 +356,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
     const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    SLM_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
+    SIGHT_ASSERT("Bad index: " << index, index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
         this->startExtrinsicConfig(index);

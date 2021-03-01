@@ -60,7 +60,7 @@ class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::
 
 public:
 
-    fwCoreServiceMacro(SliceIndexPositionEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SliceIndexPositionEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SliceIndexPositionEditor() noexcept;

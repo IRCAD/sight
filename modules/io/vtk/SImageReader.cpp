@@ -29,15 +29,11 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/Image.hpp>
 #include <data/location/Folder.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-
-#include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
-
-#include <boost/algorithm/string.hpp>
 
 #include <io/base/reader/IObjectReader.hpp>
 #include <io/base/service/IReader.hpp>
@@ -46,9 +42,13 @@
 #include <io/vtk/MetaImageReader.hpp>
 #include <io/vtk/VtiImageReader.hpp>
 
+#include <service/macros.hpp>
+
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
+
+#include <boost/algorithm/string.hpp>
 
 #include <chrono>
 #include <cstdint>
@@ -162,7 +162,7 @@ void SImageReader::updating()
     if( this->hasLocationDefined() )
     {
         data::Image::sptr image = this->getInOut< data::Image >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
@@ -188,7 +188,7 @@ void SImageReader::updating()
         catch(core::tools::Failed& e)
         {
             m_readFailed = true;
-            FW_RAISE_EXCEPTION(e);
+            SIGHT_THROW_EXCEPTION(e);
         }
 
         cursor.setDefaultCursor();
@@ -254,7 +254,8 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
             {
                 bitmapExtensions = bitmapExtensions + availableExtensions.at(i) + ", ";
             }
-            FW_RAISE_EXCEPTION(core::tools::Failed("Only " + bitmapExtensions + ".vtk, .vti and .mhd are supported."));
+            SIGHT_THROW_EXCEPTION(core::tools::Failed("Only " + bitmapExtensions +
+                                                      ".vtk, .vti and .mhd are supported."));
         }
     }
 
@@ -279,7 +280,7 @@ bool SImageReader::loadImage( const std::filesystem::path& imgFile,
             sight::ui::base::dialog::IMessageDialog::WARNING);
         ok = false;
         // Raise exception  for superior level
-        FW_RAISE_EXCEPTION(e);
+        SIGHT_THROW_EXCEPTION(e);
     }
     catch (const std::exception& e)
     {

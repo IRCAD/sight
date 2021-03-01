@@ -27,11 +27,11 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
+#include <service/extension/Factory.hpp>
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
-#include <service/extension/Factory.hpp>
 
 #include <unordered_set>
 
@@ -89,22 +89,22 @@ public:
 class TestSrvOneData : public TestEmptyService
 {
 public:
-    fwCoreServiceMacro(TestSrvOneData, service::IService)
+    SIGHT_DECLARE_SERVICE(TestSrvOneData, service::IService)
 
 };
 class TestSrvThreeData : public TestEmptyService
 {
 public:
-    fwCoreServiceMacro(TestSrvThreeData, service::IService)
+    SIGHT_DECLARE_SERVICE(TestSrvThreeData, service::IService)
 
 };
 
-fwServicesRegisterMacro( ::sight::service::ut::TestService, ::sight::service::ut::TestSrvOneData,
-                         ::sight::data::Float )
-fwServicesRegisterMacro( ::sight::service::ut::TestService, ::sight::service::ut::TestSrvThreeData )
-fwServicesRegisterObjectMacro(  ::sight::service::ut::TestSrvThreeData, ::sight::data::Float );
-fwServicesRegisterObjectMacro(  ::sight::service::ut::TestSrvThreeData, ::sight::data::Integer );
-fwServicesRegisterObjectMacro(  ::sight::service::ut::TestSrvThreeData, ::sight::data::Float );
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::TestService, ::sight::service::ut::TestSrvOneData,
+                        ::sight::data::Float )
+SIGHT_REGISTER_SERVICE( ::sight::service::ut::TestService, ::sight::service::ut::TestSrvThreeData )
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::TestSrvThreeData, ::sight::data::Float );
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::TestSrvThreeData, ::sight::data::Integer );
+SIGHT_REGISTER_SERVICE_OBJECT(  ::sight::service::ut::TestSrvThreeData, ::sight::data::Float );
 
 //------------------------------------------------------------------------------
 

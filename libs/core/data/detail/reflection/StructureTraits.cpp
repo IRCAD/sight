@@ -26,7 +26,7 @@
 
 #include <core/reflection/UserObject.hpp>
 
-fwCampImplementDataMacro((sight)(data)(StructureTraits))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(StructureTraits))
 {
     builder
     .tag("object_version", "1")
@@ -45,7 +45,7 @@ fwCampImplementDataMacro((sight)(data)(StructureTraits))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(StructureTraits)(Category))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(StructureTraits)(Category))
 {
     builder
     .value("BODY", sight::data::StructureTraits::BODY)
@@ -61,7 +61,7 @@ fwCampImplementEnumMacro((sight)(data)(StructureTraits)(Category))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(StructureTraits)(StructureClass))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(StructureTraits)(StructureClass))
 {
     builder
     .value("TOOL", sight::data::StructureTraits::TOOL)

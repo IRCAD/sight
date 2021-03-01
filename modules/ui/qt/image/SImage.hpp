@@ -24,9 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <QObject>
-
 #include <ui/base/IEditor.hpp>
+
+#include <QObject>
 
 #include <filesystem>
 
@@ -58,7 +58,7 @@ class MODULE_UI_QT_CLASS_API SImage : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SImage, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SImage, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SImage() noexcept;

@@ -39,6 +39,10 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <boost/foreach.hpp>
 
 #include <QGridLayout>
@@ -48,10 +52,6 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
@@ -90,11 +90,11 @@ void SSelector::configuring()
     if(cfg.count("filter") == 1 )
     {
         const service::IService::ConfigType& configFilter = cfg.get_child("filter");
-        SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+        SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const std::string mode = configFilter.get< std::string >("mode");
-        SLM_ASSERT("'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
-                   mode == "include" || mode == "exclude");
+        SIGHT_ASSERT("'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
+                     mode == "include" || mode == "exclude");
         m_filterMode = mode;
 
         BOOST_FOREACH( const ConfigType::value_type& v, configFilter.equal_range("id") )
@@ -102,7 +102,7 @@ void SSelector::configuring()
             m_keys.push_back(v.second.get<std::string>(""));
         }
     }
-    SLM_ASSERT("A maximum of 1 <filter> tag is allowed", cfg.count("filter") < 2);
+    SIGHT_ASSERT("A maximum of 1 <filter> tag is allowed", cfg.count("filter") < 2);
 }
 
 //------------------------------------------------------------------------------

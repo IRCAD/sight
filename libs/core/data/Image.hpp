@@ -38,7 +38,7 @@
 #include <filesystem>
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Image));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Image));
 
 namespace sight::data
 {
@@ -179,9 +179,9 @@ class DATA_CLASS_API Image : public data::Object,
                              public core::memory::IBuffered
 {
 public:
-    fwCoreClassMacro(Image, data::Object, data::factory::New< Image >)
-    fwCoreAllowSharedFromThis()
-    fwCampMakeFriendDataMacro((sight)(data)(Image))
+    SIGHT_DECLARE_CLASS(Image, data::Object, data::factory::New< Image >)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Image))
 
     /// Image size
     typedef std::array<size_t, 3> Size;

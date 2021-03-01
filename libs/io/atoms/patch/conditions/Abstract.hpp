@@ -39,8 +39,8 @@ namespace conditions
 class IO_ATOMS_CLASS_API Abstract : public core::BaseObject
 {
 public:
-    fwCoreClassMacro(Abstract, core::BaseObject, new Abstract)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(Abstract, core::BaseObject, new Abstract)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Default value getter
     IO_ATOMS_API virtual sight::atoms::Base::sptr getDefaultValue();

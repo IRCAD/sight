@@ -69,7 +69,7 @@ void ITracker::configuring()
     if (config.count("dropObj"))
     {
         const std::string dropStr = config.get< std::string >("dropObj");
-        SLM_ASSERT("'dropObj' value must be 'true' or 'false'.", dropStr == "true" || dropStr == "false");
+        SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", dropStr == "true" || dropStr == "false");
         m_dropObj = (dropStr == "true");
     }
 }
@@ -78,15 +78,15 @@ void ITracker::configuring()
 
 void ITracker::track(core::HiResClock::HiResClockType timestamp)
 {
-    SLM_DEBUG_IF("["+this->getClassname()+"] Tracking is not started: does nothing", !m_isTracking);
-    SLM_DEBUG_IF("["+this->getClassname()+"] Dropping object at " + std::to_string(timestamp),
-                 m_isTracking && m_dropObj && timestamp <= m_lastTimestamp);
+    SIGHT_DEBUG_IF("["+this->getClassname()+"] Tracking is not started: does nothing", !m_isTracking);
+    SIGHT_DEBUG_IF("["+this->getClassname()+"] Dropping object at " + std::to_string(timestamp),
+                   m_isTracking && m_dropObj && timestamp <= m_lastTimestamp);
 
     if (m_isTracking && (!m_dropObj || timestamp > m_lastTimestamp))
     {
         data::BufferTL::csptr timeline = this->getInput< data::BufferTL >(s_TIMELINE_INPUT);
-        SLM_WARN_IF("the object '" + s_TIMELINE_INPUT + "' is not defined, the 'drop' mode cannot be managed.",
-                    !timeline);
+        SIGHT_WARN_IF("the object '" + s_TIMELINE_INPUT + "' is not defined, the 'drop' mode cannot be managed.",
+                      !timeline);
         if (timeline)
         {
             if (m_dropObj)
@@ -95,12 +95,12 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
             }
             if (timeline->getClosestObject(timestamp) == nullptr)
             {
-                SLM_WARN("["+this->getClassname()+"] No buffer found for the timeline.");
+                SIGHT_WARN("["+this->getClassname()+"] No buffer found for the timeline.");
                 return;
             }
         }
 
-        SLM_DEBUG("["+this->getClassname()+"] Tracking at " +  std::to_string(timestamp) + "...");
+        SIGHT_DEBUG("["+this->getClassname()+"] Tracking at " +  std::to_string(timestamp) + "...");
         this->tracking(timestamp);
         m_lastTimestamp = timestamp;
     }

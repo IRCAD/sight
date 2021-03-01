@@ -26,6 +26,7 @@
 #include <core/com/Signal.hxx>
 
 #include <data/Camera.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/FrameTL.hpp>
 #include <data/MarkerTL.hpp>
 #include <data/Matrix4.hpp>
@@ -34,12 +35,10 @@
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 
 #include <geometry/vision/helper.hpp>
 
 #include <io/opencv/Camera.hpp>
-
 
 //-----------------------------------------------------------------------------
 
@@ -78,7 +77,7 @@ void SPoseFrom2d::configuring()
 {
     service::IService::ConfigType config = this->getConfigTree();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
-    SLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
+    SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
     auto inoutCfg = config.equal_range("inout");
     for (auto itCfg = inoutCfg.first; itCfg != inoutCfg.second; ++itCfg)
@@ -161,7 +160,7 @@ void SPoseFrom2d::updating()
 
 void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp)
 {
-    SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
+    SIGHT_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
     if(!m_isInitialized)
     {
@@ -183,7 +182,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                     core::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
                     if(timestamp <= 0.)
                     {
-                        SLM_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
+                        SIGHT_WARN("No marker found in a timeline for timestamp '"<<timestamp<<"'.");
                         return;
                     }
                     newerTimestamp = std::min(timestamp, newerTimestamp);
@@ -232,7 +231,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
 
                     if(markers.empty())
                     {
-                        SLM_WARN("No Markers!")
+                        SIGHT_WARN("No Markers!")
                         continue;
                     }
 
@@ -249,7 +248,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                     }
                     else
                     {
-                        SLM_WARN("More than 2 cameras is not handle for the moment");
+                        SIGHT_WARN("More than 2 cameras is not handle for the moment");
                         continue;
                     }
 
@@ -314,10 +313,10 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
 
                 data::Matrix4::sptr matrix = this->getInOut< data::Matrix4 >(
                     s_MATRIX_INOUT, markerIndex);
-                SLM_ASSERT("Matrix " << markerIndex << " not found", matrix);
+                SIGHT_ASSERT("Matrix " << markerIndex << " not found", matrix);
                 if(markers.empty())
                 {
-                    SLM_WARN("No Markers!")
+                    SIGHT_WARN("No Markers!")
                 }
                 else
                 {
@@ -334,7 +333,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                     }
                     else
                     {
-                        SLM_WARN("More than 2 cameras is not handle for the moment");
+                        SIGHT_WARN("More than 2 cameras is not handle for the moment");
                         continue;
                     }
 
@@ -376,8 +375,8 @@ void SPoseFrom2d::initialize()
         {
             data::MarkerTL::csptr timeline = this->getInput< data::MarkerTL >(s_MARKERTL_INPUT, 0);
 
-            SLM_ASSERT("Timelines should have the same maximum number of elements",
-                       maxElementNum == timeline->getMaxElementNum());
+            SIGHT_ASSERT("Timelines should have the same maximum number of elements",
+                         maxElementNum == timeline->getMaxElementNum());
         }
 
         data::MatrixTL::sptr matrixTL = this->getInOut< data::MatrixTL >(s_MATRIXTL_INOUT);
@@ -388,7 +387,7 @@ void SPoseFrom2d::initialize()
     for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
     {
         data::Camera::csptr camera = this->getInput< data::Camera >(s_CAMERA_INPUT, idx);
-        SLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
+        SIGHT_FATAL_IF("Camera[" << idx << "] not found", !camera);
         data::mt::ObjectReadLock cameraLock(camera);
 
         Camera cam;
@@ -400,7 +399,7 @@ void SPoseFrom2d::initialize()
             auto extrinsicMatrix = this->getInput< data::Matrix4 >(s_EXTRINSIC_INPUT);
             data::mt::ObjectReadLock matrixLock(extrinsicMatrix);
 
-            SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
+            SIGHT_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
 
             m_extrinsic.Matrix4x4   = ::cv::Mat::eye(4, 4, CV_64F);
             m_extrinsic.rotation    = ::cv::Mat::eye(3, 3, CV_64F);

@@ -41,9 +41,9 @@ class ImageReader : public io::base::reader::GenericObjectReader< data::Image >,
 
 public:
 
-    fwCoreClassMacro(ImageReader, io::base::reader::GenericObjectReader< data::Image>,
-                     io::base::reader::factory::New< ImageReader >);
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(ImageReader, io::base::reader::GenericObjectReader< data::Image>,
+                        io::base::reader::factory::New< ImageReader >);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_ITK_API ImageReader(io::base::reader::IObjectReader::Key key);
 

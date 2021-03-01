@@ -31,11 +31,11 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/http/exceptions/Base.hpp>
 #include <io/http/helper/Series.hpp>
 #include <io/http/Request.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
@@ -69,7 +69,7 @@ void SSeriesPusher::configuring()
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_serverHostnameKey = serverInfo.substr(0, splitPosition);
         m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -197,7 +197,7 @@ void SSeriesPusher::pushSeries()
                << "Pacs host name: " << m_serverHostname << "\n"
                << "Pacs port: " << m_serverPort << "\n";
             this->displayMessage(ss.str(), true);
-            SLM_WARN(exception.what());
+            SIGHT_WARN(exception.what());
         }
     }
 
@@ -209,7 +209,7 @@ void SSeriesPusher::pushSeries()
 
 void SSeriesPusher::displayMessage(const std::string& message, bool error) const
 {
-    SLM_WARN_IF("Error: " + message, error);
+    SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage( message );

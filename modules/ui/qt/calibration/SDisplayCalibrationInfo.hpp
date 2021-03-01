@@ -70,7 +70,7 @@ class MODULE_UI_QT_CLASS_API SDisplayCalibrationInfo : public service::IControll
 
 public:
 
-    fwCoreServiceMacro(SDisplayCalibrationInfo, service::IController)
+    SIGHT_DECLARE_SERVICE(SDisplayCalibrationInfo, service::IController)
 
     /// Constructor. Does nothing.
     MODULE_UI_QT_API SDisplayCalibrationInfo() noexcept;

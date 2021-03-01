@@ -30,12 +30,12 @@
 
 #include <data/DicomSeries.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <io/base/writer/registry/macros.hpp>
 #include <io/zip/WriteZipArchive.hpp>
 
-fwDataIOWriterRegisterMacro( ::sight::io::dicom::helper::DicomSeriesWriter );
+#include <boost/foreach.hpp>
+
+SIGHT_REGISTER_IO_WRITER( ::sight::io::dicom::helper::DicomSeriesWriter );
 
 namespace sight::io::dicom
 {
@@ -163,7 +163,7 @@ void DicomSeriesWriter::processWrite()
         const std::filesystem::path& dest_file = dest_dir / filename;
 
         std::ofstream fs(dest_file, std::ios::binary|std::ios::trunc);
-        FW_RAISE_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
+        SIGHT_THROW_IF("Can't open '" <<  dest_file.string() << "' for write.", !fs.good());
 
         this->processStream(*(stream.get()), fs);
 
@@ -178,7 +178,7 @@ void DicomSeriesWriter::processWrite()
 
 void DicomSeriesWriter::processWriteArchive()
 {
-    SLM_ASSERT("Output archive shall be set", m_archive);
+    SIGHT_ASSERT("Output archive shall be set", m_archive);
 
     data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
 
@@ -206,7 +206,7 @@ void DicomSeriesWriter::processWriteArchive()
 
         const std::filesystem::path& dest_file = dest_dir / filename;
         SPTR(std::ostream) fs = m_archive->createFile(dest_file);
-        FW_RAISE_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
+        SIGHT_THROW_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
         this->processStream(*(stream.get()), *fs);
 

@@ -30,6 +30,8 @@
 
 #include <service/macros.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
@@ -39,8 +41,6 @@
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -72,7 +72,6 @@ static const core::com::Slots::SlotKeyType s_SET_INT_MIN_PARAMETER_SLOT    = "se
 static const core::com::Slots::SlotKeyType s_SET_INT_MAX_PARAMETER_SLOT    = "setIntMaxParameter";
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MIN_PARAMETER_SLOT = "setDoubleMinParameter";
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "setDoubleMaxParameter";
-
 
 //-----------------------------------------------------------------------------
 
@@ -179,14 +178,14 @@ void SParameters::starting()
             else if(widget == "slider")
             {
                 // We don't support multiple sliders because we will not have the room in a single row
-                SLM_ASSERT("Count > 1 is not supported with sliders", count == 1);
+                SIGHT_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 const std::uint8_t decimals = cfg.get< std::uint8_t >("<xmlattr>.decimals", 2);
                 this->createDoubleSliderWidget(*layout, row, key, defaultValue, min, max, decimals, resetButton);
             }
             else
             {
-                SLM_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
+                SIGHT_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
             }
         }
         else if(type == "int" || type == "int2" || type == "int3")
@@ -206,13 +205,13 @@ void SParameters::starting()
             else if(widget == "slider")
             {
                 // We don't support multiple sliders because we will not have the room in a single row
-                SLM_ASSERT("Count > 1 is not supported with sliders", count == 1);
+                SIGHT_ASSERT("Count > 1 is not supported with sliders", count == 1);
 
                 this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max, resetButton);
             }
             else
             {
-                SLM_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
+                SIGHT_ERROR("Unknown widget type : '" + widget + "' for " + name + ". Must be 'spin' or 'slider'.");
             }
         }
         else if(type == "enum")
@@ -350,15 +349,15 @@ void SParameters::updating()
             if(type == "bool")
             {
                 const QCheckBox* box = dynamic_cast<QCheckBox* >(child);
-                SLM_ASSERT("Widget must be a QCheckBox", box);
+                SIGHT_ASSERT("Widget must be a QCheckBox", box);
 
                 const bool state = (box->checkState() == Qt::Checked);
 
                 if (!m_blockSignals)
                 {
                     this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(state, key);
-                    SLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key <<
-                              ")" );
+                    SIGHT_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key <<
+                                ")" );
 
                 }
             }
@@ -379,17 +378,18 @@ void SParameters::updating()
             {
                 QComboBox* box = qobject_cast<QComboBox*>(child);
 
-                SLM_ASSERT("Widget must be a QComboBox", box);
+                SIGHT_ASSERT("Widget must be a QComboBox", box);
 
                 const QString data = box->itemData(box->currentIndex()).toString();
 
                 if (!m_blockSignals)
                 {
                     this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
-                    SLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
+                    SIGHT_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")" );
                     this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(box->currentIndex(),
                                                                                                 key);
-                    SLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key << ")");
+                    SIGHT_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key <<
+                                ")");
                 }
             }
         }
@@ -472,16 +472,16 @@ void SParameters::onChangeEnum(int value)
 
     const QComboBox* box = dynamic_cast<const QComboBox*>(sender);
 
-    SLM_ASSERT("Wrong widget type", box);
+    SIGHT_ASSERT("Wrong widget type", box);
 
     const QString data = box->itemData(value).toString();
 
     if (!m_blockSignals)
     {
         this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key.toStdString());
-        SLM_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString() << ")" );
+        SIGHT_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString() << ")" );
         this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-        SLM_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
+        SIGHT_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
     }
 }
 
@@ -496,8 +496,8 @@ void SParameters::onChangeBoolean(int value)
     if (!m_blockSignals)
     {
         this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(checked, key.toStdString());
-        SLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (checked ? "true" : "false") << ", " << key.toStdString()
-                            << ")" );
+        SIGHT_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (checked ? "true" : "false") << ", " << key.toStdString()
+                              << ")" );
     }
 }
 
@@ -510,7 +510,7 @@ void SParameters::onColorButton()
     // Create Color choice dialog.
     auto qtContainer         = ::sight::ui::qt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    SIGHT_ASSERT("container not instanced", container);
 
     const QColor oldColor = sender->property("color").value<QColor>();
     const QColor colorQt  = QColorDialog::getColor(oldColor, container);
@@ -548,11 +548,11 @@ void SParameters::emitIntegerSignal(QObject* widget)
         const QString key = widget->property("key").toString();
         const int count   = widget->property("count").toInt();
 
-        SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
+        SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
         const QSpinBox* spinbox = dynamic_cast<const QSpinBox*>(widget);
         const QSlider* slider   = dynamic_cast<const QSlider*>(widget);
-        SLM_ASSERT("Wrong widget type", spinbox || slider);
+        SIGHT_ASSERT("Wrong widget type", spinbox || slider);
 
         if(count == 1)
         {
@@ -566,7 +566,7 @@ void SParameters::emitIntegerSignal(QObject* widget)
                 value = slider->value();
             }
             this->signal<IntegerChangedSignalType>(INTEGER_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-            SLM_DEBUG("[EMIT] " << INTEGER_CHANGED_SIG << "(" <<value << ", " << key.toStdString() << ")" );
+            SIGHT_DEBUG("[EMIT] " << INTEGER_CHANGED_SIG << "(" <<value << ", " << key.toStdString() << ")" );
         }
         else
         {
@@ -594,8 +594,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
             {
                 this->signal<Integer2ChangedSignalType>(INTEGER2_CHANGED_SIG)->asyncEmit(value1, value2,
                                                                                          key.toStdString());
-                SLM_DEBUG("[EMIT] " << INTEGER2_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " <<
-                          key.toStdString() << ")" );
+                SIGHT_DEBUG("[EMIT] " << INTEGER2_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " <<
+                            key.toStdString() << ")" );
             }
             else
             {
@@ -613,8 +613,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
 
                 this->signal<Integer3ChangedSignalType>(INTEGER3_CHANGED_SIG)->asyncEmit(value1, value2, value3,
                                                                                          key.toStdString());
-                SLM_DEBUG("[EMIT] " << INTEGER3_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " << value3 <<
-                          ", " << key.toStdString() << ")" );
+                SIGHT_DEBUG("[EMIT] " << INTEGER3_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " << value3 <<
+                            ", " << key.toStdString() << ")" );
             }
         }
     }
@@ -644,18 +644,18 @@ void SParameters::emitDoubleSignal(QObject* widget)
         {
             const double value = this->getDoubleSliderValue(slider);
             this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-            SLM_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
+            SIGHT_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")" );
         }
         else if (spinbox)
         {
-            SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
+            SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
             if(count == 1)
             {
                 this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(spinbox->value(),
                                                                                      key.toStdString());
-                SLM_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << spinbox->value() << ", "
-                                    << key.toStdString() << ")" );
+                SIGHT_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << spinbox->value() << ", "
+                                      << key.toStdString() << ")" );
 
             }
             else
@@ -670,8 +670,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
                 {
                     this->signal<Double2ChangedSignalType>(DOUBLE2_CHANGED_SIG)->asyncEmit(value1, value2,
                                                                                            key.toStdString());
-                    SLM_DEBUG("[EMIT] " << DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2
-                                        << ", " << key.toStdString() << ")" );
+                    SIGHT_DEBUG("[EMIT] " << DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2
+                                          << ", " << key.toStdString() << ")" );
 
                 }
                 else
@@ -681,8 +681,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
 
                     this->signal<Double3ChangedSignalType>(DOUBLE3_CHANGED_SIG)->asyncEmit(value1, value2, value3,
                                                                                            key.toStdString());
-                    SLM_DEBUG("[EMIT] " << DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2
-                                        << ", " << value3 << ", " << key.toStdString() << ")" );
+                    SIGHT_DEBUG("[EMIT] " << DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2
+                                          << ", " << value3 << ", " << key.toStdString() << ")" );
                 }
             }
         }
@@ -751,8 +751,8 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
         if (!m_blockSignals)
         {
             this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(value, key.toStdString());
-            SLM_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (value ? "true" : "false") << ", "
-                                << key.toStdString() << ")" );
+            SIGHT_DEBUG("[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (value ? "true" : "false") << ", "
+                                  << key.toStdString() << ")" );
         }
     }
 }
@@ -781,9 +781,9 @@ void SParameters::onResetColorMapped(QWidget* widget)
         if (!m_blockSignals)
         {
             this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key.toStdString());
-            SLM_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", "
-                                << int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", "
-                                << key.toStdString() << ")" );
+            SIGHT_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", "
+                                  << int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", "
+                                  << key.toStdString() << ")" );
         }
     }
 }
@@ -805,7 +805,7 @@ void SParameters::onResetIntegerMapped(QWidget* widget)
         const QString key = spinbox->property("key").toString();
         const int value   = spinbox->property("defaultValue").toInt();
         const int count   = spinbox->property("count").toInt();
-        SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
+        SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
         QSpinBox* spin1 = spinbox->property("widget#0").value< QSpinBox*>();
         spin1->setValue(value);
@@ -849,7 +849,7 @@ void SParameters::onResetDoubleMapped(QWidget* widget)
         const QString key  = spinbox->property("key").toString();
         const double value = spinbox->property("defaultValue").toDouble();
         const int count    = spinbox->property("count").toInt();
-        SLM_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
+        SIGHT_ASSERT("Invalid widgets count, must be <= 3", count <= 3);
 
         QDoubleSpinBox* spin1 = spinbox->property("widget#0").value< QDoubleSpinBox*>();
         spin1->setValue(value);
@@ -1335,7 +1335,7 @@ void SParameters::setDoubleParameter(double val, std::string key)
     }
     else
     {
-        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
     }
     this->blockSignals(false);
 }
@@ -1396,7 +1396,7 @@ void SParameters::setIntParameter(int val, std::string key)
     }
     else
     {
-        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
     }
     this->blockSignals(false);
 }
@@ -1482,8 +1482,8 @@ void SParameters::emitColorSignal(const QColor color, const std::string& key)
     if (!m_blockSignals)
     {
         this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key);
-        SLM_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", " <<
-                  int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", " << key << ")" );
+        SIGHT_DEBUG("[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", " <<
+                    int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", " << key << ")" );
     }
 }
 
@@ -1526,7 +1526,7 @@ void SParameters::setIntMinParameter(int min, std::string key)
     }
     else
     {
-        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
     }
 }
 //------------------------------------------------------------------------------
@@ -1562,7 +1562,7 @@ void SParameters::setIntMaxParameter(int max, std::string key)
     }
     else
     {
-        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
     }
 }
 //------------------------------------------------------------------------------
@@ -1600,7 +1600,7 @@ void SParameters::setDoubleMinParameter(double min, std::string key)
     }
     else
     {
-        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
     }
 }
 
@@ -1639,7 +1639,7 @@ void SParameters::setDoubleMaxParameter(double max, std::string key)
     }
     else
     {
-        SLM_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
     }
 }
 
@@ -1665,9 +1665,9 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
     // but it would be ridiculous to use a slider handling so many values.
     slider->setMinimum(0);
 
-    SLM_ERROR_IF("The requested value range for '" + key + "' is too large to be handled by a double slider. "
-                 "Please reduce your range, the number of decimals or use a 'spin' widget.",
-                 maxSliderValue < std::numeric_limits<double>::epsilon());
+    SIGHT_ERROR_IF("The requested value range for '" + key + "' is too large to be handled by a double slider. "
+                   "Please reduce your range, the number of decimals or use a 'spin' widget.",
+                   maxSliderValue < std::numeric_limits<double>::epsilon());
     if (maxSliderValue < std::numeric_limits<double>::epsilon())
     {
         maxSliderValue = 1.;
@@ -1701,7 +1701,7 @@ QWidget* SParameters::getParamWidget(const std::string& key)
     const QWidget* widget = qtContainer->getQtContainer();
 
     QWidget* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SLM_ERROR_IF("Widget '" + key + "' is not found", !child);
+    SIGHT_ERROR_IF("Widget '" + key + "' is not found", !child);
 
     return child;
 }

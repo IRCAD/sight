@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API MultiSelectorDialog : public IMultiSelectorDialog
 
 public:
 
-    fwCoreClassMacro(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog, new MultiSelectorDialog)
+    SIGHT_DECLARE_CLASS(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog, new MultiSelectorDialog)
 
     /// will instanciate the concrete implementation
     UI_BASE_API MultiSelectorDialog();

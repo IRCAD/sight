@@ -75,7 +75,7 @@ class VIZ_QT3D_CLASS_API SRender final : public viz::base::IRender
 
 public:
 
-    fwCoreServiceMacro(SRender, viz::base::IRender)
+    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender)
 
     /// Creates the service.
     VIZ_QT3D_API SRender();

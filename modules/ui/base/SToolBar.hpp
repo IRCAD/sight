@@ -39,7 +39,7 @@ class MODULE_UI_BASE_CLASS_API SToolBar : public ::sight::ui::base::IToolBar
 
 public:
 
-    fwCoreServiceMacro(SToolBar, ::sight::ui::base::IToolBar)
+    SIGHT_DECLARE_SERVICE(SToolBar, ::sight::ui::base::IToolBar)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SToolBar() noexcept;

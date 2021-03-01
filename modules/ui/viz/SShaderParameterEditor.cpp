@@ -32,17 +32,16 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
+#include <ui/base/GuiRegistry.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
 
 #include <QWidget>
 
-#include <ui/base/GuiRegistry.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 static const std::string s_RECONSTRUCTION_INOUT = "reconstruction";
 
@@ -149,7 +148,7 @@ void SShaderParameterEditor::updateGuiInfo()
     /// Stop if no Material adaptors have been find
     if(srvVec.empty())
     {
-        SLM_WARN("No module::viz::scene3d::adaptor::SMaterial found in the application");
+        SIGHT_WARN("No module::viz::scene3d::adaptor::SMaterial found in the application");
         return;
     }
 
@@ -165,7 +164,7 @@ void SShaderParameterEditor::updateGuiInfo()
         }
     }
 
-    SLM_ASSERT("Material adaptor corresponding to the current Reconstruction must exist", matService);
+    SIGHT_ASSERT("Material adaptor corresponding to the current Reconstruction must exist", matService);
 
     bool found = false;
 
@@ -220,8 +219,8 @@ void SShaderParameterEditor::updateGuiInfo()
         {
             auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicCast(adaptor);
             auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
-                                                                                        m_editorInfo.service.lock(),
-                                                                                        m_editorInfo.connections);
+                                                                                       m_editorInfo.service.lock(),
+                                                                                       m_editorInfo.connections);
 
             if(!paramConfig.empty())
             {

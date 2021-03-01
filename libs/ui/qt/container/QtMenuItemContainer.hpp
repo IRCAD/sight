@@ -27,9 +27,9 @@
 #include <core/base.hpp>
 #include <core/tools/Object.hpp>
 
-#include <QPointer>
-
 #include <ui/base/container/fwMenuItem.hpp>
+
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -48,8 +48,8 @@ class UI_QT_CLASS_API QtMenuItemContainer : public ui::base::container::fwMenuIt
 
 public:
 
-    fwCoreClassMacro(QtMenuItemContainer, ui::base::container::fwMenuItem,
-                     ui::base::factory::New< QtMenuItemContainer >)
+    SIGHT_DECLARE_CLASS(QtMenuItemContainer, ui::base::container::fwMenuItem,
+                        ui::base::factory::New< QtMenuItemContainer >)
 
     UI_QT_API QtMenuItemContainer(ui::base::GuiBaseObject::Key key) noexcept;
 

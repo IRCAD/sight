@@ -32,10 +32,10 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/vtk/helper/Mesh.hpp>
 #include <io/vtk/vtk.hpp>
+
+#include <service/macros.hpp>
 
 #include <vtkDecimatePro.h>
 #include <vtkDiscreteMarchingCubes.h>
@@ -85,11 +85,11 @@ void SVTKMesher::configuring()
 {
     const service::IService::ConfigType& srvConfig = this->getConfigTree();
 
-    SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
+    SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
 
     const service::IService::ConfigType& config = srvConfig.get_child("config");
 
-    SLM_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
+    SIGHT_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
     const service::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
     m_reduction = reductionCfg.get_value<unsigned int>();
 }

@@ -33,7 +33,7 @@
 namespace sight::data
 {
 
-fwDataRegisterMacro( ::sight::data::Array );
+SIGHT_REGISTER_DATA( ::sight::data::Array );
 
 //------------------------------------------------------------------------------
 
@@ -107,9 +107,9 @@ void Array::swap( Array::sptr _source )
 void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Array::csptr other = Array::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     this->clear();
@@ -154,8 +154,8 @@ size_t Array::resize(const SizeType& size, bool reallocate)
     }
     else if(reallocate && !m_isBufferOwner)
     {
-        FW_RAISE_EXCEPTION_MSG( data::Exception,
-                                "Tried to reallocate a not-owned Buffer.");
+        SIGHT_THROW_EXCEPTION_MSG( data::Exception,
+                                   "Tried to reallocate a not-owned Buffer.");
     }
     m_strides = computeStrides(size, m_nbOfComponents, m_type.sizeOf());
     m_size    = size;
@@ -272,7 +272,7 @@ core::tools::Type Array::getType() const
 
 size_t Array::getBufferOffset( const data::Array::IndexType& id ) const
 {
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         data::Exception("Given index has " + std::to_string(id.size()) + " dimensions, but Array has " +
                         std::to_string(m_size.size()) + " dimensions."),
         id.size() != m_size.size() );
@@ -313,8 +313,8 @@ size_t Array::resize(
     }
     else if(reallocate && !m_isBufferOwner)
     {
-        FW_RAISE_EXCEPTION_MSG( data::Exception,
-                                "Tried to reallocate a not-owned Buffer.");
+        SIGHT_THROW_EXCEPTION_MSG( data::Exception,
+                                   "Tried to reallocate a not-owned Buffer.");
     }
 
     m_strides        = computeStrides(size, type.sizeOf());
@@ -329,9 +329,9 @@ size_t Array::resize(
 
 void* Array::getBuffer()
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("The buffer cannot be accessed if the array is not locked for dump "
-                                          "(see lock())"),
-                          !m_bufferObject->isLocked());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("The buffer cannot be accessed if the array is not locked for dump "
+                                             "(see lock())"),
+                             !m_bufferObject->isLocked());
     return m_bufferObject->getBuffer();
 }
 
@@ -339,8 +339,8 @@ void* Array::getBuffer()
 
 const void* Array::getBuffer() const
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("The buffer cannot be accessed if the array is not locked"),
-                          !m_bufferObject->isLocked());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("The buffer cannot be accessed if the array is not locked"),
+                             !m_bufferObject->isLocked());
     return m_bufferObject->getBuffer();
 }
 
@@ -538,7 +538,7 @@ size_t Array::getNumberOfComponents() const
 
 size_t Array::getBufferOffset( const data::Array::IndexType& id, size_t component, size_t sizeOfType) const
 {
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
             id.size() == m_size.size()
         );

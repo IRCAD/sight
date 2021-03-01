@@ -47,7 +47,7 @@
 
 #include <filesystem>
 
-fwDataIOWriterRegisterMacro( ::sight::io::vtk::ModelSeriesObjWriter );
+SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::ModelSeriesObjWriter );
 
 namespace sight::io::vtk
 {
@@ -101,11 +101,11 @@ vtkSmartPointer< vtkActor > createActor( const data::Reconstruction::sptr& pReco
 
 void ModelSeriesObjWriter::write()
 {
-    SLM_ASSERT("Object pointer expired", !m_object.expired());
+    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SLM_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock );
 
     const std::filesystem::path prefix = this->getFolder();
 

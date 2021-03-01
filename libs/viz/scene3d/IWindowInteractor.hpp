@@ -32,10 +32,10 @@
 
 #include <service/IService.hpp>
 
+#include <ui/base/container/fwContainer.hpp>
+
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/Overlay/OgreOverlay.h>
-
-#include <ui/base/container/fwContainer.hpp>
 
 #include <string>
 #include <unordered_set>
@@ -124,7 +124,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IWindowInteractor, core::BaseObject)
+    SIGHT_DECLARE_CLASS(IWindowInteractor, core::BaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

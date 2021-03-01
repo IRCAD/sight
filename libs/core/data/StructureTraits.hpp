@@ -26,7 +26,7 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(StructureTraits));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(StructureTraits));
 
 namespace sight::data
 {
@@ -45,8 +45,8 @@ namespace sight::data
 class DATA_CLASS_API StructureTraits : public data::Object
 {
 public:
-    fwCoreClassMacro(StructureTraits, data::Object, data::factory::New< StructureTraits >)
-    fwCampMakeFriendDataMacro((sight)(data)(StructureTraits));
+    SIGHT_DECLARE_CLASS(StructureTraits, data::Object, data::factory::New< StructureTraits >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(StructureTraits));
 
     /// Defines structure categories
     typedef enum

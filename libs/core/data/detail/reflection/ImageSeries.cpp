@@ -31,7 +31,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(ImageSeries))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(ImageSeries))
 {
     builder
     .tag("object_version", "3")

@@ -30,10 +30,10 @@
 
 #include <data/Material.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QRadioButton;
 class QCheckBox;
@@ -63,7 +63,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(RepresentationEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(RepresentationEditor, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API RepresentationEditor() noexcept;

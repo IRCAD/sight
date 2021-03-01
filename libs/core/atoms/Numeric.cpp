@@ -48,7 +48,7 @@ Base::sptr Numeric::clone() const
 
 std::string Numeric::getString() const
 {
-    FW_RAISE_EXCEPTION_IF( atoms::Exception("Empty numeric atom"), m_value.which() == 0);
+    SIGHT_THROW_EXCEPTION_IF( atoms::Exception("Empty numeric atom"), m_value.which() == 0);
     return ::boost::lexical_cast<std::string>(m_value);
 }
 
@@ -76,11 +76,11 @@ bool lexicalCast( Numeric::ValueType& v, const std::string& s )
 Numeric::ValueType Numeric::valueFromString(const std::string& s, Numeric::NumericType type)
 {
     Numeric::ValueType res;
-    SLM_ASSERT("Invalid variant type requested", EMPTY <= type && type <= DOUBLE);
+    SIGHT_ASSERT("Invalid variant type requested", EMPTY <= type && type <= DOUBLE);
 
     if ( type == EMPTY)
     {
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             atoms::Exception( std::string("Unable to get numeric from '") + s + "'"),
             !(lexicalCast< std::int64_t >(res, s)
               || lexicalCast< std::uint64_t >(res, s)
@@ -89,21 +89,21 @@ Numeric::ValueType Numeric::valueFromString(const std::string& s, Numeric::Numer
     }
     else if ( type == INT)
     {
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             atoms::Exception( std::string("Unable to get int64 numeric from '") + s + "'"),
             !lexicalCast< std::int64_t >(res, s)
             );
     }
     else if ( type == UINT)
     {
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             atoms::Exception( std::string("Unable to get uint64 numeric from '") + s + "'"),
             !lexicalCast< std::uint64_t >(res, s)
             );
     }
     else if ( type == DOUBLE)
     {
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             atoms::Exception( std::string("Unable to get double numeric from '") + s + "'"),
             !lexicalCast< double >(res, s)
             );

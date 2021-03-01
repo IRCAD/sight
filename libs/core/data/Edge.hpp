@@ -28,7 +28,7 @@
 
 #include <utility>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Edge));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Edge));
 
 namespace sight::data
 {
@@ -40,8 +40,8 @@ namespace sight::data
 class DATA_CLASS_API Edge : public data::Object
 {
 public:
-    fwCoreClassMacro(Edge, data::Object, data::factory::New< Edge >)
-    fwCampMakeFriendDataMacro((sight)(data)(Edge));
+    SIGHT_DECLARE_CLASS(Edge, data::Object, data::factory::New< Edge >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Edge));
 
     DATA_API static std::string NATURE_FLOW;
     DATA_API static std::string NATURE_DATA;

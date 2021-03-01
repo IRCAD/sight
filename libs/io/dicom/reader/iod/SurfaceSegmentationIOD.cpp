@@ -68,7 +68,7 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 void SurfaceSegmentationIOD::read(data::Series::sptr series)
 {
     data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(series);
-    SLM_ASSERT("ModelSeries should not be null.", modelSeries);
+    SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
     SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader >( new ::gdcm::SurfaceReader );
@@ -88,9 +88,9 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
 
     const bool success = reader->Read();
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                       bufferObj->getStreamInfo().fsFile.string()+
-                                                       "\" using the GDCM Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
+                                                          bufferObj->getStreamInfo().fsFile.string()+
+                                                          "\" using the GDCM Reader."), !success);
 
     // Create Information Entity helpers
     io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,

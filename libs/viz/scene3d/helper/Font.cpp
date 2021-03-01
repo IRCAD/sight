@@ -47,8 +47,8 @@ Ogre::FontPtr Font::getFont(const std::string& _trueTypeFileName, const size_t _
     // Search for ttf extension in the file name.
     const size_t extPos = _trueTypeFileName.rfind(".ttf");
 
-    SLM_ASSERT(_trueTypeFileName + "doesn't seem to be a truetype font (*.ttf) file.",
-               _trueTypeFileName.size() > 4 && extPos == _trueTypeFileName.size() - 4);
+    SIGHT_ASSERT(_trueTypeFileName + "doesn't seem to be a truetype font (*.ttf) file.",
+                 _trueTypeFileName.size() > 4 && extPos == _trueTypeFileName.size() - 4);
 
     ::Ogre::FontManager& fontManager = ::Ogre::FontManager::getSingleton();
 
@@ -78,7 +78,7 @@ Ogre::TexturePtr Font::getFontMap(const std::string& _fontName)
     ::Ogre::TexturePtr fontMap =
         ::Ogre::TextureManager::getSingleton().getByName(_fontName + "Texture", RESOURCE_GROUP);
 
-    SLM_ASSERT("Could not find a font map for " + _fontName + ". Please make sure that the font is loaded.", fontMap);
+    SIGHT_ASSERT("Could not find a font map for " + _fontName + ". Please make sure that the font is loaded.", fontMap);
 
     return fontMap;
 }
@@ -94,7 +94,8 @@ Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
     if(!fontMtl)
     {
         const auto& baseTextMtl = mm.getByName("Text", RESOURCE_GROUP);
-        SLM_ASSERT("'Text' material not found, please make that the resource exists and has been loaded.", baseTextMtl);
+        SIGHT_ASSERT("'Text' material not found, please make that the resource exists and has been loaded.",
+                     baseTextMtl);
 
         fontMtl = baseTextMtl->clone(mtlName);
         fontMtl->load(false);
@@ -102,11 +103,11 @@ Ogre::MaterialPtr Font::getFontMtl(const std::string& _fontName)
         ::Ogre::TexturePtr fontMap = getFontMap(_fontName);
 
         ::Ogre::Technique* fontRenderTechnique = fontMtl->getTechnique(0);
-        SLM_ASSERT("This font's material has no technique.", fontRenderTechnique);
+        SIGHT_ASSERT("This font's material has no technique.", fontRenderTechnique);
         ::Ogre::Pass* fontRenderPass = fontRenderTechnique->getPass(0);
-        SLM_ASSERT("This font's material has no pass.", fontRenderPass);
+        SIGHT_ASSERT("This font's material has no pass.", fontRenderPass);
         ::Ogre::TextureUnitState* fontMapTextUnit = fontRenderPass->getTextureUnitState("fontMap");
-        SLM_ASSERT("This font's pass has no texture unit named 'fontMap'.", fontRenderPass);
+        SIGHT_ASSERT("This font's pass has no texture unit named 'fontMap'.", fontRenderPass);
         fontMapTextUnit->setTexture(fontMap);
     }
 

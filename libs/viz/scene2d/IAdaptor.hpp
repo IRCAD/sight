@@ -52,7 +52,7 @@ public:
     /// <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceMacro(IAdaptor, service::IService)
+    SIGHT_DECLARE_SERVICE(IAdaptor, service::IService)
 
     /// Set the zValue.
     VIZ_SCENE2D_API void setZValue(float _zValue);

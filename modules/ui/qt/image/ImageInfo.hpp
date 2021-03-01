@@ -29,11 +29,11 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::image
 {
@@ -64,7 +64,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageInfo, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(ImageInfo, sight::ui::base::IEditor)
 
     MODULE_UI_QT_API ImageInfo() noexcept;
 

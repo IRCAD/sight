@@ -72,11 +72,11 @@ void SThreshold::configuring()
 {
     const service::IService::ConfigType& srvConfig = this->getConfigTree();
 
-    SLM_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
+    SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1 );
 
     const service::IService::ConfigType& config = srvConfig.get_child("config");
 
-    SLM_ASSERT("You must have one <threshold/> element.", config.count("threshold") == 1);
+    SIGHT_ASSERT("You must have one <threshold/> element.", config.count("threshold") == 1);
     const service::IService::ConfigType& thresholdCfg = config.get_child("threshold");
     m_threshold = thresholdCfg.get_value<double>();
 }
@@ -110,7 +110,7 @@ struct ThresholdFilter
         const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
         data::Image::csptr imageIn     = param.imageIn;
         data::Image::sptr imageOut     = param.imageOut;
-        SLM_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
+        SIGHT_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->resize(); // Allocate the image buffer
@@ -169,7 +169,7 @@ void SThreshold::updating()
     }
     else
     {
-        FW_RAISE("Wrong type: source type must be an ImageSeries or an Image");
+        SIGHT_THROW("Wrong type: source type must be an ImageSeries or an Image");
     }
 
     param.thresholdValue = m_threshold;

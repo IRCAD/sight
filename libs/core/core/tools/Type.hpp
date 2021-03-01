@@ -287,9 +287,9 @@ CORE_API void Type::setType< std::uint64_t >();
 template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
 const std::string& Type::traitsToString()
 {
-    SLM_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
-                         << " " << (ISINTEGRAL ? "integral" : "floating")
-                         << " type with size : " << SIZEOF);
+    SIGHT_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
+                           << " " << (ISINTEGRAL ? "integral" : "floating")
+                           << " type with size : " << SIZEOF);
     return Type::s_UNSPECIFIED_TYPENAME;
 }
 

@@ -28,12 +28,12 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Composite.hpp>
-#include <data/String.hpp>
 #include <data/helper/Composite.hpp>
-
-#include <service/macros.hpp>
+#include <data/String.hpp>
 
 #include <filter/dicom/IFilter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -46,7 +46,6 @@ namespace sight::module::ui::dicom
 {
 
 //------------------------------------------------------------------------------
-
 
 static const service::IService::KeyType s_FILTER_INOUT = "filter";
 
@@ -78,24 +77,24 @@ void SFilterSelectorDialog::configuring()
     core::runtime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
     for(; iter != this->m_configuration->end(); ++iter )
     {
-        SLM_INFO( "SFilterSelectorDialog "  + (*iter)->getName());
+        SIGHT_INFO( "SFilterSelectorDialog "  + (*iter)->getName());
 
         if( (*iter)->getName() == "selection" )
         {
-            SLM_ASSERT( "The xml element <selection> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            SIGHT_ASSERT( "The xml element <selection> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
             const std::string mode = (*iter)->getExistingAttributeValue("mode");
             m_filtersAreExcluded = ( mode == "exclude" );
-            SLM_ASSERT( "The xml attribute <mode> must be either 'exclude' or 'include'.", mode == "exclude" ||
-                        mode == "include" );
-            SLM_DEBUG( "mode => " + mode );
+            SIGHT_ASSERT( "The xml attribute <mode> must be either 'exclude' or 'include'.", mode == "exclude" ||
+                          mode == "include" );
+            SIGHT_DEBUG( "mode => " + mode );
         }
 
         if( (*iter)->getName() == "addSelection" )
         {
-            SLM_ASSERT( "The xml element <addSelection> must have the attribute 'filter'.",
-                        (*iter)->hasAttribute("filter"));
+            SIGHT_ASSERT( "The xml element <addSelection> must have the attribute 'filter'.",
+                          (*iter)->hasAttribute("filter"));
             m_selectedFilters.push_back( (*iter)->getExistingAttributeValue("filter") );
-            SLM_DEBUG( "add selection => " + (*iter)->getExistingAttributeValue("filter") );
+            SIGHT_DEBUG( "add selection => " + (*iter)->getExistingAttributeValue("filter") );
         }
 
     }
@@ -169,8 +168,9 @@ void SFilterSelectorDialog::updating()
             filterName                = selector->show();
             filterSelectionIsCanceled = filterName.empty();
 
-            SLM_ASSERT("Unable to find the selected filter name in the filter map.",
-                       filterSelectionIsCanceled || availableFiltersMap.find(filterName) != availableFiltersMap.end() );
+            SIGHT_ASSERT("Unable to find the selected filter name in the filter map.",
+                         filterSelectionIsCanceled ||
+                         availableFiltersMap.find(filterName) != availableFiltersMap.end() );
         }
 
         if ( !filterSelectionIsCanceled )
@@ -179,7 +179,7 @@ void SFilterSelectorDialog::updating()
             filter::dicom::IFilter::sptr filter = availableFiltersMap[filterName];
 
             data::String::sptr obj = this->getInOut< data::String >(s_FILTER_INOUT);
-            SLM_ASSERT("The inout key '" + s_FILTER_INOUT + "' is not correctly set.", obj);
+            SIGHT_ASSERT("The inout key '" + s_FILTER_INOUT + "' is not correctly set.", obj);
 
             obj->setValue(filter->getClassname());
 
@@ -193,7 +193,7 @@ void SFilterSelectorDialog::updating()
     }
     else
     {
-        SLM_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
+        SIGHT_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Filter not found");
         messageBox.setMessage( "There is no available filter for this reader." );

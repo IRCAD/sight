@@ -24,11 +24,11 @@
 
 #include "ui/qml/config.hpp"
 
+#include <ui/base/dialog/IMultiSelectorDialog.hpp>
+
 #include <QObject>
 #include <QString>
 #include <QVariant>
-
-#include <ui/base/dialog/IMultiSelectorDialog.hpp>
 
 #include <vector>
 
@@ -51,8 +51,8 @@ Q_PROPERTY(QString message MEMBER m_message NOTIFY messageChanged)
 
 public:
 
-    fwCoreClassMacro(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
-                     ui::base::factory::New< MultiSelectorDialog >)
+    SIGHT_DECLARE_CLASS(MultiSelectorDialog, ui::base::dialog::IMultiSelectorDialog,
+                        ui::base::factory::New< MultiSelectorDialog >)
 
     UI_QML_API MultiSelectorDialog(ui::base::GuiBaseObject::Key key);
 

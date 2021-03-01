@@ -24,9 +24,9 @@
 
 #include "ui/qt/config.hpp"
 
-#include <QObject>
-
 #include <ui/base/ActionCallbackBase.hpp>
+
+#include <QObject>
 
 namespace sight::ui::qt
 {
@@ -42,7 +42,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(ActionCallback, ui::base::ActionCallbackBase, ui::base::factory::New< ActionCallback >)
+    SIGHT_DECLARE_CLASS(ActionCallback, ui::base::ActionCallbackBase, ui::base::factory::New< ActionCallback >)
 
     UI_QT_API ActionCallback(ui::base::GuiBaseObject::Key key);
 

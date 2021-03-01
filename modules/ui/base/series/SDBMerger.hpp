@@ -80,7 +80,7 @@ namespace series
 class MODULE_UI_BASE_CLASS_API SDBMerger : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SDBMerger, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SDBMerger, sight::ui::base::IAction)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
     typedef core::com::Slot< void ( SPTR(core::jobs::IJob) ) > ForwardJobSlotType;

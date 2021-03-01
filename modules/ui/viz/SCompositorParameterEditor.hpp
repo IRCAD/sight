@@ -24,13 +24,13 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <viz/scene3d/Layer.hpp>
 #include <viz/scene3d/SRender.hpp>
 
 #include <QVBoxLayout>
-
-#include <ui/base/IEditor.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -51,7 +51,7 @@ class MODULE_UI_VIZ_CLASS_API SCompositorParameterEditor : public sight::ui::bas
 
 public:
 
-    fwCoreServiceMacro(SCompositorParameterEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCompositorParameterEditor, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SCompositorParameterEditor() noexcept;

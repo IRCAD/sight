@@ -40,14 +40,14 @@ namespace container
 QtContainer::QtContainer(ui::base::GuiBaseObject::Key key) noexcept :
     m_container(nullptr)
 {
-    FwCoreNotUsedMacro(key);
+    SIGHT_NOT_USED(key);
 }
 
 //-----------------------------------------------------------------------------
 
 QtContainer::~QtContainer() noexcept
 {
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",
         m_container == nullptr );
 }
@@ -56,7 +56,7 @@ QtContainer::~QtContainer() noexcept
 
 void QtContainer::setLayout( QLayout* const layout )
 {
-    SLM_ASSERT("The container must be initialized before invoking setLayout().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking setLayout().", m_container);
 
     // Recursively delete all children
     QLayout* oldLayout = m_container->layout();
@@ -78,7 +78,7 @@ void QtContainer::setLayout( QLayout* const layout )
 
 void QtContainer::clean()
 {
-    SLM_ASSERT("The container must be initialized before invoking clean().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking clean().", m_container);
 
     // Recursively delete all children
     QLayout* oldLayout = m_container->layout();
@@ -102,7 +102,7 @@ void QtContainer::clean()
 
 void QtContainer::destroyContainer()
 {
-    SLM_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
 
     if(m_container)
     {
@@ -129,7 +129,7 @@ QWidget* QtContainer::getQtContainer() const
 
 bool QtContainer::isShownOnScreen()
 {
-    SLM_ASSERT("The container must be initialized before invoking isShownOnScreen().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking isShownOnScreen().", m_container);
     return m_container->isVisible();
 }
 
@@ -137,7 +137,7 @@ bool QtContainer::isShownOnScreen()
 
 void QtContainer::setVisible(bool isVisible)
 {
-    SLM_ASSERT("The container must be initialized before invoking setVisible().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking setVisible().", m_container);
 
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
@@ -154,7 +154,7 @@ void QtContainer::setVisible(bool isVisible)
 
 void QtContainer::setEnabled(bool isEnabled)
 {
-    SLM_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
 
     QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);

@@ -39,7 +39,6 @@
 
 #include <service/macros.hpp>
 
-
 // ----------------------------------------------------------------------------
 
 namespace sight::module::sync
@@ -88,7 +87,7 @@ void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestam
 
         core::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
         CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
-        SLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
+        SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
         m_lastTimestamp = currentTimestamp;
 
         const float* values = buffer->getElement(0);

@@ -34,10 +34,10 @@
 
 #include <core/tools/Stringizer.hpp>
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
 #include <data/String.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/types.hpp>
 #include <data/Vector.hpp>
 
@@ -140,8 +140,8 @@ void Measurement::createMeasurement(const SPTR(io::dicom::container::sr::DicomSR
     }
     else
     {
-        SLM_ASSERT("Unable to save a 3D distance using a SCOORD object.",
-                   frameNumber1 == io::dicom::helper::DicomDataTools::convertPointToFrameNumber(m_object, point2));
+        SIGHT_ASSERT("Unable to save a 3D distance using a SCOORD object.",
+                     frameNumber1 == io::dicom::helper::DicomDataTools::convertPointToFrameNumber(m_object, point2));
 
         // Create SCoord Node
         const float scoord[] = {

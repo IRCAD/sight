@@ -60,7 +60,7 @@ class SMeshModifier final : public ::sight::ui::base::IAction
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMeshModifier, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SMeshModifier, sight::ui::base::IAction)
 
     /// Creates the action.
     SMeshModifier() noexcept;

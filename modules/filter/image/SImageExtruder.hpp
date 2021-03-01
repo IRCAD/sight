@@ -68,7 +68,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IOper
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SImageExtruder, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SImageExtruder, ::sight::service::IOperator)
 
     /// Initializes the slot.
     MODULE_FILTER_IMAGE_API SImageExtruder();

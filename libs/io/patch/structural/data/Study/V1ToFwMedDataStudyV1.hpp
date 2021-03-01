@@ -39,8 +39,8 @@ namespace Study
 class IO_PATCH_CLASS_API V1ToFwMedDataStudyV1 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V1ToFwMedDataStudyV1, patch::structural::data::Study::V1ToFwMedDataStudyV1,
-                     new V1ToFwMedDataStudyV1)
+    SIGHT_DECLARE_CLASS(V1ToFwMedDataStudyV1, patch::structural::data::Study::V1ToFwMedDataStudyV1,
+                        new V1ToFwMedDataStudyV1)
 
     /// Constructor
     IO_PATCH_API V1ToFwMedDataStudyV1();

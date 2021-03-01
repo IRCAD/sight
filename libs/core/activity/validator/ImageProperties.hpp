@@ -38,8 +38,8 @@ namespace validator
 class ACTIVITY_CLASS_API ImageProperties : public activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(ImageProperties, activity::IObjectValidator,
-                     activity::validator::factory::New< ImageProperties >)
+    SIGHT_DECLARE_CLASS(ImageProperties, activity::IObjectValidator,
+                        activity::validator::factory::New< ImageProperties >)
 
     /// Constructor. Do nothing.
     ACTIVITY_API ImageProperties(activity::IValidator::Key key);

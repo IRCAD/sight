@@ -107,9 +107,9 @@ InformationEntity<DATATYPE>::InformationEntity(const SPTR(::gdcm::Writer)& write
     m_progressCallback(progress),
     m_cancelRequestedCallback(cancel)
 {
-    SLM_ASSERT("Writer should not be null.", writer);
-    SLM_ASSERT("Instance should not be null.", instance);
-    SLM_ASSERT("Object should not be null.", object);
+    SIGHT_ASSERT("Writer should not be null.", writer);
+    SIGHT_ASSERT("Instance should not be null.", instance);
+    SIGHT_ASSERT("Object should not be null.", object);
 }
 
 //------------------------------------------------------------------------------

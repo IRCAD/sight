@@ -38,7 +38,7 @@ namespace splitter
 class FILTER_DICOM_CLASS_API ISplitter : public filter::dicom::IFilter
 {
 public:
-    fwCoreClassMacro(ISplitter, filter::dicom::IFilter)
+    SIGHT_DECLARE_CLASS(ISplitter, filter::dicom::IFilter)
 
     /// Destructor
     FILTER_DICOM_API virtual ~ISplitter();

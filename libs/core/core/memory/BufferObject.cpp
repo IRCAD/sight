@@ -26,7 +26,7 @@
 
 namespace scm = sight::core::memory;
 
-fwCampImplementMacro((sight)(core)(memory)(BufferObject))
+SIGHT_IMPLEMENT_REFLECTION((sight)(core)(memory)(BufferObject))
 {
     builder.tag("buffer")
     .function("classname", &scm::BufferObject::className)

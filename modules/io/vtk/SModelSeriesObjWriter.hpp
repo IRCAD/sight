@@ -83,7 +83,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesObjWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SModelSeriesObjWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief Configure the mesh path.

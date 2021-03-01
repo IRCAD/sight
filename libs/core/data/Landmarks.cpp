@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-fwDataRegisterMacro( ::sight::data::Landmarks );
+SIGHT_REGISTER_DATA( ::sight::data::Landmarks );
 
 namespace sight::data
 {
@@ -71,9 +71,9 @@ Landmarks::~Landmarks ()
 void Landmarks::shallowCopy(const Object::csptr& _source )
 {
     Landmarks::csptr other = Landmarks::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_landmarks = other->m_landmarks;
@@ -84,9 +84,9 @@ void Landmarks::shallowCopy(const Object::csptr& _source )
 void Landmarks::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Landmarks::csptr other = Landmarks::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_landmarks = other->m_landmarks;
@@ -99,7 +99,7 @@ void Landmarks::addGroup(const std::string& name, const Landmarks::ColorType& co
 {
     LandmarksGroup group(color, size, shape, visibility);
     const auto iter = m_landmarks.find(name);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Group '" + name + "' already exists"), iter != m_landmarks.end());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Group '" + name + "' already exists"), iter != m_landmarks.end());
     m_landmarks.insert(std::make_pair(name, group));
 }
 
@@ -123,7 +123,7 @@ const Landmarks::GroupNameContainer Landmarks::getGroupNames() const
 const Landmarks::LandmarksGroup& Landmarks::getGroup(const std::string& name) const
 {
     const auto iter = m_landmarks.find(name);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Group '" + name + "' does not exist"), iter == m_landmarks.end());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Group '" + name + "' does not exist"), iter == m_landmarks.end());
     const Landmarks::LandmarksGroup& group = iter->second;
     return group;
 }
@@ -133,7 +133,7 @@ const Landmarks::LandmarksGroup& Landmarks::getGroup(const std::string& name) co
 Landmarks::LandmarksGroup& Landmarks::getGroup(const std::string& name)
 {
     auto iter = m_landmarks.find(name);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Group '" + name + "' does not exist"), iter == m_landmarks.end());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Group '" + name + "' does not exist"), iter == m_landmarks.end());
 
     Landmarks::LandmarksGroup& group = iter->second;
     return group;
@@ -144,9 +144,9 @@ Landmarks::LandmarksGroup& Landmarks::getGroup(const std::string& name)
 void Landmarks::renameGroup(const std::string& oldName, const std::string& newName)
 {
     const auto iter = m_landmarks.find(oldName);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Group '" + oldName + "' does not exist"), iter == m_landmarks.end());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Group '" + oldName + "' does not exist"), iter == m_landmarks.end());
     const auto iter2 = m_landmarks.find(newName);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Group '" + newName + "' already exists"), iter2 != m_landmarks.end());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Group '" + newName + "' already exists"), iter2 != m_landmarks.end());
 
     const Landmarks::LandmarksGroup group = iter->second;
     m_landmarks.insert(std::make_pair(newName, group));
@@ -158,7 +158,7 @@ void Landmarks::renameGroup(const std::string& oldName, const std::string& newNa
 void Landmarks::removeGroup(const std::string& name)
 {
     const auto iter = m_landmarks.find(name);
-    FW_RAISE_EXCEPTION_IF(data::Exception("Group '" + name + "' does not exist"), iter == m_landmarks.end());
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Group '" + name + "' does not exist"), iter == m_landmarks.end());
 
     m_landmarks.erase(name);
 }
@@ -242,8 +242,8 @@ void Landmarks::removePoint(const std::string& name, size_t index)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
 
-    FW_RAISE_EXCEPTION_IF(std::out_of_range("index out of range in group '" + name + "'"),
-                          index >= group.m_points.size());
+    SIGHT_THROW_EXCEPTION_IF(std::out_of_range("index out of range in group '" + name + "'"),
+                             index >= group.m_points.size());
 
     auto iter = group.m_points.begin() + static_cast< PointContainer::difference_type >(index);
     group.m_points.erase(iter);

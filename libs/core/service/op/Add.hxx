@@ -22,9 +22,9 @@
 
 #pragma once
 
+#include "service/extension/Factory.hpp"
 #include "service/IService.hpp"
 #include "service/registry/ObjectService.hpp"
-#include "service/extension/Factory.hpp"
 
 namespace sight::service
 {
@@ -36,8 +36,8 @@ SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
 {
     service::IService::sptr genericSrv = service::add( _implType, _id );
     auto srv                           = std::dynamic_pointer_cast< SERVICE >(genericSrv);
-    FW_RAISE_IF("Failed to cast service from factory type '" + _implType + "' into '" +
-                core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
+    SIGHT_THROW_IF("Failed to cast service from factory type '" + _implType + "' into '" +
+                   core::TypeDemangler<SERVICE>().getClassname() + "'", !srv );
 
     return srv;
 }

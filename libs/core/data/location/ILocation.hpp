@@ -43,7 +43,7 @@ namespace location
 class DATA_CLASS_API ILocation : public data::Object
 {
 public:
-    fwCoreClassMacro(ILocation, data::Object)
+    SIGHT_DECLARE_CLASS(ILocation, data::Object)
 
     typedef std::filesystem::path PathType;
     typedef std::vector<PathType> VectPathType;
@@ -64,7 +64,7 @@ protected:
 template<class LOCATION, class RW >
 inline typename LOCATION::sptr getLocation(RW* rw)
 {
-    SLM_ASSERT("rw not instanced", rw);
+    SIGHT_ASSERT("rw not instanced", rw);
     typename LOCATION::sptr location;
     location = LOCATION::dynamicCast( rw->getLocation() );
     if ( !location )

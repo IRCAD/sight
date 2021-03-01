@@ -28,13 +28,13 @@
 
 #include <data/tools/Color.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QBoxLayout>
 #include <QDockWidget>
 #include <QGroupBox>
 #include <QMainWindow>
 #include <QScrollArea>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::CardinalLayoutManager,
                     ::sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
@@ -59,7 +59,7 @@ CardinalLayoutManager::~CardinalLayoutManager()
 void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr parent )
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
     m_qtWindow = new QMainWindow(  );
 
@@ -92,8 +92,8 @@ void CardinalLayoutManager::createLayout( ui::base::container::fwContainer::sptr
             }
 
             QWidget* widget = insideWidget;
-            SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
-                       !hasCentral);
+            SIGHT_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
+                         !hasCentral);
 
             if(!viewInfo.m_backgroundColor.empty())
             {

@@ -44,7 +44,6 @@
 namespace sight::module::ui::qt
 {
 
-
 //------------------------------------------------------------------------------
 
 SShowAbout::SShowAbout( ) noexcept :
@@ -87,7 +86,7 @@ void SShowAbout::configuring()
         m_fsAboutPath = core::runtime::getModuleResourceFilePath(filename);
 
         m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
-        SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
+        SIGHT_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
     }
 
     if(cfgTitle)
@@ -110,7 +109,7 @@ void SShowAbout::configuring()
 
 void SShowAbout::updating( )
 {
-    SLM_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured );
+    SIGHT_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured );
 
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString::fromStdString(m_title));

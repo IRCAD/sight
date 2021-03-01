@@ -58,9 +58,9 @@ ByteSize::ByteSize () :
 ByteSize::ByteSize ( SizeType size, UnitType unit ) :
     m_size(0)
 {
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    SIGHT_ASSERT("Bad Unit",
+                 (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+                 || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     this->setSize(size, unit);
 }
 
@@ -69,12 +69,12 @@ ByteSize::ByteSize ( SizeType size, UnitType unit ) :
 ByteSize::ByteSize ( double size, UnitType unit ) :
     m_size(0)
 {
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    SIGHT_ASSERT("Bad Unit",
+                 (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+                 || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size << " < 0");
+        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size << " < 0");
     }
     this->setSize(size, unit);
 }
@@ -100,7 +100,7 @@ ByteSize& ByteSize::operator= ( double size )
 {
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size << " < 0");
+        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size << " < 0");
     }
 
     this->setSize(size);
@@ -119,9 +119,9 @@ ByteSize& ByteSize::operator= ( const std::string& size )
 
 void ByteSize::setSize ( SizeType size, UnitType unit )
 {
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    SIGHT_ASSERT("Bad Unit",
+                 (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+                 || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     m_size = size*unit;
 }
 
@@ -131,12 +131,12 @@ void ByteSize::setSize ( double size, UnitType unit )
 {
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size << " < 0");
+        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size << " < 0");
     }
 
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    SIGHT_ASSERT("Bad Unit",
+                 (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+                 || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     m_size = static_cast<SizeType>(size*unit);
 }
 
@@ -152,7 +152,7 @@ void ByteSize::setSize ( const std::string& size )
     }
     else
     {
-        FW_RAISE_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size );
+        SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << size );
     }
 }
 
@@ -181,9 +181,9 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
         case TiB:
             return "TiB";
     }
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    SIGHT_ASSERT("Bad Unit",
+                 (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+                 || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     return "?";
 }
 
@@ -254,7 +254,7 @@ bool ByteSize::parseSize(const std::string& s, SizeType& size)
     {
         if(floatSize < 0)
         {
-            FW_RAISE_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << floatSize << " < 0");
+            SIGHT_THROW_EXCEPTION_MSG( core::memory::exception::BadCast, "Bad size : " << floatSize << " < 0");
         }
 
         size = static_cast< ByteSize::SizeType >(floatSize * multiplier);
@@ -270,9 +270,9 @@ bool ByteSize::parseSize(const std::string& s, SizeType& size)
 
 std::string ByteSize::getSizeAsString( UnitType unit )
 {
-    SLM_ASSERT("Bad Unit",
-               (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
-               || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
+    SIGHT_ASSERT("Bad Unit",
+                 (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
+                 || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     std::stringstream sstr;
     sstr << std::noshowpoint;
 

@@ -24,11 +24,13 @@
 
 #include <core/com/Signal.hxx>
 
+#include <data/helper/Field.hpp>
 #include <data/Material.hpp>
 #include <data/String.hpp>
-#include <data/helper/Field.hpp>
 
 #include <service/macros.hpp>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -45,11 +47,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
 
@@ -184,7 +183,7 @@ void SMaterialSelector::onReloadMaterial()
 
     if(!material)
     {
-        SLM_ERROR("Could not find material" << materialName);
+        SIGHT_ERROR("Could not find material" << materialName);
     }
 
     material->reload();
@@ -193,13 +192,13 @@ void SMaterialSelector::onReloadMaterial()
 
     for(const auto tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         const ::Ogre::Technique::Passes& passes = tech->getPasses();
 
         for(const auto pass : passes)
         {
-            SLM_ASSERT("No pass found", pass);
+            SIGHT_ASSERT("No pass found", pass);
 
             if(!pass->getVertexProgramName().empty())
             {

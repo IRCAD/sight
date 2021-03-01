@@ -28,7 +28,6 @@
 
 #include <QGraphicsItemGroup>
 
-
 namespace sight::module::viz::scene2d
 {
 namespace adaptor
@@ -57,10 +56,10 @@ void SLine::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    SLM_ASSERT("Attribute 'x1' is missing", config.count("x1"));
-    SLM_ASSERT("Attribute 'x2' is missing", config.count("x2"));
-    SLM_ASSERT("Attribute 'y1' is missing", config.count("y1"));
-    SLM_ASSERT("Attribute 'y2' is missing", config.count("y2"));
+    SIGHT_ASSERT("Attribute 'x1' is missing", config.count("x1"));
+    SIGHT_ASSERT("Attribute 'x2' is missing", config.count("x2"));
+    SIGHT_ASSERT("Attribute 'y1' is missing", config.count("y1"));
+    SIGHT_ASSERT("Attribute 'y2' is missing", config.count("y2"));
 
     // Set the beginning and ending coordinates values
     m_x1 = config.get<float>("x1");

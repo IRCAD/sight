@@ -38,7 +38,7 @@ class UI_BASE_CLASS_API fwContainer : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(fwContainer, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(fwContainer, ui::base::GuiBaseObject)
 
     UI_BASE_API virtual void clean()            = 0;
     UI_BASE_API virtual void destroyContainer() = 0;

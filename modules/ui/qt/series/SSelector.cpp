@@ -33,17 +33,17 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
 #include <data/helper/SeriesDB.hpp>
 #include <data/helper/Vector.hpp>
+#include <data/Series.hpp>
+#include <data/SeriesDB.hpp>
 
 #include <service/macros.hpp>
 
-#include <QVBoxLayout>
-
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QVBoxLayout>
 
 namespace sight::module::ui::qt
 {
@@ -52,7 +52,6 @@ namespace series
 {
 
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -116,7 +115,7 @@ void SSelector::configuring()
             }
             else
             {
-                SLM_WARN("value " + selectionMode + " is not managed for <selectionMode>");
+                SIGHT_WARN("value " + selectionMode + " is not managed for <selectionMode>");
             }
         }
     }
@@ -139,7 +138,7 @@ void SSelector::configuring()
         }
         else
         {
-            SLM_WARN("value " + allowedRemove + " is not managed for <allowedRemove>");
+            SIGHT_WARN("value " + allowedRemove + " is not managed for <allowedRemove>");
         }
     }
 
@@ -161,7 +160,7 @@ void SSelector::configuring()
         }
         else
         {
-            SLM_WARN("value " + insert + " is not managed for <insertMode>");
+            SIGHT_WARN("value " + insert + " is not managed for <insertMode>");
         }
     }
 
@@ -170,17 +169,17 @@ void SSelector::configuring()
     std::vector < core::runtime::ConfigurationElement::sptr > iconsCfg = m_configuration->find(s_ICONS_CONFIG);
     if (!iconsCfg.empty())
     {
-        SLM_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
+        SIGHT_ASSERT("Only one 'config' tag is allowed for SSelector configuration", iconsCfg.size() == 1);
 
         std::vector < core::runtime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find(s_ICON_CONFIG);
 
         for(core::runtime::ConfigurationElement::sptr elt :  cfg)
         {
             const std::string series = elt->getAttributeValue("series");
-            SLM_ASSERT("'series' attribute is missing", !series.empty());
+            SIGHT_ASSERT("'series' attribute is missing", !series.empty());
 
             const std::string icon = elt->getAttributeValue("icon");
-            SLM_ASSERT("'icon' attribute is missing", !icon.empty());
+            SIGHT_ASSERT("'icon' attribute is missing", !icon.empty());
 
             const auto file = core::runtime::getResourceFilePath(icon);
             m_seriesIcons[series] = file.string();
@@ -217,7 +216,7 @@ void SSelector::configuring()
         }
         else
         {
-            SLM_WARN("value " + selectionMode + " is not managed for '" + s_SELECTION_MODE_CONFIG + "'");
+            SIGHT_WARN("value " + selectionMode + " is not managed for '" + s_SELECTION_MODE_CONFIG + "'");
         }
 
         m_allowedRemove = configAttr->get< bool >(s_ALLOWED_REMOVE_CONFIG, m_allowedRemove);
@@ -331,10 +330,10 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
     if(m_selectorWidget->getItemType(_index) == SelectorModel::SERIES)
     {
-        SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
+        SIGHT_ASSERT("There must be only one object selected", selectionVector->size() == 1);
         data::Object::sptr obj    = selectionVector->front();
         data::Series::sptr series = data::Series::dynamicCast(obj);
-        SLM_ASSERT("Object must be a 'data::Series'", series);
+        SIGHT_ASSERT("Object must be a 'data::Series'", series);
 
         m_sigSeriesDoubleClicked->asyncEmit(series);
     }

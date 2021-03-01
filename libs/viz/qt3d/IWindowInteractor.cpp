@@ -36,7 +36,7 @@ IWindowInteractor::sptr IWindowInteractor::createManager()
 {
     IWindowInteractor::sptr manager = viz::qt3d::factory::New(
         viz::qt3d::IWindowInteractor::REGISTRY_KEY );
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "The factory process to create an IWindowInteractor, failed. Missing Qt or Wx component ?",
         manager );
     return manager;

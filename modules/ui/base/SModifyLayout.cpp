@@ -34,7 +34,6 @@
 namespace sight::module::ui::base
 {
 
-
 //-----------------------------------------------------------------------------
 
 SModifyLayout::SModifyLayout() noexcept
@@ -77,11 +76,11 @@ void SModifyLayout::updating()
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
-        SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
+        SIGHT_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
         service::IService::sptr service = service::get( uid );
-        SLM_ASSERT("service not found", service);
+        SIGHT_ASSERT("service not found", service);
         ::sight::ui::base::IGuiContainer::sptr container = ::sight::ui::base::IGuiContainer::dynamicCast(service);
-        SLM_ASSERT("::ui::base::IGuiContainer dynamicCast failed", container);
+        SIGHT_ASSERT("::ui::base::IGuiContainer dynamicCast failed", container);
 
         container->setParent(wid);
         service->update();
@@ -91,9 +90,9 @@ void SModifyLayout::updating()
     {
         std::string uid = elt.first;
         bool isEnable   = elt.second;
-        SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
+        SIGHT_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
         service::IService::sptr service = service::get( uid );
-        SLM_ASSERT("service not found", service);
+        SIGHT_ASSERT("service not found", service);
         if(service->isStarted())
         {
             ::sight::ui::base::IGuiContainer::sptr containerSrv = ::sight::ui::base::IGuiContainer::dynamicCast(
@@ -116,7 +115,7 @@ void SModifyLayout::updating()
         ::boost::logic::tribool isVisible                         = elt.second;
         ::sight::ui::base::container::fwContainer::sptr container =
             ::sight::ui::base::GuiRegistry::getWIDContainer(wid);
-        SLM_ASSERT("::ui::base::IGuiContainer " << wid << " is unknown", container);
+        SIGHT_ASSERT("::ui::base::IGuiContainer " << wid << " is unknown", container);
 
         if(isVisible)
         {
@@ -136,11 +135,11 @@ void SModifyLayout::updating()
     {
         std::string uid = elt.first;
         ::boost::logic::tribool isVisible = elt.second;
-        SLM_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
+        SIGHT_ASSERT( uid << " doesn't exist", core::tools::fwID::exist(uid) );
         service::IService::sptr service = service::get( uid );
 
         auto containerSrv = ::sight::ui::base::IGuiContainer::dynamicCast(service);
-        SLM_ASSERT("::ui::base::IGuiContainer dynamicCast failed", containerSrv);
+        SIGHT_ASSERT("::ui::base::IGuiContainer dynamicCast failed", containerSrv);
 
         ::sight::ui::base::container::fwContainer::sptr container = containerSrv->getContainer();
 
@@ -172,9 +171,9 @@ void SModifyLayout::configuring()
         {
             if(actionCfg->getName() == "move")
             {
-                SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
+                SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
                 std::string uuid = actionCfg->getExistingAttributeValue("uid");
-                SLM_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid"));
+                SIGHT_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid"));
                 std::string wid = actionCfg->getExistingAttributeValue("wid");
 
                 m_moveSrv.push_back( std::make_pair(uuid, wid) );
@@ -209,12 +208,12 @@ void SModifyLayout::configuring()
                 }
                 else
                 {
-                    SLM_ERROR("Attribute wid or sid missing");
+                    SIGHT_ERROR("Attribute wid or sid missing");
                 }
             }
             else if(actionCfg->getName() == "enable" || actionCfg->getName() == "disable")
             {
-                SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
+                SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
                 std::string uuid = actionCfg->getExistingAttributeValue("uid");
                 bool isEnable    = (actionCfg->getName() == "enable");
 
@@ -222,7 +221,7 @@ void SModifyLayout::configuring()
             }
             else
             {
-                SLM_FATAL( "Invalid tag name "<<actionCfg->getName());
+                SIGHT_FATAL( "Invalid tag name "<<actionCfg->getName());
             }
         }
     }

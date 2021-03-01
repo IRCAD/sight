@@ -26,11 +26,11 @@
 #include <core/com/Slots.hxx>
 
 #include <data/CameraSeries.hpp>
+#include <data/helper/Array.hpp>
+#include <data/helper/ArrayGetter.hpp>
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/helper/Array.hpp>
-#include <data/helper/ArrayGetter.hpp>
 
 #include <service/macros.hpp>
 
@@ -40,7 +40,6 @@ namespace sight::module::filter::vision
 static const service::IService::KeyType s_CAMERA_SERIES_INPUT = "cameraSeries";
 static const service::IService::KeyType s_ORIGIN_FRAME_INPUT  = "originDepth";
 static const service::IService::KeyType s_SCALED_FRAME_INOUT  = "scaledDepth";
-
 
 //------------------------------------------------------------------------------
 
@@ -79,27 +78,27 @@ void STransformDepthMap2mm::configuring()
 void STransformDepthMap2mm::updating()
 {
     data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >(s_CAMERA_SERIES_INPUT);
-    SLM_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
+    SIGHT_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
     data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
 
     const double scale = depthCamera->getScale();
 
     auto originFrame = this->getInput< data::Image >(s_ORIGIN_FRAME_INPUT);
-    SLM_ASSERT("missing '" + s_ORIGIN_FRAME_INPUT + "' image", originFrame);
+    SIGHT_ASSERT("missing '" + s_ORIGIN_FRAME_INPUT + "' image", originFrame);
 
     data::mt::ObjectReadLock originLock(originFrame);
 
     const auto type = originFrame->getType();
     if(type != core::tools::Type::s_UINT16)
     {
-        SLM_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
+        SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
     const auto size = originFrame->getSize2();
 
     auto scaledFrame = this->getInOut< data::Image >(s_SCALED_FRAME_INOUT);
-    SLM_ASSERT("missing '" + s_SCALED_FRAME_INOUT + "' image", scaledFrame);
+    SIGHT_ASSERT("missing '" + s_SCALED_FRAME_INOUT + "' image", scaledFrame);
 
     data::mt::ObjectWriteLock scaledFrameLock(scaledFrame);
 

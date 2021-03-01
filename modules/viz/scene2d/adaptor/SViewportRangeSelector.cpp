@@ -44,7 +44,6 @@ static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
 static const std::string s_COLOR_CONFIG         = "color";
 
-
 //---------------------------------------------------------------------------------------------------------------
 
 SViewportRangeSelector::SViewportRangeSelector() noexcept :
@@ -102,14 +101,14 @@ void SViewportRangeSelector::starting()
 
         if( m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange )
         {
-            SLM_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
+            SIGHT_WARN("Set viewport width to a default value instead of the given one because it can't be accepted.");
             m_initialWidth = defaultWidth;
         }
 
         const double defaultPos = (viewportWidth - m_initialWidth) / 2.;
         if( m_initialX < sceneViewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
         {
-            SLM_WARN("Set viewport position to a default value since the given one is not correct.");
+            SIGHT_WARN("Set viewport position to a default value since the given one is not correct.");
             m_initialX = defaultPos;
         }
     }

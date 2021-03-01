@@ -28,23 +28,22 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
-#include <data/Image.hpp>
 #include <data/helper/Vector.hpp>
+#include <data/Image.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
+
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::qt::calibration
 {
 
-
-const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT = "add";
+const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
 const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 
@@ -77,7 +76,7 @@ void SImagesSelector::configuring()
 void SImagesSelector::starting()
 {
     m_frameTL = this->getInput< data::FrameTL>("frameTL");
-    SLM_ASSERT("Frame timeline is not found.", m_frameTL);
+    SIGHT_ASSERT("Frame timeline is not found.", m_frameTL);
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -179,7 +178,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
 
     if(!buffer)
     {
-        SLM_INFO("Buffer not found with timestamp "<< timestamp);
+        SIGHT_INFO("Buffer not found with timestamp "<< timestamp);
         return;
     }
 

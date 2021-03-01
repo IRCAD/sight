@@ -87,7 +87,7 @@ namespace series
 class MODULE_UI_BASE_CLASS_API SExportWithSeriesDB : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SExportWithSeriesDB, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SExportWithSeriesDB, sight::ui::base::IAction)
 
     /**
      * @name Signal/Slot typedefs

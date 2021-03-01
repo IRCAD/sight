@@ -39,7 +39,7 @@ data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid,
 {
     data::Object::sptr obj = data::Object::dynamicCast(core::tools::UUID::get(uuid));
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         exception::ClassnameMismatch("Loaded object classname (" + classname
                                      + ") for UUID '" + uuid
                                      + "' does not match existing classname (" + obj->classname() + ")"  ),
@@ -53,9 +53,9 @@ data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid,
         }
         catch(const core::Exception& e)
         {
-            SLM_ERROR(e.what());
+            SIGHT_ERROR(e.what());
         }
-        FW_RAISE_EXCEPTION_IF(
+        SIGHT_THROW_EXCEPTION_IF(
             exception::DataFactoryNotFound(
                 std::string("Unable to build '") + classname + "': the data factory may be missing.")
             , !obj
@@ -63,7 +63,7 @@ data::Object::sptr AtomVisitor::ReusePolicy::operator()(const std::string& uuid,
 
         bool uuidIsSet = core::tools::UUID::set(obj, uuid);
 
-        SLM_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
+        SIGHT_ASSERT( "UUID '" << uuid << "' should not exist", uuidIsSet );
     }
 
     return obj;
@@ -82,9 +82,9 @@ data::Object::sptr AtomVisitor::ChangePolicy::operator()(const std::string& uuid
     }
     catch(const core::Exception& e)
     {
-        SLM_ERROR(e.what());
+        SIGHT_ERROR(e.what());
     }
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         exception::DataFactoryNotFound(
             std::string("Unable to build '") + classname + "': the data factory may be missing.")
         , !obj
@@ -106,16 +106,16 @@ data::Object::sptr AtomVisitor::StrictPolicy::operator()(const std::string& uuid
     }
     catch(const core::Exception& e)
     {
-        SLM_ERROR(e.what());
+        SIGHT_ERROR(e.what());
     }
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         exception::DataFactoryNotFound(
             std::string("Unable to build '") + classname + "': the data factory may be missing.")
         , !obj
         );
     const bool uuidIsSet = core::tools::UUID::set(obj, uuid);
 
-    FW_RAISE_EXCEPTION_IF(
+    SIGHT_THROW_EXCEPTION_IF(
         exception::DuplicatedDataUUID(
             std::string( "Try to create new data object '") + classname + "' with uuid '"
             + uuid + "' but this uuid is already used."

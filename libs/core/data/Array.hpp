@@ -31,7 +31,7 @@
 #include <core/memory/IBuffered.hpp>
 #include <core/tools/Type.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Array));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Array));
 
 namespace sight::data
 {
@@ -151,9 +151,9 @@ class DATA_CLASS_API Array : public data::Object,
 {
 public:
 
-    fwCoreClassMacro(Array, data::Object, data::factory::New< Array >)
+    SIGHT_DECLARE_CLASS(Array, data::Object, data::factory::New< Array >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Array))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Array))
 
     /**
      * @brief Array size type
@@ -807,7 +807,7 @@ inline T& Array::at(const data::Array::IndexType& id)
         {
             return a < b;
         });
-    FW_RAISE_EXCEPTION_IF(data::Exception("Index out of bounds"), !isIndexInBounds);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }
 
@@ -818,7 +818,7 @@ inline const T& Array::at(const data::Array::IndexType& id) const
 {
     const bool isIndexInBounds =
         std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
-    FW_RAISE_EXCEPTION_IF(data::Exception("Index out of bounds"), !isIndexInBounds);
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }
 
@@ -827,9 +827,9 @@ inline const T& Array::at(const data::Array::IndexType& id) const
 template< typename T >
 inline T& Array::at(const size_t& offset)
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
-                                          + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
-                          offset >= this->getSizeInBytes()/sizeof(T));
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+                                             + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
+                             offset >= this->getSizeInBytes()/sizeof(T));
     return *(reinterpret_cast<T*>(this->getBuffer()) + offset);
 }
 
@@ -838,9 +838,9 @@ inline T& Array::at(const size_t& offset)
 template< typename T >
 inline const T& Array::at(const size_t& offset) const
 {
-    FW_RAISE_EXCEPTION_IF(data::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
-                                          + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
-                          offset >= this->getSizeInBytes()/sizeof(T));
+    SIGHT_THROW_EXCEPTION_IF(data::Exception("Index out of bounds, " + std::to_string(offset) + " is not in [0-"
+                                             + std::to_string(this->getSizeInBytes()/sizeof(T)-1) + "]"),
+                             offset >= this->getSizeInBytes()/sizeof(T));
     return *(reinterpret_cast<const T*>(this->getBuffer()) + offset);
 }
 
@@ -913,7 +913,7 @@ inline bool Array::IteratorBase<TYPE, isConst>::operator!=(const IteratorBase& o
 template <typename TYPE, bool isConst>
 inline typename Array::IteratorBase<TYPE, isConst>::reference Array::IteratorBase<TYPE, isConst>::operator*() const
 {
-    SLM_ASSERT("Iterator needs to be initialized", m_pointer);
+    SIGHT_ASSERT("Iterator needs to be initialized", m_pointer);
     return *m_pointer;
 }
 
@@ -931,8 +931,8 @@ template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator++()
 {
     ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
     ++m_pointer;
     return *this;
 }
@@ -944,8 +944,8 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 {
     IteratorBase tmp(*this);
     ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
     ++m_pointer;
     return tmp;
 }
@@ -966,8 +966,8 @@ template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator+=(difference_type index)
 {
     m_idx += index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
     m_pointer += index;
     return *this;
 }
@@ -977,7 +977,7 @@ inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::o
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator--()
 {
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
     --m_pointer;
     return *this;
@@ -988,7 +988,7 @@ inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::o
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::operator--(int)
 {
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
     IteratorBase tmp(*this);
     --m_pointer;
@@ -1010,8 +1010,8 @@ inline Array::IteratorBase<TYPE, isConst> Array::IteratorBase<TYPE, isConst>::op
 template <class TYPE, bool isConst>
 inline Array::IteratorBase<TYPE, isConst>& Array::IteratorBase<TYPE, isConst>::operator-=(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
+    SIGHT_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
+                                               << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
     m_idx     -= index;
     m_pointer -= index;
     return *this;

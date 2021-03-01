@@ -67,7 +67,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IBuilder, core::BaseObject)
+    SIGHT_DECLARE_CLASS(IBuilder, core::BaseObject)
 
     /**
      * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.

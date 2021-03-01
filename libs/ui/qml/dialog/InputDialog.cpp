@@ -24,11 +24,11 @@
 
 #include <core/runtime/operations.hpp>
 
-#include <QGuiApplication>
-#include <QObject>
-
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QGuiApplication>
+#include <QObject>
 
 fwGuiRegisterMacro( ::sight::ui::qml::dialog::InputDialog, ::sight::ui::base::dialog::IInputDialog::REGISTRY_KEY );
 
@@ -85,14 +85,14 @@ std::string InputDialog::getInput()
     context->setContextProperty("inputDialog", this);
     // load the qml ui component
     QObject* window = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File InputDialog is not found or not loaded", window);
+    SIGHT_ASSERT("The Qml File InputDialog is not found or not loaded", window);
     // keep window to destroy it
 
     window->setProperty("title", m_title);
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
     QObject* dialog = window->findChild<QObject*>("dialog");
-    SLM_ASSERT("The dialog is not found inside the window", dialog);
+    SIGHT_ASSERT("The dialog is not found inside the window", dialog);
     m_input = "";
 
     QEventLoop loop;

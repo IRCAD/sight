@@ -38,11 +38,11 @@
 #include <data/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -108,7 +108,7 @@ class MODULE_UI_QT_CLASS_API SWizard : public QObject,
 
 public:
 
-    fwCoreServiceMacro(SWizard, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SWizard, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SWizard() noexcept;

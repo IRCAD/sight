@@ -96,7 +96,7 @@ void TransferFunctionEditor::configuring()
         }
 
         const std::string value = config.get("<xmlattr>.useDefaultPath", "yes");
-        SLM_FATAL_IF("'useDefaultPath' value must be 'yes' or 'no'", value != "yes" && value != "no");
+        SIGHT_FATAL_IF("'useDefaultPath' value must be 'yes' or 'no'", value != "yes" && value != "no");
 
         useDefaultPath = (value == "yes");
     }
@@ -233,7 +233,7 @@ void TransferFunctionEditor::deleteTF()
     if (answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
         if( poolTF->size() > 1 )
         {
@@ -241,7 +241,7 @@ void TransferFunctionEditor::deleteTF()
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
             data::helper::Composite compositeHelper(poolTF);
-            SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
+            SIGHT_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
 
             {
@@ -294,7 +294,7 @@ void TransferFunctionEditor::newTF()
             pNewTransferFunction->setName(newName);
 
             data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
             data::helper::Composite compositeHelper(poolTF);
             compositeHelper.add(newName, pNewTransferFunction);
@@ -330,7 +330,7 @@ void TransferFunctionEditor::reinitializeTFPool()
     if (answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
     {
         data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-        SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+        SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
         data::helper::Composite compositeHelper(poolTF);
         compositeHelper.clear();
@@ -360,7 +360,7 @@ void TransferFunctionEditor::renameTF()
         if( !this->hasTransferFunctionName(newName) )
         {
             data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-            SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+            SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
             data::TransferFunction::sptr pTF;
             pTF = data::TransferFunction::dynamicCast((*poolTF)[str]);
@@ -402,7 +402,7 @@ void TransferFunctionEditor::renameTF()
 void TransferFunctionEditor::importTF()
 {
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     data::helper::Composite compositeHelper(poolTF);
 
@@ -455,7 +455,7 @@ void TransferFunctionEditor::initTransferFunctions()
 {
     // Get transfer function composite (pool TF)
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     data::helper::Composite compositeHelper(poolTF);
 
@@ -473,7 +473,7 @@ void TransferFunctionEditor::initTransferFunctions()
         std::vector< std::filesystem::path > paths;
         for(std::filesystem::path dirPath :  m_paths)
         {
-            SLM_ASSERT("Invalid directory path '"+dirPath.string()+"'", std::filesystem::exists(dirPath));
+            SIGHT_ASSERT("Invalid directory path '"+dirPath.string()+"'", std::filesystem::exists(dirPath));
             for(std::filesystem::directory_iterator it(dirPath);
                 it != std::filesystem::directory_iterator();
                 ++it )
@@ -528,7 +528,7 @@ void TransferFunctionEditor::initTransferFunctions()
 void TransferFunctionEditor::updateTransferFunctionPreset()
 {
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
@@ -561,7 +561,7 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
 bool TransferFunctionEditor::hasTransferFunctionName(const std::string& _sName) const
 {
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
     return poolTF->find(_sName) != poolTF->end();
 }
 
@@ -589,12 +589,12 @@ std::string TransferFunctionEditor::createTransferFunctionName(const std::string
 void TransferFunctionEditor::updateTransferFunction()
 {
     data::Composite::sptr poolTF = this->getInOut< data::Composite >(s_TF_POOL_INOUT);
-    SLM_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
+    SIGHT_ASSERT("inout '" + s_TF_POOL_INOUT + "' is not defined.", poolTF);
 
     std::string newSelectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
-    SLM_DEBUG("Transfer function selected : " +  newSelectedTFKey);
+    SIGHT_DEBUG("Transfer function selected : " +  newSelectedTFKey);
 
-    SLM_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
+    SIGHT_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
 
     data::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
 

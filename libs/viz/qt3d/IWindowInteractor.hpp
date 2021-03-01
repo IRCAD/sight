@@ -67,7 +67,7 @@ public:
         }
     };
 
-    fwCoreClassMacro(IWindowInteractor, sight::core::BaseObject)
+    SIGHT_DECLARE_CLASS(IWindowInteractor, sight::core::BaseObject)
 
     typedef std::string FactoryRegistryKeyType;
 

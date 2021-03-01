@@ -26,7 +26,7 @@
 #include "data/factory/new.hpp"
 #include "data/Object.hpp"
 
-fwCampAutoDeclareDataMacro((sight)(data)(Port));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Port));
 
 namespace sight::data
 {
@@ -36,7 +36,7 @@ namespace sight::data
 class DATA_CLASS_API Port : public data::Object
 {
 public:
-    fwCoreClassMacro(Port, data::Object, data::factory::New< Port >)
+    SIGHT_DECLARE_CLASS(Port, data::Object, data::factory::New< Port >)
 
     /**
      * @brief Constructor
@@ -70,7 +70,7 @@ public:
      * @{
      * @brief Retrieve the input data.
      */
-    fwCampMakeFriendDataMacro((sight)(data)(Port));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Port));
     /// @}
 
     /// Defines shallow copy

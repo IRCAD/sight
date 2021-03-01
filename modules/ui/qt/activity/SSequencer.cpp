@@ -29,15 +29,15 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QApplication>
 #include <QDir>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QVBoxLayout>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -222,7 +222,7 @@ void SSequencer::stopping()
 void SSequencer::updating()
 {
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     m_currentActivity = this->parseActivities(seriesDB);
     if (m_currentActivity >= 0)
@@ -249,11 +249,11 @@ void SSequencer::goTo(int index)
 {
     if (index < 0 || index >= static_cast<int>(m_activityIds.size()))
     {
-        SLM_ERROR("no activity to launch at index " << index)
+        SIGHT_ERROR("no activity to launch at index " << index)
         return;
     }
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     if (m_currentActivity >= 0)
     {
@@ -289,7 +289,7 @@ void SSequencer::goTo(int index)
 void SSequencer::checkNext()
 {
     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-    SLM_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
+    SIGHT_ASSERT("Missing '" + s_SERIESDB_INOUT +"' seriesDB", seriesDB);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.

@@ -31,14 +31,13 @@
 
 #include <service/macros.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <functional>
 #include <string>
-
 
 namespace sight::module::io::igtl
 {
@@ -61,13 +60,13 @@ STDataListener::~STDataListener()
 
 void STDataListener::configuring()
 {
-    SLM_ASSERT("Configuration not found", m_configuration != NULL);
+    SIGHT_ASSERT("Configuration not found", m_configuration != NULL);
     if (m_configuration->findConfigurationElement("server"))
     {
         const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
-        SLM_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
+        SIGHT_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_hostnameConfig = serverInfo.substr(0, splitPosition);
         m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -93,7 +92,7 @@ void STDataListener::configuring()
     }
     else
     {
-        SLM_WARN("Element 'TData' is missing, the listener will do nothing !");
+        SIGHT_WARN("Element 'TData' is missing, the listener will do nothing !");
     }
 }
 
@@ -137,7 +136,7 @@ void STDataListener::runClient()
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            SLM_ERROR(ex.what());
+            SIGHT_ERROR(ex.what());
         }
         return;
     }
@@ -170,7 +169,7 @@ void STDataListener::runClient()
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            SLM_ERROR(ex.what());
+            SIGHT_ERROR(ex.what());
         }
     }
 }

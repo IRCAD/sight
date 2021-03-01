@@ -59,10 +59,10 @@ class ModelSeriesObjWriter : public io::base::writer::GenericObjectWriter< data:
 
 public:
 
-    fwCoreClassMacro(ModelSeriesObjWriter, io::base::writer::GenericObjectWriter< data::ModelSeries >,
-                     io::base::writer::factory::New< ModelSeriesObjWriter >)
+    SIGHT_DECLARE_CLASS(ModelSeriesObjWriter, io::base::writer::GenericObjectWriter< data::ModelSeries >,
+                        io::base::writer::factory::New< ModelSeriesObjWriter >)
 
-    fwCoreAllowSharedFromThis()
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Constructor.
     IO_VTK_API ModelSeriesObjWriter(io::base::writer::IObjectWriter::Key key);

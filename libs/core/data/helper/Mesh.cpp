@@ -37,7 +37,7 @@ Mesh::Mesh( data::Mesh::sptr mesh ) :
 {
     FW_DEPRECATED_MSG("::data::helper::Mesh is no longer supported, the methods have been moved to "
                       "::sight::data::Mesh", "22.0")
-    SLM_ASSERT("Mesh ptr is null.", mesh);
+    SIGHT_ASSERT("Mesh ptr is null.", mesh);
     this->updateLock();
 }
 
@@ -51,7 +51,7 @@ Mesh::~Mesh()
 
 void Mesh::updateLock()
 {
-    SLM_ASSERT("Mesh ptr is null.", m_mesh);
+    SIGHT_ASSERT("Mesh ptr is null.", m_mesh);
     m_mesh->getPointsArray()->setNumberOfComponents(3);
     m_helperPoints          = data::helper::Array::New(m_mesh->getPointsArray());
     m_helperCellTypes       = data::helper::Array::New(m_mesh->getCellTypesArray());
@@ -183,20 +183,20 @@ data::Mesh::CellId Mesh::insertNextCell(data::Mesh::CellTypesEnum type,
                                         const data::Mesh::CellId* cell,
                                         size_t nb)
 {
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'",
-               type != data::Mesh::NO_CELL || nb == 0);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'",
-               type != data::Mesh::POINT || nb == 1);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'",
-               type != data::Mesh::EDGE || nb == 2);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'",
-               type != data::Mesh::TRIANGLE || nb == 3);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'",
-               type != data::Mesh::QUAD || nb == 4);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TETRA'",
-               type != data::Mesh::TETRA || nb == 4);
-    SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'",
-               type != data::Mesh::POLY || nb > 4);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'",
+                 type != data::Mesh::NO_CELL || nb == 0);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'",
+                 type != data::Mesh::POINT || nb == 1);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'",
+                 type != data::Mesh::EDGE || nb == 2);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'",
+                 type != data::Mesh::TRIANGLE || nb == 3);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'",
+                 type != data::Mesh::QUAD || nb == 4);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TETRA'",
+                 type != data::Mesh::TETRA || nb == 4);
+    SIGHT_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'",
+                 type != data::Mesh::POLY || nb > 4);
 
     data::Mesh::Size cellsDataSize    = m_mesh->getCellDataSize();
     data::Mesh::Size nbCells          = m_mesh->getNumberOfCells();

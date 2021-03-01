@@ -26,10 +26,10 @@
 
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLabel>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 class QPushButton;
 
@@ -97,7 +97,7 @@ class MODULE_UI_QT_CLASS_API SStatus : public QObject,
 
 public:
 
-    fwCoreServiceMacro(SStatus, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SStatus, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SStatus() noexcept;

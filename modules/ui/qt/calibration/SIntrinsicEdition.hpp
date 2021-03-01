@@ -61,7 +61,7 @@ class MODULE_UI_QT_CLASS_API SIntrinsicEdition : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SIntrinsicEdition, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(SIntrinsicEdition, sight::service::IService)
 
     /**
      * @brief Constructor.

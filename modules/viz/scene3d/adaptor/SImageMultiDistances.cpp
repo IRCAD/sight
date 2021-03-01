@@ -25,11 +25,11 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/helper/Vector.hpp>
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 #include <data/PointList.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/helper/Vector.hpp>
 
 #include <service/macros.hpp>
 
@@ -156,7 +156,7 @@ void SImageMultiDistances::configuring()
     std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -167,7 +167,7 @@ void SImageMultiDistances::configuring()
     hexaMask = config.get<std::string>(s_QUERY_FLAGS_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -210,20 +210,20 @@ void SImageMultiDistances::starting()
     // Retrive the ogre material to change the depth check.
     const ::Ogre::MaterialPtr ogreSphereMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
         m_sphereMaterialName, sight::viz::scene3d::RESOURCE_GROUP);
-    SLM_ASSERT("'" + m_sphereMaterialName + "' does not exist.", ogreSphereMaterial);
+    SIGHT_ASSERT("'" + m_sphereMaterialName + "' does not exist.", ogreSphereMaterial);
     const ::Ogre::Technique* const sphereTech = ogreSphereMaterial->getTechnique(0);
-    SLM_ASSERT("No techique found", sphereTech);
+    SIGHT_ASSERT("No techique found", sphereTech);
     ::Ogre::Pass* const spherePass = sphereTech->getPass(0);
-    SLM_ASSERT("No pass found", spherePass);
+    SIGHT_ASSERT("No pass found", spherePass);
     spherePass->setDepthCheckEnabled(false);
 
     const ::Ogre::MaterialPtr ogreDashedLineMaterial = ::Ogre::MaterialManager::getSingleton().getByName(
         m_dashedLineMaterialName, sight::viz::scene3d::RESOURCE_GROUP);
-    SLM_ASSERT("'" + m_dashedLineMaterialName + "' does not exist.", ogreDashedLineMaterial);
+    SIGHT_ASSERT("'" + m_dashedLineMaterialName + "' does not exist.", ogreDashedLineMaterial);
     const ::Ogre::Technique* const dashedTech = ogreDashedLineMaterial->getTechnique(0);
-    SLM_ASSERT("No techique found", dashedTech);
+    SIGHT_ASSERT("No techique found", dashedTech);
     ::Ogre::Pass* const dashedPass = dashedTech->getPass(0);
-    SLM_ASSERT("No pass found", dashedPass);
+    SIGHT_ASSERT("No pass found", dashedPass);
     dashedPass->setDepthCheckEnabled(false);
 
     if(m_interactive)
@@ -299,8 +299,8 @@ void SImageMultiDistances::addDistances()
         for(const auto& object : *distanceField)
         {
             const data::PointList::sptr pointList = data::PointList::dynamicCast(object);
-            SLM_ASSERT("The distance should be a point list", pointList);
-            SLM_ASSERT("The distance must contains two points", pointList->getPoints().size() == 2);
+            SIGHT_ASSERT("The distance should be a point list", pointList);
+            SIGHT_ASSERT("The distance must contains two points", pointList->getPoints().size() == 2);
 
             const core::tools::fwID::IDType id = pointList->getID();
             if(m_distances.find(id) == m_distances.end())
@@ -561,7 +561,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y,
 
             if(!hit.first)
             {
-                SLM_ERROR("The ray must intersect the plane")
+                SIGHT_ERROR("The ray must intersect the plane")
                 return;
             }
 
@@ -608,7 +608,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton, Modifier, int, int)
 void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
 {
     const core::tools::fwID::IDType id = _pl->getID();
-    SLM_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
+    SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
 
     ::Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     ::Ogre::SceneNode* const rootNode    = sceneMgr->getRootSceneNode();
@@ -633,9 +633,9 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
     sphere1->setQueryFlags(m_distanceQueryFlag);
     // Render this sphere over all others objects.
     sphere1->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
-    SLM_ASSERT("Can't create the first entity", sphere1);
+    SIGHT_ASSERT("Can't create the first entity", sphere1);
     ::Ogre::SceneNode* const node1 = rootNode->createChildSceneNode(this->getID() + "_node1_" + id, begin);
-    SLM_ASSERT("Can't create the first node", node1);
+    SIGHT_ASSERT("Can't create the first node", node1);
     node1->attachObject(sphere1);
 
     // Second sphere.
@@ -645,14 +645,14 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
     sphere2->setQueryFlags(m_distanceQueryFlag);
     // Render this sphere over all others objects.
     sphere2->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
-    SLM_ASSERT("Can't create the second entity", sphere2);
+    SIGHT_ASSERT("Can't create the second entity", sphere2);
     ::Ogre::SceneNode* const node2 = rootNode->createChildSceneNode(this->getID() + "_node2_" + id, end);
-    SLM_ASSERT("Can't create the second node", node2);
+    SIGHT_ASSERT("Can't create the second node", node2);
     node2->attachObject(sphere2);
 
     // Line.
     ::Ogre::ManualObject* const line = sceneMgr->createManualObject(this->getID() + "_line_" + id);
-    SLM_ASSERT("Can't create the line", line);
+    SIGHT_ASSERT("Can't create the line", line);
     line->begin(m_lineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST, sight::viz::scene3d::RESOURCE_GROUP);
     line->colour(colour);
     line->position(begin);
@@ -663,7 +663,7 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
 
     // Dashed line.
     ::Ogre::ManualObject* const dashedLine = sceneMgr->createManualObject(this->getID() + "_dashedLine_" + id);
-    SLM_ASSERT("Can't create the dashed line", dashedLine);
+    SIGHT_ASSERT("Can't create the dashed line", dashedLine);
     dashedLine->begin(m_dashedLineMaterialName, ::Ogre::RenderOperation::OT_LINE_LIST,
                       sight::viz::scene3d::RESOURCE_GROUP);
     dashedLine->colour(colour);
@@ -687,7 +687,7 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
     label->setQueryFlags(0x0);
     ::Ogre::SceneNode* const labelNode =
         rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
-    SLM_ASSERT("Can't create the label node", labelNode);
+    SIGHT_ASSERT("Can't create the label node", labelNode);
     labelNode->attachObject(label);
 
     // Set the visibility.
@@ -708,7 +708,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
                                           ::Ogre::Vector3 _begin,
                                           ::Ogre::Vector3 _end)
 {
-    SLM_ASSERT("Distance can't be null", _data);
+    SIGHT_ASSERT("Distance can't be null", _data);
 
     // Update spheres position.
     _data->m_node1->setPosition(_begin);
@@ -750,7 +750,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
 void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
 {
     const DistanceMap::const_iterator it = m_distances.find(_id);
-    SLM_ASSERT("The distance is not found", it != m_distances.end());
+    SIGHT_ASSERT("The distance is not found", it != m_distances.end());
 
     // Destroy Ogre resource.
     const DistanceData distanceData = it->second;

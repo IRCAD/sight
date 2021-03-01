@@ -31,7 +31,6 @@
 
 #include <functional>
 
-
 namespace sight::module::io::igtl
 {
 
@@ -60,8 +59,8 @@ void SServerListener::configuring()
 
     const ConfigType configInOut = config.get_child("inout");
 
-    SLM_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
-               configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
+    SIGHT_ASSERT("configured group must be '" + s_OBJECTS_GROUP + "'",
+                 configInOut.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP);
 
     const auto keyCfg = configInOut.equal_range("key");
     for(auto itCfg = keyCfg.first; itCfg != keyCfg.second; ++itCfg)
@@ -93,7 +92,7 @@ void SServerListener::starting()
                                                      std::string(e.what()),
                                                      sight::ui::base::dialog::IMessageDialog::CRITICAL);
         // Only report the error on console (this normally happens only if we have requested the disconnection)
-        SLM_ERROR(e.what());
+        SIGHT_ERROR(e.what());
         this->slot(s_STOP_SLOT)->asyncRun();
     }
 }
@@ -171,7 +170,7 @@ void SServerListener::receiveObject()
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            SLM_ERROR(ex.what());
+            SIGHT_ERROR(ex.what());
         }
     }
 }

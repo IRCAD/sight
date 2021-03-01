@@ -46,7 +46,7 @@ void Plugin::start()
     // Thus we load the adaptors model here instead in the .xml of the
     // application to hide the complexity.
     auto module = core::runtime::loadModule("sight::module::viz::scene3d");
-    SLM_FATAL_IF("'sight::module::viz::scene3d' module failed to load.", !module);
+    SIGHT_FATAL_IF("'sight::module::viz::scene3d' module failed to load.", !module);
 }
 
 //------------------------------------------------------------------------------

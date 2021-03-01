@@ -24,9 +24,9 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <service/IController.hpp>
-
 #include <io/dimse/data/PacsConfiguration.hpp>
+
+#include <service/IController.hpp>
 
 #include <filesystem>
 
@@ -73,7 +73,7 @@ class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationInitializer : public service::
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPacsConfigurationInitializer,  service::IController)
+    SIGHT_DECLARE_SERVICE(SPacsConfigurationInitializer,  service::IController)
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SPacsConfigurationInitializer() noexcept;

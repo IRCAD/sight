@@ -40,7 +40,7 @@ namespace sorter
 class FILTER_DICOM_CLASS_API TagValueSorter : public ISorter
 {
 public:
-    fwCoreClassMacro(TagValueSorter, ISorter, filter::dicom::factory::New< TagValueSorter >)
+    SIGHT_DECLARE_CLASS(TagValueSorter, ISorter, filter::dicom::factory::New< TagValueSorter >)
 
     /// Constructor
     FILTER_DICOM_API TagValueSorter(filter::dicom::IFilter::Key key);

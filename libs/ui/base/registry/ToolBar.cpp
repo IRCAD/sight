@@ -62,8 +62,8 @@ ui::base::container::fwToolBar::sptr ToolBar::getParent()
 ui::base::container::fwMenuItem::sptr ToolBar::getFwMenuItem(std::string actionSid,
                                                              std::vector< ui::base::container::fwMenuItem::sptr > menuItems)
 {
-    SLM_ASSERT("The action '" + actionSid + "' declared by the toolBar '" + m_sid + "' is not found",
-               m_actionSids.find(actionSid) != m_actionSids.end());
+    SIGHT_ASSERT("The action '" + actionSid + "' declared by the toolBar '" + m_sid + "' is not found",
+                 m_actionSids.find(actionSid) != m_actionSids.end());
     ui::base::container::fwMenuItem::sptr menuItem = menuItems.at( m_actionSids[actionSid].first );
     return menuItem;
 }
@@ -72,7 +72,7 @@ ui::base::container::fwMenuItem::sptr ToolBar::getFwMenuItem(std::string actionS
 
 void ToolBar::initialize( core::runtime::ConfigurationElement::sptr configuration)
 {
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName()+ "'",
         configuration->getName() == "registry");
 
@@ -83,27 +83,27 @@ void ToolBar::initialize( core::runtime::ConfigurationElement::sptr configuratio
     std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
     for( ConfigurationType menuItem :  vectMenuItems)
     {
-        SLM_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
+        SIGHT_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
         if(menuItem->hasAttribute("sid"))
         {
             bool start = false;
             if(menuItem->hasAttribute("start"))
             {
                 std::string startValue = menuItem->getAttributeValue("start");
-                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
-                           << startValue <<"'.", startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                             << startValue <<"'.", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = menuItem->getAttributeValue("sid");
-            SLM_ASSERT("Action '" + sid + "' already exists for '" + m_sid + "' toolBar", m_actionSids.find(
-                           sid) == m_actionSids.end());
+            SIGHT_ASSERT("Action '" + sid + "' already exists for '" + m_sid + "' toolBar", m_actionSids.find(
+                             sid) == m_actionSids.end());
             m_actionSids[sid] = SIDToolBarMapType::mapped_type(index, start);
 
             ui::base::ActionCallbackBase::sptr callback;
             ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ActionCallbackBase::REGISTRY_KEY);
             callback = ui::base::ActionCallbackBase::dynamicCast(guiObj);
-            SLM_ASSERT("Cannot create action callback, factory failed for '"
-                       + ui::base::ActionCallbackBase::REGISTRY_KEY + "'", callback);
+            SIGHT_ASSERT("Cannot create action callback, factory failed for '"
+                         + ui::base::ActionCallbackBase::REGISTRY_KEY + "'", callback);
             callback->setSID(sid);
             m_callbacks.push_back(callback);
         }
@@ -114,20 +114,20 @@ void ToolBar::initialize( core::runtime::ConfigurationElement::sptr configuratio
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     for( ConfigurationType menu :  vectMenus)
     {
-        SLM_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
+        SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
         if(menu->hasAttribute("sid"))
         {
             bool start = false;
             if(menu->hasAttribute("start"))
             {
                 std::string startValue = menu->getAttributeValue("start");
-                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
-                           << startValue <<"'.", startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                             << startValue <<"'.", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = menu->getAttributeValue("sid");
-            SLM_ASSERT("Menu '" + sid + "' already exists for '" + m_sid + "' toolBar",
-                       m_menuSids.find(sid) == m_menuSids.end());
+            SIGHT_ASSERT("Menu '" + sid + "' already exists for '" + m_sid + "' toolBar",
+                         m_menuSids.find(sid) == m_menuSids.end());
             m_menuSids[sid] = SIDToolBarMapType::mapped_type(index, start);
         }
         index++;
@@ -138,21 +138,21 @@ void ToolBar::initialize( core::runtime::ConfigurationElement::sptr configuratio
     std::vector < ConfigurationType > vectEditors = configuration->find("editor");
     for( ConfigurationType editor :  vectEditors)
     {
-        SLM_ASSERT("[" + m_sid + "] <editor> tag must have sid attribute", editor->hasAttribute(
-                       "sid")  || editor->hasAttribute("wid"));
+        SIGHT_ASSERT("[" + m_sid + "] <editor> tag must have sid attribute", editor->hasAttribute(
+                         "sid")  || editor->hasAttribute("wid"));
         if(editor->hasAttribute("sid"))
         {
             bool start = false;
             if(editor->hasAttribute("start"))
             {
                 std::string startValue = editor->getAttributeValue("start");
-                SLM_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
-                           << startValue <<"'.", startValue == "yes" || startValue == "no");
+                SIGHT_ASSERT("[" + m_sid + "] Wrong value for 'start' attribute (require yes or no), actual: '"
+                             << startValue <<"'.", startValue == "yes" || startValue == "no");
                 start = (startValue == "yes");
             }
             std::string sid = editor->getAttributeValue("sid");
-            SLM_ASSERT("Editor '" + sid + "' already exists for '" + m_sid + "'  toolBar", m_editorSids.find(
-                           sid) == m_editorSids.end());
+            SIGHT_ASSERT("Editor '" + sid + "' already exists for '" + m_sid + "'  toolBar", m_editorSids.find(
+                             sid) == m_editorSids.end());
             m_editorSids[sid] = SIDToolBarMapType::mapped_type(index, start);
         }
         else if(editor->hasAttribute("wid"))
@@ -171,19 +171,19 @@ void ToolBar::manage(std::vector< ui::base::container::fwMenuItem::sptr > menuIt
     ui::base::container::fwMenuItem::sptr menuItem;
     for( SIDToolBarMapType::value_type sid :  m_actionSids)
     {
-        SLM_ASSERT("The toolBar '" << m_sid << "' contains more menuItem in <registry> than in <layout>: "
-                                   << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
-                   sid.second.first < menuItems.size());
+        SIGHT_ASSERT("The toolBar '" << m_sid << "' contains more menuItem in <registry> than in <layout>: "
+                                     << (sid.second.first+1) << " menuItems in <registry>, but only " << menuItems.size() <<" in <layout>.",
+                     sid.second.first < menuItems.size());
         menuItem = menuItems.at( sid.second.first );
         ui::base::GuiRegistry::registerActionSIDToParentSID(sid.first, m_sid);
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The action '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' toolBar, "
-                       "the service may be created later if it uses deferred objects, thus use start=\"no\" and start it at the end of the configuration",
-                       core::tools::fwID::exist(sid.first ));
+            SIGHT_ASSERT("The action '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' toolBar, "
+                         "the service may be created later if it uses deferred objects, thus use start=\"no\" and start it at the end of the configuration",
+                         core::tools::fwID::exist(sid.first ));
             service::IService::sptr service = service::get( sid.first );
-            SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
-                       , service->isStopped() );
+            SIGHT_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
+                         , service->isStopped() );
             service->start();
         }
         else
@@ -208,18 +208,18 @@ void ToolBar::manage(std::vector< ui::base::container::fwMenu::sptr > menus )
     ui::base::container::fwMenu::sptr menu;
     for( SIDToolBarMapType::value_type sid :  m_menuSids)
     {
-        SLM_ASSERT("The toolBar '" << m_sid << "' contains more menu in <regitry> than in <layout>: "
-                                   << (sid.second.first+1) << " menu in <regitry>, but only " << menus.size() <<"  in <layout>.",
-                   sid.second.first < menus.size());
+        SIGHT_ASSERT("The toolBar '" << m_sid << "' contains more menu in <regitry> than in <layout>: "
+                                     << (sid.second.first+1) << " menu in <regitry>, but only " << menus.size() <<"  in <layout>.",
+                     sid.second.first < menus.size());
         menu = menus.at( sid.second.first );
         ui::base::GuiRegistry::registerSIDMenu(sid.first, menu);
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' toolbar.",
-                       core::tools::fwID::exist(sid.first ));
+            SIGHT_ASSERT("The menu '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' toolbar.",
+                         core::tools::fwID::exist(sid.first ));
             service::IService::sptr service = service::get( sid.first );
-            SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
-                       , service->isStopped() );
+            SIGHT_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
+                         , service->isStopped() );
             service->start();
         }
     }
@@ -232,27 +232,27 @@ void ToolBar::manage(std::vector< ui::base::container::fwContainer::sptr > conta
     ui::base::container::fwContainer::sptr container;
     for( SIDToolBarMapType::value_type sid :  m_editorSids)
     {
-        SLM_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
-                                   << (sid.second.first+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
-                   sid.second.first < containers.size());
+        SIGHT_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
+                                     << (sid.second.first+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
+                     sid.second.first < containers.size());
         container = containers.at( sid.second.first );
         ui::base::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' toolbar.",
-                       core::tools::fwID::exist(sid.first ));
+            SIGHT_ASSERT("The service '"+sid.first +"' does not exist, but is declared in '" + m_sid + "' toolbar.",
+                         core::tools::fwID::exist(sid.first ));
             service::IService::sptr service = service::get( sid.first );
-            SLM_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
-                       , service->isStopped() );
+            SIGHT_ASSERT("The service '"+sid.first +"' cannot be started by '" + m_sid + "' because it is not stopped."
+                         , service->isStopped() );
             service->start();
         }
     }
 
     for( WIDToolBarMapType::value_type wid :  m_editorWids)
     {
-        SLM_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
-                                   << (wid.second+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
-                   wid.second < containers.size());
+        SIGHT_ASSERT("The toolBar '" << m_sid << "' contains more editors in <regitry> than in <layout>: "
+                                     << (wid.second+1) << " editors in <registry>, but only " << containers.size() <<" in <layout>.",
+                     wid.second < containers.size());
         container = containers.at( wid.second );
         ui::base::GuiRegistry::registerWIDContainer(wid.first, container);
     }
@@ -266,10 +266,10 @@ void ToolBar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                       core::tools::fwID::exist(
-                           sid.first ) );
+            SIGHT_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                         "It may have been destroyed by the configuration if it uses deferred objects.",
+                         core::tools::fwID::exist(
+                             sid.first ) );
             service::IService::sptr service = service::get( sid.first );
             service->stop().wait();
         }
@@ -279,10 +279,10 @@ void ToolBar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                       core::tools::fwID::exist(
-                           sid.first ) );
+            SIGHT_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                         "It may have been destroyed by the configuration if it uses deferred objects.",
+                         core::tools::fwID::exist(
+                             sid.first ) );
             service::IService::sptr service = service::get( sid.first );
             service->stop().wait();
         }
@@ -292,10 +292,10 @@ void ToolBar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            SLM_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                       core::tools::fwID::exist(
-                           sid.first ) );
+            SIGHT_ASSERT("The toolBar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
+                         "It may have been destroyed by the configuration if it uses deferred objects.",
+                         core::tools::fwID::exist(
+                             sid.first ) );
             service::IService::sptr service = service::get( sid.first );
             service->stop().wait();
         }
@@ -311,7 +311,7 @@ void ToolBar::unmanage()
 
 void ToolBar::onItemAction()
 {
-    SLM_WARN("TODO: ToolBar::onItemAction not yet implemented");
+    SIGHT_WARN("TODO: ToolBar::onItemAction not yet implemented");
 }
 
 //-----------------------------------------------------------------------------

@@ -27,5 +27,5 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampAutoDeclareEnumMacro((sight)(data)(Image)(PixelFormat));
-fwCampDeclareAccessor((sight)(data)(Image), (sight)(data)(Array));
+SIGHT_DECLARE_ENUM_REFLECTION((sight)(data)(Image)(PixelFormat));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(Image), (sight)(data)(Array));

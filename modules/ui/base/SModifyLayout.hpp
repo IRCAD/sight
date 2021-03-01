@@ -26,9 +26,9 @@
 
 #include <service/IService.hpp>
 
-#include <boost/logic/tribool.hpp>
-
 #include <ui/base/IAction.hpp>
+
+#include <boost/logic/tribool.hpp>
 
 #include <vector>
 
@@ -42,7 +42,7 @@ class MODULE_UI_BASE_CLASS_API SModifyLayout : public ::sight::ui::base::IAction
 
 public:
 
-    fwCoreServiceMacro(SModifyLayout, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SModifyLayout, ::sight::ui::base::IAction)
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /**

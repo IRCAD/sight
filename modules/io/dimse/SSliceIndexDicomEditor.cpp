@@ -25,20 +25,20 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/fieldHelper/Image.hpp>
-
-#include <service/extension/Config.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
-#include <QHBoxLayout>
+#include <service/extension/Config.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <QHBoxLayout>
 
 namespace sight::module::io::dimse
 {
@@ -75,7 +75,7 @@ void SSliceIndexDicomEditor::configuring()
 
     m_delay                     = config.get<unsigned>(s_DELAY_CONFIG, m_delay);
     m_dicomReaderImplementation = config.get(s_DICOM_READER_CONFIG, m_dicomReaderImplementation);
-    SLM_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
+    SIGHT_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
 
     m_readerConfig = configType.get(s_READER_CONFIG, m_readerConfig);
 }
@@ -91,7 +91,7 @@ void SSliceIndexDicomEditor::starting()
     m_seriesDB = data::SeriesDB::New();
 
     m_dicomReader = this->registerService< sight::io::base::service::IReader >(m_dicomReaderImplementation);
-    SLM_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
+    SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
     m_dicomReader->registerInOut(m_seriesDB, "data");
 
@@ -101,15 +101,15 @@ void SSliceIndexDicomEditor::starting()
             service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig, "::io::base::service::IReader");
 
-        SLM_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
-                   readerConfig);
+        SIGHT_ASSERT("No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
+                     readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }
 
     m_dicomReader->configure();
     m_dicomReader->start().wait();
-    SLM_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
+    SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
     m_sliceTriggerer = m_associatedWorker->createTimer();
@@ -254,7 +254,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
-        SLM_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
+        SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
         const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
             service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to connect to PACS");
@@ -282,7 +282,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
                     seriesEnquirer->pullInstanceUsingMoveRetrieveMethod(seriesInstanceUID, sopInstanceUID);
                     break;
                 default:
-                    SLM_ERROR("Unknown retrieve method, 'get' will be used");
+                    SIGHT_ERROR("Unknown retrieve method, 'get' will be used");
                     seriesEnquirer->pullInstanceUsingGetRetrieveMethod(seriesInstanceUID, sopInstanceUID);
                     break;
             }
@@ -304,7 +304,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
-        SLM_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
+        SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
         const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
             service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to execute query");
@@ -340,7 +340,7 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     // Get the DICOM buffer to write in a temporary folder.
     const auto& binaries = _dicomSeries->getDicomContainer();
     auto iter            = binaries.find(_selectedSliceIndex);
-    SLM_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
+    SIGHT_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
     const core::memory::BufferObject::sptr bufferObj = iter->second;
     const core::memory::BufferObject::Lock lockerDest(bufferObj);
     const char* buffer      = static_cast<char*>(lockerDest.getBuffer());
@@ -355,7 +355,7 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     std::ofstream fs(path, std::ios::binary|std::ios::trunc);
     if(!fs.good())
     {
-        SLM_ERROR("Unable to open '" << path << "' for write.");
+        SIGHT_ERROR("Unable to open '" << path << "' for write.");
         return;
     }
     fs.write(buffer, bufferSize);
@@ -389,7 +389,7 @@ void SSliceIndexDicomEditor::readSlice(const data::mt::locked_ptr< data::DicomSe
     }
     else
     {
-        SLM_ERROR("Unable to read the image");
+        SIGHT_ERROR("Unable to read the image");
         const auto notif = this->signal< service::IService::FailureNotifiedSignalType >(
             service::IService::s_FAILURE_NOTIFIED_SIG);
         notif->asyncEmit("Unable to read the image");

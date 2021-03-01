@@ -26,11 +26,11 @@
 
 #include <activity/IActivitySequencer.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
 #include <QQuickWidget>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -112,7 +112,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSequencer, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::base::IEditor)
 
     /// Initialize signals and slots
     MODULE_UI_QT_API SSequencer() noexcept;

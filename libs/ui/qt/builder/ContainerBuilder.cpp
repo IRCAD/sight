@@ -24,11 +24,11 @@
 
 #include "ui/qt/container/QtContainer.hpp"
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::base::builder::ContainerBuilder,
                     ::sight::ui::base::builder::IContainerBuilder::REGISTRY_KEY);
@@ -55,7 +55,7 @@ ContainerBuilder::~ContainerBuilder()
 void ContainerBuilder::createContainer( ui::base::container::fwContainer::sptr parent )
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
 
     ui::qt::container::QtContainer::sptr qtContainer = ui::qt::container::QtContainer::New();
     QWidget* widget                                  = new QWidget();
@@ -74,8 +74,8 @@ void ContainerBuilder::createContainer( ui::base::container::fwContainer::sptr p
 
 void ContainerBuilder::destroyContainer()
 {
-    SLM_ASSERT("The Container is not initialized", m_container);
-    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The Container is not initialized", m_container);
+    SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
 
     m_container->destroyContainer();
 }
@@ -84,16 +84,16 @@ void ContainerBuilder::destroyContainer()
 
 void ContainerBuilder::setParent(ui::base::container::fwContainer::sptr parent)
 {
-    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
+    SIGHT_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
     ui::qt::container::QtContainer::sptr parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", parentContainer);
+    SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", parentContainer);
     ui::qt::container::QtContainer::sptr container = ui::qt::container::QtContainer::dynamicCast(m_container);
-    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", container);
+    SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", container);
 
     QWidget* qtContainer = container->getQtContainer();
-    SLM_ASSERT("The QtContainer is not yet initialized", qtContainer);
+    SIGHT_ASSERT("The QtContainer is not yet initialized", qtContainer);
     QWidget* qtParent = parentContainer->getQtContainer();
-    SLM_ASSERT("The parent's QtContainer is not yet initialized", qtParent);
+    SIGHT_ASSERT("The parent's QtContainer is not yet initialized", qtParent);
 
     if(qtParent != m_parent->getQtContainer() )
     {

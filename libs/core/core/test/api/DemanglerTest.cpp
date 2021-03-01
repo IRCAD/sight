@@ -43,7 +43,7 @@ void DemanglerTest::setUp()
 class IDemanglerTest : public core::BaseObject
 {
 public:
-    fwCoreClassMacro(IDemanglerTest)
+    SIGHT_DECLARE_CLASS(IDemanglerTest)
     virtual ~IDemanglerTest();
 
 };
@@ -57,7 +57,7 @@ IDemanglerTest::~IDemanglerTest()
 class ODemanglerTest : public IDemanglerTest
 {
 public:
-    fwCoreClassMacro(ODemanglerTest, IDemanglerTest, new ODemanglerTest)
+    SIGHT_DECLARE_CLASS(ODemanglerTest, IDemanglerTest, new ODemanglerTest)
     virtual ~ODemanglerTest();
 };
 

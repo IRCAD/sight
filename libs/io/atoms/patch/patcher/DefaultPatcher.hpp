@@ -53,8 +53,8 @@ class IO_ATOMS_CLASS_API DefaultPatcher : public IPatcher
 
 public:
 
-    fwCoreClassMacro(DefaultPatcher, io::atoms::patch::patcher::IPatcher,
-                     io::atoms::patch::patcher::factory::New< DefaultPatcher >)
+    SIGHT_DECLARE_CLASS(DefaultPatcher, io::atoms::patch::patcher::IPatcher,
+                        io::atoms::patch::patcher::factory::New< DefaultPatcher >)
 
     /// Constructor
     IO_ATOMS_API DefaultPatcher(io::atoms::patch::patcher::IPatcher::Key key);

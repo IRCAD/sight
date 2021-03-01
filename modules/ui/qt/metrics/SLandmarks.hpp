@@ -27,6 +27,8 @@
 #include <data/Landmarks.hpp>
 #include <data/tools/PickingInfo.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QObject>
@@ -34,8 +36,6 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QTreeWidget>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::metrics
 {
@@ -93,7 +93,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLandmarks, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SLandmarks, sight::ui::base::IEditor)
 
     /// Initializes slots.
     MODULE_UI_QT_API SLandmarks() noexcept;

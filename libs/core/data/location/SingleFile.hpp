@@ -28,7 +28,7 @@
 
 #include <filesystem>
 
-fwCampAutoDeclareDataMacro((sight)(data)(location)(SingleFile));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(location)(SingleFile));
 
 namespace sight::data
 {
@@ -41,7 +41,7 @@ class DATA_CLASS_API SingleFile  : public ILocation
 {
 public:
 
-    fwCoreClassMacro(SingleFile, ILocation, data::factory::New< SingleFile >)
+    SIGHT_DECLARE_CLASS(SingleFile, ILocation, data::factory::New< SingleFile >)
 
     /// SingleFile factory
     DATA_API static sptr New(PathType path);
@@ -52,7 +52,7 @@ public:
     /// Destructor
     DATA_API virtual ~SingleFile();
 
-    fwCampMakeFriendDataMacro((sight)(data)(location)(SingleFile));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(location)(SingleFile));
 
     /// Defines shallow copy
     DATA_API void shallowCopy( const Object::csptr& _source ) override;
@@ -89,7 +89,7 @@ struct enableSingleFile
     enableSingleFile(RW* rw) :
         m_rw(rw)
     {
-        SLM_ASSERT("m_rw not instanced", m_rw);
+        SIGHT_ASSERT("m_rw not instanced", m_rw);
     }
 
     /// Set file system path

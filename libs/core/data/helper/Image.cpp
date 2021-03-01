@@ -156,7 +156,7 @@ bool Image::createImageSliceIndex()
         fieldIsCreated = true;
     }
 
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Information on image slice index is not correct, miss one of these fields : "
         "m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
         axialIdx && frontalIdx && sagittalIdx

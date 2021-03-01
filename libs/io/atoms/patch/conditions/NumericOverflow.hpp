@@ -37,8 +37,8 @@ namespace conditions
 class IO_ATOMS_CLASS_API NumericOverflow : public Abstract
 {
 public:
-    fwCoreClassMacro(NumericOverflow, Abstract, new NumericOverflow)
-    fwCoreAllowSharedFromThis()
+    SIGHT_DECLARE_CLASS(NumericOverflow, Abstract, new NumericOverflow)
+    SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Numerical test
     IO_ATOMS_API virtual bool test(sight::atoms::Base::sptr old, sight::atoms::Base::sptr newValue) override;

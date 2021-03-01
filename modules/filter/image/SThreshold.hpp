@@ -62,7 +62,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SThreshold : public service::IOperator
 
 public:
 
-    fwCoreServiceMacro(SThreshold, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SThreshold, ::sight::service::IOperator)
 
     MODULE_FILTER_IMAGE_API SThreshold() noexcept;
 

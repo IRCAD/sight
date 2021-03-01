@@ -49,7 +49,7 @@ public:
     /// the object type related
     typedef DATATYPE DataType;
 
-    fwCoreClassMacro(GenericObjectReader<DATATYPE>, io::base::reader::IObjectReader)
+    SIGHT_DECLARE_CLASS(GenericObjectReader<DATATYPE>, io::base::reader::IObjectReader)
 
     /// Constructor. Do nothing.
     GenericObjectReader()

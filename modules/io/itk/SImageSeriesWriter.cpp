@@ -31,10 +31,10 @@
 #include <data/location/Folder.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/service/IWriter.hpp>
 #include <io/itk/ImageWriter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -43,7 +43,6 @@
 
 namespace sight::module::io::itk
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -133,10 +132,10 @@ void SImageSeriesWriter::updating()
         // Retrieve dataStruct associated with this service
 
         data::ImageSeries::csptr iseries = this->getInput< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", iseries);
+        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", iseries);
 
         const data::Image::csptr& associatedImage = iseries->getImage();
-        SLM_ASSERT("associatedImage not instanced", associatedImage);
+        SIGHT_ASSERT("associatedImage not instanced", associatedImage);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);

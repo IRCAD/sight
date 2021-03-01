@@ -60,7 +60,7 @@ class MODULE_IO_DICOM_CLASS_API SSurfaceSegmentationWriter : public sight::io::b
 {
 
 public:
-    fwCoreServiceMacro(SSurfaceSegmentationWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SSurfaceSegmentationWriter, sight::io::base::service::IWriter)
 
     /**
      * @brief Constructor

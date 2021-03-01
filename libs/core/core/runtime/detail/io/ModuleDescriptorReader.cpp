@@ -97,11 +97,11 @@ const ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModu
             }
             catch(const RuntimeException& runtimeException)
             {
-                SLM_DEBUG( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
+                SIGHT_DEBUG( "'"<< entryPath.string() << "': skipped. " << runtimeException.what() );
             }
             catch(const core::Exception& exception)
             {
-                SLM_DEBUG( "'"<< entryPath.string() << "': skipped. " << exception.what() );
+                SIGHT_DEBUG( "'"<< entryPath.string() << "': skipped. " << exception.what() );
             }
         }
     }
@@ -202,7 +202,7 @@ ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(x
         {
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
-            SLM_WARN_IF(
+            SIGHT_WARN_IF(
                 "Module : " << ( module ? module->getIdentifier() : "<None>" ) << ", node: " << nodeName << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
                 (value.find("\n") != std::string::npos || value.find("\t") != std::string::npos));
 
@@ -365,7 +365,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
             continue;
         }
     }
-    SLM_ASSERT("module identifier is empty", !moduleIdentifier.empty());
+    SIGHT_ASSERT("module identifier is empty", !moduleIdentifier.empty());
 
     if( core::runtime::Runtime::getDefault()->findModule(moduleIdentifier))
     {
@@ -382,7 +382,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
                 std::string libname = boost::algorithm::replace_all_copy(moduleIdentifier, "::", "_");
                 boost::algorithm::trim_left_if(libname, [](auto x) { return x == '_'; } );
 
-                SLM_INFO("Plugin " + moduleIdentifier + " holds library " + libname);
+                SIGHT_INFO("Plugin " + moduleIdentifier + " holds library " + libname);
 
                 // Creates the library
                 // If we have a library, deduce the plugin name
@@ -439,7 +439,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
         // Point declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) POINT.c_str()) == 0)
         {
-            SLM_FATAL("This xml element  ( <point ... > </point> ) is deprecated (" + location.string() + ")" );
+            SIGHT_FATAL("This xml element  ( <point ... > </point> ) is deprecated (" + location.string() + ")" );
         }
     }
 

@@ -40,7 +40,7 @@ class IO_ZIP_CLASS_API ReadDirArchive : public IReadArchive
 {
 
 public:
-    fwCoreClassMacro(ReadDirArchive, IReadArchive)
+    SIGHT_DECLARE_CLASS(ReadDirArchive, IReadArchive)
 
     //------------------------------------------------------------------------------
 

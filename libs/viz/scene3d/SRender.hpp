@@ -135,7 +135,7 @@ class VIZ_SCENE3D_CLASS_API SRender final : public viz::base::IRender
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SRender, viz::base::IRender)
+    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender)
 
     /// Represents all possible render modes.
     enum class RenderMode

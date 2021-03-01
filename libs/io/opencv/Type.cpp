@@ -31,7 +31,7 @@ namespace sight::io::opencv
 
 std::int32_t Type::toCv(const core::tools::Type _type, const size_t _numComponents)
 {
-    SLM_ASSERT("Number of dimensions should be between 1 and 4", _numComponents > 0 && _numComponents <= 4);
+    SIGHT_ASSERT("Number of dimensions should be between 1 and 4", _numComponents > 0 && _numComponents <= 4);
 
     static const std::map< core::tools::Type, std::array< std::int32_t, 4 > > s_IMAGE_FORMAT_TO_CV =
     {{
@@ -45,7 +45,7 @@ std::int32_t Type::toCv(const core::tools::Type _type, const size_t _numComponen
      }};
 
     const auto it = s_IMAGE_FORMAT_TO_CV.find(_type);
-    SLM_ASSERT("Format not handled by OpenCV: " + _type.string(), it != s_IMAGE_FORMAT_TO_CV.end());
+    SIGHT_ASSERT("Format not handled by OpenCV: " + _type.string(), it != s_IMAGE_FORMAT_TO_CV.end());
 
     return (it->second)[_numComponents - 1];
 }
@@ -87,7 +87,7 @@ std::pair< core::tools::Type, uint8_t> Type::fromCv(int32_t _cvType)
      }};
 
     const auto it = s_IMAGE_FORMAT_FROM_CV.find(_cvType);
-    SLM_ASSERT("Format not handled by OpenCV: " + std::to_string(_cvType), it != s_IMAGE_FORMAT_FROM_CV.end());
+    SIGHT_ASSERT("Format not handled by OpenCV: " + std::to_string(_cvType), it != s_IMAGE_FORMAT_FROM_CV.end());
 
     return it->second;
 }

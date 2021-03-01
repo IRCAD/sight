@@ -59,7 +59,7 @@ class MODULE_DATA_CLASS_API SMergeTF final : public service::IController
 
 public:
 
-    fwCoreServiceMacro(SMergeTF, ::sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SMergeTF, ::sight::service::IController)
 
     /// Creates the service.
     MODULE_DATA_API SMergeTF() noexcept;

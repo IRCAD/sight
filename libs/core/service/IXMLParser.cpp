@@ -59,7 +59,7 @@ void IXMLParser::updating()
     for(configEltIter = this->m_configuration->begin(); !(configEltIter == this->m_configuration->end());
         ++configEltIter)
     {
-        SLM_ASSERT("ACH => still used ?", (*configEltIter)->getName() != "object" );
+        SIGHT_ASSERT("ACH => still used ?", (*configEltIter)->getName() != "object" );
     }
 }
 

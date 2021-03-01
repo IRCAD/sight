@@ -35,17 +35,16 @@
 
 #include <service/macros.hpp>
 
-#include <boost/tokenizer.hpp>
-
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
+
+#include <boost/tokenizer.hpp>
 
 #include <filesystem>
 #include <fstream>
 
 namespace sight::module::io::matrix
 {
-
 
 static const service::IService::KeyType s_MATRIXTL = "matrixTL";
 
@@ -106,7 +105,7 @@ void SMatricesReader::configuring()
     service::IService::ConfigType config = this->getConfigTree();
 
     m_fps = config.get<unsigned int>("fps", 30);
-    SLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
+    SIGHT_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
 
     m_useTimelapse = config.get<bool>("useTimelapse", m_useTimelapse);
 
@@ -115,7 +114,7 @@ void SMatricesReader::configuring()
     m_oneShot = config.get<bool>("oneShot", m_oneShot);
 
     m_step = config.get<unsigned long>("step", m_step);
-    SLM_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
+    SIGHT_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
 }
 
@@ -240,13 +239,13 @@ void SMatricesReader::setStep(int _step, std::string _key)
 {
     if(_key == "step")
     {
-        SLM_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
+        SIGHT_ASSERT("Needed step value (" << _step << ") should be > 0.", _step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<unsigned long>(_step);
     }
     else
     {
-        SLM_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
+        SIGHT_WARN("Only 'step' key is supported (current key value is : '" << _key << "').");
     }
 }
 
@@ -286,7 +285,7 @@ void SMatricesReader::startReading()
                 const long int nbOfElements = std::distance(tok.begin(), tok.end());
                 if(nbOfElements < 17)
                 {
-                    SLM_WARN("Too few elements("<<nbOfElements<< ") to convert this csv line into matrices");
+                    SIGHT_WARN("Too few elements("<<nbOfElements<< ") to convert this csv line into matrices");
                     continue;
                 }
                 const unsigned int nbOfMatrices = static_cast< unsigned int>((nbOfElements - 1 )/ 16);
@@ -323,7 +322,7 @@ void SMatricesReader::startReading()
         }
         else
         {
-            SLM_ERROR("The csv file '" + this->getFile().string() +"' can not be openned.");
+            SIGHT_ERROR("The csv file '" + this->getFile().string() +"' can not be openned.");
         }
 
         if(m_oneShot)
@@ -442,7 +441,7 @@ void SMatricesReader::readMatrices()
         matrixBuf = matrixTL->createBuffer(timestamp);
         matrixTL->pushObject(matrixBuf);
 
-        SLM_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
+        SIGHT_DEBUG("Reading matrix index " << m_tsMatricesCount << " with timestamp " << timestamp);
         for(unsigned int i = 0; i < currentMatrices.matrices.size(); ++i)
         {
             float mat[16];
@@ -462,7 +461,7 @@ void SMatricesReader::readMatrices()
             {
                 nextDuration       = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - currentTime;
                 m_tsMatricesCount += m_step;
-                SLM_DEBUG("Skipping a matrix");
+                SIGHT_DEBUG("Skipping a matrix");
             }
 
             // If it is the last matrix array: stop the timer or loop

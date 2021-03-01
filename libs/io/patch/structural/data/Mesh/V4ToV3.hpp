@@ -39,7 +39,7 @@ namespace Mesh
 class IO_PATCH_CLASS_API V4ToV3 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V4ToV3, patch::structural::data::Mesh::V4ToV3, new V4ToV3)
+    SIGHT_DECLARE_CLASS(V4ToV3, patch::structural::data::Mesh::V4ToV3, new V4ToV3)
 
     /// Constructor
     IO_PATCH_API V4ToV3();

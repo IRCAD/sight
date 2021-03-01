@@ -41,7 +41,7 @@ ClippingBoxInteractor::ClippingBoxInteractor(Layer::sptr _layer,
     m_widget(_id, _parentSceneNode, _layer->getDefaultCamera(), _layer->getSceneManager(),
              _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
 {
-    SLM_ASSERT("This interactor must know its layer.", _layer);
+    SIGHT_ASSERT("This interactor must know its layer.", _layer);
 
     m_picker.setSceneManager(_layer->getSceneManager());
 }

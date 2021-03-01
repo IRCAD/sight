@@ -40,7 +40,7 @@ class DATA_CLASS_API GenericFieldBase : public Object
 {
 public:
 
-    fwCoreClassMacro(GenericFieldBase)
+    SIGHT_DECLARE_CLASS(GenericFieldBase)
 
     DATA_API virtual bool operator== (const GenericFieldBase& lf ) = 0;
     DATA_API virtual bool operator!= (const GenericFieldBase& lf ) = 0;

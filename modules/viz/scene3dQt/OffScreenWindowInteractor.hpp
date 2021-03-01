@@ -41,7 +41,7 @@ class MODULE_VIZ_SCENE3DQT_CLASS_API OffScreenWindowInteractor final :
 
 public:
 
-    fwCoreClassMacro(OffScreenWindowInteractor, sight::viz::scene3d::IWindowInteractor)
+    SIGHT_DECLARE_CLASS(OffScreenWindowInteractor, sight::viz::scene3d::IWindowInteractor)
 
     /**
      * @brief Initialize members.

@@ -33,13 +33,12 @@
 #include <data/MatrixTL.hpp>
 #include <data/timeline/Buffer.hpp>
 
-#include <service/macros.hpp>
-
 #include <geometry/data/Compare.hpp>
+
+#include <service/macros.hpp>
 
 #include <algorithm>
 #include <functional>
-
 
 namespace sight::module::sync
 {
@@ -118,7 +117,7 @@ void SFrameMatrixSynchronizer::starting()
 {
     const size_t numFrameTLs = this->getKeyGroupSize(s_FRAMETL_INPUT);
     const size_t numImages   = this->getKeyGroupSize(s_IMAGE_INOUT);
-    SLM_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
+    SIGHT_ASSERT("You should have the same number of 'frameTL' and 'image' keys", numFrameTLs == numImages);
 
     m_frameTLs.reserve(numFrameTLs);
     m_images.reserve(numFrameTLs);
@@ -181,7 +180,7 @@ void SFrameMatrixSynchronizer::starting()
         }
     }
 
-    SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
+    SIGHT_ASSERT("No valid worker for timer.", m_associatedWorker);
     if(m_timeStep)
     {
         m_timer = m_associatedWorker->createTimer();
@@ -232,7 +231,7 @@ void SFrameMatrixSynchronizer::synchronize()
     for(size_t i = 0; i != m_frameTLs.size(); ++i)
     {
         const auto tl = m_frameTLs[i].lock();
-        SLM_ASSERT("Frame TL does not exist", tl);
+        SIGHT_ASSERT("Frame TL does not exist", tl);
         core::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
@@ -256,7 +255,7 @@ void SFrameMatrixSynchronizer::synchronize()
                                                        [ = ](size_t const& idx)
                     {
                         const auto frametl = m_frameTLs[idx].lock();
-                        SLM_ASSERT("Frame TL does not exist", frametl);
+                        SIGHT_ASSERT("Frame TL does not exist", frametl);
                         const auto ts = frametl->getNewerTimestamp();
                         return std::abs(frameTimestamp - ts) >= m_tolerance;
                     }), availableFramesTL.end());
@@ -264,7 +263,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            SLM_INFO("no available frame for timeline 'frame" << i << ".");
+            SIGHT_INFO("no available frame for timeline 'frame" << i << ".");
         }
     }
 
@@ -276,7 +275,7 @@ void SFrameMatrixSynchronizer::synchronize()
     for(size_t i = 0; i != m_matrixTLs.size(); ++i)
     {
         const auto tl = m_matrixTLs[i].lock();
-        SLM_ASSERT("Matrix TL does not exist", tl);
+        SIGHT_ASSERT("Matrix TL does not exist", tl);
 
         core::HiResClock::HiResClockType tlTimestamp = tl->getNewerTimestamp();
         if( (tlTimestamp > 0) && (std::abs(frameTimestamp - tlTimestamp) < m_tolerance) )
@@ -286,7 +285,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
         else
         {
-            SLM_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
+            SIGHT_INFO_IF("no available matrix for timeline 'matrix" << i << "'.", tlTimestamp > 0);
 
             // Notify each matrices in the ith TL that they are unsychronized
             for(const int sendStatus : m_sendMatricesStatus[i])
@@ -315,7 +314,7 @@ void SFrameMatrixSynchronizer::synchronize()
         CSPTR(data::FrameTL::BufferType) buffer;
         {
             const auto frameTL = m_frameTLs[i].lock();
-            SLM_ASSERT("Image with index '" << i << "' does not exist", image);
+            SIGHT_ASSERT("Image with index '" << i << "' does not exist", image);
 
             const data::Image::Size size = { frameTL->getWidth(), frameTL->getHeight(), 0};
             // Check if image dimensions have changed
@@ -361,7 +360,7 @@ void SFrameMatrixSynchronizer::synchronize()
                                 format = data::Image::RGBA;
                                 break;
                             default:
-                                SLM_ERROR("Number of component not managed.")
+                                SIGHT_ERROR("Number of component not managed.")
                                 return;
                         }
                 }
@@ -381,7 +380,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
         if(!buffer)
         {
-            SLM_INFO("Buffer not found for timestamp "<< matrixTimestamp << " in timeline 'frame" << i << "'.");
+            SIGHT_INFO("Buffer not found for timestamp "<< matrixTimestamp << " in timeline 'frame" << i << "'.");
             continue;
         }
         const std::uint8_t* frameBuff = &buffer->getElement(0);
@@ -411,7 +410,7 @@ void SFrameMatrixSynchronizer::synchronize()
             for(unsigned int k = 0; k < matrixVector.size(); ++k)
             {
                 const auto matrix = matrixVector[k].lock();
-                SLM_ASSERT("Matrix with indices '"<< tlIdx << ", " << k << "' does not exist", matrix);
+                SIGHT_ASSERT("Matrix with indices '"<< tlIdx << ", " << k << "' does not exist", matrix);
 
                 const int sendStatus = m_sendMatricesStatus[tlIdx][k];
 
@@ -488,7 +487,7 @@ void SFrameMatrixSynchronizer::setFrameDelay(int val, std::string key)
     }
     else
     {
-        SLM_WARN("Unknown key");
+        SIGHT_WARN("Unknown key");
     }
 }
 

@@ -42,7 +42,8 @@ class UI_QT_CLASS_API SlideViewBuilder : public ui::base::builder::ISlideViewBui
 
 public:
 
-    fwCoreClassMacro(SlideViewBuilder, ui::base::builder::ISlideViewBuilder, ui::base::factory::New< SlideViewBuilder >)
+    SIGHT_DECLARE_CLASS(SlideViewBuilder, ui::base::builder::ISlideViewBuilder,
+                        ui::base::factory::New< SlideViewBuilder >)
 
     /// Creates the slide builder.
     UI_QT_API SlideViewBuilder(ui::base::GuiBaseObject::Key key);

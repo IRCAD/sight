@@ -52,7 +52,7 @@ public:
 
     typedef std::shared_future< ExitReturnType > FutureType;
 
-    fwCoreClassMacro(Worker, core::BaseObject, defaultFactory)
+    SIGHT_DECLARE_CLASS(Worker, core::BaseObject, defaultFactory)
 
     Worker()
     {

@@ -32,7 +32,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Resection));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Resection));
 namespace sight::data
 {
 /**
@@ -42,9 +42,9 @@ class DATA_CLASS_API Resection : public data::Object
 {
 
 public:
-    fwCoreClassMacro(Resection, data::Object, data::factory::New< Resection >)
+    SIGHT_DECLARE_CLASS(Resection, data::Object, data::factory::New< Resection >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Resection));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Resection));
 
     typedef std::vector< data::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< data::Reconstruction::sptr > ResectionOutputs;

@@ -75,7 +75,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SReconstruction final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SReconstruction, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SReconstruction, ::sight::viz::scene3d::IAdaptor)
 
     /// Initialise slots.
     MODULE_VIZ_SCENE3D_API SReconstruction() noexcept;

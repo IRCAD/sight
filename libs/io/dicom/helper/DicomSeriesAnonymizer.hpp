@@ -47,7 +47,7 @@ class IO_DICOM_CLASS_API DicomSeriesAnonymizer
 {
 public:
 
-    fwCoreClassMacro(DicomSeriesAnonymizer)
+    SIGHT_DECLARE_CLASS(DicomSeriesAnonymizer)
 
     //------------------------------------------------------------------------------
 

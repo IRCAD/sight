@@ -28,6 +28,8 @@
 
 #include <filter/dicom/IFilter.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QListWidget>
@@ -36,8 +38,6 @@
 #include <QPushButton>
 #include <QShortcut>
 #include <QWidget>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::dicom
 {
@@ -66,7 +66,7 @@ Q_OBJECT;
 
 public:
 
-    fwCoreServiceMacro(SFilterSelectionEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SFilterSelectionEditor,  sight::ui::base::IEditor )
 
     typedef std::map< std::string, filter::dicom::IFilter::sptr > FilterMapType;
 

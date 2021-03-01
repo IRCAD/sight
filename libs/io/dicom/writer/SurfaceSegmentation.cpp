@@ -40,7 +40,7 @@
 
 #include <io/base/writer/registry/macros.hpp>
 
-fwDataIOWriterRegisterMacro(::sight::io::dicom::writer::SurfaceSegmentation);
+SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::SurfaceSegmentation);
 
 namespace sight::io::dicom
 {
@@ -69,7 +69,7 @@ void SurfaceSegmentation::write()
     const data::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
     const data::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
 
-    SLM_ASSERT("::sight::data::ModelSeries not instanced", srcModelSeries);
+    SIGHT_ASSERT("::sight::data::ModelSeries not instanced", srcModelSeries);
 
     if(!associatedDicomSeries)
     {

@@ -59,7 +59,7 @@ template <typename T>
 ::cv::Mat genCvImage(  const std::vector<T>& _imageBuffer, size_t _w, size_t _h, size_t _d,
                        std::uint8_t _numChannels)
 {
-    SLM_ASSERT("Width should be at least 1", _w >= 1);
+    SIGHT_ASSERT("Width should be at least 1", _w >= 1);
 
     std::vector<int> cvSize;
     if(_d > 0)

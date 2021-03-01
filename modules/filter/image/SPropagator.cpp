@@ -32,15 +32,14 @@
 #include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/helper/MedicalImage.hpp>
 
-#include <service/macros.hpp>
-
 #include <filter/image/ImageDiff.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/history/ImageDiffCommand.hpp>
 
 namespace sight::module::filter::image
 {
-
 
 static const core::com::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
 
@@ -97,7 +96,7 @@ void SPropagator::configuring()
     }
     else
     {
-        SLM_FATAL("Unknown mode '" + mode + "'. Accepted values are 'min', 'max' or 'minmax'.");
+        SIGHT_FATAL("Unknown mode '" + mode + "'. Accepted values are 'min', 'max' or 'minmax'.");
     }
 
     const std::string orientation = config.get< std::string >("orientation", "axial");
@@ -116,7 +115,7 @@ void SPropagator::configuring()
     }
     else
     {
-        SLM_FATAL("Unknown orientation '" + orientation + "'");
+        SIGHT_FATAL("Unknown orientation '" + orientation + "'");
     }
 }
 
@@ -129,14 +128,14 @@ void SPropagator::starting()
     data::Image::csptr imgIn = imgInLock.get_shared();
     data::Image::sptr imgOut = imgOutLock.get_shared();
 
-    SLM_ASSERT("'imageIn' does not exist", imgIn);
-    SLM_ASSERT("'imageOut' does not exist", imgOut);
+    SIGHT_ASSERT("'imageIn' does not exist", imgIn);
+    SIGHT_ASSERT("'imageOut' does not exist", imgOut);
 
     bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgIn) &&
                    data::fieldHelper::MedicalImageHelpers::checkImageValidity(imgOut);
 
-    SLM_FATAL_IF("Input and output image must have the same size.", imgIn->getSize2() != imgOut->getSize2());
-    SLM_WARN_IF("Input and output image must have the same spacing.", imgIn->getSpacing2() != imgOut->getSpacing2());
+    SIGHT_FATAL_IF("Input and output image must have the same size.", imgIn->getSize2() != imgOut->getSize2());
+    SIGHT_WARN_IF("Input and output image must have the same spacing.", imgIn->getSpacing2() != imgOut->getSpacing2());
 
     if (isValid)
     {
@@ -179,7 +178,7 @@ void SPropagator::setOrientation(int from, int to)
 
 void SPropagator::setBoolParameter(bool val, std::string key)
 {
-    SLM_WARN_IF("Key must be 'overwrite' for this slot to have an effect.", key != "overwrite");
+    SIGHT_WARN_IF("Key must be 'overwrite' for this slot to have an effect.", key != "overwrite");
     if(key == "overwrite")
     {
         m_overwrite = val;
@@ -190,7 +189,7 @@ void SPropagator::setBoolParameter(bool val, std::string key)
 
 void SPropagator::setIntParameter(int val, std::string key)
 {
-    SLM_WARN_IF("Key must be 'value' for this slot to have an effect.", key != "value");
+    SIGHT_WARN_IF("Key must be 'value' for this slot to have an effect.", key != "value");
     if(key == "value")
     {
         m_value = val;
@@ -201,7 +200,7 @@ void SPropagator::setIntParameter(int val, std::string key)
 
 void SPropagator::setDoubleParameter(double val, std::string key)
 {
-    SLM_WARN_IF("Key must be 'radius' for this slot to have an effect.", key != "radius");
+    SIGHT_WARN_IF("Key must be 'radius' for this slot to have an effect.", key != "radius");
     if(key == "radius")
     {
         m_radius = val;
@@ -212,7 +211,7 @@ void SPropagator::setDoubleParameter(double val, std::string key)
 
 void SPropagator::setEnumParameter(std::string val, std::string key)
 {
-    SLM_WARN_IF("Key must be 'mode' for this slot to have an effect.", key != "mode");
+    SIGHT_WARN_IF("Key must be 'mode' for this slot to have an effect.", key != "mode");
     if(key == "mode")
     {
         if(val == "min")
@@ -229,7 +228,7 @@ void SPropagator::setEnumParameter(std::string val, std::string key)
         }
         else
         {
-            SLM_WARN("Unknown mode '" + val + "'. Accepted values are 'min', 'max' or 'minmax'.");
+            SIGHT_WARN("Unknown mode '" + val + "'. Accepted values are 'min', 'max' or 'minmax'.");
         }
     }
 }
@@ -246,13 +245,13 @@ void SPropagator::resetDrawing()
 
 void SPropagator::draw(data::tools::PickingInfo pickingInfo)
 {
-    SLM_ASSERT("Drawer not instantiated, have you started the service ?", m_lineDrawer);
+    SIGHT_ASSERT("Drawer not instantiated, have you started the service ?", m_lineDrawer);
 
     const auto imgInLock    = this->getLockedInput< data::Image >(s_IMAGE_IN);
     const auto imgOutLock   = this->getLockedInOut< data::Image >(s_IMAGE_INOUT);
     data::Image::sptr image = imgOutLock.get_shared();
 
-    SLM_ASSERT("'image' does not exist", image);
+    SIGHT_ASSERT("'image' does not exist", image);
 
     SPTR(data::Image::BufferType) val =
         data::fieldHelper::MedicalImageHelpers::getPixelBufferInImageSpace(image, m_value);

@@ -85,16 +85,16 @@ void init(const std::filesystem::path& directory)
     core::runtime::Runtime* rntm = core::runtime::Runtime::getDefault();
 
     const auto location = rntm->getWorkingPath() / MODULE_RC_PREFIX;
-    SLM_INFO("Launching Sight runtime in: " + location.string());
+    SIGHT_INFO("Launching Sight runtime in: " + location.string());
 
     auto profile = std::make_shared<detail::profile::Profile>();
     detail::profile::setCurrentProfile(profile);
 
-    SLM_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
+    SIGHT_ASSERT("Default Modules location not found: " + location.string(), std::filesystem::exists(location));
 
     // Read modules
     rntm->addModules(location);
-    SLM_ASSERT("Couldn't load any module from path: " + location.string(), !rntm->getModules().empty());
+    SIGHT_ASSERT("Couldn't load any module from path: " + location.string(), !rntm->getModules().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier)
 
     if(module == nullptr)
     {
-        SLM_ERROR("Could not find module " + moduleIdentifier + "'");
+        SIGHT_ERROR("Could not find module " + moduleIdentifier + "'");
         return std::filesystem::path();
     }
     return module->getResourcesLocation();
@@ -146,7 +146,7 @@ std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentif
 
     if(module == nullptr)
     {
-        SLM_ERROR("Could not find module '" + moduleIdentifier + "'");
+        SIGHT_ERROR("Could not find module '" + moduleIdentifier + "'");
         return std::filesystem::path();
     }
     return getModuleResourcePath(module, path);
@@ -156,8 +156,8 @@ std::filesystem::path getModuleResourceFilePath(const std::string& moduleIdentif
 
 std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& path) noexcept
 {
-    SLM_ASSERT("Path should not be empty", !path.empty());
-    SLM_ASSERT("Path should be relative", path.is_relative());
+    SIGHT_ASSERT("Path should not be empty", !path.empty());
+    SIGHT_ASSERT("Path should be relative", path.is_relative());
 
     const std::string moduleFolder = path.begin()->string();
 
@@ -175,14 +175,14 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
         if(module == nullptr)
         {
-            SLM_ERROR("Could not find module '" + moduleFolder + "'");
+            SIGHT_ERROR("Could not find module '" + moduleFolder + "'");
             return std::filesystem::path();
         }
         return getModuleResourcePath(module, pathWithoutModule );
     }
     catch(...)
     {
-        SLM_ERROR("Error looking for module '" + moduleFolder + "'");
+        SIGHT_ERROR("Error looking for module '" + moduleFolder + "'");
         return std::filesystem::path();
     }
 }
@@ -206,7 +206,7 @@ std::filesystem::path getResourceFilePath(const std::filesystem::path& path) noe
     {
         // If not found in a module, look into libraries
         file = core::runtime::getLibraryResourceFilePath(path);
-        SLM_ERROR_IF("Resource '" + path.string() + "' has not been found in any module or library", file.empty());
+        SIGHT_ERROR_IF("Resource '" + path.string() + "' has not been found in any module or library", file.empty());
     }
     return file;
 }
@@ -239,7 +239,7 @@ std::filesystem::path getModuleResourcePath(const IExecutable* executable,
 
 void addModules( const std::filesystem::path& directory)
 {
-    SLM_INFO("Loading modules from: " + directory.string());
+    SIGHT_INFO("Loading modules from: " + directory.string());
 
     Runtime& rntm = Runtime::get();
     rntm.addModules( directory );
@@ -295,7 +295,7 @@ bool loadLibrary(const std::string& identifier)
         }
 
     }
-    SLM_ERROR("Could not load library '" + identifier);
+    SIGHT_ERROR("Could not load library '" + identifier);
 
     return false;
 }
@@ -362,7 +362,7 @@ std::vector<ConfigurationElement::sptr> getAllConfigurationElementsForPoint(cons
     }
     else
     {
-        SLM_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
+        SIGHT_DEBUG( "Ignoring getAllConfigurationElementsForPoint(" << identifier << ") extension point disabled");
     }
 
     // The job is done!

@@ -27,11 +27,11 @@
 
 #include <data/mt/ObjectWriteLock.hpp>
 
+#include <geometry/data/PointList.hpp>
+
 #include <glm/geometric.hpp>
 
 #include <service/macros.hpp>
-
-#include <geometry/data/PointList.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -40,7 +40,6 @@ const core::com::Slots::SlotKeyType SAddPoint::s_PICK_SLOT         = "pick";
 const core::com::Slots::SlotKeyType SAddPoint::s_CLEAR_POINTS_SLOT = "clearPoints";
 
 const std::string s_POINTLIST_KEY = "pointList";
-
 
 //------------------------------------------------------------------------------
 
@@ -87,7 +86,7 @@ void SAddPoint::updating()
 void SAddPoint::addPoint(const data::Point::sptr _point)
 {
     auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
-    SLM_ASSERT("Missing data::PointList data", pointList);
+    SIGHT_ASSERT("Missing data::PointList data", pointList);
 
     {
         data::mt::ObjectWriteLock lock(pointList);
@@ -106,7 +105,7 @@ void SAddPoint::addPoint(const data::Point::sptr _point)
 void SAddPoint::removePoint(const data::Point::csptr _point)
 {
     auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
-    SLM_ASSERT("Missing data::PointList data", pointList);
+    SIGHT_ASSERT("Missing data::PointList data", pointList);
 
     data::mt::ObjectWriteLock lock(pointList);
 
@@ -149,7 +148,7 @@ void SAddPoint::pick(data::tools::PickingInfo _info)
 void SAddPoint::clearPoints()
 {
     auto pointList = this->getInOut< data::PointList >(s_POINTLIST_KEY);
-    SLM_ASSERT("Missing data::PointList data", pointList);
+    SIGHT_ASSERT("Missing data::PointList data", pointList);
 
     data::mt::ObjectWriteLock lock(pointList);
 

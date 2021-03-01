@@ -72,28 +72,28 @@ ItkLogger::~ItkLogger()
 
 void ItkLogger::DisplayText(const char* _txt)
 {
-    SLM_INFO("[ITK]: " << _txt);
+    SIGHT_INFO("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
 void ItkLogger::DisplayErrorText(const char* _txt)
 {
-    SLM_ERROR("[ITK]: " << _txt);
+    SIGHT_ERROR("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
 void ItkLogger::DisplayWarningText(const char* _txt)
 {
-    SLM_WARN("[ITK]: " << _txt);
+    SIGHT_WARN("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------
 
 void ItkLogger::DisplayDebugText(const char* _txt)
 {
-    SLM_DEBUG("[ITK]: " << _txt);
+    SIGHT_DEBUG("[ITK]: " << _txt);
 }
 
 //------------------------------------------------------------------------------

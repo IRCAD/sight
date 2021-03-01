@@ -30,10 +30,10 @@
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/vtk/helper/Mesh.hpp>
 #include <io/vtk/vtk.hpp>
+
+#include <service/macros.hpp>
 
 #include <vtkDecimatePro.h>
 #include <vtkDiscreteMarchingCubes.h>
@@ -51,7 +51,6 @@ namespace action
 {
 
 //-----------------------------------------------------------------------------
-
 
 //-----------------------------------------------------------------------------
 
@@ -94,7 +93,7 @@ void SMeshCreation::configuring()
         m_reduction = boost::lexical_cast<unsigned int>(reduce);
     }
 
-    SLM_INFO( "Reduction value = " << m_reduction);
+    SIGHT_INFO( "Reduction value = " << m_reduction);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,9 +103,9 @@ void SMeshCreation::updating()
 
     /// Retrieve objects
     auto pImage = this->getInput< data::Image >("image");
-    SLM_ASSERT("'image' key not found", pImage);
+    SIGHT_ASSERT("'image' key not found", pImage);
     auto pMesh = this->getInOut< data::Mesh >("mesh");
-    SLM_ASSERT("'mesh' key not found", pMesh);
+    SIGHT_ASSERT("'mesh' key not found", pMesh);
 
     ///VTK Mesher
 

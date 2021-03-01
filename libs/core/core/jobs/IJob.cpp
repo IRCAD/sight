@@ -124,8 +124,8 @@ IJob::SharedFuture IJob::cancel()
 
         core::mt::UpgradeToWriteLock writeLock(lock);
 
-        SLM_ASSERT("State shall be only CANCELING or CANCELED, not " << m_state,
-                   m_state == CANCELED || m_state == CANCELING);
+        SIGHT_ASSERT("State shall be only CANCELING or CANCELED, not " << m_state,
+                     m_state == CANCELED || m_state == CANCELING);
 
         if(m_state == CANCELING)
         {
@@ -263,7 +263,7 @@ void IJob::setStateNoLock(IJob::State state)
             m_sigFinished->asyncEmit();
             break;
         default:
-            SLM_ASSERT("You shall not pass !", 0);
+            SIGHT_ASSERT("You shall not pass !", 0);
     }
 
     std::for_each(m_stateHooks.begin(), m_stateHooks.end(),
@@ -310,7 +310,7 @@ void IJob::wait()
     // No std::future_error are raised before the segfault
     if(!runFuture.valid())
     {
-        FW_RAISE_EXCEPTION( core::jobs::exception::Waiting("Job has not been started") );
+        SIGHT_THROW_EXCEPTION( core::jobs::exception::Waiting("Job has not been started") );
     }
 
     try
@@ -319,7 +319,7 @@ void IJob::wait()
     }
     catch( std::future_error& )
     {
-        FW_RAISE_EXCEPTION( core::jobs::exception::Waiting("Job has not been started") );
+        SIGHT_THROW_EXCEPTION( core::jobs::exception::Waiting("Job has not been started") );
     }
 }
 

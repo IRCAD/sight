@@ -36,10 +36,10 @@
 
 #include <data/ActivitySeries.hpp>
 
-#include <boost/algorithm/string.hpp>
-
 #include <io/atoms/patch/helper/functions.hpp>
 #include <io/atoms/patch/StructuralCreatorDB.hpp>
+
+#include <boost/algorithm/string.hpp>
 
 #include <string>
 #include <vector>
@@ -92,14 +92,14 @@ void processPlanning(
         sight::atoms::Map::sptr oldPlanning
             = sight::atoms::Object::dynamicCast(oldPlanningAtom.second)->getAttribute< sight::atoms::Map >("values");
 
-        SLM_ASSERT("Didn't find 'acquisition' in planning",
-                   oldPlanning->getValue().find("acquisition") != oldPlanning->getValue().end());
+        SIGHT_ASSERT("Didn't find 'acquisition' in planning",
+                     oldPlanning->getValue().find("acquisition") != oldPlanning->getValue().end());
         sight::atoms::Base::sptr acquisition = oldPlanning->getValue().find("acquisition")->second;
         sight::atoms::Object::sptr acqObj    = sight::atoms::Object::dynamicCast(acquisition);
-        SLM_ASSERT("Failed to cast acquisition to object", acqObj);
+        SIGHT_ASSERT("Failed to cast acquisition to object", acqObj);
 
         Image2ModelType::const_iterator it = image2Model.find(newVersions[acqObj]);
-        SLM_ASSERT("Didn't find image series related to acquisition", it != image2Model.end());
+        SIGHT_ASSERT("Didn't find image series related to acquisition", it != image2Model.end());
         sight::atoms::Object::sptr imageSeries = it->first;
 
         sight::atoms::Object::sptr resectionDB
@@ -263,7 +263,7 @@ void processProcessing(
         // Check if the processing is associated to an acquisition
         sight::atoms::Base::sptr acquisitionSelection = oldProcessing->getValue().find("acquisitionSelection")->second;
         sight::atoms::Object::sptr acqSelectionObj    = sight::atoms::Object::dynamicCast(acquisitionSelection);
-        SLM_ASSERT("Failed to cast acquisition composite to object", acqSelectionObj);
+        SIGHT_ASSERT("Failed to cast acquisition composite to object", acqSelectionObj);
 
         sight::atoms::Map::sptr acqSelectionMap = acqSelectionObj->getAttribute< sight::atoms::Map >("values");
 
@@ -273,7 +273,7 @@ void processProcessing(
             // get associated image
             sight::atoms::Base::sptr acquisition = iter->second;
             sight::atoms::Object::sptr acqObj    = sight::atoms::Object::dynamicCast(acquisition);
-            SLM_ASSERT("Failed to cast acquisition to object", acqObj);
+            SIGHT_ASSERT("Failed to cast acquisition to object", acqObj);
 
             Image2ModelType::const_iterator it = image2Model.find(newVersions[acqObj]);
             if(it != image2Model.end())

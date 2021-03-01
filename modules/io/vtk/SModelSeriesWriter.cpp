@@ -36,13 +36,13 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/vtk/MeshWriter.hpp>
 #include <io/vtk/ObjMeshWriter.hpp>
 #include <io/vtk/PlyMeshWriter.hpp>
 #include <io/vtk/StlMeshWriter.hpp>
 #include <io/vtk/VtpMeshWriter.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/ILocationDialog.hpp>
@@ -54,7 +54,6 @@
 
 namespace sight::module::io::vtk
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -181,7 +180,7 @@ void SModelSeriesWriter::configuring()
 
         if(ext != "vtk" && ext != "vtp" && ext != "stl" && ext != "ply" && ext != "obj")
         {
-            SLM_ERROR("Extensions '" + ext + "' isn't managed by module::io::vtk::SModelSeriesWriter");
+            SIGHT_ERROR("Extensions '" + ext + "' isn't managed by module::io::vtk::SModelSeriesWriter");
         }
         else
         {
@@ -235,8 +234,8 @@ void SModelSeriesWriter::writeMesh(const std::filesystem::path& _filename, const
     }
     else
     {
-        FW_RAISE_EXCEPTION(core::tools::Failed("Extension '"+ ext.string() +
-                                               "' is not managed by module::io::vtk::SModelSeriesWriter."));
+        SIGHT_THROW_EXCEPTION(core::tools::Failed("Extension '"+ ext.string() +
+                                                  "' is not managed by module::io::vtk::SModelSeriesWriter."));
     }
 
     m_sigJobCreated->emit(meshWriter->getJob());
@@ -262,9 +261,9 @@ void SModelSeriesWriter::updating()
         const data::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
         for(const data::Reconstruction::csptr& rec :  recs)
         {
-            SLM_ASSERT("Reconstruction from model series is not instanced", rec);
+            SIGHT_ASSERT("Reconstruction from model series is not instanced", rec);
             data::Mesh::sptr mesh = rec->getMesh();
-            SLM_ASSERT("Mesh from reconstruction is not instanced", mesh);
+            SIGHT_ASSERT("Mesh from reconstruction is not instanced", mesh);
 
             const std::filesystem::path filename = this->getFolder() /
                                                    (rec->getOrganName() + "_" + core::tools::UUID::get(mesh) +

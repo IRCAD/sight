@@ -71,7 +71,7 @@ namespace sight::module::geometry::vision::charuco
 class MODULE_GEOMETRY_VISION_CLASS_API SOpenCVExtrinsic : public service::ICalibration
 {
 public:
-    fwCoreServiceMacro(SOpenCVExtrinsic, sight::service::ICalibration)
+    SIGHT_DECLARE_SERVICE(SOpenCVExtrinsic, sight::service::ICalibration)
 
     /// Double changed signal type
     typedef core::com::Signal< void (double) > ErrorComputedSignalType;

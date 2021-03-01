@@ -79,9 +79,9 @@ TemplateID<DATATYPE>::TemplateID(const SPTR(::gdcm::Writer)& writer,
     m_instance(instance),
     m_object(object)
 {
-    SLM_ASSERT("Writer should not be null.", writer);
-    SLM_ASSERT("Instance should not be null.", instance);
-    SLM_ASSERT("Object should not be null.", object);
+    SIGHT_ASSERT("Writer should not be null.", writer);
+    SIGHT_ASSERT("Instance should not be null.", instance);
+    SIGHT_ASSERT("Object should not be null.", object);
 }
 
 //------------------------------------------------------------------------------

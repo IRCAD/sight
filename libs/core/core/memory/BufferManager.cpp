@@ -27,9 +27,9 @@
 #include "core/memory/stream/in/Raw.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/LazyInstantiator.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
-#include <core/LazyInstantiator.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -98,9 +98,9 @@ std::shared_future<void> BufferManager::unregisterBuffer(BufferManager::BufferPt
 
 void BufferManager::unregisterBufferImpl(BufferManager::BufferPtrType bufferPtr)
 {
-    SLM_ASSERT("There are still " << m_bufferInfos[bufferPtr].lockCount() << " locks on this BufferObject (" <<
-               this << ")",
-               m_bufferInfos[bufferPtr].lockCounter.expired());
+    SIGHT_ASSERT("There are still " << m_bufferInfos[bufferPtr].lockCount() << " locks on this BufferObject (" <<
+                 this << ")",
+                 m_bufferInfos[bufferPtr].lockCounter.expired());
 
     m_bufferInfos.erase(bufferPtr);
     m_updatedSig->asyncEmit();
@@ -120,7 +120,7 @@ void BufferManager::allocateBufferImpl(BufferManager::BufferPtrType bufferPtr, S
                                        const core::memory::BufferAllocationPolicy::sptr& policy)
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
-    SLM_ASSERT("Buffer has already been allocated", info.loaded && (*bufferPtr == NULL));
+    SIGHT_ASSERT("Buffer has already been allocated", info.loaded && (*bufferPtr == NULL));
 
     if(!info.loaded)
     {
@@ -168,7 +168,7 @@ void BufferManager::setBufferImpl(BufferManager::BufferPtrType bufferPtr,
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
 
-    SLM_ASSERT("Buffer is already set", *bufferPtr == NULL && info.loaded);
+    SIGHT_ASSERT("Buffer is already set", *bufferPtr == NULL && info.loaded);
 
     m_dumpPolicy->setRequest( info, bufferPtr, size );
 
@@ -203,7 +203,7 @@ std::shared_future<void> BufferManager::reallocateBuffer(BufferManager::BufferPt
 void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr, SizeType newSize)
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
-    SLM_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
+    SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
 
     m_dumpPolicy->reallocateRequest( info, bufferPtr, newSize );
 
@@ -246,7 +246,7 @@ std::shared_future<void> BufferManager::destroyBuffer(BufferManager::BufferPtrTy
 void BufferManager::destroyBufferImpl(BufferManager::BufferPtrType bufferPtr)
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
-    SLM_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
+    SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
 
     m_dumpPolicy->destroyRequest( info, bufferPtr );
 
@@ -298,9 +298,9 @@ struct AutoUnlock
         if ( !info.loaded )
         {
             bool restored = manager->restoreBuffer( bufferPtr ).get();
-            SLM_ASSERT( "restore not OK ( "<< restored << " && " << *bufferPtr <<" != 0 ).",
-                        restored && *bufferPtr != 0 );
-            FwCoreNotUsedMacro(restored);
+            SIGHT_ASSERT( "restore not OK ( "<< restored << " && " << *bufferPtr <<" != 0 ).",
+                          restored && *bufferPtr != 0 );
+            SIGHT_NOT_USED(restored);
         }
     }
 
@@ -312,11 +312,11 @@ struct AutoUnlock
         }
         catch(std::exception& e)
         {
-            SLM_ASSERT( "Unlock Failed" << e.what(), 0 );
+            SIGHT_ASSERT( "Unlock Failed" << e.what(), 0 );
         }
         catch(...)
         {
-            SLM_ASSERT( "Unlock Failed", 0 );
+            SIGHT_ASSERT( "Unlock Failed", 0 );
         }
     }
 
@@ -454,7 +454,7 @@ bool BufferManager::restoreBuffer(BufferInfo& info,
             std::istream& is = *isptr;
             SizeType read    = is.read(charBuf, size).gcount();
 
-            FW_RAISE_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
+            SIGHT_THROW_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
             notFailed = !is.fail();
         }
 
@@ -495,7 +495,7 @@ bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
                                     SizeType size, std::filesystem::path& path)
 {
     std::ofstream fs(path, std::ios::binary|std::ios::trunc);
-    FW_RAISE_IF("Memory management : Unable to open " << path, !fs.good());
+    SIGHT_THROW_IF("Memory management : Unable to open " << path, !fs.good());
     const char* charBuf = static_cast< const char* >(buffer);
     fs.write(charBuf, size);
     fs.close();
@@ -515,13 +515,13 @@ std::shared_future<bool> BufferManager::readBuffer(BufferManager::BufferType buf
 bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType size, std::filesystem::path& path)
 {
     std::ifstream fs(path, std::ios::in|std::ios::binary|std::ios::ate);
-    FW_RAISE_IF("Unable to read " << path, !fs.good());
+    SIGHT_THROW_IF("Unable to read " << path, !fs.good());
 
     std::streampos fileSize = fs.tellg();
     fs.seekg(0, std::ios::beg);
 
-    FW_RAISE_IF(path << ": Bad file size, expected: " << size << ", was: " << fileSize,
-                size - fileSize != 0);
+    SIGHT_THROW_IF(path << ": Bad file size, expected: " << size << ", was: " << fileSize,
+                   size - fileSize != 0);
 
     char* charBuf = static_cast< char* >(buffer);
     fs.read(charBuf, size);
@@ -645,10 +645,10 @@ void BufferManager::setIStreamFactoryImpl(BufferPtrType bufferPtr,
                                           )
 {
     BufferInfoMapType::iterator iterInfo = m_bufferInfos.find(bufferPtr);
-    FW_RAISE_IF("Buffer is not managed by core::memory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    SIGHT_THROW_IF("Buffer is not managed by core::memory::BufferManager.", iterInfo == m_bufferInfos.end() );
     BufferInfo& info = iterInfo->second;
 
-    SLM_ASSERT("Buffer is already set", *bufferPtr == NULL && info.loaded);
+    SIGHT_ASSERT("Buffer is already set", *bufferPtr == NULL && info.loaded);
 
     m_dumpPolicy->setRequest( info, bufferPtr, size );
 
@@ -671,7 +671,7 @@ void BufferManager::setIStreamFactoryImpl(BufferPtrType bufferPtr,
             m_updatedSig->asyncEmit();
             break;
         default:
-            SLM_ASSERT("You shall not pass", 0);
+            SIGHT_ASSERT("You shall not pass", 0);
     }
 }
 
@@ -690,7 +690,7 @@ BufferManager::StreamInfo BufferManager::getStreamInfoImpl(const BufferManager::
 {
     StreamInfo streamInfo;
     BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(bufferPtr);
-    FW_RAISE_IF("Buffer is not managed by core::memory::BufferManager.", iterInfo == m_bufferInfos.end() );
+    SIGHT_THROW_IF("Buffer is not managed by core::memory::BufferManager.", iterInfo == m_bufferInfos.end() );
     const BufferInfo& info = iterInfo->second;
     streamInfo.size       = info.size;
     streamInfo.fsFile     = info.fsFile;

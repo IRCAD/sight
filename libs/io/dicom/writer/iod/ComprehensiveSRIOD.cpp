@@ -72,7 +72,7 @@ void ComprehensiveSRIOD::write(const data::Series::csptr& series)
 {
     // Retrieve image series
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-    SLM_ASSERT("Image series should not be null.", imageSeries);
+    SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
     data::Image::sptr image = imageSeries->getImage();

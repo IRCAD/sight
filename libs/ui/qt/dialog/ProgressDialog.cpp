@@ -24,11 +24,11 @@
 
 #include <core/base.hpp>
 
-#include <QPaintEvent>
-
 #include <ui/base/container/fwContainer.hpp>
 #include <ui/base/IFrame.hpp>
 #include <ui/base/registry/macros.hpp>
+
+#include <QPaintEvent>
 
 fwGuiRegisterMacro( ::sight::ui::qt::dialog::ProgressDialog, ::sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY );
 
@@ -132,7 +132,7 @@ ProgressDialog::~ProgressDialog()
 
 void ProgressDialog::operator()(float percent, std::string msg)
 {
-    SLM_ASSERT("m_pdialog or m_pprogressbar not instanced", m_pprogressbar || m_pdialog);
+    SIGHT_ASSERT("m_pdialog or m_pprogressbar not instanced", m_pprogressbar || m_pdialog);
     int value = (int)(percent*100);
     if(value != this->m_value)
     {

@@ -59,7 +59,7 @@ void Mesh::copyColors(::Ogre::RGBA* _dest, const std::uint8_t* _src, size_t _num
     }
     else
     {
-        SLM_FATAL("We only support RGB or RGBA vertex color");
+        SIGHT_FATAL("We only support RGB or RGBA vertex color");
     }
 }
 

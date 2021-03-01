@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-fwDataRegisterMacro( ::sight::data::ROITraits );
+SIGHT_REGISTER_DATA( ::sight::data::ROITraits );
 
 namespace sight::data
 {
@@ -82,12 +82,12 @@ data::StructureTraits::sptr ROITraits::getStructureTraits()
 void ROITraits::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     ROITraits::csptr other = ROITraits::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    SLM_FATAL("Not implemented." );
+    SIGHT_FATAL("Not implemented." );
 }
 
 } // namespace sight::data

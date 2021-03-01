@@ -37,7 +37,7 @@ class UI_BASE_CLASS_API IPreferences : public service::IService
 {
 
 public:
-    fwCoreServiceMacro(IPreferences, service::IService)
+    SIGHT_DECLARE_SERVICE(IPreferences, service::IService)
 
     /// Constructor
     IPreferences() noexcept

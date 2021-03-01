@@ -29,7 +29,7 @@
 #include <fstream>
 #include <iostream>
 
-fwDataIOReaderRegisterMacro( ::sight::io::base::reader::ArrayReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::ArrayReader );
 
 namespace sight::io::base
 {
@@ -67,13 +67,13 @@ void ArrayReader::read()
 
     std::ifstream fs(file.string().c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 
-    FW_RAISE_IF("Unable to read " << file, !fs.good());
+    SIGHT_THROW_IF("Unable to read " << file, !fs.good());
 
     std::streampos fileSize = fs.tellg();
     fs.seekg(0, std::ios::beg);
 
-    FW_RAISE_IF(file << ": Bad file size, expected: " << arraySizeInBytes << ", was: " << fileSize,
-                arraySizeInBytes - static_cast<size_t>(fileSize) != 0);
+    SIGHT_THROW_IF(file << ": Bad file size, expected: " << arraySizeInBytes << ", was: " << fileSize,
+                   arraySizeInBytes - static_cast<size_t>(fileSize) != 0);
 
     fs.read(buff, static_cast<std::streamsize>(arraySizeInBytes));
 

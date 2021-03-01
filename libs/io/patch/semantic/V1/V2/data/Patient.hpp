@@ -39,7 +39,7 @@ namespace data
 class IO_PATCH_CLASS_API Patient : public io::atoms::patch::ISemanticPatch
 {
 public:
-    fwCoreClassMacro(Patient, io::atoms::patch::ISemanticPatch, new Patient)
+    SIGHT_DECLARE_CLASS(Patient, io::atoms::patch::ISemanticPatch, new Patient)
 
     /// Constructor
     IO_PATCH_API Patient();

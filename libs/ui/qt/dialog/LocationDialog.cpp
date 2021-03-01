@@ -26,14 +26,14 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/location/SingleFile.hpp>
 
+#include <ui/base/dialog/ILocationDialog.hpp>
+#include <ui/base/registry/macros.hpp>
+
 #include <boost/tokenizer.hpp>
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QString>
-
-#include <ui/base/dialog/ILocationDialog.hpp>
-#include <ui/base/registry/macros.hpp>
 
 #include <filesystem>
 #include <functional>
@@ -80,7 +80,7 @@ data::location::ILocation::sptr LocationDialog::show()
 
     if (m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
     {
-        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ui::base::dialog::ILocationDialog::READ);
+        SIGHT_ASSERT("MULTI_FILES type must have a READ style", m_style & ui::base::dialog::ILocationDialog::READ);
 
         dialog.setFilter(QDir::Filter::Files);
         dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);

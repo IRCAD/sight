@@ -61,8 +61,8 @@ void SScreenSelector::configuring()
 
     m_mode = configTree.get("config.<xmlattr>.mode", m_mode);
 
-    SLM_ERROR_IF("Unknown selection mode '" + m_mode + "'.",
-                 m_mode != "current" && m_mode != "neighbor" && m_mode != "select");
+    SIGHT_ERROR_IF("Unknown selection mode '" + m_mode + "'.",
+                   m_mode != "current" && m_mode != "neighbor" && m_mode != "select");
 }
 
 //------------------------------------------------------------------------------

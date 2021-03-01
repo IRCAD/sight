@@ -144,7 +144,7 @@ protected:
 template<typename DATA_TYPE>
 inline SPTR(DATA_TYPE) Field::setDefaultField(const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue)
 {
-    SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
+    SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     data::Object::sptr object = m_object.lock();
     data::Object::sptr field  = object->getField(name);
     if (!field)

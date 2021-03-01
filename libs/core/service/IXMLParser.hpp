@@ -52,7 +52,7 @@ class SERVICE_CLASS_API IXMLParser : public service::IService
 {
 public:
 
-    fwCoreServiceMacro(IXMLParser, service::IService)
+    SIGHT_DECLARE_SERVICE(IXMLParser, service::IService)
 
 public:
 

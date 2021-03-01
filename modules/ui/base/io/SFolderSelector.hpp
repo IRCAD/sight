@@ -52,7 +52,7 @@ namespace io
 class MODULE_UI_BASE_CLASS_API SFolderSelector : public ::sight::ui::base::IAction
 {
 public:
-    fwCoreServiceMacro(SFolderSelector, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SFolderSelector, sight::ui::base::IAction)
 
     /**
      * @name Signals API

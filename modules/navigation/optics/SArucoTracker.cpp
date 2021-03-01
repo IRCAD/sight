@@ -32,12 +32,12 @@
 #include <data/MarkerTL.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 
-#include <boost/foreach.hpp>
-#include <boost/tokenizer.hpp>
-
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
+
+#include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
@@ -48,7 +48,7 @@ namespace sight::module::navigation::optics
 {
 //-----------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
+const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG  = "detectionDone";
 const core::com::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
 
 const core::com::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
@@ -161,7 +161,7 @@ void SArucoTracker::starting()
         data::MarkerTL::sptr markerTL = this->getInOut< data::MarkerTL >(s_TAGTL_INOUT_GROUP, i);
         if(markerTL)
         {
-            SLM_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
+            SIGHT_ASSERT("Marker id(s) for timeline #" << i << " not found", i < m_markers.size());
             markerTL->initPoolSize(static_cast<unsigned int>(m_markers[i].size()));
         }
     }
@@ -218,7 +218,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         {
             const CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
-            SLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
+            SIGHT_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
 
             if(buffer)
             {
@@ -258,8 +258,8 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         // Discard "exotic" values of components (0, 2, > 4).
         else
         {
-            SLM_ERROR("Invalid number of components ( " + std::to_string(nbOfComponents) + " ) for : '"
-                      + s_FRAME_INOUT + "' (accepted values are 1, 3 or 4). ");
+            SIGHT_ERROR("Invalid number of components ( " + std::to_string(nbOfComponents) + " ) for : '"
+                        + s_FRAME_INOUT + "' (accepted values are 1, 3 or 4). ");
 
             return;
         }
@@ -338,7 +338,7 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
                         {
                             auto markerMap =
                                 this->getInOut< data::MarkerMap >(s_MARKER_MAP_INOUT_GROUP, tagTLIndex);
-                            SLM_ASSERT("Marker map not found", markerMap);
+                            SIGHT_ASSERT("Marker map not found", markerMap);
 
                             data::MarkerMap::MarkerType marker;
                             marker.resize(4);
@@ -391,13 +391,13 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
         int val                                               = _val;
         if(m_detectorParams->adaptiveThreshWinSizeMin < s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE)
         {
-            SLM_ERROR("Tried to set adaptiveThreshWinSizeMin < 3, let it set to 3");
+            SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMin < 3, let it set to 3");
             val = s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE;
         }
         if(val >= m_detectorParams->adaptiveThreshWinSizeMax)
         {
             val = m_detectorParams->adaptiveThreshWinSizeMax - 1;
-            SLM_ERROR("Tried to set adaptiveThreshWinSizeMin > adaptiveThreshWinSizeMax, let it set to " << val);
+            SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMin > adaptiveThreshWinSizeMax, let it set to " << val);
         }
         m_detectorParams->adaptiveThreshWinSizeMin = val;
     }
@@ -407,7 +407,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
         if(m_detectorParams->adaptiveThreshWinSizeMin >= val)
         {
             val = m_detectorParams->adaptiveThreshWinSizeMin + 1;
-            SLM_ERROR("Tried to set adaptiveThreshWinSizeMax < adaptiveThreshWinSizeMin, let it set to " << val);
+            SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMax < adaptiveThreshWinSizeMin, let it set to " << val);
         }
         m_detectorParams->adaptiveThreshWinSizeMax = val;
     }
@@ -429,7 +429,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
         if(val <= 0)
         {
             val = 1;
-            SLM_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
+            SIGHT_ERROR("Tried to set cornerRefinementMaxIterations <=0, let it set to " << val);
         }
         m_detectorParams->cornerRefinementMaxIterations = val;
     }
@@ -443,7 +443,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
@@ -481,7 +481,7 @@ void SArucoTracker::setDoubleParameter(double _val, std::string _key)
         if(val <= 0.)
         {
             val = 0.01;
-            SLM_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
+            SIGHT_ERROR("Tried to set cornerRefinementMinAccuracy <=0, let it set to " << val);
         }
         m_detectorParams->cornerRefinementMinAccuracy = val;
     }
@@ -503,7 +503,7 @@ void SArucoTracker::setDoubleParameter(double _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
@@ -528,7 +528,7 @@ void SArucoTracker::setBoolParameter(bool _val, std::string _key)
     }
     else
     {
-        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+        SIGHT_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 

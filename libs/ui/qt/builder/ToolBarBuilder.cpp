@@ -28,11 +28,11 @@
 
 #include <data/tools/Color.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <QToolBar>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::base::builder::ToolBarBuilder,
                     ::sight::ui::base::builder::IToolBarBuilder::REGISTRY_KEY);
@@ -59,7 +59,7 @@ ToolBarBuilder::~ToolBarBuilder()
 void ToolBarBuilder::createToolBar( ui::base::container::fwContainer::sptr parent )
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
     QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     QToolBar* toolBar = new QToolBar(QObject::tr("ToolBar"));
@@ -108,7 +108,7 @@ void ToolBarBuilder::createToolBar( ui::base::container::fwContainer::sptr paren
     else // parent is not a QMainWindow
     {
         QWidget* widget = m_parent->getQtContainer();
-        SLM_ASSERT("Parent container must have a layout", widget->layout());
+        SIGHT_ASSERT("Parent container must have a layout", widget->layout());
         QBoxLayout* layout = qobject_cast<QBoxLayout*> ( widget->layout() );
         switch (m_alignment)
         {
@@ -129,7 +129,7 @@ void ToolBarBuilder::createToolBar( ui::base::container::fwContainer::sptr paren
                 toolBar->setOrientation(Qt::Vertical);
                 break;
         }
-        SLM_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
+        SIGHT_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
         layout->insertWidget(0, toolBar, 0);
     }
 
@@ -142,8 +142,8 @@ void ToolBarBuilder::createToolBar( ui::base::container::fwContainer::sptr paren
 
 void ToolBarBuilder::destroyToolBar()
 {
-    SLM_ASSERT("The ToolBar is not initialized", m_toolBar);
-    SLM_ASSERT("The parent's container is not a QtContainer", m_parent);
+    SIGHT_ASSERT("The ToolBar is not initialized", m_toolBar);
+    SIGHT_ASSERT("The parent's container is not a QtContainer", m_parent);
     QMainWindow* window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     if (window)

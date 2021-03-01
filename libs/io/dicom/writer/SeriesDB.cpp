@@ -30,7 +30,7 @@
 
 #include <filesystem>
 
-fwDataIOWriterRegisterMacro(::sight::io::dicom::writer::SeriesDB);
+SIGHT_REGISTER_IO_WRITER(::sight::io::dicom::writer::SeriesDB);
 
 namespace sight::io::dicom
 {
@@ -60,7 +60,7 @@ void SeriesDB::write()
 //    ::gdcm::Trace::SetWarning(false);
 
     data::SeriesDB::csptr seriesDB = this->getConcreteObject();
-    SLM_ASSERT("SeriesDB not instanced", seriesDB);
+    SIGHT_ASSERT("SeriesDB not instanced", seriesDB);
 
     io::dicom::writer::Series::sptr writer = io::dicom::writer::Series::New();
     writer->setFiducialsExportMode(m_fiducialsExportMode);

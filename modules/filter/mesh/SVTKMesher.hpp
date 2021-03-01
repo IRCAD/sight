@@ -58,7 +58,7 @@ class MODULE_FILTER_MESH_CLASS_API SVTKMesher : public service::IOperator
 
 public:
 
-    fwCoreServiceMacro(SVTKMesher, sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SVTKMesher, sight::service::IOperator)
 
     MODULE_FILTER_MESH_API SVTKMesher() noexcept;
 

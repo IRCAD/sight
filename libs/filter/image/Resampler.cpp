@@ -74,7 +74,7 @@ struct Resampling
         typename ImageType::SpacingType spacing     = itkImage->GetSpacing();
         typename ImageType::DirectionType direction = itkImage->GetDirection();
 
-        SLM_ASSERT("Input spacing can't be null along any axis", spacing[0] > 0 && spacing[1] > 0 && spacing[2] > 0);
+        SIGHT_ASSERT("Input spacing can't be null along any axis", spacing[0] > 0 && spacing[1] > 0 && spacing[2] > 0);
 
         if(params.i_targetImage)
         {
@@ -86,7 +86,7 @@ struct Resampling
                 origin[i]  = params.i_targetImage->getOrigin2()[i];
                 spacing[i] = params.i_targetImage->getSpacing2()[i];
 
-                SLM_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
+                SIGHT_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
             }
         }
 
@@ -168,8 +168,8 @@ data::Image::sptr Resampler::resample(const data::Image::csptr& _img,
     const auto& inputOrigin  = _img->getOrigin2();
     const auto& inputSpacing = _img->getSpacing2();
 
-    SLM_ASSERT("Image dimension must be 3.",
-               inputOrigin.size() == 3 && inputSpacing.size() == 3 && inputSize.size() == 3);
+    SIGHT_ASSERT("Image dimension must be 3.",
+                 inputOrigin.size() == 3 && inputSpacing.size() == 3 && inputSize.size() == 3);
 
     typename BoundingBoxType::Pointer inputBB = BoundingBoxType::New();
 

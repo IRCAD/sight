@@ -22,12 +22,12 @@
 
 #include "ui/qt/dialog/MessageDialog.hpp"
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QApplication>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QVector>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::dialog::MessageDialog, ::sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY );
 
@@ -116,7 +116,7 @@ void MessageDialog::setDefaultButton(ui::base::dialog::IMessageDialog::Buttons b
 ui::base::dialog::IMessageDialog::Buttons MessageDialog::show()
 {
     MessageDialogQtIconsType::const_iterator iterIcon = messageDialogQtIcons.find(m_icon);
-    SLM_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end());
+    SIGHT_ASSERT("Unknown Icon", iterIcon != messageDialogQtIcons.end());
 
     QMessageBox::Icon icon               = iterIcon->second;
     QString title                        = QString::fromStdString(m_title);

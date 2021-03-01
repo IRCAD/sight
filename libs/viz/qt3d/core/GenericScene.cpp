@@ -117,7 +117,7 @@ FrameGraph* const GenericScene::getFrameGraph() const
 
 void GenericScene::setCamera(Qt3DRender::QCamera* _camera)
 {
-    SLM_ASSERT("Camera can't be set to null value.", _camera);
+    SIGHT_ASSERT("Camera can't be set to null value.", _camera);
     m_camera = _camera;
     m_frameGraph->setCamera(_camera);
 }
@@ -147,7 +147,7 @@ void GenericScene::setRenderSettings(Qt3DRender::QRenderSettings* _renderSetting
 
 void GenericScene::setFrameGraph(FrameGraph* _frameGraph)
 {
-    SLM_ASSERT("FrameGraph can't be set to null value.", _frameGraph);
+    SIGHT_ASSERT("FrameGraph can't be set to null value.", _frameGraph);
     m_frameGraph = _frameGraph;
 }
 

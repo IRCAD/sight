@@ -30,7 +30,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(SeriesDB))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(SeriesDB))
 {
     builder
     .tag("object_version", "1")

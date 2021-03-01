@@ -39,7 +39,7 @@ namespace ut
 class TestConfigService : public service::IService
 {
 public:
-    fwCoreServiceMacro(TestConfigService, service::IService)
+    SIGHT_DECLARE_SERVICE(TestConfigService, service::IService)
     TestConfigService() noexcept :
         m_isUpdated(false)
     {
@@ -93,7 +93,7 @@ class TestServiceImplementationImage : public TestConfigService
 {
 
 public:
-    fwCoreServiceMacro(TestServiceImplementationImage, service::ut::TestConfigService)
+    SIGHT_DECLARE_SERVICE(TestServiceImplementationImage, service::ut::TestConfigService)
     TestServiceImplementationImage() noexcept
     {
     }

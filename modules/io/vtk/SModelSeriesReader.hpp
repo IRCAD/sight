@@ -67,7 +67,7 @@ class MODULE_IO_VTK_CLASS_API SModelSeriesReader : public sight::io::base::servi
 {
 
 public:
-    fwCoreServiceMacro(SModelSeriesReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SModelSeriesReader, sight::io::base::service::IReader)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 

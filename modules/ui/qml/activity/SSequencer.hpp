@@ -28,9 +28,9 @@
 
 #include <data/ActivitySeries.hpp>
 
-#include <QStringList>
-
 #include <ui/qml/IQmlEditor.hpp>
+
+#include <QStringList>
 
 namespace sight::module::ui::qml::activity
 {
@@ -94,7 +94,7 @@ Q_OBJECT
 Q_PROPERTY(QStringList activityIds MEMBER m_qActivityIds)
 public:
 
-    fwCoreServiceMacro(SSequencer, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SSequencer, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SSequencer();

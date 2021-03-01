@@ -49,12 +49,12 @@ BarrierDump::BarrierDump() :
 void BarrierDump::allocationRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                      BufferInfo::SizeType size )
 {
-    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
+    SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
     if(!info.loaded)
     {
-        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
+        SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
     this->apply();
@@ -65,12 +65,12 @@ void BarrierDump::allocationRequest( BufferInfo& info, core::memory::BufferManag
 void BarrierDump::setRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                               BufferInfo::SizeType size )
 {
-    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
+    SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
     if(!info.loaded)
     {
-        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
+        SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
     this->apply();
@@ -81,12 +81,12 @@ void BarrierDump::setRequest( BufferInfo& info, core::memory::BufferManager::Con
 void BarrierDump::reallocateRequest( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer,
                                      BufferInfo::SizeType newSize )
 {
-    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
+    SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
     if(!info.loaded)
     {
-        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
+        SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
     this->apply();
@@ -98,10 +98,10 @@ void BarrierDump::destroyRequest( BufferInfo& info, core::memory::BufferManager:
 {
     if(!info.loaded)
     {
-        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
+        SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
-    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
+    SIGHT_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
 }
 
@@ -129,7 +129,7 @@ void BarrierDump::dumpSuccess( BufferInfo& info, core::memory::BufferManager::Co
 
 void BarrierDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType buffer )
 {
-    SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
+    SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
 }
 
@@ -137,7 +137,7 @@ void BarrierDump::restoreSuccess( BufferInfo& info, core::memory::BufferManager:
 
 size_t BarrierDump::getTotalAlive() const
 {
-    SLM_ASSERT("More dumped data than allocated data.", m_totalAllocated >= m_totalDumped);
+    SIGHT_ASSERT("More dumped data than allocated data.", m_totalAllocated >= m_totalDumped);
     size_t totalAlive = m_totalAllocated - m_totalDumped;
     return totalAlive;
 }
@@ -231,11 +231,11 @@ bool BarrierDump::setParam(const std::string& name, const std::string& value)
     }
     catch( core::memory::exception::BadCast const& )
     {
-        SLM_ERROR("Bad value for " << name << " : " << value);
+        SIGHT_ERROR("Bad value for " << name << " : " << value);
         return false;
     }
 
-    SLM_ERROR("Bad parameter name " << name );
+    SIGHT_ERROR("Bad parameter name " << name );
     return false;
 }
 

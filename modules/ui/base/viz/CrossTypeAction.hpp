@@ -44,7 +44,7 @@ class MODULE_UI_BASE_CLASS_API CrossTypeAction : public ::sight::ui::base::IActi
 
 public:
 
-    fwCoreServiceMacro(CrossTypeAction, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(CrossTypeAction, ::sight::ui::base::IAction)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API CrossTypeAction() noexcept;

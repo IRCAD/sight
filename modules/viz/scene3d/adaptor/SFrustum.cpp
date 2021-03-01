@@ -182,7 +182,7 @@ void SFrustum::setOgreCamFromData()
     }
     else
     {
-        SLM_WARN("The camera '" + s_CAMERA_INPUT + "' is not calibrated");
+        SIGHT_WARN("The camera '" + s_CAMERA_INPUT + "' is not calibrated");
     }
 }
 

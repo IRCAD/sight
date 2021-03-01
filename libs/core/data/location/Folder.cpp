@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-fwDataRegisterMacro( ::sight::data::location::Folder );
+SIGHT_REGISTER_DATA( ::sight::data::location::Folder );
 
 namespace sight::data
 {
@@ -36,7 +36,7 @@ namespace location
 
 Folder::Folder( data::Object::Key key )
 {
-    FwCoreNotUsedMacro(key);
+    SIGHT_NOT_USED(key);
 }
 
 //------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ Folder::~Folder()
 
 Folder::sptr Folder::New(PathType path, bool recursive )
 {
-    FwCoreNotUsedMacro(recursive);
+    SIGHT_NOT_USED(recursive);
     Folder::sptr folder = Folder::New();
     folder->setFolder(path);
     return folder;
@@ -60,9 +60,9 @@ Folder::sptr Folder::New(PathType path, bool recursive )
 void Folder::shallowCopy(const Object::csptr& _source )
 {
     Folder::csptr other = Folder::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     this->m_folder = other->m_folder;
 }
@@ -72,9 +72,9 @@ void Folder::shallowCopy(const Object::csptr& _source )
 void Folder::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Folder::csptr other = Folder::dynamicConstCast(_source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     this->m_folder = other->m_folder;
 }

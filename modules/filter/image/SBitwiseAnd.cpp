@@ -27,13 +27,13 @@
 #include <core/tools/DynamicTypeKeyTypeMapping.hpp>
 #include <core/tools/IntegerTypes.hpp>
 
+#include <data/helper/ImageGetter.hpp>
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
-#include <data/helper/ImageGetter.hpp>
-
-#include <service/macros.hpp>
 
 #include <io/itk/itk.hpp>
+
+#include <service/macros.hpp>
 
 #include <itkAndImageFilter.h>
 #include <itkCastImageFilter.h>
@@ -42,9 +42,8 @@
 namespace sight::module::filter::image
 {
 
-
 static const service::IService::KeyType s_IMAGE_IN = "image";
-static const service::IService::KeyType s_MASK_IN = "mask";
+static const service::IService::KeyType s_MASK_IN  = "mask";
 
 static const service::IService::KeyType s_OUTPUTIMAGE_OUT = "outputImage";
 
@@ -70,7 +69,7 @@ struct AndImageFilter
         data::Image::sptr outputImage = params.outputImage;
 
         const unsigned int dimension = 3;
-        SLM_ASSERT("Only image dimension 3 managed.", inputImage->getNumberOfDimensions() == dimension);
+        SIGHT_ASSERT("Only image dimension 3 managed.", inputImage->getNumberOfDimensions() == dimension);
 
         typedef typename ::itk::Image<PIXELTYPE, dimension> InputImageType;
         typedef typename ::itk::Image<MASK_PIXELTYPE, dimension>  MaskImageType;
@@ -151,10 +150,10 @@ void SBitwiseAnd::starting()
 void SBitwiseAnd::updating()
 {
     const auto image = this->getLockedInput< data::Image >(s_IMAGE_IN);
-    SLM_ASSERT("image does not exist.", image);
+    SIGHT_ASSERT("image does not exist.", image);
 
     const auto mask = this->getLockedInput< data::Image >(s_MASK_IN);
-    SLM_ASSERT("mask does not exist.", mask);
+    SIGHT_ASSERT("mask does not exist.", mask);
 
     data::helper::ImageGetter imageHelper(image.get_shared());
     data::helper::ImageGetter maskHelper(mask.get_shared());

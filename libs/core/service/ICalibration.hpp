@@ -34,7 +34,7 @@ namespace sight::service
 class SERVICE_CLASS_API ICalibration : public service::IService
 {
 public:
-    fwCoreServiceMacro(ICalibration, service::IService)
+    SIGHT_DECLARE_SERVICE(ICalibration, service::IService)
 
     /// Constructor.
     SERVICE_API ICalibration() noexcept;

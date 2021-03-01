@@ -41,7 +41,7 @@ namespace builder
 class UI_BASE_CLASS_API IToolBarBuilder : public ui::base::GuiBaseObject
 {
 public:
-    fwCoreClassMacro(IToolBarBuilder, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IToolBarBuilder, ui::base::GuiBaseObject)
 
     typedef std::string RegistryKeyType;
 

@@ -74,7 +74,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::IOperator
 
 public:
 
-    fwCoreServiceMacro(SPlaneSlicer, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::IOperator)
 
     /// Constructor.
     MODULE_FILTER_IMAGE_API SPlaneSlicer() noexcept;

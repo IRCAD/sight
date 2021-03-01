@@ -49,7 +49,7 @@ public:
     static const std::string s_UNCONFIGURED;
     static const std::string s_NOT_DEFINED;
 
-    fwCoreServiceMacro(TestService, service::IService)
+    SIGHT_DECLARE_SERVICE(TestService, service::IService)
     TestService() noexcept
     {
     }
@@ -153,7 +153,7 @@ class TestServiceImplementation : public TestService
 {
 
 public:
-    fwCoreServiceMacro(TestServiceImplementation, service::ut::TestService)
+    SIGHT_DECLARE_SERVICE(TestServiceImplementation, service::ut::TestService)
 
     /// Keys to register Signal
     static const core::com::Signals::SignalKeyType s_MSG_SENT_SIG;
@@ -243,7 +243,7 @@ class TestServiceImplementation2 : public TestService
 {
 
 public:
-    fwCoreServiceMacro(TestServiceImplementation2, service::ut::TestService)
+    SIGHT_DECLARE_SERVICE(TestServiceImplementation2, service::ut::TestService)
 
     //-------------------------------------------------------------------------
     TestServiceImplementation2() noexcept
@@ -262,7 +262,7 @@ class TestSrvAutoconnect : public TestService
 {
 
 public:
-    fwCoreServiceMacro(TestSrvAutoconnect, service::ut::TestService)
+    SIGHT_DECLARE_SERVICE(TestSrvAutoconnect, service::ut::TestService)
 
     /// Keys to register Signal
     static const core::com::Signals::SignalKeyType s_SIG_1;
@@ -344,7 +344,7 @@ public:
     static const KeyType s_INOUT_GROUP;
     static const KeyType s_OUTPUT;
 
-    fwCoreServiceMacro(TestServiceWithData, service::IService)
+    SIGHT_DECLARE_SERVICE(TestServiceWithData, service::IService)
     TestServiceWithData() noexcept
     {
         this->registerObject(s_INPUT, AccessType::INPUT, true, false);

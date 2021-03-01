@@ -36,7 +36,7 @@ namespace parser
 class Float : public GenericField
 {
 public:
-    fwCoreServiceMacro(Float, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Float, service::IXMLParser)
 };
 
 } //namespace parser

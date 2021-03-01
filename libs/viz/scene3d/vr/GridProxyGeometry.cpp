@@ -209,7 +209,7 @@ void GridProxyGeometry::initializeGridMaterials()
     m_geomGeneratorPass = geomGeneratorMtl->getTechnique(0)->getPass(0);
 
     ::Ogre::TextureUnitState* tex3DState = m_gridComputingPass->getTextureUnitState("image");
-    SLM_ASSERT("'image' texture unit is not found", tex3DState);
+    SIGHT_ASSERT("'image' texture unit is not found", tex3DState);
     tex3DState->setTexture(m_3DImageTexture);
 
     this->setupGrid();
@@ -306,7 +306,7 @@ void GridProxyGeometry::setupGrid()
 
         ::Ogre::TextureUnitState* gridTexState = m_geomGeneratorPass->getTextureUnitState("gridVolume");
 
-        SLM_ASSERT("'gridVolume' texture unit is not found", gridTexState);
+        SIGHT_ASSERT("'gridVolume' texture unit is not found", gridTexState);
         gridTexState->setTexture(this->m_gridTexture);
     }
 }
@@ -356,7 +356,7 @@ void GridProxyGeometry::clipGrid(const Ogre::AxisAlignedBox& _clippingBox)
     }
     else if(_clippingBox.isNull())
     {
-        SLM_ERROR("Unexpected empty clipping box, no proxy geometry will be generated.");
+        SIGHT_ERROR("Unexpected empty clipping box, no proxy geometry will be generated.");
         geomParams->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
         geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3::ZERO);
     }

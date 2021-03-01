@@ -30,7 +30,7 @@
 
 #include <iostream>
 
-fwDataIOWriterRegisterMacro( ::sight::io::base::writer::GzBufferImageWriter);
+SIGHT_REGISTER_IO_WRITER( ::sight::io::base::writer::GzBufferImageWriter);
 
 namespace sight::io::base
 {
@@ -61,7 +61,7 @@ void GzBufferImageWriter::write()
 
     /// test if can open archive
     gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");
-    SLM_ASSERT("rawFile not instanced", rawFile);
+    SIGHT_ASSERT("rawFile not instanced", rawFile);
     if ( rawFile == 0 )
     {
         std::string str = "GzBufferImageWriter::write unable to open ";

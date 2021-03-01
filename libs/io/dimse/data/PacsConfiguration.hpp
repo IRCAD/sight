@@ -27,7 +27,7 @@
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(io)(dimse)(data)(PacsConfiguration), IO_DIMSE_API);
+SIGHT_DECLARE_DATA_REFLECTION((sight)(io)(dimse)(data)(PacsConfiguration), IO_DIMSE_API);
 
 namespace sight::io::dimse
 {
@@ -41,8 +41,8 @@ class IO_DIMSE_CLASS_API PacsConfiguration : public sight::data::Object
 
 public:
 
-    fwCoreClassMacro(PacsConfiguration, sight::data::Object, sight::data::factory::New< PacsConfiguration >)
-    fwCampMakeFriendDataMacro((sight)(io)(dimse)(data)(PacsConfiguration));
+    SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::Object, sight::data::factory::New< PacsConfiguration >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(io)(dimse)(data)(PacsConfiguration));
 
     /**
      * @brief Constructor

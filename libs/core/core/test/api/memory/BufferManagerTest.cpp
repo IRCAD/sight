@@ -162,31 +162,31 @@ void BufferManagerTest::memoryInfoTest()
     core::memory::BufferManager::sptr manager = core::memory::BufferManager::getDefault();
 
     {
-        SLM_INFO(manager->toString().get());
+        SIGHT_INFO(manager->toString().get());
         core::memory::BufferObject::sptr bo = core::memory::BufferObject::New();
         const int SIZE                      = 100000;
         bo->allocate(SIZE);
-        SLM_INFO(manager->toString().get());
+        SIGHT_INFO(manager->toString().get());
         core::memory::BufferObject::sptr bo1 = core::memory::BufferObject::New();
-        SLM_INFO(manager->toString().get());
+        SIGHT_INFO(manager->toString().get());
         {
             core::memory::BufferObject::Lock lock1(bo1->lock());
-            SLM_INFO(manager->toString().get());
+            SIGHT_INFO(manager->toString().get());
         }
         core::memory::BufferObject::sptr bo2 = core::memory::BufferObject::New();
-        SLM_INFO(manager->toString().get());
+        SIGHT_INFO(manager->toString().get());
         bo->reallocate(SIZE*2);
         {
             core::memory::BufferObject::Lock lock(bo->lock());
-            SLM_INFO(manager->toString().get());
+            SIGHT_INFO(manager->toString().get());
         }
         bo->destroy();
-        SLM_INFO(manager->toString().get());
+        SIGHT_INFO(manager->toString().get());
         bo1->allocate(SIZE);
         bo2->allocate(SIZE);
         char* buff = new char[SIZE];
         bo->setBuffer( buff, SIZE, core::memory::BufferNewPolicy::New() );
-        SLM_INFO(manager->toString().get());
+        SIGHT_INFO(manager->toString().get());
 
         { core::memory::BufferObject::Lock lock(bo->lock()); }
         { core::memory::BufferObject::Lock lock(bo1->lock()); }
@@ -196,7 +196,7 @@ void BufferManagerTest::memoryInfoTest()
         bo1->destroy();
         bo2->destroy();
     }
-    SLM_INFO(manager->toString().get());
+    SIGHT_INFO(manager->toString().get());
 }
 
 } // namespace ut

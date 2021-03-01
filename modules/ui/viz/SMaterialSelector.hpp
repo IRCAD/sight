@@ -28,13 +28,13 @@
 
 #include <data/Reconstruction.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
 #include <QString>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -66,7 +66,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SMaterialSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SMaterialSelector, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_VIZ_API SMaterialSelector() noexcept;

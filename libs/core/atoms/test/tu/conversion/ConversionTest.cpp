@@ -93,7 +93,7 @@ void compare(data::Object::sptr objRef, data::Object::sptr objComp)
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        SIGHT_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
     CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
@@ -609,7 +609,7 @@ class ClassNotCamped : public data::Object
 {
 public:
 
-    fwCoreClassMacro(ClassNotCamped, data::Object, data::factory::New< ClassNotCamped >)
+    SIGHT_DECLARE_CLASS(ClassNotCamped, data::Object, data::factory::New< ClassNotCamped >)
 
     ClassNotCamped(data::Object::Key)
     {
@@ -715,7 +715,7 @@ void ConversionTest::nullPtrManagmentTest()
 
 //-----------------------------------------------------------------------------
 
-fwCampAutoDeclareDataMacro((sight)(atoms)(conversion)(ut)(ClassNotManaged));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(atoms)(conversion)(ut)(ClassNotManaged));
 
 namespace sight::atoms::conversion
 {
@@ -727,9 +727,9 @@ class ClassNotManaged : public data::Object
 
 public:
 
-    fwCoreClassMacro(ClassNotManaged, data::Object, data::factory::New< ClassNotManaged >)
+    SIGHT_DECLARE_CLASS(ClassNotManaged, data::Object, data::factory::New< ClassNotManaged >)
 
-    fwCampMakeFriendDataMacro((sight)(atoms)(conversion)(ut)(ClassNotManaged))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(atoms)(conversion)(ut)(ClassNotManaged))
 
     ClassNotManaged(data::Object::Key)
     {
@@ -749,7 +749,7 @@ public:
 }     // namespace ut
 }  // namespace sight::atoms::conversion
 
-fwCampImplementDataMacro((sight)(atoms)(conversion)(ut)(ClassNotManaged))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(atoms)(conversion)(ut)(ClassNotManaged))
 {
     builder
     .tag("object_version", "1")

@@ -62,7 +62,7 @@ class EXTIMELINE_CLASS_API SConsumer : public sight::service::IService
 public:
     EXTIMELINE_API static const sight::core::com::Slots::SlotKeyType s_CONSUME_SLOT;
 
-    fwCoreServiceMacro(SConsumer, sight::service::IService)
+    SIGHT_DECLARE_SERVICE(SConsumer, sight::service::IService)
 
     EXTIMELINE_API SConsumer() noexcept;
     EXTIMELINE_API virtual ~SConsumer() noexcept;

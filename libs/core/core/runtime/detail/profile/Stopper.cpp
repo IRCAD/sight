@@ -51,16 +51,16 @@ Stopper::Stopper( const std::string& identifier ) :
 void Stopper::apply()
 {
     auto module = detail::Runtime::get().findEnabledModule(m_identifier);
-    SLM_FATAL_IF("Unable to stop module " + m_identifier + ". Not found.",
-                 module == nullptr);
+    SIGHT_FATAL_IF("Unable to stop module " + m_identifier + ". Not found.",
+                   module == nullptr);
     try
     {
-        SLM_INFO("Stopping module : " + m_identifier);
+        SIGHT_INFO("Stopping module : " + m_identifier);
         module->stop();
     }
     catch( const std::exception& e )
     {
-        SLM_ERROR("Unable to stop module " + m_identifier + ". " + e.what());
+        SIGHT_ERROR("Unable to stop module " + m_identifier + ". " + e.what());
     }
 }
 

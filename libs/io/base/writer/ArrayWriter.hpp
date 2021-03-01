@@ -45,8 +45,8 @@ class IO_BASE_CLASS_API ArrayWriter :  public GenericObjectWriter< data::Array >
 
 public:
 
-    fwCoreClassMacro(ArrayWriter, GenericObjectWriter< data::Array>,
-                     io::base::writer::factory::New< ArrayWriter >)
+    SIGHT_DECLARE_CLASS(ArrayWriter, GenericObjectWriter< data::Array>,
+                        io::base::writer::factory::New< ArrayWriter >)
 
     /// Constructor. Do nothing.
     IO_BASE_API ArrayWriter(io::base::writer::IObjectWriter::Key key);

@@ -56,7 +56,7 @@ class MODULE_VIZ_SAMPLE_CLASS_API SMesh : public sight::ui::base::IGuiContainer
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMesh, sight::ui::base::IGuiContainer)
+    SIGHT_DECLARE_SERVICE(SMesh, sight::ui::base::IGuiContainer)
 
     MODULE_VIZ_SAMPLE_API static const core::com::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
 

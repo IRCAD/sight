@@ -115,7 +115,7 @@ void MeshConverter::copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyD
                 dest->GetVertices()->AddCell(4, cell);
                 break;
             default:
-                SLM_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cellType));
+                SIGHT_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(cellType));
         }
     }
 }

@@ -24,10 +24,10 @@
 
 #include "modules/ui/qml/config.hpp"
 
+#include <ui/qml/IQmlEditor.hpp>
+
 #include <QColor>
 #include <QObject>
-
-#include <ui/qml/IQmlEditor.hpp>
 
 namespace sight::module::ui::qml::reconstruction
 {
@@ -74,7 +74,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SOrganMaterialEditor, ::sight::ui::qml::IQmlEditor)
+    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, ::sight::ui::qml::IQmlEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SOrganMaterialEditor() noexcept;

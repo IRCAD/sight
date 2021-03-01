@@ -94,8 +94,8 @@ struct FlippingDimensionExtractor
                 d3(params);
                 break;
             default:
-                SLM_ERROR("Flipping cannot be performed due to incompatible image size ("
-                          + std::to_string(size.size()) + ").");
+                SIGHT_ERROR("Flipping cannot be performed due to incompatible image size ("
+                            + std::to_string(size.size()) + ").");
                 // In this case, we just deep copy the input image in the output
                 params.o_image->deepCopy(params.i_image);
                 break;

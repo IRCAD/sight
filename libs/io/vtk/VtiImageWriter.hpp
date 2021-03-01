@@ -50,9 +50,9 @@ class VtiImageWriter : public io::base::writer::GenericObjectWriter< data::Image
 
 public:
 
-    fwCoreClassMacro(VtiImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
-                     io::base::writer::factory::New< VtiImageWriter >);
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(VtiImageWriter, io::base::writer::GenericObjectWriter< data::Image >,
+                        io::base::writer::factory::New< VtiImageWriter >);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
     IO_VTK_API VtiImageWriter(io::base::writer::IObjectWriter::Key key);

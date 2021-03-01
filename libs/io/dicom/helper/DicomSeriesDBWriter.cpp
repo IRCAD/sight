@@ -28,12 +28,11 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
-
-#include <core/thread/ActiveWorkers.hpp>
 
 #include <io/zip/WriteDirArchive.hpp>
 #include <io/zip/WriteZipArchive.hpp>
@@ -109,7 +108,7 @@ std::string getSubPath(int index)
 void DicomSeriesDBWriter::write()
 {
     data::SeriesDB::csptr seriesDB = this->getConcreteObject();
-    SLM_ASSERT("Unable to retrieve associated SeriesDB", seriesDB);
+    SIGHT_ASSERT("Unable to retrieve associated SeriesDB", seriesDB);
 
     io::zip::IWriteArchive::sptr writeArchive;
 

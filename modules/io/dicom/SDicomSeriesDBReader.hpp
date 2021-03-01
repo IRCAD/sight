@@ -75,7 +75,7 @@ public:
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceMacro(SDicomSeriesDBReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SDicomSeriesDBReader, sight::io::base::service::IReader)
 
     /**
      * @brief   constructor

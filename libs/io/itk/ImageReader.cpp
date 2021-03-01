@@ -41,7 +41,7 @@
 
 #include <filesystem>
 
-fwDataIOReaderRegisterMacro( ::sight::io::itk::ImageReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::itk::ImageReader );
 
 namespace sight::io::itk
 {
@@ -76,8 +76,8 @@ struct ITKLoaderFunctor
     template<class PIXELTYPE>
     void operator()(Parameter& param)
     {
-        SLM_INFO( "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
-                  core::tools::Type::create<PIXELTYPE>().string());
+        SIGHT_INFO( "::io::itk::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
+                    core::tools::Type::create<PIXELTYPE>().string());
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader
         // ne permet pas de l'atteindre
@@ -131,7 +131,7 @@ struct ITKLoaderFunctor
 void ImageReader::read()
 {
     std::filesystem::path file = getFile();
-    SLM_ASSERT("File: "<<file<<" doesn't exist", std::filesystem::exists( file ) );
+    SIGHT_ASSERT("File: "<<file<<" doesn't exist", std::filesystem::exists( file ) );
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
@@ -144,11 +144,11 @@ void ImageReader::read()
 
     core::tools::Dispatcher< core::tools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
 
-    SLM_ASSERT("::sight::data::Image is not well produced", m_object.lock() ); // verify that data::Image is well
+    SIGHT_ASSERT("::sight::data::Image is not well produced", m_object.lock() ); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
-    SLM_ASSERT("Image has an unspecified type",
-               getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
+    SIGHT_ASSERT("Image has an unspecified type",
+                 getConcreteObject()->getType() != core::tools::Type::s_UNSPECIFIED_TYPE );
 }
 
 //------------------------------------------------------------------------------

@@ -47,7 +47,7 @@ bool Composite::refObjectValidator( core::runtime::ConfigurationElement::sptr _c
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            SLM_ERROR(
+            SIGHT_ERROR(
                 "xml subelement \""<< subElementName <<
                     "\" for element object is not supported for the moment when you use a reference on item composite.");
             isOk = false;
@@ -61,7 +61,7 @@ bool Composite::refObjectValidator( core::runtime::ConfigurationElement::sptr _c
 
 void Composite::updating()
 {
-    SLM_FATAL("This method is deprecated, and this, shouldn't be used.");
+    SIGHT_FATAL("This method is deprecated, and this, shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void Composite::createConfig( core::tools::Object::sptr _obj )
     const std::string GET_OBJECT        = "ref";
 
     data::Composite::sptr dataComposite = data::Composite::dynamicCast(_obj);
-    SLM_ASSERT("The passed object must be a data::Composite", dataComposite);
+    SIGHT_ASSERT("The passed object must be a data::Composite", dataComposite);
 
     for( core::runtime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -87,24 +87,24 @@ void Composite::createConfig( core::tools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                SLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
-                            "or GET_OBJECT.",
-                            buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                SIGHT_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
+                              "or GET_OBJECT.",
+                              buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
-            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
-                        elem->hasAttribute("key") );
+            SIGHT_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
+                          elem->hasAttribute("key") );
             std::string key = elem->getExistingAttributeValue("key");
-            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" which is not empty.",
-                        !key.empty() );
-            SLM_ASSERT( "The xml element \"item\" must have one (and only one) xml sub-element \"object\".",
-                        elem->size() == 1 && (*elem->getElements().begin())->getName() == "object" );
+            SIGHT_ASSERT( "The xml element \"item\" must have an attribute named \"key\" which is not empty.",
+                          !key.empty() );
+            SIGHT_ASSERT( "The xml element \"item\" must have one (and only one) xml sub-element \"object\".",
+                          elem->size() == 1 && (*elem->getElements().begin())->getName() == "object" );
 
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in composite
-                SLM_ASSERT("The key "<< key <<" already exists in the composite.", dataComposite->find(
-                               key ) == dataComposite->end() );
+                SIGHT_ASSERT("The key "<< key <<" already exists in the composite.", dataComposite->find(
+                                 key ) == dataComposite->end() );
 
                 // Create and manage object config
                 service::IAppConfigManager::sptr ctm = service::IAppConfigManager::New();
@@ -115,13 +115,13 @@ void Composite::createConfig( core::tools::Object::sptr _obj )
                 data::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
-                SLM_ASSERT("A data::Composite can contain only data::Object", localObj );
+                SIGHT_ASSERT("A data::Composite can contain only data::Object", localObj );
                 (*dataComposite)[ key ] = localObj;
 
             }
             else // if( buildMode == GET_OBJECT )
             {
-                SLM_FATAL("ACH => Todo");
+                SIGHT_FATAL("ACH => Todo");
             }
         }
     }

@@ -69,7 +69,7 @@ class SHistogramValue : public sight::viz::scene2d::IAdaptor
 
 public:
 
-    fwCoreServiceMacro(SHistogramValue, ::sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SHistogramValue, ::sight::viz::scene2d::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API SHistogramValue() noexcept;

@@ -28,13 +28,13 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/location/SingleFile.hpp>
 
-#include <QDir>
-#include <QGuiApplication>
-
 #include <ui/base/dialog/ILocationDialog.hpp>
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
+
+#include <QDir>
+#include <QGuiApplication>
 
 #include <filesystem>
 #include <functional>
@@ -89,7 +89,7 @@ data::location::ILocation::sptr LocationDialog::show()
     context->setContextProperty("locationDialog", this);
     // load the qml ui component
     QObject* dialog = engine->createComponent(dialogPath, context);
-    SLM_ASSERT("The Qml File LocationDialog is not found or not loaded", dialog);
+    SIGHT_ASSERT("The Qml File LocationDialog is not found or not loaded", dialog);
 
     dialog->setProperty("title", caption);
     dialog->setProperty("folder", QUrl::fromLocalFile(path));
@@ -108,7 +108,7 @@ data::location::ILocation::sptr LocationDialog::show()
 
     if (m_type == ui::base::dialog::ILocationDialog::MULTI_FILES)
     {
-        SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ui::base::dialog::ILocationDialog::READ);
+        SIGHT_ASSERT("MULTI_FILES type must have a READ style", m_style & ui::base::dialog::ILocationDialog::READ);
         dialog->setProperty("selectFolder", false);
         dialog->setProperty("selectMultiple", true);
         QStringList files;

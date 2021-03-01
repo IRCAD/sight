@@ -27,9 +27,9 @@
 #include <core/base.hpp>
 #include <core/tools/Object.hpp>
 
-#include <QPointer>
-
 #include <ui/base/container/fwMenu.hpp>
+
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 class QMenu;
@@ -49,7 +49,7 @@ class UI_QT_CLASS_API QtMenuContainer : public ui::base::container::fwMenu
 
 public:
 
-    fwCoreClassMacro(QtMenuContainer, ui::base::container::fwMenu, ui::base::factory::New< QtMenuContainer >)
+    SIGHT_DECLARE_CLASS(QtMenuContainer, ui::base::container::fwMenu, ui::base::factory::New< QtMenuContainer >)
 
     UI_QT_API QtMenuContainer(ui::base::GuiBaseObject::Key key) noexcept;
 

@@ -49,7 +49,7 @@
 
 #include <stack>
 
-fwServicesRegisterMacro( ::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite )
+SIGHT_REGISTER_SERVICE( ::sight::viz::base::IRender, ::sight::viz::scene3d::SRender, ::sight::data::Composite )
 
 namespace sight::viz::scene3d
 {
@@ -110,18 +110,18 @@ void SRender::configuring()
 {
     const ConfigType config = this->getConfigTree();
 
-    SLM_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
+    SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
     const ConfigType sceneCfg = config.get_child("scene");
 
     const size_t nbInouts = config.count("inout");
-    SLM_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
+    SIGHT_ASSERT("This service accepts at most one inout.", nbInouts <= 1);
 
     if(nbInouts == 1)
     {
         const std::string key = config.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
-        SLM_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
+        SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" + s_OFFSCREEN_INOUT +"' is accepted.", m_offScreen);
 
         m_width  = sceneCfg.get<unsigned int>("<xmlattr>.width", m_width);
         m_height = sceneCfg.get<unsigned int>("<xmlattr>.height", m_height);
@@ -137,8 +137,8 @@ void SRender::configuring()
 
 #ifdef __APPLE__
     // TODO: fix fullscreen rendering on macOS.
-    SLM_ERROR("Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
-              "it is therefore disabled.");
+    SIGHT_ERROR("Fullscreen is broken on macOS (as of macOS 10.14 and Qt 5.11.2 and Ogre 1.11.4, "
+                "it is therefore disabled.");
     m_fullscreen = false;
 #endif
 
@@ -157,7 +157,7 @@ void SRender::configuring()
     }
     else
     {
-        SLM_ERROR("Unknown rendering mode '" + renderMode + "'");
+        SIGHT_ERROR("Unknown rendering mode '" + renderMode + "'");
     }
 
     auto adaptorConfigs = sceneCfg.equal_range("adaptor");
@@ -182,11 +182,11 @@ void SRender::starting()
     }
     const ConfigType config = this->getConfigTree();
 
-    SLM_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
+    SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
 
     const ConfigType sceneCfg = config.get_child("scene");
 
-    SLM_ERROR_IF("Overlays should be enabled at the layer level.", !sceneCfg.get("<xmlattr>.overlays", "").empty());
+    SIGHT_ERROR_IF("Overlays should be enabled at the layer level.", !sceneCfg.get("<xmlattr>.overlays", "").empty());
 
     auto layerConfigs = sceneCfg.equal_range("layer");
     for( auto it = layerConfigs.first; it != layerConfigs.second; ++it )
@@ -196,14 +196,14 @@ void SRender::starting()
     auto bkgConfigs = sceneCfg.equal_range("background");
     for( auto it = bkgConfigs.first; it != bkgConfigs.second; ++it )
     {
-        SLM_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
+        SIGHT_ERROR_IF("A background has already been set, overriding it...", bHasBackground);
         try
         {
             this->configureBackgroundLayer(it->second);
         }
         catch (std::exception& e)
         {
-            SLM_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
+            SIGHT_ERROR("Error configuring background for layer '" + this->getID() + "': " + e.what());
         }
 
         bHasBackground = true;
@@ -317,10 +317,10 @@ void SRender::configureLayer(const ConfigType& _cfg )
         enabledOverlays.push_back(overlayName);
     }
 
-    SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
-    SLM_ASSERT( "Unknown 3D mode : " << stereoMode,
-                stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8" ||
-                stereoMode == "Stereo");
+    SIGHT_ASSERT( "'id' required attribute missing or empty", !id.empty() );
+    SIGHT_ASSERT( "Unknown 3D mode : " << stereoMode,
+                  stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8" ||
+                  stereoMode == "Stereo");
 
     int layerOrder        = 0;
     const auto layerDepth = attributes.get_optional<int>("depth");
@@ -333,7 +333,7 @@ void SRender::configureLayer(const ConfigType& _cfg )
     {
         layerOrder = attributes.get<int>("order");
     }
-    SLM_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
+    SIGHT_ASSERT("Attribute 'order' must be greater than 0", layerOrder > 0);
 
     viz::scene3d::Layer::sptr ogreLayer              = viz::scene3d::Layer::New();
     compositor::Core::StereoModeType layerStereoMode =
@@ -364,7 +364,7 @@ void SRender::configureLayer(const ConfigType& _cfg )
 
 void SRender::configureBackgroundLayer(const ConfigType& _cfg )
 {
-    SLM_ASSERT( "'id' required attribute missing or empty", !this->getID().empty() );
+    SIGHT_ASSERT( "'id' required attribute missing or empty", !this->getID().empty() );
     const ConfigType attributes = _cfg.get_child("<xmlattr>");
 
     viz::scene3d::Layer::sptr ogreLayer = viz::scene3d::Layer::New();
@@ -464,7 +464,7 @@ void SRender::requestRender()
         {
             this->makeCurrent();
             ::Ogre::TexturePtr renderTexture = m_interactorManager->getRenderTexture();
-            SLM_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
+            SIGHT_ASSERT("The offscreen window doesn't write to a texture", renderTexture);
             viz::scene3d::Utils::convertFromOgreTexture(renderTexture, image.get_shared(), m_flip);
         }
 
@@ -536,8 +536,8 @@ bool SRender::isShownOnScreen()
 
 viz::scene3d::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
-    SLM_ASSERT("Empty sceneID", !sceneID.empty());
-    SLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
+    SIGHT_ASSERT("Empty sceneID", !sceneID.empty());
+    SIGHT_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
 
     viz::scene3d::Layer::sptr layer = m_layers.at(sceneID);
 

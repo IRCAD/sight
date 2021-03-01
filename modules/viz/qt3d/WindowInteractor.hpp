@@ -26,12 +26,12 @@
 
 #include <core/base.hpp>
 
+#include <ui/base/container/fwContainer.hpp>
+
 #include <viz/qt3d/IWindowInteractor.hpp>
 
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/container/fwContainer.hpp>
 
 namespace sight::ui::qt
 {
@@ -51,14 +51,14 @@ namespace sight::module::viz::qt3d
 
 /// Defines a class to manage a render window.
 class MODULE_VIZ_QT3D_CLASS_API WindowInteractor final : public QObject,
-                                                   public sight::viz::qt3d::IWindowInteractor
+                                                         public sight::viz::qt3d::IWindowInteractor
 {
 
 Q_OBJECT
 
 public:
 
-    fwCoreClassMacro(WindowInteractor, sight::viz::qt3d::IWindowInteractor)
+    SIGHT_DECLARE_CLASS(WindowInteractor, sight::viz::qt3d::IWindowInteractor)
 
     /// Initialize members.
     MODULE_VIZ_QT3D_API WindowInteractor(sight::viz::qt3d::IWindowInteractor::Key);

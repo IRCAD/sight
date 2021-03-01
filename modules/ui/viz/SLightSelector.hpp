@@ -24,6 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <viz/scene3d/ILight.hpp>
 #include <viz/scene3d/Layer.hpp>
 
@@ -35,8 +37,6 @@
 #include <QListWidget>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 #include <string>
 #include <vector>
@@ -68,7 +68,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLightSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SLightSelector, sight::ui::base::IEditor)
 
     /// Initializes signals and slots.
     MODULE_UI_VIZ_API SLightSelector() noexcept;

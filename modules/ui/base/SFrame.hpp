@@ -39,7 +39,7 @@ class MODULE_UI_BASE_CLASS_API SFrame : public ::sight::ui::base::IFrame
 
 public:
 
-    fwCoreServiceMacro(SFrame, ::sight::ui::base::IFrame)
+    SIGHT_DECLARE_SERVICE(SFrame, ::sight::ui::base::IFrame)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SFrame() noexcept;

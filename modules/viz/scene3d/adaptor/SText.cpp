@@ -76,16 +76,16 @@ void SText::configuring()
     m_fontSize   = config.get<size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 
     m_horizontalAlignment = config.get<std::string>(s_H_ALIGN_CONFIG, "left");
-    SLM_ASSERT("'hAlign' must be 'left', 'center' or 'right'",
-               m_horizontalAlignment == "left"
-               || m_horizontalAlignment == "center"
-               || m_horizontalAlignment == "right" );
+    SIGHT_ASSERT("'hAlign' must be 'left', 'center' or 'right'",
+                 m_horizontalAlignment == "left"
+                 || m_horizontalAlignment == "center"
+                 || m_horizontalAlignment == "right" );
 
     m_verticalAlignment = config.get<std::string>(s_V_ALIGN_CONFIG, "bottom");
-    SLM_ASSERT("'vAlign' must be 'top', 'center' or 'bottom'",
-               m_verticalAlignment == "top"
-               || m_verticalAlignment == "center"
-               || m_verticalAlignment == "bottom");
+    SIGHT_ASSERT("'vAlign' must be 'top', 'center' or 'bottom'",
+                 m_verticalAlignment == "top"
+                 || m_verticalAlignment == "center"
+                 || m_verticalAlignment == "bottom");
 
     m_position.x = config.get<float>(s_X_CONFIG, m_position.x);
     m_position.y = config.get<float>(s_Y_CONFIG, m_position.y);

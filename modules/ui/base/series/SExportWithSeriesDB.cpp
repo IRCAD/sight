@@ -30,11 +30,11 @@
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
 
+#include <io/base/service/ioTypes.hpp>
+
+#include <service/extension/Config.hpp>
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/extension/Config.hpp>
-
-#include <io/base/service/ioTypes.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -43,9 +43,8 @@ namespace sight::module::ui::base
 namespace series
 {
 
-
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
+static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
 static const service::IService::KeyType s_SERIES_INOUT = "series";
 
@@ -80,7 +79,7 @@ void SExportWithSeriesDB::configuring()
     if(!vectConfig.empty())
     {
         ConfigurationType selectorConfig = vectConfig.at(0);
-        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
+        SIGHT_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
         m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
     }
 }
@@ -92,7 +91,7 @@ void SExportWithSeriesDB::updating( )
     sight::ui::base::LockAction lock(this->getSptr());
 
     data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
-    SLM_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
+    SIGHT_ASSERT("The inout key '" + s_SERIES_INOUT + "' is not correctly set.", series);
 
     // Create a new SeriesDB
     data::SeriesDB::sptr localSeriesDB = data::SeriesDB::New();
@@ -103,10 +102,10 @@ void SExportWithSeriesDB::updating( )
     // Get the config
     core::runtime::ConfigurationElement::csptr ioCfg;
     ioCfg = service::extension::Config::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                             "::sight::module::ui::base::io::SSelector");
-    SLM_ASSERT("There is no service configuration "
-               << m_ioSelectorSrvConfig
-               << " for module::ui::base::editor::SSelector", ioCfg);
+                                                                       "::sight::module::ui::base::io::SSelector");
+    SIGHT_ASSERT("There is no service configuration "
+                 << m_ioSelectorSrvConfig
+                 << " for module::ui::base::editor::SSelector", ioCfg);
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
@@ -136,7 +135,7 @@ void SExportWithSeriesDB::starting()
     this->sight::ui::base::IAction::actionServiceStarting();
 
     data::Series::sptr series = this->getInOut< data::Series >(s_SERIES_INOUT);
-    SLM_FATAL_IF( "The associated object must be a data::Series.", !series);
+    SIGHT_FATAL_IF( "The associated object must be a data::Series.", !series);
 }
 
 //------------------------------------------------------------------------------

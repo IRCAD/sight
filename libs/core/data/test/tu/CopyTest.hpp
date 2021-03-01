@@ -26,7 +26,7 @@
 
 #define __FWDATA_UT_FIELD_DEEP_COPY_MACRO(ObjType)                                                                        \
     {                                                                                                                     \
-        SLM_WARN("Testing : " << #ObjType);                                                                              \
+        SIGHT_WARN("Testing : " << #ObjType);                                                                              \
         ObjType::sptr object = ObjType::New();                                                                            \
         ObjType::sptr deepCopyObject;                                                                                     \
                                                                                                                           \
@@ -52,7 +52,7 @@
 
 #define __FWDATA_UT_FIELD_COPY_MACRO(ObjType)                                                                        \
     {                                                                                                                \
-        SLM_WARN("Testing : " << #ObjType);                                                                         \
+        SIGHT_WARN("Testing : " << #ObjType);                                                                         \
         ObjType::sptr object            = ObjType::New();                                                            \
         ObjType::sptr deepCopyObject    = ObjType::New();                                                            \
         ObjType::sptr shallowCopyObject = ObjType::New();                                                            \

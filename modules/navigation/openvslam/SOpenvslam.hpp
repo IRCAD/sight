@@ -38,9 +38,9 @@
 #include <data/Mesh.hpp>
 #include <data/PointList.hpp>
 
-#include <service/ITracker.hpp>
-
 #include <navigation/openvslam/OpenvslamConfig.hpp>
+
+#include <service/ITracker.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -140,7 +140,7 @@ class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public service::ITracke
 
 public:
 
-    fwCoreServiceMacro(SOpenvslam, service::ITracker)
+    SIGHT_DECLARE_SERVICE(SOpenvslam, service::ITracker)
 
     /// Constructor. Initializes signals and slots.
     MODULE_NAVIGATION_OPENVSLAM_API SOpenvslam() noexcept;

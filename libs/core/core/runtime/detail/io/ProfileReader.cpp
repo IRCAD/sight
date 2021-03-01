@@ -103,8 +103,8 @@ std::shared_ptr< profile::Profile > ProfileReader::createProfile( const std::fil
             reinterpret_cast<char*>(xmlGetProp(rootNode,
                                                reinterpret_cast<const xmlChar*>( CHECK_SINGLE_INSTANCE.c_str())));
 
-        SLM_ASSERT("Application profile MUST have a name attribute", pName);
-        SLM_ASSERT("Application profile MUST have a version attribute", pVersion);
+        SIGHT_ASSERT("Application profile MUST have a name attribute", pName);
+        SIGHT_ASSERT("Application profile MUST have a version attribute", pVersion);
 
         std::string sName( pName );
         std::string sVersion( pVersion );

@@ -28,7 +28,7 @@
 
 #include <array>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Point));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Point));
 
 namespace sight::data
 {
@@ -43,7 +43,7 @@ public:
     typedef double PointCoordType;
     typedef std::array<double, 3> PointCoordArrayType;
 
-    fwCoreClassMacro(Point, data::Object, data::factory::New< Point >)
+    SIGHT_DECLARE_CLASS(Point, data::Object, data::factory::New< Point >)
 
     /// Point factory
     DATA_API static Point::sptr New(float x, float y = 0.f, float z = 0.f);
@@ -51,7 +51,7 @@ public:
     DATA_API static Point::sptr New(const PointCoordArrayType& coord);
     DATA_API static Point::sptr New(const Point::sptr& p);
 
-    fwCampMakeFriendDataMacro((sight)(data)(Point));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Point));
 
     /**
      * @brief Constructor

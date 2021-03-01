@@ -28,4 +28,4 @@
 
 #include <core/reflection/macros.hpp>
 
-fwCampDeclareAccessor((sight)(data)(ModelSeries), (sight)(data)(DicomSeries));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ModelSeries), (sight)(data)(DicomSeries));

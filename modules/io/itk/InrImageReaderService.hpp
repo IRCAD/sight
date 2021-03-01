@@ -58,7 +58,7 @@ class MODULE_IO_ITK_CLASS_API InrImageReaderService : public sight::io::base::se
 {
 
 public:
-    fwCoreServiceMacro(InrImageReaderService, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(InrImageReaderService, sight::io::base::service::IReader)
 
     MODULE_IO_ITK_API InrImageReaderService() noexcept;
 

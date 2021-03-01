@@ -26,6 +26,9 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/Cursor.hpp>
+#include <ui/base/dialog/MessageDialog.hpp>
+
 #include <QApplication>
 #include <QDialog>
 #include <QHBoxLayout>
@@ -34,9 +37,6 @@
 #include <QObject>
 #include <QSplitter>
 #include <QTextBrowser>
-
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
 
 #include <filesystem>
 
@@ -72,7 +72,6 @@ private:
     QHelpEngine* helpEngine;
 };
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -111,7 +110,7 @@ void SShowHelp::configuring()
         std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
         m_fsHelpPath           = std::filesystem::path( filename );
         m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
-        SLM_WARN_IF("Help file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
+        SIGHT_WARN_IF("Help file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
     }
 }
 
@@ -119,14 +118,14 @@ void SShowHelp::configuring()
 
 void SShowHelp::updating()
 {
-    SLM_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
+    SIGHT_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
 
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Help"));
     QHelpEngine* helpEngine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
     if (!helpEngine->setupData())
     {
-        SLM_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
+        SIGHT_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage( "Help file is missing or not correct." );

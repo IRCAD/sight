@@ -22,14 +22,14 @@
 
 #include "service/registry/ObjectService.hpp"
 
-#include "service/IService.hpp"
 #include "service/extension/AppConfig.hpp"
 #include "service/extension/Config.hpp"
 #include "service/extension/Factory.hpp"
+#include "service/IService.hpp"
 
+#include <core/LazyInstantiator.hpp>
 #include <core/LogicStamp.hpp>
 #include <core/tools/fwID.hpp>
-#include <core/LazyInstantiator.hpp>
 
 #include <filesystem>
 #include <iostream>
@@ -232,7 +232,7 @@ void ObjectService::registerServiceOutput(data::Object::sptr object, const servi
     this->internalRegisterService(object, service, objKey, service::IService::AccessType::OUTPUT);
 
     const bool hasID = service->hasObjectId(objKey);
-    SLM_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
+    SIGHT_DEBUG_IF("No output is defined for '" + objKey + "', the object is not emitted to the configuration", !hasID);
     if (hasID)
     {
         const auto id = service->getObjectId(objKey);
@@ -247,8 +247,8 @@ void ObjectService::unregisterService( service::IService::sptr service )
 {
     core::mt::WriteLock writeLock(m_containerMutex);
 
-    SLM_ASSERT( "The service ( " + service->getID() + " ) must be stopped before being unregistered.",
-                service->isStopped() );
+    SIGHT_ASSERT( "The service ( " + service->getID() + " ) must be stopped before being unregistered.",
+                  service->isStopped() );
 
     this->removeFromContainer( service );
 
@@ -268,7 +268,7 @@ void ObjectService::unregisterService( service::IService::sptr service )
                 objectKeys += "'" + obj.first + "'(nbRef: " + std::to_string(output.use_count()) + ")";
             }
         }
-        SLM_WARN_IF(
+        SIGHT_WARN_IF(
             "Service "+ service->getID() + " still contains registered outputs: " + objectKeys + ". They will no "
             "longer be maintained. You should call setOutput(key, nullptr) before stopping the service to inform "
             "AppManager and other services that the object will be destroyed.", !objectKeys.empty());
@@ -381,10 +381,10 @@ void ObjectService::internalRegisterService(data::Object::sptr object, service::
                                             const service::IService::KeyType& objKey,
                                             service::IService::AccessType access)
 {
-    SLM_ASSERT("Can't register a null service in OSR.", service);
-    SLM_ASSERT("Can't register a null object in OSR.", object);
+    SIGHT_ASSERT("Can't register a null service in OSR.", service);
+    SIGHT_ASSERT("Can't register a null object in OSR.", object);
 
-    SLM_FATAL_IF("object key is not defined", objKey.empty());
+    SIGHT_FATAL_IF("object key is not defined", objKey.empty());
 
     // new behavior with N objects -> N Services
     if(access == service::IService::AccessType::INPUT)
@@ -407,9 +407,9 @@ void ObjectService::internalRegisterService(data::Object::sptr object, service::
 void ObjectService::internalRegisterServiceInput(const data::Object::csptr& object, const IService::sptr& service,
                                                  const service::IService::KeyType& objKey)
 {
-    SLM_ASSERT("Can't register a null service in OSR.", service);
-    SLM_ASSERT("Can't register a null object in OSR.", object);
-    SLM_ASSERT("Can't register an input object without key.", !objKey.empty());
+    SIGHT_ASSERT("Can't register a null service in OSR.", service);
+    SIGHT_ASSERT("Can't register a null object in OSR.", object);
+    SIGHT_ASSERT("Can't register an input object without key.", !objKey.empty());
 
     service->m_inputsMap[objKey] = object;
 
@@ -422,7 +422,7 @@ void ObjectService::removeFromContainer( service::IService::sptr service )
 {
 
     auto it = m_services.find(service);
-    FW_RAISE_IF("service '" + service->getID() + "' is not found in the OSR", it == m_services.end());
+    SIGHT_THROW_IF("service '" + service->getID() + "' is not found in the OSR", it == m_services.end());
     m_services.erase(it);
 }
 

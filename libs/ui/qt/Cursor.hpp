@@ -39,7 +39,7 @@ class UI_QT_CLASS_API Cursor : public ui::base::ICursor
 
 public:
 
-    fwCoreClassMacro(Cursor, ui::base::ICursor, ui::base::factory::New< Cursor >)
+    SIGHT_DECLARE_CLASS(Cursor, ui::base::ICursor, ui::base::factory::New< Cursor >)
 
     UI_QT_API Cursor(ui::base::GuiBaseObject::Key key);
 

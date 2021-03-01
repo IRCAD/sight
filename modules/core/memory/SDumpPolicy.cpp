@@ -33,7 +33,6 @@
 namespace sight::module::memory
 {
 
-
 SDumpPolicy::SDumpPolicy()
 {
 }
@@ -91,16 +90,16 @@ void SDumpPolicy::starting()
             for(const ParametersType::value_type& param :  m_policyParams)
             {
                 success = policy->setParam(param.first, param.second);
-                SLM_ERROR_IF( "[" << m_policy << "] Unable to set '"
-                                  << param.first << "' parameter to " << param.second,
-                              !success);
-                SLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
+                SIGHT_ERROR_IF( "[" << m_policy << "] Unable to set '"
+                                    << param.first << "' parameter to " << param.second,
+                                !success);
+                SIGHT_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
             }
             core::mt::WriteLock lock( manager->getMutex() );
             manager->setDumpPolicy(policy);
-            SLM_INFO("Set dump policy to : " << m_policy);
+            SIGHT_INFO("Set dump policy to : " << m_policy);
         }
-        SLM_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
+        SIGHT_ERROR_IF("Unable to instantiate '" << m_policy << "' dump policy", !policy);
     }
 }
 

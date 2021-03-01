@@ -61,35 +61,35 @@ struct ValueMapper< sight::data::NavigationSeries::CoordinateType >
 
     static ReturnType from(bool )
     {
-        SLM_ERROR("Conversion not handled");
+        SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(long )
     {
-        SLM_ERROR("Conversion not handled");
+        SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(double )
     {
-        SLM_ERROR("Conversion not handled");
+        SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::EnumObject& )
     {
-        SLM_ERROR("Conversion not handled");
+        SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
 
     static ReturnType from(const camp::UserObject& )
     {
-        SLM_ERROR("Conversion not handled");
+        SIGHT_ERROR("Conversion not handled");
         return ReturnType();
     }
     //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ struct ValueMapper< sight::data::NavigationSeries::CoordinateType >
         }
         else
         {
-            SLM_WARN("Invalid number of components: " << result.size());
+            SIGHT_WARN("Invalid number of components: " << result.size());
         }
         return coord;
     }

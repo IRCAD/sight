@@ -110,8 +110,8 @@ public:
             {
                 std::copy( extension->begin(), extension->end(), output);
             }
-            SLM_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
-                         " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnabled());
+            SIGHT_DEBUG_IF("getAllConfigurationElements for point=" <<  extension->getPoint() <<
+                           " extension" << extension->getIdentifier() << "extension disabled", !extension->isEnabled());
         }
     }
 

@@ -47,7 +47,7 @@ class UI_BASE_CLASS_API IFrameLayoutManager : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(IFrameLayoutManager, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IFrameLayoutManager, ui::base::GuiBaseObject)
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 

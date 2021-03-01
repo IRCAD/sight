@@ -27,14 +27,14 @@
 #include <core/jobs/Observer.hpp>
 #include <core/tools/System.hpp>
 
+#include <data/helper/SeriesDB.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/helper/SeriesDB.hpp>
-
-#include <service/macros.hpp>
 
 #include <io/base/service/IReader.hpp>
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -46,7 +46,6 @@
 
 namespace sight::module::io::dicom
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -77,7 +76,7 @@ void SDicomSeriesDBReader::configuring()
     if(logDialog)
     {
         std::string logDialogStr = logDialog->getValue();
-        SLM_ASSERT("<showLogDialog> value must be 'yes' or 'no'", logDialogStr == "yes" || logDialogStr == "no");
+        SIGHT_ASSERT("<showLogDialog> value must be 'yes' or 'no'", logDialogStr == "yes" || logDialogStr == "no");
         m_showLogDialog = (logDialogStr == "yes");
     }
 
@@ -86,8 +85,8 @@ void SDicomSeriesDBReader::configuring()
     if(dicomDir)
     {
         std::string dicomDirStr = dicomDir->getValue();
-        SLM_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
-                   dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
+        SIGHT_ASSERT("<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
+                     dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection");
 
         if(dicomDirStr == "always")
         {
@@ -266,7 +265,7 @@ void SDicomSeriesDBReader::updating()
             // Retrieve dataStruct associated with this service
             data::SeriesDB::sptr associatedSeriesDB =
                 this->getInOut< data::SeriesDB >(sight::io::base::service::s_DATA_KEY);
-            SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
+            SIGHT_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
 
             // Clear SeriesDB and add new series
             data::helper::SeriesDB sDBhelper(associatedSeriesDB);

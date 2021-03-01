@@ -166,7 +166,7 @@ bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 
     for(const fwVertexIndex::value_type& vertex :  _vertexIndex)
     {
-        SLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
+        SIGHT_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
         ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[1]), std::max(vertex[0], vertex[1]) )];
         ++edgesHistogram[std::make_pair(std::min(vertex[0], vertex[2]), std::max(vertex[0], vertex[2]) )];
         ++edgesHistogram[std::make_pair(std::min(vertex[2], vertex[1]), std::max(vertex[2], vertex[1]) )];

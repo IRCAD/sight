@@ -43,13 +43,13 @@
 #include <data/Reconstruction.hpp>
 #include <data/Study.hpp>
 
+#include <io/base/reader/registry/macros.hpp>
+
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/stream.hpp>
-
-#include <io/base/reader/registry/macros.hpp>
 
 #include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
@@ -72,7 +72,7 @@
 #include <iosfwd>
 #include <numeric>
 
-fwDataIOReaderRegisterMacro( ::sight::io::vtk::SeriesDBReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::vtk::SeriesDBReader );
 
 namespace sight::io::vtk
 {
@@ -181,7 +181,7 @@ data::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  >& obj, c
         }
         catch( std::exception& e)
         {
-            FW_RAISE("VTKImage to data::Image failed "<<e.what());
+            SIGHT_THROW("VTKImage to data::Image failed "<<e.what());
         }
     }
     return dataObj;
@@ -240,7 +240,7 @@ protected:
     {
         if(!std::filesystem::exists(m_path))
         {
-            FW_RAISE("file "<< m_path.string() << " does not exist anymore or has moved.");
+            SIGHT_THROW("file "<< m_path.string() << " does not exist anymore or has moved.");
         }
 
         vtkSmartPointer< vtkDataObject  > obj;
@@ -450,7 +450,7 @@ void SeriesDBReader::read()
 
     if (!errorFiles.empty())
     {
-        FW_RAISE("SeriesDBReader cannot read VTK file(s) : "<< ::boost::algorithm::join(errorFiles, ", ") );
+        SIGHT_THROW("SeriesDBReader cannot read VTK file(s) : "<< ::boost::algorithm::join(errorFiles, ", ") );
     }
 
     // Adds loaded Reconstructions in SeriesDB

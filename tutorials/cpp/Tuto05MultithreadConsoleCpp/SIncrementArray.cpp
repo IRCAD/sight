@@ -33,7 +33,6 @@
 
 #include <functional>
 
-
 namespace Tuto05MultithreadConsoleCpp
 {
 
@@ -76,7 +75,7 @@ void SIncrementArray::starting()
 void SIncrementArray::updating()
 {
     const auto array = this->getInOut< sight::data::Array >(s_ARRAY_INOUT);
-    SLM_ASSERT("Bad number of dimensions", array->getNumberOfDimensions() == 1 );
+    SIGHT_ASSERT("Bad number of dimensions", array->getNumberOfDimensions() == 1 );
 
     const auto dumpLock = array->lock();
 

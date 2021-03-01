@@ -23,9 +23,9 @@
 #include "service/AppManager.hpp"
 
 #include <core/com/Slots.hxx>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <service/op/Add.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 #include <service/registry/Proxy.hpp>
 
@@ -66,7 +66,7 @@ AppManager::~AppManager()
 
 void AppManager::create()
 {
-    SLM_ASSERT("create() method should not be called twice", m_addObjectConnection.expired());
+    SIGHT_ASSERT("create() method should not be called twice", m_addObjectConnection.expired());
 
     m_addObjectConnection    = service::OSR::getRegisterSignal()->connect( this->slot(s_ADD_OBJECT_SLOT) );
     m_removeObjectConnection = service::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECT_SLOT) );
@@ -138,14 +138,15 @@ bool AppManager::checkInputs()
                 else if(!input.isOptional)
                 {
                     // data::factory::New() require a classname.
-                    const data::Object::sptr newObj = input.defaultValue.empty() ? nullptr : data::factory::New(input.defaultValue);
+                    const data::Object::sptr newObj = input.defaultValue.empty() ? nullptr : data::factory::New(
+                        input.defaultValue);
                     if (newObj)
                     {
                         this->addObject(obj, this->getInputID(input.key));
                     }
                     else
                     {
-                        SLM_DEBUG("[" + this->getID() + "] missing input for : '" + input.key + "'")
+                        SIGHT_DEBUG("[" + this->getID() + "] missing input for : '" + input.key + "'")
                         isOK = false;
                     }
                 }
@@ -154,14 +155,14 @@ bool AppManager::checkInputs()
             case InputType::CHANNEL:
                 if (input.value.empty() && !input.isOptional)
                 {
-                    SLM_DEBUG("missing input: '" + input.key + "'")
+                    SIGHT_DEBUG("missing input: '" + input.key + "'")
                     isOK = false;
                 }
                 break;
             case InputType::OTHER:
                 if (input.value.empty() && !input.isOptional)
                 {
-                    SLM_DEBUG("missing input: '" + input.key + "'")
+                    SIGHT_DEBUG("missing input: '" + input.key + "'")
                     isOK = false;
                 }
                 break;
@@ -222,8 +223,8 @@ void AppManager::startService(const service::IService::sptr& srv)
 
     const ServiceInfo& info = this->getServiceInfo(srv);
 
-    FW_RAISE_IF("Service cannot be started because all the required objects are not present.",
-                !srv->hasAllRequiredObjects());
+    SIGHT_THROW_IF("Service cannot be started because all the required objects are not present.",
+                   !srv->hasAllRequiredObjects());
     this->start(info).wait();
 
     if (info.m_autoUpdate)
@@ -347,12 +348,12 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
     {
         if (it->second == obj)
         {
-            SLM_WARN("Object '" + id + "' is already registered.");
+            SIGHT_WARN("Object '" + id + "' is already registered.");
             return;
         }
         else
         {
-            SLM_WARN("Object '" + id + "' has not been unregistered, we will do it.");
+            SIGHT_WARN("Object '" + id + "' has not been unregistered, we will do it.");
             this->removeObject(it->second, id);
         }
     }
@@ -390,7 +391,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             {
                 if (srv->isStarted() && !objCfg.m_optional)
                 {
-                    SLM_ERROR("Service should be stopped.");
+                    SIGHT_ERROR("Service should be stopped.");
                     this->stop(srvInfo).wait();
                 }
 
@@ -456,7 +457,7 @@ void AppManager::removeObject(data::Object::sptr obj, const std::string& id)
 
         for (auto& srvInfo : m_services)
         {
-            FW_RAISE_IF("service is expired", srvInfo.m_service.expired());
+            SIGHT_THROW_IF("service is expired", srvInfo.m_service.expired());
             service::IService::sptr srv = srvInfo.m_service.lock();
             if (srv->hasObjInfoFromId(id))
             {
@@ -556,7 +557,7 @@ AppManager::ServiceInfo& AppManager::getServiceInfo(const service::IService::spt
             return (srvInfo.m_service.lock() == srv);
         });
 
-    SLM_ASSERT("Service '" + srv->getID() + "' is not registered.", itr != m_services.end());
+    SIGHT_ASSERT("Service '" + srv->getID() + "' is not registered.", itr != m_services.end());
     return *itr;
 }
 
@@ -570,7 +571,7 @@ const AppManager::ServiceInfo& AppManager::getServiceInfo(const service::IServic
             return (srvInfo.m_service.lock() == srv);
         });
 
-    SLM_ASSERT("Service '" + srv->getID() + "' is not registered.", itr != m_services.end());
+    SIGHT_ASSERT("Service '" + srv->getID() + "' is not registered.", itr != m_services.end());
     return *itr;
 }
 

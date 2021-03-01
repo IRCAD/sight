@@ -40,7 +40,7 @@ namespace data
 class IO_PATCH_CLASS_API Acquisition : public io::atoms::patch::ISemanticPatch
 {
 public:
-    fwCoreClassMacro(Acquisition, io::atoms::patch::ISemanticPatch, new Acquisition)
+    SIGHT_DECLARE_CLASS(Acquisition, io::atoms::patch::ISemanticPatch, new Acquisition)
 
     /// Constructor
     IO_PATCH_API Acquisition();

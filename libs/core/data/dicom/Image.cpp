@@ -76,7 +76,7 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             const int64_t max =
                 static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMax()) + m_rescaleIntercept);
 
-            SLM_ASSERT("Min must be lower than max.", min <= max );
+            SIGHT_ASSERT("Min must be lower than max.", min <= max );
 
             // Unsigned values
             if(min >= 0)
@@ -95,7 +95,7 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
                 }
                 else
                 {
-                    SLM_ASSERT("Unable to determine the pixel format.", 0);
+                    SIGHT_ASSERT("Unable to determine the pixel format.", 0);
                 }
             }
             // Signed values
@@ -116,7 +116,7 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
                 }
                 else
                 {
-                    SLM_ASSERT("Unable to determine the pixel format.", 0 );
+                    SIGHT_ASSERT("Unable to determine the pixel format.", 0 );
                 }
             }
 
@@ -131,8 +131,8 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
 
 int64_t Image::getPixelMin() const
 {
-    SLM_ASSERT("The number of bits allocated must be known", m_bitsAllocated);
-    SLM_ASSERT("The number of bits stored must be less than 33.", m_bitsStored <= 32);
+    SIGHT_ASSERT("The number of bits allocated must be known", m_bitsAllocated);
+    SIGHT_ASSERT("The number of bits stored must be less than 33.", m_bitsStored <= 32);
 
     if(m_pixelRepresentation == 1)
     {
@@ -143,7 +143,7 @@ int64_t Image::getPixelMin() const
         return 0;
     }
 
-    SLM_ASSERT("Unable to determine minimum value of pixel", 0);
+    SIGHT_ASSERT("Unable to determine minimum value of pixel", 0);
     return 0;
 }
 
@@ -151,8 +151,8 @@ int64_t Image::getPixelMin() const
 
 int64_t Image::getPixelMax() const
 {
-    SLM_ASSERT("The number of bits allocated must be known", m_bitsAllocated);
-    SLM_ASSERT("The number of bits stored must be less than 33.", m_bitsStored <= 32);
+    SIGHT_ASSERT("The number of bits allocated must be known", m_bitsAllocated);
+    SIGHT_ASSERT("The number of bits stored must be less than 33.", m_bitsStored <= 32);
 
     if(m_pixelRepresentation == 1)
     {
@@ -163,7 +163,7 @@ int64_t Image::getPixelMax() const
         return (int64_t)((1ull << m_bitsStored) - 1);
     }
 
-    SLM_ASSERT("Unable to determine maximum value of pixel", 0);
+    SIGHT_ASSERT("Unable to determine maximum value of pixel", 0);
     return 0;
 }
 

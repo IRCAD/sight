@@ -153,7 +153,7 @@ void Image::writeImagePixelModule()
 
 void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
 {
-    SLM_ASSERT("Wrong instance number.", m_instance->getIsMultiFiles() || instanceNumber == 0);
+    SIGHT_ASSERT("Wrong instance number.", m_instance->getIsMultiFiles() || instanceNumber == 0);
 
     // Retrieve GDCM image
     ::gdcm::ImageWriter* imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();

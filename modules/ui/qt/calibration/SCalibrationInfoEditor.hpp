@@ -27,12 +27,12 @@
 #include <data/List.hpp>
 #include <data/PointList.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLabel>
 #include <QListWidget>
 #include <QPointer>
 #include <QPushButton>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -61,7 +61,7 @@ class MODULE_UI_QT_CLASS_API SCalibrationInfoEditor : public QObject,
 Q_OBJECT;
 
 public:
-    fwCoreServiceMacro(SCalibrationInfoEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SCalibrationInfoEditor, sight::ui::base::IEditor)
 
     /**
      * @name Slots API

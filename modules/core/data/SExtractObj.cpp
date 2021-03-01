@@ -32,8 +32,7 @@
 namespace sight::module::data
 {
 
-
-static const std::string s_SOURCE_INOUT = "source";
+static const std::string s_SOURCE_INOUT  = "source";
 static const std::string s_TARGET_OUTPUT = "target";
 
 //-----------------------------------------------------------------------------
@@ -57,14 +56,14 @@ void SExtractObj::configuring()
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     const ConfigurationType inoutCfg = m_configuration->findConfigurationElement("inout");
-    SLM_ASSERT("At one 'inout' tag is required.", inoutCfg);
+    SIGHT_ASSERT("At one 'inout' tag is required.", inoutCfg);
 
     const std::vector< ConfigurationType > extractCfg = inoutCfg->find("extract");
-    SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
+    SIGHT_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
     for(ConfigurationType cfg : extractCfg)
     {
-        SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+        SIGHT_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
         const std::string from = cfg->getAttributeValue("from");
 
         m_sourcePaths.push_back(from);
@@ -99,14 +98,14 @@ void SExtractObj::updating()
         }
         catch(sight::data::reflection::exception::ObjectNotFound&)
         {
-            SLM_WARN("Object from '"+ from +"' not found");
+            SIGHT_WARN("Object from '"+ from +"' not found");
         }
         catch(std::exception& e)
         {
-            SLM_FATAL("Unhandled exception: " << e.what());
+            SIGHT_FATAL("Unhandled exception: " << e.what());
         }
 
-        SLM_WARN_IF("Object from '"+ from +"' not found", !object);
+        SIGHT_WARN_IF("Object from '"+ from +"' not found", !object);
         if(object)
         {
             this->setOutput(s_TARGET_OUTPUT, object, index);

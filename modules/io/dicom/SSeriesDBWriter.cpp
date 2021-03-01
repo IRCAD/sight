@@ -25,17 +25,17 @@
 #include <core/base.hpp>
 #include <core/tools/ProgressToLogger.hpp>
 
+#include <data/helper/SeriesDB.hpp>
 #include <data/location/Folder.hpp>
 #include <data/Series.hpp>
 #include <data/SeriesDB.hpp>
-#include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
-
-#include <service/macros.hpp>
 
 #include <io/base/service/IWriter.hpp>
 #include <io/dicom/helper/Fiducial.hpp>
 #include <io/dicom/writer/SeriesDB.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
@@ -45,7 +45,6 @@
 
 namespace sight::module::io::dicom
 {
-
 
 //------------------------------------------------------------------------------
 
@@ -150,7 +149,7 @@ void SSeriesDBWriter::updating()
         for(const data::Object::sptr& object : vector->getContainer())
         {
             data::Series::sptr series = data::Series::dynamicCast(object);
-            SLM_ASSERT("The container should only contain series.", series);
+            SIGHT_ASSERT("The container should only contain series.", series);
             seriesDBHelper.add(series);
         }
 
@@ -219,7 +218,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
     for(const data::Object::sptr& object : vector->getContainer())
     {
         data::Series::sptr series = data::Series::dynamicCast(object);
-        SLM_ASSERT("The container should only contain series.", series);
+        SIGHT_ASSERT("The container should only contain series.", series);
         seriesDBHelper.add(series);
     }
 

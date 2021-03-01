@@ -24,14 +24,14 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/extension/Activity.hpp>
 #include <activity/ActivityMsg.hpp>
+#include <activity/extension/Activity.hpp>
+
+#include <ui/base/IEditor.hpp>
 
 #include <QButtonGroup>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -77,7 +77,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSelector, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSelector() noexcept;

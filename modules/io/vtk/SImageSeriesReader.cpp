@@ -40,24 +40,23 @@
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
 
-#include <service/macros.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
-
 #include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
 #include <io/vtk/BitmapImageReader.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <filesystem>
 
 namespace sight::module::io::vtk
 {
-
 
 static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
@@ -186,7 +185,7 @@ void SImageSeriesReader::updating()
         // Retrieve dataStruct associated with this service
         data::ImageSeries::sptr imageSeries =
             this->getInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("ImageSeries is not instanced", imageSeries);
+        SIGHT_ASSERT("ImageSeries is not instanced", imageSeries);
 
         sight::ui::base::Cursor cursor;
         cursor.setCursor(ui::base::ICursor::BUSY);
@@ -204,7 +203,7 @@ void SImageSeriesReader::updating()
         }
         catch(core::tools::Failed& e)
         {
-            FW_RAISE_EXCEPTION(e);
+            SIGHT_THROW_EXCEPTION(e);
         }
         cursor.setDefaultCursor();
     }
@@ -215,7 +214,7 @@ void SImageSeriesReader::updating()
 void SImageSeriesReader::notificationOfDBUpdate()
 {
     data::ImageSeries::sptr imageSeries = this->getInOut< data::ImageSeries >(sight::io::base::service::s_DATA_KEY);
-    SLM_ASSERT("imageSeries not instanced", imageSeries);
+    SIGHT_ASSERT("imageSeries not instanced", imageSeries);
 
     auto sig = imageSeries->signal< data::Object::ModifiedSignalType >(data::Object::s_MODIFIED_SIG);
     {

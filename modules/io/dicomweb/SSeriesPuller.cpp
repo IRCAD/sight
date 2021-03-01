@@ -32,13 +32,13 @@
 #include <data/helper/SeriesDB.hpp>
 #include <data/Vector.hpp>
 
-#include <service/registry/ObjectService.hpp>
-#include <service/extension/Config.hpp>
-#include <service/extension/Factory.hpp>
-
 #include <io/http/exceptions/Base.hpp>
 #include <io/http/helper/Series.hpp>
 #include <io/http/Request.hpp>
+
+#include <service/extension/Config.hpp>
+#include <service/extension/Factory.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/ProgressDialog.hpp>
@@ -68,13 +68,13 @@ SSeriesPuller::~SSeriesPuller() noexcept
 void SSeriesPuller::configuring()
 {
     core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service module::io::dicomweb::SSeriesPuller must have a \"config\" element.", config);
+    SIGHT_ASSERT("The service module::io::dicomweb::SSeriesPuller must have a \"config\" element.", config);
 
     bool success;
 
     // Dicom Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" in the module::io::dicomweb::SSeriesPuller config element.", success);
+    SIGHT_ASSERT("It should be a \"dicomReader\" in the module::io::dicomweb::SSeriesPuller config element.", success);
 
     // Dicom Reader Config
     std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
@@ -85,7 +85,7 @@ void SSeriesPuller::configuring()
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_serverHostnameKey = serverInfo.substr(0, splitPosition);
         m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -103,7 +103,7 @@ void SSeriesPuller::starting()
 {
     // Get Destination SeriesDB
     m_destinationSeriesDB = this->getInOut< data::SeriesDB>("seriesDB");
-    SLM_ASSERT("The 'seriesDB' key doesn't exist.", m_destinationSeriesDB);
+    SIGHT_ASSERT("The 'seriesDB' key doesn't exist.", m_destinationSeriesDB);
 
     // Create temporary SeriesDB
     m_tempSeriesDB = data::SeriesDB::New();
@@ -112,7 +112,7 @@ void SSeriesPuller::starting()
     service::extension::Factory::sptr srvFactory = service::extension::Factory::getDefault();
     m_dicomReader =
         sight::io::base::service::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::SSeriesPuller.",
         m_dicomReader);
     service::OSR::registerService(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY,
@@ -125,9 +125,9 @@ void SSeriesPuller::starting()
             service::extension::Config::getDefault()->getServiceConfig(
                 m_dicomReaderSrvConfig, "::io::base::service::IReader");
 
-        SLM_ASSERT("Sorry, there is no service configuration "
-                   << m_dicomReaderSrvConfig
-                   << " for sight::io::base::service::IReader", readerConfig);
+        SIGHT_ASSERT("Sorry, there is no service configuration "
+                     << m_dicomReaderSrvConfig
+                     << " for sight::io::base::service::IReader", readerConfig);
 
         m_dicomReader->setConfiguration( core::runtime::ConfigurationElement::constCast(readerConfig) );
     }
@@ -267,7 +267,7 @@ void SSeriesPuller::pullSeries()
                        << "Pacs port: " << m_serverPort << "\n";
 
                     this->displayErrorMessage(ss.str());
-                    SLM_WARN(exception.what());
+                    SIGHT_WARN(exception.what());
                 }
 
                 QJsonDocument jsonResponse    = QJsonDocument::fromJson(seriesAnswer);
@@ -305,7 +305,7 @@ void SSeriesPuller::pullSeries()
                                << "Unable download the DICOM instance. \n";
 
                             this->displayErrorMessage(ss.str());
-                            SLM_WARN(exception.what());
+                            SIGHT_WARN(exception.what());
                         }
 
                         // Create dicom folder
@@ -335,7 +335,7 @@ void SSeriesPuller::pullSeries()
         std::stringstream ss;
         ss << "Unknown error.";
         this->displayErrorMessage(ss.str());
-        SLM_WARN(exception.what());
+        SIGHT_WARN(exception.what());
         m_isPulling = false;
     }
 }
@@ -383,7 +383,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 
 void SSeriesPuller::displayErrorMessage(const std::string& message) const
 {
-    SLM_WARN("Error: " + message);
+    SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage( message );

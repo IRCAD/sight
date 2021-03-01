@@ -59,7 +59,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SResizeViewport final : public sight::viz::sc
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SResizeViewport, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SResizeViewport, ::sight::viz::scene3d::IAdaptor)
 
     /// Initializes slots.
     MODULE_VIZ_SCENE3D_API SResizeViewport() noexcept;

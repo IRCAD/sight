@@ -58,7 +58,7 @@ Buffer::Buffer(void* buf, size_t size) :
     m_size(size),
     m_counterFactory(&noFactory)
 {
-    SLM_ASSERT("Buffer is null.", m_buf || size == 0);
+    SIGHT_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 Buffer::Buffer(void* buf, size_t size, CounterFactoryType counterFactory) :
@@ -66,7 +66,7 @@ Buffer::Buffer(void* buf, size_t size, CounterFactoryType counterFactory) :
     m_size(size),
     m_counterFactory(counterFactory)
 {
-    SLM_ASSERT("Buffer is null.", m_buf || size == 0);
+    SIGHT_ASSERT("Buffer is null.", m_buf || size == 0);
 }
 
 SPTR(std::istream) Buffer::get()

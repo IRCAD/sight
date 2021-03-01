@@ -33,9 +33,9 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/Series.hpp>
 
-#include <utestData/Data.hpp>
-
 #include <io/vtk/SeriesDBReader.hpp>
+
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -111,7 +111,7 @@ void SeriesDBTest::testImportSeriesDB()
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        SIGHT_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
     CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }

@@ -45,7 +45,7 @@ void compare(data::Object::sptr objRef, data::Object::sptr objComp)
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
     for( data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        SLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        SIGHT_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
     CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }

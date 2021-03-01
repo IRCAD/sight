@@ -27,11 +27,11 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/tools/Color.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <service/macros.hpp>
 
@@ -126,7 +126,7 @@ void SNegato3D::configuring()
     const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -344,19 +344,19 @@ void SNegato3D::newImage()
         const auto imgSize       = image->getSize2();
         const auto axialIdxField = image->getField< data::Integer >(
             data::fieldHelper::Image::m_axialSliceIndexId);
-        SLM_INFO_IF("Axial Idx field missing", !axialIdxField);
+        SIGHT_INFO_IF("Axial Idx field missing", !axialIdxField);
         axialIdx = axialIdxField ?
                    static_cast<int>(axialIdxField->getValue()) : static_cast<int>(imgSize[2]/2);
 
         const auto frontalIdxField = image->getField< data::Integer >(
             data::fieldHelper::Image::m_frontalSliceIndexId);
-        SLM_INFO_IF("Frontal Idx field missing", !frontalIdxField);
+        SIGHT_INFO_IF("Frontal Idx field missing", !frontalIdxField);
         frontalIdx = frontalIdxField ?
                      static_cast<int>(frontalIdxField->getValue()) : static_cast<int>(imgSize[1]/2);
 
         const auto sagittalIdxField = image->getField< data::Integer >(
             data::fieldHelper::Image::m_sagittalSliceIndexId);
-        SLM_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
+        SIGHT_INFO_IF("Sagittal Idx field missing", !sagittalIdxField);
         sagittalIdx = sagittalIdxField ?
                       static_cast<int>(sagittalIdxField->getValue()) : static_cast<int>(imgSize[0]/2);
     }
@@ -659,7 +659,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
 std::optional< ::Ogre::Vector3 > SNegato3D::getPickedSlices(int _x, int _y)
 {
     auto* const sceneManager = this->getSceneManager();
-    SLM_ASSERT("Scene manager not created yet.", sceneManager);
+    SIGHT_ASSERT("Scene manager not created yet.", sceneManager);
 
     sight::viz::scene3d::picker::IPicker picker;
     picker.setSceneManager(sceneManager);

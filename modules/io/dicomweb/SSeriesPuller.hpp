@@ -26,10 +26,10 @@
 
 #include <data/SeriesDB.hpp>
 
-#include <service/IController.hpp>
-
 #include <io/base/service/IReader.hpp>
 #include <io/http/ClientQt.hpp>
+
+#include <service/IController.hpp>
 
 #include <filesystem>
 
@@ -72,7 +72,7 @@ class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public service::IController
 {
 public:
 
-    fwCoreServiceMacro(SSeriesPuller, ::sight::service::IController )
+    SIGHT_DECLARE_SERVICE(SSeriesPuller, ::sight::service::IController )
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;

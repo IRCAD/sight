@@ -51,7 +51,7 @@
 #include <vtkRenderer.h>
 #endif
 
-fwDataIOWriterRegisterMacro( ::sight::io::vtk::ObjMeshWriter );
+SIGHT_REGISTER_IO_WRITER( ::sight::io::vtk::ObjMeshWriter );
 
 namespace sight::io::vtk
 {
@@ -79,11 +79,11 @@ void ObjMeshWriter::write()
 {
     using namespace sight::io::vtk::helper;
 
-    SLM_ASSERT("Object pointer expired", !m_object.expired());
+    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SLM_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock );
 
     const data::Mesh::csptr pMesh = getConcreteObject();
 
@@ -120,11 +120,11 @@ void ObjMeshWriter::write()
 {
     using namespace sight::io::vtk::helper;
 
-    SLM_ASSERT("Object pointer expired", !m_object.expired());
+    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();
 
-    SLM_ASSERT("Object Lock null.", objectLock );
+    SIGHT_ASSERT("Object Lock null.", objectLock );
 
     const data::Mesh::csptr pMesh          = getConcreteObject();
     vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();

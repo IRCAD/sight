@@ -27,10 +27,10 @@
 #include <core/runtime/operations.hpp>
 
 #include <data/Composite.hpp>
+#include <data/helper/Composite.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectReadToWriteLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -312,7 +312,7 @@ void STransferFunction::deleteTF()
             const std::string selectedTFKey = m_transferFunctionPreset->currentText().toStdString();
 
             data::helper::Composite compositeHelper(poolTF.get_shared());
-            SLM_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
+            SIGHT_ASSERT("TF '"+ selectedTFKey +"' missing in pool", this->hasTransferFunctionName(selectedTFKey));
 
             compositeHelper.remove(selectedTFKey);
             {
@@ -548,7 +548,7 @@ void STransferFunction::initTransferFunctions()
             std::vector< std::filesystem::path > paths;
             for(std::filesystem::path dirPath :  m_paths)
             {
-                SLM_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
+                SIGHT_ASSERT("Invalid directory path '" + dirPath.string() + "'", std::filesystem::exists(dirPath));
                 for(std::filesystem::directory_iterator it(dirPath);
                     it != std::filesystem::directory_iterator();
                     ++it )
@@ -679,9 +679,9 @@ std::string STransferFunction::createTransferFunctionName(const std::string& _ba
 void STransferFunction::updateTransferFunction()
 {
     const std::string newSelectedTFKey = m_transferFunctionPreset->currentText().toStdString();
-    SLM_DEBUG("Transfer function selected : " +  newSelectedTFKey);
+    SIGHT_DEBUG("Transfer function selected : " +  newSelectedTFKey);
 
-    SLM_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
+    SIGHT_ASSERT("TF '"+ newSelectedTFKey +"' missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
 
     const auto poolTF = this->getLockedInOut< data::Composite >(s_TF_POOL_INOUT);
 

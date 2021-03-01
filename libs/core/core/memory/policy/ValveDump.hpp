@@ -50,7 +50,7 @@ namespace policy
 class CORE_CLASS_API ValveDump : public core::memory::IPolicy
 {
 public:
-    fwCoreClassMacro(ValveDump, core::memory::IPolicy, core::memory::policy::factory::New< ValveDump >)
+    SIGHT_DECLARE_CLASS(ValveDump, core::memory::IPolicy, core::memory::policy::factory::New< ValveDump >)
 
     CORE_API ValveDump();
 

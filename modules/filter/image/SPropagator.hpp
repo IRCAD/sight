@@ -28,11 +28,11 @@
 
 #include <data/tools/PickingInfo.hpp>
 
-#include <service/IOperator.hpp>
-
 #include <filter/image/ImageDiff.hpp>
 #include <filter/image/LineDrawer.hpp>
 #include <filter/image/MinMaxPropagation.hpp>
+
+#include <service/IOperator.hpp>
 
 #include <ui/history/ICommand.hpp>
 
@@ -85,7 +85,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SPropagator, ::sight::service::IOperator)
+    SIGHT_DECLARE_SERVICE(SPropagator, ::sight::service::IOperator)
 
     /// Initializes slots signals and member variables.
     MODULE_FILTER_IMAGE_API SPropagator();

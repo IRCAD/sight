@@ -37,7 +37,7 @@ class UI_BASE_CLASS_API fwToolBar : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(fwToolBar, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(fwToolBar, ui::base::GuiBaseObject)
 
     UI_BASE_API virtual void clean()            = 0;
     UI_BASE_API virtual void destroyContainer() = 0;

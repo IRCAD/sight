@@ -44,7 +44,7 @@ namespace builder
 class UI_QT_CLASS_API ToolBarBuilder : public ui::base::builder::IToolBarBuilder
 {
 public:
-    fwCoreClassMacro(ToolBarBuilder, ui::base::builder::IToolBarBuilder, ui::base::factory::New< ToolBarBuilder >)
+    SIGHT_DECLARE_CLASS(ToolBarBuilder, ui::base::builder::IToolBarBuilder, ui::base::factory::New< ToolBarBuilder >)
 
     UI_QT_API ToolBarBuilder(ui::base::GuiBaseObject::Key key);
 

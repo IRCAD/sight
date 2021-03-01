@@ -56,7 +56,7 @@ class MODULE_FILTER_IMAGE_CLASS_API SResampler : public service::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SResampler, service::IOperator)
+    SIGHT_DECLARE_SERVICE(SResampler, service::IOperator)
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SResampler();

@@ -52,7 +52,7 @@ class MessageTL : public ::sight::data::GenericTL< MsgData >
 
 public:
 
-    fwCoreClassMacro(MessageTL, ::sight::data::TimeLine, ::sight::data::factory::New< MessageTL >)
+    SIGHT_DECLARE_CLASS(MessageTL, ::sight::data::TimeLine, ::sight::data::factory::New< MessageTL >)
 
     /**
      * @brief Creates the data.

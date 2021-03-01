@@ -29,7 +29,7 @@
 
 #include <functional>
 
-fwDataRegisterMacro( ::sight::data::StructureTraitsDictionary );
+SIGHT_REGISTER_DATA( ::sight::data::StructureTraitsDictionary );
 
 namespace sight::data
 {
@@ -49,8 +49,8 @@ StructureTraitsDictionary::~StructureTraitsDictionary ()
 
 StructureTraits::sptr StructureTraitsDictionary::getStructure(std::string type)
 {
-    SLM_ASSERT("Structure of type '" + type + "' not found",
-               m_structureTraitsMap.find(type) != m_structureTraitsMap.end());
+    SIGHT_ASSERT("Structure of type '" + type + "' not found",
+                 m_structureTraitsMap.find(type) != m_structureTraitsMap.end());
     return m_structureTraitsMap[type];
 }
 
@@ -62,24 +62,24 @@ void StructureTraitsDictionary::addStructure(StructureTraits::sptr structureTrai
     StructureTraits::StructureClass structClass = structureTraits->getClass();
     std::string attachment                      = structureTraits->getAttachmentType();
 
-    FW_RAISE_IF("Structure of type '" << type << "' already exist",
-                m_structureTraitsMap.find(type) != m_structureTraitsMap.end());
+    SIGHT_THROW_IF("Structure of type '" << type << "' already exist",
+                   m_structureTraitsMap.find(type) != m_structureTraitsMap.end());
 
-    FW_RAISE_IF("Structure of class '" << structClass << "' can not have attachment",
-                !(attachment.empty() || structClass == StructureTraits::LESION || structClass ==
-                  StructureTraits::FUNCTIONAL) );
+    SIGHT_THROW_IF("Structure of class '" << structClass << "' can not have attachment",
+                   !(attachment.empty() || structClass == StructureTraits::LESION || structClass ==
+                     StructureTraits::FUNCTIONAL) );
 
-    FW_RAISE_IF("Structure attachment '" << attachment << "' not found in dictionary",
-                !(attachment.empty() || m_structureTraitsMap.find(attachment) != m_structureTraitsMap.end() ) );
+    SIGHT_THROW_IF("Structure attachment '" << attachment << "' not found in dictionary",
+                   !(attachment.empty() || m_structureTraitsMap.find(attachment) != m_structureTraitsMap.end() ) );
 
-    FW_RAISE_IF("Structure attachment '" << attachment << "' must be of class ORGAN",
-                !(attachment.empty() || m_structureTraitsMap[attachment]->getClass() == StructureTraits::ORGAN ) );
+    SIGHT_THROW_IF("Structure attachment '" << attachment << "' must be of class ORGAN",
+                   !(attachment.empty() || m_structureTraitsMap[attachment]->getClass() == StructureTraits::ORGAN ) );
 
-    FW_RAISE_IF("Structure must have at least one category",
-                structureTraits->getCategories().empty());
+    SIGHT_THROW_IF("Structure must have at least one category",
+                   structureTraits->getCategories().empty());
 
-    FW_RAISE_IF("Wrong structure type '" << type<< "', a type cannot contain space",
-                structureTraits->getType().find(" ") != std::string::npos );
+    SIGHT_THROW_IF("Wrong structure type '" << type<< "', a type cannot contain space",
+                   structureTraits->getType().find(" ") != std::string::npos );
 
     m_structureTraitsMap[type] = structureTraits;
 }
@@ -100,9 +100,9 @@ StructureTraitsDictionary::StructureTypeNameContainer StructureTraitsDictionary:
 void StructureTraitsDictionary::shallowCopy(const Object::csptr& source )
 {
     StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( source );
     m_structureTraitsMap = other->m_structureTraitsMap;
 }
@@ -112,9 +112,9 @@ void StructureTraitsDictionary::shallowCopy(const Object::csptr& source )
 void StructureTraitsDictionary::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     StructureTraitsDictionary::csptr other = StructureTraitsDictionary::dynamicConstCast(source);
-    FW_RAISE_EXCEPTION_IF( data::Exception(
-                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+    SIGHT_THROW_EXCEPTION_IF( data::Exception(
+                                  "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                                  + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
     m_structureTraitsMap.clear();
     for(const StructureTraitsMapType::value_type& elt : other->m_structureTraitsMap)

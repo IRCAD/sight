@@ -58,7 +58,7 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
 {
     // Retrieve image series
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
-    SLM_ASSERT("Image series should not be null.", imageSeries);
+    SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
     SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
@@ -71,9 +71,9 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     reader->SetStream(*is);
     const bool success = reader->Read();
 
-    FW_RAISE_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
-                                                       bufferObj->getStreamInfo().fsFile.string()+
-                                                       "\" using the GDCM Image Reader."), !success);
+    SIGHT_THROW_EXCEPTION_IF(io::dicom::exception::Failed("Unable to read the DICOM instance \""+
+                                                          bufferObj->getStreamInfo().fsFile.string()+
+                                                          "\" using the GDCM Image Reader."), !success);
 
     // Create Information Entity helpers
     io::dicom::reader::ie::Document documentIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,

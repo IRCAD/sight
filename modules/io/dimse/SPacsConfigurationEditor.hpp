@@ -29,6 +29,8 @@
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
@@ -36,8 +38,6 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
-
-#include <ui/base/IEditor.hpp>
 
 #include <filesystem>
 
@@ -71,7 +71,7 @@ Q_OBJECT;
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPacsConfigurationEditor,  sight::ui::base::IEditor )
+    SIGHT_DECLARE_SERVICE(SPacsConfigurationEditor,  sight::ui::base::IEditor )
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SPacsConfigurationEditor() noexcept;

@@ -65,7 +65,7 @@ static std::stringstream spiritDebugStream;
 #include "io/base/reader/DictionaryReader.hpp"
 #include "io/base/reader/registry/macros.hpp"
 
-fwDataIOReaderRegisterMacro( ::sight::io::base::reader::DictionaryReader );
+SIGHT_REGISTER_IO_READER( ::sight::io::base::reader::DictionaryReader );
 
 namespace sight::io::base
 {
@@ -209,7 +209,7 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         BOOST_SPIRIT_DEBUG_NODE(dbl);
         BOOST_SPIRIT_DEBUG_NODE(line);
         BOOST_SPIRIT_DEBUG_NODE(lines);
-        SLM_DEBUG(spiritDebugStream.str());
+        SIGHT_DEBUG(spiritDebugStream.str());
         spiritDebugStream.str( std::string() );
     #endif
 
@@ -288,8 +288,8 @@ void DictionaryReader::read()
     assert( std::dynamic_pointer_cast< data::location::SingleFile >(m_location) );
     std::filesystem::path path = std::dynamic_pointer_cast< data::location::SingleFile >(m_location)->getPath();
 
-    SLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
-    SLM_ASSERT("Empty path for dictionary file", !path.empty());
+    SIGHT_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
+    SIGHT_ASSERT("Empty path for dictionary file", !path.empty());
 
     // Reading of the file
     std::string buf;
@@ -297,7 +297,7 @@ void DictionaryReader::read()
     file.open(path.string().c_str(), std::ios::binary );
 
     std::string errorOpen = "Unable to open " + path.string();
-    FW_RAISE_IF(errorOpen, !file.is_open());
+    SIGHT_THROW_IF(errorOpen, !file.is_open());
 
     file.seekg(0, std::ios::end);
     const auto length = file.tellg();
@@ -313,7 +313,7 @@ void DictionaryReader::read()
     std::pair<bool, std::string> result = parse(buf, dicolines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
-    FW_RAISE_IF(error, !result.first);
+    SIGHT_THROW_IF(error, !result.first);
 
     // File the dictionary Structure
     data::StructureTraitsDictionary::sptr structDico = getConcreteObject();
@@ -329,7 +329,7 @@ void DictionaryReader::read()
             data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
         std::string availableValues = getValues(data::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
         error = "Organ class " + classReformated + " isn't available. Authorized type are " + availableValues;
-        FW_RAISE_IF(error, !(strClassIter != data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
+        SIGHT_THROW_IF(error, !(strClassIter != data::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
         newOrgan->setColor(data::Color::New(static_cast<float>(line.red)/255.0f,
@@ -349,7 +349,7 @@ void DictionaryReader::read()
                 data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
             error =
                 "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
-            FW_RAISE_IF(error, !(strCategoryIter != data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
+            SIGHT_THROW_IF(error, !(strCategoryIter != data::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }
         newOrgan->setCategories(categories);

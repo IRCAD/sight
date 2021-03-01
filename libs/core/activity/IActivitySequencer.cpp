@@ -57,8 +57,8 @@ int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
         if (!activity)
         {
             // Remove the wrong data
-            SLM_ERROR("The series DB must only contain 'ActivitySeries'. The series of type '" +
-                      series->getClassname() + "' will be removed")
+            SIGHT_ERROR("The series DB must only contain 'ActivitySeries'. The series of type '" +
+                        series->getClassname() + "' will be removed")
 
             data::helper::SeriesDB helper(seriesDB);
             helper.remove(series);
@@ -68,7 +68,7 @@ int IActivitySequencer::parseActivities(const data::SeriesDB::sptr& seriesDB)
                   m_activityIds[lastActivityIndex+1] == activity->getActivityConfigId()))
         {
             // Remove the wrong data
-            SLM_ERROR("The activity '" +activity->getActivityConfigId() + "' is unknown, it will be removed")
+            SIGHT_ERROR("The activity '" +activity->getActivityConfigId() + "' is unknown, it will be removed")
 
             data::helper::SeriesDB helper(seriesDB);
             helper.remove(activity);
@@ -98,10 +98,10 @@ void IActivitySequencer::storeActivityData(const data::SeriesDB::sptr& seriesDB,
 {
     // Retrives the current activity data
     const size_t currentIdx = static_cast<size_t>(index);
-    SLM_ASSERT("SeriesDB does not contain enough series.", seriesDB->size() > currentIdx);
+    SIGHT_ASSERT("SeriesDB does not contain enough series.", seriesDB->size() > currentIdx);
     data::Series::sptr series           = seriesDB->getContainer()[currentIdx];
     data::ActivitySeries::sptr activity = data::ActivitySeries::dynamicCast(series);
-    SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
+    SIGHT_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
     data::Composite::sptr composite = activity->getData();
 
     if(overrides)
@@ -136,13 +136,13 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
     {
         data::Series::sptr series = seriesDB->getContainer()[index];
         activity = data::ActivitySeries::dynamicCast(series);
-        SLM_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
+        SIGHT_ASSERT("seriesDB contains an unknown series : " + series->getClassname(), activity);
         data::Composite::sptr composite = activity->getData();
 
         // FIXME: update all the data or only the requirement ?
         if(overrides)
         {
-            const std::string activityId                 = m_activityIds[index];
+            const std::string activityId                  = m_activityIds[index];
             const activity::extension::ActivityInfo& info =
                 activity::extension::Activity::getDefault()->getInfo(activityId);
 
@@ -160,7 +160,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
         }
         else
         {
-            const std::string activityId                 = m_activityIds[index];
+            const std::string activityId                  = m_activityIds[index];
             const activity::extension::ActivityInfo& info =
                 activity::extension::Activity::getDefault()->getInfo(activityId);
 
@@ -181,7 +181,7 @@ data::ActivitySeries::sptr IActivitySequencer::getActivity(const data::SeriesDB:
             this->getActivity(seriesDB, index-1, slot, overrides);
         }
 
-        const std::string activityId                 = m_activityIds[index];
+        const std::string activityId                  = m_activityIds[index];
         const activity::extension::ActivityInfo& info =
             activity::extension::Activity::getDefault()->getInfo(activityId);
 

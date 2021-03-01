@@ -146,7 +146,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
         }
         else
         {
-            SLM_INFO("try visiting class= '" << metaclass.name() << " but a null pointer was found");
+            SIGHT_INFO("try visiting class= '" << metaclass.name() << " but a null pointer was found");
         }
         return prop;
     }
@@ -180,7 +180,7 @@ CompareObjects::~CompareObjects()
 void CompareObjects::visit(const camp::SimpleProperty& property)
 {
     const std::string name( property.name() );
-    SLM_DEBUG("SimpleProperty name = " << name);
+    SIGHT_DEBUG("SimpleProperty name = " << name);
     ::camp::Value elemValue = property.get(m_campObj);
     PropertyVisitor visitor(getPath(name), m_props);
     PropType pt = elemValue.visit(visitor);
@@ -210,7 +210,7 @@ void CompareObjects::visit(const camp::EnumProperty& property)
 void CompareObjects::visit(const camp::MapProperty& property)
 {
     const std::string name(property.name());
-    SLM_DEBUG("MapProperty name = " << name);
+    SIGHT_DEBUG("MapProperty name = " << name);
 
     std::pair< ::camp::Value, ::camp::Value > value;
     std::string mapKey;
@@ -232,7 +232,7 @@ void CompareObjects::visit(const camp::MapProperty& property)
 void CompareObjects::visit(const camp::ArrayProperty& property)
 {
     const std::string name(property.name());
-    SLM_DEBUG( "ArrayProperty name =" << name );
+    SIGHT_DEBUG( "ArrayProperty name =" << name );
 
     for(unsigned int i = 0; i < property.size(m_campObj); ++i)
     {
@@ -253,7 +253,7 @@ void CompareObjects::visit(const camp::ArrayProperty& property)
 void CompareObjects::visit(const camp::UserProperty& property)
 {
     const std::string name( property.name() );
-    SLM_DEBUG( "UserProperty name =" << name );
+    SIGHT_DEBUG( "UserProperty name =" << name );
     ::camp::Value elemValue = property.get( m_campObj );
 
     if(m_campObj.call("is_a", ::camp::Args("::sight::data::Object")).to<bool>())
@@ -295,14 +295,14 @@ void CompareObjects::compare(SPTR(data::Object)objRef, SPTR(data::Object)objComp
     m_objRef  = objRef;
     m_objComp = objComp;
 
-    SLM_ASSERT("Reference object not defined", m_objRef);
+    SIGHT_ASSERT("Reference object not defined", m_objRef);
     m_campObj = ::camp::UserObject(m_objRef.get());
     const ::camp::Class& classRef = ::camp::classByName(m_objRef->getClassname());
     classRef.visit(*this);
     m_propsRef = std::move(*m_props);
     m_props->clear();
 
-    SLM_ASSERT("Reference object not defined", m_objComp);
+    SIGHT_ASSERT("Reference object not defined", m_objComp);
     m_campObj = ::camp::UserObject(m_objComp.get());
     const ::camp::Class& classComp = ::camp::classByName(m_objComp->getClassname());
     classComp.visit(*this);

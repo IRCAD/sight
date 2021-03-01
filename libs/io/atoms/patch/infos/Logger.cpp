@@ -76,7 +76,7 @@ Logger::Logger()
 
     const bfile::path appPrefDir = core::tools::os::getUserDataDir("sight", appName, true);
 
-    FW_RAISE_IF("Unable to define User's data directory", appPrefDir.empty());
+    SIGHT_THROW_IF("Unable to define User's data directory", appPrefDir.empty());
 
     if (!bfile::exists(appPrefDir))
     {

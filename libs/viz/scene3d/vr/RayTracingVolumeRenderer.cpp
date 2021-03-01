@@ -177,7 +177,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                                  stereoMode, true);
 
     auto* const compositorInstance = compositorManager.addCompositor(viewport, rayEntryCompositorName, 0);
-    SLM_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
+    SIGHT_ERROR_IF("Compositor '" + rayEntryCompositorName + "' not found.", compositorInstance == nullptr);
     compositorInstance->setEnabled(true);
 
     const std::string rtvSharedParamsName = parentId + "_RTVParams";
@@ -281,15 +281,15 @@ void RayTracingVolumeRenderer::imageUpdate(const data::Image::sptr image, const 
     else
     {
         const auto* const technique = material->getTechnique(0);
-        SLM_ASSERT("Technique not found", technique);
+        SIGHT_ASSERT("Technique not found", technique);
         const auto* const pass = technique->getPass(0);
-        SLM_ASSERT("Pass not found", pass);
+        SIGHT_ASSERT("Pass not found", pass);
         m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
 
     // The depth technique always used the transfer function
     const auto* const technique = material->getTechnique(1);
-    SLM_ASSERT("Technique not found", technique);
+    SIGHT_ASSERT("Technique not found", technique);
     const auto* const pass = technique->getPass(0);
     m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
 }
@@ -304,14 +304,14 @@ void RayTracingVolumeRenderer::set3DTexture(const ::Ogre::TexturePtr& _texture)
 
         ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
         ::Ogre::MaterialPtr mat     = mm.getByName(m_currentMtlName, RESOURCE_GROUP);
-        SLM_ASSERT("Missing material '" + m_currentMtlName + "'.", mat);
+        SIGHT_ASSERT("Missing material '" + m_currentMtlName + "'.", mat);
         const ::Ogre::Technique* const tech = mat->getTechnique(0);
-        SLM_ASSERT("Material '" + m_currentMtlName + "' has no techniques.", tech);
+        SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no techniques.", tech);
         ::Ogre::Pass* const pass = tech->getPass(0);
-        SLM_ASSERT("Material '" + m_currentMtlName + "' has no passes.", pass);
+        SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no passes.", pass);
 
         ::Ogre::TextureUnitState* const texUnitState = pass->getTextureUnitState(0);
-        SLM_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", texUnitState);
+        SIGHT_ASSERT("Material '" + m_currentMtlName + "' has no texture units.", texUnitState);
         texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
 
         m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
@@ -327,17 +327,17 @@ void RayTracingVolumeRenderer::updateVolumeTF()
     if(!m_preIntegratedRendering)
     {
         const auto* const technique = material->getTechnique(0);
-        SLM_ASSERT("Technique not found", technique);
+        SIGHT_ASSERT("Technique not found", technique);
         const auto* const pass = technique->getPass(0);
-        SLM_ASSERT("Pass not found", pass);
+        SIGHT_ASSERT("Pass not found", pass);
         m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
     }
 
     // The depth technique always used the transfer function
     const auto* const technique = material->getTechnique(1);
-    SLM_ASSERT("Technique not found", technique);
+    SIGHT_ASSERT("Technique not found", technique);
     const auto* const pass = technique->getPass(0);
-    SLM_ASSERT("Pass not found", pass);
+    SIGHT_ASSERT("Pass not found", pass);
     m_gpuVolumeTF.lock()->bind(pass, s_VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
 
     m_proxyGeometry->computeGrid();
@@ -818,7 +818,7 @@ void RayTracingVolumeRenderer::updateVolIllumMat()
     volIllumMtl += m_ambientOcclusion || m_colorBleeding ? "_AO" : "";
     volIllumMtl += m_shadows ? "_Shadows" : "";
 
-    SLM_ASSERT("Camera listener not instantiated", m_cameraListener);
+    SIGHT_ASSERT("Camera listener not instantiated", m_cameraListener);
     m_cameraListener->setCurrentMtlName(volIllumMtl);
 }
 

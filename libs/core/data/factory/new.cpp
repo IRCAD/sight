@@ -38,7 +38,7 @@ namespace factory
 
 data::Object::sptr New( const data::registry::KeyType& classname )
 {
-    SLM_ASSERT("A classname must be specified", !classname.empty());
+    SIGHT_ASSERT("A classname must be specified", !classname.empty());
 
     // 1. Try first to create the data
     auto data = data::registry::get()->create(classname);
@@ -52,17 +52,17 @@ data::Object::sptr New( const data::registry::KeyType& classname )
         {
             const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "") +
                                         match[3].str();
-            SLM_DEBUG("libname: " + libname);
+            SIGHT_DEBUG("libname: " + libname);
             const bool loaded = core::runtime::loadLibrary(libname);
             if(!loaded)
             {
-                FW_RAISE("Cannot load library for data '" + classname + "'");
+                SIGHT_THROW("Cannot load library for data '" + classname + "'");
                 return nullptr;
             }
         }
         else
         {
-            FW_RAISE("Cannot determine library name from data '" + classname + "'");
+            SIGHT_THROW("Cannot determine library name from data '" + classname + "'");
         }
         // 3. Re-try now that the library is loaded
         data = data::registry::get()->create(classname);

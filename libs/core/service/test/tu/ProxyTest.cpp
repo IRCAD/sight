@@ -26,8 +26,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-
 #include <core/thread/ActiveWorkers.hpp>
+
 #include <service/registry/Proxy.hpp>
 
 // Registers the fixture into the 'registry'
@@ -67,7 +67,7 @@ struct ProxyTestClass
 
     int sum(int a, int b)
     {
-        SLM_INFO("SUM " << a << " + " << b);
+        SIGHT_INFO("SUM " << a << " + " << b);
         ++m_methodSum;
         return a+b;
     }
@@ -76,7 +76,7 @@ struct ProxyTestClass
 
     int square (int a)
     {
-        SLM_INFO("SQUARE " << a );
+        SIGHT_INFO("SQUARE " << a );
         ++m_methodSquare;
         return a*a;
     }
@@ -85,7 +85,7 @@ struct ProxyTestClass
 
     void doNothing()
     {
-        SLM_INFO("DO NOTHING");
+        SIGHT_INFO("DO NOTHING");
         ++m_methodDoNothing;
     }
 

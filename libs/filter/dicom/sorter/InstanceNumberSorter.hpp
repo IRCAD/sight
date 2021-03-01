@@ -38,8 +38,8 @@ namespace sorter
 class FILTER_DICOM_CLASS_API InstanceNumberSorter : public filter::dicom::sorter::TagValueSorter
 {
 public:
-    fwCoreClassMacro(InstanceNumberSorter, filter::dicom::sorter::TagValueSorter,
-                     filter::dicom::factory::New< InstanceNumberSorter >);
+    SIGHT_DECLARE_CLASS(InstanceNumberSorter, filter::dicom::sorter::TagValueSorter,
+                        filter::dicom::factory::New< InstanceNumberSorter >);
 
     /// Constructor
     FILTER_DICOM_API InstanceNumberSorter(filter::dicom::IFilter::Key key);

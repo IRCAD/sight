@@ -30,11 +30,11 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
+#include <data/fieldHelper/Image.hpp>
+#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/Image.hpp>
 #include <data/mt/ObjectReadLock.hpp>
 #include <data/mt/ObjectWriteLock.hpp>
-#include <data/fieldHelper/Image.hpp>
-#include <data/fieldHelper/MedicalImageHelpers.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <service/macros.hpp>
@@ -45,7 +45,6 @@
 #include <QGraphicsItemGroup>
 #include <QPixmap>
 #include <QPoint>
-
 
 namespace sight::module::viz::scene2d
 {
@@ -284,7 +283,7 @@ QImage* SNegato::createQImage()
             break;
 
         default:
-            SLM_FATAL("Unsupported value for orientation");
+            SIGHT_FATAL("Unsupported value for orientation");
             break;
     }
 
@@ -349,7 +348,7 @@ void SNegato::swapping(const KeyType& key)
     if (key == s_TF_INOUT)
     {
         data::Image::sptr image = this->getInOut< data::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Missing image", image);
+        SIGHT_ASSERT("Missing image", image);
 
         data::TransferFunction::sptr tf = this->getInOut< data::TransferFunction>(s_TF_INOUT);
         m_helperTF.setOrCreateTF(tf, image);

@@ -36,7 +36,7 @@ namespace parser
 class Boolean : public GenericField
 {
 public:
-    fwCoreServiceMacro(Boolean, service::IXMLParser)
+    SIGHT_DECLARE_SERVICE(Boolean, service::IXMLParser)
 };
 
 } //namespace parser

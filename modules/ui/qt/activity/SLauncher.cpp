@@ -47,6 +47,9 @@
 #include <service/IAppConfigManager.hpp>
 #include <service/macros.hpp>
 
+#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/base/dialog/SelectorDialog.hpp>
+
 #include <boost/foreach.hpp>
 
 #include <QApplication>
@@ -56,9 +59,6 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QVBoxLayout>
-
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
 
 Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
@@ -125,15 +125,15 @@ void SLauncher::configuring()
     m_parameters.clear();
     if(this->getConfigTree().count("config") > 0)
     {
-        SLM_ASSERT("There must be one (and only one) <config/> element.",
-                   this->getConfigTree().count("config") == 1 );
+        SIGHT_ASSERT("There must be one (and only one) <config/> element.",
+                     this->getConfigTree().count("config") == 1 );
 
         const service::IService::ConfigType srvconfig = this->getConfigTree();
         const service::IService::ConfigType& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
-        SLM_ASSERT("SLauncher mode must be either 'immediate' or 'message'",
-                   "message" == m_mode || "immediate" == m_mode);
+        SIGHT_ASSERT("SLauncher mode must be either 'immediate' or 'message'",
+                     "message" == m_mode || "immediate" == m_mode);
 
         if(config.count("parameters") == 1 )
         {
@@ -144,16 +144,17 @@ void SLauncher::configuring()
                 m_parameters.push_back( parameter );
             }
         }
-        SLM_ASSERT("A maximum of 1 <parameters> tag is allowed", config.count("parameters") < 2);
+        SIGHT_ASSERT("A maximum of 1 <parameters> tag is allowed", config.count("parameters") < 2);
 
         if(config.count("filter") == 1 )
         {
             const service::IService::ConfigType& configFilter = config.get_child("filter");
-            SLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+            SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
-            SLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
-                       mode == "include" || mode == "exclude");
+            SIGHT_ASSERT(
+                "'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
+                    mode == "include" || mode == "exclude");
             m_filterMode = mode;
 
             BOOST_FOREACH( const ConfigType::value_type& v,  configFilter.equal_range("id") )
@@ -161,7 +162,7 @@ void SLauncher::configuring()
                 m_keys.push_back(v.second.get<std::string>(""));
             }
         }
-        SLM_ASSERT("A maximum of 1 <filter> tag is allowed", config.count("filter") < 2);
+        SIGHT_ASSERT("A maximum of 1 <filter> tag is allowed", config.count("filter") < 2);
 
         if(config.count("quickLaunch") == 1 )
         {
@@ -172,8 +173,8 @@ void SLauncher::configuring()
                 const service::IService::ConfigType& association = v.second;
                 const service::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
 
-                SLM_FATAL_IF( "The attribute \"type\" is missing", xmlattr.count("type") != 1 );
-                SLM_FATAL_IF( "The attribute \"id\" is missing", xmlattr.count("id") != 1 );
+                SIGHT_FATAL_IF( "The attribute \"type\" is missing", xmlattr.count("type") != 1 );
+                SIGHT_FATAL_IF( "The attribute \"id\" is missing", xmlattr.count("id") != 1 );
 
                 std::string type = xmlattr.get<std::string>("type");
                 std::string id   = xmlattr.get<std::string>("id");
@@ -181,7 +182,7 @@ void SLauncher::configuring()
                 m_quickLaunch[type] = id;
             }
         }
-        SLM_ASSERT("A maximum of 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
+        SIGHT_ASSERT("A maximum of 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
     }
 }
 
@@ -289,7 +290,7 @@ SLauncher::ActivityInfoContainer SLauncher::getEnabledActivities(const ActivityI
 void SLauncher::updating()
 {
     data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
-    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
+    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     const bool launchAS = this->launchAS(selection);
     if (!launchAS)
@@ -328,7 +329,7 @@ void SLauncher::updating()
 void SLauncher::updateState()
 {
     data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
-    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
+    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     bool isExecutable = false;
 
@@ -388,7 +389,7 @@ void SLauncher::buildActivity(const ActivityInfo& info,
 {
     data::Composite::sptr replaceMap = data::Composite::New();
     auto builder                     = sight::activity::builder::factory::New(info.builderImpl);
-    SLM_ASSERT(info.builderImpl << " instantiation failed", builder);
+    SIGHT_ASSERT(info.builderImpl << " instantiation failed", builder);
 
     data::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
@@ -399,7 +400,7 @@ void SLauncher::buildActivity(const ActivityInfo& info,
                                 "> failed.";
         sight::ui::base::dialog::MessageDialog::show( "Activity can not be launched", msg,
                                                       sight::ui::base::dialog::IMessageDialog::WARNING);
-        SLM_ERROR(msg);
+        SIGHT_ERROR(msg);
         return;
     }
 
@@ -457,16 +458,16 @@ void SLauncher::sendConfig( const ActivityInfo& info )
 {
     // Start module containing the activity if it is not started
     std::shared_ptr< core::runtime::Module > module = core::runtime::findModule(info.bundleId);
-    SLM_WARN_IF("Module '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
-                module->isStarted());
+    SIGHT_WARN_IF("Module '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
+                  module->isStarted());
     if (!module->isStarted())
     {
-        SLM_DEBUG("Start module '" + info.bundleId + "' used by activity '" + info.id + "'");
+        SIGHT_DEBUG("Start module '" + info.bundleId + "' used by activity '" + info.id + "'");
         module->start();
     }
 
     data::Vector::csptr selection = this->getInput< data::Vector >(s_SERIES_INPUT);
-    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
+    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", selection);
 
     IValidator::ValidationType validation;
     validation.first = true;
@@ -474,7 +475,7 @@ void SLauncher::sendConfig( const ActivityInfo& info )
     for(auto const& validatorImpl :  info.validatorsImpl)
     {
         IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
-        SLM_ASSERT(validatorImpl << " instantiation failed", validator);
+        SIGHT_ASSERT(validatorImpl << " instantiation failed", validator);
 
         IValidator::ValidationType valid = validator->validate(info, selection);
         validation.first &= valid.first;
@@ -543,8 +544,8 @@ void SLauncher::launchSeries(data::Series::sptr series)
         if( m_quickLaunch.find( series->getClassname() ) != m_quickLaunch.end() )
         {
             std::string activityId = m_quickLaunch[ series->getClassname() ];
-            SLM_ASSERT("Activity information not found for" + activityId,
-                       Activity::getDefault()->hasInfo(activityId) );
+            SIGHT_ASSERT("Activity information not found for" + activityId,
+                         Activity::getDefault()->hasInfo(activityId) );
             this->sendConfig( Activity::getDefault()->getInfo(activityId) );
         }
         else if ( !infos.empty() )
@@ -605,7 +606,7 @@ SLauncher::ParametersType SLauncher::translateParameters( const ParametersType& 
 {
     ParametersType transParams     = parameters;
     data::Object::csptr workingObj = this->getInput< data::Object >(s_SERIES_INPUT);
-    SLM_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", workingObj);
+    SIGHT_ASSERT("The input key '" + s_SERIES_INPUT + "' is not correctly set.", workingObj);
 
     for(ParametersType::value_type& param :  transParams)
     {
@@ -618,7 +619,7 @@ SLauncher::ParametersType SLauncher::translateParameters( const ParametersType& 
             }
 
             data::Object::sptr obj = data::reflection::getObject(workingObj, parameterToReplace);
-            SLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
+            SIGHT_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
 
             data::String::sptr stringParameter = data::String::dynamicCast(obj);
 

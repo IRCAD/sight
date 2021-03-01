@@ -67,7 +67,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
             parameters.push_back( parameter );
         }
     }
-    SLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+    SIGHT_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,12 +100,12 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     }
 
     std::string createStr = config.get_optional<std::string>("<xmlattr>.create").get_value_or("false");
-    SLM_ASSERT("'create' attribute must be 'true' or 'false'", createStr == "true" || createStr == "false");
+    SIGHT_ASSERT("'create' attribute must be 'true' or 'false'", createStr == "true" || createStr == "false");
     create = (createStr == "true");
-    SLM_ASSERT("Create option is only available if minOccurs = 0 and maxOccurs = 1",
-               !create || (minOccurs == 0 && maxOccurs == 1));
+    SIGHT_ASSERT("Create option is only available if minOccurs = 0 and maxOccurs = 1",
+                 !create || (minOccurs == 0 && maxOccurs == 1));
 
-    SLM_ASSERT(
+    SIGHT_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
             0 <= minOccurs && minOccurs <= maxOccurs);
 }
@@ -257,12 +257,12 @@ void Activity::parseBundleInformation()
 
     for( const SPTR( core::runtime::Extension ) &ext :  extensions )
     {
-        SLM_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activity");
+        SIGHT_DEBUG("Parsing <" << ext->getModule()->getIdentifier() << "> Activity");
         ActivityInfo info(ext);
 
         core::mt::WriteLock lock(m_registryMutex);
-        SLM_ASSERT("The id " <<  info.id << "(" << info.title << ")"
-                             << " already exists in the Activity registry", m_reg.find( info.id ) == m_reg.end());
+        SIGHT_ASSERT("The id " <<  info.id << "(" << info.title << ")"
+                               << " already exists in the Activity registry", m_reg.find( info.id ) == m_reg.end());
         m_reg.insert( Registry::value_type(info.id, info) );
     }
 }
@@ -363,8 +363,8 @@ const ActivityInfo Activity::getInfo( const std::string& extensionId ) const
 {
     core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
-    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
-               iter != m_reg.end());
+    SIGHT_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
+                 iter != m_reg.end());
     return iter->second;
 }
 

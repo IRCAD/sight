@@ -75,8 +75,8 @@ void SVoxelPicker::configuring()
     m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
 
     const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
-    SLM_ASSERT("Orientation mode must be 'axial', 'frontal' or 'sagittal'.",
-               orientation == "axial" || orientation == "frontal" || orientation == "sagittal");
+    SIGHT_ASSERT("Orientation mode must be 'axial', 'frontal' or 'sagittal'.",
+                 orientation == "axial" || orientation == "frontal" || orientation == "sagittal");
     if(orientation == "axial")
     {
         m_orientation = OrientationMode::Z_AXIS;
@@ -91,7 +91,7 @@ void SVoxelPicker::configuring()
     }
 
     const std::string mode = config.get<std::string>(s_MODE_CONFIG, "2D");
-    SLM_ASSERT("Mode must be '2D' or '3D'.", mode == "2D" || mode == "3D");
+    SIGHT_ASSERT("Mode must be '2D' or '3D'.", mode == "2D" || mode == "3D");
     m_mode2D = mode == "2D";
 
     m_moveOnPick = config.get<bool>(s_MOVE_ON_PICK_CONFIG, m_moveOnPick);
@@ -199,7 +199,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
                     info.m_eventId = _pressed ? PickingEventType::MOUSE_MIDDLE_DOWN : PickingEventType::MOUSE_MIDDLE_UP;
                     break;
                 default:
-                    SLM_ERROR("Unknown mouse button");
+                    SIGHT_ERROR("Unknown mouse button");
                     break;
             }
 
@@ -291,7 +291,7 @@ std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(con
                            && _inter.y <= _origin.y + _spacing.y * static_cast< ::Ogre::Real >(size[1]);
                 }
                 default:
-                    SLM_ERROR("Unknown orientation mode");
+                    SIGHT_ERROR("Unknown orientation mode");
                     return false;
             }
         };
@@ -327,7 +327,7 @@ std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(con
                       break;
                   }
                   default:
-                      SLM_ERROR("Unknown orientation mode");
+                      SIGHT_ERROR("Unknown orientation mode");
                       break;
               }
               return _inter;
@@ -350,7 +350,7 @@ std::pair< bool, ::Ogre::Vector3 > SVoxelPicker::computeRayImageIntersection(con
                 plane = ::Ogre::Plane(::Ogre::Vector3::UNIT_Z, _origin.z + axialIndex*_spacing.z);
                 break;
             default:
-                SLM_ERROR("Unknown orientation mode");
+                SIGHT_ERROR("Unknown orientation mode");
                 break;
         }
 

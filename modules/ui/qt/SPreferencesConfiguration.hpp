@@ -29,13 +29,13 @@
 
 #include <data/String.hpp>
 
+#include <ui/base/IAction.hpp>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IAction.hpp>
 
 #include <vector>
 
@@ -121,7 +121,7 @@ Q_OBJECT
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SPreferencesConfiguration, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, ::sight::ui::base::IAction)
 
     /// Initializes the signal.
     MODULE_UI_QT_API SPreferencesConfiguration() noexcept;

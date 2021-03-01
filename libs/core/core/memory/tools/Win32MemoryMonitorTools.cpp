@@ -83,34 +83,34 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
         HMODULE hMod;
         DWORD cbNeeded;
 
-        SLM_INFO( "-- Process memory information --" );
+        SIGHT_INFO( "-- Process memory information --" );
         if ( EnumProcessModules( hProcess, &hMod, sizeof(hMod), &cbNeeded) )
         {
             GetModuleBaseNameW( hProcess, hMod, (LPWSTR)name, nameSize );
-            SLM_INFO( "    Name : " << name << "  ( PID : " << processID << " )");
+            SIGHT_INFO( "    Name : " << name << "  ( PID : " << processID << " )");
         }
         else
         {
-            SLM_INFO( "    Name : not found ( PID : " << processID << " )");
+            SIGHT_INFO( "    Name : not found ( PID : " << processID << " )");
         }
 
         PROCESS_MEMORY_COUNTERS_EX pmc;
         if ( GetProcessMemoryInfo( hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
         {
-            SLM_INFO("    PageFaultCount : " << (int)pmc.PageFaultCount );
-            SLM_INFO("    PeakWorkingSetSize : " << (int)pmc.PeakWorkingSetSize );
-            SLM_INFO("    WorkingSetSize : " << (int)pmc.WorkingSetSize );
-            SLM_INFO("    QuotaPeakPagedPoolUsage : " << (int)pmc.QuotaPeakPagedPoolUsage );
-            SLM_INFO("    QuotaPagedPoolUsage : " << (int)pmc.QuotaPagedPoolUsage );
-            SLM_INFO("    QuotaPeakNonPagedPoolUsage : " << (int)pmc.QuotaPeakNonPagedPoolUsage );
-            SLM_INFO("    QuotaNonPagedPoolUsage : " << (int)pmc.QuotaNonPagedPoolUsage );
-            SLM_INFO("    PagefileUsage : " << (int)pmc.PagefileUsage );
-            SLM_INFO("    PeakPagefileUsage : " << (int)pmc.PeakPagefileUsage );
-            SLM_INFO("    PrivateUsage : " << (int)pmc.PrivateUsage );
+            SIGHT_INFO("    PageFaultCount : " << (int)pmc.PageFaultCount );
+            SIGHT_INFO("    PeakWorkingSetSize : " << (int)pmc.PeakWorkingSetSize );
+            SIGHT_INFO("    WorkingSetSize : " << (int)pmc.WorkingSetSize );
+            SIGHT_INFO("    QuotaPeakPagedPoolUsage : " << (int)pmc.QuotaPeakPagedPoolUsage );
+            SIGHT_INFO("    QuotaPagedPoolUsage : " << (int)pmc.QuotaPagedPoolUsage );
+            SIGHT_INFO("    QuotaPeakNonPagedPoolUsage : " << (int)pmc.QuotaPeakNonPagedPoolUsage );
+            SIGHT_INFO("    QuotaNonPagedPoolUsage : " << (int)pmc.QuotaNonPagedPoolUsage );
+            SIGHT_INFO("    PagefileUsage : " << (int)pmc.PagefileUsage );
+            SIGHT_INFO("    PeakPagefileUsage : " << (int)pmc.PeakPagefileUsage );
+            SIGHT_INFO("    PrivateUsage : " << (int)pmc.PrivateUsage );
         }
         else
         {
-            SLM_WARN("GetProcessMemoryInfo failed !");
+            SIGHT_WARN("GetProcessMemoryInfo failed !");
         }
 
         delete[] name;
@@ -129,14 +129,14 @@ void Win32MemoryMonitorTools::printSystemMemoryInformation()
     statex.dwLength = sizeof (statex);
     GlobalMemoryStatusEx(&statex);
 
-    SLM_INFO( "-- System memory information --" );
-    SLM_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
-    SLM_INFO( "    There are " << statex.ullTotalPhys/oToKo        <<  " total Ko of physical memory." );
-    SLM_INFO( "    There are " << statex.ullAvailPhys/oToKo        <<  " free Ko of physical memory." );
-    SLM_INFO( "    There are " << statex.ullTotalPageFile/oToKo    <<  " total Ko of paging file." );
-    SLM_INFO( "    There are " << statex.ullAvailPageFile/oToKo    <<  " free Ko of paging file." );
-    SLM_INFO( "    There are " << statex.ullTotalVirtual/oToKo     <<  " total Ko of virtual memory." );
-    SLM_INFO( "    There are " << statex.ullAvailVirtual/oToKo     <<  " free Ko of virtual memory." );
+    SIGHT_INFO( "-- System memory information --" );
+    SIGHT_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
+    SIGHT_INFO( "    There are " << statex.ullTotalPhys/oToKo        <<  " total Ko of physical memory." );
+    SIGHT_INFO( "    There are " << statex.ullAvailPhys/oToKo        <<  " free Ko of physical memory." );
+    SIGHT_INFO( "    There are " << statex.ullTotalPageFile/oToKo    <<  " total Ko of paging file." );
+    SIGHT_INFO( "    There are " << statex.ullAvailPageFile/oToKo    <<  " free Ko of paging file." );
+    SIGHT_INFO( "    There are " << statex.ullTotalVirtual/oToKo     <<  " total Ko of virtual memory." );
+    SIGHT_INFO( "    There are " << statex.ullAvailVirtual/oToKo     <<  " free Ko of virtual memory." );
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ std::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
     {
         memory = pmc.WorkingSetSize;
     }
-    SLM_WARN_IF("GetProcessMemoryInfo failed !", !result);
+    SIGHT_WARN_IF("GetProcessMemoryInfo failed !", !result);
 
     return memory;
 }

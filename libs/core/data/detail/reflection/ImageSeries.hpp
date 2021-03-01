@@ -30,5 +30,5 @@
 
 #include <data/Image.hpp>
 
-fwCampDeclareAccessor((sight)(data)(ImageSeries), (sight)(data)(Image));
-fwCampDeclareAccessor((sight)(data)(ImageSeries), (sight)(data)(DicomSeries));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ImageSeries), (sight)(data)(Image));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ImageSeries), (sight)(data)(DicomSeries));

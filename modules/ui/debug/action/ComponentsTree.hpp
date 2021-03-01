@@ -24,12 +24,12 @@
 
 #include "modules/ui/debug/config.hpp"
 
+#include <ui/base/IAction.hpp>
+
 #include <QDialog>
 #include <QObject>
 #include <QPointer>
 #include <QTreeWidget>
-
-#include <ui/base/IAction.hpp>
 
 namespace sight::module::ui::debug
 {
@@ -44,7 +44,7 @@ class MODULE_UI_DEBUG_CLASS_API ComponentsTree : public ::sight::ui::base::IActi
 
 public:
 
-    fwCoreServiceMacro(ComponentsTree, ::sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(ComponentsTree, ::sight::ui::base::IAction)
 
     /// Does nothing
     MODULE_UI_DEBUG_API ComponentsTree() noexcept;

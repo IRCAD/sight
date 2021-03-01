@@ -28,13 +28,13 @@
 
 #include <data/Point.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QAction>
 #include <QCheckBox>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::image
 {
@@ -62,7 +62,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(ImageTransparency, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(ImageTransparency, sight::ui::base::IEditor)
 
     MODULE_UI_QT_API ImageTransparency() noexcept;
 

@@ -29,7 +29,6 @@
 namespace sight::module::ui::base
 {
 
-
 SFrame::SFrame() noexcept
 {
 }
@@ -44,7 +43,7 @@ SFrame::~SFrame() noexcept
 
 void SFrame::configuring()
 {
-    SLM_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
+    SIGHT_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
     this->initialize();
 }
 

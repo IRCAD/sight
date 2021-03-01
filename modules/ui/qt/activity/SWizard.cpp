@@ -37,12 +37,15 @@
 
 #include <data/Composite.hpp>
 #include <data/Equipment.hpp>
+#include <data/helper/SeriesDB.hpp>
 #include <data/Patient.hpp>
 #include <data/Series.hpp>
 #include <data/Study.hpp>
-#include <data/helper/SeriesDB.hpp>
 
 #include <service/macros.hpp>
+
+#include <ui/base/dialog/InputDialog.hpp>
+#include <ui/qt/container/QtContainer.hpp>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -50,9 +53,6 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QVBoxLayout>
-
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -106,7 +106,7 @@ void SWizard::configuring()
     const auto config = this->getConfigTree();
 
     m_ioSelectorConfig = config.get("ioSelectorConfig", "");
-    SLM_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());
+    SIGHT_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());
 
     m_sdbIoSelectorConfig = config.get("sdbIoSelectorConfig", "");
     if (m_sdbIoSelectorConfig.empty())
@@ -124,14 +124,14 @@ void SWizard::configuring()
         const auto iconCfg = itIcon->second.get_child("<xmlattr>");
 
         const std::string type = iconCfg.get<std::string>("type");
-        SLM_ASSERT("'type' attribute must not be empty", !type.empty());
+        SIGHT_ASSERT("'type' attribute must not be empty", !type.empty());
         const std::string icon = iconCfg.get<std::string>("icon");
-        SLM_ASSERT("'icon' attribute must not be empty", !icon.empty());
+        SIGHT_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
         const auto file = core::runtime::getResourceFilePath(icon);
         m_objectIcons[type] = file.string();
     }
-    SLM_ASSERT("icons are empty", !m_objectIcons.empty());
+    SIGHT_ASSERT("icons are empty", !m_objectIcons.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ void SWizard::updating()
         this->updateActivity(as);
     }
 
-    SLM_DEBUG_IF("activity series is not defined, it cannot be updated", !as);
+    SIGHT_DEBUG_IF("activity series is not defined, it cannot be updated", !as);
 }
 
 //------------------------------------------------------------------------------
@@ -290,13 +290,13 @@ void SWizard::createActivity(std::string activityID)
         // Create data automatically if they are not provided by the user
         for(const auto& req : info.requirements)
         {
-            SLM_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
+            SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
             data::Composite::sptr data = m_actSeries->getData();
             (*data)[req.name] = data::factory::New(req.type);
         }
 
         data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-        SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
+        SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
         data::helper::SeriesDB helper(seriesDB);
         helper.add(m_actSeries);
@@ -488,7 +488,7 @@ void SWizard::onBuildActivity()
                     }
                     m_actSeries->setDescription(description);
                     data::SeriesDB::sptr seriesDB = this->getInOut< data::SeriesDB >(s_SERIESDB_INOUT);
-                    SLM_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
+                    SIGHT_ASSERT("The inout key '" + s_SERIESDB_INOUT + "' is not defined.", seriesDB);
 
                     data::helper::SeriesDB helper(seriesDB);
                     helper.add(m_actSeries);
@@ -508,7 +508,7 @@ void SWizard::onBuildActivity()
                 QString message = "This activity can not be created : \n";
                 message.append(QString::fromStdString(errorMsg));
                 QMessageBox::warning(qApp->activeWindow(), "Activity Creation", message);
-                SLM_ERROR(errorMsg);
+                SIGHT_ERROR(errorMsg);
             }
         }
     }

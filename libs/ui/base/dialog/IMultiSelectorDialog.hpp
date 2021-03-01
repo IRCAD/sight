@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API IMultiSelectorDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(IMultiSelectorDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMultiSelectorDialog, ui::base::GuiBaseObject)
 
     typedef std::map< std::string, bool > Selections;
     typedef std::string FactoryRegistryKeyType;

@@ -28,14 +28,14 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLabel>
 #include <QLineEdit>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QSlider>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -77,7 +77,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SSlider, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SSlider, sight::ui::base::IEditor)
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSlider() noexcept;

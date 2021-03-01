@@ -39,8 +39,8 @@ namespace sorter
 class UI_DICOM_CLASS_API TagValueConfigurableSorter : public filter::dicom::sorter::TagValueSorter
 {
 public:
-    fwCoreClassMacro(TagValueConfigurableSorter, filter::dicom::sorter::TagValueSorter,
-                     filter::dicom::factory::New< TagValueConfigurableSorter >);
+    SIGHT_DECLARE_CLASS(TagValueConfigurableSorter, filter::dicom::sorter::TagValueSorter,
+                        filter::dicom::factory::New< TagValueConfigurableSorter >);
 
     /// Constructor
     UI_DICOM_API TagValueConfigurableSorter(filter::dicom::IFilter::Key key);

@@ -28,11 +28,11 @@
 
 #include <data/tools/Color.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QBoxLayout>
 #include <QScrollArea>
 #include <QTabWidget>
-
-#include <ui/base/registry/macros.hpp>
 
 fwGuiRegisterMacro( ::sight::ui::qt::TabLayoutManager,
                     ::sight::ui::base::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
@@ -57,7 +57,7 @@ TabLayoutManager::~TabLayoutManager()
 void TabLayoutManager::createLayout( ui::base::container::fwContainer::sptr parent )
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     m_parentContainer->setLayout(layout);

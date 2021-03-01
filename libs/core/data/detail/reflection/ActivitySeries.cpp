@@ -30,7 +30,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(ActivitySeries))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(ActivitySeries))
 {
     builder
     .tag("object_version", "2")

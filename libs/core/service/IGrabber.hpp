@@ -61,7 +61,7 @@ class SERVICE_CLASS_API IGrabber : public service::IService
 
 public:
 
-    fwCoreServiceMacro(IGrabber, service::IService)
+    SIGHT_DECLARE_SERVICE(IGrabber, service::IService)
 
     /**
      * @name Slots API

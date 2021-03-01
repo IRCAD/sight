@@ -65,7 +65,7 @@ namespace sight::module::filter::vision
 class MODULE_FILTER_VISION_CLASS_API SOpticalFlow : public service::IController
 {
 public:
-    fwCoreServiceMacro(SOpticalFlow, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SOpticalFlow, sight::service::IController)
 
     typedef core::com::Signal<void ()> MotionSignalType;
     typedef core::com::Signal<void ()> NoMotionSignalType;

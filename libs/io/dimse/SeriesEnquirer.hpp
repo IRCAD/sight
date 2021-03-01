@@ -57,7 +57,7 @@ namespace sight::io::dimse
     }
     catch(io::dimse::exceptions::Base& _e)
     {
-        SLM_ERROR("Can't execute query: " + std::string(_e.what()));
+        SIGHT_ERROR("Can't execute query: " + std::string(_e.what()));
     }
     seriesEnquirer->disconnect();
    @endcode
@@ -69,8 +69,8 @@ class IO_DIMSE_CLASS_API SeriesEnquirer :
 
 public:
 
-    fwCoreClassMacro(SeriesEnquirer, io::dimse::SeriesEnquirer, new SeriesEnquirer)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_CLASS(SeriesEnquirer, io::dimse::SeriesEnquirer, new SeriesEnquirer)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_DIMSE_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
 

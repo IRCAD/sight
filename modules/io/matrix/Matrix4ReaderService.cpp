@@ -29,10 +29,10 @@
 #include <data/location/SingleFile.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/macros.hpp>
-
 #include <io/base/reader/Matrix4Reader.hpp>
 #include <io/base/service/IReader.hpp>
+
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
@@ -44,7 +44,6 @@ namespace sight::module::io::matrix
 {
 
 //-----------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -131,7 +130,7 @@ void Matrix4ReaderService::updating()
         // Retrieve object
         data::Matrix4::sptr matrix =
             this->getInOut< data::Matrix4 >(sight::io::base::service::s_DATA_KEY);
-        SLM_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
+        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", matrix);
 
         sight::io::base::reader::Matrix4Reader::sptr reader =
             sight::io::base::reader::Matrix4Reader::New();

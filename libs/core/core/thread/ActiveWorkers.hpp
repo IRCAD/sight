@@ -37,7 +37,7 @@ class CORE_CLASS_API ActiveWorkers : public core::BaseObject
 
 public:
 
-    fwCoreClassMacro(ActiveWorkers, core::BaseObject, std::make_shared< ActiveWorkers >)
+    SIGHT_DECLARE_CLASS(ActiveWorkers, core::BaseObject, std::make_shared< ActiveWorkers >)
 
     typedef std::string WorkerKeyType;
 

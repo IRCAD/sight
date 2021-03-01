@@ -77,8 +77,8 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
     //points list should have same number of points
     if(fwPoints2d->getPoints().size() != fwPoints3d->getPoints().size())
     {
-        SLM_ERROR("'" + s_POINTLIST2D_INPUT + "' and '"
-                  + s_POINTLIST3D_INPUT + "' should have the same number of points");
+        SIGHT_ERROR("'" + s_POINTLIST2D_INPUT + "' and '"
+                    + s_POINTLIST3D_INPUT + "' should have the same number of points");
 
         return;
     }

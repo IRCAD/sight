@@ -38,7 +38,7 @@ class MODULE_IO_IGTL_CLASS_API INetworkSender : public service::IController
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(INetworkSender, service::IController)
+    SIGHT_DECLARE_SERVICE(INetworkSender, service::IController)
 
     /// Initializes signals.
     MODULE_IO_IGTL_API INetworkSender();

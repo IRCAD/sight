@@ -40,6 +40,7 @@
 
 #include <boost/tokenizer.hpp>
 
+#include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
@@ -54,7 +55,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/Ogre.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
@@ -101,7 +101,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 
     void cameraPreRenderScene(::Ogre::Camera*) final
     {
-        SLM_ASSERT("Layer is not set", m_layer );
+        SIGHT_ASSERT("Layer is not set", m_layer );
 
         if(m_layer->getStereoMode() != viz::scene3d::compositor::Core::StereoModeType::NONE)
         {
@@ -175,7 +175,7 @@ void Layer::setRenderTarget(::Ogre::RenderTarget* _renderTarget)
 void Layer::setID(const std::string& id)
 {
     auto renderService = m_renderService.lock();
-    SLM_ASSERT("Render service must be set before calling setID().", renderService);
+    SIGHT_ASSERT("Render service must be set before calling setID().", renderService);
     m_id = id;
 }
 
@@ -212,8 +212,8 @@ void Layer::createScene()
     m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->getID() + "_" + m_id);
     m_sceneManager->addRenderQueueListener( viz::scene3d::Utils::getOverlaySystem() );
 
-    SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
-    SLM_ASSERT("Render window must be initialized", m_renderTarget);
+    SIGHT_ASSERT("Scene manager must be initialized", m_sceneManager);
+    SIGHT_ASSERT("Render window must be initialized", m_renderTarget);
 
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
@@ -227,7 +227,7 @@ void Layer::createScene()
         }
         else
         {
-            SLM_ERROR("No overlay script named: '" + overlayName + "'.");
+            SIGHT_ERROR("No overlay script named: '" + overlayName + "'.");
         }
     }
 
@@ -477,7 +477,7 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
                 for(auto& [name, movObj] : movableTextObjects)
                 {
                     Text* const textObj = dynamic_cast<Text*>(movObj);
-                    SLM_ASSERT("Movable object should be of type '::viz::scene3d::Text'", textObj);
+                    SIGHT_ASSERT("Movable object should be of type '::viz::scene3d::Text'", textObj);
                     textObj->setDotsPerInch(newDpi);
                 }
             }
@@ -561,7 +561,7 @@ viz::scene3d::SRender::sptr Layer::getRenderService() const
 
 void Layer::setRenderService( const viz::scene3d::SRender::sptr& _service)
 {
-    SLM_ASSERT("service not instanced", _service);
+    SIGHT_ASSERT("service not instanced", _service);
 
     m_renderService = _service;
 }
@@ -755,7 +755,7 @@ bool Layer::isDefaultLight(const viz::scene3d::ILight::csptr& _light) const
 
 void Layer::removeDefaultLight()
 {
-    SLM_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
+    SIGHT_ASSERT("m_lightAdaptor must not be null", m_lightAdaptor != nullptr);
     viz::scene3d::ILight::destroyLightAdaptor(m_lightAdaptor);
     m_lightAdaptor.reset();
 }
@@ -782,7 +782,7 @@ void Layer::resetCameraCoordinates()
                                                    worldCoordBoundingBox.getSize().length() : 0;
 
             float coeffZoom = static_cast<float>(boundingBoxLength);
-            SLM_DEBUG("Zoom coefficient : " << coeffZoom);
+            SIGHT_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
             ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
@@ -1016,7 +1016,7 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
         }
         else
         {
-            SLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
+            SIGHT_ERROR("Unknown transparency technique : " << transparencyTechnique);
         }
     }
 
@@ -1172,7 +1172,8 @@ bool Layer::isSceneCreated() const
 
 Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 {
-    SLM_ASSERT("Index exceeds the number of cameras used for this stereo mode", cameraIdx < this->getNumberOfCameras());
+    SIGHT_ASSERT("Index exceeds the number of cameras used for this stereo mode",
+                 cameraIdx < this->getNumberOfCameras());
     ::Ogre::Matrix4 extrinsicTransform(::Ogre::Matrix4::IDENTITY);
 
     if(m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_5)
@@ -1193,7 +1194,7 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     {
         if(m_stereoCameraCalibration.size() < 2 && cameraIdx == 1)
         {
-            SLM_WARN("Only a single calibration was set but stereo rendering is set.");
+            SIGHT_WARN("Only a single calibration was set but stereo rendering is set.");
             // Kept for compatibility purposes.
             extrinsicTransform = ::Ogre::Matrix4(1, 0, 0, 5,
                                                  0, 1, 0, 0,

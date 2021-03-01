@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------
 
-fwCampImplementDataMacro((sight)(data)(Camera))
+SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Camera))
 {
     builder
     .tag("object_version", "3")
@@ -51,7 +51,7 @@ fwCampImplementDataMacro((sight)(data)(Camera))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Camera)(SourceType))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Camera)(SourceType))
 {
     builder
     .value("FILE", ::sight::data::Camera::FILE)
@@ -61,7 +61,7 @@ fwCampImplementEnumMacro((sight)(data)(Camera)(SourceType))
     ;
 }
 
-fwCampImplementEnumMacro((sight)(data)(Camera)(PixelFormat))
+SIGHT_IMPLEMENT_ENUM_REFLECTION((sight)(data)(Camera)(PixelFormat))
 {
     using ::sight::data::Camera;
     builder

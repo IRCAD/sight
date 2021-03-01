@@ -36,16 +36,15 @@
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
+#include <io/opencv/Matrix.hpp>
+
 #include <service/IService.hpp>
 #include <service/macros.hpp>
 
-#include <io/opencv/Matrix.hpp>
+#include <ui/base/preferences/helper.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
-
-#include <ui/base/preferences/helper.hpp>
-
 
 namespace sight::module::geometry::vision
 {
@@ -76,20 +75,20 @@ SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept
 void SOpenCVIntrinsic::configuring()
 {
     core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SLM_ASSERT("Tag 'board' not found.", cfgBoard);
+    SIGHT_ASSERT("Tag 'board' not found.", cfgBoard);
 
-    SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
+    SIGHT_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
     m_widthKey = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
+    SIGHT_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
-    SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
+    SIGHT_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
     m_heightKey = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
+    SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
     if( cfgBoard->hasAttribute("squareSize"))
     {
         m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
-        SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
+        SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
     }
 }
 
@@ -122,8 +121,8 @@ void SOpenCVIntrinsic::updating()
     data::Camera::sptr cam               = this->getInOut< data::Camera >("camera");
     data::Vector::sptr poseCamera        = this->getInOut< data::Vector >("poseVector");
 
-    SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
-    SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
+    SIGHT_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
+    SIGHT_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
 
     if(!calInfo->getPointListContainer().empty())
     {
@@ -150,7 +149,7 @@ void SOpenCVIntrinsic::updating()
 
                 for(data::Point::csptr point : capture->getPoints())
                 {
-                    SLM_ASSERT("point is null", point);
+                    SIGHT_ASSERT("point is null", point);
                     dst.push_back(::cv::Point2f(static_cast<float>(point->getCoord()[0]),
                                                 static_cast<float>(point->getCoord()[1])));
                 }
@@ -188,7 +187,7 @@ void SOpenCVIntrinsic::updating()
             }
         }
 
-        SLM_DEBUG("Calibration error :" << err);
+        SIGHT_DEBUG("Calibration error :" << err);
 
         data::mt::ObjectWriteLock camLock(cam);
 

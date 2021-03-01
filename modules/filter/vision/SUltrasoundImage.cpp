@@ -62,7 +62,6 @@ static const std::string s_US_DEPTH_CONFIG      = "USDepth";
 static const std::string s_DEBUG_CONFIG         = "debug";
 static const std::string s_CONVEX_SHAPE         = "convex";
 
-
 // -----------------------------------------------------------------------------
 
 SUltrasoundImage::SUltrasoundImage() noexcept
@@ -130,7 +129,7 @@ void SUltrasoundImage::updating()
     // take a `data::Image::cpstr` and output `const ::cv::Mat`.
     const auto constImage        = this->getLockedInput< data::Image >(s_ULTRASOUND_IMAGE_INPUT);
     data::Image::sptr inputImage = data::Image::constCast(constImage.get_shared());
-    SLM_ASSERT("Missing input frame.", inputImage);
+    SIGHT_ASSERT("Missing input frame.", inputImage);
 
     const bool isValid = data::fieldHelper::MedicalImageHelpers::checkImageValidity(inputImage);
     if(!isValid)
@@ -172,7 +171,7 @@ void SUltrasoundImage::updating()
     ::cv::cvtColor( src, srcGray, ::cv::COLOR_RGB2GRAY );
 
     auto outputImage = this->getLockedInOut< data::Image >(s_EXTRACTED_ULTRASOUND_BEAM_OUTPUT);
-    SLM_ASSERT("Missing output frame.", outputImage);
+    SIGHT_ASSERT("Missing output frame.", outputImage);
 
     const data::Image::Size outputSize = {{ m_probeSettings.matrixWidth, m_probeSettings.matrixDepth, 0}};
 
@@ -415,16 +414,16 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
     // as we won't be able to compute new ones.
     if(foundLines.size() < 2)
     {
-        SLM_ERROR("Less than 2 lines were found (can't compute an intersection).");
+        SIGHT_ERROR("Less than 2 lines were found (can't compute an intersection).");
         return;
     }
 
     /* Display information about the intersection lines found */
-    SLM_DEBUG("Number of lines found: " << foundLines.size());
+    SIGHT_DEBUG("Number of lines found: " << foundLines.size());
     for( size_t i = 0; i < foundLines.size(); i++)
     {
         ::cv::Vec2f v = foundLines.at(i);
-        SLM_DEBUG(" - " << v[0] << " * x + " << v[1]);
+        SIGHT_DEBUG(" - " << v[0] << " * x + " << v[1]);
     }
 
     if(m_convexShape)
@@ -438,16 +437,16 @@ void SUltrasoundImage::process(const ::cv::Mat& input)
 
     m_probeSettingsInitialized = true;
 
-    SLM_DEBUG("echoShapeOn: " << m_probeSettings.echoShapeOn);
-    SLM_DEBUG("depth: " << m_probeSettings.depth);
-    SLM_DEBUG("width: " << m_probeSettings.width);
-    SLM_DEBUG("angle: " << m_probeSettings.angle);
-    SLM_DEBUG("deltaDepth: " << m_probeSettings.deltaDepth);
-    SLM_DEBUG(
+    SIGHT_DEBUG("echoShapeOn: " << m_probeSettings.echoShapeOn);
+    SIGHT_DEBUG("depth: " << m_probeSettings.depth);
+    SIGHT_DEBUG("width: " << m_probeSettings.width);
+    SIGHT_DEBUG("angle: " << m_probeSettings.angle);
+    SIGHT_DEBUG("deltaDepth: " << m_probeSettings.deltaDepth);
+    SIGHT_DEBUG(
         "centerPosition: " << m_probeSettings.centerPosition[0] << " " << m_probeSettings.centerPosition[1] << " " <<
             m_probeSettings.centerPosition[2]);
-    SLM_DEBUG("direction: " << m_probeSettings.direction[0] << " " << m_probeSettings.direction[1]);
-    SLM_DEBUG("normal: " << m_probeSettings.normal[0] << " " << m_probeSettings.normal[1]);
+    SIGHT_DEBUG("direction: " << m_probeSettings.direction[0] << " " << m_probeSettings.direction[1]);
+    SIGHT_DEBUG("normal: " << m_probeSettings.normal[0] << " " << m_probeSettings.normal[1]);
 }
 
 // -----------------------------------------------------------------------------
@@ -512,13 +511,13 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
 
     if(nbLeftLines == 0 || nbLeftLines == nbVerticalLines )
     {
-        SLM_WARN("There is only on stack of vertical lines. We can't extract a rectangular shape.");
+        SIGHT_WARN("There is only on stack of vertical lines. We can't extract a rectangular shape.");
         return probeSettings;
     }
 
     if(nbTopLines == 0 || nbTopLines == nbHorizontalLines)
     {
-        SLM_WARN("There is only on stack of horizontal lines. We can't extract a rectangular shape.");
+        SIGHT_WARN("There is only on stack of horizontal lines. We can't extract a rectangular shape.");
         return probeSettings;
     }
 
@@ -546,16 +545,16 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processRectangularSh
     probeSettings.width             = static_cast<int>(meanRightX - meanLeftX);
     probeSettings.echoShapeOn       = false;
 
-    SLM_DEBUG("nbHorizontalLines: " << nbHorizontalLines);
-    SLM_DEBUG("nbVerticalLines: " << nbVerticalLines);
-    SLM_DEBUG("meanLeftX: " << meanLeftX);
-    SLM_DEBUG("meanRightX: " << meanRightX);
-    SLM_DEBUG("meanTopY: " << meanTopY);
-    SLM_DEBUG("meanBottomY: " << meanBottomY);
-    SLM_DEBUG("nbLeftLines: " << nbLeftLines);
-    SLM_DEBUG("nbRightLines: " << (nbVerticalLines - nbLeftLines));
-    SLM_DEBUG("nbTopLines: " << nbTopLines);
-    SLM_DEBUG("nbBottomLines: " << (nbHorizontalLines - nbTopLines));
+    SIGHT_DEBUG("nbHorizontalLines: " << nbHorizontalLines);
+    SIGHT_DEBUG("nbVerticalLines: " << nbVerticalLines);
+    SIGHT_DEBUG("meanLeftX: " << meanLeftX);
+    SIGHT_DEBUG("meanRightX: " << meanRightX);
+    SIGHT_DEBUG("meanTopY: " << meanTopY);
+    SIGHT_DEBUG("meanBottomY: " << meanBottomY);
+    SIGHT_DEBUG("nbLeftLines: " << nbLeftLines);
+    SIGHT_DEBUG("nbRightLines: " << (nbVerticalLines - nbLeftLines));
+    SIGHT_DEBUG("nbTopLines: " << nbTopLines);
+    SIGHT_DEBUG("nbBottomLines: " << (nbHorizontalLines - nbTopLines));
 
     return probeSettings;
 }
@@ -636,7 +635,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
     probeSettings.centerPosition[1] = center[1];
     probeSettings.centerPosition[2] = 0.0;
 
-    SLM_DEBUG("Discarded " << discardCount << " line(s) intersection with same sign lines ");
+    SIGHT_DEBUG("Discarded " << discardCount << " line(s) intersection with same sign lines ");
 
     // Compute the inner radius.
     // Go straight down from the center of the circle previously found.
@@ -659,7 +658,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
     probeSettings.direction = { {0.0, 1.0, 0.0} };
 
     innerRadius = std::abs(interInnerCircle[1] - center[1]);
-    SLM_DEBUG("innerRadius=" << innerRadius);
+    SIGHT_DEBUG("innerRadius=" << innerRadius);
 
     probeSettings.deltaDepth = static_cast<int>(std::nearbyint(innerRadius));
 
@@ -669,7 +668,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
 
     if(lcInterDesc.size() != 2)
     {
-        SLM_DEBUG("No Circle-Line intersection detected " << lcInterDesc.size());
+        SIGHT_DEBUG("No Circle-Line intersection detected " << lcInterDesc.size());
     }
     else
     {
@@ -693,7 +692,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
 
     if(lcInterAsc.size() != 2)
     {
-        SLM_DEBUG("No Circle-Line intersection detected " << lcInterAsc.size());
+        SIGHT_DEBUG("No Circle-Line intersection detected " << lcInterAsc.size());
     }
     else
     {
@@ -712,8 +711,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
         }
     }
 
-    SLM_DEBUG("A:" << m_echoRefPoints[0][0] << " " << m_echoRefPoints[0][1]);
-    SLM_DEBUG("B:" << m_echoRefPoints[1][0] << " " << m_echoRefPoints[1][1]);
+    SIGHT_DEBUG("A:" << m_echoRefPoints[0][0] << " " << m_echoRefPoints[0][1]);
+    SIGHT_DEBUG("B:" << m_echoRefPoints[1][0] << " " << m_echoRefPoints[1][1]);
 
     fwVec3d AmC, BmC;
     ::glm::dvec3 BmA;
@@ -760,7 +759,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
 
     double outerRadius = std::abs(interOuterCircle[1] - center[1]);
 
-    SLM_DEBUG("outerRadius=" << outerRadius);
+    SIGHT_DEBUG("outerRadius=" << outerRadius);
 
     const std::vector< ::cv::Vec2d> c1 = computeLineCircleIntersection(ascLine, center, outerRadius);
     const std::vector< ::cv::Vec2d> c2 = computeLineCircleIntersection(descLine, center, outerRadius);
@@ -817,7 +816,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
 
     if(lcExterDesc.size() != 2)
     {
-        SLM_DEBUG("No Circle-Line intersection detected " << lcExterDesc.size());
+        SIGHT_DEBUG("No Circle-Line intersection detected " << lcExterDesc.size());
     }
     else
     {
@@ -841,7 +840,7 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
 
     if(lcExterAsc.size() != 2)
     {
-        SLM_DEBUG("No Circle-Line intersection detected " << lcExterAsc.size());
+        SIGHT_DEBUG("No Circle-Line intersection detected " << lcExterAsc.size());
     }
     else
     {
@@ -860,8 +859,8 @@ SUltrasoundImage::ProbeSimulationSettings SUltrasoundImage::processConvexShape(:
         }
     }
 
-    SLM_DEBUG("C:" << m_echoRefPoints[2][0] << " " << m_echoRefPoints[2][1]);
-    SLM_DEBUG("D:" << m_echoRefPoints[3][0] << " " << m_echoRefPoints[3][1]);
+    SIGHT_DEBUG("C:" << m_echoRefPoints[2][0] << " " << m_echoRefPoints[2][1]);
+    SIGHT_DEBUG("D:" << m_echoRefPoints[3][0] << " " << m_echoRefPoints[3][1]);
 
     for(std::uint8_t i = 0; i < 3; i++)
     {
@@ -891,7 +890,7 @@ void SUltrasoundImage::updateDoubleExtractionParameter(double val, std::string k
     }
     else
     {
-        SLM_WARN("Unknown key '" << key << "' in " << s_UPDATE_DOUBLE_EXTRACTION_PARAMETERS_SLOT);
+        SIGHT_WARN("Unknown key '" << key << "' in " << s_UPDATE_DOUBLE_EXTRACTION_PARAMETERS_SLOT);
     }
 }
 
@@ -909,7 +908,7 @@ void SUltrasoundImage::updateIntExtractionParameter(int val, std::string key)
     }
     else
     {
-        SLM_WARN("Unknown key '" << key << "' in " << s_UPDATE_INT_EXTRACTION_PARAMETERS_SLOT);
+        SIGHT_WARN("Unknown key '" << key << "' in " << s_UPDATE_INT_EXTRACTION_PARAMETERS_SLOT);
     }
 }
 
@@ -962,7 +961,7 @@ void SUltrasoundImage::changeDebugEchoPlane(bool debug, std::string key)
     }
     else
     {
-        SLM_WARN("Unknown key '" << key << "' in " << s_CHANGE_DEBUG_ECHO_PLANE_SLOT);
+        SIGHT_WARN("Unknown key '" << key << "' in " << s_CHANGE_DEBUG_ECHO_PLANE_SLOT);
     }
 }
 
@@ -977,7 +976,7 @@ void SUltrasoundImage::changeEchoShape(bool echoShape, std::string key)
     }
     else
     {
-        SLM_WARN("Unknown key '" << key << "' in " << s_CHANGE_ECHO_SHAPE_SLOT);
+        SIGHT_WARN("Unknown key '" << key << "' in " << s_CHANGE_ECHO_SHAPE_SLOT);
     }
 }
 

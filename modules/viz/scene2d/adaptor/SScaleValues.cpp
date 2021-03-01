@@ -29,7 +29,6 @@
 
 #include <QGraphicsItemGroup>
 
-
 namespace sight::module::viz::scene2d
 {
 namespace adaptor
@@ -64,8 +63,8 @@ void SScaleValues::configuring()
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
     // Set the min/max values
-    SLM_ASSERT("'min' atttribute is missing.", config.count("min"));
-    SLM_ASSERT("'min' atttribute is missing.", config.count("max"));
+    SIGHT_ASSERT("'min' atttribute is missing.", config.count("min"));
+    SIGHT_ASSERT("'min' atttribute is missing.", config.count("max"));
 
     m_min = config.get<double>("min");
     m_max = config.get<double>("max");
@@ -96,30 +95,30 @@ void SScaleValues::configuring()
     if (config.count("showUnit"))
     {
         const std::string showUnit = config.get<std::string>("showUnit");
-        SLM_ASSERT("Unsupported value "+showUnit+" for 'showUnit' attribute (true or false expected).",
-                   showUnit == "true" || showUnit == "false");
+        SIGHT_ASSERT("Unsupported value "+showUnit+" for 'showUnit' attribute (true or false expected).",
+                     showUnit == "true" || showUnit == "false");
         m_showUnit = (showUnit == "true");
     }
 
     // Unit text configuration
     m_displayedUnit = config.get<std::string>("unit", "");
 
-    SLM_ASSERT("'align' attribute is missing. "
-               "Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
-               config.count("align"));
+    SIGHT_ASSERT("'align' attribute is missing. "
+                 "Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
+                 config.count("align"));
 
     // 'align' attribute configuration
     m_align = config.get<std::string>("align");
 
-    SLM_ASSERT("Unsupported value for 'align' attribute.",
-               m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
+    SIGHT_ASSERT("Unsupported value for 'align' attribute.",
+                 m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void SScaleValues::buildValues()
 {
-    SLM_ASSERT("m_interval can not be equal to 0", m_interval != 0);
+    SIGHT_ASSERT("m_interval can not be equal to 0", m_interval != 0);
 
     m_values.clear();
 

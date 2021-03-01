@@ -48,15 +48,15 @@ Uninitializer::Uninitializer( const std::string& identifier ) :
 void Uninitializer::apply()
 {
     auto module = detail::Runtime::get().findEnabledModule(m_identifier);
-    SLM_FATAL_IF("Unable to start module " + m_identifier + ": not found.",
-                 module == nullptr);
+    SIGHT_FATAL_IF("Unable to start module " + m_identifier + ": not found.",
+                   module == nullptr);
     try
     {
         module->uninitialize();
     }
     catch( const std::exception& e )
     {
-        SLM_FATAL("Unable to uninitialize module " + m_identifier + " : " + e.what());
+        SIGHT_FATAL("Unable to uninitialize module " + m_identifier + " : " + e.what());
     }
 }
 

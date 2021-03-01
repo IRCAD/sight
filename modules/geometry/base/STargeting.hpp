@@ -67,7 +67,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API STargeting final : public service::IService
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(STargeting, service::IService)
+    SIGHT_DECLARE_SERVICE(STargeting, service::IService)
 
     /// Initializes member variables and slots.
     MODULE_GEOMETRY_BASE_API STargeting() noexcept;

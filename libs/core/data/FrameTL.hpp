@@ -31,7 +31,7 @@
 
 #include <data/factory/new.hpp>
 
-fwCampAutoDeclareDataMacro((sight)(data)(FrameTL));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(FrameTL));
 
 namespace sight::data
 {
@@ -42,8 +42,8 @@ class DATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
-    fwCoreClassMacro(FrameTL, data::TimeLine, data::factory::New< FrameTL >)
-    fwCampMakeFriendDataMacro((sight)(data)(FrameTL))
+    SIGHT_DECLARE_CLASS(FrameTL, data::TimeLine, data::factory::New< FrameTL >)
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(FrameTL))
 
     /// Frame format
     enum class PixelFormat

@@ -38,10 +38,10 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 namespace sight::viz::scene2d
 {
@@ -156,7 +156,7 @@ void SRender::configuring()
     this->initialize();
 
     std::vector < SPTR(core::runtime::ConfigurationElement) > vectConfig = m_configuration->find("scene");
-    SLM_ASSERT("There is no implementation between \"scene\" tags", !vectConfig.empty());
+    SIGHT_ASSERT("There is no implementation between \"scene\" tags", !vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
 
     core::runtime::ConfigurationElementContainer::Iterator iter;
@@ -180,7 +180,7 @@ void SRender::configuring()
         }
         else
         {
-            SLM_ASSERT("Bad scene configurationType, unknown xml node : " + (*iter)->getName(), false);
+            SIGHT_ASSERT("Bad scene configurationType, unknown xml node : " + (*iter)->getName(), false);
         }
     }
 }
@@ -268,7 +268,7 @@ Qt::AspectRatioMode SRender::getAspectRatioMode() const
 
 void SRender::configureAxis( ConfigurationType _conf )
 {
-    SLM_ASSERT("\"axis\" tag required", _conf->getName() == "axis");
+    SIGHT_ASSERT("\"axis\" tag required", _conf->getName() == "axis");
 
     const std::string id        = _conf->getAttributeValue("id");
     const std::string origin    = _conf->getAttributeValue("origin");
@@ -286,7 +286,7 @@ void SRender::configureAxis( ConfigurationType _conf )
 
 void SRender::configureViewport( ConfigurationType _conf )
 {
-    SLM_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
+    SIGHT_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
 
     const std::string id     = _conf->getAttributeValue("id");
     const std::string x      = _conf->getAttributeValue("x");
@@ -305,7 +305,7 @@ void SRender::configureViewport( ConfigurationType _conf )
 
 void SRender::configureScene( ConfigurationType _conf )
 {
-    SLM_ASSERT("\"scene\" tag required", _conf->getName() == "scene");
+    SIGHT_ASSERT("\"scene\" tag required", _conf->getName() == "scene");
 
     const std::string x      = _conf->getAttributeValue("x");
     const std::string y      = _conf->getAttributeValue("y");
@@ -338,10 +338,10 @@ void SRender::configureScene( ConfigurationType _conf )
         }
         else
         {
-            SLM_ERROR_IF("Unknown aspect ratio (" <<
-                         aspectRatio <<
-                         "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
-                         aspectRatio != "IgnoreAspectRatio");
+            SIGHT_ERROR_IF("Unknown aspect ratio (" <<
+                           aspectRatio <<
+                           "). Possible values are: KeepAspectRatio, KeepAspectRatioByExpanding or IgnoreAspectRatio.",
+                           aspectRatio != "IgnoreAspectRatio");
             m_aspectRatioMode = Qt::IgnoreAspectRatio;
         }
     }
@@ -349,7 +349,7 @@ void SRender::configureScene( ConfigurationType _conf )
     if ( _conf->hasAttribute(("background")) )
     {
         m_background = _conf->getAttributeValue("background");
-        SLM_ASSERT("Color format must be hexadecimal.", m_background[0] == '#');
+        SIGHT_ASSERT("Color format must be hexadecimal.", m_background[0] == '#');
     }
 }
 
@@ -357,7 +357,7 @@ void SRender::configureScene( ConfigurationType _conf )
 
 void SRender::configureAdaptor( ConfigurationType _conf )
 {
-    SLM_ASSERT("\"adaptor\" tag required", _conf->getName() == "adaptor");
+    SIGHT_ASSERT("\"adaptor\" tag required", _conf->getName() == "adaptor");
 
     const std::string adaptorId = _conf->getAttributeValue("uid");
 

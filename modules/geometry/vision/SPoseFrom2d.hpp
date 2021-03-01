@@ -97,7 +97,7 @@ namespace sight::module::geometry::vision
 class MODULE_GEOMETRY_VISION_CLASS_API SPoseFrom2d : public service::IRegisterer
 {
 public:
-    fwCoreServiceMacro(SPoseFrom2d, service::IRegisterer)
+    SIGHT_DECLARE_SERVICE(SPoseFrom2d, service::IRegisterer)
 
     typedef std::vector<std::string> VectKeyType;
 

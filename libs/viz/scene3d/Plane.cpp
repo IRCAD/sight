@@ -113,7 +113,7 @@ void Plane::initializeMaterial()
 {
     auto& materialMgr = ::Ogre::MaterialManager::getSingleton();
     ::Ogre::MaterialPtr defaultMat = materialMgr.getByName("Negato", RESOURCE_GROUP);
-    SLM_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
+    SIGHT_ASSERT("Default material not found, the 'material' module may not be loaded.", defaultMat);
 
     // If the texture material exists, delete it.
     if(m_texMaterial)
@@ -133,14 +133,14 @@ void Plane::initializeMaterial()
 
     for(const auto* const tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* const pass = tech->getPass(0);
 
             ::Ogre::TextureUnitState* const texState = pass->getTextureUnitState("image");
-            SLM_ASSERT("'image' texture unit is not found", texState);
+            SIGHT_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
             ::Ogre::TextureFilterOptions filterType = ::Ogre::TFO_NONE;
@@ -370,7 +370,7 @@ void Plane::setTFData(const viz::scene3d::TransferFunction& _tfTexture)
 
     for(const auto tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
@@ -388,13 +388,13 @@ void Plane::switchThresholding(bool _threshold)
 
     for(const auto tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
-            SLM_ASSERT("Can't find Ogre pass", pass);
+            SIGHT_ASSERT("Can't find Ogre pass", pass);
 
             m_threshold = _threshold;
             pass->getFragmentProgramParameters()->setNamedConstant("u_threshold", static_cast<int>(m_threshold));
@@ -440,12 +440,12 @@ void Plane::setOrientationMode(OrientationMode _newMode)
 
     for(const auto* const tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
             const ::Ogre::Pass* const pass = tech->getPass(0);
-            SLM_ASSERT("Material '" + m_texMaterial->getName() + "' does not define any pass.", pass);
+            SIGHT_ASSERT("Material '" + m_texMaterial->getName() + "' does not define any pass.", pass);
 
             const int orientationIndex = static_cast<int>(_newMode);
             pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
@@ -483,13 +483,13 @@ void Plane::enableAlpha(bool _enable)
 
     for(const auto* const tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* const pass = tech->getPass(0);
 
-            SLM_ASSERT("Can't find Ogre pass", pass);
+            SIGHT_ASSERT("Can't find Ogre pass", pass);
             pass->getFragmentProgramParameters()->setNamedConstant("u_enableAlpha", _enable );
         }
     }
@@ -506,7 +506,7 @@ void Plane::setEntityOpacity(float _f)
     m_texMaterial->setDiffuse(diffuse);
 
     ::Ogre::Technique* tech = m_texMaterial->getTechnique(0);
-    SLM_ASSERT("Technique is not set", tech);
+    SIGHT_ASSERT("Technique is not set", tech);
 
     if(viz::scene3d::helper::Shading::isColorTechnique(*tech) &&
        !viz::scene3d::helper::Shading::isPeelTechnique(*tech))
@@ -534,13 +534,13 @@ void Plane::changeSlice(float sliceIndex)
 
     for(const auto tech : techniques)
     {
-        SLM_ASSERT("Technique is not set", tech);
+        SIGHT_ASSERT("Technique is not set", tech);
 
         if(viz::scene3d::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
-            SLM_ASSERT("Can't find Ogre pass", pass);
+            SIGHT_ASSERT("Can't find Ogre pass", pass);
 
             pass->getFragmentProgramParameters()->setNamedConstant("u_slice", sliceIndex );
         }

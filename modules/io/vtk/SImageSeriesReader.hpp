@@ -74,7 +74,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SImageSeriesReader, sight::io::base::service::IReader)
+    SIGHT_DECLARE_SERVICE(SImageSeriesReader, sight::io::base::service::IReader)
 
     /**
      * @brief Configure the image path.

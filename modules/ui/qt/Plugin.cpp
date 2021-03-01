@@ -26,18 +26,18 @@
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 
 #include <service/macros.hpp>
-#include <core/thread/ActiveWorkers.hpp>
+
+#include <ui/qt/App.hpp>
+#include <ui/qt/WorkerQt.hpp>
 
 #include <QFile>
 #include <QResource>
 #include <QString>
 #include <QStyleFactory>
 #include <QTextStream>
-
-#include <ui/qt/App.hpp>
-#include <ui/qt/WorkerQt.hpp>
 
 #include <functional>
 
@@ -58,7 +58,7 @@ Plugin::~Plugin() noexcept
 void Plugin::start()
 {
     core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
-    SLM_ASSERT("Profile is not initialized", profile);
+    SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
@@ -121,7 +121,7 @@ void Plugin::loadStyleSheet()
         const auto path                = core::runtime::getModuleResourceFilePath(resourceFile);
 
         const bool resourceLoaded = QResource::registerResource(path.string().c_str());
-        SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
+        SIGHT_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
     }
 
     if( this->getModule()->hasParameter("style") )

@@ -41,7 +41,7 @@ namespace Material
 class IO_PATCH_CLASS_API V2ToV3 : public io::atoms::patch::IStructuralPatch
 {
 public:
-    fwCoreClassMacro(V2ToV3, patch::structural::data::Material::V2ToV3, new V2ToV3)
+    SIGHT_DECLARE_CLASS(V2ToV3, patch::structural::data::Material::V2ToV3, new V2ToV3)
 
     /// Constructor
     IO_PATCH_API V2ToV3();

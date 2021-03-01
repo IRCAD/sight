@@ -37,8 +37,8 @@ namespace CameraSeries
 class MODULE_ACTIVITY_CLASS_API StereoCamera : public sight::activity::IObjectValidator
 {
 public:
-    fwCoreClassMacro(StereoCamera, ::sight::activity::IObjectValidator,
-                     ::sight::activity::validator::factory::New< StereoCamera >)
+    SIGHT_DECLARE_CLASS(StereoCamera, ::sight::activity::IObjectValidator,
+                        ::sight::activity::validator::factory::New< StereoCamera >)
 
     /// Constructor. Do nothing.
     MODULE_ACTIVITY_API StereoCamera(::sight::activity::IValidator::Key key);

@@ -235,7 +235,7 @@ class ACTIVITY_CLASS_API Activity : public core::BaseObject
 public:
     typedef std::vector< ActivityInfo > ActivitiesType;
 
-    fwCoreClassMacro(Activity, core::BaseObject, new Activity)
+    SIGHT_DECLARE_CLASS(Activity, core::BaseObject, new Activity)
 
     /// Return the default global instance of Activity
     ACTIVITY_API static Activity::sptr getDefault();

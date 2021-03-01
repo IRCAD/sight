@@ -28,8 +28,8 @@
 #include <core/macros.hpp>
 #include <core/thread/Timer.hpp>
 
-#include <data/Landmarks.hpp>
 #include <data/helper/MedicalImage.hpp>
+#include <data/Landmarks.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/ITransformable.hpp>
@@ -97,7 +97,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SLandmarks, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SLandmarks, ::sight::viz::scene3d::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SLandmarks() noexcept;

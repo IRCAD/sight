@@ -24,12 +24,12 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <ui/base/IEditor.hpp>
+
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
-
-#include <ui/base/IEditor.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -64,7 +64,7 @@ class MODULE_UI_QT_CLASS_API SOpticalCenterEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOpticalCenterEditor, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SOpticalCenterEditor, sight::ui::base::IEditor)
 
     /// Constructor.
     MODULE_UI_QT_API SOpticalCenterEditor() noexcept;

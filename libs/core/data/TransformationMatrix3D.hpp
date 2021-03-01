@@ -28,7 +28,7 @@
 #include <array>
 #include <iostream>
 
-fwCampAutoDeclareDataMacro((sight)(data)(Matrix4));
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(Matrix4));
 
 namespace sight::data
 {
@@ -40,9 +40,9 @@ class DATA_CLASS_API Matrix4 : public Object
 {
 
 public:
-    fwCoreClassMacro(Matrix4, data::Object, data::factory::New< Matrix4 >)
+    SIGHT_DECLARE_CLASS(Matrix4, data::Object, data::factory::New< Matrix4 >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(Matrix4));
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(Matrix4));
 
     typedef double TM3DType;
     typedef std::array<TM3DType, 16> TMCoefArray;

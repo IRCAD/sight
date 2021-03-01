@@ -28,13 +28,13 @@
 #include "ui/qt/container/QtMenuItemContainer.hpp"
 #include "ui/qt/container/QtToolBarContainer.hpp"
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QAction>
 #include <QActionGroup>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
-
-#include <ui/base/registry/macros.hpp>
 
 #include <functional>
 
@@ -64,7 +64,7 @@ void ToolBarLayoutManager::createLayout( ui::base::container::fwToolBar::sptr pa
 {
 
     m_parent = ui::qt::container::QtToolBarContainer::dynamicCast(parent);
-    SLM_ASSERT("dynamicCast fwToolBar to QtToolBarContainer failed", m_parent);
+    SIGHT_ASSERT("dynamicCast fwToolBar to QtToolBarContainer failed", m_parent);
 
     QToolBar* toolBar = m_parent->getQtToolBar();
 
@@ -202,11 +202,11 @@ void ToolBarLayoutManager::createLayout( ui::base::container::fwToolBar::sptr pa
             menuItem->setQtMenuItem(action);
 
             m_menuItems.push_back(menuItem);
-            SLM_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
+            SIGHT_ASSERT("No callback found for menu" << actionInfo.m_name, menuItemIndex < m_callbacks.size());
             ui::base::IMenuItemCallback::sptr callback = m_callbacks.at(menuItemIndex);
 
             ui::qt::ActionCallback::sptr qtCallback = ui::qt::ActionCallback::dynamicCast(callback);
-            SLM_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
+            SIGHT_ASSERT("dynamicCast IMenuItemCallback to ActionCallback failed", qtCallback);
 
             QObject::connect( action, SIGNAL(triggered(bool)), qtCallback.get(), SLOT(executeQt(bool)));
             QObject::connect( action, SIGNAL(toggled(bool)), qtCallback.get(), SLOT(checkQt(bool)));

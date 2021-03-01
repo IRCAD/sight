@@ -39,7 +39,7 @@ PointInfoBase<isConst>& PointInfoBase<isConst>::operator=(
     const PointInfoBase<false>& other)
 {
     static_assert(isConst == false, "Cannot affect values on a read-only struct.");
-    FW_RAISE_IF("Point is not defined", nullptr == point);
+    SIGHT_THROW_IF("Point is not defined", nullptr == point);
     point->x = other.point->x;
     point->y = other.point->y;
     point->z = other.point->z;
@@ -78,7 +78,7 @@ PointInfoBase<isConst>& PointInfoBase<isConst>::operator=(
     const PointInfoBase<true>& other)
 {
     static_assert(isConst == false, "Cannot affect values on a read-only struct.");
-    FW_RAISE_IF("Point is not defined", nullptr == point);
+    SIGHT_THROW_IF("Point is not defined", nullptr == point);
     point->x = other.point->x;
     point->y = other.point->y;
     point->z = other.point->z;
@@ -159,7 +159,7 @@ CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
     const CellInfoBase<false>& other)
 {
     static_assert(isConst == false, "Cannot affect values on a read-only struct.");
-    FW_RAISE_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
+    SIGHT_THROW_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
     *type    = *other.type;
     *offset  = *other.offset;
     nbPoints = other.nbPoints;
@@ -206,7 +206,7 @@ CellInfoBase<isConst>& CellInfoBase<isConst>::operator=(
     const CellInfoBase<true>& other)
 {
     static_assert(isConst == false, "Cannot affect values on a read-only struct.");
-    FW_RAISE_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
+    SIGHT_THROW_IF("Cell is not defined", nullptr == type || nullptr == offset || nullptr == pointIdx);
     *type    = *other.type;
     *offset  = *other.offset;
     nbPoints = other.nbPoints;
@@ -392,8 +392,8 @@ template<bool isConst>
 PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator++()
 {
     ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
     ++m_pointInfo->point;
     if (m_pointInfo->rgba)
     {
@@ -421,8 +421,8 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator++(int)
 {
     PointIteratorBase tmp(*this);
     ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
     ++m_pointInfo->point;
     if (m_pointInfo->rgba)
     {
@@ -461,8 +461,8 @@ template<bool isConst>
 PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator+=(difference_type index)
 {
     m_idx += index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
     m_pointInfo->point += index;
     if (m_pointInfo->rgba)
     {
@@ -491,7 +491,7 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator+=(difference_ty
 template<bool isConst>
 PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator--()
 {
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
     --m_pointInfo->point;
     if (m_pointInfo->rgba)
@@ -521,7 +521,7 @@ PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator--()
 template<bool isConst>
 PointIteratorBase<isConst> PointIteratorBase<isConst>::operator--(int)
 {
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     PointIteratorBase tmp(*this);
     --m_idx;
     --m_pointInfo->point;
@@ -562,8 +562,8 @@ PointIteratorBase<isConst> PointIteratorBase<isConst>::operator-(difference_type
 template<bool isConst>
 PointIteratorBase<isConst>& PointIteratorBase<isConst>::operator-=(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
+    SIGHT_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
+                                               << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
     m_idx              -= index;
     m_pointInfo->point -= index;
     if (m_pointInfo->rgba)
@@ -734,8 +734,8 @@ template<bool isConst>
 CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator++()
 {
     ++m_idx;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "[",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "[",
+                 m_idx <= m_numberOfElements );
     ++m_cellInfo->type;
     ++m_cellInfo->offset;
 
@@ -809,8 +809,8 @@ template<bool isConst>
 CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type index)
 {
     m_idx += index;
-    SLM_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
-               m_idx <= m_numberOfElements );
+    SIGHT_ASSERT("Array out of bounds: index " << m_idx << " is not in [0-"<<m_numberOfElements << "]",
+                 m_idx <= m_numberOfElements );
 
     m_cellInfo->type   += index;
     m_cellInfo->offset += index;
@@ -863,7 +863,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator+=(difference_type
 template<bool isConst>
 CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
 {
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     --m_idx;
     --m_cellInfo->type;
     --m_cellInfo->offset;
@@ -899,7 +899,7 @@ CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator--()
 template<bool isConst>
 CellIteratorBase<isConst> CellIteratorBase<isConst>::operator--(int)
 {
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     CellIteratorBase tmp(*this);
     this->operator--();
     return tmp;
@@ -919,10 +919,10 @@ CellIteratorBase<isConst> CellIteratorBase<isConst>::operator-(difference_type i
 template<bool isConst>
 CellIteratorBase<isConst>& CellIteratorBase<isConst>::operator-=(difference_type index)
 {
-    SLM_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
-                                             << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
+    SIGHT_ASSERT("Array out of bounds: index " << (static_cast<std::int64_t>(m_idx) - static_cast<std::int64_t>(index))
+                                               << " is not in [0-"<<m_numberOfElements << "]", m_idx >= index );
 
-    SLM_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
+    SIGHT_ASSERT("Array out of bounds: index -1 is not in [0-"<<m_numberOfElements << "]", m_idx > 0 );
     m_idx -= index;
 
     m_cellInfo->type   -= index;
@@ -1004,8 +1004,8 @@ typename CellIteratorBase<isConst>::pointer CellIteratorBase<isConst>::operator-
 template<bool isConst>
 typename CellIteratorBase<isConst>::CellInfo::cell_data_value_type& CellIteratorBase<isConst>::operator[](size_t index)
 {
-    SLM_ASSERT("Index out ou bounds, the cell contains only " << m_cellInfo->nbPoints << " points",
-               index < m_cellInfo->nbPoints);
+    SIGHT_ASSERT("Index out ou bounds, the cell contains only " << m_cellInfo->nbPoints << " points",
+                 index < m_cellInfo->nbPoints);
     return *(m_cellInfo->pointIdx+index);
 }
 

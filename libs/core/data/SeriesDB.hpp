@@ -30,7 +30,7 @@
 
 #include <vector>
 
-fwCampAutoDeclareDataMacro((sight)(data)(SeriesDB))
+SIGHT_DECLARE_DATA_REFLECTION((sight)(data)(SeriesDB))
 
 namespace sight::data
 {
@@ -44,9 +44,9 @@ class DATA_CLASS_API SeriesDB : public data::Object
 {
 
 public:
-    fwCoreClassMacro(SeriesDB, data::Object, data::factory::New< SeriesDB >)
+    SIGHT_DECLARE_CLASS(SeriesDB, data::Object, data::factory::New< SeriesDB >)
 
-    fwCampMakeFriendDataMacro((sight)(data)(SeriesDB))
+    SIGHT_MAKE_FRIEND_REFLECTION((sight)(data)(SeriesDB))
 
     typedef std::vector< SPTR(Series) > ContainerType;
 

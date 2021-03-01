@@ -33,11 +33,11 @@
 #include <core/spyLog.hpp>
 
 #include <data/Equipment.hpp>
+#include <data/fieldHelper/Image.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Patient.hpp>
 #include <data/Study.hpp>
-#include <data/fieldHelper/Image.hpp>
 #include <data/Vector.hpp>
 
 #include <gdcmWriter.h>
@@ -72,14 +72,14 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
 {
     // Retrieve image series
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-    SLM_ASSERT("Image series should not be null.", imageSeries);
+    SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Retrieve image
     data::Image::csptr image = imageSeries->getImage();
 
     data::Vector::sptr distances = image->getField< data::Vector >(
         data::fieldHelper::Image::m_imageDistancesId);
-    SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
+    SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
     SPTR(::gdcm::Writer) writer = std::make_shared< ::gdcm::Writer >();

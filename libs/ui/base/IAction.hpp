@@ -41,8 +41,8 @@ class UI_BASE_CLASS_API IAction : public ::sight::service::IService
 
 public:
 
-    fwCoreServiceMacro(IAction, service::IService)
-    fwCoreAllowSharedFromThis();
+    SIGHT_DECLARE_SERVICE(IAction, service::IService)
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @name Signals

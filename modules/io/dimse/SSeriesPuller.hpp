@@ -27,11 +27,11 @@
 #include <data/DicomSeries.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <service/IController.hpp>
-#include <service/IHasServices.hpp>
-
 #include <io/base/service/IReader.hpp>
 #include <io/dimse/SeriesRetriever.hpp>
+
+#include <service/IController.hpp>
+#include <service/IHasServices.hpp>
 
 #include <vector>
 
@@ -74,7 +74,7 @@ class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public service::IControlle
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SSeriesPuller,  sight::service::IController)
+    SIGHT_DECLARE_SERVICE(SSeriesPuller,  sight::service::IController)
 
     /// Creates the service and slots.
     MODULE_IO_DIMSE_API SSeriesPuller() noexcept;

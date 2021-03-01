@@ -22,10 +22,10 @@
 
 #include "FactoryRegistryTest.hpp"
 
-#include <core/mt/types.hpp>
-#include <core/spyLog.hpp>
 #include <core/FactoryRegistry.hpp>
 #include <core/LazyInstantiator.hpp>
+#include <core/mt/types.hpp>
+#include <core/spyLog.hpp>
 
 #include <chrono>
 #include <exception>
@@ -264,9 +264,9 @@ struct UseFactoryThread
         int duration = 20;
         for (int i = 0; i < s_NBOBJECTS; ++i)
         {
-            SLM_WARN( "building 1 " << m_objectType << "... " );
+            SIGHT_WARN( "building 1 " << m_objectType << "... " );
             m_objects.push_back( m_factory.create(m_objectType, duration) );
-            SLM_WARN( "built 1 " << m_objectType << "... " );
+            SIGHT_WARN( "built 1 " << m_objectType << "... " );
         }
     }
 
@@ -297,12 +297,12 @@ struct PopulateRegistryThread
             std::stringstream ss;
             ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() <<"-" << i;
             std::string name = ss.str();
-            SLM_WARN( "adding " + name + "... " );
+            SIGHT_WARN( "adding " + name + "... " );
             m_factory.addFactory(name, [](int msec) -> ObjectTest::sptr
                     {
                         return std::make_shared<ObjectTest>(msec);
                     });
-            SLM_WARN( "added " + name + "... " );
+            SIGHT_WARN( "added " + name + "... " );
             std::this_thread::sleep_for( std::chrono::milliseconds(1));
         }
 

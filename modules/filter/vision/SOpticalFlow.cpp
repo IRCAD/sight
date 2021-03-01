@@ -88,12 +88,12 @@ void SOpticalFlow::updating()
 {
     if(!this->isStarted())
     {
-        SLM_ERROR("Cannot call `update` when service is stopped.");
+        SIGHT_ERROR("Cannot call `update` when service is stopped.");
         return;
     }
 
     const auto frameTL = this->getInput< data::FrameTL >(s_FRAME_TIMELINE_INPUT);
-    SLM_ASSERT(" Input "+ s_FRAME_TIMELINE_INPUT + " cannot be null", frameTL);
+    SIGHT_ASSERT(" Input "+ s_FRAME_TIMELINE_INPUT + " cannot be null", frameTL);
     core::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
 
     if(timestamp > m_lastTimestamp + m_latency )
@@ -136,7 +136,7 @@ void SOpticalFlow::updating()
         }
         else
         {
-            SLM_FATAL("Wrong type of image (nb of components = "<<frameTL->getNumberOfComponents()<<").");
+            SIGHT_FATAL("Wrong type of image (nb of components = "<<frameTL->getNumberOfComponents()<<").");
         }
 
         if(!m_initialization)
@@ -164,9 +164,9 @@ void SOpticalFlow::updating()
 
             m_mainMutex.lock();
 
-            SLM_ASSERT("last image and current image should have same size: "<< m_lastGrayImg.size << " , "
-                                                                             << grayImg.size
-                       , m_lastGrayImg.size == grayImg.size);
+            SIGHT_ASSERT("last image and current image should have same size: "<< m_lastGrayImg.size << " , "
+                                                                               << grayImg.size
+                         , m_lastGrayImg.size == grayImg.size);
 
             // Optical flow (Lucas-Kanade version).
             ::cv::calcOpticalFlowPyrLK(m_lastGrayImg, grayImg, m_lastCorners, currentCorners, status, err);

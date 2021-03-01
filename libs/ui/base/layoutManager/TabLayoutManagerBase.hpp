@@ -43,7 +43,7 @@ class UI_BASE_CLASS_API TabLayoutManagerBase : public IViewLayoutManager
 
 public:
 
-    fwCoreClassMacro(TabLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
+    SIGHT_DECLARE_CLASS(TabLayoutManagerBase, ui::base::layoutManager::IViewLayoutManager)
 
     typedef std::string RegistryKeyType;
 

@@ -57,7 +57,7 @@ public:
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
     typedef std::function< SPTR(service::IService)() > FactoryType;
 
-    fwCoreClassMacro(Factory, core::BaseObject, new Factory)
+    SIGHT_DECLARE_CLASS(Factory, core::BaseObject, new Factory)
 
     /// Return the unique Instance, create it if required at first access
     SERVICE_API static Factory::sptr getDefault();

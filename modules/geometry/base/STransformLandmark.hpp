@@ -67,7 +67,7 @@ class MODULE_GEOMETRY_BASE_CLASS_API STransformLandmark final : public service::
 public:
 
     /// Generates default methods like New, dynamicCast, ...
-    fwCoreServiceMacro( STransformLandmark, service::IService)
+    SIGHT_DECLARE_SERVICE( STransformLandmark, service::IService)
 
     /// Initializes signals.
     MODULE_GEOMETRY_BASE_API STransformLandmark() noexcept;

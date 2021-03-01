@@ -97,21 +97,21 @@ void IGrabber::playPauseCamera()
 // ----------------------------------------------------------------------------
 void IGrabber::previousImage()
 {
-    SLM_WARN("Frame by frame mode not implemented for this grabber type.");
+    SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 // ----------------------------------------------------------------------------
 
 void IGrabber::nextImage()
 {
-    SLM_WARN("Frame by frame mode not implemented for this grabber type.");
+    SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 // ----------------------------------------------------------------------------
 
 void IGrabber::setStep(int /*step*/, std::string /*key*/)
 {
-    SLM_WARN("Frame by frame mode not implemented for this grabber type.");
+    SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
 // ----------------------------------------------------------------------------

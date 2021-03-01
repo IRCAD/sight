@@ -27,10 +27,10 @@
 #include <data/Matrix4.hpp>
 #include <data/Reconstruction.hpp>
 
+#include <ui/base/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
-
-#include <ui/base/IEditor.hpp>
 
 #include <map>
 #include <string>
@@ -65,7 +65,7 @@ class MODULE_UI_QT_CLASS_API SOrganTransformation : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceMacro(SOrganTransformation, sight::ui::base::IEditor)
+    SIGHT_DECLARE_SERVICE(SOrganTransformation, sight::ui::base::IEditor)
 
     /// constructor
     MODULE_UI_QT_API SOrganTransformation() noexcept;

@@ -33,7 +33,7 @@ namespace sight::service
 
 service::IService::sptr get( std::string uid )
 {
-    SLM_ASSERT("service does not exist with uid "<<uid, core::tools::fwID::exist(uid ));
+    SIGHT_ASSERT("service does not exist with uid "<<uid, core::tools::fwID::exist(uid ));
     return service::IService::dynamicCast( core::tools::fwID::getObject( uid ) );
 }
 

@@ -31,8 +31,8 @@
 #include <data/Composite.hpp>
 #include <data/helper/Composite.hpp>
 
-#include <service/macros.hpp>
 #include <service/extension/AppConfig.hpp>
+#include <service/macros.hpp>
 #include <service/registry/ObjectService.hpp>
 
 namespace sight::module::ui::base
@@ -44,7 +44,6 @@ static const std::string s_SOURCE_KEY      = "source";
 static const std::string s_DESTINATION_KEY = "destination";
 
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +66,7 @@ void SPushObject::configuring()
 
     const ConfigurationType pushCfg = m_configuration->findConfigurationElement("push");
 
-    SLM_ASSERT("<push> tag must have one attribute 'srcKey'.", pushCfg->hasAttribute("srcKey"));
+    SIGHT_ASSERT("<push> tag must have one attribute 'srcKey'.", pushCfg->hasAttribute("srcKey"));
     m_srcKey = pushCfg->getAttributeValue("srcKey");
 }
 
@@ -91,11 +90,11 @@ void SPushObject::stopping()
 void SPushObject::updating()
 {
     data::Composite::sptr compositeSrc = this->getInOut< data::Composite >(s_SOURCE_KEY);
-    SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
+    SIGHT_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
     data::Object::sptr obj = compositeSrc->at< data::Object>(m_srcKey);
 
-    SLM_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
+    SIGHT_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
     if (service::OSR::isRegistered(s_DESTINATION_KEY, service::IService::AccessType::OUTPUT,
                                    this->getSptr()))
     {
@@ -112,7 +111,7 @@ void SPushObject::updating()
 void SPushObject::updateObjects()
 {
     data::Composite::sptr compositeSrc = this->getInOut< data::Composite >(s_SOURCE_KEY);
-    SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
+    SIGHT_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
     const bool executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
 

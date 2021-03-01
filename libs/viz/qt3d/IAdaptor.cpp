@@ -66,7 +66,7 @@ void IAdaptor::initialize()
             {
                 return srv->getID() == renderServiceId;
             });
-        SLM_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
 
         m_renderService = viz::qt3d::SRender::dynamicCast(*result);
     }

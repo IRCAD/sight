@@ -32,9 +32,9 @@
 #include <data/location/MultiFiles.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <service/IService.hpp>
-
 #include <io/base/reader/GenericObjectReader.hpp>
+
+#include <service/IService.hpp>
 
 namespace sight::core::jobs
 {
@@ -60,8 +60,8 @@ class IO_DICOM_CLASS_API SeriesDB : public io::base::reader::GenericObjectReader
 
 public:
 
-    fwCoreClassMacro(SeriesDB, io::base::reader::GenericObjectReader< data::SeriesDB >,
-                     io::base::reader::factory::New< SeriesDB >);
+    SIGHT_DECLARE_CLASS(SeriesDB, io::base::reader::GenericObjectReader< data::SeriesDB >,
+                        io::base::reader::factory::New< SeriesDB >);
 
     typedef std::vector< SPTR(data::DicomSeries) > DicomSeriesContainerType;
     typedef std::vector< std::string > FilenameContainerType;

@@ -23,6 +23,7 @@
 #include "IoAtomsTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Array.hpp>
@@ -30,16 +31,15 @@
 #include <data/reflection/visitor/CompareObjects.hpp>
 #include <data/SeriesDB.hpp>
 
-#include <service/op/Add.hpp>
-#include <core/thread/ActiveWorkers.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <io/base/service/ioTypes.hpp>
+
 #include <service/extension/Factory.hpp>
+#include <service/op/Add.hpp>
+#include <service/registry/ObjectService.hpp>
 
 #include <utest/Exception.hpp>
 
 #include <utestData/generator/SeriesDB.hpp>
-
-#include <io/base/service/ioTypes.hpp>
 
 #include <filesystem>
 
@@ -76,7 +76,7 @@ void compareLog(T& comparator)
     SPTR(data::reflection::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
     for(data::reflection::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
-        SLM_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
+        SIGHT_ERROR( "new object difference found : " << prop.first << " != " << prop.second );
     }
 }
 

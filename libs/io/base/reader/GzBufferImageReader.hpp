@@ -49,8 +49,8 @@ class IO_BASE_CLASS_API GzBufferImageReader :  public GenericObjectReader< data:
 
 public:
 
-    fwCoreClassMacro(GzBufferImageReader, GenericObjectReader< data::Image>,
-                     io::base::reader::factory::New< GzBufferImageReader >)
+    SIGHT_DECLARE_CLASS(GzBufferImageReader, GenericObjectReader< data::Image>,
+                        io::base::reader::factory::New< GzBufferImageReader >)
 
     /// Constructor. Do nothing.
     IO_BASE_API GzBufferImageReader(io::base::reader::IObjectReader::Key key);

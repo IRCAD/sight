@@ -108,7 +108,7 @@ struct ValueMapper< sight::data::TransferFunction::TFColor >
         }
         else
         {
-            SLM_WARN("Your tf color is not correctly setted, nb of component : " << result.size());
+            SIGHT_WARN("Your tf color is not correctly setted, nb of component : " << result.size());
         }
         return tfColor;
     }

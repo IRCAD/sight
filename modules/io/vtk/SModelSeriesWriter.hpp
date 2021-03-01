@@ -85,7 +85,7 @@ public:
     {
     }
 
-    fwCoreServiceMacro(SModelSeriesWriter, sight::io::base::service::IWriter)
+    SIGHT_DECLARE_SERVICE(SModelSeriesWriter, sight::io::base::service::IWriter)
 
     typedef core::com::Signal< void ( SPTR(core::jobs::IJob) ) > JobCreatedSignalType;
 

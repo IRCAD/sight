@@ -156,7 +156,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
     {
         if(series->getDicomContainer().empty())
         {
-            SLM_ERROR("DicomSeries doesn't not contain any instance.");
+            SIGHT_ERROR("DicomSeries doesn't not contain any instance.");
             break;
         }
         const auto& firstItem                                    = series->getDicomContainer().begin();
@@ -169,8 +169,8 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
 
         if(!reader.ReadSelectedTags(selectedtags))
         {
-            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                     "(slice: '" << firstItem->first << "')");
+            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                        "(slice: '" << firstItem->first << "')");
         }
         const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
@@ -236,7 +236,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     }
 
     bool status = seriesScanner.Scan( fileVec );
-    FW_RAISE_IF("Unable to read the files.", !status);
+    SIGHT_THROW_IF("Unable to read the files.", !status);
 
     ::gdcm::Directory::FilenamesType keys = seriesScanner.GetKeys();
     ::gdcm::Directory::FilenamesType::const_iterator it;
@@ -255,8 +255,8 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(FilenameContainerT
     {
         auto filename = dicomFile.second.string();
 
-        SLM_ASSERT("The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
-                   seriesScanner.IsKey(filename.c_str()));
+        SIGHT_ASSERT("The file \"" << dicomFile.second << "\" is not a key of the gdcm scanner",
+                     seriesScanner.IsKey(filename.c_str()));
 
         const std::string sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
         const std::string mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
@@ -315,7 +315,7 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
         if(!size)
         {
-            SLM_ERROR("The DicomSeries doesn't contain any instance.");
+            SIGHT_ERROR("The DicomSeries doesn't contain any instance.");
             break;
         }
 
@@ -330,8 +330,8 @@ void DicomSeries::fillSeries(DicomSeriesContainerType& seriesDB,
 
         if(!reader.ReadSelectedTags(selectedtags))
         {
-            FW_RAISE("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
-                     "(slice: '" << firstItem->first << "')");
+            SIGHT_THROW("Unable to read Dicom file '"<< bufferObj->getStreamInfo().fsFile.string() <<"' "<<
+                        "(slice: '" << firstItem->first << "')");
         }
         const ::gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 

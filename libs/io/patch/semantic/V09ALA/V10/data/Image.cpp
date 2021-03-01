@@ -77,7 +77,7 @@ void Image::apply(
     io::atoms::patch::helper::Object helper( current );
 
     sight::atoms::Map::csptr previousFieldMap = sight::atoms::Map::dynamicCast(previous->getAttribute("fields"));
-    SLM_ASSERT("Image does not have field map", previousFieldMap);
+    SIGHT_ASSERT("Image does not have field map", previousFieldMap);
 
     const auto& iter = previousFieldMap->find("m_imageLandmarksId");
     if (iter != previousFieldMap->end())

@@ -54,7 +54,7 @@ class MODULE_UI_DICOM_CLASS_API SSeriesDBMerger : public ::sight::ui::base::IAct
 {
 public:
 
-    fwCoreServiceMacro(SSeriesDBMerger, sight::ui::base::IAction )
+    SIGHT_DECLARE_SERVICE(SSeriesDBMerger, sight::ui::base::IAction )
 
     /// Constructor
     MODULE_UI_DICOM_API SSeriesDBMerger() noexcept;

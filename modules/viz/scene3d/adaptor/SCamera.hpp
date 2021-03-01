@@ -79,7 +79,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SCamera final : public sight::viz::scene3d::I
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SCamera, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SCamera, ::sight::viz::scene3d::IAdaptor)
 
     /// Creates the adaptor and initialize slots.
     MODULE_VIZ_SCENE3D_API SCamera() noexcept;

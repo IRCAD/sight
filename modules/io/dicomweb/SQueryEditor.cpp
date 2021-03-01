@@ -25,19 +25,19 @@
 #include <data/DicomSeries.hpp>
 #include <data/helper/SeriesDB.hpp>
 
-#include <service/macros.hpp>
-
-#include <boost/foreach.hpp>
-
 #include <io/http/helper/Series.hpp>
 
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QLabel>
+#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/preferences/helper.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <boost/foreach.hpp>
+
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
 #include <filesystem>
 
@@ -65,7 +65,7 @@ void SQueryEditor::configuring()
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
-        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
         m_serverHostnameKey = serverInfo.substr(0, splitPosition);
         m_serverPortKey     = serverInfo.substr(splitPosition + 1, serverInfo.size());
@@ -262,7 +262,7 @@ void SQueryEditor::queryStudyDate()
                << "Pacs port: " << m_serverPort << "\n";
 
             this->displayErrorMessage(ss.str());
-            SLM_WARN(exception.what());
+            SIGHT_WARN(exception.what());
         }
         QJsonDocument jsonResponse         = QJsonDocument::fromJson(studiesListAnswer);
         const QJsonArray& studiesListArray = jsonResponse.array();
@@ -309,7 +309,7 @@ void SQueryEditor::queryStudyDate()
         std::stringstream ss;
         ss << "Unknown error.";
         this->displayErrorMessage(ss.str());
-        SLM_WARN(exception.what());
+        SIGHT_WARN(exception.what());
     }
 }
 

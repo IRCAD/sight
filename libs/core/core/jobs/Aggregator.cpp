@@ -93,9 +93,9 @@ IJob::SharedFuture Aggregator::runImpl()
 
 void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 {
-    SLM_ASSERT("iJob shall not be null", iJob);
+    SIGHT_ASSERT("iJob shall not be null", iJob);
 
-    SLM_ASSERT("iJob shall not be added to itself", this != iJob.get());
+    SIGHT_ASSERT("iJob shall not be added to itself", this != iJob.get());
 
     if(!iJob)
     {
@@ -104,7 +104,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
     core::mt::ReadToWriteLock lock(m_mutex);
 
-    SLM_ASSERT("Jobs can't be added when Aggregator is running", m_state == WAITING || m_state == RUNNING);
+    SIGHT_ASSERT("Jobs can't be added when Aggregator is running", m_state == WAITING || m_state == RUNNING);
 
     const auto normValue = std::uint64_t(weight*100);
 

@@ -92,7 +92,7 @@ class MODULE_VIZ_SCENE3D_CLASS_API SMaterial final : public sight::viz::scene3d:
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    fwCoreServiceMacro(SMaterial, ::sight::viz::scene3d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMaterial, ::sight::viz::scene3d::IAdaptor)
 
     /**
      * @name Slots API

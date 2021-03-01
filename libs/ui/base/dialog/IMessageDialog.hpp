@@ -39,7 +39,7 @@ class UI_BASE_CLASS_API IMessageDialog : public ui::base::GuiBaseObject
 
 public:
 
-    fwCoreClassMacro(IMessageDialog, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(IMessageDialog, ui::base::GuiBaseObject)
 
     /// Icon type
     typedef enum

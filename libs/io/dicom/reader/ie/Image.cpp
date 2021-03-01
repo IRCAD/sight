@@ -30,6 +30,8 @@
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 
+#include <geometry/data/VectorFunctions.hpp>
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -42,8 +44,6 @@
 #include <gdcmPixelFormat.h>
 #include <gdcmRescaler.h>
 #include <gdcmUIDGenerator.h>
-
-#include <geometry/data/VectorFunctions.hpp>
 
 namespace sight::io::dicom
 {
@@ -710,7 +710,7 @@ Image::MatrixType Image::computeInverseMatrix(MatrixType matrix)
     long unsigned int res = boost::numeric::ublas::lu_factorize(matrix, perm);
     if (res != 0)
     {
-        SLM_WARN("Cannot compute matrix.");
+        SIGHT_WARN("Cannot compute matrix.");
     }
     else
     {

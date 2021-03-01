@@ -113,11 +113,11 @@ void signal_handler(int signal)
     }
     catch(const std::exception& e)
     {
-        SLM_FATAL( e.what() );
+        SIGHT_FATAL( e.what() );
     }
     catch(...)
     {
-        SLM_FATAL( "An unrecoverable error has occurred." );
+        SIGHT_FATAL( "An unrecoverable error has occurred." );
     }
 
     // We use brutal exit because when interrupted by a signal, we never get out from run,
@@ -273,22 +273,22 @@ int main(int argc, char* argv[])
         }
         else
         {
-            SLM_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
-                                                                               SIGHT_MODULE_RC_PREFIX) ));
+            SIGHT_ERROR_IF("Module directory not found.", !fs::is_directory( execPath / fs::path(
+                                                                                 SIGHT_MODULE_RC_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
 
-        SLM_ERROR_IF("Was not able to find a directory to change to.", !isChdirOkOSX);
+        SIGHT_ERROR_IF("Was not able to find a directory to change to.", !isChdirOkOSX);
     }
 #endif
 
-    SLM_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
-    SLM_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
+    SIGHT_INFO_IF( "Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
+    SIGHT_INFO_IF( "Profile-args: " << profileArgs, vm.count("profile-args") );
 
     // Check if path exist
-    SLM_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
-                      profileFile), !std::filesystem::exists(profileFile.string()));
+    SIGHT_FATAL_IF( "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
+                        profileFile), !std::filesystem::exists(profileFile.string()));
 
     std::transform( modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute );
     profileFile = ::absolute(profileFile);
@@ -307,17 +307,17 @@ int main(int argc, char* argv[])
     {
         modulePaths.push_back(profileModulePath);
     }
-#if SLM_INFO_ENABLED
+#if SIGHT_INFO_ENABLED
     for(const fs::path& modulePath :  modulePaths )
     {
-        SLM_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
-                     vm.count("module-path") );
+        SIGHT_INFO_IF( "Module paths are: " << modulePath.string() << " => " << ::absolute(modulePath),
+                       vm.count("module-path") );
     }
 #endif
     for(const fs::path& modulePath :  modulePaths )
     {
-        SLM_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
-                          modulePath), !std::filesystem::exists(modulePath.string()) );
+        SIGHT_FATAL_IF( "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
+                            modulePath), !std::filesystem::exists(modulePath.string()) );
     }
 
     sight::core::runtime::init();
@@ -330,7 +330,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            SLM_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
+            SIGHT_ERROR( "Module path " << modulePath << " do not exists or is not a directory.");
         }
     }
 
@@ -364,18 +364,18 @@ int main(int argc, char* argv[])
         }
         catch(const std::exception& e)
         {
-            SLM_FATAL( e.what() );
+            SIGHT_FATAL( e.what() );
             retValue = 3;
         }
         catch(...)
         {
-            SLM_FATAL( "An unrecoverable error has occurred." );
+            SIGHT_FATAL( "An unrecoverable error has occurred." );
             retValue = 4;
         }
     }
     else
     {
-        SLM_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
+        SIGHT_ERROR( "Profile file " << profileFile << " do not exists or is not a regular file.");
         retValue = 5;
     }
 

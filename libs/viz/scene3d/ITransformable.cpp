@@ -47,7 +47,7 @@ viz::scene3d::SRender::OgreObjectIdType ITransformable::getTransformId() const
 
 ::Ogre::SceneNode* ITransformable::getTransformNode(::Ogre::SceneNode* const _parentNode)
 {
-    SLM_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
+    SIGHT_ASSERT("Transform id is not set, please call setTransformId before.", !m_transformId.empty());
     m_transformNode = this->getTransformNode(m_transformId, _parentNode);
     return m_transformNode;
 }
@@ -57,7 +57,7 @@ viz::scene3d::SRender::OgreObjectIdType ITransformable::getTransformId() const
 ::Ogre::SceneNode* ITransformable::getTransformNode(const std::string& _name,
                                                     ::Ogre::SceneNode* const _parentNode)
 {
-    SLM_ASSERT("Transform name is not set.", !_name.empty());
+    SIGHT_ASSERT("Transform name is not set.", !_name.empty());
     auto transformNode = viz::scene3d::helper::Scene::getNodeById(_name, _parentNode);
     if (transformNode == nullptr)
     {

@@ -56,8 +56,8 @@ class IO_BASE_CLASS_API DictionaryReader :
 
 public:
 
-    fwCoreClassMacro(DictionaryReader, GenericObjectReader< data::StructureTraitsDictionary >,
-                     io::base::reader::factory::New< DictionaryReader >)
+    SIGHT_DECLARE_CLASS(DictionaryReader, GenericObjectReader< data::StructureTraitsDictionary >,
+                        io::base::reader::factory::New< DictionaryReader >)
 
     /// Constructor. Do nothing .
     IO_BASE_API DictionaryReader(io::base::reader::IObjectReader::Key key);

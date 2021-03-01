@@ -50,14 +50,14 @@ QOpenGLContext* OpenGLContext::createOgreGLContext(QOpenGLContext* const _shared
     {
         // For context sharing to be enabled, both contexts need to be on the same thread when calling 'create'.
         // (At least on Windows: see https://community.khronos.org/t/wglsharelists-failing/42656).
-        SLM_FATAL_IF("Shared contexts should be created on the same thread.",
-                     glContext->thread() != _sharedContext->thread());
+        SIGHT_FATAL_IF("Shared contexts should be created on the same thread.",
+                       glContext->thread() != _sharedContext->thread());
         glContext->setShareContext(_sharedContext);
     }
 
     const bool success = glContext->create();
-    SLM_FATAL_IF("Did not manage to create an OpenGL 4.1 core context for ogre.",
-                 !success || glContext->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr);
+    SIGHT_FATAL_IF("Did not manage to create an OpenGL 4.1 core context for ogre.",
+                   !success || glContext->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr);
 
     return glContext;
 }

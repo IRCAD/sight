@@ -91,7 +91,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SMultipleTF, sight::viz::scene2d::IAdaptor)
+    SIGHT_DECLARE_SERVICE(SMultipleTF, sight::viz::scene2d::IAdaptor)
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API SMultipleTF() noexcept;

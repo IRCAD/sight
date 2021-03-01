@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <ui/base/IAction.hpp>
+
 #include <QObject>
 #include <QSize>
 #include <QUrl>
-
-#include <ui/base/IAction.hpp>
 
 #include <filesystem>
 
@@ -43,7 +43,7 @@ class MODULE_UI_QT_CLASS_API SShowAbout : public QObject,
 
 Q_OBJECT
 public:
-    fwCoreServiceMacro(SShowAbout, sight::ui::base::IAction)
+    SIGHT_DECLARE_SERVICE(SShowAbout, sight::ui::base::IAction)
 
     /**
      * @name Constructor/Destructor

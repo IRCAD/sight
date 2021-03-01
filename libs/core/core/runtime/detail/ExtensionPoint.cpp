@@ -59,7 +59,7 @@ std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
         try
         {
             std::filesystem::path schemaPath = getModule()->getResourcesLocation() / m_schema;
-            SLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
+            SIGHT_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
             if(!std::filesystem::exists(schemaPath))
             {
                 // Allow to specify a schema defined elsewhere than this module

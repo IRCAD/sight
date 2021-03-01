@@ -39,7 +39,7 @@ namespace data
 class IO_PATCH_CLASS_API Image : public io::atoms::patch::ISemanticPatch
 {
 public:
-    fwCoreClassMacro(Image, io::atoms::patch::ISemanticPatch, new Image)
+    SIGHT_DECLARE_CLASS(Image, io::atoms::patch::ISemanticPatch, new Image)
 
     /// Constructor
     IO_PATCH_API Image();

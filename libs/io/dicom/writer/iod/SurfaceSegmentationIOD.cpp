@@ -73,7 +73,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 {
     // Retrieve model series
     data::ModelSeries::csptr modelSeries = data::ModelSeries::dynamicCast(series);
-    SLM_ASSERT("Image series should not be null.", modelSeries);
+    SIGHT_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
     SPTR(::gdcm::SurfaceWriter) writer = std::make_shared< ::gdcm::SurfaceWriter >();

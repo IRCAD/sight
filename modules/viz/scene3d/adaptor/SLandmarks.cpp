@@ -125,13 +125,13 @@ void SLandmarks::configuring()
     }
     else
     {
-        SLM_ERROR("Unknown orientation, allow values are `axial`, `frontal` and `sagittal`");
+        SIGHT_ERROR("Unknown orientation, allow values are `axial`, `frontal` and `sagittal`");
     }
 
     std::string hexaMask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values (" + s_QUERY_MASK_CONFIG + ") should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -142,7 +142,7 @@ void SLandmarks::configuring()
     hexaMask = config.get<std::string>(s_LANDMARKS_FLAGS_CONFIG, "");
     if(!hexaMask.empty())
     {
-        SLM_ASSERT(
+        SIGHT_ASSERT(
             "Hexadecimal values (" + s_LANDMARKS_FLAGS_CONFIG + ") should start with '0x'"
             "Given value : " + hexaMask,
             hexaMask.length() > 2 &&
@@ -376,7 +376,8 @@ void SLandmarks::addPoint(std::string _groupName)
 
         // Retrieve group.
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
-        SLM_ASSERT("They must have at least one point in the group `" << _groupName << "`", group.m_points.size() > 0);
+        SIGHT_ASSERT("They must have at least one point in the group `" << _groupName << "`",
+                     group.m_points.size() > 0);
 
         // Get the last index.
         index = group.m_points.size() - 1;
@@ -735,7 +736,7 @@ void SLandmarks::hideMyLandmark(std::shared_ptr<Landmark> _landmark,
                        node->getPosition()[2] <= m_currentSlicePos[2]+group.m_size*0.5;
                 break;
             default:
-                SLM_ERROR("Unhandle orientation mode");
+                SIGHT_ERROR("Unhandle orientation mode");
                 break;
         }
     }
@@ -904,7 +905,7 @@ void SLandmarks::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
 
             if(!hit.first)
             {
-                SLM_ERROR("The ray must intersect the plane")
+                SIGHT_ERROR("The ray must intersect the plane")
                 return;
             }
 

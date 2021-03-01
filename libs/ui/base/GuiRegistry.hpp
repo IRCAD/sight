@@ -48,7 +48,7 @@ public:
     typedef std::vector< std::string >                           ParentSidsType;
     typedef std::map< std::string, ParentSidsType > ActionToParentMapType;
 
-    fwCoreClassMacro(GuiRegistry, ui::base::GuiBaseObject)
+    SIGHT_DECLARE_CLASS(GuiRegistry, ui::base::GuiBaseObject)
 
     /**
      * @brief   Constructor.

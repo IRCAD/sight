@@ -49,7 +49,7 @@ class MODULE_MEMORY_CLASS_API LockDumpSrv : public service::IController
 
 public:
 
-    fwCoreServiceMacro(LockDumpSrv, sight::service::IController)
+    SIGHT_DECLARE_SERVICE(LockDumpSrv, sight::service::IController)
 
     /// Constructor. Does nothing
     MODULE_MEMORY_API LockDumpSrv() noexcept;

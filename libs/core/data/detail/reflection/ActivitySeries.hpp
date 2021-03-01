@@ -29,4 +29,4 @@
 
 #include <data/Composite.hpp>
 
-fwCampDeclareAccessor((sight)(data)(ActivitySeries), (sight)(data)(Composite));
+SIGHT_DECLARE_REFLECTION_ACCESSOR((sight)(data)(ActivitySeries), (sight)(data)(Composite));

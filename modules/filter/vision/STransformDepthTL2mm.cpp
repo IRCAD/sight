@@ -39,7 +39,6 @@ static const service::IService::KeyType s_CAMERA_SERIES_INPUT   = "cameraSeries"
 static const service::IService::KeyType s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";
 static const service::IService::KeyType s_SCALED_FRAME_TL_INOUT = "scaledDepthTL";
 
-
 //------------------------------------------------------------------------------
 
 STransformDepthTL2mm::STransformDepthTL2mm() :
@@ -81,12 +80,12 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
     if (timestamp > m_lastTimestamp)
     {
         data::FrameTL::csptr originFrameTL = this->getInput< data::FrameTL >(s_ORIGIN_FRAME_TL_INPUT);
-        SLM_ASSERT("missing '" + s_ORIGIN_FRAME_TL_INPUT + "' timeline", originFrameTL);
+        SIGHT_ASSERT("missing '" + s_ORIGIN_FRAME_TL_INPUT + "' timeline", originFrameTL);
         data::CameraSeries::csptr cameraSeries = this->getInput< data::CameraSeries >(s_CAMERA_SERIES_INPUT);
-        SLM_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
+        SIGHT_ASSERT("missing '" + s_CAMERA_SERIES_INPUT + "' cameraSeries", cameraSeries);
         data::Camera::csptr depthCamera   = cameraSeries->getCamera(0);
         data::FrameTL::sptr scaledFrameTL = this->getInOut< data::FrameTL >(s_SCALED_FRAME_TL_INOUT);
-        SLM_ASSERT("missing '" + s_SCALED_FRAME_TL_INOUT + "' timeline", scaledFrameTL);
+        SIGHT_ASSERT("missing '" + s_SCALED_FRAME_TL_INOUT + "' timeline", scaledFrameTL);
 
         const double scale = depthCamera->getScale();
 

@@ -39,7 +39,7 @@ class MODULE_UI_BASE_CLASS_API SView : public ::sight::ui::base::view::IView
 {
 public:
 
-    fwCoreServiceMacro(SView, ::sight::ui::base::view::IView)
+    SIGHT_DECLARE_SERVICE(SView, ::sight::ui::base::view::IView)
 
     /// Constructor. Do nothing.
     MODULE_UI_BASE_API SView() noexcept;

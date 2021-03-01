@@ -104,7 +104,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
                             segmentLabel = ::gdcm::LOComp::Trim(segmentLabel.c_str());
                             const std::string msg = "Error while reading the '" + segmentLabel + "' segment: " + error;
 
-                            SLM_WARN_IF(msg, !m_logger);
+                            SIGHT_WARN_IF(msg, !m_logger);
                             if(m_logger)
                             {
                                 m_logger->critical(msg);
@@ -233,7 +233,7 @@ void Surface::readSurfaceSegmentationModule(const data::Reconstruction::sptr& re
             const std::string msg = "Unable to retrieve structure type from segment identification "
                                     "for segment '" + organName + "'.";
 
-            SLM_WARN_IF(msg, !m_logger);
+            SIGHT_WARN_IF(msg, !m_logger);
             if(m_logger)
             {
                 m_logger->warning(msg);

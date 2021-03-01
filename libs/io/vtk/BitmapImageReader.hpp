@@ -51,10 +51,10 @@ class BitmapImageReader : public io::base::reader::GenericObjectReader< data::Im
 
 public:
 
-    fwCoreClassMacro(BitmapImageReader, io::base::reader::GenericObjectReader< data::Image >,
-                     io::base::reader::factory::New< BitmapImageReader >);
+    SIGHT_DECLARE_CLASS(BitmapImageReader, io::base::reader::GenericObjectReader< data::Image >,
+                        io::base::reader::factory::New< BitmapImageReader >);
 
-    fwCoreAllowSharedFromThis();
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
     IO_VTK_API BitmapImageReader(io::base::reader::IObjectReader::Key key);
