@@ -44,6 +44,7 @@ static const std::string s_PRIORITY_CONFIG              = "priority";
 static const std::string s_ORIENTATION_CONFIG           = "orientation";
 static const std::string s_MODE_CONFIG                  = "mode";
 static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
+static const std::string s_MOVE_ON_PICK_CONFIG          = "moveOnPick";
 
 //-----------------------------------------------------------------------------
 
@@ -92,6 +93,8 @@ void SVoxelPicker::configuring()
     const std::string mode = config.get<std::string>(s_MODE_CONFIG, "2D");
     SLM_ASSERT("Mode must be '2D' or '3D'.", mode == "2D" || mode == "3D");
     m_mode2D = mode == "2D";
+
+    m_moveOnPick = config.get<bool>(s_MOVE_ON_PICK_CONFIG, m_moveOnPick);
 }
 
 //-----------------------------------------------------------------------------
@@ -203,6 +206,17 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
             if(static_cast<bool>(_mod & Modifier::CONTROL))
             {
                 info.m_modifierMask |= data::tools::PickingInfo::CTRL;
+
+                if(m_moveOnPick && info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
+                {
+                    // Emit slices positions
+                    const int sagittalIdx = static_cast<int>((info.m_worldPos[0] - origin[0])/spacing[0]);
+                    const int frontalIdx  = static_cast<int>((info.m_worldPos[1] - origin[1])/spacing[1]);
+                    const int axialIdx    = static_cast<int>((info.m_worldPos[2] - origin[2])/spacing[2]);
+                    const auto sig        = image->signal< data::Image::SliceIndexModifiedSignalType>(
+                        data::Image::s_SLICE_INDEX_MODIFIED_SIG);
+                    sig->asyncEmit(axialIdx, frontalIdx, sagittalIdx);
+                }
             }
             if(static_cast<bool>(_mod & Modifier::SHIFT))
             {

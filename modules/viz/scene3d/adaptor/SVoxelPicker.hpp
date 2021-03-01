@@ -52,7 +52,8 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
         <service type="::sight::module::viz::scene3d::adaptor::SVoxelPicker">
             <in key="image" uid="..." />
-            <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true" />
+            <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
+                moveOnPick="false" />
        </service>
    @endcode
  *
@@ -66,6 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): orientation of the image.
  * - \b mode (optional, 2D/3D, default=2D): in 2D, the ray is intersected with the current image slice.
  *                                          In 3D, the ray intersects each slices and returns the nearest one.
+ * - \b moveOnPick (optional, bool, default=false): move image slices indexes on the picked position.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SVoxelPicker final :
     public sight::viz::scene3d::IAdaptor,
@@ -153,6 +155,9 @@ private:
 
     /// Defines if the interaction must take into account above layers.
     bool m_layerOrderDependant { true };
+
+    /// Defines if the image slices indexes will be updated with the picked position.
+    bool m_moveOnPick { false };
 
     /// Defines the signal sent on picking events.
     core::com::Signal< void ( data::tools::PickingInfo ) >::sptr m_pickedSig;

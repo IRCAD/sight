@@ -70,6 +70,9 @@ namespace sight::module::viz::scene3d::adaptor
  *      This is a performance hint that will choose a specific GPU memory pool accordingly.
  * - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
+ * - \b visible (optional, true/false, default=true): Used to define the default visibility of the modelSeries. If the
+ *      tag is not present, the visibility will be set by the value of the modelSeries field. If the tag is present,
+ *      the visibility is set by the value of this tag.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SModelSeries final :
     public sight::viz::scene3d::IAdaptor,
@@ -142,6 +145,9 @@ private:
 
     /// Defines the mask used for picking request.
     std::uint32_t m_queryFlags {::Ogre::SceneManager::ENTITY_TYPE_MASK};
+
+    /// Defines if the visibility tag is present in the configuration.
+    bool m_isVisibleTag{false};
 };
 
 //------------------------------------------------------------------------------
