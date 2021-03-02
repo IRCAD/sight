@@ -64,15 +64,22 @@ function(get_header_file_install_destination)
     string(REPLACE "/" ";" CURRENT_SOURCE_DIRS ${CURRENT_SOURCE_DIR_REL})
 
     list(GET CURRENT_SOURCE_DIRS 0 ROOT)
-    list(GET CURRENT_SOURCE_DIRS 1 THEME)
-    list(GET CURRENT_SOURCE_DIRS 2 PROJECT)
-    string(REPLACE "core" "." THEME ${THEME})
+    list(LENGTH CURRENT_SOURCE_DIRS CURRENT_SOURCE_DIRS_LEN)
+    if(CURRENT_SOURCE_DIRS_LEN LESS 3)
+        list(GET CURRENT_SOURCE_DIRS 1 PROJECT)
+        set(PROJECT_PATH "${PROJECT}")
+    else()
+        list(GET CURRENT_SOURCE_DIRS 1 THEME)
+        list(GET CURRENT_SOURCE_DIRS 2 PROJECT)
+        string(REPLACE "core" "." THEME ${THEME})
+        set(PROJECT_PATH "${THEME}/${PROJECT}")
+    endif()
     
     if("${ROOT}" STREQUAL "libs")
-        set(HEADER_FILE_DESTINATION_REL "${THEME}/${PROJECT}" PARENT_SCOPE)
+        set(HEADER_FILE_DESTINATION_REL "${PROJECT_PATH}" PARENT_SCOPE)
     else()
         if("${ROOT}" STREQUAL "modules" OR "${ROOT}" STREQUAL "activities" )
-            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${THEME}/${PROJECT}" PARENT_SCOPE)
+            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${PROJECT_PATH}" PARENT_SCOPE)
         else()
             set(HEADER_FILE_DESTINATION_REL "${PROJECT}" PARENT_SCOPE)
         endif()
@@ -513,14 +520,14 @@ macro(fwLib FWPROJECT_NAME OBJECT_LIBRARY)
     # Add all targets to the build-tree export set
     export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
             FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
-            NAMESPACE sight::)
+            NAMESPACE ${SIGHT_REPOSITORY}::)
 
     # Install sight_Project_Targets.cmake
     install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
             FILE
-            ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
+                ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
             NAMESPACE
-                sight::
+                ${SIGHT_REPOSITORY}::
             DESTINATION
                 ${FWCONFIG_PACKAGE_LOCATION}
     )
@@ -718,14 +725,14 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
         # Add all targets to the build-tree export set
         export( EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
                 FILE "${CMAKE_BINARY_DIR}/cmake/${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake"
-                NAMESPACE sight::)
+                NAMESPACE ${SIGHT_REPOSITORY}::)
 
         # Install sight_Project_Targets.cmake
         install(EXPORT ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets
                 FILE
-                ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
+                    ${SIGHT_REPOSITORY}_${FWPROJECT_NAME}_Targets.cmake
                 NAMESPACE
-                    sight::
+                    ${SIGHT_REPOSITORY}::
                 DESTINATION
                     ${FWCONFIG_PACKAGE_LOCATION}
         )
