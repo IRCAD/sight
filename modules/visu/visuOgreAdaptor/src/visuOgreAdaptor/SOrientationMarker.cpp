@@ -42,40 +42,18 @@
 namespace visuOgreAdaptor
 {
 
-static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_UPDATED_SIG = "visibilityUpdated";
-
 static const std::string s_MATRIX_INOUT = "matrix";
-
-struct SOrientationMarker::CameraListener : public ::Ogre::Camera::Listener
-{
-    ::Ogre::SceneNode* m_transformNode;
-
-    CameraListener(::Ogre::SceneNode* transformNode)
-    {
-        m_transformNode = transformNode;
-    }
-
-    //------------------------------------------------------------------------------
-
-    void cameraPreRenderScene(::Ogre::Camera* _cam) final
-    {
-        m_transformNode->setPosition(0.0, 0.0, -24.0);
-    }
-};
 
 //-----------------------------------------------------------------------------
 
 SOrientationMarker::SOrientationMarker() noexcept
 {
-    // newSignal< VisibilityUpdatedSignalType >(s_VISIBILITY_UPDATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
 SOrientationMarker::~SOrientationMarker() noexcept
 {
-    m_mesh.reset();
-    m_mesh = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -87,13 +65,13 @@ void SOrientationMarker::configuring()
     const ConfigType configType = this->getConfigTree();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
-    const std::string transformId = config.get<std::string>(::visuOgreAdaptor::STransform::s_TRANSFORM_CONFIG,
-                                                            this->getID() + "_transform");
-
-    this->setTransformId(transformId);
+    // Create the transform node.
+    this->setTransformId(this->getID() + "_transform");
 
     // Set the resource this use, if it has been set via xml
-    m_patientMeshRes = config.get<std::string>("resource", "human.mesh");
+    m_patientMeshRc = config.get<std::string>("resource", "human.mesh");
+
+    m_markerDepth = config.get< float > ("depth", m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------
@@ -105,7 +83,6 @@ void SOrientationMarker::starting()
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    // m_sceneNode                            = rootSceneNode->createChildSceneNode(this->getID() + "_mainNode");
     ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
     m_sceneNode                            = transformNode->createChildSceneNode(this->getID() + "_mainNode");
 
@@ -131,11 +108,6 @@ void SOrientationMarker::starting()
     m_patientMesh->setMaterialName(materialAdaptor->getMaterialName());
     m_sceneNode->attachObject(m_patientMesh);
 
-    // Sets up the camera listener to update the input matrix
-    ::Ogre::Camera* m_camera = this->getLayer()->getDefaultCamera();
-    m_cameraListener         = new CameraListener(transformNode);
-    m_camera->addListener(m_cameraListener);
-
     this->updateVisibility(m_isVisible);
 
     this->requestRender();
@@ -145,6 +117,7 @@ void SOrientationMarker::starting()
 
 void SOrientationMarker::updating()
 {
+    this->updateCameraMatrix();
     this->requestRender();
 }
 
@@ -152,33 +125,50 @@ void SOrientationMarker::updating()
 
 void SOrientationMarker::updateCameraMatrix()
 {
-    const auto inMatrix = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
-    if (inMatrix)
+
+    ::Ogre::Affine3 ogreMatrix;
     {
-        m_cameraTransform->shallowCopy(inMatrix.get_shared());
+        const auto transform = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
-        // Convert the matrix to the glm format
-        ::glm::dmat4x4 mat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(inMatrix.get_shared());
-
-        // Nullify the translation vector, to reset the camera to the origin
-        mat[3][0] = mat[3][1] = mat[3][2] = 0.0;
-
-        // Translate the camera position to a fixed position
-        ::glm::dvec3 v1(0.0, 0.0, -32.0);
-        mat = ::glm::translate(mat, v1);
-
-        ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(m_cameraTransform, mat);
-
-        auto sig = m_cameraTransform->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >(
-            ::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        // Received input line and column data from Sight transformation matrix
+        for (size_t lt = 0; lt < 4; lt++)
+        {
+            for (size_t ct = 0; ct < 4; ct++)
+            {
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+            }
+        }
     }
+
+    // Get the transformation as sceneNode.
+    ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
+
+    // Decompose the matrix
+    ::Ogre::Vector3 position;
+    ::Ogre::Vector3 scale;
+    ::Ogre::Quaternion orientation;
+    ogreMatrix.decomposition(position, scale, orientation);
+
+    const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
+
+    // Reset the camera position
+    transformNode->setPosition(0, 0, 0);
+    // Reverse X axis.
+    transformNode->setOrientation(rotateX);
+
+    // Update the camera position
+    // Inverse camera matrix (since we move the mesh)
+    transformNode->rotate(orientation.Inverse());
+    // Place it at a fixed position
+    transformNode->translate(0.f, 0.f, m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------
 
 void SOrientationMarker::stopping()
 {
+    this->unregisterServices();
 }
 
 //-----------------------------------------------------------------------------
@@ -191,6 +181,15 @@ void SOrientationMarker::setVisible(bool _visible)
     }
 
     this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push(s_MATRIX_INOUT, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

@@ -34,22 +34,26 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief TODO
+ * @brief Displays an orientation "marker", marker is represented by a human body mesh,
+ * its orientation follows camera movement.
  *
  * @section Slots Slots
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::visuOgreAdaptor::SOrientationMarker">
-        <inout key="matrix" uid="..." />
-        <config layer="default" />
+    <service uid="..." type="::visuOgreAdaptor::SOrientationMarker" autoConnect="yes">
+        <in key="matrix" uid="..." />
+        <config layer="default" ressource="..." depth="-32.0" />
     </service>
    @endcode
  *
+ * @subsection Input Input
+ *  - \b matrix [::fwData::TransformationMatrix3D]: matrix to follow (usually SCamera Matrix).
  * @subsection Configuration Configuration:
  * - \b layer (mandatory, string): defines the mesh's layer.
- * - \b transform (optional, string): base transform to use for the marker.
  * - \b resource (optional, string): name of the resource to use for the marker.
+ * - \b depth (optionnal, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
+ * to zoom-out.
  */
 class VISUOGREADAPTOR_CLASS_API SOrientationMarker final :
     public ::fwRenderOgre::IAdaptor,
@@ -75,7 +79,7 @@ protected:
     /// Initializes and starts child services
     VISUOGREADAPTOR_API void starting() override;
 
-    /// Updates the camera from the input transform
+    /// Updates internal matrix from the input transform
     VISUOGREADAPTOR_API void updating() override;
 
     /// Unregisters child services
@@ -84,24 +88,16 @@ protected:
     /// Sets the visibility of the adaptor
     VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
+    /// Connects input matrix S_MODIFIED to UPDATE slot.
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const override;
+
 private:
-    /// Type of the 'visibilityUpdated' signal.
-    typedef ::fwCom::Signal<void (bool)> VisibilityUpdatedSignalType;
 
     /// Contains the material data.
     ::fwData::Material::sptr m_material { nullptr };
 
     /// Updates the internal camera matrix from the input transform
     void updateCameraMatrix();
-
-    /// Human model
-    ::fwData::Mesh::sptr m_mesh { nullptr };
-
-    /// Internal matrix updating the mesh position
-    std::shared_ptr< ::fwData::TransformationMatrix3D > m_cameraTransform;
-
-    // Connections with child services
-    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Contains the scene node where all of manual objects are attached.
     ::Ogre::SceneNode* m_sceneNode { nullptr };
@@ -110,11 +106,11 @@ private:
     ::Ogre::Entity* m_patientMesh { nullptr };
 
     /// Resource used for the marker
-    std::string m_patientMeshRes { "human.mesh" };
+    std::string m_patientMeshRc { "human.mesh" };
 
-    /// Camera listener class used to compute the entry points textures before rendering.
-    struct CameraListener;
-    CameraListener* m_cameraListener;
+    /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
+    float m_markerDepth = -32.f;
+
 };
 
 } // namespace visuOgreAdaptor.
