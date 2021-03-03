@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::Color );
+SIGHT_REGISTER_DATA( sight::data::Color );
 
 namespace sight::data
 {

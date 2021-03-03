@@ -83,7 +83,7 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
 
     const auto& objType = shaderObj->getClassname();
 
-    if(objType == "::sight::data::Boolean")
+    if(objType == "sight::data::Boolean")
     {
         _connections.connect(_paramSrv, "boolChanged", _adaptor, "setBoolParameter");
 
@@ -92,7 +92,7 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
         paramConfig.add("<xmlattr>.key", _adaptor->getParamName());
         paramConfig.add("<xmlattr>.defaultValue", false);
     }
-    else if(objType == "::sight::data::Color")
+    else if(objType == "sight::data::Color")
     {
         _connections.connect(_paramSrv, "colorChanged", _adaptor, "setColorParameter");
 
@@ -115,7 +115,7 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
         paramConfig.add("<xmlattr>.key", _adaptor->getParamName());
         paramConfig.add("<xmlattr>.defaultValue", hexStr.str());
     }
-    else if(objType == "::sight::data::Float")
+    else if(objType == "sight::data::Float")
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
@@ -132,7 +132,7 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
         paramConfig.add("<xmlattr>.min", min);
         paramConfig.add("<xmlattr>.max", max);
     }
-    else if(objType == "::sight::data::Integer")
+    else if(objType == "sight::data::Integer")
     {
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
@@ -149,7 +149,7 @@ service::IService::ConfigType ParameterEditor::createConfig(const sight::viz::sc
         paramConfig.add("<xmlattr>.min", min);
         paramConfig.add("<xmlattr>.max", max);
     }
-    else if(objType == "::sight::data::Array")
+    else if(objType == "sight::data::Array")
     {
         auto arrayObject         = data::Array::dynamicCast(shaderObj);
         const auto numComponents = arrayObject->getSize()[0];

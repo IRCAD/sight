@@ -37,7 +37,7 @@ namespace sight::module::io::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::module::io::vision::SCalibrationImagesWriter">
+   <service uid="..." type="sight::module::io::vision::SCalibrationImagesWriter">
        <in key="data" uid="..." />
        <format>.tiff</format>
        <folder>...</folder>

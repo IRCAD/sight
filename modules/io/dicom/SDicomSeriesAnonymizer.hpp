@@ -48,7 +48,7 @@ namespace sight::module::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::dicom::SDicomSeriesAnonymizer">
+        <service type="sight::module::io::dicom::SDicomSeriesAnonymizer">
             <inout key="seriesDB" uid="..." />
             <inout key="selectedSeries" uid="..." />
        </service>

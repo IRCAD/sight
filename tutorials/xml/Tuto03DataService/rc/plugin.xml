@@ -11,7 +11,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- The root data object in tutoDataService is a ::sight::data::Image. -->
-            <object uid="image" type="::sight::data::Image" />
+            <object uid="image" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -20,7 +20,7 @@
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="yes"' attribute.
             -->
-            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto03DataService</name>
@@ -43,7 +43,7 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -65,7 +65,7 @@
                 In this tutorial, the attribute 'specialAction' has the value "QUIT". On MS Windows, there's no
                 impact, but on Linux this value installs the default 'Quit' system icon in the menuItem.
             -->
-            <service uid="menuView" type="::sight::module::ui::base::SMenu" >
+            <service uid="menuView" type="sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -86,7 +86,7 @@
                 The action service (::sight::module::ui::base::SQuit) is a generic action that will close the application
                 when the user click on the menuItem "Quit".
             -->
-            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!--
                 Open file action:
@@ -94,7 +94,7 @@
                 services given in the configuration when the user clicks on the action.
                 Here, the reader selector will be called when the action is clicked.
             -->
-            <service uid="openImageAct" type="::sight::module::ui::base::com::SStarter" >
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
@@ -109,7 +109,7 @@
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
-            <service uid="imageReaderSrv" type="::sight::module::ui::base::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="image" />
             </service>
 
@@ -118,7 +118,7 @@
                 Here, the service attribute 'autoConnect="yes"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
-            <service uid="imageRenderSrv" type="::sight::module::viz::sample::SImage" >
+            <service uid="imageRenderSrv" type="sight::module::viz::sample::SImage" >
                 <in key="image" uid="image" autoConnect="yes" />
             </service>
 

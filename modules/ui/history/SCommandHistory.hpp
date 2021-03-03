@@ -52,7 +52,7 @@ namespace sight::module::ui::history
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::ui::history::SControlHistory" >
+        <service uid="..." type="sight::module::ui::history::SControlHistory" >
             <maxCommands>10</maxCommands>
             <maxMemory>100000000</maxMemory>
         </service>

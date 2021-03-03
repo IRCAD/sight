@@ -44,7 +44,7 @@ namespace wrapper
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::data::wrapper::SImageSignalForwarder">
+   <service type="sight::module::data::wrapper::SImageSignalForwarder">
        <in key="target" uid="..." />
        <in key="source" uid="..." />
        <forward>modified</forward>

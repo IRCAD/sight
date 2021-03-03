@@ -31,7 +31,7 @@ namespace layoutManager
 {
 //-----------------------------------------------------------------------------
 
-const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY = "::sight::ui::base::TabLayoutManager";
+const TabLayoutManagerBase::RegistryKeyType TabLayoutManagerBase::REGISTRY_KEY = "sight::ui::base::TabLayoutManager";
 
 //-----------------------------------------------------------------------------
 

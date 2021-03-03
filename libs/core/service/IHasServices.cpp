@@ -24,6 +24,8 @@
 
 #include "service/IService.hpp"
 
+#include <core/runtime/Runtime.hpp>
+
 #include <service/registry/ObjectService.hpp>
 
 namespace sight::service
@@ -112,10 +114,11 @@ service::IService::sptr IHasServices::registerService(const std::string& _implTy
 
 void IHasServices::unregisterServices(const std::string& _classname)
 {
+    const std::string classname = core::runtime::filterID(_classname);
     for(auto itSrv = m_subServices.begin(); itSrv != m_subServices.end(); )
     {
         const service::IService::sptr& srv = itSrv->lock();
-        if(srv && (_classname.empty() || ( !_classname.empty() && srv->getClassname() == _classname)))
+        if(srv && (classname.empty() || ( !classname.empty() && srv->getClassname() == classname)))
         {
             srv->stop().wait();
             service::OSR::unregisterService(srv);

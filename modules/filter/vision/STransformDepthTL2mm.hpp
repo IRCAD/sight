@@ -44,7 +44,7 @@ namespace sight::module::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::filter::vision::STransformDepthTL2mm">
+   <service type="sight::module::filter::vision::STransformDepthTL2mm">
        <in key="cameraSeries" uid="..." />
        <in key="originDepthTL" uid="..." />
        <inout key="scaledDepthTL" uid="..." />

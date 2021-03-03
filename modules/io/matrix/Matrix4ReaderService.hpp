@@ -39,7 +39,7 @@ namespace sight::module::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::matrix::Matrix4ReaderService">
+   <service type="sight::module::io::matrix::Matrix4ReaderService">
        <inout key="data" uid="..." />
    </service>
    @endcode

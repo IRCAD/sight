@@ -42,7 +42,7 @@ namespace com
  *
  * This action works on a data::Object. It does the action specify by the specify config.
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::base::com::SSlotCaller" >
+   <service uid="..." type="sight::module::ui::base::com::SSlotCaller" >
       <sync>true</sync>
       <slots>
           <slot>hasSlotsId/slotKey</slot>

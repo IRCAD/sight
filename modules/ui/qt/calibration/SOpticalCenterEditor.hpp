@@ -40,7 +40,7 @@ namespace sight::module::ui::qt::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::sight::module::ui::qt::calibration::SOpticalCenterEditor">
+     <service type="sight::module::ui::qt::calibration::SOpticalCenterEditor">
          <in key="camera" uid="..." />
          <inout key="matrix" uid="..." />
      </service>

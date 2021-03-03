@@ -29,7 +29,7 @@
 
 #include <functional>
 
-SIGHT_REGISTER_DATA( ::sight::data::ProcessObject );
+SIGHT_REGISTER_DATA( sight::data::ProcessObject );
 
 namespace sight::data
 {

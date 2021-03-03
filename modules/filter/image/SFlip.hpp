@@ -43,7 +43,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::sight::module::filter::image::SFlip">
+       <service type="sight::module::filter::image::SFlip">
            <in key="source" uid="..." autoConnect="yes" />
            <out key="target" uid="..." />
        </service>

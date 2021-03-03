@@ -55,7 +55,7 @@ namespace activity
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="editor_newActivity" type="::sight::module::ui::qt::activity::SSelector" >
+   <service uid="editor_newActivity" type="sight::module::ui::qt::activity::SSelector" >
        <filter>
            <mode>include</mode>
            <id>2DVisualizationActivity</id>

@@ -5,8 +5,8 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::ITracker</type>
-         <service>::sight::module::navigation::openvslam::SOpenvslam</service>
+         <type>sight::service::ITracker</type>
+         <service>sight::module::navigation::openvslam::SOpenvslam</service>
          <desc>Service that manages an instance of Openvslam (Simultaneous tracking and Mapping).</desc>
     </extension>
 </plugin>

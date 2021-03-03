@@ -73,7 +73,7 @@ namespace sight::module::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::video::SFrameGrabber">
+        <service type="sight::module::io::video::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>

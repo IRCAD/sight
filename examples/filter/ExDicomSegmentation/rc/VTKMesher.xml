@@ -11,18 +11,18 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="${imageSeries}"  type="::sight::data::ImageSeries" src="ref" />
-        <object uid="${image}"  type="::sight::data::Image" src="ref" />
-        <object uid="modelSeries" type="::sight::data::ModelSeries" src="deferred" />
-        <object uid="reconstructionUID" type="::sight::data::Reconstruction" src="deferred" />
-        <object uid="snapshot" type="::sight::data::Image" />
+        <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${imageSeries}"  type="sight::data::ImageSeries" src="ref" />
+        <object uid="${image}"  type="sight::data::Image" src="ref" />
+        <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
+        <object uid="reconstructionUID" type="sight::data::Reconstruction" src="deferred" />
+        <object uid="snapshot" type="sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" minWidth="300" />
@@ -37,7 +37,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="VTK Mesher" icon="sight::module::ui::flaticons/YellowMenu.svg" />
@@ -50,9 +50,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::module::ui::base::SView" >
+        <service uid="containerView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -64,9 +64,9 @@
             </registry>
         </service>
 
-        <service uid="parametersView" type="::sight::module::ui::base::SView" >
+        <service uid="parametersView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="50" />
                     <view proportion="1" />
@@ -80,9 +80,9 @@
             </registry>
         </service>
 
-        <service uid="materialView" type="::sight::module::ui::base::SView" >
+        <service uid="materialView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::ToolboxLayoutManager" >
+                <layout type="sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                     <view caption="Organs" expanded="true" />
                     <view caption="Material" expanded="true" />
@@ -98,7 +98,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="mesherAct" type="::sight::module::filter::mesh::SVTKMesher" >
+        <service uid="mesherAct" type="sight::module::filter::mesh::SVTKMesher" >
             <in key="imageSeries" uid="${imageSeries}" />
             <out key="modelSeries" uid="modelSeries" />
             <config>
@@ -106,14 +106,14 @@
             </config>
         </service>
 
-        <service uid="exportAct" type="::sight::module::ui::base::series::SExport" autoConnect="yes" >
+        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="series" uid="modelSeries" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -124,24 +124,24 @@
             </scene>
         </service>
 
-        <service uid="modelSeriesAdp" type="::sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="modelSeries" />
             <config layer="default" picker="" />
         </service>
 
-        <service uid="negatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="default" sliceIndex="axial" />
         </service>
 
-        <service uid="snapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
+        <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
             <inout key="image" uid="snapshot" />
             <config layer="default" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showHideNegatoSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="showHideNegatoSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
                 <icon>sight::module::ui::flaticons/Layers.svg</icon>
@@ -151,43 +151,43 @@
             </config>
         </service>
 
-        <service uid="snapshotSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="snapshotSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
             </config>
         </service>
 
-        <service uid="MedicalImageSrv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
+        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="sliceIndexEditorSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="modelSeriesListSrv" type="::sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes" >
+        <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="yes" >
             <inout key="modelSeries" uid="modelSeries" />
             <columns>
                 <organ_name>@organ_name</organ_name>
             </columns>
         </service>
 
-        <service uid="reconstructionUpdaterSrv" type="::sight::module::data::updater::SObjFromSlot" >
+        <service uid="reconstructionUpdaterSrv" type="sight::module::data::updater::SObjFromSlot" >
             <out key="object" uid="reconstructionUID" />
         </service>
 
-        <service uid="materialEditorSrv" type="::sight::module::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="yes" >
+        <service uid="materialEditorSrv" type="sight::module::ui::qt::reconstruction::OrganMaterialEditor" autoConnect="yes" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
-        <service uid="representationSrv" type="::sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
+        <service uid="representationSrv" type="sight::module::ui::qt::reconstruction::RepresentationEditor" autoConnect="yes" >
             <inout key="reconstruction" uid="reconstructionUID" />
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />

@@ -22,17 +22,17 @@
 
 #include "InstanceNumberSorterTest.hpp"
 
-#include <utestData/Data.hpp>
-
-#include <boost/lexical_cast.hpp>
-
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
-#include <gdcmScanner.h>
-
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <utestData/Data.hpp>
+
+#include <boost/lexical_cast.hpp>
+
+#include <gdcmScanner.h>
 
 #include <filesystem>
 
@@ -85,7 +85,7 @@ void InstanceNumberSorterTest::simpleApplication()
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());

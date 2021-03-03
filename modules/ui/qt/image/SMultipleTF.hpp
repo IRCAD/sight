@@ -44,7 +44,7 @@ namespace sight::module::ui::qt::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::ui::qt::image::SMultipleTF">
+   <service type="sight::module::ui::qt::image::SMultipleTF">
        <in key="currentTFPool" uid="..." optional="yes" />
        <inout key="tfPools" uid="..." />
        <out key="tfPool" uid="..." />

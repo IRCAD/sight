@@ -121,7 +121,7 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< atoms::Base::sp
         {
             DataVisitor::ClassnameType classname = value.call("classname").to<std::string>();
 
-            if( classname == "::sight::core::memory::BufferObject" )
+            if( classname == "sight::core::memory::BufferObject" )
             {
                 core::memory::BufferObject* ptr = value.get< core::memory::BufferObject* >();
                 baseObj = atoms::Blob::New( ptr->getSptr() );

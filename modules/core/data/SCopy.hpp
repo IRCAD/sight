@@ -40,7 +40,7 @@ namespace sight::module::data
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::module::data::SCopy" >
+       <service uid="..." type="sight::module::data::SCopy" >
            <in key="source" uid="..." >
              <extract from="@path.to.data.0" />
            </in>
@@ -48,13 +48,13 @@ namespace sight::module::data
            <mode>copyOnStart</mode>
        </service>
 
-       <service uid="..." type="::sight::module::data::SCopy" >
+       <service uid="..." type="sight::module::data::SCopy" >
            <in key="source" uid="..." />
            <inout key="target" uid="..." />
            <mode>copyOnStart</mode>
        </service>
 
-       <service uid="..." type="::sight::module::data::SCopy" >
+       <service uid="..." type="sight::module::data::SCopy" >
            <in key="source" uid="..." >
              <extract from="@path.to.data.0" />
            </in>
@@ -62,7 +62,7 @@ namespace sight::module::data
            <mode>copyOnStart</mode>
        </service>
 
-       <service uid="..." type="::sight::module::data::SCopy" >
+       <service uid="..." type="sight::module::data::SCopy" >
            <in key="source" uid="..." />
            <out key="target" uid="..." />
            <mode>copyOnStart</mode>

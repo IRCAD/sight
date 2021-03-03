@@ -4,7 +4,7 @@ for slices and transfer function.
 
 Example:
 
-<service uid="..." type="::sight::service::SConfigController">
+<service uid="..." type="sight::service::SConfigController">
     <appConfig id="ImageManager" />
     <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
     <inout key="image" uid="..." />
@@ -22,12 +22,12 @@ Example:
     <desc>Displays sliders to manage the image (slice index, windowing)</desc>
     <config>
 
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
-        <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="ref" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
 
-        <service uid="imageManagerView" type="::sight::module::ui::base::SView">
+        <service uid="imageManagerView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -41,9 +41,9 @@ Example:
             </registry>
         </service>
 
-        <service uid="sliderView" type="::sight::module::ui::base::SView">
+        <service uid="sliderView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -54,18 +54,18 @@ Example:
         </service>
 
         <!-- Service to add field used to properly display and manage image: Slice index, TransferFunction, ... -->
-        <service uid="medicalImageConverterImage" type="::sight::module::data::MedicalImageSrv">
+        <service uid="medicalImageConverterImage" type="sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${image}" />
         </service>
 
         <!-- Editor to manage slice index and image orientation (axial, frontal, sagittal) -->
-        <service uid="selectorSliderNegatoImage" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="selectorSliderNegatoImage" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
         <!-- Editor to manage image windowing -->
-        <service uid="windowLevelImage" type="::sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
+        <service uid="windowLevelImage" type="sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>

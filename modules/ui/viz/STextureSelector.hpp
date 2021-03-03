@@ -42,7 +42,7 @@ namespace sight::module::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::ui::viz::STextureSelector">
+        <service uid="..." type="sight::module::ui::viz::STextureSelector">
             <inout key="reconstruction" uid="..." />
        </service>
    @endcode
@@ -67,7 +67,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="STextureSelectorInstance" type="::sight::module::ui::viz::STextureSelector">
+        <service uid="STextureSelectorInstance" type="sight::module::ui::viz::STextureSelector">
         </service>
        @endcode
      */

@@ -75,16 +75,16 @@ void DemanglerTest::tearDown()
 
 void DemanglerTest::classNameTest()
 {
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::core::ut::IDemanglerTest"), core::ut::IDemanglerTest::classname());
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::core::ut::ODemanglerTest"), core::ut::ODemanglerTest::classname());
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::core::ut::IDemanglerTest"), core::ut::IDemanglerTest::classname());
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::core::ut::ODemanglerTest"), core::ut::ODemanglerTest::classname());
 
     CPPUNIT_ASSERT_EQUAL(std::string("IDemanglerTest"), core::ut::IDemanglerTest::leafClassname());
     CPPUNIT_ASSERT_EQUAL(std::string("ODemanglerTest"), core::ut::ODemanglerTest::leafClassname());
 
     ODemanglerTest::sptr object        = std::make_shared< ODemanglerTest>();
     IDemanglerTest::sptr genericObject = object;
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::core::ut::ODemanglerTest"), object->getClassname());
-    CPPUNIT_ASSERT_EQUAL(std::string("::sight::core::ut::ODemanglerTest"), genericObject->getClassname());
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::core::ut::ODemanglerTest"), object->getClassname());
+    CPPUNIT_ASSERT_EQUAL(std::string("sight::core::ut::ODemanglerTest"), genericObject->getClassname());
 
     CPPUNIT_ASSERT_EQUAL(std::string("ODemanglerTest"), object->getLeafClassname());
     CPPUNIT_ASSERT_EQUAL(std::string("ODemanglerTest"), genericObject->getLeafClassname());

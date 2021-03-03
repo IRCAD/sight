@@ -65,7 +65,7 @@ namespace sight::module::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::io::video::SGrabberProxy">
+        <service uid="..." type="sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <inout key="depthTL" uid="..." />

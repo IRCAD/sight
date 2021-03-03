@@ -45,7 +45,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::qt::image::ImageTransparency">
+   <service type="sight::module::ui::qt::image::ImageTransparency">
        <inout key="image" uid="..." />
        <shortcut value="Ctrl+U" />
    </service>

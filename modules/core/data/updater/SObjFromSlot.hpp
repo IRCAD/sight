@@ -41,7 +41,7 @@ namespace updater
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::sight::module::data::updater::SObjFromSlot">
+     <service type="sight::module::data::updater::SObjFromSlot">
          <out key="object" uid="..." />
      </service>
      @endcode

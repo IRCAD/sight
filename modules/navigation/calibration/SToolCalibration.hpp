@@ -34,7 +34,7 @@ namespace sight::module::navigation::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::module::navigation::calibration::SToolCalibration" >
+    <service uid="..." type="sight::module::navigation::calibration::SToolCalibration" >
         <in key="matricesVector" uid="..." />
         <out key="matrixCalibration" uid="..." />
         <out key="matrixCenter" uid="..." />

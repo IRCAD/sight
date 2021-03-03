@@ -255,7 +255,7 @@ namespace sight::service
                  containers in the application main window.
                  Here, it declares a container for the 3D rendering service.
              -->
-             <service uid="myFrame" type="::sight::module::ui::base::SFrame">
+             <service uid="myFrame" type="sight::module::ui::base::SFrame">
                  <gui>
                      <frame>
                          <name>${appName}</name>
@@ -274,7 +274,7 @@ namespace sight::service
                  The <file> tag defines the path of the image to load. Here, it is a relative
                  path from the repository in which you launch the application.
              -->
-             <service uid="myReaderPathFile" type="::sight::module::io::vtk::SImageReader">
+             <service uid="myReaderPathFile" type="sight::module::io::vtk::SImageReader">
                 <inout key="target" uid="myImage" />
                 <file>./TutoData/patient1.vtk</file>
              </service>
@@ -283,7 +283,7 @@ namespace sight::service
                  Visualization service of a 3D medical image:
                  This service will render the 3D image.
              -->
-             <service uid="myRendering" type="::vtkSimpleNegato::SRenderer">
+             <service uid="myRendering" type="vtkSimpleNegato::SRenderer">
                 <in key="image" uid="myImage" />
              </service>
 
@@ -392,7 +392,7 @@ namespace sight::service
  *     - \b worker (optional): allows to run the service in another worker (see core::thread::Worker)
  *
  * @code{.xml}
-    <service uid="mesher" type="::opMesh::SMesher">
+    <service uid="mesher" type="opMesh::SMesher">
         <in key="image" uid="imageId" />
         <out key="mesh" uid="meshId" />
     </service>

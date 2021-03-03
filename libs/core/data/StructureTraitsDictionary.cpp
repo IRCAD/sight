@@ -29,7 +29,7 @@
 
 #include <functional>
 
-SIGHT_REGISTER_DATA( ::sight::data::StructureTraitsDictionary );
+SIGHT_REGISTER_DATA( sight::data::StructureTraitsDictionary );
 
 namespace sight::data
 {

@@ -58,7 +58,7 @@ namespace sight::module::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::vtk::SSeriesDBReader">
+   <service type="sight::module::io::vtk::SSeriesDBReader">
       <inout key="data" uid="..." />
       <file>...</file>
       <file>...</file>

@@ -33,7 +33,7 @@ namespace sight::module::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::module::filter::image::SBitwiseAnd">
+       <service uid="..." type="sight::module::filter::image::SBitwiseAnd">
            <in key="image" uid="..."/>
            <in key="mask" uid="..."/>
            <out key="outputImage" uid="..." />

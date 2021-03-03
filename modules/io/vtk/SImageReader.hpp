@@ -55,7 +55,7 @@ namespace sight::module::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::vtk::SImageReader">
+   <service type="sight::module::io::vtk::SImageReader">
        <inout key="data" uid="..." />
        <file>...</file>
    </service>

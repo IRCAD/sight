@@ -33,7 +33,7 @@
 #include <boost/assign.hpp>
 #include <boost/bimap/bimap.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::Camera );
+SIGHT_REGISTER_DATA( sight::data::Camera );
 
 namespace sight::data
 {

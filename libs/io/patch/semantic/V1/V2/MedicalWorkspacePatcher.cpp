@@ -67,7 +67,7 @@ sight::atoms::Object::sptr MedicalWorkspacePatcher::transformObject(sight::atoms
 
 void MedicalWorkspacePatcher::addCompositeTypes(sight::atoms::Object::sptr object)
 {
-    if( io::atoms::patch::helper::getClassname( object ) == "::sight::data::Composite")
+    if( io::atoms::patch::helper::getClassname( object ) == "sight::data::Composite")
     {
         sight::atoms::Map::sptr values = object->getAttribute< sight::atoms::Map >("values");
         if((*values)["patientDB"] && (*values)["planningDB"] && (*values)["processingDB"])

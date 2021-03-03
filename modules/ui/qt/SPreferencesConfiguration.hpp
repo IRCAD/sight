@@ -53,7 +53,7 @@ namespace sight::module::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::ui::qt::SPreferencesConfiguration">
+    <service type="sight::module::ui::qt::SPreferencesConfiguration">
         <preference>
             <type>path</type>
             <name>Video path</name>

@@ -47,7 +47,7 @@ namespace sight::module::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::geometry::base::SSwitchMatrices" autoConnect="yes">
+        <service uid="..." type="sight::module::geometry::base::SSwitchMatrices" autoConnect="yes">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." />

@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3d::adaptor
 
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::STexture">
+    <service type="sight::module::viz::scene3d::adaptor::STexture">
         <in key="image" uid="..." />
         <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
     </service>

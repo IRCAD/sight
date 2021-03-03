@@ -6,10 +6,10 @@
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
     </parameters>
     <config>
-        <object uid="${PACS_CONFIGURATION}" type="::sight::io::dimse::data::PacsConfiguration" src="ref" />
+        <object uid="${PACS_CONFIGURATION}" type="sight::io::dimse::data::PacsConfiguration" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="pacsConfigurationManagerFrame" type="::sight::module::ui::base::SFrame" >
+        <service uid="pacsConfigurationManagerFrame" type="sight::module::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -24,9 +24,9 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="pacsConfigurationEditor" type="::sight::module::io::dimse::SPacsConfigurationEditor">
+        <service uid="pacsConfigurationEditor" type="sight::module::io::dimse::SPacsConfigurationEditor">
             <inout key="config" uid="${PACS_CONFIGURATION}" />
         </service>
 

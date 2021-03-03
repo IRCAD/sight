@@ -14,68 +14,68 @@
 
     <!-- SPECIFIC SERVICES -->
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Color</service>
-        <object>::sight::data::Color</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Color</service>
+        <object>sight::data::Color</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Composite</service>
-        <object>::sight::data::Composite</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Composite</service>
+        <object>sight::data::Composite</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Matrix4</service>
-        <object>::sight::data::Matrix4</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Matrix4</service>
+        <object>sight::data::Matrix4</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Object</service>
-        <object>::sight::data::Object</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Object</service>
+        <object>sight::data::Object</object>
     </extension>
 
      <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::List</service>
-        <object>::sight::data::List</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::List</service>
+        <object>sight::data::List</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Boolean</service>
-        <object>::sight::data::Boolean</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Boolean</service>
+        <object>sight::data::Boolean</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Float</service>
-        <object>::sight::data::Float</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Float</service>
+        <object>sight::data::Float</object>
     </extension>
 
      <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::Integer</service>
-        <object>::sight::data::Integer</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::Integer</service>
+        <object>sight::data::Integer</object>
     </extension>
 
      <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::String</service>
-        <object>::sight::data::String</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::String</service>
+        <object>sight::data::String</object>
     </extension>
 
      <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IXMLParser</type>
-        <service>::sight::service::parser::TransferFunction</service>
-        <object>::sight::data::TransferFunction</object>
+        <type>sight::service::IXMLParser</type>
+        <service>sight::service::parser::TransferFunction</service>
+        <object>sight::data::TransferFunction</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-        <type>::sight::service::IController</type>
-        <service>::sight::service::SConfigController</service>
+        <type>sight::service::IController</type>
+        <service>sight::service::SConfigController</service>
     </extension>
 
 </plugin>

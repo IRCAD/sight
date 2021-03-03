@@ -43,7 +43,7 @@ namespace sight::module::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::video::SVideoWriter">
+   <service type="sight::module::io::video::SVideoWriter">
        <in key="data" uid="..." />
    </service>
    @endcode

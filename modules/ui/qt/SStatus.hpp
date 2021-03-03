@@ -46,7 +46,7 @@ namespace sight::module::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::qt::SStatus">
+   <service uid="..." type="sight::module::ui::qt::SStatus">
        <form>square|circle</form>
        <count>2</count>
        <layout>horizontal|vertical</layout>

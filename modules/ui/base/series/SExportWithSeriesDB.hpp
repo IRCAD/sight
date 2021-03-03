@@ -74,7 +74,7 @@ namespace series
  *  @code{.xml}
     <extension implements="::sight::service::extension::Config">
         <id>seriesDBExporterConfig</id>
-        <service>::module::ui::base::editor::SSelector</service>
+        <service>module::ui::base::editor::SSelector</service>
         <desc>IOSelector config to export SeriesDB</desc>
         <config>
             <type mode="writer" />

@@ -50,7 +50,7 @@ namespace sight::module::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::itk::SInrSeriesDBReader">
+   <service type="sight::module::io::itk::SInrSeriesDBReader">
        <inout key="data" uid="..." />
        <file>...</file>
        <file>...</file>

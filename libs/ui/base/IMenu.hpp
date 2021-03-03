@@ -69,7 +69,7 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-        <service uid="myMenu" type="::ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
+        <service uid="myMenu" type="ui::base::IMenu" impl="::sight::module::ui::base::SMenu"
      * autoConnect="no" >
             <gui>
                 <layout hideAction="false">

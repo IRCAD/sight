@@ -36,7 +36,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::sight::module::data::MedicalImageSrv">
+       <service type="sight::module::data::MedicalImageSrv">
            <inout key="image" uid="..."/>
        </service>
    @endcode

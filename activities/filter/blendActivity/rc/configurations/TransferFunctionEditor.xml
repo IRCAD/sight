@@ -8,14 +8,14 @@
         <param name="transferFunction" />
     </parameters>
     <config>
-        <object uid="Histogram" type="::sight::data::Histogram" />
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
-        <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
-        <object uid="${transferFunction}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="Histogram" type="sight::data::Histogram" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="TFSet" type="sight::data::Composite" src="deferred" />
+        <object uid="${transferFunction}" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato" align="center" />
                     <view caption="TF selection" align="right" minWidth="450" />
                 </layout>
@@ -27,9 +27,9 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="::sight::module::ui::base::SView">
+        <service uid="sceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -41,9 +41,9 @@
             </registry>
         </service>
 
-        <service uid="sceneView_bottom" type="::sight::module::ui::base::SView">
+        <service uid="sceneView_bottom" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="1" />
@@ -55,11 +55,11 @@
             </registry>
         </service>
 
-        <service uid="snapshotEditor" type="::sight::module::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshotEditor" type="sight::module::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="tfView" type="::sight::module::ui::base::SView">
+        <service uid="tfView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -73,7 +73,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="genericScene" type="::fwRenderVTK::SRender">
+        <service uid="genericScene" type="fwRenderVTK::SRender">
             <scene>
                 <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -86,39 +86,39 @@
             </scene>
         </service>
 
-        <service uid="snapshot1" type="::visuVTKAdaptor::SSnapshot">
+        <service uid="snapshot1" type="visuVTKAdaptor::SSnapshot">
             <config renderer="default" />
         </service>
 
-        <service uid="Interactor1" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="Interactor1" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="MPRNegato2" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="MPRNegato2" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" optional="yes" />
             <config renderer="default" picker="negato2default" mode="2d" slices="1" sliceIndex="axial"/>
         </service>
 
-        <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="text" type="visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" optional="yes" />
             <config renderer="default" picker="negato2default" text="" />
         </service>
 
-        <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+        <service uid="multiDistances" type="visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <config filter="true" renderer="default" picker="negato2default" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
             <in key="object" uid="${image}" />
             <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="tfWidget" type="::sight::service::SConfigController">
+        <service uid="tfWidget" type="sight::service::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
@@ -126,29 +126,29 @@
             <parameter replace="WID_PARENT" by="tfWidget" />
         </service>
 
-        <service uid="LockImageSrv" type="::sight::module::memory::LockDumpSrv">
+        <service uid="LockImageSrv" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${image}" />
         </service>
 
         <!-- Please use SManager -->
-        <service uid="fieldMgr" type="::sight::module::ui::base::SPushField">
+        <service uid="fieldMgr" type="sight::module::ui::base::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />
         </service>
 
-        <service uid="tfSelector" type="::sight::module::ui::qt::image::TransferFunctionEditor" autoConnect="yes">
+        <service uid="tfSelector" type="sight::module::ui::qt::image::TransferFunctionEditor" autoConnect="yes">
             <inout key="tfPool" uid="TFSet" />
             <out key="tf" uid="${transferFunction}" />
         </service>
 
         <!-- Editors for Negato2 -->
-        <service uid="slider" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="computeHistogram" type="::sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${image}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>

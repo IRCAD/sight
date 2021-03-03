@@ -15,24 +15,24 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <!-- Displayed image pair. -->
-        <object uid="frame1" type="::sight::data::Image" />
-        <object uid="frame2" type="::sight::data::Image" />
+        <object uid="frame1" type="sight::data::Image" />
+        <object uid="frame2" type="sight::data::Image" />
 
         <!-- Second pair of images used for detection. Prevents the detector from slowing down the video. -->
-        <object uid="frame1TL" type="::sight::data::FrameTL" />
-        <object uid="frame2TL" type="::sight::data::FrameTL" />
-        <object uid="${calibrationInfo1}" type="::sight::data::CalibrationInfo" src="ref" />
-        <object uid="${calibrationInfo2}" type="::sight::data::CalibrationInfo" src="ref" />
-        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
-        <object uid="${camera1}" type="::sight::data::Camera" src="ref" />
-        <object uid="${camera2}" type="::sight::data::Camera" src="ref" />
-        <object uid="exportExtrinsicMat" type="::sight::data::Matrix4" src="deferred" />
+        <object uid="frame1TL" type="sight::data::FrameTL" />
+        <object uid="frame2TL" type="sight::data::FrameTL" />
+        <object uid="${calibrationInfo1}" type="sight::data::CalibrationInfo" src="ref" />
+        <object uid="${calibrationInfo2}" type="sight::data::CalibrationInfo" src="ref" />
+        <object uid="${cameraSeries}" type="sight::data::CameraSeries" src="ref" />
+        <object uid="${camera1}" type="sight::data::Camera" src="ref" />
+        <object uid="${camera2}" type="sight::data::Camera" src="ref" />
+        <object uid="exportExtrinsicMat" type="sight::data::Matrix4" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="7" />
@@ -46,9 +46,9 @@
 
         </service>
 
-        <service uid="leftPanelView" type="::sight::module::ui::base::SView" >
+        <service uid="leftPanelView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -60,10 +60,10 @@
             </registry>
         </service>
 
-        <service uid="toolboxView" type="::sight::module::ui::base::SView" >
+        <service uid="toolboxView" type="sight::module::ui::base::SView" >
             <gui>
                 <toolBar/>
-                <layout type="::sight::ui::base::ToolboxLayoutManager">
+                <layout type="sight::ui::base::ToolboxLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" caption="Calibration input" expanded="true" />
                     <view proportion="1" caption="Calibration result" expanded="true" />
@@ -76,7 +76,7 @@
             </registry>
         </service>
 
-        <service uid="videoToolbarView" type="::sight::module::ui::base::SToolBar">
+        <service uid="videoToolbarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
@@ -95,12 +95,12 @@
             </registry>
         </service>
 
-        <service uid="calibrationDataView" type="::sight::module::ui::base::SView">
+        <service uid="calibrationDataView" type="sight::module::ui::base::SView">
             <gui>
                 <toolBar>
                     <toolBitmapSize height="24" width="24" />
                 </toolBar>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -111,9 +111,9 @@
         </service>
 
 
-        <service uid="cameraInfoView" type="::sight::module::ui::base::SView">
+        <service uid="cameraInfoView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
@@ -127,7 +127,7 @@
             </registry>
         </service>
 
-        <service uid="extrinsicCameraView" type="::sight::module::ui::base::SToolBar">
+        <service uid="extrinsicCameraView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <editor/>
@@ -154,9 +154,9 @@
             </registry>
         </service>
 
-        <service uid="videoView" type="::sight::module::ui::base::SView">
+        <service uid="videoView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -176,9 +176,9 @@
             </registry>
         </service>
 
-        <service uid="videoSliderView" type="::sight::module::ui::base::SView">
+        <service uid="videoSliderView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" />
@@ -191,39 +191,39 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="addAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="addAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>chessboardDetectorSrv/recordPoints</slot>
             </slots>
         </service>
 
-        <service uid="resetAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="resetAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/reset</slot>
             </slots>
         </service>
 
-        <service uid="removeAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="removeAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/remove</slot>
             </slots>
         </service>
 
-        <service uid="goOpenCVAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="goOpenCVAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>openCVExtrinsicCalSrv/update</slot>
                 <slot>Status/changeToOrange</slot>
             </slots>
         </service>
 
-        <service uid="displayImageAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="displayImageAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationInfoEditorSrv/getSelection</slot>
             </slots>
         </service>
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/startCamera</slot>
                 <slot>videoGrabber2Srv/startCamera</slot>
@@ -231,7 +231,7 @@
         </service>
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
@@ -242,7 +242,7 @@
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/pauseCamera</slot>
                 <slot>videoGrabber2Srv/pauseCamera</slot>
@@ -253,7 +253,7 @@
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>videoGrabber1Srv/stopCamera</slot>
                 <slot>videoGrabber2Srv/stopCamera</slot>
@@ -268,7 +268,7 @@
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>videoGrabber1Srv/loopVideo</slot>
                 <slot>videoGrabber2Srv/loopVideo</slot>
@@ -276,13 +276,13 @@
             <state executable="false" />
         </service>
 
-        <service uid="exportExtrinsicAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="exportExtrinsicAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>extrinsicExporterSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="saveInputsAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="saveInputsAct" type="sight::module::ui::base::com::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataWriter1Srv/openLocationDialog</slot>
@@ -292,7 +292,7 @@
             </slots>
         </service>
 
-        <service uid="loadInputsAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="loadInputsAct" type="sight::module::ui::base::com::SSlotCaller">
             <sync>true</sync>
             <slots>
                 <slot>calibrationDataReader1Srv/openLocationDialog</slot>
@@ -304,7 +304,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -320,13 +320,13 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame1" />
             <config layer="video1" />
         </service>
 
 
-        <service uid="video2Adp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="frame2" />
             <config layer="video2" />
         </service>
@@ -334,10 +334,10 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="videoSliderSrv" type="::sight::module::ui::qt::video::SSlider" />
+        <service uid="videoSliderSrv" type="sight::module::ui::qt::video::SSlider" />
 
         <!-- Extracts images for the detection algorithm. -->
-        <service uid="frameSynchronizerSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="extr_chess_checker">
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="extr_chess_checker">
             <in group="frameTL" autoConnect="yes" >
                 <key uid="frame1TL" />
                 <key uid="frame2TL" />
@@ -349,30 +349,30 @@
             <framerate>0</framerate>
         </service>
 
-        <service uid="extrinsicExporterSrv" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="extrinsicExporterSrv" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="exportExtrinsicMat" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
-        <service uid="calibrationInfoEditorSrv" type="::sight::module::ui::qt::calibration::SCalibrationInfoEditor" >
+        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::SCalibrationInfoEditor" >
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="detectionStatusSrv" type="::sight::module::ui::qt::SStatus">
+        <service uid="detectionStatusSrv" type="sight::module::ui::qt::SStatus">
             <green>Point are visible</green>
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
         </service>
 
-        <service uid="errorLabelSrv" type="::sight::module::ui::qt::STextStatus">
+        <service uid="errorLabelSrv" type="sight::module::ui::qt::STextStatus">
             <label>Reprojection error (RMSE)</label>
             <color>#D25252</color>
         </service>
 
-        <service uid="chessboardDetectorSrv" type="::sight::module::geometry::vision::SChessBoardDetector" worker="extr_chess_checker">
+        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::SChessBoardDetector" worker="extr_chess_checker">
             <in group="image" autoConnect="yes" >
                 <key uid="frame1" />
                 <key uid="frame2" />
@@ -384,12 +384,12 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
         </service>
 
-        <service uid="displayCalibrationInfoSrv" type="::sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
+        <service uid="displayCalibrationInfoSrv" type="sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
             <in key="calInfo1" uid="${calibrationInfo1}" />
             <in key="calInfo2" uid="${calibrationInfo2}" />
         </service>
 
-        <service uid="videoGrabber1Srv" type="::sight::module::io::video::SGrabberProxy">
+        <service uid="videoGrabber1Srv" type="sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="${camera1}" />
             <inout key="frameTL" uid="frame1TL" />
             <config>
@@ -397,7 +397,7 @@
             </config>
         </service>
 
-        <service uid="videoGrabber2Srv" type="::sight::module::io::video::SGrabberProxy">
+        <service uid="videoGrabber2Srv" type="sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="${camera2}" />
             <inout key="frameTL" uid="frame2TL" />
             <config>
@@ -405,7 +405,7 @@
             </config>
         </service>
 
-        <service uid="openCVExtrinsicCalSrv" type="::sight::module::geometry::vision::SOpenCVExtrinsic" worker="extr_chess_checker">
+        <service uid="openCVExtrinsicCalSrv" type="sight::module::geometry::vision::SOpenCVExtrinsic" worker="extr_chess_checker">
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
             <inout key="cameraSeries" uid="${cameraSeries}" />
@@ -414,36 +414,36 @@
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
-        <service uid="cameraSeriesInfoSrv" type="::sight::module::ui::qt::calibration::SCameraSeriesEditor" autoConnect="yes">
+        <service uid="cameraSeriesInfoSrv" type="sight::module::ui::qt::calibration::SCameraSeriesEditor" autoConnect="yes">
             <in key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 
-        <service uid="cameraInfo1Srv" type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo1Srv" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera1}" />
         </service>
 
-        <service uid="cameraInfo2Srv" type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+        <service uid="cameraInfo2Srv" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
             <in key="camera" uid="${camera2}" />
         </service>
 
-        <service uid="calibrationDataWriter1Srv" type="::sight::module::io::vision::SCalibrationImagesWriter">
+        <service uid="calibrationDataWriter1Srv" type="sight::module::io::vision::SCalibrationImagesWriter">
             <in key="data" uid="${calibrationInfo1}" />
             <format>.tiff</format>
         </service>
 
-        <service uid="calibrationDataWriter2Srv" type="::sight::module::io::vision::SCalibrationImagesWriter">
+        <service uid="calibrationDataWriter2Srv" type="sight::module::io::vision::SCalibrationImagesWriter">
             <in key="data" uid="${calibrationInfo2}" />
             <format>.tiff</format>
         </service>
 
-        <service uid="calibrationDataReader1Srv" type="::sight::module::io::vision::SCalibrationInfoReader">
+        <service uid="calibrationDataReader1Srv" type="sight::module::io::vision::SCalibrationInfoReader">
             <windowTitle>Load left images.</windowTitle>
             <inout key="data" uid="${calibrationInfo1}" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
         </service>
 
-        <service uid="calibrationDataReader2Srv" type="::sight::module::io::vision::SCalibrationInfoReader">
+        <service uid="calibrationDataReader2Srv" type="sight::module::io::vision::SCalibrationInfoReader">
             <windowTitle>Load right images.</windowTitle>
             <inout key="data" uid="${calibrationInfo2}" />
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />

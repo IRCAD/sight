@@ -14,14 +14,14 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref"/>
-        <object uid="${LOADING_SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref"/>
+        <object uid="${LOADING_SERIESDB}" type="sight::data::SeriesDB" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainview" type="::sight::module::ui::base::SView">
+        <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
-            <layout type="::sight::ui::base::LineLayoutManager">
+            <layout type="sight::ui::base::LineLayoutManager">
                 <orientation value="vertical" />
                     <view proportion="1" visible="false" backgroundColor="#2E3034" border="5" />
                     <view proportion="1" />
@@ -36,18 +36,18 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityWizardSrv" type="::sight::module::ui::qt::activity::SWizard" >
+        <service uid="activityWizardSrv" type="sight::module::ui::qt::activity::SWizard" >
             <inout key="seriesDB" uid="${SERIESDB}" />
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::sight::data::CameraSeries" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                <icon type="sight::data::CameraSeries" icon="sight::module::ui::flaticons/YellowCamera.svg" />
             </icons>
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="activityCreatorSrv" type="::sight::module::ui::qt::activity::SSelector">
+        <service uid="activityCreatorSrv" type="sight::module::ui::qt::activity::SSelector">
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>
@@ -59,15 +59,15 @@
             </filter>
         </service>
 
-        <service uid="seriesSignalSrv" type="::sight::module::data::SSeriesSignal" autoConnect="yes">
+        <service uid="seriesSignalSrv" type="sight::module::data::SSeriesSignal" autoConnect="yes">
             <in key="seriesDB" uid="${LOADING_SERIESDB}" />
             <filter>
                 <mode>include</mode>
-                <type>::sight::data::ActivitySeries</type>
+                <type>sight::data::ActivitySeries</type>
             </filter>
         </service>
 
-        <service uid="activitySeriesCleanerSrv" type="::sight::module::data::SManage">
+        <service uid="activitySeriesCleanerSrv" type="sight::module::data::SManage">
             <inout key="seriesDB" uid="${LOADING_SERIESDB}" />
         </service>
 

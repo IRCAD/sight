@@ -45,26 +45,26 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="::sight::data::SeriesDB" />
-            <object uid="modelSeries" type="::sight::data::ModelSeries" />
-            <object uid="image" type="::sight::data::Image" />
-            <object uid="histogram" type="::sight::data::Histogram" />
-            <object uid="extrudedModelSeries" type="::sight::data::ModelSeries" />
-            <object uid="landmarks" type="::sight::data::Landmarks" />
+            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="modelSeries" type="sight::data::ModelSeries" />
+            <object uid="image" type="sight::data::Image" />
+            <object uid="histogram" type="sight::data::Histogram" />
+            <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
+            <object uid="landmarks" type="sight::data::Landmarks" />
 
-            <object uid="volumeTFPools" type="::sight::data::Composite" />
-            <object uid="volumeCurrentTFPool" type="::sight::data::Composite" src="deferred" />
-            <object uid="volumeCurrentTF" type="::sight::data::TransferFunction" src="deferred" />
-            <object uid="volumeTF" type="::sight::data::TransferFunction" >
+            <object uid="volumeTFPools" type="sight::data::Composite" />
+            <object uid="volumeCurrentTFPool" type="sight::data::Composite" src="deferred" />
+            <object uid="volumeCurrentTF" type="sight::data::TransferFunction" src="deferred" />
+            <object uid="volumeTF" type="sight::data::TransferFunction" >
                 <colors default="true" />
             </object>
 
-            <object uid="previewSeriesDB" type="::sight::data::SeriesDB" />
-            <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
+            <object uid="previewSeriesDB" type="sight::data::SeriesDB" />
+            <object uid="localSeriesDB" type="sight::data::SeriesDB" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainView" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Sight Viewer</name>
@@ -77,9 +77,9 @@
                 </registry>
             </service>
 
-            <service uid="mainContainerView" type="::sight::module::ui::base::SView" >
+            <service uid="mainContainerView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" topBorder="5" bottomBorder="5" backgroundColor="#2E2F30" />
                     </layout>
@@ -89,10 +89,10 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="::sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::base::SView" >
                 <gui>
                     <toolBar align="left" />
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
@@ -119,10 +119,10 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarSliderView" type="::sight::module::ui::base::SView">
+            <service uid="rightToolbarSliderView" type="sight::module::ui::base::SView">
                 <gui>
                     <toolBar backgroundColor="#3E4453" />
-                    <layout type="::sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                     </layout>
                 </gui>
@@ -131,7 +131,7 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarView" type="::sight::module::ui::base::SToolBar">
+            <service uid="rightToolbarView" type="sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
                         <spacer />
@@ -143,10 +143,10 @@
                 </registry>
             </service>
 
-            <service uid="parameterView" type="::sight::module::ui::base::SView" >
+            <service uid="parameterView" type="sight::module::ui::base::SView" >
                 <gui>
                     <toolBar/>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
@@ -165,7 +165,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterToolBarView" type="::sight::module::ui::base::SToolBar" >
+            <service uid="parameterToolBarView" type="sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
@@ -187,9 +187,9 @@
                 </registry>
             </service>
 
-            <service uid="volumeParameterView" type="::sight::module::ui::base::SView" >
+            <service uid="volumeParameterView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <spacer />
@@ -200,9 +200,9 @@
                 </registry>
             </service>
 
-            <service uid="landmarksParameterView" type="::sight::module::ui::base::SView" >
+            <service uid="landmarksParameterView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <spacer />
@@ -213,9 +213,9 @@
                 </registry>
             </service>
 
-            <service uid="lightParameterView" type="::sight::module::ui::base::SView" >
+            <service uid="lightParameterView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -229,7 +229,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load series" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -279,7 +279,7 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesDBAct" type="::sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
+            <service uid="openSeriesDBAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesDB" />
                 <selection mode="exclude" />
                 <addSelection service="::sight::module::io::dicom::SDicomSeriesDBReader" />
@@ -289,14 +289,14 @@
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="::sight::module::ui::base::com::SSignal" />
+            <service uid="negatoViewAct" type="sight::module::ui::base::com::SSignal" />
 
-            <service uid="volumeViewAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="volumeViewAct" type="sight::module::ui::base::com::SSignal" >
                 <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
-            <service uid="volumeManagerAct" type="::sight::module::ui::base::SModifyLayout" >
+            <service uid="volumeManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -306,7 +306,7 @@
                 </config>
             </service>
 
-            <service uid="organsManagerAct" type="::sight::module::ui::base::SModifyLayout" >
+            <service uid="organsManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <show wid="organsParameterView" />
@@ -316,7 +316,7 @@
                 </config>
             </service>
 
-            <service uid="landmarksManagerAct" type="::sight::module::ui::base::SModifyLayout" >
+            <service uid="landmarksManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -326,7 +326,7 @@
                 </config>
             </service>
 
-            <service uid="lightManagerAct" type="::sight::module::ui::base::SModifyLayout" >
+            <service uid="lightManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -336,7 +336,7 @@
                 </config>
             </service>
 
-            <service uid="extrudedMeshesManagerAct" type="::sight::module::ui::base::SModifyLayout" >
+            <service uid="extrudedMeshesManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide wid="organsParameterView" />
@@ -347,7 +347,7 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="hideParameterAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <sync>true</sync>
                 <slots>
                     <slot>parameterView/hide</slot>
@@ -355,7 +355,7 @@
                 </slots>
              </service>
 
-            <service uid="showParameterAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
+            <service uid="showParameterAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>parameterView/show</slot>
                     <slot>rightToolbarSliderView/hide</slot>
@@ -364,7 +364,7 @@
             </service>
 
             <!-- TF manager -->
-            <service uid="volumeTFAct" type="::sight::module::ui::base::SConfigLauncher" >
+            <service uid="volumeTFAct" type="sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="SightViewer_TransferFunctionManagerWindow_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
@@ -378,7 +378,7 @@
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="::sight::module::ui::base::SConfigLauncher" >
+            <service uid="pacsAct" type="sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="SightViewer_PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
@@ -388,55 +388,55 @@
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="volumeVisibilityAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="negato3DVisibilityAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="meshVisibilityAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="boxWidgetResetAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="shapeExtruderAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="::sight::module::ui::base::com::SSignal" >
+            <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::com::SSignal" >
                 <state executable="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="::sight::module::ui::base::com::SSignal" />
+            <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="::sight::module::ui::base::metrics::SAddDistance">
+            <service uid="addDistanceAct" type="sight::module::ui::base::metrics::SAddDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="removeDistanceAct" type="::sight::module::ui::base::metrics::SRemoveDistance">
+            <service uid="removeDistanceAct" type="sight::module::ui::base::metrics::SRemoveDistance">
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
-            <service uid="hideDistanceAct" type="::sight::module::ui::base::metrics::SShowDistance" autoConnect="yes" >
+            <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="yes" >
                 <inout key="image" uid="image" />
                 <state executable="false" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
 
-            <service uid="ogreGenericSceneCfg" type="::sight::service::SConfigController" >
+            <service uid="ogreGenericSceneCfg" type="sight::service::SConfigController" >
                 <appConfig id="SightViewer_GenericScene_AppCfg" />
                 <parameter replace="WID_PARENT" by="ogreSceneView" />
                 <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
@@ -461,14 +461,14 @@
                 <inout key="landmarks" uid="landmarks" />
             </service>
 
-            <service uid="organManagerCfg"  type="::sight::service::SConfigController" >
+            <service uid="organManagerCfg"  type="sight::service::SConfigController" >
                 <appConfig id="OgreOrganManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
                 <inout key="organManagerModelSeries" uid="modelSeries" />
             </service>
 
-            <service uid="extrudedMeshesManagerCfg"  type="::sight::service::SConfigController" >
+            <service uid="extrudedMeshesManagerCfg"  type="sight::service::SConfigController" >
                 <appConfig id="OgreOrganManager" />
                 <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
@@ -478,14 +478,14 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Extract the model or the image from the series -->
-            <service uid="extractImageSrv" type="::sight::module::data::SCopy" >
+            <service uid="extractImageSrv" type="sight::module::data::SCopy" >
                 <in key="source" uid="seriesDB" >
                     <extract from="@values.0.image" />
                 </in>
                 <inout key="target" uid="image" />
             </service>
 
-            <service uid="extractMeshSrv" type="::sight::module::data::SCopy" >
+            <service uid="extractMeshSrv" type="sight::module::data::SCopy" >
                 <in key="source" uid="seriesDB" >
                     <extract from="@values.0" />
                 </in>
@@ -493,14 +493,14 @@
             </service>
 
             <!-- Compute the image histogram -->
-            <service uid="computeHistogramSrv" type="::sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+            <service uid="computeHistogramSrv" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
                 <in key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volumeParameterSrv" type="::sight::module::ui::qt::SParameters" >
+            <service uid="volumeParameterSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
@@ -516,15 +516,15 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="::sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes" >
+            <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes" >
                 <inout key="landmarks" uid="landmarks" />
                 <advanced>yes</advanced>
             </service>
 
             <!-- Light editor -->
-            <service uid="lightSelectorSrv" type="::sight::module::ui::viz::SLightSelector"  />
+            <service uid="lightSelectorSrv" type="sight::module::ui::viz::SLightSelector"  />
 
-            <service uid="lightEditorSrv" type="::sight::module::ui::viz::SLightEditor" />
+            <service uid="lightEditorSrv" type="sight::module::ui::viz::SLightEditor" />
 
             <!-- ******************************* Connections ***************************************** -->
 

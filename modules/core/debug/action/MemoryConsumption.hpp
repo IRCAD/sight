@@ -53,7 +53,7 @@ protected:
      * Sample of declaration configuration :
      *
      * @code{.xml}
-         <service uid="myIncMemConsum"  type="::ui::base::IAction"
+         <service uid="myIncMemConsum"  type="ui::base::IAction"
             implementation="::sight::module::core::debug::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>

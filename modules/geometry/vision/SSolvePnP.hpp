@@ -41,7 +41,7 @@ namespace sight::module::geometry::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::geometry::vision::SSolvePnP">
+        <service type="sight::module::geometry::vision::SSolvePnP">
             <in key="pointList2d" uid="..." />
             <in key="pointList3d" uid="..." />
             <in key="calibration" uid="..." />

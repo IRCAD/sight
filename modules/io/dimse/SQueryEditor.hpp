@@ -49,7 +49,7 @@ namespace sight::module::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::io::dimse::SQueryEditor">
+        <service type="sight::module::io::dimse::SQueryEditor">
             <in key="pacsConfig" uid="..." />
             <inout key="seriesDB" uid="..." />
             <config icon="..." />

@@ -43,7 +43,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::data::SExtractMeshByType" >
+        <service uid="..." type="sight::module::data::SExtractMeshByType" >
            <inout key="source" uid="...">
                <extract type="organ1" />
                <extract type="organ2" matching="(.*)surface(.*)"/>

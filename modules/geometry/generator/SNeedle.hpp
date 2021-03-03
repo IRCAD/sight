@@ -42,7 +42,7 @@ namespace generator
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="cylinderGenerator" type="::opVTKMesh::SNeedle" >
+        <service uid="cylinderGenerator" type="opVTKMesh::SNeedle" >
             <inout key="mesh" uid="..." />
             <config radius="5.0" height="10.0" resolution="100" />
             <needle color="#ffffff">

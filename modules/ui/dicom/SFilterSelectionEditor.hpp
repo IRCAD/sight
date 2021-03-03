@@ -48,7 +48,7 @@ namespace sight::module::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::ui::dicom::SFilterSelectionEditor">
+        <service type="sight::module::ui::dicom::SFilterSelectionEditor">
             <in key="selection" uid="..." />
             <inout key="target" uid="..." />
        </service>

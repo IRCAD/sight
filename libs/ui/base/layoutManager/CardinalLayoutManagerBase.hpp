@@ -100,9 +100,9 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
-       <service uid="subView2" type="::sight::module::ui::base::SView" autoConnect="no" >
+       <service uid="subView2" type="sight::module::ui::base::SView" autoConnect="no" >
            <gui>
-               <layout type="::ui::base::CardinalLayoutManager" >
+               <layout type="ui::base::CardinalLayoutManager" >
                    <view caption="CardinalView1" align="center" />
                    <view caption="CardinalView2" align="right" minWidth="400" />
                    <view caption="CardinalView3" align="bottom" minHeight="400" />
@@ -115,7 +115,7 @@ public:
            </registry>
        </service>
        @endcode
-     *  - \<layout type="::ui::base::CardinalLayoutManager" \> : define a cardinal layout.
+     *  - \<layout type="ui::base::CardinalLayoutManager" \> : define a cardinal layout.
      *  - \<view caption="CardinalView1" align="center" /\> : define a new view with following attribute
      *   - \b caption : name of the view (display on the screen).
      *   - \b align  {center | bottom | top | right | left}: define the position of the view

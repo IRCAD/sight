@@ -10,9 +10,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="LightView" type="::sight::module::ui::base::SView" >
+        <service uid="LightView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::ToolboxLayoutManager" >
+                <layout type="sight::ui::base::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                     <view caption="Light selector" expanded="true" />
                     <view caption="Light editor" expanded="true" />
@@ -27,8 +27,8 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="LightSelector" type="::sight::module::ui::viz::SLightSelector"  />
-        <service uid="LightEditor" type="::sight::module::ui::viz::SLightEditor" />
+        <service uid="LightSelector" type="sight::module::ui::viz::SLightSelector"  />
+        <service uid="LightEditor" type="sight::module::ui::viz::SLightEditor" />
 
         <!-- ************************************* Actions ************************************* -->
 

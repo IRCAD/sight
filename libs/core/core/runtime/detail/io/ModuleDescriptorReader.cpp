@@ -361,7 +361,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(xmlNodePtr
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
         {
             moduleIdentifier = (const char*) curAttr->children->content;
-            boost::algorithm::trim_left_if(moduleIdentifier, [](auto x) { return x == ':'; } );
+            moduleIdentifier = filterID(moduleIdentifier);
             continue;
         }
     }

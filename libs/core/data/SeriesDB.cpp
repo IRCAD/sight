@@ -30,7 +30,7 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::SeriesDB )
+SIGHT_REGISTER_DATA( sight::data::SeriesDB )
 
 namespace sight::data
 {

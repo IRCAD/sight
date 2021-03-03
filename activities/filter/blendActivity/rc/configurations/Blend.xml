@@ -8,15 +8,15 @@
 
     <config>
 
-        <object uid="${backgroundImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${frontImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${backgroundImageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${frontImageUid}" type="sight::data::Image" src="ref" />
 
-        <object uid="tfBackgroundImage" type="::sight::data::TransferFunction" src="deferred" />
-        <object uid="tfFrontImage" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="tfBackgroundImage" type="sight::data::TransferFunction" src="deferred" />
+        <object uid="tfFrontImage" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::TabLayoutManager">
+                <layout type="sight::ui::base::TabLayoutManager">
                     <view caption="Blend" selected="yes" />
                     <view caption="Background image" />
                     <view caption="Front image" />
@@ -30,15 +30,15 @@
             </registry>
         </service>
 
-        <service uid="medicalImageFrontSrv" type="::sight::module::data::MedicalImageSrv">
+        <service uid="medicalImageFrontSrv" type="sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="medicalImageBgSrv" type="::sight::module::data::MedicalImageSrv">
+        <service uid="medicalImageBgSrv" type="sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
 
-        <service uid="blendViewCtrl" type="::sight::service::SConfigController">
+        <service uid="blendViewCtrl" type="sight::service::SConfigController">
             <state active="true" />
             <inout key="backgroundImageUid" uid="${backgroundImageUid}" />
             <inout key="frontImageUid" uid="${frontImageUid}" />
@@ -48,14 +48,14 @@
             <parameter replace="tfFrontImage" by="tfFrontImage" />
         </service>
 
-        <service uid="bgTFViewCtrl" type="::sight::service::SConfigController">
+        <service uid="bgTFViewCtrl" type="sight::service::SConfigController">
             <inout key="image" uid="${backgroundImageUid}" />
             <appConfig id="TransferFunctionEditor" />
             <parameter replace="WID_PARENT" by="bgImageView" />
             <parameter replace="transferFunction" by="tfBackgroundImage" />
         </service>
 
-        <service uid="frontTFViewCtrl" type="::sight::service::SConfigController">
+        <service uid="frontTFViewCtrl" type="sight::service::SConfigController">
             <inout key="image" uid="${frontImageUid}" />
             <appConfig id="TransferFunctionEditor" />
             <parameter replace="WID_PARENT" by="frontImageView" />

@@ -10,14 +10,14 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Mesh object associated to the uid 'myMesh' -->
-            <object uid="myMesh" type="::sight::data::Mesh" />
+            <object uid="myMesh" type="sight::data::Mesh" />
 
             <!-- Image object associated to the key 'myImage' -->
-            <object uid="myImage" type="::sight::data::Image" />
+            <object uid="myImage" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto05Mesher</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -66,7 +66,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="::sight::module::ui::base::SMenu" >
+            <service uid="menuMesherView" type="sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Compute Mesh (VTK)" />
@@ -84,9 +84,9 @@
                 It is possible to add a 'proportion' attribute for the <view> to defined the proportion
                 used by the view compared to the others.
             -->
-            <service uid="containerView" type="::sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view/>
                         <view/>
@@ -100,25 +100,25 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
-            <service uid="openImageAct" type="::sight::module::ui::base::com::SStarter" >
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="saveImageAct" type="::sight::module::ui::base::com::SStarter" >
+            <service uid="saveImageAct" type="sight::module::ui::base::com::SStarter" >
                 <start uid="imageWriterSrv" />
             </service>
 
-            <service uid="openMeshAct" type="::sight::module::ui::base::com::SStarter" >
+            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter" >
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="::sight::module::ui::base::com::SStarter" >
+            <service uid="saveMeshAct" type="sight::module::ui::base::com::SStarter" >
                 <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="createMeshAct" type="::sight::module::filter::mesh::action::SMeshCreation" >
+            <service uid="createMeshAct" type="sight::module::filter::mesh::action::SMeshCreation" >
                 <in key="image" uid="myImage" />
                 <inout key="mesh" uid="myMesh" />
                 <percentReduction value="0" />
@@ -127,7 +127,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Add a shortcut in the application (key "v") -->
-            <service uid="shortcutSrv" type="::sight::module::ui::qt::com::SSignalShortcut" >
+            <service uid="shortcutSrv" type="sight::module::ui::qt::com::SSignalShortcut" >
                 <config shortcut="v" sid="containerView" />
             </service>
 
@@ -135,16 +135,16 @@
                 Services associated to the Image data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="imageSrv" type="::sight::module::viz::sample::SImage" >
+            <service uid="imageSrv" type="sight::module::viz::sample::SImage" >
                 <in key="image" uid="myImage" autoConnect="yes" />
             </service>
 
-            <service uid="imageReaderSrv" type="::sight::module::ui::base::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
 
-            <service uid="imageWriterSrv" type="::sight::module::ui::base::io::SSelector" >
+            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="myImage" />
                 <type mode="writer" />
             </service>
@@ -153,16 +153,16 @@
                 Services associated to the Mesh data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="meshSrv" type="::sight::module::viz::sample::SMesh" >
+            <service uid="meshSrv" type="sight::module::viz::sample::SMesh" >
                 <in key="mesh" uid="myMesh" autoConnect="yes" />
             </service>
 
-            <service uid="meshReaderSrv" type="::sight::module::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshWriterSrv" type="::sight::module::ui::base::io::SSelector" >
+            <service uid="meshWriterSrv" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>

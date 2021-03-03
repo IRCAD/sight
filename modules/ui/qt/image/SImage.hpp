@@ -41,7 +41,7 @@ namespace image
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::qt::image::SImage" >
+   <service uid="..." type="sight::module::ui::qt::image::SImage" >
         <path>...</path>
         <width>...</width>
         <height>...</height>

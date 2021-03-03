@@ -53,7 +53,7 @@ namespace sight::module::navigation::optics
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::navigation::optics::SArucoTracker" >
+        <service uid="..." type="sight::module::navigation::optics::SArucoTracker" >
             <in key="timeline" uid="..." autoConnect="yes"/>
             <in key="camera" uid="..." />
             <inout group="tagTL" >
@@ -72,7 +72,7 @@ namespace sight::module::navigation::optics
 
         or
 
-        <service uid="..." type="::sight::module::navigation::optics::SArucoTracker" >
+        <service uid="..." type="sight::module::navigation::optics::SArucoTracker" >
             <in key="camera" uid="..." />
             <inout key="frame" uid="..." autoConnect="yes" />
             <inout group="markerMap">

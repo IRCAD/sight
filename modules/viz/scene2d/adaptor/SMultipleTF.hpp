@@ -51,7 +51,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::module::viz::scene2d::adaptor::SMultipleTF" >
+   <service uid="..." type="sight::module::viz::scene2d::adaptor::SMultipleTF" >
        <in key="viewport" uid="..." />
        <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />

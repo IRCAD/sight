@@ -9,14 +9,14 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="selection" type="::sight::data::Vector" />
+        <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="selection" type="sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E3034" />
                 </layout>
@@ -27,10 +27,10 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::module::ui::base::SView" >
+        <service uid="containerView" type="sight::module::ui::base::SView" >
             <gui>
                 <toolBar/>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" />
                     <view proportion="1" backgroundColor="#2E3034" border="5" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -63,12 +63,12 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="::sight::module::ui::base::series::SDBMerger" >
+        <service uid="importAct" type="sight::module::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="exportAct" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+        <service uid="exportAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -83,7 +83,7 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+        <service uid="mesherAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -96,7 +96,7 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+        <service uid="thresholdAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -111,19 +111,19 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selectorSrv" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes" >
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${seriesDB}" />
             <inout key="selection" uid="selection" />
         </service>
 
-        <service uid="seriesViewerSrv" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes" >
+        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::SViewer" autoConnect="yes" >
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
-                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries" >
+                <config id="2DSimpleConfig2" type="sight::data::ImageSeries" >
                     <extract path="@image" pattern="imageID" />
                 </config>
-                <config id="3DSimpleConfig2" type="::sight::data::ModelSeries" />
+                <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />
             </configs>
         </service>
 

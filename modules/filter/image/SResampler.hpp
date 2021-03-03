@@ -38,7 +38,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::opITK::SPropagator">
+   <service type="opITK::SPropagator">
        <in key="imageIn" uid="..." autoConnect="yes" />
        <in key="transform" uid="..." />
        <in key="target" uid="..." />

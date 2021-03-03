@@ -79,6 +79,7 @@ void AppConfigTest::setUp()
     core::runtime::loadModule("AppConfigTest");
 
     service::extension::AppConfig::sptr appConfig = service::extension::AppConfig::getDefault();
+    appConfig->clearRegistry();
     appConfig->parseBundleInformation();
 }
 
@@ -95,11 +96,6 @@ void AppConfigTest::tearDown()
         m_appConfigMgr->stopAndDestroy();
         m_appConfigMgr = nullptr;
     }
-
-    // Clean up after the test run.
-    service::extension::AppConfig::sptr appConfig;
-    appConfig = service::extension::AppConfig::getDefault();
-    appConfig->clearRegistry();
 
     core::thread::ActiveWorkers::sptr activeWorkers = core::thread::ActiveWorkers::getDefault();
     activeWorkers->clearRegistry();

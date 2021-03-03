@@ -41,7 +41,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="histogram" type="::sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="yes">
+   <service uid="histogram" type="sight::module::viz::scene2d::adaptor::SCurvedHistogram" autoConnect="yes">
        <in key="histogram" uid="..." />
        <inout key="point" uid="..." optional="yes" />
        <config xAxis="xAxis" yAxis="yAxis" borderColor="lightGray" innerColor="gray"

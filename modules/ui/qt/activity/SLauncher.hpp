@@ -66,7 +66,7 @@ namespace activity
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+    <service uid="action_newActivity" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
         <in key="series" uid="..." />
         <config>
             <!-- SLauncher mode : immediate or message(default)

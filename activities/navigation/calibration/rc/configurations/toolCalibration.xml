@@ -5,20 +5,20 @@
         <param name="ICON_PATH" />
     </parameters>
     <config>
-        <object uid="matrixTL" type="::sight::data::MatrixTL" />
-        <object uid="matricesVector" type="::sight::data::Vector" />
-        <object uid="toolMatrix" type="::sight::data::Matrix4" src="deferred"/>
-        <object uid="matrixCalibration" type="::sight::data::Matrix4" src="deferred"/>
-        <object uid="matrixCalibration" type="::sight::data::Matrix4" src="deferred"/>
-        <object uid="trackerMatrix0" type="::sight::data::Matrix4" />
-        <object uid="calibrationAxisMatrix" type="::sight::data::Matrix4" />
-        <object uid="pointlist" type="::sight::data::PointList" />
+        <object uid="matrixTL" type="sight::data::MatrixTL" />
+        <object uid="matricesVector" type="sight::data::Vector" />
+        <object uid="toolMatrix" type="sight::data::Matrix4" src="deferred"/>
+        <object uid="matrixCalibration" type="sight::data::Matrix4" src="deferred"/>
+        <object uid="matrixCalibration" type="sight::data::Matrix4" src="deferred"/>
+        <object uid="trackerMatrix0" type="sight::data::Matrix4" />
+        <object uid="calibrationAxisMatrix" type="sight::data::Matrix4" />
+        <object uid="pointlist" type="sight::data::PointList" />
 
         <!-- *************************** Begin Layouts *************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -33,9 +33,9 @@
             </registry>
         </service>
 
-        <service uid="footer" type="::sight::module::ui::base::SView">
+        <service uid="footer" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -45,7 +45,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Start Tracker client" icon="sight::module::ui::icons/Network-Receiving.svg" />
@@ -70,30 +70,30 @@
 
         <!-- *************************** Begin Actions *************************** -->
 
-        <service uid="actionStartOpenIGTLinkClient" type="::sight::module::ui::base::com::SStarter">
+        <service uid="actionStartOpenIGTLinkClient" type="sight::module::ui::base::com::SStarter">
             <state active="true" visible="true" />
             <start uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionStopOpenIGTLinkClient" type="::sight::module::ui::base::com::SStarter">
+        <service uid="actionStopOpenIGTLinkClient" type="sight::module::ui::base::com::SStarter">
             <state active="true" visible="false" />
             <stop uid="trackerTLMatrixListener" />
         </service>
 
-        <service uid="actionAddPoint" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="actionAddPoint" type="sight::module::ui::base::com::SSlotCaller" >
            <slots>
                <slot>originToPoint/addPoint</slot>
                <slot>manageVector/addCopy</slot>
            </slots>
         </service>
 
-        <service uid="actionComputeCalibration" type="::sight::module::ui::base::com::STimestampSlotCaller" >
+        <service uid="actionComputeCalibration" type="sight::module::ui::base::com::STimestampSlotCaller" >
            <slots>
                <slot>toolCalibration/computeRegistration</slot>
            </slots>
         </service>
 
-        <service uid="actionExportMatrix" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="actionExportMatrix" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationMatrixWriter/update</slot>
             </slots>
@@ -103,12 +103,12 @@
 
         <!-- *************************** Begin Services *************************** -->
 
-        <service uid="originToPoint" type="::sight::module::geometry::vision::SMarkerToPoint" >
+        <service uid="originToPoint" type="sight::module::geometry::vision::SMarkerToPoint" >
             <in key="matrixTL" uid="matrixTL" />
             <inout key="pointList" uid="pointlist" />
         </service>
 
-        <service uid="trackerTLMatrixListener" type="::sight::module::io::igtl::STDataListener">
+        <service uid="trackerTLMatrixListener" type="sight::module::io::igtl::STDataListener">
             <inout key="timeline" uid="matrixTL" />
             <server>%TRACKER_HOSTNAME%:%TRACKER_PORT%</server>
             <deviceName>%TRACKER_NAME%</deviceName>
@@ -117,21 +117,21 @@
             </TData>
         </service>
 
-        <service uid="trackerTLMatrixSynchronizer" type="::sight::module::sync::SMatrixTLSynchronizer">
+        <service uid="trackerTLMatrixSynchronizer" type="sight::module::sync::SMatrixTLSynchronizer">
             <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
             <inout group="matrices">
                 <key uid="trackerMatrix0" />
             </inout>
         </service>
 
-        <service uid="status" type="::sight::module::ui::qt::SStatus" >
+        <service uid="status" type="sight::module::ui::qt::SStatus" >
             <form>circle</form>
             <labelStatus>Sensor status</labelStatus>
             <green>Sensor is tracked</green>
             <red>Sensor is not tracked</red>
         </service>
 
-        <service uid="configureClient" type="::sight::module::ui::qt::SPreferencesConfiguration">
+        <service uid="configureClient" type="sight::module::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Tracker hostname</name>
@@ -152,26 +152,26 @@
             </preference>
         </service>
 
-        <service uid="toolCalibration" type="::sight::module::navigation::calibration::SToolCalibration" >
+        <service uid="toolCalibration" type="sight::module::navigation::calibration::SToolCalibration" >
             <out key="matrixCenter" uid="toolMatrix" />
             <out key="matrixCalibration" uid="matrixCalibration" />
             <in key="matricesVector" uid="matricesVector" />
         </service>
 
 
-        <service uid="manageVector" type="::sight::module::data::SManage">
+        <service uid="manageVector" type="sight::module::data::SManage">
            <inout key="object" uid="trackerMatrix0" />
            <inout key="vector" uid="matricesVector" />
         </service>
 
-        <service uid="calibrationMatrixWriter" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="calibrationMatrixWriter" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="matrixCalibration" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
-        <service uid="concatenateMatrices" type="::sight::module::geometry::base::SConcatenateMatrices">
+        <service uid="concatenateMatrices" type="sight::module::geometry::base::SConcatenateMatrices">
             <in group="matrix">
                 <key uid="trackerMatrix0" autoConnect="yes"/>
                 <key uid="matrixCalibration" autoConnect="yes"/>
@@ -183,7 +183,7 @@
 
         <!-- *************************** Begin resultView *************************** -->
 
-        <service uid="resultView" type="::sight::viz::scene3d::SRender" >
+        <service uid="resultView" type="sight::viz::scene3d::SRender" >
             <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
                 <layer id="default" order="1" />
@@ -199,43 +199,43 @@
             </scene>
         </service>
 
-        <service uid="trackedMatrixAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
             <inout key="transform" uid="trackerMatrix0" />
             <config layer="default" transform="trackerMatrix0Trf" />
         </service>
 
-         <service uid="calibMatAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+         <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
             <inout key="transform" uid="matrixCalibration" />
             <config layer="default" transform="calibrationTrf" />
         </service>
 
-        <service uid="calibAxisMatAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
+        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes" >
             <inout key="transform" uid="calibrationAxisMatrix" />
             <config layer="default" transform="calibrationAxisTrf" />
         </service>
 
-        <service uid="calibrationAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+        <service uid="calibrationAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
             <config layer="default" length="20" transform="calibrationAxisTrf" label="no" origin="yes" originColor="#0000FF" />
         </service>
 
-        <service uid="toolCalibrationAdp" type="::sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes">
+        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="yes">
             <inout key="transform" uid="toolMatrix" />
             <config layer="default" transform="toolCalibrationTrf" />
         </service>
 
-        <service uid="systemCenterAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+        <service uid="systemCenterAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
             <config layer="default" length="20" transform="id" label="no" origin="yes" originColor="#FFFFFF" />
         </service>
 
-        <service uid="toolAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+        <service uid="toolAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
             <config layer="default" length="20" transform="toolCalibrationTrf" label="no" origin="yes" originColor="#FF0000" />
         </service>
 
-        <service uid="trackerAxis0Adp" type="::sight::module::viz::scene3d::adaptor::SAxis">
+        <service uid="trackerAxis0Adp" type="sight::module::viz::scene3d::adaptor::SAxis">
             <config layer="default" length="20" transform="trackerMatrix0Trf" label="no" origin="yes" originColor="#00FF00" />
         </service>
 
-        <service uid="pointlistAdp" type="::sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes">
+        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes">
             <in key="pointList" uid="pointlist" />
             <config layer="default" radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16"
                 labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>

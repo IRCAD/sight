@@ -6,16 +6,16 @@
         <param name="appVersion" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="::sight::data::SeriesDB" />
+        <object uid="seriesDB" type="sight::data::SeriesDB" />
 
-        <service uid="action_open" type="::sight::module::ui::base::series::SDBMerger">
+        <service uid="action_open" type="sight::module::ui::base::series::SDBMerger">
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
         </service>
-        <service uid="action_save" type="::sight::module::ui::base::com::SStarter">
+        <service uid="action_save" type="sight::module::ui::base::com::SStarter">
             <start uid="SDBWriter" />
         </service>
-        <service uid="SDBWriter" type="::sight::module::ui::base::io::SSelector">
+        <service uid="SDBWriter" type="sight::module::ui::base::io::SSelector">
             <inout key="data" uid="seriesDB" />
             <type mode="writer" />
             <selection mode="include" />
@@ -23,7 +23,7 @@
             <config id="MDAtomsConfig" service="::sight::module::io::atoms::SWriter" />
         </service>
 
-        <service uid="mainFrame" type="::sight::module::ui::base::SFrame">
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame">
             <gui>
                 <frame>
                     <name>${appName}</name>
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="menuBar" type="::sight::module::ui::base::SMenuBar">
+        <service uid="menuBar" type="sight::module::ui::base::SMenuBar">
             <gui>
                 <layout>
                     <menu name="File" />
@@ -53,7 +53,7 @@
             </registry>
         </service>
 
-        <service uid="menu_file" type="::sight::module::ui::base::SMenu">
+        <service uid="menu_file" type="sight::module::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Open" shortcut="Ctrl+O" />
@@ -68,7 +68,7 @@
             </registry>
         </service>
 
-        <service uid="menu_preferences" type="::sight::module::ui::base::SMenu">
+        <service uid="menu_preferences" type="sight::module::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Preferences configuration"/>
@@ -79,7 +79,7 @@
             </registry>
         </service>
 
-        <service uid="menu_help" type="::sight::module::ui::base::SMenu">
+        <service uid="menu_help" type="sight::module::ui::base::SMenu">
             <gui>
                 <layout>
                     <menuItem name="About" specialAction="ABOUT" />
@@ -90,9 +90,9 @@
             </registry>
         </service>
 
-        <service uid="action_quit" type="::sight::module::ui::base::SQuit" />
+        <service uid="action_quit" type="sight::module::ui::base::SQuit" />
 
-        <service uid="action_configuration" type="::sight::module::ui::qt::SPreferencesConfiguration">
+        <service uid="action_configuration" type="sight::module::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>text</type>
                 <name>Pacs Server Hostname</name>
@@ -114,11 +114,11 @@
              </preference>
         </service>
 
-        <service uid="action_about" type="::sight::module::ui::qt::SShowAbout">
+        <service uid="action_about" type="sight::module::ui::qt::SShowAbout">
             <filename id="VRRender-${appVersion}/about/about.html" />
         </service>
 
-        <service uid="dynamicView" type="::sight::module::ui::qt::activity::SDynamicView">
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView">
             <inout key="SERIESDB" uid="seriesDB" />
             <mainActivity id="SDBVRRender" closable="false" />
             <parameters>
@@ -128,9 +128,9 @@
             </parameters>
         </service>
 
-        <service uid="progress_statusbar" type="::sight::module::ui::base::SJobBar" />
+        <service uid="progress_statusbar" type="sight::module::ui::base::SJobBar" />
 
-         <service uid="qtSelector" type="::sight::module::ui::qt::SStyleSelector" />
+         <service uid="qtSelector" type="sight::module::ui::qt::SStyleSelector" />
 
         <connect channel="progressStatus">
             <signal>SDBWriter/jobCreated</signal>

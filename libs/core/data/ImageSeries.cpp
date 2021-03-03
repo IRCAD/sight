@@ -26,7 +26,7 @@
 #include <data/Image.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::ImageSeries )
+SIGHT_REGISTER_DATA( sight::data::ImageSeries )
 
 namespace sight::data
 {

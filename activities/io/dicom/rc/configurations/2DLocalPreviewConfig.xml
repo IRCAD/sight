@@ -6,11 +6,11 @@
         <param name="FILE_CACHE" default="none" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="::sight::data::DicomSeries" src="ref" />
-        <object uid="image" type="::sight::data::Image" src="deferred" />
-        <service uid="mainview" type="::sight::module::ui::base::SView">
+        <object uid="${objectID}" type="sight::data::DicomSeries" src="ref" />
+        <object uid="image" type="sight::data::Image" src="deferred" />
+        <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="40" resizable="no" />
                 </layout>
@@ -24,7 +24,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="::fwRenderVTK::SRender">
+        <service uid="gs" type="fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -35,36 +35,36 @@
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="interactor4Negato" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="imageText" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="imageText" type="visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="image" />
             <config renderer="default" picker="picker" text="" color="#FFFFFF" />
         </service>
 
-        <service uid="seriesAdaptor" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="seriesAdaptor" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="image" />
             <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
             <in key="object" uid="${objectID}" />
             <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="imageDumpLocker" type="::sight::module::memory::LockDumpSrv">
+        <service uid="imageDumpLocker" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="image" />
         </service>
 
-        <service uid="medicalImgConverter" type="::sight::module::data::MedicalImageSrv">
+        <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
             <inout key="image" uid="image" />
         </service>
 
-        <service uid="sliderIndexDicomPullerEditor" type="::sight::module::ui::dicom::SSliceIndexDicomEditor">
+        <service uid="sliderIndexDicomPullerEditor" type="sight::module::ui::dicom::SSliceIndexDicomEditor">
             <in key="series" uid="${objectID}" />
             <out key="image" uid="image" />
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">

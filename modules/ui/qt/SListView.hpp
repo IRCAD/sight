@@ -36,7 +36,7 @@ namespace sight::module::ui::qt
  * The currently selected item can be deleted by pressing on "del" key
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::qt::SListView"/>
+    <service uid="..." type="sight::module::ui::qt::SListView"/>
     </service>
    @endcode
  *

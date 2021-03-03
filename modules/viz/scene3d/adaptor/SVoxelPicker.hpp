@@ -50,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::viz::scene3d::adaptor::SVoxelPicker">
+        <service type="sight::module::viz::scene3d::adaptor::SVoxelPicker">
             <in key="image" uid="..." />
             <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
                 moveOnPick="false" />

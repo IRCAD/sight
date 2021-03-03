@@ -31,7 +31,7 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-const std::string ILight::REGISTRY_KEY = "::sight::viz::scene3d::ILight::REGISTRY_KEY";
+const std::string ILight::REGISTRY_KEY = "sight::viz::scene3d::ILight::REGISTRY_KEY";
 
 const std::string ILight::s_POINT_LIGHT       = "Point";
 const std::string ILight::s_DIRECTIONAL_LIGHT = "Directional";

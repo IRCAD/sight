@@ -33,7 +33,7 @@
 namespace sight::data
 {
 
-SIGHT_REGISTER_DATA( ::sight::data::Array );
+SIGHT_REGISTER_DATA( sight::data::Array );
 
 //------------------------------------------------------------------------------
 

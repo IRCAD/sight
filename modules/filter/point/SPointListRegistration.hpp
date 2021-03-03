@@ -43,7 +43,7 @@ namespace sight::module::filter::point
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::module::filter::point::SPointListRegistration">
+       <service uid="..." type="sight::module::filter::point::SPointListRegistration">
            <inout key="registeredPL" uid="..." />
            <inout key="referencePL" uid="..." />
            <inout key="output" uid="..." />

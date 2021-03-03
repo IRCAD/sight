@@ -247,28 +247,28 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
     // Set shader parameters
     std::string objClass = obj->getClassname();
-    if(objClass == "::sight::data::Integer")
+    if(objClass == "sight::data::Integer")
     {
         data::Integer::sptr intValue = data::Integer::dynamicCast(obj);
         SIGHT_ASSERT("The given integer object is null", intValue);
 
         params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
     }
-    else if(objClass == "::sight::data::Float")
+    else if(objClass == "sight::data::Float")
     {
         data::Float::sptr floatValue = data::Float::dynamicCast(obj);
         SIGHT_ASSERT("The given float object is null", floatValue);
 
         params->setNamedConstant(m_paramName,  floatValue->value());
     }
-    else if(objClass == "::sight::data::Boolean")
+    else if(objClass == "sight::data::Boolean")
     {
         data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj);
         SIGHT_ASSERT("The given boolean object is null", booleanValue);
 
         params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
     }
-    else if(objClass == "::sight::data::Color")
+    else if(objClass == "sight::data::Color")
     {
         data::Color::sptr colorValue = data::Color::dynamicCast(obj);
         SIGHT_ASSERT("The given color object is null", colorValue);
@@ -284,7 +284,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         params->setNamedConstant(m_paramName, color);
     }
-    else if(objClass == "::sight::data::PointList")
+    else if(objClass == "sight::data::PointList")
     {
         data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj);
         SIGHT_ASSERT("The given pointList object is null", pointListValue);
@@ -310,7 +310,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         delete [] paramValues;
     }
-    else if(objClass == "::sight::data::Matrix4")
+    else if(objClass == "sight::data::Matrix4")
     {
         data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj);
         SIGHT_ASSERT("The given Matrix4 object is null", transValue);
@@ -324,7 +324,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         params->setNamedConstant(m_paramName, paramValues, static_cast<size_t>(16), static_cast<size_t>(1));
     }
-    else if(objClass == "::sight::data::Array")
+    else if(objClass == "sight::data::Array")
     {
         data::Array::sptr arrayObject = data::Array::dynamicCast(obj);
         SIGHT_ASSERT("The object is nullptr", arrayObject);
@@ -359,7 +359,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
             SIGHT_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
         }
     }
-    else if(objClass == "::sight::data::Image")
+    else if(objClass == "sight::data::Image")
     {
         data::Image::sptr image = data::Image::dynamicCast(obj);
         SIGHT_ASSERT("The object is nullptr", image);
@@ -388,7 +388,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         }
     }
     // We allow to work on the SRender composite and interact with slots instead
-    else if(objClass != "::sight::data::Composite")
+    else if(objClass != "sight::data::Composite")
     {
         SIGHT_ERROR("This Type " << objClass << " isn't supported.");
     }

@@ -38,7 +38,7 @@ namespace sight::module::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::itk::SImageSeriesWriter">
+   <service type="sight::module::io::itk::SImageSeriesWriter">
        <in key="data" uid="..." />
        <file>...</file>
    </service>

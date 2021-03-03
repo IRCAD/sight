@@ -37,7 +37,7 @@ namespace sight::module::memory
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::memory::LockDumpSrv">
+   <service type="sight::module::memory::LockDumpSrv">
        <inout key="target" uid="..." />
    </service>
    @endcode

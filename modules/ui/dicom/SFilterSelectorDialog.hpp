@@ -35,10 +35,10 @@ namespace sight::module::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::dicom::SFilterSelectorDialog">
+   <service type="sight::module::ui::dicom::SFilterSelectorDialog">
        <inout key="filter" uid="..." />
        <selection mode="include" />
-       <addSelection filter="::sight::filter::dicom::custom::NoFilter" />
+       <addSelection filter="sight::filter::dicom::custom::NoFilter" />
    </service>
    @endcode
  * @subsection In-Out In-Out

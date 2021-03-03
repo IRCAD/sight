@@ -10,7 +10,7 @@
         <desc>Activity to export the selected ImageSeries.</desc>
         <icon>sight::module::ui::icons/Export.svg</icon>
         <requirements>
-            <requirement name="series" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="series" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
@@ -27,7 +27,7 @@
         <desc>Activity to export the selected ModelSeries.</desc>
         <icon>sight::module::ui::icons/Export.svg</icon>
         <requirements>
-            <requirement name="series" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="series" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExportSelection">
@@ -44,7 +44,7 @@
         <desc>Activity to export a ModelSeries as a Dicom Segmentation Surface file.</desc>
         <icon>sight::module::ui::icons/Export.svg</icon>
         <requirements>
-            <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExportDicomSelection">
@@ -63,7 +63,7 @@
         <config>
             <object uid="${selection}" src="ref" />
 
-            <service uid="export_selection" type="::sight::module::ui::base::io::SSelector">
+            <service uid="export_selection" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="${selection}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
@@ -81,9 +81,9 @@
             <param name="model" />
         </parameters>
         <config>
-            <object uid="${model}" type="::sight::data::ModelSeries" src="ref" />
+            <object uid="${model}" type="sight::data::ModelSeries" src="ref" />
 
-            <service uid="exportSelection" type="::sight::module::ui::base::io::SSelector">
+            <service uid="exportSelection" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="${model}" />
                 <type mode="writer" />
                 <selection mode="include" />
@@ -98,7 +98,7 @@
     <!-- Service config used to read SeriesDB without using ioAtoms. -->
     <extension implements="::sight::service::extension::Config">
         <id>SDBReaderIOSelectorConfig</id>
-        <service>::sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
@@ -111,7 +111,7 @@
     <!-- Service config used to read seriesDB using ioAtoms. -->
     <extension implements="::sight::service::extension::Config">
         <id>SDBAtomsReaderIOSelectorConfig</id>
-        <service>::sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::base::io::SSelector</service>
         <desc>Atoms seriesDB reader.</desc>
         <config>
             <type mode="reader" />
@@ -124,7 +124,7 @@
     <!-- Service config used to write a seriesDB using ioAtoms. -->
     <extension implements="::sight::service::extension::Config">
         <id>SDBAtomsWriterIOSelectorConfig</id>
-        <service>::sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::base::io::SSelector</service>
         <desc>Atoms seriesDB writer.</desc>
         <config>
             <type mode="writer" />
@@ -137,7 +137,7 @@
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
     <extension implements="::sight::service::extension::Config">
         <id>FullSDBReaderIOSelectorConfig</id>
-        <service>::sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for SeriesDB reader</desc>
         <config>
             <type mode="reader" />
@@ -173,7 +173,7 @@
 
     <extension implements="::sight::service::extension::Config">
         <id>ActivityReaderConfig</id>
-        <service>::sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::base::io::SSelector</service>
         <desc>Activity reader</desc>
         <config>
             <type mode="reader" />
@@ -185,7 +185,7 @@
 
     <extension implements="::sight::service::extension::Config">
         <id>ActivityWriterConfig</id>
-        <service>::sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::base::io::SSelector</service>
         <desc>Activity writer</desc>
         <config>
             <type mode="writer" />

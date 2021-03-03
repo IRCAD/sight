@@ -40,7 +40,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::module::filter::image::SFastRegistration">
+   <service uid="..." type="sight::module::filter::image::SFastRegistration">
        <in key="source" uid="..." />
        <in key="target" uid="..." />
        <in key="transform" uid="..." />

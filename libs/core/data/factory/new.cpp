@@ -25,6 +25,7 @@
 #include "data/Object.hpp"
 
 #include <core/runtime/operations.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <regex>
 
@@ -36,9 +37,11 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-data::Object::sptr New( const data::registry::KeyType& classname )
+data::Object::sptr New( const data::registry::KeyType& _classname )
 {
-    SIGHT_ASSERT("A classname must be specified", !classname.empty());
+    SIGHT_ASSERT("A classname must be specified", !_classname.empty());
+
+    const std::string classname = core::runtime::filterID(_classname);
 
     // 1. Try first to create the data
     auto data = data::registry::get()->create(classname);
@@ -47,7 +50,7 @@ data::Object::sptr New( const data::registry::KeyType& classname )
     if(data == nullptr)
     {
         std::smatch match;
-        static const std::regex reg("::(\\w*)::(?:(core|filter|geometry|io|navigation|ui|viz)::)?(\\w*)::.*");
+        static const std::regex reg("(\\w*)::(?:(core|filter|geometry|io|navigation|ui|viz)::)?(\\w*)::.*");
         if( std::regex_match(classname, match, reg ) && match.size() >= 3)
         {
             const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "") +

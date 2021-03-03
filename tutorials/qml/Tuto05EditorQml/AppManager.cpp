@@ -22,9 +22,9 @@
 
 #include "AppManager.hpp"
 
-#include <QVariant>
-
 #include <ui/qml/IQmlEditor.hpp>
+
+#include <QVariant>
 
 using namespace sight;
 
@@ -74,7 +74,7 @@ void AppManager::onServiceCreated(const QVariant& obj)
     if (srv)
     {
         // check if it is the SOrganMaterialEditor
-        if (srv->isA("::Tuto05EditorQml::SStringEditor"))
+        if (srv->isA("Tuto05EditorQml::SStringEditor"))
         {
             // register the new service in the AppManager, it will be automatically started when the reconstruction is
             // added

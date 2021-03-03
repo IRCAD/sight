@@ -38,7 +38,7 @@ namespace layoutManager
 //-----------------------------------------------------------------------------
 
 const CardinalLayoutManagerBase::RegistryKeyType CardinalLayoutManagerBase::REGISTRY_KEY =
-    "::sight::ui::base::CardinalLayoutManager";
+    "sight::ui::base::CardinalLayoutManager";
 
 //-----------------------------------------------------------------------------
 

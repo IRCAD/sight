@@ -8,18 +8,18 @@
     </parameters>
     <config>
 
-        <object type="::sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
-        <object type="::sight::data::SeriesDB" uid="readingSeriesDB" />
-        <object type="::sight::data::SeriesDB" uid="loadedSeriesDB" />
-        <object type="::sight::data::SeriesDB" uid="filteredSeriesDB" />
-        <object type="::sight::data::Vector" uid="readingSelection" />
-        <object type="::sight::data::Vector" uid="loadedSelection" />
+        <object type="sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="sight::data::SeriesDB" uid="readingSeriesDB" />
+        <object type="sight::data::SeriesDB" uid="loadedSeriesDB" />
+        <object type="sight::data::SeriesDB" uid="filteredSeriesDB" />
+        <object type="sight::data::Vector" uid="readingSelection" />
+        <object type="sight::data::Vector" uid="loadedSelection" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                     <view align="right" minWidth="350" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="sight::module::ui::icons/Import.svg" />
@@ -59,9 +59,9 @@
         </service>
 
 
-        <service uid="centerView" type="::sight::module::ui::base::SView" >
+        <service uid="centerView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
@@ -73,9 +73,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::module::ui::base::SView" >
+        <service uid="bottomView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Loaded Series" align="center" minWidth="200" />
                     <view caption="Loaded Preview" align="right" minWidth="200" />
@@ -87,9 +87,9 @@
             </registry>
         </service>
 
-        <service uid="rightView" type="::sight::module::ui::base::SView" >
+        <service uid="rightView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Filters" align="center" minWidth="200" />
                 </layout>
@@ -100,7 +100,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="menuHelp" type="::sight::module::ui::base::SMenu" >
+        <service uid="menuHelp" type="sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Activity help" />
@@ -113,63 +113,63 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="activityHelp" type="::sight::module::ui::qt::SLaunchBrowser" >
+        <service uid="activityHelp" type="sight::module::ui::qt::SLaunchBrowser" >
             <url>dicomFilteringActivity/quickstart.pdf</url>
         </service>
 
         <!-- READING SELECTION -->
-        <service uid="action_readDicomSeries" type="::sight::module::ui::base::series::SDBMerger" >
+        <service uid="action_readDicomSeries" type="sight::module::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="readingSeriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
-        <service uid="readingSelector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="readingSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="selection" uid="readingSelection" />
             <inout key="seriesDB" uid="readingSeriesDB" />
         </service>
 
-        <service uid="readingViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="readingViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="readingSelection" />
             <parentView wid="readingPreview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="::sight::data::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="sight::data::DicomSeries" />
             </configs>
         </service>
 
-        <service uid="filterSelectionEditor" type="::sight::module::ui::dicom::SFilterSelectionEditor">
+        <service uid="filterSelectionEditor" type="sight::module::ui::dicom::SFilterSelectionEditor">
             <in key="selection" uid="readingSelection" />
             <inout key="target" uid="filteredSeriesDB" />
         </service>
 
         <!-- FILTERED SELECTION -->
-        <service uid="action_previewFilteredDicomSeries" type="::sight::module::ui::base::SConfigLauncher">
+        <service uid="action_previewFilteredDicomSeries" type="sight::module::ui::base::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout key="SERIESDB" uid="filteredSeriesDB" />
             <parameter replace="ICON_PATH" by="module_ui_icons/Preview.svg" />
         </service>
 
-        <service uid="action_convertSeries" type="::sight::module::io::dicom::SDicomSeriesConverter">
+        <service uid="action_convertSeries" type="sight::module::io::dicom::SDicomSeriesConverter">
             <in key="source" uid="filteredSeriesDB" />
             <inout key="target" uid="loadedSeriesDB" />
         </service>
 
         <!-- LOADED SELECTION -->
-        <service uid="loadedSelector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="loadedSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="selection" uid="loadedSelection" />
             <inout key="seriesDB" uid="loadedSeriesDB" />
         </service>
 
-        <service uid="loadedViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="loadedViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="loadedSelection" />
             <parentView wid="loadedPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries">
+                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>
         </service>
 
-        <service uid="action_pushSeries" type="::sight::module::ui::dicom::SSeriesDBMerger">
+        <service uid="action_pushSeries" type="sight::module::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="loadedSelection" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>

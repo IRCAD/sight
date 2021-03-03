@@ -50,7 +50,7 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::qt::image::TransferFunctionEditor">
+   <service type="sight::module::ui::qt::image::TransferFunctionEditor">
        <in key="currentTF" uid="..." optional="yes" />
        <inout key="tfPool" uid="..." />
        <out key="tf" uid="..." />

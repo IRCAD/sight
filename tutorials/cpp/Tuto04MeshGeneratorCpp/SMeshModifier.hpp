@@ -35,7 +35,7 @@ namespace Tuto04MeshGeneratorCpp
  *
  * @section XML XML Configuration
  * @code{.xml}
-     <service type="::Tuto04MeshGeneratorCpp::SMeshModifier" >
+     <service type="Tuto04MeshGeneratorCpp::SMeshModifier" >
          <inout key="mesh" uid="..." />
          <config functor="ShakeMeshPoint" />
      </service>

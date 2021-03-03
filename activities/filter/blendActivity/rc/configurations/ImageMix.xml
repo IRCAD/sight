@@ -10,15 +10,15 @@
         <param name="patient_name" default="" />
     </parameters>
     <config>
-        <object uid="${backgroundImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${frontImageUid}" type="::sight::data::Image" src="ref" />
+        <object uid="${backgroundImageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${frontImageUid}" type="sight::data::Image" src="ref" />
 
-        <object uid="${tfBackgroundImage}" type="::sight::data::TransferFunction" src="deferred" />
-        <object uid="${tfFrontImage}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${tfBackgroundImage}" type="sight::data::TransferFunction" src="deferred" />
+        <object uid="${tfFrontImage}" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Blend" align="center" />
                     <view align="bottom" />
                 </layout>
@@ -30,9 +30,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::module::ui::base::SView">
+        <service uid="bottomView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -44,9 +44,9 @@
             </registry>
         </service>
 
-        <service uid="sliderView" type="::sight::module::ui::base::SView">
+        <service uid="sliderView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -58,9 +58,9 @@
             </registry>
         </service>
 
-        <service uid="editorsView" type="::sight::module::ui::base::SView">
+        <service uid="editorsView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Background image" proportion="1" />
                     <view caption="Front image" proportion="1" />
@@ -72,9 +72,9 @@
             </registry>
         </service>
 
-        <service uid="bgBottomView" type="::sight::module::ui::base::SView">
+        <service uid="bgBottomView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <spacer/>
@@ -85,9 +85,9 @@
             </registry>
         </service>
 
-        <service uid="frontBottomView" type="::sight::module::ui::base::SView">
+        <service uid="frontBottomView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -100,40 +100,40 @@
             </registry>
         </service>
 
-        <service uid="snapshot" type="::sight::module::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshot" type="sight::module::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="bgLockDump" type="::sight::module::memory::LockDumpSrv">
+        <service uid="bgLockDump" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${backgroundImageUid}" />
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service uid="bg_medicalImageConverter" type="::sight::module::data::MedicalImageSrv" autoConnect="yes">
+        <service uid="bg_medicalImageConverter" type="sight::module::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
         </service>
-        <service uid="slider" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
-        <service uid="bg_windowLevel" type="::sight::module::ui::qt::image::WindowLevel">
+        <service uid="bg_windowLevel" type="sight::module::ui::qt::image::WindowLevel">
             <inout key="image" uid="${backgroundImageUid}" autoConnect="yes" />
             <inout key="tf" uid="${tfBackgroundImage}" />
         </service>
 
-        <service uid="frontLockDump" type="::sight::module::memory::LockDumpSrv">
+        <service uid="frontLockDump" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${frontImageUid}" />
         </service>
 
         <!-- This service convert a stypee fwData::Image to medical Image -->
-        <service uid="frontMedicalImageConverter" type="::sight::module::data::MedicalImageSrv" autoConnect="yes">
+        <service uid="frontMedicalImageConverter" type="sight::module::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
         </service>
 
-        <service uid="front_imageTransparency" type="::sight::module::ui::qt::image::ImageTransparency" autoConnect="yes">
+        <service uid="front_imageTransparency" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
             <shortcut value="V" />
         </service>
 
-        <service uid="front_windowLevel" type="::sight::module::ui::qt::image::WindowLevel">
+        <service uid="front_windowLevel" type="sight::module::ui::qt::image::WindowLevel">
             <inout key="image" uid="${frontImageUid}" autoConnect="yes" />
             <inout key="tf" uid="${tfFrontImage}" />
         </service>
@@ -141,7 +141,7 @@
         <!-- Generic scene to show merging of backgroung and front images -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="blendGenericScene" type="::fwRenderVTK::SRender">
+        <service uid="blendGenericScene" type="fwRenderVTK::SRender">
             <scene>
                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -157,32 +157,32 @@
             </scene>
         </service>
 
-        <service uid="MPRNegato3D" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="MPRNegato3D" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <inout key="tf" uid="${tfBackgroundImage}" />
             <config renderer="default" picker="myPicker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
         </service>
 
-        <service uid="interactor" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="interactor" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="bgImagePicker" type="::visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes">
+        <service uid="bgImagePicker" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes">
             <inout key="image" uid="${backgroundImageUid}" />
             <config renderer="default" picker="myPicker" />
         </service>
 
-        <service uid="frontImagePicker" type="::visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes">
+        <service uid="frontImagePicker" type="visuVTKAdaptor::SImagePickerInteractor" autoConnect="yes">
             <inout key="image" uid="${frontImageUid}" />
             <config renderer="default" picker="myPicker" />
         </service>
 
-        <service uid="snapshotAdaptor" type="::visuVTKAdaptor::SSnapshot">
+        <service uid="snapshotAdaptor" type="visuVTKAdaptor::SSnapshot">
             <config renderer="default" />
         </service>
 
         <!-- Adaptor to show background and front image merge in the same view. -->
-        <service uid="myImagesBlendAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+        <service uid="myImagesBlendAdaptor" type="visuVTKAdaptor::SImagesBlend">
             <inout group="image" autoConnect="yes">
                 <key uid="${backgroundImageUid}" tfalpha="no" />
                 <key uid="${frontImageUid}" tfalpha="yes" />
@@ -194,12 +194,12 @@
             <config vtkimageregister="imageBlend" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText">
             <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
         <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
-        <service uid="myImagesProbeCursor" type="::visuVTKAdaptor::SImagesProbeCursor">
+        <service uid="myImagesProbeCursor" type="visuVTKAdaptor::SImagesProbeCursor">
             <inout group="image" autoConnect="yes">
                 <key uid="${backgroundImageUid}" name="background" />
                 <key uid="${frontImageUid}" name="front" />

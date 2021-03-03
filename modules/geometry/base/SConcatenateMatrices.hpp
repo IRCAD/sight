@@ -42,7 +42,7 @@ namespace sight::module::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::geometry::base::SConcatenateMatrices">
+        <service uid="..." type="sight::module::geometry::base::SConcatenateMatrices">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." inverse="true"/>

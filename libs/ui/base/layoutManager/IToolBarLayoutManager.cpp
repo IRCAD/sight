@@ -32,7 +32,7 @@ namespace layoutManager
 {
 
 const IToolBarLayoutManager::RegistryKeyType IToolBarLayoutManager::REGISTRY_KEY =
-    "::sight::ui::base::ToolBarLayoutManager";
+    "sight::ui::base::ToolBarLayoutManager";
 
 //-----------------------------------------------------------------------------
 

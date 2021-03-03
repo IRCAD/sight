@@ -13,14 +13,14 @@
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
-        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::sight::data::ActivitySeries" src="ref" />
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
-        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="sight::data::ActivitySeries" src="ref" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato1" align="center" />
                     <view caption="Negato2" align="right" />
                     <view caption="Negato3" align="right" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
@@ -76,7 +76,7 @@
             </registry>
         </service>
 
-        <service uid="cfgNegato1" type="::sight::service::SConfigController">
+        <service uid="cfgNegato1" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -86,7 +86,7 @@
             <parameter replace="orientation" by="axial" />
         </service>
 
-        <service uid="cfgNegato2" type="::sight::service::SConfigController">
+        <service uid="cfgNegato2" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -96,7 +96,7 @@
             <parameter replace="orientation" by="frontal" />
         </service>
 
-        <service uid="cfgNegato3" type="::sight::service::SConfigController">
+        <service uid="cfgNegato3" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -106,70 +106,70 @@
             <parameter replace="orientation" by="sagittal" />
         </service>
 
-        <service uid="extractLandmarks" type="::sight::module::data::SCopy" >
+        <service uid="extractLandmarks" type="sight::module::data::SCopy" >
             <in key="source" uid="${image}">
                 <extract from="@fields.m_landmarksId" />
             </in>
             <inout key="target" uid="${landmarks}"/>
         </service>
 
-        <service uid="ActionExportActivity" type="::sight::module::ui::base::series::SExport" autoConnect="yes">
+        <service uid="ActionExportActivity" type="sight::module::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="landmarksEditor" type="::sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes">
+        <service uid="landmarksEditor" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="yes">
             <inout key="landmarks" uid="${landmarks}" />
             <advanced>${advancedLandmarksEditor}</advanced>
         </service>
 
-        <service uid="MedicalImageSrv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes">
+        <service uid="MedicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes">
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="ActionSFocusLandmark" type="::sight::module::ui::base::metrics::SFocusLandmark" >
+        <service uid="ActionSFocusLandmark" type="sight::module::ui::base::metrics::SFocusLandmark" >
             <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="ActionLoadLandmark" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="ActionLoadLandmark" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>LoadLandmark/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionSaveLandmark" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="ActionSaveLandmark" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>SaveLandmark/update</slot>
             </slots>
         </service>
 
-        <service uid="ActionEditLandmark" type="::sight::module::ui::base::com::SBooleanSlotCaller">
+        <service uid="ActionEditLandmark" type="sight::module::ui::base::com::SBooleanSlotCaller">
             <slots>
                 <slot>landmarksEditor/setVisible</slot>
             </slots>
         </service>
-        <service uid="ActionAddDistance" type="::sight::module::ui::base::metrics::AddDistance" >
+        <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::AddDistance" >
             <inout key="image" uid="${image}" />
         </service>
-        <service uid="ActionRemoveDistance" type="::sight::module::ui::base::metrics::RemoveDistance" >
+        <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::RemoveDistance" >
             <inout key="image" uid="${image}" />
         </service>
-        <service uid="ActionHideDistance" type="::sight::module::ui::base::metrics::ShowDistance" autoConnect="yes" >
+        <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::ShowDistance" autoConnect="yes" >
             <inout key="image" uid="${image}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
              This service send signals to enable or not the actions. -->
-        <service uid="ActionPrevious" type="::sight::module::ui::base::com::SSignal">
+        <service uid="ActionPrevious" type="sight::module::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="ActionNext" type="::sight::module::ui::base::com::SSignal">
+        <service uid="ActionNext" type="sight::module::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="LoadLandmark" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="LoadLandmark" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
             <selection mode="include" />
@@ -177,7 +177,7 @@
             <config id="LandmarksAtomsConfig" service="::sight::module::io::atoms::SReader" />
         </service>
 
-        <service uid="SaveLandmark" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="SaveLandmark" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="writer" />
             <selection mode="include" />
@@ -185,16 +185,16 @@
             <config id="LandmarksAtomsConfig" service="::sight::module::io::atoms::SWriter" />
         </service>
 
-        <service uid="ActionHideCross" type="::sight::module::ui::base::viz::CrossTypeAction">
+        <service uid="ActionHideCross" type="sight::module::ui::base::viz::CrossTypeAction">
             <in key="image" uid="${image}" />
             <crossType>hide</crossType>
         </service>
-        <service uid="ActionShowNormalCross" type="::sight::module::ui::base::viz::CrossTypeAction">
+        <service uid="ActionShowNormalCross" type="sight::module::ui::base::viz::CrossTypeAction">
             <in key="image" uid="${image}" />
             <crossType>half</crossType>
             <state active="true" />
         </service>
-        <service uid="ActionShowFullCross" type="::sight::module::ui::base::viz::CrossTypeAction">
+        <service uid="ActionShowFullCross" type="sight::module::ui::base::viz::CrossTypeAction">
             <in key="image" uid="${image}" />
             <crossType>full</crossType>
         </service>

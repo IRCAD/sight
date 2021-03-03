@@ -50,7 +50,7 @@ namespace sight::module::io::document
  *
  * @section XML XML configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::io::document::SPdfWriter">
+    <service uid="..." type="sight::module::io::document::SPdfWriter">
         <in group="image">
             <key uid="..."/>
             <key uid="..."/>

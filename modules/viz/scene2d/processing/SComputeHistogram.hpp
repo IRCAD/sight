@@ -41,7 +41,7 @@ namespace processing
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="computeHistogram" type="::sight::module::viz::scene2d::processing::SComputeHistogram"
+   <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram"
  * autoConnect="yes">
     <inout key="histogram" uid="..." />
     <in key="image" uid="..." />

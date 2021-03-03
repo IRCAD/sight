@@ -85,9 +85,9 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
-       <service uid="subView2" type="::sight::module::ui::base::SView" autoConnect="no" >
+       <service uid="subView2" type="sight::module::ui::base::SView" autoConnect="no" >
            <gui>
-               <layout type="::ui::base::ToolboxLayoutManager">
+               <layout type="ui::base::ToolboxLayoutManager">
                    <view caption="My view 1" expanded="true" />
                    <view caption="My view 2" expanded="true" />
                    <view caption="My view 3" expanded="false" />
@@ -101,7 +101,7 @@ public:
            </registry>
        </service>
        @endcode
-     *  - \<layout type="::ui::base::ToolboxLayoutManager" \> : define a toolbox layout.
+     *  - \<layout type="ui::base::ToolboxLayoutManager" \> : define a toolbox layout.
      *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following
      * attributes
      *   - \b border : defines the size of the border in the layout

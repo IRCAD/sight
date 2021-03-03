@@ -66,7 +66,7 @@ protected:
      * @brief This method is used to configure the service.
      *
      * @code{.xml}
-       <service type="::sight::module::sync::SMatrixSynchronizer">
+       <service type="sight::module::sync::SMatrixSynchronizer">
             <inout>Matrix</inout>
             <in>MatrixTL</in>
        </service>

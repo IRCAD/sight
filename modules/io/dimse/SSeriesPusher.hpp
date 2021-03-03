@@ -53,7 +53,7 @@ namespace sight::module::io::dimse
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::dimse::SSeriesPusher">
+        <service type="sight::module::io::dimse::SSeriesPusher">
             <in key="pacsConfig" uid="..." />
             <in key="selectedSeries" uid="..." />
        </service>

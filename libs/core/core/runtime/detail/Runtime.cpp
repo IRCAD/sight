@@ -34,7 +34,6 @@
 
 #include <core/tools/Os.hpp>
 
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/dll.hpp>
 
 #include <filesystem>
@@ -45,6 +44,7 @@ namespace sight::core::runtime
 
 namespace detail
 {
+
 //------------------------------------------------------------------------------
 
 std::shared_ptr<Runtime> Runtime::m_instance;
@@ -135,8 +135,9 @@ void Runtime::unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > 
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string& type ) const
+std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string& _type ) const
 {
+    const std::string type = filterID(_type);
     std::shared_ptr< ExecutableFactory > resFactory;
     for(const ExecutableFactoryContainer::value_type& factory : m_executableFactories)
     {
@@ -154,7 +155,7 @@ std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::
 void Runtime::addExtension( std::shared_ptr<Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
-    const std::string identifier(extension->getIdentifier());
+    const std::string identifier(filterID(extension->getIdentifier()));
     if( !identifier.empty() && this->findExtension(identifier) != 0 )
     {
         throw RuntimeException(identifier + ": identifier already used by a registered extension.");
@@ -168,7 +169,7 @@ void Runtime::addExtension( std::shared_ptr<Extension> extension)
 void Runtime::unregisterExtension( std::shared_ptr<Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
-    const std::string identifier(extension->getIdentifier());
+    const std::string identifier(filterID(extension->getIdentifier()));
     SIGHT_WARN_IF("Extension " + identifier + " not found.",
                   !identifier.empty() && this->findExtension(identifier) == 0 );
     // Removes the extension.
@@ -201,7 +202,7 @@ Runtime::ExtensionIterator Runtime::extensionsEnd()
 void Runtime::addExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 {
     // Asserts no registered extension point has the same identifier.
-    const std::string identifier(point->getIdentifier());
+    const std::string identifier(filterID(point->getIdentifier()));
     if( this->findExtensionPoint(identifier) != nullptr)
     {
         throw RuntimeException(identifier + ": identifier already used by a registered extension point.");
@@ -215,7 +216,7 @@ void Runtime::addExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 {
     // Asserts no registered extension point has the same identifier.
-    const std::string identifier(point->getIdentifier());
+    const std::string identifier(filterID(point->getIdentifier()));
     SIGHT_WARN_IF("ExtensionPoint " + identifier + " not found.", this->findExtensionPoint(identifier) == 0);
 
     m_extensionPoints.erase(point);
@@ -228,7 +229,7 @@ Runtime::findModule( const std::string& identifier ) const
 {
     SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
 
-    const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
+    const std::string id = filterID(identifier);
 
     std::shared_ptr<Module> resModule;
     for(const std::shared_ptr<Module>& module : m_modules)
@@ -249,7 +250,7 @@ std::shared_ptr< Module > Runtime::findEnabledModule( const std::string& identif
 {
     SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
 
-    const std::string id = boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
+    const std::string id = filterID(identifier);
 
     std::shared_ptr<Module> resModule;
     for(const std::shared_ptr<Module>& module :  m_modules)
@@ -286,10 +287,11 @@ Runtime& Runtime::get()
 
 std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
 {
+    const std::string id = filterID(identifier);
     std::shared_ptr<Extension> resExtension;
     for(const ExtensionContainer::value_type& extension : m_extensions)
     {
-        if(extension->getIdentifier() == identifier && extension->isEnabled())
+        if(extension->getIdentifier() == id && extension->isEnabled())
         {
             resExtension = extension;
             break;
@@ -325,10 +327,11 @@ std::vector<std::filesystem::path> Runtime::getRepositoriesPath() const
 
 std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string& identifier ) const
 {
+    const std::string id = filterID(identifier);
     std::shared_ptr<ExtensionPoint> resExtensionPoint;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
     {
-        if(extensionPoint->getIdentifier() == identifier && extensionPoint->isEnabled())
+        if(extensionPoint->getIdentifier() == id && extensionPoint->isEnabled())
         {
             resExtensionPoint = extensionPoint;
             break;

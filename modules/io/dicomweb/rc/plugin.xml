@@ -6,22 +6,22 @@
     <requirement id="sight::module::ui::qt"/>
     <extension implements="::sight::service::extension::Factory">
          <type>sight::ui::base::IEditor</type>
-         <service>::sight::module::io::dicomweb::SQueryEditor</service>
+         <service>sight::module::io::dicomweb::SQueryEditor</service>
          <object key="seriesDB">sight::data::SeriesDB</object>
          <desc>This editor service is used to perform an HTTP query on a Pacs.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::io::dicomweb::SSeriesPuller</service>
+         <type>sight::service::IController</type>
+         <service>sight::module::io::dicomweb::SSeriesPuller</service>
          <object key="selectedSeries">sight::data::Vector</object>
          <object key="seriesDB">sight::data::SeriesDB</object>
          <desc>This service is used to pull series from a PACS (Orthanc).</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::io::dicomweb::SSeriesPusher</service>
+         <type>sight::service::IController</type>
+         <service>sight::module::io::dicomweb::SSeriesPusher</service>
          <object key="selectedSeries">sight::data::Vector</object>
          <desc>This service is used to push a DICOM series to a PACS.</desc>
     </extension>

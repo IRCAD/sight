@@ -75,7 +75,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SMesh" >
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SMesh" >
         <inout key="mesh" uid="..." />
         <config layer="..." transform="..." visible="true" materialName="..." shadingMode="gouraud" textureName="..."
         queryFlags="0x40000000" />

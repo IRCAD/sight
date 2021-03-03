@@ -8,8 +8,8 @@
         <desc>Desc Test0</desc>
         <icon>Icon Test0</icon>
         <requirements>
-            <requirement name="param1" type="::sight::data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-            <requirement name="param2" type="::sight::data::Mesh" maxOccurs="8" >
+            <requirement name="param1" type="sight::data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="sight::data::Mesh" maxOccurs="8" >
               <key>key1</key>
               <key>key2</key>
               <key>key3</key>
@@ -19,7 +19,7 @@
               <key>key7</key>
               <key>key8</key>
             </requirement>
-            <requirement name="param3" type="::sight::data::Mesh" maxOccurs="10" > <!-- '*' not managed right now -->
+            <requirement name="param3" type="sight::data::Mesh" maxOccurs="10" > <!-- '*' not managed right now -->
               <key>key1</key>
               <key>key2</key>
               <key>key3</key>
@@ -31,11 +31,11 @@
               <key>key9</key>
               <key>key10</key>
             </requirement>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="0" maxOccurs="2" >
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="0" maxOccurs="2" >
               <key>key1</key>
               <key>key2</key>
             </requirement>
-            <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
             <!--# ...-->
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
@@ -55,7 +55,7 @@
         <desc>1 image</desc>
         <icon>Icon Test1</icon>
         <requirements>
-            <requirement name="param1" type="::sight::data::Image" />
+            <requirement name="param1" type="sight::data::Image" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="TestRegistryCfg1" >
@@ -69,8 +69,8 @@
         <desc>1 image, 1 mesh</desc>
         <icon>Icon Test2</icon>
         <requirements>
-            <requirement name="img" type="::sight::data::Image" />
-            <requirement name="mesh" type="::sight::data::Mesh" />
+            <requirement name="img" type="sight::data::Image" />
+            <requirement name="mesh" type="sight::data::Mesh" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="TestRegistryCfg2" >
@@ -84,7 +84,7 @@
         <desc>1-2 image</desc>
         <icon>Icon Test3</icon>
         <requirements>
-          <requirement name="param1" type="::sight::data::Image" maxOccurs="2" >
+          <requirement name="param1" type="sight::data::Image" maxOccurs="2" >
             <key>key1</key>
             <key>key2</key>
           </requirement>
@@ -101,7 +101,7 @@
         <desc>* image</desc>
         <icon>Icon Test4</icon>
         <requirements>
-            <requirement name="param1" type="::sight::data::Image" maxOccurs="10" > <!-- '*' not managed right now -->
+            <requirement name="param1" type="sight::data::Image" maxOccurs="10" > <!-- '*' not managed right now -->
               <key>key1</key>
               <key>key2</key>
               <key>key3</key>
@@ -126,7 +126,7 @@
         <desc>4-8 image</desc>
         <icon>Icon Test5</icon>
         <requirements>
-            <requirement name="param1" type="::sight::data::Image" minOccurs="4" maxOccurs="8">
+            <requirement name="param1" type="sight::data::Image" minOccurs="4" maxOccurs="8">
               <key>key1</key>
               <key>key2</key>
               <key>key3</key>
@@ -149,8 +149,8 @@
         <desc>2 image</desc>
         <icon>Icon Test6</icon>
         <requirements>
-            <requirement name="param1" type="::sight::data::Image" />
-            <requirement name="param2" type="::sight::data::Image" />
+            <requirement name="param1" type="sight::data::Image" />
+            <requirement name="param2" type="sight::data::Image" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="TestRegistryCfg6" >
@@ -165,8 +165,8 @@
         <desc>1 image, 0-1 mesh</desc>
         <icon>Icon Test3</icon>
         <requirements>
-            <requirement name="img" type="::sight::data::Image" />
-            <requirement name="mesh" type="::sight::data::Mesh" minOccurs="0" >
+            <requirement name="img" type="sight::data::Image" />
+            <requirement name="mesh" type="sight::data::Mesh" minOccurs="0" >
               <key>key1</key>
             </requirement>
         </requirements>

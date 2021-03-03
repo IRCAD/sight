@@ -41,7 +41,7 @@ namespace sight::module::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::geometry::base::STargeting">
+        <service type="sight::module::geometry::base::STargeting">
             <in key="landmark" uid="..." />
             <in key="matrix" uid="..." />
             <inout key="pointList" uid="..." />

@@ -35,7 +35,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::filter::image::SImagesSubstract">
+   <service type="sight::module::filter::image::SImagesSubstract">
        <in key="image1" uid="..." />
        <in key="image2" uid="..." />
        <inout key="result" uid="..." />

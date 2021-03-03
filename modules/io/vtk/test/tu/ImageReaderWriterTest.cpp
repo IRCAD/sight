@@ -23,6 +23,7 @@
 #include "ImageReaderWriterTest.hpp"
 
 #include <core/runtime/EConfigurationElement.hpp>
+#include <core/thread/ActiveWorkers.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
@@ -32,7 +33,6 @@
 
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <core/thread/ActiveWorkers.hpp>
 #include <service/registry/ObjectService.hpp>
 
 #include <utestData/Data.hpp>
@@ -64,7 +64,7 @@ void runImageSrv(
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-    if (srv->isA("::sight::io::base::service::IReader"))
+    if (srv->isA("sight::io::base::service::IReader"))
     {
         srv->registerInOut(image, "data");
     }
@@ -138,7 +138,7 @@ void ImageReaderWriterTest::testVtkImageReader()
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
 
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing2();
@@ -173,7 +173,7 @@ void ImageReaderWriterTest::testVtiImageReader()
                            std::filesystem::exists(file));
 
     data::Image::sptr image = data::Image::New();
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
     data::Image::Spacing spacingExpected;
@@ -227,7 +227,7 @@ void ImageReaderWriterTest::testMhdImageReader()
                            std::filesystem::exists(file));
 
     data::Image::sptr image = data::Image::New();
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
     data::Image::Spacing spacingExpected;
@@ -284,7 +284,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
     data::Image::sptr image = data::Image::New();
 
     {
-        const std::string srvname("::sight::module::io::vtk::SImageReader");
+        const std::string srvname("sight::module::io::vtk::SImageReader");
 
         service::IService::sptr srv = service::add( srvname );
 
@@ -333,11 +333,11 @@ void ImageReaderWriterTest::testBitmapImageWriter()
         // Write to bitmap image.
         const std::filesystem::path file = core::tools::System::getTemporaryFolder() / ("temporaryFile." + ext);
 
-        runImageSrv("::sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
+        runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
         // Read image from disk
         const data::Image::sptr imageFromDisk = data::Image::New();
-        runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
+        runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
         std::filesystem::remove(file);
 
@@ -388,11 +388,11 @@ void ImageReaderWriterTest::testVtkImageWriter()
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
-    runImageSrv("::sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
+    runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     data::Image::sptr imageFromDisk = data::Image::New();
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     std::filesystem::remove(file);
 
@@ -442,11 +442,11 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "imageSeries.vtk";
 
     // Write image series
-    runImageSrv("::sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
+    runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
     data::Image::sptr newImage = data::Image::New();
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), newImage);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), newImage);
 
     utestData::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
@@ -473,11 +473,11 @@ void ImageReaderWriterTest::testVtiImageWriter()
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.vti";
 
-    runImageSrv("::sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
+    runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     data::Image::sptr imageFromDisk = data::Image::New();
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     data::Image::Spacing spacingRead = image->getSpacing2();
@@ -529,11 +529,11 @@ void ImageReaderWriterTest::testMhdImageWriter()
     // Write to vtk image.
     const std::filesystem::path file = core::tools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
-    runImageSrv("::sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
+    runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     data::Image::sptr imageFromDisk = data::Image::New();
-    runImageSrv("::sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     data::Image::Spacing spacingRead = image->getSpacing2();

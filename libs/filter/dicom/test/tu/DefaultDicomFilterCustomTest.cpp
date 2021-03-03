@@ -22,19 +22,19 @@
 
 #include "DefaultDicomFilterCustomTest.hpp"
 
+#include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/helper/Filter.hpp>
+#include <filter/dicom/IFilter.hpp>
+
+#include <io/dicom/reader/SeriesDB.hpp>
+
 #include <utestData/Data.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <filter/dicom/factory/new.hpp>
-#include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
-
 #include <gdcmScanner.h>
-
-#include <io/dicom/reader/SeriesDB.hpp>
 
 #include <filesystem>
 
@@ -87,7 +87,7 @@ void DefaultDicomFilterCustomTest::simpleApplication()
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::custom::DefaultDicomFilter");
+        "sight::filter::dicom::custom::DefaultDicomFilter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());

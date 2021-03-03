@@ -61,7 +61,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SStereoSelectorInstance" type="::sight::module::ui::viz::SStereoSelector">
+        <service uid="SStereoSelectorInstance" type="sight::module::ui::viz::SStereoSelector">
              <parameter>param</parameter>
         </service>
        @endcode

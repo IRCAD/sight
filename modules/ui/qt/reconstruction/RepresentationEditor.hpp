@@ -49,7 +49,7 @@ namespace sight::module::ui::qt::reconstruction
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::qt::reconstruction::RepresentationEditor">
+   <service type="sight::module::ui::qt::reconstruction::RepresentationEditor">
        <inout key="reconstruction" uid="..." />
    </service>
    @endcode

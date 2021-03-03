@@ -61,7 +61,6 @@ void ActivitySeriesBuilderTest::setUp()
 void ActivitySeriesBuilderTest::tearDown()
 {
     activity::extension::Activity::getDefault()->clearRegistry();
-
     // Clean up after the test run.
     m_module.reset();
 }
@@ -78,7 +77,7 @@ void ActivitySeriesBuilderTest::buildDataTest()
 
     activity::extension::Activity::ActivitiesType activities;
     activities = m_activity->getInfos(selection);
-    CPPUNIT_ASSERT_EQUAL(size_t(1), activities.size());
+    CPPUNIT_ASSERT_EQUAL(size_t(2), activities.size());
 
     activity::extension::ActivityInfo activityInfo = activities[0];
     data::ActivitySeries::sptr actSeries;

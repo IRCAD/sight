@@ -26,7 +26,7 @@
 #include "data/GenericField.hpp"
 #include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA( ::sight::data::String );
+SIGHT_REGISTER_DATA( sight::data::String );
 
 namespace sight::data
 {

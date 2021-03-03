@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::ROITraits );
+SIGHT_REGISTER_DATA( sight::data::ROITraits );
 
 namespace sight::data
 {

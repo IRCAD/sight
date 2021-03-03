@@ -37,7 +37,7 @@ namespace sight::module::geometry::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::geometry::base::SDecomposeMatrix">
+        <service uid="..." type="sight::module::geometry::base::SDecomposeMatrix">
             <in key="source" uid="..." autoConnect="yes" />
             <inout key="translation" uid="..." />
             <inout key="rotation" uid="..." />

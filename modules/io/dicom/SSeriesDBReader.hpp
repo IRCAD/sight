@@ -57,7 +57,7 @@ namespace sight::module::io::dicom
  * It is also possible to define a filter that must be applied prior to the reading process.
  *
  * @code{.xml}
-       <service uid="..." type="::sight::module::io::dicom::SSeriesDBReader" >
+       <service uid="..." type="sight::module::io::dicom::SSeriesDBReader" >
            <inout key="data" uid="..." />
            <config>
                <filterType>::filter::dicom::custom::NoFilter<filterType/>
@@ -74,7 +74,7 @@ namespace sight::module::io::dicom
  * On the other hand, you can specify a service configuration using the filterConfig element:
  *
  * @code{.xml}
-       <service uid="..." type="::sight::module::io::dicom::SSeriesDBReader" >
+       <service uid="..." type="sight::module::io::dicom::SSeriesDBReader" >
            <inout key="data" uid="..." />
            <config>
                <filterConfig>MyFilterSelectorConfig<filterConfig/>
@@ -91,12 +91,12 @@ namespace sight::module::io::dicom
  * @code{.xml}
     <extension implements="::sight::service::extension::Config">
         <id>MyFilterSelectorConfig</id>
-        <service>::module::ui::dicom::SFilterSelectorDialog</service>
+        <service>module::ui::dicom::SFilterSelectorDialog</service>
         <desc>"Open" action's filter selector config</desc>
         <config>
             <selection mode="include" />
-            <addSelection filter="::sight::filter::dicom::custom::DefaultDicomFilter" />
-            <addSelection filter="::sight::filter::dicom::custom::NoFilter" />
+            <addSelection filter="sight::filter::dicom::custom::DefaultDicomFilter" />
+            <addSelection filter="sight::filter::dicom::custom::NoFilter" />
         </config>
     </extension>
    @endcode

@@ -119,7 +119,7 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
                 CompareObjects visitor(value, m_prefix, m_props);
                 newMetaclass.visit(visitor);
             }
-            else if(classname == "::sight::core::memory::BufferObject")
+            else if(classname == "sight::core::memory::BufferObject")
             {
                 core::memory::BufferObject* bo = value.get< core::memory::BufferObject* >();
                 if(bo)
@@ -256,7 +256,7 @@ void CompareObjects::visit(const camp::UserProperty& property)
     SIGHT_DEBUG( "UserProperty name =" << name );
     ::camp::Value elemValue = property.get( m_campObj );
 
-    if(m_campObj.call("is_a", ::camp::Args("::sight::data::Object")).to<bool>())
+    if(m_campObj.call("is_a", ::camp::Args("sight::data::Object")).to<bool>())
     {
         PropertyVisitor visitor(getPath(name), m_props);
         PropType pt = elemValue.visit(visitor);

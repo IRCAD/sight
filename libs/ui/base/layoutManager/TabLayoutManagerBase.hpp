@@ -84,9 +84,9 @@ public:
      *
      * Example of configuration with Tab layout.
      * @code{.xml}
-       <service uid="subView3" type="::sight::module::ui::base::SView" autoConnect="no" >
+       <service uid="subView3" type="sight::module::ui::base::SView" autoConnect="no" >
            <gui>
-               <layout type="::ui::base::TabLayoutManager" >
+               <layout type="ui::base::TabLayoutManager" >
                    <view caption="TabView1" />
                    <view caption="TabView2" selected="yes" border="10" />
                    <view caption="TabView3"  />
@@ -99,7 +99,7 @@ public:
            </registry>
        </service>
        @endcode
-     *  - \<layout type="::ui::base::TabLayoutManager" \> : define a tab layout.
+     *  - \<layout type="ui::base::TabLayoutManager" \> : define a tab layout.
      *  - \<view caption="TabView1" selected="center" /\> : define a new view which can have the following attributes
      *   - \b border : defines the size of the border in the layout
      *   - \b leftBorder : defines the size of the left border in the layout

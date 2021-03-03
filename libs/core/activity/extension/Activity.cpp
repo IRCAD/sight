@@ -253,7 +253,7 @@ Activity::~Activity()
 void Activity::parseBundleInformation()
 {
     std::vector< SPTR( core::runtime::Extension ) >  extensions
-        = core::runtime::getAllExtensionsForPoint("::sight::activity::extension::Activity");
+        = core::runtime::getAllExtensionsForPoint("sight::activity::extension::Activity");
 
     for( const SPTR( core::runtime::Extension ) &ext :  extensions )
     {

@@ -72,7 +72,7 @@ namespace sight::module::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::ui::dicom::SSliceIndexDicomEditor">
+        <service type="sight::module::ui::dicom::SSliceIndexDicomEditor">
            <in key="series" uid="..." />
            <out key="image" uid="..." />
            <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500">

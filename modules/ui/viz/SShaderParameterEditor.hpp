@@ -45,7 +45,7 @@ namespace sight::module::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::ui::viz::SShaderParameterEditor" >
+        <service uid="..." type="sight::module::ui::viz::SShaderParameterEditor" >
             <inout key="reconstruction" uid="..." />
         </service>
    @endcode

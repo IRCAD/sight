@@ -17,7 +17,7 @@
         <desc>Mesher activity using VTK</desc>
         <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg" >
@@ -34,7 +34,7 @@
         <desc>Simple threshold activity</desc>
         <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::activity::builder::ActivitySeries</builder>
         <appConfig id="ExDicomSegmentation_Threshold_AppCfg" >
@@ -61,11 +61,11 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="::sight::data::SeriesDB" />
+            <object uid="seriesDB" type="sight::data::SeriesDB" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExDicomSegmentation</name>
@@ -79,7 +79,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="dynamicViewSrv" type="::sight::module::ui::qt::activity::SDynamicView" >
+            <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView" >
                 <inout key="seriesDB" uid="seriesDB" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>

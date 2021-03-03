@@ -38,7 +38,7 @@ You can do this by two ways:
 See **ExRealSense**
 
 ```xml
-            <service uid="presets" type="::guiQt::editor::SParameters">
+            <service uid="presets" type="guiQt::editor::SParameters">
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default" values="Default,HighResHighAccuracy, HighResHighDensity,HighResMidDensity,MidResHighAccuracy, MidResHighDensity,MidResMidDensity,LowResHighAccuracy, LowResHighDensity,LowResMidDensity,Hand,ShortRange,BodyScan,RemoveIR" />
                 </parameters>

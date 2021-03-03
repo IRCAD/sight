@@ -51,7 +51,7 @@ namespace sight::module::io::dicomweb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::dicomweb::SQueryEditor">
+        <service type="sight::module::io::dicomweb::SQueryEditor">
             <inout key="seriesDB" uid="..." />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
        </service>

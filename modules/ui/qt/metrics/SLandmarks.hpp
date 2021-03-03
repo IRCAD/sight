@@ -61,7 +61,7 @@ namespace sight::module::ui::qt::metrics
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::ui::qt::metrics::SLandmarks" >
+        <service uid="..." type="sight::module::ui::qt::metrics::SLandmarks" >
            <inout key="landmarks" uid="..." />
            <in key="matrix" uid="..." />
            <text>Use 'Ctrl+Left Click' to add new landmarks</text>

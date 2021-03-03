@@ -50,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SLine">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SLine">
         <config layer="default" transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode

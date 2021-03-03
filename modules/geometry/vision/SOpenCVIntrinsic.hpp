@@ -38,7 +38,7 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::geometry::vision::SOpenCVIntrinsic">
+        <service type="sight::module::geometry::vision::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />

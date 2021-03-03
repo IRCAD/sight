@@ -58,7 +58,7 @@ namespace sight::module::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::vtk::SModelSeriesWriter">
+   <service type="sight::module::io::vtk::SModelSeriesWriter">
        <in key="data" uid="..." />
        <folder>...</folder>
        <extension>vtk</extension>

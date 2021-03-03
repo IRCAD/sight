@@ -37,7 +37,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::filter::image::SThreshold">
+        <service type="sight::module::filter::image::SThreshold">
             <in key="source" uid="..." />
             <out key="target" uid="..." />
             <config>

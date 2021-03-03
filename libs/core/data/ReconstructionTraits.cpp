@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::ReconstructionTraits );
+SIGHT_REGISTER_DATA( sight::data::ReconstructionTraits );
 
 namespace sight::data
 {

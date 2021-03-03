@@ -35,7 +35,7 @@
 namespace sight::data
 {
 
-SIGHT_REGISTER_DATA( ::sight::data::CameraSeries );
+SIGHT_REGISTER_DATA( sight::data::CameraSeries );
 
 const core::com::Signals::SignalKeyType CameraSeries::s_ADDED_CAMERA_SIG         = "addedCamera";
 const core::com::Signals::SignalKeyType CameraSeries::s_REMOVED_CAMERA_SIG       = "removedCamera";

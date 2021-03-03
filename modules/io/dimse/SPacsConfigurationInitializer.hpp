@@ -38,7 +38,7 @@ namespace sight::module::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::io::dimse::SPacsConfigurationInitializer">
+        <service type="sight::module::io::dimse::SPacsConfigurationInitializer">
             <inout key="config" uid="..." />
             <config
                 localApplicationTitle="VRRender"

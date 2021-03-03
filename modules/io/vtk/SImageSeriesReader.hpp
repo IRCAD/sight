@@ -48,7 +48,7 @@ namespace sight::module::io::vtk
  *
  * @section XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::io::vtk::SImageSeriesReader">
+    <service uid="..." type="sight::module::io::vtk::SImageSeriesReader">
         <inout key="data" uid="imageSeries" />
         <file>@path/to/file</file>
     </service>

@@ -63,10 +63,10 @@ void ObjectTest::callFunctionTest()
     CPPUNIT_ASSERT(metaClass.hasFunction("classname"));
     CPPUNIT_ASSERT(metaClass.hasFunction("is_a"));
 
-    CPPUNIT_ASSERT(campObj.call("classname").to<std::string>() == "::sight::data::Image");
-    CPPUNIT_ASSERT(campObj.call("is_a", ::camp::Args("::sight::data::Object")).to<bool>());
-    CPPUNIT_ASSERT(campObj.call("is_a", ::camp::Args("::sight::data::Image")).to<bool>());
-    CPPUNIT_ASSERT(!campObj.call("is_a", ::camp::Args("::sight::data::Float")).to<bool>());
+    CPPUNIT_ASSERT(campObj.call("classname").to<std::string>() == "sight::data::Image");
+    CPPUNIT_ASSERT(campObj.call("is_a", ::camp::Args("sight::data::Object")).to<bool>());
+    CPPUNIT_ASSERT(campObj.call("is_a", ::camp::Args("sight::data::Image")).to<bool>());
+    CPPUNIT_ASSERT(!campObj.call("is_a", ::camp::Args("sight::data::Float")).to<bool>());
 
 }
 

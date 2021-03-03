@@ -172,15 +172,15 @@ void SShaderParameterEditor::updateGuiInfo()
     for (const auto& wParamSrv : matService->getRegisteredServices())
     {
         const auto paramSrv = wParamSrv.lock();
-        if (paramSrv->getClassname() == "::sight::module::viz::scene3d::adaptor::SShaderParameter")
+        if (paramSrv->getClassname() == "sight::module::viz::scene3d::adaptor::SShaderParameter")
         {
             /// Filter object types
             const data::Object::csptr shaderObj =
                 paramSrv->getInOut< data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
             const ObjectClassnameType objType = shaderObj->getClassname();
 
-            if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
-               objType == "::sight::data::Integer")
+            if(objType == "sight::data::Boolean" || objType == "sight::data::Float" ||
+               objType == "sight::data::Integer")
             {
                 found = true;
                 break;
@@ -215,7 +215,7 @@ void SShaderParameterEditor::updateGuiInfo()
     for (auto wAdaptor : matService->getRegisteredServices())
     {
         const auto adaptor = wAdaptor.lock();
-        if (adaptor->getClassname() == "::sight::module::viz::scene3d::adaptor::SShaderParameter")
+        if (adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SShaderParameter")
         {
             auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicCast(adaptor);
             auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,

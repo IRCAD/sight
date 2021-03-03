@@ -36,8 +36,8 @@
 #include <QMainWindow>
 #include <QScrollArea>
 
-fwGuiRegisterMacro( ::sight::ui::qt::CardinalLayoutManager,
-                    ::sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( sight::ui::qt::CardinalLayoutManager,
+                    sight::ui::base::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
 
 namespace sight::ui::qt
 {

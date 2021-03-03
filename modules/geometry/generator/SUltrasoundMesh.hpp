@@ -53,7 +53,7 @@ namespace generator
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::module::filter::mesh::generator::SUltrasoundMesh">
+   <service uid="..." type="sight::module::filter::mesh::generator::SUltrasoundMesh">
        <inout key="mesh" uid="..." />
         <config deltaDepth="50" depth="132" width="90" />
    </service>

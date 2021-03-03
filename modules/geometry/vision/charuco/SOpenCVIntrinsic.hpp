@@ -41,7 +41,7 @@ namespace sight::module::geometry::vision::charuco
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::geometry::vision::charuco::SOpenCVIntrinsic">
+        <service type="sight::module::geometry::vision::charuco::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />

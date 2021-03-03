@@ -42,7 +42,7 @@ namespace sight::module::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::ui::viz::SAddPoint">
+        <service type="sight::module::ui::viz::SAddPoint">
             <inout key="pointList" uid="..." />
        </service>
    @endcode

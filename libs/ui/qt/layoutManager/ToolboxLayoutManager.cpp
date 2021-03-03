@@ -29,14 +29,14 @@
 
 #include <data/tools/Color.hpp>
 
+#include <ui/base/registry/macros.hpp>
+
 #include <QScrollArea>
 #include <QStyle>
 #include <QVBoxLayout>
 
-#include <ui/base/registry/macros.hpp>
-
-fwGuiRegisterMacro( ::sight::ui::qt::ToolboxLayoutManager,
-                    ::sight::ui::base::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
+fwGuiRegisterMacro( sight::ui::qt::ToolboxLayoutManager,
+                    sight::ui::base::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
 
 namespace sight::ui::qt
 {

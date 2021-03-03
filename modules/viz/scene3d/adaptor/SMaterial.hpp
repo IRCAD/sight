@@ -62,7 +62,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SMaterial">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SMaterial">
         <inout key="material" uid="..." />
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
                 shadingMode="gouraud" normalLength="0.1" representationMode="SURFACE" />

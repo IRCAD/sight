@@ -28,7 +28,7 @@
 namespace sight::data
 {
 
-SIGHT_REGISTER_DATA( ::sight::data::MarkerMap )
+SIGHT_REGISTER_DATA( sight::data::MarkerMap )
 
 //------------------------------------------------------------------------------
 

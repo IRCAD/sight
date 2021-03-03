@@ -27,24 +27,24 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeries}" type="::sight::data::ModelSeries" src="ref" />
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
-        <object uid="${volumeTF}" type="::sight::data::TransferFunction" src="ref" />
-        <object uid="${extrudedModelSeries}" type="::sight::data::ModelSeries" src="ref" />
-        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
+        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
+        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
-        <object uid="extrudedImage" type="::sight::data::Image" />
-        <object uid="clippingMatrix" type="::sight::data::Matrix4" />
-        <object uid="identityMatrix" type="::sight::data::Matrix4" />
-        <object uid="background" type="::sight::data::Image" />
-        <object uid="border" type="::sight::data::Color" >
+        <object uid="extrudedImage" type="sight::data::Image" />
+        <object uid="clippingMatrix" type="sight::data::Matrix4" />
+        <object uid="identityMatrix" type="sight::data::Matrix4" />
+        <object uid="background" type="sight::data::Image" />
+        <object uid="border" type="sight::data::Color" >
             <value>#2E3034</value>
         </object>
-        <object uid="snapshot" type="::sight::data::Image" />
+        <object uid="snapshot" type="sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
                 <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100" >
                     <styleSheet>
@@ -64,7 +64,7 @@
                         ]]>
                     </styleSheet>
                 </slideView>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -87,10 +87,10 @@
             </registry>
         </service>
 
-        <service uid="topToolbarSliderView" type="::sight::module::ui::base::SView">
+        <service uid="topToolbarSliderView" type="sight::module::ui::base::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                 </layout>
             </gui>
@@ -99,7 +99,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="::sight::module::ui::base::SToolBar">
+        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
@@ -115,9 +115,9 @@
             </registry>
         </service>
 
-        <service uid="topNegatoSlicerSliderView" type="::sight::module::ui::base::SView">
+        <service uid="topNegatoSlicerSliderView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                 </layout>
@@ -127,9 +127,9 @@
             </registry>
         </service>
 
-        <service uid="bottomNegatoSlicerSliderView" type="::sight::module::ui::base::SView">
+        <service uid="bottomNegatoSlicerSliderView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000"/>
@@ -140,9 +140,9 @@
             </registry>
         </service>
 
-        <service uid="bottomNegatoSlicerView" type="::sight::module::ui::base::SView">
+        <service uid="bottomNegatoSlicerView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
                     <view proportion="0" backgroundColor="#00000000" border="5" />
@@ -154,7 +154,7 @@
             </registry>
         </service>
 
-        <service uid="notifierSrv" type="::sight::module::ui::qt::SNotifier" >
+        <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier" >
             <parent uid="mainview"/>
             <message>Default message</message>
             <maxNotifications>3</maxNotifications>
@@ -164,7 +164,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -236,112 +236,112 @@
             </scene>
         </service>
 
-        <service uid="trackballInteractorAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera">
+        <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
             <config layer="defaultLayer" priority="0" />
         </service>
 
-        <service uid="pickerInteractorAdp" type="::sight::module::viz::scene3d::adaptor::SPicker">
+        <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
             <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="modeSeriesAdp" type="::sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${modelSeries}" />
             <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
-        <service uid="extrudedMeshesAdp" type="::sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
+        <service uid="extrudedMeshesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="yes" >
             <in key="model" uid="${extrudedModelSeries}" />
             <config layer="defaultLayer" queryFlags="0x40000000" autoresetcamera="no" />
         </service>
 
-        <service uid="volumeAdp" type="::sight::module::viz::scene3d::adaptor::SVolumeRender" >
+        <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
             <inout key="image" uid="extrudedImage" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="yes" />
             <config layer="defaultLayer" widgets="no" preintegration="no" autoresetcamera="no" samples="1024" />
         </service>
 
-        <service uid="3DNegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" >
+        <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
-        <service uid="landmarksAdp" type="::sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
             <inout key="landmarks" uid="${landmarks}" />
             <config layer="defaultLayer" priority="4" />
         </service>
 
-        <service uid="multiDistancesAdp" type="::sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
-        <service uid="axisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis" >
+        <service uid="axisAdp" type="sight::module::viz::scene3d::adaptor::SAxis" >
             <config layer="defaultLayer" visible="false" origin="true" label="false" />
         </service>
 
-        <service uid="pickedVoxelTextAdp" type="::sight::module::viz::scene3d::adaptor::SText">
+        <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
             <text></text>
             <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="bottom" color="#D35151" />
         </service>
 
-        <service uid="shapeExtruderAdp" type="::sight::module::viz::scene3d::adaptor::SShapeExtruder">
+        <service uid="shapeExtruderAdp" type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
             <inout key="extrudedMeshes" uid="${extrudedModelSeries}" />
             <config layer="defaultLayer" lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
-        <service uid="resizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="resizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="defaultLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top"/>
         </service>
 
-        <service uid="snapshotAdp" type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo">
+        <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
             <config layer="defaultLayer" flip="true" />
         </service>
 
         <!-- Axial -->
 
-        <service uid="axialBackgroundAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="axialBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="axialBackgroundNegatoLayer" />
         </service>
 
-        <service uid="axialBackgroundResizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="axialBackgroundResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="axialBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
         </service>
 
-        <service uid="axialCompositorAdp" type="::sight::module::viz::scene3d::adaptor::SCompositorParameter">
+        <service uid="axialCompositorAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
             <inout key="parameter" uid="border" />
             <config layer="axialNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="axialNegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="axialNegatoMultiDistancesAdp" type="::sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="axialNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="axialNegatoCameraAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" priority="0" orientation="axial" />
         </service>
 
-        <service uid="axialNegatoResizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="axialNegatoResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="axialNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top"/>
         </service>
 
-        <service uid="axialPickerInteractorAdp" type="::sight::module::viz::scene3d::adaptor::SPicker">
+        <service uid="axialPickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
             <config layer="axialNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="axialLandmarksAdp" type="::sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="axialLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="axialNegatoLayer" label="false" orientation="axial" priority="4" />
@@ -349,46 +349,46 @@
 
         <!-- Sagittal -->
 
-        <service uid="sagittalBackgroundAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="sagittalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="sagittalBackgroundNegatoLayer" />
         </service>
 
-        <service uid="sagittalBackgroundResizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="sagittalBackgroundResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="sagittalBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
         </service>
 
-        <service uid="sagittalCompositorAdp" type="::sight::module::viz::scene3d::adaptor::SCompositorParameter">
+        <service uid="sagittalCompositorAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
             <inout key="parameter" uid="border" />
             <config layer="sagittalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="sagittalNegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" sliceIndex="sagittal" filtering="anisotropic" />
         </service>
 
-        <service uid="sagittalNegatoMultiDistancesAdp" type="::sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="sagittalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="sagittalNegatoCameraAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" priority="0" orientation="sagittal" />
         </service>
 
-        <service uid="sagittalNegatoResizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="sagittalNegatoResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="sagittalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom"/>
         </service>
 
-        <service uid="sagittalPickerInteractorAdp" type="::sight::module::viz::scene3d::adaptor::SPicker">
+        <service uid="sagittalPickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
             <config layer="sagittalNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="sagittalLandmarksAdp" type="::sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="sagittalLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" priority="4" />
@@ -396,46 +396,46 @@
 
         <!-- Frontal -->
 
-        <service uid="frontalBackgroundAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="frontalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="frontalBackgroundNegatoLayer" />
         </service>
 
-        <service uid="frontalBackgroundResizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="frontalBackgroundResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="frontalBackgroundNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
         </service>
 
-        <service uid="frontalCompositorAdp" type="::sight::module::viz::scene3d::adaptor::SCompositorParameter">
+        <service uid="frontalCompositorAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
             <inout key="parameter" uid="border" />
             <config layer="frontalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="frontalNegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" sliceIndex="frontal" filtering="anisotropic" />
         </service>
 
-        <service uid="frontalNegatoMultiDistancesAdp" type="::sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+        <service uid="frontalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="frontalNegatoCameraAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" priority="0" orientation="frontal" />
         </service>
 
-        <service uid="frontalNegatoResizeViewportAdp" type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+        <service uid="frontalNegatoResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
             <config layer="frontalNegatoLayer" hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom"/>
         </service>
 
-        <service uid="frontalPickerInteractorAdp" type="::sight::module::viz::scene3d::adaptor::SPicker">
+        <service uid="frontalPickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
             <config layer="frontalNegatoLayer" queryMask="0x40000000" />
         </service>
 
-        <service uid="frontalLandmarksAdp" type="::sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
+        <service uid="frontalLandmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="yes" >
             <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" label="false" orientation="frontal" priority="4" />
@@ -443,42 +443,42 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="axialNegatoSlicerSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="axialNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Axial</sliceIndex>
         </service>
 
-        <service uid="sagittalNegatoSlicerSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="sagittalNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
-        <service uid="frontalNegatoSlicerSrv" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+        <service uid="frontalNegatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
             <inout key="image" uid="${image}" />
             <sliceIndex>Frontal</sliceIndex>
         </service>
 
         <!-- Reset the clipping box matreix -->
-        <service uid="clippingBoxResetSrv" type="::sight::module::data::SCopy" >
+        <service uid="clippingBoxResetSrv" type="sight::module::data::SCopy" >
             <in key="source" uid="identityMatrix" />
             <inout key="target" uid="clippingMatrix" />
         </service>
 
         <!-- Load the background image -->
-        <service uid="backgroundReaderSrv" type="::sight::module::io::vtk::SImageReader">
+        <service uid="backgroundReaderSrv" type="sight::module::io::vtk::SImageReader">
             <inout key="data" uid="background" />
             <resource>SightViewer/background.png</resource>
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="exclude" />
             <addSelection service="::sight::module::io::atoms::SWriter" />
         </service>
 
-        <service uid="imageExtruderSrv" type="::sight::module::filter::image::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" autoConnect="yes" worker="EXTRUSION_THREAD" >
             <in key="meshes" uid="${extrudedModelSeries}" />
             <in key="image" uid="${image}" />
             <inout key="extrudedImage" uid="extrudedImage" />
@@ -487,12 +487,12 @@
         <!-- ************************************* Action ************************************ -->
 
         <!-- Set the view in full screen -->
-        <service uid="fullscreenAct" type="::sight::module::ui::viz::SScreenSelector" >
+        <service uid="fullscreenAct" type="sight::module::ui::viz::SScreenSelector" >
             <config mode="select" />
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="windowedAct" type="sight::module::ui::base::com::SSlotCaller">
             <state visible="false" />
             <slots>
                 <slot>genericSceneSrv/disableFullscreen</slot>
@@ -501,7 +501,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="snapshotAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>imageWriterSrv/update</slot>
             </slots>

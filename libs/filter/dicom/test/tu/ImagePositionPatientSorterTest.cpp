@@ -22,21 +22,21 @@
 
 #include "ImagePositionPatientSorterTest.hpp"
 
+#include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/helper/Filter.hpp>
+#include <filter/dicom/IFilter.hpp>
+
+#include <geometry/data/VectorFunctions.hpp>
+
+#include <io/dicom/reader/SeriesDB.hpp>
+
 #include <utestData/Data.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <filter/dicom/factory/new.hpp>
-#include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
-
 #include <gdcmImageReader.h>
-
-#include <geometry/data/VectorFunctions.hpp>
-
-#include <io/dicom/reader/SeriesDB.hpp>
 
 #include <filesystem>
 
@@ -139,7 +139,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::sorter::ImagePositionPatientSorter");
+        "sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_NO_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
 
@@ -186,7 +186,7 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::sorter::ImagePositionPatientSorter");
+        "sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false),
                          filter::dicom::exceptions::FilterFailure);

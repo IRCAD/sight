@@ -43,7 +43,7 @@ namespace sight::module::viz::sample
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::module::viz::sample::SMesh" >
+   <service uid="..." type="sight::module::viz::sample::SMesh" >
       <in key="mesh" uid="..." />
    </service>
  *

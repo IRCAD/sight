@@ -42,7 +42,7 @@ namespace Tuto05MultithreadConsoleCpp
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::Tuto05MultithreadConsoleCpp::SIncrementArray" >
+        <service type="Tuto05MultithreadConsoleCpp::SIncrementArray" >
             <inout key="array" uid="..." />
        </service>
    @endcode

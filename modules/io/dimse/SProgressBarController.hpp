@@ -46,7 +46,7 @@ namespace sight::module::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="progressBarController" type="::sight::module::io::dimse::SProgressBarController" />
+    <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController" />
    @endcode
  */
 class MODULE_IO_DIMSE_CLASS_API SProgressBarController : public service::IController

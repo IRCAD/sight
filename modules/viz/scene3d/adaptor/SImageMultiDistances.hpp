@@ -53,7 +53,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="yes" >
         <inout key="image" uid="..." />
         <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
     </service>

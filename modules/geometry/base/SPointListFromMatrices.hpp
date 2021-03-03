@@ -39,7 +39,7 @@ namespace sight::module::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::geometry::base::SPointListFromMatrices">
+        <service type="sight::module::geometry::base::SPointListFromMatrices">
             <in group="matrices">
                 <key uid="matrix1" />
                 <key uid="matrix2" />

@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( ::sight::data::ResectionDB );
+SIGHT_REGISTER_DATA( sight::data::ResectionDB );
 
 namespace sight::data
 {

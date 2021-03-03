@@ -53,7 +53,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
+    <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="yes" />
         <inout key="tf" uid="..." optional="yes" />
         <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />

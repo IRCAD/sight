@@ -41,7 +41,7 @@ namespace sight::module::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::sync::SSignalGate">
+        <service uid="..." type="sight::module::sync::SSignalGate">
             <signal>data/modified</signal>
             <signal>object/changed</signal>
             <signal>service/computed</signal>

@@ -61,7 +61,7 @@ namespace sight::module::io::pcl
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::pcl::SFrameGrabber">
+        <service type="sight::module::io::pcl::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>

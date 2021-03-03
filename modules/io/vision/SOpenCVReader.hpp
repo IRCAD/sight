@@ -34,7 +34,7 @@ namespace sight::module::io::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::module::io::vision::SOpenCVReader" >
+       <service uid="..." type="sight::module::io::vision::SOpenCVReader" >
            <inout key="data" uid="..." />
        </service>
  * @endcode

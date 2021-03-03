@@ -42,7 +42,7 @@ namespace sight::module::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::viz::SStereoToggler" >
+    <service uid="..." type="sight::module::ui::viz::SStereoToggler" >
         <config layer="default" stereoMode="interlaced" />
     </service>
  *

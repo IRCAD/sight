@@ -43,7 +43,7 @@ namespace sight::module::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::itk::InrImageReaderService">
+   <service type="sight::module::io::itk::InrImageReaderService">
        <inout key="data" uid="..." />
        <file>...</file>
    </service>

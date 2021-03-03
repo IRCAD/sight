@@ -71,7 +71,7 @@ class Layer;
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::viz::scene3d::SRender" autoconnect="yes">
+    <service uid="..." type="sight::viz::scene3d::SRender" autoconnect="yes">
         <scene renderMode="auto">
             <background topColor="#000000" bottomColor="#FFFFFF" topScale="0.7" bottomScale="1.0"/>
 

@@ -49,7 +49,7 @@ namespace sight::module::ui::qt::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="cameraLauncher" type="::sight::module::ui::qt::calibration::SCameraConfigLauncher">
+   <service uid="cameraLauncher" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
        <inout key="cameraSeries" uid="..." />
        <inout key="activitySeries" uid="..." />
        <config>

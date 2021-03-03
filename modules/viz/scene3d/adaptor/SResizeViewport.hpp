@@ -39,7 +39,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::SResizeViewport" >
+    <service type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
         <config layer="default" hOffset="0" vOffset="0" width="1" height="1" hAlign="left" vAlign="top"/>
     </service>
    @endcode

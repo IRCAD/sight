@@ -139,8 +139,8 @@ void ConversionTest::dataToAtomTest()
         {
             std::string classname = atom->getMetaInfo( atoms::conversion::DataVisitor::CLASSNAME_METAINFO );
             // Drop attributes from atoms::conversion::mappers.
-            if( ( classname == "::sight::data::Mesh" && elem.first == "attributes" ) ||
-                ( classname == "::sight::data::Graph" && elem.first == "connections" ) )
+            if( ( classname == "sight::data::Mesh" && elem.first == "attributes" ) ||
+                ( classname == "sight::data::Graph" && elem.first == "connections" ) )
             {
                 continue;
             }
@@ -163,9 +163,9 @@ void ConversionTest::dataToAtomTest()
                     CPPUNIT_ASSERT(elem.second->isValue());
                     break;
                 case camp::userType:
-                    if( ( ( classname == "::sight::data::Material" ) && ( attribute == "diffuse_texture" ) ) ||
-                        ( ( classname == "::sight::data::Reconstruction" ) && ( attribute == "image" ) ) ||
-                        ( ( classname == "::sight::data::Reconstruction" ) && ( attribute == "mesh" ) ) )
+                    if( ( ( classname == "sight::data::Material" ) && ( attribute == "diffuse_texture" ) ) ||
+                        ( ( classname == "sight::data::Reconstruction" ) && ( attribute == "image" ) ) ||
+                        ( ( classname == "sight::data::Reconstruction" ) && ( attribute == "mesh" ) ) )
                     {
                         CPPUNIT_ASSERT_MESSAGE("classname: " + classname + ", attribute: " + attribute,
                                                !elem.second);
@@ -780,7 +780,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         atoms::Object::sptr atomObj = atoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::sight::data::Vector" );
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "sight::data::Vector" );
         atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID() );
 
         CPPUNIT_ASSERT_THROW( atoms::conversion::convert( atomObj ),
@@ -790,7 +790,7 @@ void ConversionTest::conversionNotManagedExceptionTest()
     // Test ConversionNotManaged throwing during atom to data conversion
     {
         atoms::Object::sptr atomObj = atoms::Object::New();
-        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "::sight::data::Vector");
+        atomObj->setMetaInfo( DataVisitor::CLASSNAME_METAINFO, "sight::data::Vector");
         atomObj->setMetaInfo( DataVisitor::ID_METAINFO, core::tools::UUID::generateUUID());
 
         atoms::Map::sptr atomFields = atoms::Map::New();

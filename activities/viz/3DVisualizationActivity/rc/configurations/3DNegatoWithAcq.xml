@@ -14,13 +14,13 @@
         <param name="setAxialCameraChannel" />
     </parameters>
     <config>
-        <object uid="${modelSeries}" type="::sight::data::ModelSeries" src="ref" />
-        <object uid="${imageComposite}" type="::sight::data::Composite" src="ref" />
-        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
-        <object uid="optionalInputImage" type="::sight::data::Image" src="deferred" />
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
+        <object uid="${imageComposite}" type="sight::data::Composite" src="ref" />
+        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
+        <object uid="optionalInputImage" type="sight::data::Image" src="deferred" />
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -33,9 +33,9 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::sight::module::ui::base::SView">
+        <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="0" minWidth="30" />
@@ -51,31 +51,31 @@
             </registry>
         </service>
 
-        <service uid="snapshotNegatoEditor" type="::sight::module::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshotNegatoEditor" type="sight::module::ui::qt::viz::SnapshotEditor" />
 
-        <service uid="extractImage" type="::sight::module::ui::base::SPushObject">
+        <service uid="extractImage" type="sight::module::ui::base::SPushObject">
             <inout key="source" uid="${imageComposite}" />
             <out key="destination" uid="optionalInputImage" />
             <push srcKey="OptionalInputImageKey" />
         </service>
 
-        <service uid="LockImageSrv" type="::sight::module::memory::LockDumpSrv">
+        <service uid="LockImageSrv" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="optionalInputImage" />
         </service>
 
-        <service uid="sliderNegato" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderNegato" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="optionalInputImage" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
-        <service uid="distanceNegatoEditor" type="::sight::module::ui::qt::metrics::Distance">
+        <service uid="distanceNegatoEditor" type="sight::module::ui::qt::metrics::Distance">
             <inout key="image" uid="optionalInputImage" />
         </service>
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="negato" type="::fwRenderVTK::SRender" >
+        <service uid="negato" type="fwRenderVTK::SRender" >
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -94,59 +94,59 @@
             </scene>
         </service>
 
-        <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+        <service uid="snapshot" type="visuVTKAdaptor::SSnapshot">
             <config renderer="default" />
         </service>
 
-        <service uid="orientationMarker" type="::visuVTKAdaptor::SOrientationMarker">
+        <service uid="orientationMarker" type="visuVTKAdaptor::SOrientationMarker">
             <config renderer="default" hAlign="right" />
         </service>
 
-        <service uid="interactor" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="interactor" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle3DForNegato" />
         </service>
 
-        <service uid="pickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+        <service uid="pickerInteractor" type="visuVTKAdaptor::SPickerInteractor">
             <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP,MOUSE_RIGHT_UP" />
         </service>
 
-        <service uid="medical3DCamera" type="::visuVTKAdaptor::SMedical3DCamera">
+        <service uid="medical3DCamera" type="visuVTKAdaptor::SMedical3DCamera">
             <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
         </service>
 
-        <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="MPRNegato" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="optionalInputImage" />
             <config renderer="default" picker="negatodefault" slices="3" sliceIndex="${orientation}" />
         </service>
 
-        <service uid="modelSeries" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+        <service uid="modelSeries" type="visuVTKAdaptor::SModelSeries" autoConnect="yes">
             <in key="model" uid="${modelSeries}" />
             <config renderer="default" picker="negatodefault" autoresetcamera="yes" />
         </service>
 
-        <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="text" type="visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="optionalInputImage" />
             <config renderer="default" picker="negatodefault" text="" />
         </service>
 
-        <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+        <service uid="multiDistances" type="visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
             <inout key="image" uid="optionalInputImage" />
             <config filter="true" renderer="default" picker="negatodefault" />
         </service>
 
-        <service uid="landmarksNegato" type="::visuVTKAdaptor::SLandmarks" autoConnect="yes">
+        <service uid="landmarksNegato" type="visuVTKAdaptor::SLandmarks" autoConnect="yes">
             <inout key="landmarks" uid="${landmarks}" />
             <config renderer="default" picker="negatodefault" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
             <in key="object" uid="${modelSeries}" />
             <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="sliceListNegatoEditor" type="::sight::module::ui::qt::SSelectionMenuButton">
+        <service uid="sliceListNegatoEditor" type="sight::module::ui::qt::SSelectionMenuButton">
             <!-- This input is only needed to start the service only if the image is present -->
             <in key="imageKey" uid="optionalInputImage" />
             <toolTip>Manage slice visibility</toolTip>

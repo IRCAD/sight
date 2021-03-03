@@ -33,7 +33,7 @@ namespace sight::module::io::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::module::io::vision::SOpenCVWriter" >
+       <service uid="..." type="sight::module::io::vision::SOpenCVWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode

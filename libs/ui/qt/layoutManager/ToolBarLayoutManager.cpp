@@ -38,8 +38,8 @@
 
 #include <functional>
 
-fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::ToolBarLayoutManager,
-                    ::sight::ui::base::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( sight::ui::qt::layoutManager::ToolBarLayoutManager,
+                    sight::ui::base::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
 
 namespace sight::ui::qt
 {

@@ -41,7 +41,7 @@ namespace sight::module::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::geometry::base::SPointToLandmarkVector">
+        <service type="sight::module::geometry::base::SPointToLandmarkVector">
             <in key="landmark" uid="..." />
             <inout key="transform" uid="..." />
             <inout key="computedLandmark" uid="..." />

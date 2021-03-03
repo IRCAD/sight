@@ -42,7 +42,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="square" type="::sight::module::viz::scene2d::adaptor::SSquare">
+   <service uid="square" type="sight::module::viz::scene2d::adaptor::SSquare">
       <config x="20" y="20" size="30" color="blue" zValue="3" autoRefresh="false" interaction="false" />
    </service>
    @endcode

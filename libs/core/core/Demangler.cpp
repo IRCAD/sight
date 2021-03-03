@@ -75,7 +75,7 @@ std::string Demangler::getLeafClassname() const
 std::string Demangler::getClassname() const
 {
     const std::string demangled(this->demangle());
-    return COLONS + demangled;
+    return demangled;
 }
 
 //------------------------------------------------------------------------------
@@ -129,8 +129,5 @@ std::string Demangler::demangle() const
 }
 
 //------------------------------------------------------------------------------
-
-#undef COLONS
-#undef LT
 
 } //namespace sight::core

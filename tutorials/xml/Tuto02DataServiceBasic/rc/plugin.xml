@@ -12,7 +12,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- In tutoDataServiceBasic, the central data object is a ::sight::data::Image. -->
-            <object uid="imageData" type="::sight::data::Image" />
+            <object uid="imageData" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -22,7 +22,7 @@
                 containers in the application main window.
                 Here, it declares a container for the 3D rendering service.
             -->
-            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto02DataServiceBasic</name>
@@ -43,7 +43,7 @@
                 The <file> tag defines the path of the image to load. Here, it is a relative
                 path from the repository in which you launch the application.
             -->
-            <service uid="imageReaderSrv" type="::sight::module::io::vtk::SImageReader" >
+            <service uid="imageReaderSrv" type="sight::module::io::vtk::SImageReader" >
                 <inout key="data" uid="imageData" />
                 <file>../../data/patient1.vtk</file>
             </service>
@@ -52,7 +52,7 @@
                 Visualization service of a 3D medical image:
                 This service will render the 3D image.
             -->
-            <service uid="imageRendereSrv" type="::sight::module::viz::sample::SImage" >
+            <service uid="imageRendereSrv" type="sight::module::viz::sample::SImage" >
                 <in key="image" uid="imageData" />
             </service>
 

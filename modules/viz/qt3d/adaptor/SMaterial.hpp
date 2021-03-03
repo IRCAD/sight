@@ -41,7 +41,7 @@ namespace sight::module::viz::qt3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::qt3d::adaptor::SMaterial" >
+    <service uid="..." type="sight::module::viz::qt3d::adaptor::SMaterial" >
         <inout key="material" uid="..." />
         <config materialName="..." />
     </service>

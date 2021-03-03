@@ -37,7 +37,7 @@ namespace sight::module::ui::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::base::SPreferences">
+   <service type="sight::module::ui::base::SPreferences">
        <inout key="preferences" uid="..." />
        <filename>path/to/my/preferences.json</filename>
    </service>

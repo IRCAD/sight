@@ -40,7 +40,7 @@ namespace sight::module::filter::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::filter::vision::STransformDepthMap2mm">
+   <service type="sight::module::filter::vision::STransformDepthMap2mm">
        <in key="cameraSeries" uid="..." />
        <in key="originDepth" uid="..." />
        <inout key="scaledDepth" uid="..." />

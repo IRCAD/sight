@@ -5,40 +5,40 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::data::MedicalImageSrv</service>
-         <object>::sight::data::Image</object>
+         <type>sight::service::IController</type>
+         <service>sight::module::data::MedicalImageSrv</service>
+         <object>sight::data::Image</object>
          <desc>This service convert its attached image to a medical image by adding specific fields.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::module::data::ICamp</type>
-         <service>::sight::module::data::SCopy</service>
+         <service>sight::module::data::SCopy</service>
          <object>sight::data::Object</object>
          <desc>This service copies an object and updates its own object or the defined target.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::data::SExtractDeviceInfo</service>
-         <object>::sight::data::Object</object>
+         <type>sight::service::IController</type>
+         <service>sight::module::data::SExtractDeviceInfo</service>
+         <object>sight::data::Object</object>
          <desc>This service extract camera informations in configuration using android device name.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::module::data::ICamp</type>
-         <service>::sight::module::data::SExtractMeshByType</service>
+         <service>sight::module::data::SExtractMeshByType</service>
          <desc>This service extract meshes of a specific structure type from data::ModelSeries.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::module::data::ICamp</type>
-         <service>::sight::module::data::SExtractObj</service>
+         <type>sight::module::data::ICamp</type>
+         <service>sight::module::data::SExtractObj</service>
          <desc>This service get objects from a source object and expose them as new objects.</desc>
     </extension>
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::data::SManage</service>
+         <type>sight::service::IController</type>
+         <service>sight::module::data::SManage</service>
          <object key="object">sight::data::Object</object>
          <object key="composite">sight::data::Composite</object>
          <object key="vector">sight::data::Vector</object>
@@ -48,8 +48,8 @@
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::data::SMergeTF</service>
+         <type>sight::service::IController</type>
+         <service>sight::module::data::SMergeTF</service>
          <object key="tfPool">sight::data::Composite</object>
          <object key="tf">sight::data::TransferFunction</object>
          <desc>Controller that merge all TF from a composite into one TF.</desc>
@@ -57,23 +57,23 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IController</type>
-         <service>::sight::module::data::SSeriesSignal</service>
-         <object>::sight::data::SeriesDB</object>
+         <type>sight::service::IController</type>
+         <service>sight::module::data::SSeriesSignal</service>
+         <object>sight::data::SeriesDB</object>
          <desc>This service emits a signal for each added series (the signal contains the added series)</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::module::data::IUpdaterSrv</type>
-         <service>::sight::module::data::updater::SObjFromSlot</service>
-         <object>::sight::data::Composite</object>
+         <type>sight::module::data::IUpdaterSrv</type>
+         <service>sight::module::data::updater::SObjFromSlot</service>
+         <object>sight::data::Composite</object>
          <desc>Registers/unregisters the object given by the slots.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::module::data::IWrapperSrv</type>
-         <service>::sight::module::data::wrapper::SImageSignalForwarder</service>
-         <object>::sight::data::Image</object>
+         <type>sight::module::data::IWrapperSrv</type>
+         <service>sight::module::data::wrapper::SImageSignalForwarder</service>
+         <object>sight::data::Image</object>
          <desc>This service forwards signals from an image ti another.</desc>
     </extension>
 </plugin>

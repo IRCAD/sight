@@ -98,7 +98,7 @@ struct isMappingSingleMPLHelper
         BOOST_STATIC_ASSERT(sizeof(T) == 0);  // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
-        std::string msg("isMapping<TYPE>::(const KEYTYPE &key) not specializated for TYPE and/or KEYTYPE!!!");
+        std::string msg("isMapping<type>(const KEYTYPE &key) not specializated for TYPE and/or KEYTYPE!!!");
         throw std::invalid_argument(msg);
         return false;
     }

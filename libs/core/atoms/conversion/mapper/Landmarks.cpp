@@ -46,7 +46,7 @@ namespace mapper
 
 //-----------------------------------------------------------------------------
 
-fwAtomConversionRegisterMacro( atoms::conversion::mapper::Landmarks, ::sight::data::Landmarks);
+fwAtomConversionRegisterMacro( atoms::conversion::mapper::Landmarks, sight::data::Landmarks);
 
 //-----------------------------------------------------------------------------
 

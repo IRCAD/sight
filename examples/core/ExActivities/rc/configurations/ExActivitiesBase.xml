@@ -10,11 +10,11 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="seriesDB" type="::sight::data::SeriesDB" />
+        <object uid="seriesDB" type="sight::data::SeriesDB" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -29,7 +29,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityLauncherSrv" type="::sight::service::SConfigController" >
+        <service uid="activityLauncherSrv" type="sight::service::SConfigController" >
             <appConfig id="ActivityLauncher" />
             <inout key="seriesDB" uid="seriesDB" />
             <parameter replace="SEQUENCER_CONFIG" by="${SEQUENCER_CONFIG}" />

@@ -49,7 +49,7 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::geometry::vision::SChessBoardDetector" >
+        <service uid="..." type="sight::module::geometry::vision::SChessBoardDetector" >
             <in group="image">
                 <key uid="..." />
                 <key uid="..." />

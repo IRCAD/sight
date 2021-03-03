@@ -52,7 +52,7 @@ namespace sight::module::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::geometry::base::SPointToLandmarkDistance">
+   <service type="sight::module::geometry::base::SPointToLandmarkDistance">
        <in key="pointMatrix" uid="..." />
        <in key="landmark" uid="..." />
        <inout key="pointToLandmarkMatrix" uid="..." />

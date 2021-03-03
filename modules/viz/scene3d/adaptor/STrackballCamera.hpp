@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::STrackballCamera">
+    <service type="sight::module::viz::scene3d::adaptor::STrackballCamera">
         <config layer="..." priority="0" layerOrderDependant="true" />
    </service>
    @endcode

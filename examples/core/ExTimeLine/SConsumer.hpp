@@ -45,7 +45,7 @@ namespace ExTimeLine
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::Ex02TimeLine::SConsumer" >
+        <service type="Ex02TimeLine::SConsumer" >
             <in key="timeline" uid="..." />
             <id>0</id>
             <period>1000</period>

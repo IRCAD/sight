@@ -48,7 +48,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::viz::scene3d::adaptor::SFrustumList">
+        <service type="sight::module::viz::scene3d::adaptor::SFrustumList">
             <in key="camera" uid="..." />
             <in key="transform" uid="..." />
             <config layer="default" near="0.1" far="300" color="#f8e119" transform="..." />

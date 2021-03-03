@@ -81,7 +81,7 @@ void runModelSeriesSrv(
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
 
-    if (srv->isA("::sight::io::base::service::IReader"))
+    if (srv->isA("sight::io::base::service::IReader"))
     {
         srv->registerInOut(obj, "data");
     }

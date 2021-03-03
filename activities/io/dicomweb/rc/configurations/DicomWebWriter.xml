@@ -7,14 +7,14 @@
         <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="::sight::data::SeriesDB" />
-        <object uid="selections" type="::sight::data::Vector" />
+        <object uid="seriesDB" type="sight::data::SeriesDB" />
+        <object uid="selections" type="sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
                     <view caption="Preview" align="bottom" minHeight="200" />
                 </layout>
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
@@ -45,48 +45,48 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="::sight::module::ui::base::series::SDBMerger" >
+        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger" >
             <inout key="seriesDB" uid="seriesDB" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="action_anonymize" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>anonymizeController/update</slot>
             </slots>
         </service>
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>pushSeriesController/update</slot>
                 <slot>action_pushSeriesToPacs/setInexecutable</slot>
             </slots>
         </service>
 
-        <service uid="pushSeriesController" type="::sight::module::io::dicomweb::SSeriesPusher">
+        <service uid="pushSeriesController" type="sight::module::io::dicomweb::SSeriesPusher">
             <in key="selectedSeries" uid="selections" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selection" uid="selections" />
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="viewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="::sight::data::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="sight::data::DicomSeries" />
             </configs>
         </service>
 
-        <service uid="anonymizeController" type="::sight::module::io::dicom::SDicomSeriesAnonymizer">
+        <service uid="anonymizeController" type="sight::module::io::dicom::SDicomSeriesAnonymizer">
             <inout key="seriesDB" uid="seriesDB" />
             <inout key="selectedSeries" uid="selections" />
         </service>

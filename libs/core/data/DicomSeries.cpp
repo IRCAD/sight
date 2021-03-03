@@ -29,7 +29,7 @@
 
 #include <filesystem>
 
-SIGHT_REGISTER_DATA( ::sight::data::DicomSeries )
+SIGHT_REGISTER_DATA( sight::data::DicomSeries )
 
 namespace sight::data
 {

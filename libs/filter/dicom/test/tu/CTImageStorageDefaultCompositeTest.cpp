@@ -22,13 +22,13 @@
 
 #include "CTImageStorageDefaultCompositeTest.hpp"
 
-#include <utestData/Data.hpp>
-
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -86,27 +86,27 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
 
     // Apply composite filter on the first DicomSeries
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::composite::CTImageStorageDefaultComposite");
+        "sight::filter::dicom::composite::CTImageStorageDefaultComposite");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerA, filter, true);
 
     // Apply other filters on the second DicomSeries
-    filter = filter::dicom::factory::New("::sight::filter::dicom::splitter::AcquisitionNumberSplitter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::splitter::AcquisitionNumberSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("::sight::filter::dicom::sorter::InstanceNumberSorter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("::sight::filter::dicom::sorter::ImagePositionPatientSorter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("::sight::filter::dicom::splitter::ImagePositionPatientSplitter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("::sight::filter::dicom::sorter::ImagePositionPatientSorter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("::sight::filter::dicom::modifier::SliceThicknessModifier");
+    filter = filter::dicom::factory::New("sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
 

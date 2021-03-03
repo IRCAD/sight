@@ -95,13 +95,13 @@ struct LockVisitor : public camp::ValueVisitor< void >
                          "' )" );
             if( metaclass.hasFunction("is_a") )
             {
-                if( value.call("is_a", ::camp::Args("::sight::data::Object")).to<bool>() )
+                if( value.call("is_a", ::camp::Args("sight::data::Object")).to<bool>() )
                 {
                     data::Object* ptr      = value.get< data::Object* >();
                     data::Object::sptr obj = ptr->getSptr();
                     data::reflection::visitor::RecursiveLock visitor( obj, m_locks );
                 }
-                else if( value.call("is_a", ::camp::Args("::sight::core::memory::BufferObject")).to<bool>() )
+                else if( value.call("is_a", ::camp::Args("sight::core::memory::BufferObject")).to<bool>() )
                 {
                     core::memory::BufferObject* ptr     = value.get< core::memory::BufferObject* >();
                     core::memory::BufferObject::sptr bo = ptr->getSptr();

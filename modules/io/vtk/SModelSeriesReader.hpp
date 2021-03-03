@@ -50,7 +50,7 @@ namespace sight::module::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::vtk::SModelSeriesReader">
+   <service type="sight::module::io::vtk::SModelSeriesReader">
        <inout key="data" uid="..." />
        <file>...</file>
        <file>...</file>

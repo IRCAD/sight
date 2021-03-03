@@ -51,7 +51,7 @@ namespace sight::module::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::module::io::dicom::SDicomSeriesWriter" >
+       <service uid="..." type="sight::module::io::dicom::SDicomSeriesWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode

@@ -96,9 +96,9 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
-       <service uid="subView2" type="::sight::module::ui::base::SView" autoConnect="no" >
+       <service uid="subView2" type="sight::module::ui::base::SView" autoConnect="no" >
            <gui>
-              <layout type="::ui::base::LineLayoutManager" >
+              <layout type="ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="0" minWidth="50" />
@@ -111,7 +111,7 @@ public:
            </registry>
        </service>
        @endcode
-     *  - \<layout type="::ui::base::LineLayoutManager" \> : define a line layout.
+     *  - \<layout type="ui::base::LineLayoutManager" \> : define a line layout.
      *  - \<spacer /> : create a stretch view.
      *  - \<view proportion="0" minWidth="30" /\> : define a new view which can have the following attributes
      *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizontal.

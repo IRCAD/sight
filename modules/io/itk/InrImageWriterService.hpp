@@ -42,7 +42,7 @@ namespace sight::module::io::itk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::itk::InrImageWriterService">
+   <service type="sight::module::io::itk::InrImageWriterService">
        <in key="data" uid="..." />
        <file>...</file>
    </service>

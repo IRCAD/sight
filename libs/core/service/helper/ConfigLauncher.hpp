@@ -24,8 +24,8 @@
 
 #include "service/AppConfigManager.hpp"
 #include "service/config.hpp"
-#include "service/IService.hpp"
 #include "service/extension/AppConfig.hpp"
+#include "service/IService.hpp"
 
 #include <activity/extension/Activity.hpp>
 
@@ -44,7 +44,7 @@ namespace helper
  * @brief This class provides few methods to manage AppConfig (parsing, starting, stopping...).
  *
  * @code{.xml}
-    <service type="::sight::service::SConfigController" >
+    <service type="sight::service::SConfigController" >
         <appConfig id="IdOfConfig" />
         <inout key="object" uid="..." />
         <parameter replace="channel" by="changeValueChannel"  />

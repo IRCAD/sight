@@ -90,7 +90,7 @@ public Q_SLOTS:
      * The service can be retrived like:
      * @code{.cpp}
         ui::qml::IQmlEditor::sptr srv(obj.value< ui::qml::IQmlEditor* >());
-        if (srv && srv->isA("::sight::module::ui::qml::activity::SView"))
+        if (srv && srv->isA("sight::module::ui::qml::activity::SView"))
         {
             // register input/inout
             srv->registerInOut(data, "myData", true);

@@ -15,14 +15,14 @@
         <desc>Activity to display a 3D model, and optionally its associated image.</desc>
         <icon>sight::module::ui::icons/icon-3D.png</icon>
         <requirements>
-            <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1">
                 <desc>3D model.</desc>
             </requirement>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="0" maxOccurs="1" >
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="0" maxOccurs="1" >
                 <desc>Image associated to the model.</desc>
                 <key path="@image" >OptionalInputImageKey</key>
             </requirement>
-            <requirement name="landmarks" type="::sight::data::Landmarks" minOccurs="0" maxOccurs="0">
+            <requirement name="landmarks" type="sight::data::Landmarks" minOccurs="0" maxOccurs="0">
                 <desc>Landmarks to display.</desc>
             </requirement>
         </requirements>

@@ -505,7 +505,6 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
             {
                 type.first = elem->getAttributeValue("type");
                 SIGHT_ASSERT(this->msgHead() + "\"type\" attribute is empty.", !type.first.empty());
-                SIGHT_ASSERT(this->msgHead() + "\"type\" must be a rooted namespace.", type.first.substr(0, 2) == "::");
                 type.second = true;
             }
 

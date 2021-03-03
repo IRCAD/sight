@@ -35,7 +35,7 @@ namespace Tuto05MultithreadConsoleCpp
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::Tuto05MultithreadConsoleCpp::SShowArray" >
+        <service type="Tuto05MultithreadConsoleCpp::SShowArray" >
             <input key="array" uid="..." />
        </service>
    @endcode

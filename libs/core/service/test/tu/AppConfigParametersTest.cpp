@@ -57,6 +57,7 @@ void AppConfigParametersTest::setUp()
 
     service::extension::AppConfigParameters::sptr appConfigParam;
     appConfigParam = service::extension::AppConfigParameters::getDefault();
+    appConfigParam->clearRegistry();
     appConfigParam->parseBundleInformation();
 }
 
@@ -64,10 +65,6 @@ void AppConfigParametersTest::setUp()
 
 void AppConfigParametersTest::tearDown()
 {
-    // Clean up after the test run.
-    service::extension::AppConfigParameters::sptr appConfigParameters;
-    appConfigParameters = service::extension::AppConfigParameters::getDefault();
-    appConfigParameters->clearRegistry();
 }
 
 //------------------------------------------------------------------------------

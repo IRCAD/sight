@@ -42,7 +42,7 @@ namespace sight::module::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service uid="..." type="::sight::module::filter::image::SLabelGeometryImage">
+       <service uid="..." type="sight::module::filter::image::SLabelGeometryImage">
            <inout key="image" uid="..."/>
            <out key="pointList" uid"..."/>
            <clusters>

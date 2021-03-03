@@ -104,7 +104,7 @@ void Config::addServiceConfigInfo
                  m_reg.find( configId ) == m_reg.end() );
 
     ServiceConfigInfo::sptr info = ServiceConfigInfo::New();
-    info->service   = service;
+    info->service   = core::runtime::filterID(service);
     info->desc      = desc;
     info->config    = config;
     m_reg[configId] = info;
@@ -127,10 +127,12 @@ void Config::clearRegistry()
 //-----------------------------------------------------------------------------
 
 core::runtime::ConfigurationElement::csptr Config::getServiceConfig( const std::string& configId,
-                                                                     const std::string& serviceImpl ) const
+                                                                     const std::string& _serviceImpl ) const
 {
 #ifndef _DEBUG
-    SIGHT_NOT_USED(serviceImpl);
+    SIGHT_NOT_USED(_serviceImpl);
+#else
+    const std::string serviceImpl = core::runtime::filterID(_serviceImpl);
 #endif
     core::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
@@ -154,8 +156,9 @@ const std::string& Config::getConfigDesc( const std::string& configId ) const
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > Config::getAllConfigForService( std::string serviceImpl, bool matchingOnly ) const
+std::vector< std::string > Config::getAllConfigForService( std::string _serviceImpl, bool matchingOnly ) const
 {
+    const std::string serviceImpl = core::runtime::filterID(_serviceImpl);
     core::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
 

@@ -72,7 +72,7 @@ namespace sight::module::sync
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::sync::SFrameMatrixSynchronizer" autoConnect="yes">
+        <service type="sight::module::sync::SFrameMatrixSynchronizer" autoConnect="yes">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />

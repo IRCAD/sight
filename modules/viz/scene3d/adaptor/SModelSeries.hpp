@@ -49,7 +49,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::SModelSeries">
+    <service type="sight::module::viz::scene3d::adaptor::SModelSeries">
         <in key="model" uid="..." />
         <config layer="..." transform="..." material="..." autoresetcamera="yes" dynamic="no" dynamicVertices="no"
         queryFlags="0x40000000" />

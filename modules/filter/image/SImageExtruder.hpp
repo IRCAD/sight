@@ -49,7 +49,7 @@ namespace sight::module::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::filter::image::SImageExtruder">
+    <service uid="..." type="sight::module::filter::image::SImageExtruder">
         <in key="meshes" uid="..." />
         <in key="image" uid="..." />
         <inout key="extrudedImage" uid="..." />

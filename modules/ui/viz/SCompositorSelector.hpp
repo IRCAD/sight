@@ -78,7 +78,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SCompositorSelectorInstance" type="::sight::module::ui::viz::SCompositorSelector">
+        <service uid="SCompositorSelectorInstance" type="sight::module::ui::viz::SCompositorSelector">
              <parameter>param</parameter>
         </service>
        @endcode

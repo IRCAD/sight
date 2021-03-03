@@ -423,7 +423,7 @@ void SeriesDBReaderTest::readJMSSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
@@ -453,7 +453,7 @@ void SeriesDBReaderTest::readCTSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -517,7 +517,7 @@ void SeriesDBReaderTest::readMRSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -584,7 +584,7 @@ void SeriesDBReaderTest::readOTSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -650,7 +650,7 @@ void SeriesDBReaderTest::readSEGSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -700,7 +700,7 @@ void SeriesDBReaderTest::readSFSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -752,7 +752,7 @@ void SeriesDBReaderTest::readSRSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -820,7 +820,7 @@ void SeriesDBReaderTest::read3DSRSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -890,7 +890,7 @@ void SeriesDBReaderTest::readDisabledSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
     reader->setSupportedSOPClassContainer(supportedSOPClassContainer);
 
     // Read DICOM
@@ -916,7 +916,7 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDir()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
     reader->setDicomdirActivated(true);
 
     // Read DICOM
@@ -942,7 +942,7 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -988,7 +988,7 @@ void SeriesDBReaderTest::readCTWithSurviewSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -1013,7 +1013,7 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeries()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -1038,7 +1038,7 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
     io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
-    reader->setDicomFilterType("::sight::filter::dicom::custom::DefaultDicomFilter");
+    reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());

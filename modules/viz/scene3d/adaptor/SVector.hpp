@@ -52,7 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SVector">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SVector">
         <config layer="..." transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode

@@ -56,7 +56,7 @@ bool isSeriesKnown(const SPTR(sight::atoms::Object)& series)
 
     if(itKey != keys.end())
     {
-        if(classname == "::sight::data::ActivitySeries")
+        if(classname == "sight::data::ActivitySeries")
         {
             // Check if activity config id is known
             sight::atoms::String::sptr asId = series->getAttribute< sight::atoms::String >("activity_config_id");

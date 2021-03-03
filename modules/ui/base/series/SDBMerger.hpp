@@ -53,7 +53,7 @@ namespace series
  * The available reader can be configured
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="action" type="::sight::module::ui::base::series::SDBMerger">
+   <service uid="action" type="sight::module::ui::base::series::SDBMerger">
         <inout key="seriesDB" uid="..." />
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
    </service>
@@ -64,7 +64,7 @@ namespace series
  * @code{.xml}
     <extension implements="::sight::service::extension::Config">
         <id>seriesDBImporterConfig</id>
-        <service>::module::ui::base::editor::SSelector</service>
+        <service>module::ui::base::editor::SSelector</service>
         <desc>IOSelector config to import SeriesDB</desc>
         <config>
             <type mode="reader" />

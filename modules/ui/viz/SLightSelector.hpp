@@ -56,7 +56,7 @@ namespace sight::module::ui::viz
  *
  * @section XML XML Configuration
  * @code{.xml}
- *  <service uid="SLightSelectorUid" type="::sight::module::ui::viz::SLightSelector" />
+ *  <service uid="SLightSelectorUid" type="sight::module::ui::viz::SLightSelector" />
  */
 class MODULE_UI_VIZ_CLASS_API SLightSelector final :
     public QObject,

@@ -45,7 +45,7 @@ namespace sight::module::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::geometry::base::STransformLandmark">
+        <service type="sight::module::geometry::base::STransformLandmark">
             <in key="matrix" uid="..." />
             <inout key="landmark" uid="..." />
             <label></label>

@@ -51,7 +51,7 @@ class CompositorListener;
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SCompositorParameter">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
         <inout key="parameter" uid="collimation" />
         <config layer="..." compositorName="compositor" parameter="u_value" shaderType="fragment" />
     </service>

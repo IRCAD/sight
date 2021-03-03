@@ -52,7 +52,7 @@ protected:
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="::ui::base::IAction" impl="::sight::module::ui::qt::SLaunchBrowser"
+       <service type="ui::base::IAction" impl="::sight::module::ui::qt::SLaunchBrowser"
      * autoConnect="no">
         <url>http://www.ircad.fr</url>
        </service>

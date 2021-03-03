@@ -22,6 +22,8 @@
 
 #include "core/runtime/ExecutableFactory.hpp"
 
+#include "core/runtime/Runtime.hpp"
+
 #include <boost/algorithm/string/trim.hpp>
 
 namespace sight::core::runtime
@@ -30,10 +32,8 @@ namespace sight::core::runtime
 //------------------------------------------------------------------------------
 
 ExecutableFactory::ExecutableFactory( const std::string& type ) :
-    m_type( type )
+    m_type( filterID(type) )
 {
-    // Remove trailing "::", no need to annoy people with that...
-    boost::algorithm::trim_left_if(m_type, [](auto x) { return x == ':'; } );
 }
 
 //------------------------------------------------------------------------------

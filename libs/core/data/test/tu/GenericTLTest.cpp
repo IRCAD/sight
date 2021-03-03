@@ -47,7 +47,7 @@ public:
     {
     }
 };
-SIGHT_REGISTER_DATA( ::sight::data::Float3TL )
+SIGHT_REGISTER_DATA( sight::data::Float3TL )
 
 typedef float float4[4];
 
@@ -62,7 +62,7 @@ public:
     {
     }
 };
-SIGHT_REGISTER_DATA( ::sight::data::Float4TL )
+SIGHT_REGISTER_DATA( sight::data::Float4TL )
 
 //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ public:
     {
     }
 };
-SIGHT_REGISTER_DATA( ::sight::data::TestClassTL )
+SIGHT_REGISTER_DATA( sight::data::TestClassTL )
 
 namespace ut
 {

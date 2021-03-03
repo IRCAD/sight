@@ -81,37 +81,37 @@ public:
     SERVICE_API void clearFactory();
 
     /// return a vector of service implementation
-    SERVICE_API std::vector< std::string > getImplementationIdFromObjectAndType(const std::string& object,
-                                                                                const std::string& type) const;
+    SERVICE_API std::vector< std::string > getImplementationIdFromObjectAndType(const std::string& _object,
+                                                                                const std::string& _type) const;
 
     /// return the default service implementation for an object
-    SERVICE_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object,
-                                                                         const std::string& type ) const;
+    SERVICE_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& _object,
+                                                                         const std::string& _type ) const;
 
     /// return the objects registered for a given service.
-    SERVICE_API const std::vector<std::string>& getServiceObjects(const std::string& srvImpl) const;
+    SERVICE_API const std::vector<std::string>& getServiceObjects(const std::string& _srvImpl) const;
 
     /// return the service description.
-    SERVICE_API std::string getServiceDescription(const std::string& srvImpl) const;
+    SERVICE_API std::string getServiceDescription(const std::string& _srvImpl) const;
 
     /// return the service capabilities.
-    SERVICE_API std::string getServiceTags(const std::string& srvImpl) const;
+    SERVICE_API std::string getServiceTags(const std::string& _srvImpl) const;
 
     /// Check if the service with given object and implementation is valid
-    SERVICE_API bool checkServiceValidity(const std::string& object, const std::string& srvImpl) const;
+    SERVICE_API bool checkServiceValidity(const std::string& _object, const std::string& _srvImpl) const;
 
     /**
      * @brief Check whether an object (object) supports service of type srvType
      * @return true if service type supported
      */
-    SERVICE_API bool support(const std::string& object, const std::string& srvType);
+    SERVICE_API bool support(const std::string& _object, const std::string& _srvType);
 
     /**
      * @brief Check whether an object (object) supports service of type srvType and implementation srvImpl
      * @return true if service type supported
      */
-    SERVICE_API bool support(const std::string& object, const std::string& srvType,
-                             const std::string& srvImpl) const;
+    SERVICE_API bool support(const std::string& _object, const std::string& _srvType,
+                             const std::string& _srvImpl) const;
 
     /**
      * @brief returns the registered factory keys.

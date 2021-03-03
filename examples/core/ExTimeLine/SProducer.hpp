@@ -36,7 +36,7 @@ namespace ExTimeLine
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service type="::Ex02TimeLine::SProducer" >
+       <service type="Ex02TimeLine::SProducer" >
             <inout key="timeline" uid="..." />
            <message>Hello</message>
            <id>0</id>

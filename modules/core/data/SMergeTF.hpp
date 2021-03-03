@@ -42,7 +42,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::data::SMergeTF">
+   <service type="sight::module::data::SMergeTF">
        <in key="tfPool" uid="..." />
        <inout key="tf" uid="..." />
    </service>

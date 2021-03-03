@@ -46,12 +46,12 @@ namespace sight::core::runtime
 
 Extension::Extension( std::shared_ptr< Module > module, const std::string& id, const std::string& point,
                       xmlNodePtr xmlNode ) :
-    ModuleElement( module                    ),
-    m_id( id                        ),
-    m_point( point                     ),
+    ModuleElement( module ),
+    m_id( filterID(id) ),
+    m_point( filterID(point) ),
     m_xmlDoc( xmlNewDoc(BAD_CAST "1.0") ),
-    m_xmlNode( xmlCopyNode(xmlNode, 1)   ),
-    m_validity( UnknownValidity           )
+    m_xmlNode( xmlCopyNode(xmlNode, 1) ),
+    m_validity( UnknownValidity )
 {
     xmlDocSetRootElement(m_xmlDoc, m_xmlNode);
 }

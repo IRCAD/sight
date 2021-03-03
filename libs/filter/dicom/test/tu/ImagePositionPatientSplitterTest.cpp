@@ -22,15 +22,15 @@
 
 #include "ImagePositionPatientSplitterTest.hpp"
 
-#include <utestData/Data.hpp>
-
-#include <boost/lexical_cast.hpp>
-
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <utestData/Data.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
@@ -83,12 +83,12 @@ void ImagePositionPatientSplitterTest::simpleApplication()
 
     // Sort instances according to instance number
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
     // Apply filter
-    filter = filter::dicom::factory::New("::sight::filter::dicom::splitter::ImagePositionPatientSplitter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());
@@ -144,12 +144,12 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 
     // Sort instances according to instance number
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
     // Apply filter
-    filter = filter::dicom::factory::New("::sight::filter::dicom::splitter::ImagePositionPatientSplitter");
+    filter = filter::dicom::factory::New("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(37), dicomSeriesContainer.size());

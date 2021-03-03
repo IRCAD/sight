@@ -164,4 +164,7 @@ private:
     ExtensionContainer m_extensions;
 };
 
+/// Utility function used to trim leading '::' in identifiers of modules, services, objects, extensions, etc...
+CORE_API std::string filterID(const std::string& identifier);
+
 } // namespace sight::core::runtime

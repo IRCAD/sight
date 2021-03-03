@@ -47,7 +47,7 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service type="::sight::module::geometry::vision::SChessboardReprojection">
+     <service type="sight::module::geometry::vision::SChessboardReprojection">
         <in key="transform" uid="..."/>
         <in key="camera" uid="..."/>
         <in key="detectedChessboard" uid="..." />

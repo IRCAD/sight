@@ -46,7 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+    <service type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
         <in key="image" uid="..." />
         <in key="tf" uid="..." optional="yes" />
         <config layer="default" />

@@ -48,7 +48,7 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="markerToPoint" type="::sight::module::geometry::vision::SMarkerToPoint">
+     <service uid="markerToPoint" type="sight::module::geometry::vision::SMarkerToPoint">
          <in key="matrixTL" uid="matrixTL" />
          <inout key="pointList" uid="markersPL" />
      </service>

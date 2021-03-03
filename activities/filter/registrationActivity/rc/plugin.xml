@@ -18,13 +18,13 @@
         <desc>Activity to register two images.</desc>
         <icon>sight::module::ui::icons/icon-blend.png</icon>
         <requirements>
-            <requirement name="referenceSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" >
+            <requirement name="referenceSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" >
                 <desc>The object that will be transformed in order to be superimposed to the Target.</desc>
             </requirement>
-            <requirement name="targetSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1" >
+            <requirement name="targetSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" >
                 <desc>The object that is assumed to be static.</desc>
             </requirement>
-            <requirement name="transformationMatrix" type="::sight::data::Matrix4" minOccurs="0" maxOccurs="0" >
+            <requirement name="transformationMatrix" type="sight::data::Matrix4" minOccurs="0" maxOccurs="0" >
                 <desc>The mapping that will convert one point from the Reference object space to the Target object space.</desc>
             </requirement>
         </requirements>

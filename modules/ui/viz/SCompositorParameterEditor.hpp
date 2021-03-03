@@ -41,7 +41,7 @@ namespace sight::module::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::module::ui::viz::SCompositorParameterEditor" >
+       <service uid="..." type="sight::module::ui::viz::SCompositorParameterEditor" >
 
        </service>
        @endcode

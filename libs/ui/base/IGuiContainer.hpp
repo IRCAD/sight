@@ -66,9 +66,9 @@ class ISlideViewBuilder;
  * @section XML Example of XML configuration
  *
  * @code{.xml}
-   <service uid="subView1" type="::sight::module::ui::base::SView" autoConnect="no" >
+   <service uid="subView1" type="sight::module::ui::base::SView" autoConnect="no" >
        <gui>
-           <layout type="::ui::base::LineLayoutManager" >
+           <layout type="ui::base::LineLayoutManager" >
                <orientation value="horizontal" />
                <view caption="view3" />
                <view caption="view4" />
@@ -91,7 +91,7 @@ class ISlideViewBuilder;
         </registry>
    </service>
    @endcode
- *  - \<layout type="::ui::base::LineLayoutManager" \> : give the type of layout.
+ *  - \<layout type="ui::base::LineLayoutManager" \> : give the type of layout.
  *    - \b type {::ui::base::LineLayoutManager | ui::base::CardinalLayoutManager | ui::base::TabLayoutManager |
  *              ui::base::ToolboxLayoutManager} :
  *     - \b ui::base::LineLayoutManager : all views will be on the same line or column (it depends of the orientation

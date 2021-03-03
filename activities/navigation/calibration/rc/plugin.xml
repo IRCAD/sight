@@ -24,7 +24,7 @@
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
         <icon>::sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
+             <requirement name="cameraSeries" type="sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
         <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibration">
@@ -46,7 +46,7 @@
         </desc>
         <icon>::sight::module::ui::flaticons/BlueParametersCamera.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
+             <requirement name="cameraSeries" type="sight::data::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
              </requirement>
         </requirements>
@@ -76,7 +76,7 @@
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras with charuco boards.</desc>
         <icon>::sight::module::ui::flaticons/YellowCamera.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
+             <requirement name="cameraSeries" type="sight::data::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
         <builder>::sight::activity::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibrationCharuco">
@@ -89,7 +89,7 @@
     <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
     <extension implements="::sight::service::extension::Config">
         <id>InfraredRealsenseGrabberConfig</id>
-        <service>::sight::module::io::realsense::SScan</service>
+        <service>sight::module::io::realsense::SScan</service>
         <desc>Infrared grabber without IR emitter </desc>
         <config>
             <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />

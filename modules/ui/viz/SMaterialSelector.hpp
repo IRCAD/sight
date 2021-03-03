@@ -48,7 +48,7 @@ namespace sight::module::ui::viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::ui::viz::SMaterialSelector">
+        <service type="sight::module::ui::viz::SMaterialSelector">
             <inout key="reconstruction" uid="..." />
        </service>
    @endcode
@@ -87,7 +87,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SMaterialSelectorInstance" type="::sight::module::ui::viz::SMaterialSelector">
+        <service uid="SMaterialSelectorInstance" type="sight::module::ui::viz::SMaterialSelector">
         </service>
        @endcode
      */

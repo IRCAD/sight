@@ -14,7 +14,7 @@
         <desc>Activity to read an image</desc>
         <icon>sight::module::ui::flaticons/BlueFile.svg</icon>
         <requirements>
-            <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
+            <requirement name="image" type="sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be read by this activity.</desc>
             </requirement>
         </requirements>
@@ -32,10 +32,10 @@
         <icon>sight::module::ui::flaticons/Layers.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
-            <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
+            <requirement name="image" type="sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="landmarks" type="::sight::data::Landmarks" minOccurs="0" maxOccurs="0" >
+            <requirement name="landmarks" type="sight::data::Landmarks" minOccurs="0" maxOccurs="0" >
                 <desc>Landmarks that will be created in this activity.</desc>
             </requirement>
         </requirements>
@@ -54,10 +54,10 @@
         <icon>sight::module::ui::flaticons/Volume.svg</icon>
         <requirements>
             <!-- The image must be present to launch the activity -->
-            <requirement name="image" type="::sight::data::Image" minOccurs="1" maxOccurs="1" >
+            <requirement name="image" type="sight::data::Image" minOccurs="1" maxOccurs="1" >
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
-            <requirement name="optionalModelSeries" type="::sight::data::ModelSeries" minOccurs="0" maxOccurs="1" >
+            <requirement name="optionalModelSeries" type="sight::data::ModelSeries" minOccurs="0" maxOccurs="1" >
                 <desc>Optional model series.</desc>
             </requirement>
         </requirements>
@@ -71,7 +71,7 @@
 
     <extension implements="::sight::service::extension::Config" >
         <id>ExActivities_Sequencer_SrvCfg</id>
-        <service>::sight::module::ui::qt::activity::SSequencer</service>
+        <service>sight::module::ui::qt::activity::SSequencer</service>
         <desc>Configuration for sequencer</desc>
         <config>
             <activity id="ExImage_Import_Activity" name="Import" />
@@ -88,14 +88,14 @@
 
     <extension implements="::sight::service::extension::Config" >
         <id>ExActivities_Wizard_SrvCfg</id>
-        <service>::sight::module::ui::qt::activity::SWizard</service>
+        <service>sight::module::ui::qt::activity::SWizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
         <config>
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="::sight::data::Image" icon="sight::module::ui::flaticons/Volume.svg" />
+                <icon type="sight::data::Image" icon="sight::module::ui::flaticons/Volume.svg" />
             </icons>
         </config>
     </extension>

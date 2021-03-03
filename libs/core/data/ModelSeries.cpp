@@ -31,7 +31,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::ModelSeries )
+SIGHT_REGISTER_DATA( sight::data::ModelSeries )
 
 namespace sight::data
 {

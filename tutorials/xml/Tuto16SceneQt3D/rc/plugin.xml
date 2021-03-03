@@ -29,12 +29,12 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="mesh" type="::sight::data::Mesh" />
-            <object uid="material" type="::sight::data::Material" />
+            <object uid="mesh" type="sight::data::Mesh" />
+            <object uid="material" type="sight::data::Material" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainView" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto16SceneQt3D</name>
@@ -49,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -60,7 +60,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -76,7 +76,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::sight::viz::qt3d::SRender" >
+            <service uid="genericSceneSrv" type="sight::viz::qt3d::SRender" >
                 <scene>
                     <background color="#2d2d2d" />
 
@@ -85,26 +85,26 @@
                 </scene>
             </service>
 
-            <service uid="materialAdp" type="::sight::module::viz::qt3d::adaptor::SMaterial" autoConnect="yes">
+            <service uid="materialAdp" type="sight::module::viz::qt3d::adaptor::SMaterial" autoConnect="yes">
                 <inout key="material" uid="material" />
                 <config materialName="mat"/>
             </service>
 
-            <service uid="meshAdp" type="::sight::module::viz::qt3d::adaptor::SMesh" autoConnect="yes">
+            <service uid="meshAdp" type="sight::module::viz::qt3d::adaptor::SMesh" autoConnect="yes">
                 <inout key="mesh" uid="mesh" />
                 <config autoresetcamera="true" visible="true"  materialName="mat"/>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="meshReaderAct" type="::sight::module::ui::base::io::SSelector" >
+            <service uid="meshReaderAct" type="sight::module::ui::base::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
                 <config id="Tuto16SceneQt3D_jsonReader_SrvCfg" service="::sight::module::io::atoms::SReader" />
                 <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="::sight::module::io::vtk::SMeshReader" />
             </service>
 
-            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- ******************************* Start services ***************************************** -->
 

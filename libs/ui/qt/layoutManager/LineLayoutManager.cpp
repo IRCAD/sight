@@ -35,8 +35,8 @@
 #include <QScrollArea>
 #include <QStyle>
 
-fwGuiRegisterMacro( ::sight::ui::qt::LineLayoutManager,
-                    ::sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY )
+fwGuiRegisterMacro( sight::ui::qt::LineLayoutManager,
+                    sight::ui::base::layoutManager::LineLayoutManagerBase::REGISTRY_KEY )
 
 namespace sight::ui::qt
 {

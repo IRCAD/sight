@@ -36,7 +36,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SFragmentsInfo">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
         <config layer="default  width="1280" height="720"/>
         <inout key="image" uid="..." />
         <inout key="depth" uid="..." />

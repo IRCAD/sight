@@ -39,7 +39,7 @@ namespace sight::module::ui::base::metrics
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::ui::base::metrics::SShowDistance">
+   <service type="sight::module::ui::base::metrics::SShowDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode

@@ -5,28 +5,28 @@
     <requirement id="sight::module::service"/>
     <extension implements="::sight::service::extension::Factory">
          <type>sight::io::base::service::IWriter</type>
-         <service>::sight::module::io::vision::SCalibrationImagesWriter</service>
+         <service>sight::module::io::vision::SCalibrationImagesWriter</service>
          <object key="data">sight::data::CalibrationInfo</object>
          <desc>Write CalibrationInfo 2D images to a folder using OpenCV.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::io::base::service::IReader</type>
-         <service>::sight::module::io::vision::SCalibrationInfoReader</service>
+         <service>sight::module::io::vision::SCalibrationInfoReader</service>
          <object key="data">sight::data::CalibrationInfo</object>
          <desc>Read calibration input datasets.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::io::base::service::IReader</type>
-         <service>::sight::module::io::vision::SOpenCVReader</service>
+         <service>sight::module::io::vision::SOpenCVReader</service>
          <object key="data">sight::data::CameraSeries</object>
          <desc>SOpenCVReader class read a xml/yaml file using opencv and fill a data::CameraSeries.</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::io::base::service::IWriter</type>
-         <service>::sight::module::io::vision::SOpenCVWriter</service>
+         <service>sight::module::io::vision::SOpenCVWriter</service>
          <object key="data">sight::data::CameraSeries</object>
          <desc>SOpenCVWriter class exports data::CameraSeries in xml/yaml files using openCV</desc>
     </extension>

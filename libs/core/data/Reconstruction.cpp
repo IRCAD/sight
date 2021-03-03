@@ -33,7 +33,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::Reconstruction );
+SIGHT_REGISTER_DATA( sight::data::Reconstruction );
 namespace sight::data
 {
 

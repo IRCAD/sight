@@ -56,7 +56,7 @@ namespace sight::module::ui::base
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::service::SConfigController" >
+        <service type="sight::service::SConfigController" >
             <appConfig id="IdOfConfig" />
             <inout key="object" uid="..." />
             <parameter replace="channel" by="changeValueChannel"  />
@@ -116,7 +116,7 @@ protected:
      *
      * Example of this service configuration
      * @code{.xml}
-       <service impl="::sight::module::ui::base::SConfigLauncher" type="::ui::base::IAction">
+       <service impl="::sight::module::ui::base::SConfigLauncher" type="ui::base::IAction">
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>

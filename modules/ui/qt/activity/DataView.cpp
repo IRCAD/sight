@@ -274,9 +274,9 @@ void DataView::fillInformation(const ActivityInfo& _info)
 
         QHBoxLayout* const treeLayout   = new QHBoxLayout();
         QVBoxLayout* const buttonLayout = new QVBoxLayout();
-        if (req.type == "::sight::data::String" || req.type == "::sight::data::Boolean"
-            || req.type == "::sight::data::Integer" || req.type == "::sight::data::Float"
-            || req.type == "::sight::data::Matrix4")
+        if (req.type == "sight::data::String" || req.type == "sight::data::Boolean"
+            || req.type == "sight::data::Integer" || req.type == "sight::data::Float"
+            || req.type == "sight::data::Matrix4")
         {
             QPushButton* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
@@ -1012,7 +1012,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
             data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
             if (obj)
             {
-                if (obj->isA("::sight::data::String"))
+                if (obj->isA("sight::data::String"))
                 {
                     data::String::sptr str = data::String::dynamicCast(obj);
                     bool isOkClicked       = false;
@@ -1026,7 +1026,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), value);
                     }
                 }
-                else if (obj->isA("::sight::data::Integer"))
+                else if (obj->isA("sight::data::Integer"))
                 {
                     data::Integer::sptr intObj = data::Integer::dynamicCast(obj);
 
@@ -1040,7 +1040,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if (obj->isA("::sight::data::Float"))
+                else if (obj->isA("sight::data::Float"))
                 {
                     data::Float::sptr floatObj = data::Float::dynamicCast(obj);
 
@@ -1054,7 +1054,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if (obj->isA("::sight::data::Boolean"))
+                else if (obj->isA("sight::data::Boolean"))
                 {
                     data::Boolean::sptr boolObj        = data::Boolean::dynamicCast(obj);
                     QMessageBox::StandardButton button = QMessageBox::question(
@@ -1062,7 +1062,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                     boolObj->value() = (button == QMessageBox::Yes);
                     _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false" );
                 }
-                else if (obj->isA("::sight::data::Matrix4"))
+                else if (obj->isA("sight::data::Matrix4"))
                 {
                     data::Matrix4::sptr trf = data::Matrix4::dynamicCast(obj);
                     std::stringstream str;

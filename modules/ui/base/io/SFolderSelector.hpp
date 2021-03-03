@@ -42,7 +42,7 @@ namespace io
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::ui::base::io::SFolderSelector" >
+        <service type="sight::module::ui::base::io::SFolderSelector" >
             <dialogTitle>Select a folder</dialogTitle>
         </service>
    @endcode

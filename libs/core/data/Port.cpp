@@ -25,7 +25,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-SIGHT_REGISTER_DATA( ::sight::data::Port );
+SIGHT_REGISTER_DATA( sight::data::Port );
 
 namespace sight::data
 {

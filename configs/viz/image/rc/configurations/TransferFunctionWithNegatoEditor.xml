@@ -1,7 +1,7 @@
 <!--
 Example:
 
-<service uid="..." type="::sight::service::SConfigController">
+<service uid="..." type="sight::service::SConfigController">
     <appConfig id="TransferFunctionWithNegatoEditor" />
     <inout key="image" uid="..." />
     <inout key="histogram" uid="..." />
@@ -25,16 +25,16 @@ Example:
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}"     type="::sight::data::Image"     src="ref" />
-        <object uid="${histogram}" type="::sight::data::Histogram" src="ref"/>
-        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref"/>
+        <object uid="${image}"     type="sight::data::Image"     src="ref" />
+        <object uid="${histogram}" type="sight::data::Histogram" src="ref"/>
+        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref"/>
 
-        <object uid="TFSet" type="::sight::data::Composite" src="deferred" />
-        <object uid="${transferFunctionOutput}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="TFSet" type="sight::data::Composite" src="deferred" />
+        <object uid="${transferFunctionOutput}" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="tfEditor" type="::sight::module::ui::base::SView">
+        <service uid="tfEditor" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -48,13 +48,13 @@ Example:
         </service>
 
         <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
-        <service uid="fieldMgr" type="::sight::module::ui::base::SPushField">
+        <service uid="fieldMgr" type="sight::module::ui::base::SPushField">
             <inout key="source" uid="${image}" />
             <out key="destination" uid="TFSet" />
             <push field="m_transferFunctionCompositeId" />
         </service>
 
-        <service uid="tfm" type="::sight::module::ui::qt::image::TransferFunctionEditor">
+        <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
             <inout key="tfPool" uid="TFSet" autoConnect="yes"/>
             <in key="currentTF" uid="${transferFunctionOutput}" optional="yes"/>
             <out key="tf" uid="${transferFunctionOutput}" />
@@ -63,9 +63,9 @@ Example:
             </config>
         </service>
 
-        <service uid="tfmTab" type="::sight::module::ui::base::SView">
+        <service uid="tfmTab" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::TabLayoutManager">
+                <layout type="sight::ui::base::TabLayoutManager">
                     <view caption="TF-Negato" />
                     <view caption="TF-Editor" />
                 </layout>
@@ -76,7 +76,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="cfgNegato" type="::sight::service::SConfigController">
+        <service uid="cfgNegato" type="sight::service::SConfigController">
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
             <inout key="landmarks" uid="${landmarks}" />
@@ -84,7 +84,7 @@ Example:
             <parameter replace="WID_PARENT" by="negatoView" />
         </service>
 
-        <service uid="tfWidget" type="::sight::service::SConfigController">
+        <service uid="tfWidget" type="sight::service::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${image}"/>
             <inout key="histogram" uid="${histogram}"/>

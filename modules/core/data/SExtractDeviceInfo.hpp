@@ -39,7 +39,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::data::SExtractDeviceInfo">
+        <service uid="..." type="sight::module::data::SExtractDeviceInfo">
             <inout key="camera" uid="..." />
             <devices>
                 <device>

@@ -12,16 +12,16 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="camera" type="::sight::data::Camera" />
-            <object uid="frameTL" type="::sight::data::FrameTL" >
+            <object uid="camera" type="sight::data::Camera" />
+            <object uid="frameTL" type="sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="tagTL" type="::sight::data::MarkerTL" />
-            <object uid="videoImage" type="::sight::data::Image" />
+            <object uid="tagTL" type="sight::data::MarkerTL" />
+            <object uid="videoImage" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <editor/>
@@ -57,9 +57,9 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::module::ui::base::SView" >
+            <service uid="cameraView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -74,7 +74,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/startCamera</slot>
                 </slots>
@@ -82,7 +82,7 @@
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/show</slot>
@@ -92,7 +92,7 @@
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/pauseCamera</slot>
                     <slot>resumeVideoAct/hide</slot>
@@ -102,7 +102,7 @@
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/stopCamera</slot>
                     <slot>startVideoAct/show</slot>
@@ -116,7 +116,7 @@
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
@@ -125,7 +125,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -134,14 +134,14 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage" />
                 <config layer="default" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="parametersSrv" type="::sight::module::ui::qt::SParameters" >
+            <service uid="parametersSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -195,17 +195,17 @@
                 </parameters>
             </service>
 
-            <service uid="videoSelectorSrv" type="::sight::module::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="videoGrabberSrv" type="::sight::module::io::video::SGrabberProxy" >
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL" />
                 </in>
@@ -215,7 +215,7 @@
                 <framerate>30</framerate>
             </service>
 
-            <service uid="trackerSrv" type="::sight::module::navigation::optics::SArucoTracker" worker="tracking" >
+            <service uid="trackerSrv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking" >
                 <in key="timeline" uid="frameTL" autoConnect="yes" />
                 <in key="camera" uid="camera" />
                 <inout group="tagTL" >

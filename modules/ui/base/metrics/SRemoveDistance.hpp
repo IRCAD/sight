@@ -44,18 +44,18 @@ namespace sight::module::ui::base::metrics
  * @section XML XML Configuration
  * Example to remove a selected distance:
  * @code{.xml}
-   <service type="::sight::module::ui::base::metrics::SRemoveDistance">
+   <service type="sight::module::ui::base::metrics::SRemoveDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
  *
  * Example to remove the last added distance:
  * @code{.xml}
-    <service uid="SRemoveDistanceAct" type="::sight::module::ui::base::metrics::SRemoveDistance">
+    <service uid="SRemoveDistanceAct" type="sight::module::ui::base::metrics::SRemoveDistance">
             <inout key="image" uid="${image}" />
     </service>
 
-    <service uid="removeLastDistance" type="::sight::module::ui::base::com::SSlotCaller">
+    <service uid="removeLastDistance" type="sight::module::ui::base::com::SSlotCaller">
         <slots>
             <slot>SRemoveDistanceAct/removeLastDistance</slot>
         </slots>

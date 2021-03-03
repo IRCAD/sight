@@ -37,7 +37,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="interactor" type="::sight::module::viz::scene2d::adaptor::SViewportInteractor">
+   <service uid="interactor" type="sight::module::viz::scene2d::adaptor::SViewportInteractor">
    </service>
    @endcode
  *

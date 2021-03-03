@@ -30,8 +30,8 @@
 #include <QMenuBar>
 #include <QString>
 
-fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::MenuBarLayoutManager,
-                    ::sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( sight::ui::qt::layoutManager::MenuBarLayoutManager,
+                    sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY );
 
 namespace sight::ui::qt
 {

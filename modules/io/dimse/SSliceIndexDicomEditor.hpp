@@ -50,7 +50,7 @@ namespace sight::module::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::io::dimse::SSliceIndexDicomEditor">
+    <service type="sight::module::io::dimse::SSliceIndexDicomEditor">
         <in key="pacsConfig" uid="..." />
         <inout key="series" uid="..." />
         <inout key="image" uid="..." />

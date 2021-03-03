@@ -48,7 +48,7 @@ namespace sight::module::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::io::dimse::SSeriesPuller">
+    <service type="sight::module::io::dimse::SSeriesPuller">
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
         <inout key="seriesDB" uid="..." />

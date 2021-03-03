@@ -37,7 +37,7 @@ namespace sight::module::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::filter::image::SImageCenter">
+   <service type="sight::module::filter::image::SImageCenter">
        <in key="image" uid="..." />
        <inout key="transform" uid="..." />
    </service>

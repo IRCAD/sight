@@ -55,7 +55,7 @@ namespace sight::module::io::vtk
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::vtk::SMeshWriter">
+   <service type="sight::module::io::vtk::SMeshWriter">
        <in key="data" uid="..." />
        <file>...</file>
    </service>

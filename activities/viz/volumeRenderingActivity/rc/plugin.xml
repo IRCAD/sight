@@ -11,10 +11,10 @@
         <desc>Volume rendering activity</desc>
         <icon>sight::module::ui::icons/icon-VR.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to displayed in volumic rendering.</desc>
             </requirement>
-            <requirement name="modelSeries" type="::sight::data::ModelSeries" minOccurs="0" maxOccurs="1" >
+            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="0" maxOccurs="1" >
                 <desc>Optional model to superimpose with the volumic image.</desc>
                 <key>optionalModelSeriesKey</key>
             </requirement>

@@ -49,7 +49,7 @@ namespace sight::module::ui::qt
  *
  * @section XML Example of configuration
  * @code{.xml}
-    <service uid="sliceListNegato3DEditor" type="::sight::module::ui::qt::image::SSelectionMenuButton">
+    <service uid="sliceListNegato3DEditor" type="sight::module::ui::qt::image::SSelectionMenuButton">
         <text>...</text>
         <toolTip>...</toolTip>
         <items>

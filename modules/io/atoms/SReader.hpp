@@ -50,7 +50,7 @@ namespace sight::module::io::atoms
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::atoms::SReader">
+   <service type="sight::module::io::atoms::SReader">
        <inout key="data" uid="..." />
        <out key="data" uid="..." />
        <uuidPolicy>Strict|Change</uuidPolicy>

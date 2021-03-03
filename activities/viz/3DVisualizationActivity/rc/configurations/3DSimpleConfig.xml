@@ -5,10 +5,10 @@
         <param name="objectID" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="::sight::data::ModelSeries" src="ref" />
+        <object uid="${objectID}" type="sight::data::ModelSeries" src="ref" />
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="::fwRenderVTK::SRender">
+        <service uid="gs" type="fwRenderVTK::SRender">
             <registry>
                 <parent wid="${WID_PARENT}" />
             </registry>
@@ -22,17 +22,17 @@
             </scene>
         </service>
 
-        <service uid="modelAdaptor" type="::visuVTKAdaptor::SModelSeries" autoConnect="yes">
+        <service uid="modelAdaptor" type="visuVTKAdaptor::SModelSeries" autoConnect="yes">
             <in key="model" uid="${objectID}" />
             <config renderer="default" picker="picker" autoresetcamera="yes" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
             <in key="object" uid="${objectID}" />
             <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
-        <service uid="orientationMarker" type="::visuVTKAdaptor::SOrientationMarker">
+        <service uid="orientationMarker" type="visuVTKAdaptor::SOrientationMarker">
             <config renderer="default" />
         </service>
 

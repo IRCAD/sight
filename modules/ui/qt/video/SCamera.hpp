@@ -59,7 +59,7 @@ namespace video
  * Configure this service either with a single camera data:
  *
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::qt::video::SCamera" >
+    <service uid="..." type="sight::module::ui::qt::video::SCamera" >
         <inout key="camera" uid="..."/>
         <videoSupport>yes</videoSupport>
         <label>Video source: </label>
@@ -71,7 +71,7 @@ namespace video
  * \b createCameraNumber. This may be useful to load/save camera data without an existing calibration.
  *
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::qt::video::SCamera" >
+    <service uid="..." type="sight::module::ui::qt::video::SCamera" >
         <inout key="cameraSeries" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
         <videoSupport>yes</videoSupport>

@@ -38,7 +38,7 @@ namespace adaptor
  * @section XML XML Configuration
  *
    @code{.xml}
-   <service uid="axis" type="::sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes">
+   <service uid="axis" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="yes">
       <in key="viewport" uid="..." />
       <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" align="left" min="0" max="1" step="0.1" />
    </service>

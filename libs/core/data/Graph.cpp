@@ -34,7 +34,7 @@
 
 #include <utility>
 
-SIGHT_REGISTER_DATA( ::sight::data::Graph );
+SIGHT_REGISTER_DATA( sight::data::Graph );
 
 namespace sight::data
 {

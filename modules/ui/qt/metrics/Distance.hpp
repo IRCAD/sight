@@ -47,7 +47,7 @@ namespace sight::module::ui::qt::metrics
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::qt::metrics::Distance" >
+   <service uid="..." type="sight::module::ui::qt::metrics::Distance" >
        <inout key="image" uid="..." />
    </service>
    @endcode

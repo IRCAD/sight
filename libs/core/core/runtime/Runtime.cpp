@@ -30,6 +30,8 @@
 
 #include <core/spyLog.hpp>
 
+#include <boost/algorithm/string/trim.hpp>
+
 namespace sight::core::runtime
 {
 
@@ -79,6 +81,13 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier
 
 void Runtime::setWorkingPath(const std::filesystem::path& )
 {
+}
+
+//-----------------------------------------------------------------------------
+
+std::string filterID(const std::string& identifier)
+{
+    return boost::algorithm::trim_left_copy_if(identifier, [](auto x) { return x == ':'; } );
 }
 
 //------------------------------------------------------------------------------

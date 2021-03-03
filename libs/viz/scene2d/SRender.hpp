@@ -55,7 +55,7 @@ class IAdaptor;
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service uid="GENERIC_UID_Scene2D" type="::sight::viz::scene2d::SRender" >
+   <service uid="GENERIC_UID_Scene2D" type="sight::viz::scene2d::SRender" >
        <scene>
            <scene x="-1100" y="-1.1" width="2500" height="1.2" background="#FFFFFF" />
            <viewport x="-500" y="-1.1" width="500" height="1.2" />

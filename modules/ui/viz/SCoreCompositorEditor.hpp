@@ -71,7 +71,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SCoreCompositorEditorInstance" type="::sight::module::ui::viz::SCoreCompositorEditor">
+        <service uid="SCoreCompositorEditorInstance" type="sight::module::ui::viz::SCoreCompositorEditor">
              <parameter>param</parameter>
         </service>
        @endcode

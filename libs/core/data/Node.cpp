@@ -29,7 +29,7 @@
 #include "data/Exception.hpp"
 #include "data/Port.hpp"
 
-SIGHT_REGISTER_DATA( ::sight::data::Node );
+SIGHT_REGISTER_DATA( sight::data::Node );
 
 namespace sight::data
 {

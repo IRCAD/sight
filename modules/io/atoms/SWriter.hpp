@@ -46,7 +46,7 @@ namespace sight::module::io::atoms
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::io::atoms::SWriter">
+    <service type="sight::module::io::atoms::SWriter">
         <in key="data" uid="..." />
         <patcher context="..." version="..." />
 

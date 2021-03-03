@@ -40,7 +40,7 @@ namespace sight::module::ui::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::ui::dicom::SSeriesDBMerger">
+        <service type="sight::module::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
        </service>

@@ -47,7 +47,7 @@ namespace sight::module::io::dicomweb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::dicomweb::SSeriesPusher">
+        <service type="sight::module::io::dicomweb::SSeriesPusher">
             <in key="selectedSeries" uid="..." />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
        </service>

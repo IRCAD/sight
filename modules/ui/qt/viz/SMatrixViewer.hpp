@@ -44,7 +44,7 @@ namespace viz
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::module::ui::qt::viz::SMatrixViewer">
+    <service type="sight::module::ui::qt::viz::SMatrixViewer">
         <in key="matrix" uid="..." />
         <title>matrix name</title>
     </service>

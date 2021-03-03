@@ -9,17 +9,17 @@
     <config>
 
         <!-- *********************************** Begin Objects declaration *********************************** -->
-        <object uid="${IMAGE}"     type="::sight::data::Image"     src="ref" />
-        <object uid="${TF}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${IMAGE}"     type="sight::data::Image"     src="ref" />
+        <object uid="${TF}" type="sight::data::TransferFunction" src="deferred" />
 
-        <object uid="TFPool" type="::sight::data::Composite" />
-        <object uid="histogram" type="::sight::data::Histogram" />
+        <object uid="TFPool" type="sight::data::Composite" />
+        <object uid="histogram" type="sight::data::Histogram" />
         <!-- *********************************** End Objects declaration *********************************** -->
 
         <!-- *********************************** Begin layouts declaration *********************************** -->
-        <service uid="HistogramView" type="::sight::module::ui::base::SView" >
+        <service uid="HistogramView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -38,7 +38,7 @@
         <!-- *********************************** End layouts declaration *********************************** -->
 
         <!-- *********************************** Begin services declarations *********************************** -->
-        <service uid="TFWidget" type="::sight::service::SConfigController">
+        <service uid="TFWidget" type="sight::service::SConfigController">
             <appConfig id="TransferFunctionWidget" />
             <inout key="image" uid="${IMAGE}"/>
             <inout key="histogram" uid="histogram"/>
@@ -46,21 +46,21 @@
             <parameter replace="WID_PARENT" by="TFScene"/>
         </service>
 
-        <service uid="WindowLevel" type="::sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
+        <service uid="WindowLevel" type="sight::module::ui::qt::image::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${IMAGE}" />
             <inout key="tf" uid="${TF}" optional="yes" />
         </service>
 
-        <service uid="TransparencyEditor" type="::sight::module::ui::qt::image::ImageTransparency" autoConnect="yes" >
+        <service uid="TransparencyEditor" type="sight::module::ui::qt::image::ImageTransparency" autoConnect="yes" >
             <inout key="image" uid="${IMAGE}" />
         </service>
 
-        <service uid="TransferFunctionEditor" type="::sight::module::ui::qt::image::STransferFunction" >
+        <service uid="TransferFunctionEditor" type="sight::module::ui::qt::image::STransferFunction" >
             <inout key="tfPool" uid="TFPool" autoConnect="yes"/>
             <out key="tf" uid="${TF}" />
         </service>
 
-        <service uid="computeHistogram" type="::sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+        <service uid="computeHistogram" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
             <in key="image" uid="${IMAGE}" />
             <inout key="histogram" uid="histogram" />
             <binsWidth>5.0</binsWidth>

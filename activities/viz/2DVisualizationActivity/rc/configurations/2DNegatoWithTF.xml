@@ -10,13 +10,13 @@
         <param name="transferFunctionDeferred" />
     </parameters>
     <config>
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
-        <object uid="${landmarks}" type="::sight::data::Landmarks" src="ref" />
-        <object uid="${transferFunctionDeferred}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
+        <object uid="${transferFunctionDeferred}" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -29,9 +29,9 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="::sight::module::ui::base::SView">
+        <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="1" />
@@ -45,12 +45,12 @@
             </registry>
         </service>
 
-        <service uid="snapshotNegatoEditor" type="::sight::module::ui::qt::viz::SnapshotEditor" />
+        <service uid="snapshotNegatoEditor" type="sight::module::ui::qt::viz::SnapshotEditor" />
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="negato" type="::fwRenderVTK::SRender" >
+        <service uid="negato" type="fwRenderVTK::SRender" >
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -66,42 +66,42 @@
             </scene>
         </service>
 
-        <service uid="snapshot" type="::visuVTKAdaptor::SSnapshot">
+        <service uid="snapshot" type="visuVTKAdaptor::SSnapshot">
             <config renderer="default" />
         </service>
 
-        <service uid="interactor" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="interactor" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="MPRNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="MPRNegato" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunctionDeferred}" optional="yes" />
             <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" />
         </service>
 
-        <service uid="text" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="text" type="visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunctionDeferred}" />
             <config renderer="default" picker="negatodefault" text="" />
         </service>
 
-        <service uid="multiDistances" type="::visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
+        <service uid="multiDistances" type="visuVTKAdaptor::SImageMultiDistances" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <config filter="true" renderer="default" picker="negatodefault" />
         </service>
 
-        <service uid="landmarksNegato" type="::visuVTKAdaptor::SLandmarks" autoConnect="yes">
+        <service uid="landmarksNegato" type="visuVTKAdaptor::SLandmarks" autoConnect="yes">
             <inout key="landmarks" uid="${landmarks}" />
             <config renderer="default" picker="negatodefault" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
             <in key="object" uid="${image}" />
             <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
-        <service uid="imageSliceOrientationText" type="::visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
+        <service uid="imageSliceOrientationText" type="visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
             <in key="image" uid="${image}" />
             <config renderer="default">
                 <locations>default</locations>
@@ -111,16 +111,16 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="LockImageSrv" type="::sight::module::memory::LockDumpSrv">
+        <service uid="LockImageSrv" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="slider_negato" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="slider_negato" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${image}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
 
-        <service uid="distanceNegatoEditor" type="::sight::module::ui::qt::metrics::Distance">
+        <service uid="distanceNegatoEditor" type="sight::module::ui::qt::metrics::Distance">
             <inout key="image" uid="${image}" />
         </service>
 

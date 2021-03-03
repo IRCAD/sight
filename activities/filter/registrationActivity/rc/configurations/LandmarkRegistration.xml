@@ -9,22 +9,22 @@
         <param name="referenceTransferFunction" />
     </parameters>
     <config>
-        <object uid="${referenceImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${targetImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${transformUid}" type="::sight::data::Matrix4" src="ref" />
+        <object uid="${referenceImageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${targetImageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${transformUid}" type="sight::data::Matrix4" src="ref" />
 
-        <object uid="${targetTransferFunction}" type="::sight::data::TransferFunction" src="ref" />
-        <object uid="${referenceTransferFunction}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${targetTransferFunction}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${referenceTransferFunction}" type="sight::data::TransferFunction" src="deferred" />
 
-        <object uid="referencePL" type="::sight::data::PointList" />
-        <object uid="targetPL" type="::sight::data::PointList" />
+        <object uid="referencePL" type="sight::data::PointList" />
+        <object uid="targetPL" type="sight::data::PointList" />
 
-        <object uid="transformedImage" type="::sight::data::Image" />
-        <object uid="emptyImage" type="::sight::data::Image" />
+        <object uid="transformedImage" type="sight::data::Image" />
+        <object uid="emptyImage" type="sight::data::Image" />
 
-        <service uid="landmarkRegistrationView" type="::sight::module::ui::base::SView">
+        <service uid="landmarkRegistrationView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -37,9 +37,9 @@
             </registry>
         </service>
 
-        <service uid="editors" type="::sight::module::ui::base::SView">
+        <service uid="editors" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="1" />
@@ -51,9 +51,9 @@
             </registry>
         </service>
 
-        <service uid="landmarkRegEditor" type="::sight::module::ui::base::SView">
+        <service uid="landmarkRegEditor" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <spacer proportion="1" />
                     <view proportion="0" />
@@ -68,23 +68,23 @@
             </registry>
         </service>
 
-        <service uid="applyLandmarkRegistration" type="::sight::module::ui::qt::com::SSignalButton">
+        <service uid="applyLandmarkRegistration" type="sight::module::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
             </config>
         </service>
 
-        <service uid="resetLandmarks" type="::sight::module::ui::qt::com::SSignalButton">
+        <service uid="resetLandmarks" type="sight::module::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
                 <text>Reset</text>
             </config>
         </service>
 
-        <service uid="registrationScenes" type="::sight::module::ui::base::SView">
+        <service uid="registrationScenes" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="1" />
@@ -96,9 +96,9 @@
             </registry>
         </service>
 
-        <service uid="referenceSceneView" type="::sight::module::ui::base::SView">
+        <service uid="referenceSceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -110,14 +110,14 @@
             </registry>
         </service>
 
-        <service uid="referenceSliceSelector" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="referenceSliceSelector" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="mixedSceneView" type="::sight::module::ui::base::SView">
+        <service uid="mixedSceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -129,12 +129,12 @@
             </registry>
         </service>
 
-        <service uid="targetSliceSelector" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="targetSliceSelector" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
-        <service uid="blendEditor" type="::sight::service::SConfigController" >
+        <service uid="blendEditor" type="sight::service::SConfigController" >
             <appConfig id="BlendEditor" />
             <parameter replace="WID_PARENT" by="blendEditor" />
             <parameter replace="modifyTransparencyChannel" by="modifyTransparencyChannel"/>
@@ -143,36 +143,36 @@
         </service>
 
         <!-- Landmark handling services -->
-        <service uid="referenceLandmarkManager" type="::sight::module::geometry::base::SManagePointList">
+        <service uid="referenceLandmarkManager" type="sight::module::geometry::base::SManagePointList">
             <inout key="pointList" uid="referencePL" />
             <config label="true" />
         </service>
 
-        <service uid="targetLandmarkManager" type="::sight::module::geometry::base::SManagePointList">
+        <service uid="targetLandmarkManager" type="sight::module::geometry::base::SManagePointList">
             <inout key="pointList" uid="targetPL" />
             <config label="true" />
         </service>
 
-        <service uid="landmarkRegistration" type="::sight::module::filter::point::SPointListRegistration">
+        <service uid="landmarkRegistration" type="sight::module::filter::point::SPointListRegistration">
             <inout key="registeredPL" uid="targetPL" />
             <inout key="referencePL" uid="referencePL" />
             <inout key="output" uid="${transformUid}" />
         </service>
 
-        <service uid="resampler" type="::sight::module::filter::image::SResampler">
+        <service uid="resampler" type="sight::module::filter::image::SResampler">
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
             <in key="target" uid="${targetImageUid}" />
             <inout key="imageOut" uid="transformedImage" />
         </service>
 
-        <service uid="resetTransformedImage" type="::sight::module::data::SCopy">
+        <service uid="resetTransformedImage" type="sight::module::data::SCopy">
             <in key="source" uid="emptyImage" />
             <inout key="target" uid="transformedImage" />
         </service>
 
         <!-- -->
-        <service uid="referenceScene" type="::fwRenderVTK::SRender">
+        <service uid="referenceScene" type="fwRenderVTK::SRender">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />
@@ -183,27 +183,27 @@
             </scene>
         </service>
 
-        <service uid="referenceNegato" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="referenceNegato" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${referenceImageUid}" />
             <inout key="tf" uid="${referenceTransferFunction}" optional="yes" />
             <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
         </service>
 
-        <service uid="referenceInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="referenceInteractorStyle" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="referencePickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+        <service uid="referencePickerInteractor" type="visuVTKAdaptor::SPickerInteractor">
             <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" abortOnPick="false" />
         </service>
 
-        <service uid="referencePointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+        <service uid="referencePointListAdaptor" type="visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
             <inout key="pointList" uid="referencePL" />
             <config renderer="default" picker="picker" color="#550066" radius="10" />
         </service>
 
         <!-- Target and blend scene -->
-        <service uid="targetAndBlendScene" type="::fwRenderVTK::SRender">
+        <service uid="targetAndBlendScene" type="fwRenderVTK::SRender">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="#052833" />
@@ -217,17 +217,17 @@
             </scene>
         </service>
 
-        <service uid="mixedNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="mixedNegatoMPR" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
         </service>
 
-        <service uid="mixedInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="mixedInteractorStyle" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
         <!-- Adaptor to show background and front image merge in the same view. -->
-        <service uid="targetTransformedBlendAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+        <service uid="targetTransformedBlendAdaptor" type="visuVTKAdaptor::SImagesBlend">
             <inout group="image" autoConnect="yes">
                 <key uid="${targetImageUid}" tfalpha="no" />
                 <key uid="transformedImage" tfalpha="no" />
@@ -239,11 +239,11 @@
             <config vtkimageregister="imageBlend" checkerboardDivision="10" />
         </service>
 
-        <service uid="targetPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+        <service uid="targetPickerInteractor" type="visuVTKAdaptor::SPickerInteractor">
             <config renderer="default" picker="picker" event="MOUSE_LEFT_UP" />
         </service>
 
-        <service uid="targetPointListAdaptor" type="::visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
+        <service uid="targetPointListAdaptor" type="visuVTKAdaptor::SLabeledPointList" autoConnect="yes">
             <inout key="pointList" uid="targetPL" />
             <config renderer="default" picker="picker" color="#550066" radius="10" />
         </service>

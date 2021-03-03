@@ -48,7 +48,7 @@ namespace series
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::qt::series::SSelector">
+    <service uid="..." type="sight::module::ui::qt::series::SSelector">
         <inout key="seriesDB" uid="..." />
         <inout key="selection" uid="..." />
         <icons>

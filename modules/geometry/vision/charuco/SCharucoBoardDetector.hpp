@@ -64,7 +64,7 @@ namespace sight::module::geometry::vision::charuco
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::module::geometry::vision::charuco::SCharucoBoardDetector" >
+       <service uid="..." type="sight::module::geometry::vision::charuco::SCharucoBoardDetector" >
             <in group="timeline">
                 <key uid="..." />
                 <key uid="..." />

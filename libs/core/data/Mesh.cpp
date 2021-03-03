@@ -38,7 +38,7 @@ namespace sight::data
 #define CELL_REALLOC_STEP 1000
 #define CELLDATA_REALLOC_STEP 1000
 
-SIGHT_REGISTER_DATA( ::sight::data::Mesh );
+SIGHT_REGISTER_DATA( sight::data::Mesh );
 
 //------------------------------------------------------------------------------
 

@@ -49,7 +49,7 @@ namespace sight::module::io::dimse
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::io::dimse::SPacsConfigurationEditor">
+    <service type="sight::module::io::dimse::SPacsConfigurationEditor">
         <inout key="config" uid="..." />
         <config showDialog="true" />
     </service>

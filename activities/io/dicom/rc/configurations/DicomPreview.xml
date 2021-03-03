@@ -7,12 +7,12 @@
     </parameters>
     <config>
 
-        <object type="::sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
-        <object type="::sight::data::Vector" uid="dicomSelection" />
+        <object type="sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="sight::data::Vector" uid="dicomSelection" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="dicomPreviewFrame" type="::sight::module::ui::base::SFrame" >
+        <service uid="dicomPreviewFrame" type="sight::module::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -26,9 +26,9 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager" >
+                <layout type="sight::ui::base::CardinalLayoutManager" >
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
                 </layout>
@@ -40,16 +40,16 @@
         </service>
 
         <!-- DICOM SELECTION -->
-        <service uid="dicomSelector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="dicomSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="selection" uid="dicomSelection" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>
 
-        <service uid="dicomViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="dicomViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="dicomSelection" />
             <parentView wid="dicomPreview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="::sight::data::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="sight::data::DicomSeries" />
             </configs>
         </service>
 

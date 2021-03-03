@@ -54,7 +54,7 @@ namespace sight::module::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::dicom::SDicomSeriesDBReader">
+        <service type="sight::module::io::dicom::SDicomSeriesDBReader">
             <inout key="data" uid="..." />
             <dicomdirSupport>user_selection</dicomdirSupport>
        </service>

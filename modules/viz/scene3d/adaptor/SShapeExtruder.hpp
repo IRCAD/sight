@@ -60,7 +60,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SShapeExtruder">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
         <inout key="extrudedMeshes" uid="..." />
         <config layer="..." priority="2" extrude="true" />
     </service>

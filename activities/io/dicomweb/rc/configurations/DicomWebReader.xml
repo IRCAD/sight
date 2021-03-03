@@ -10,16 +10,16 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="previewSeriesDB" type="::sight::data::SeriesDB" />
-        <object uid="previewSelections" type="::sight::data::Vector" />
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="previewSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="previewSelections" type="sight::data::Vector" />
 
-        <object uid="localSeriesDB" type="::sight::data::SeriesDB" />
-        <object uid="localSelections" type="::sight::data::Vector" />
+        <object uid="localSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="localSelections" type="sight::data::Vector" />
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="top"/>
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
@@ -48,9 +48,9 @@
             </registry>
         </service>
 
-        <service uid="topView" type="::sight::module::ui::base::SView" >
+        <service uid="topView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="DICOM Query" align="center" minWidth="200" />
                 </layout>
@@ -60,9 +60,9 @@
             </registry>
         </service>
 
-        <service uid="centerView" type="::sight::module::ui::base::SView" >
+        <service uid="centerView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Pacs Information" align="center" minWidth="200" />
                     <view caption="Pacs Preview" align="right" minWidth="200" />
@@ -74,9 +74,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="::sight::module::ui::base::SView" >
+        <service uid="bottomView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <orientation value="horizontal" />
                     <view caption="Local Series" align="center" minWidth="200" />
                     <view caption="Local Preview" align="right" minWidth="200" />
@@ -90,14 +90,14 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_pullSeries" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>action_pullSeries/setInexecutable</slot>
                 <slot>pullSeriesController/update</slot>
             </slots>
         </service>
 
-        <service uid="action_pushSeries" type="::sight::module::ui::dicom::SSeriesDBMerger">
+        <service uid="action_pushSeries" type="sight::module::ui::dicom::SSeriesDBMerger">
             <in key="selectedSeries" uid="localSelections" />
             <inout key="seriesDB" uid="${SERIESDB}" />
         </service>
@@ -105,51 +105,51 @@
         <!-- ******************************* Services ***************************************** -->
 
         <!-- PREVIEW -->
-        <service uid="previewSelector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="selection" uid="previewSelections" />
             <inout key="seriesDB" uid="previewSeriesDB" />
         </service>
 
-        <service uid="queryEditor" type="::sight::module::io::dicomweb::SQueryEditor">
+        <service uid="queryEditor" type="sight::module::io::dicomweb::SQueryEditor">
             <inout key="seriesDB" uid="previewSeriesDB" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
-        <service uid="pullSeriesController" type="::sight::module::io::dicomweb::SSeriesPuller" >
+        <service uid="pullSeriesController" type="sight::module::io::dicomweb::SSeriesPuller" >
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="localSeriesDB" />
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="DicomWebReaderConfig" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
-        <service uid="pacsViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
-                <config id="2DDicomWebPreviewConfig" type="::sight::data::DicomSeries" />
+                <config id="2DDicomWebPreviewConfig" type="sight::data::DicomSeries" />
             </configs>
         </service>
 
         <!-- LOCAL -->
-        <service uid="localSelector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="localSeriesDB" />
             <inout key="selection" uid="localSelections" />
         </service>
 
-        <service uid="localViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>
-                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries">
+                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
             </configs>
         </service>
 
 
-        <service uid="seriesDBReader" type="::sight::module::io::dicom::SSeriesDBReader" >
+        <service uid="seriesDBReader" type="sight::module::io::dicom::SSeriesDBReader" >
             <inout key="data" uid="localSeriesDB" />
-            <config filterType="::sight::filter::dicom::sorter::ImagePositionPatientSorter" />
+            <config filtertype="sight::filter::dicom::sorter::ImagePositionPatientSorter" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->

@@ -61,7 +61,7 @@ namespace com
  *
  * @section XML XML configuration
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::qt::com::SSignalButton" >
+   <service uid="..." type="sight::module::ui::qt::com::SSignalButton" >
        <config>
           <checkable>true|false</checkable>
           <text>...</text>

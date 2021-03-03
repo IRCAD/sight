@@ -38,7 +38,7 @@ namespace sight::module::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::matrix::Matrix4WriterService">
+   <service type="sight::module::io::matrix::Matrix4WriterService">
        <in key="data" uid="..." />
    </service>
    @endcode

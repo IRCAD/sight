@@ -66,7 +66,7 @@ AppConfig::~AppConfig()
 
 void AppConfig::parseBundleInformation()
 {
-    auto extensions = core::runtime::getAllExtensionsForPoint("::sight::service::extension::AppConfig");
+    auto extensions = core::runtime::getAllExtensionsForPoint("sight::service::extension::AppConfig");
     for( const auto& ext : extensions )
     {
         // Get id
@@ -190,7 +190,7 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
         else
         {
             SIGHT_THROW("Parameter : '" << param.first << "' is needed by the app configuration id='"<< configId <<
-                    "'.");
+                        "'.");
         }
     }
 

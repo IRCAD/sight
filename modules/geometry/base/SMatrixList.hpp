@@ -53,7 +53,7 @@ namespace sight::module::geometry::base
  *
  * @section XML XML Configuration
  * @code{.xml}
-        <service type="::sight::module::geometry::base::SMatrixList">
+        <service type="sight::module::geometry::base::SMatrixList">
             <inout group="matrices">
                 <key uid="..." />
                 <key uid="..." />

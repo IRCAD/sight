@@ -71,8 +71,8 @@ void SFilterSelectorDialog::configuring()
 
     //  Config Elem
     //  <selection mode="exclude">
-    //  <addSelection filter="::sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
-    //  <addSelection filter="::sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
+    //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
+    //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
 
     core::runtime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
     for(; iter != this->m_configuration->end(); ++iter )

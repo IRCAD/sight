@@ -40,7 +40,7 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::sight::module::geometry::vision::SReprojectionError">
+     <service uid="..." type="sight::module::geometry::vision::SReprojectionError">
         <in key="matrixTL" uid="..."/>
         <in key="markerTL" uid="..."/>
         <in key="camera" uid="..."/>
@@ -52,7 +52,7 @@ namespace sight::module::geometry::vision
 
      or
 
-     <service uid="..." type="::sight::module::geometry::vision::SReprojectionError">
+     <service uid="..." type="sight::module::geometry::vision::SReprojectionError">
          <in group="matrix">
              <key uid="..." />
              <key uid="..." />

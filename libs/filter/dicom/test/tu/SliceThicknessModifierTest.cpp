@@ -22,15 +22,15 @@
 
 #include "SliceThicknessModifierTest.hpp"
 
-#include <utestData/Data.hpp>
-
-#include <boost/lexical_cast.hpp>
-
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <utestData/Data.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
@@ -83,12 +83,12 @@ void SliceThicknessModifierTest::simpleApplication()
 
     // Sort instances according to instance number
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::sorter::InstanceNumberSorter");
+        "sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
     // Apply filter
-    filter = filter::dicom::factory::New("::sight::filter::dicom::modifier::SliceThicknessModifier");
+    filter = filter::dicom::factory::New("sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(1), dicomSeriesContainer.size());
@@ -129,7 +129,7 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::modifier::SliceThicknessModifier");
+        "sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT(!filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false));
 }

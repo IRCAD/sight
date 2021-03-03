@@ -49,7 +49,7 @@ namespace sight::module::io::matrix
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::matrix::SMatrixWriter">
+   <service type="sight::module::io::matrix::SMatrixWriter">
        <in key="data" uid="..." autoConnect="yes" />
        <windowTitle>Select the file to save the matrix timeline to</windowTitle>
    </service>

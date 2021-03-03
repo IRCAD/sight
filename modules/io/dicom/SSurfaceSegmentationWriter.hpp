@@ -48,7 +48,7 @@ namespace sight::module::io::dicom
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::sight::module::io::dicom::SSurfaceSegmentationWriter" >
+       <service uid="..." type="sight::module::io::dicom::SSurfaceSegmentationWriter" >
            <in key="data" uid="..." />
        </service>
  * @endcode

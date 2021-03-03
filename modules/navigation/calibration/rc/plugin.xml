@@ -4,8 +4,8 @@
 <plugin id="sight::module::navigation::calibration" library="true" >
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IRegisterer</type>
-         <service>::sight::module::navigation::calibration::SToolCalibration</service>
+         <type>sight::service::IRegisterer</type>
+         <service>sight::module::navigation::calibration::SToolCalibration</service>
          <object key="matricesVector">sight::data::Vector</object>
          <object key="matrixCalibration">sight::data::Matrix4</object>
          <object key="matrixCenter">sight::data::Matrix4</object>

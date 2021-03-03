@@ -32,7 +32,7 @@
 
 #include <functional>
 
-SIGHT_REGISTER_DATA( ::sight::data::RawBufferTL );
+SIGHT_REGISTER_DATA( sight::data::RawBufferTL );
 
 namespace sight::data
 {

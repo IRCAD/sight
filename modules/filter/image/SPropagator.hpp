@@ -57,7 +57,7 @@ namespace sight::module::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::filter::image::SPropagator">
+   <service type="sight::module::filter::image::SPropagator">
        <in key="imageIn" uid="..." autoConnect="yes" />
        <inout key="imageOut" uid="..." />
        <value>1</value>

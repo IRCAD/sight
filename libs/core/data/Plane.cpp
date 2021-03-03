@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( ::sight::data::Plane );
+SIGHT_REGISTER_DATA( sight::data::Plane );
 
 namespace sight::data
 {

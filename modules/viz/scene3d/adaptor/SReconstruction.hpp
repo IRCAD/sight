@@ -51,7 +51,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::SReconstruction">
+    <service type="sight::module::viz::scene3d::adaptor::SReconstruction">
         <in key="reconstruction" uid="..." />
         <config layer="..." transform="..." autoresetcamera="yes" queryFlags="0x40000000" />
    </service>

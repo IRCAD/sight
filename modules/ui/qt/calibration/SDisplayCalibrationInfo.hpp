@@ -51,7 +51,7 @@ namespace sight::module::ui::qt::calibration
  *
  * @section XML XML Configuration
  * @code{.xml}
-     <service type="::sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
+     <service type="sight::module::ui::qt::calibration::SDisplayCalibrationInfo">
          <in key="calInfo1" uid="..." />
          <in key="calInfo2" uid="..." />
      </service>

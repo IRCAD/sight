@@ -18,10 +18,10 @@
         <desc>Display a medical image in 2D.</desc>
         <icon>sight::module::ui::icons/icon-2D.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to display.</desc>
             </requirement>
-            <requirement name="landmarks" type="::sight::data::Landmarks" minOccurs="0" maxOccurs="0">
+            <requirement name="landmarks" type="sight::data::Landmarks" minOccurs="0" maxOccurs="0">
                 <desc>Landmarks to display.</desc>
             </requirement>
         </requirements>

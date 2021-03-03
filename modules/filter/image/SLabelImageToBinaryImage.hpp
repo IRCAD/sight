@@ -46,7 +46,7 @@ namespace sight::module::filter::image
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::filter::image::SLabelImageToBinaryImage">
+   <service type="sight::module::filter::image::SLabelImageToBinaryImage">
        <in key="labelImage" uid="..." autoConnect="yes" />
        <inout key="binaryMask" uid="..." />
        <config labelsField="maskLabels" />

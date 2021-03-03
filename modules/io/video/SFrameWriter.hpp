@@ -49,7 +49,7 @@ namespace sight::module::io::video
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::io::video::SFrameWriter">
+   <service type="sight::module::io::video::SFrameWriter">
        <in key="data" uid="..." autoConnect="yes" />
        <windowTitle>Select the image file to load</windowTitle>
        <format>.tiff</format>

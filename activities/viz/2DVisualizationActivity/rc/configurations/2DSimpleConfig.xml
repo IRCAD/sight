@@ -7,11 +7,11 @@
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
-        <object uid="${objectID}" type="::sight::data::ImageSeries" src="ref" />
-        <object uid="${imageID}" type="::sight::data::Image" src="ref" />
-        <service uid="mainview" type="::sight::module::ui::base::SView">
+        <object uid="${objectID}" type="sight::data::ImageSeries" src="ref" />
+        <object uid="${imageID}" type="sight::data::Image" src="ref" />
+        <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
                 </layout>
@@ -25,7 +25,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="::fwRenderVTK::SRender">
+        <service uid="gs" type="fwRenderVTK::SRender">
             <scene>
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" background="0.0" />
@@ -38,26 +38,26 @@
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="interactor4Negato" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="imageText" type="::visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="imageText" type="visuVTKAdaptor::SImageText" autoConnect="yes">
             <inout key="image" uid="${imageID}" />
             <config renderer="default" picker="picker" text="" color="#FFFFFF" />
         </service>
 
-        <service uid="seriesAdaptor" type="::visuVTKAdaptor::SImageSeries" autoConnect="yes">
+        <service uid="seriesAdaptor" type="visuVTKAdaptor::SImageSeries" autoConnect="yes">
             <inout key="imageSeries" uid="${objectID}" />
             <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
         </service>
 
-        <service uid="nameAdaptor" type="::visuVTKAdaptor::SText" autoConnect="yes">
+        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
             <in key="object" uid="${objectID}" />
             <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
         </service>
 
-        <service uid="imageSliceOrientationText" type="::visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
+        <service uid="imageSliceOrientationText" type="visuVTKAdaptor::SImageSliceOrientationText" autoConnect="yes">
             <in key="image" uid="${imageID}" />
             <config renderer="default">
                 <locations>default</locations>
@@ -67,14 +67,14 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="imageDumpLocker" type="::sight::module::memory::LockDumpSrv">
+        <service uid="imageDumpLocker" type="sight::module::memory::LockDumpSrv">
             <inout key="target" uid="${imageID}" />
         </service>
 
-        <service uid="medicalImgConverter" type="::sight::module::data::MedicalImageSrv">
+        <service uid="medicalImgConverter" type="sight::module::data::MedicalImageSrv">
             <inout key="image" uid="${imageID}" />
         </service>
-        <service uid="sliderIndexEditor" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

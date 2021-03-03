@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::Point );
+SIGHT_REGISTER_DATA( sight::data::Point );
 
 namespace sight::data
 {

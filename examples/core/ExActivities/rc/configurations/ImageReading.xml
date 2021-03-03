@@ -10,13 +10,13 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager" >
+                <layout type="sight::ui::base::CardinalLayoutManager" >
                     <view align="center" />
                 </layout>
                 <toolBar />
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -41,7 +41,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="::sight::module::ui::base::io::SSelector" >
+        <service uid="importAct" type="sight::module::ui::base::io::SSelector" >
             <inout key="data" uid="${image}" />
             <type mode="reader" />
             <selection mode="include" />
@@ -50,7 +50,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="::sight::module::viz::sample::SImage" autoConnect="yes" >
+        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="yes" >
             <in key="image" uid="${image}" />
         </service>
 

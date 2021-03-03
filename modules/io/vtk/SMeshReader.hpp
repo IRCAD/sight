@@ -46,7 +46,7 @@ namespace sight::module::io::vtk
  *
  * @section XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::io::vtk::SMeshReader">
+    <service uid="..." type="sight::module::io::vtk::SMeshReader">
         <inout key="data" uid="..." />
         <file>@path/to/file</file>
     </service>

@@ -22,16 +22,16 @@
 
 #include "TagValueInstanceRemoveSplitterTest.hpp"
 
-#include <utestData/Data.hpp>
-
-#include <dcmtk/dcmdata/dcdeftag.h>
-
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 #include <filter/dicom/splitter/TagValueInstanceRemoveSplitter.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <utestData/Data.hpp>
+
+#include <dcmtk/dcmdata/dcdeftag.h>
 
 #include <filesystem>
 
@@ -85,7 +85,7 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     // Apply filter
     filter::dicom::splitter::TagValueInstanceRemoveSplitter::sptr filter =
         filter::dicom::splitter::TagValueInstanceRemoveSplitter::dynamicCast(
-            filter::dicom::factory::New("::sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter"));
+            filter::dicom::factory::New("sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter"));
     CPPUNIT_ASSERT(filter);
     filter->setTag(DCM_AcquisitionNumber);
     filter->setTagValue("1");

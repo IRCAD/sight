@@ -45,7 +45,7 @@ namespace sight::module::ui::qt
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::qt::STextStatus">
+    <service uid="..." type="sight::module::ui::qt::STextStatus">
         <in key="string" uid="..." />
         <label>my label</label>
         <color>#FF0000</color>

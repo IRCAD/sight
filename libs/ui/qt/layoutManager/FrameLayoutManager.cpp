@@ -36,8 +36,8 @@
 #include <QLayout>
 #include <QMainWindow>
 
-fwGuiRegisterMacro( ::sight::ui::qt::FrameLayoutManager,
-                    ::sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( sight::ui::qt::FrameLayoutManager,
+                    sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY );
 
 namespace sight::ui::qt
 {

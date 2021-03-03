@@ -14,16 +14,16 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="${AS_UID}" type="::sight::data::ActivitySeries" src="ref" />
-        <object uid="${cameraSeries}" type="::sight::data::CameraSeries" src="ref" />
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="sight::data::ActivitySeries" src="ref" />
+        <object uid="${cameraSeries}" type="sight::data::CameraSeries" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
                 <toolBar/>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view align="center" />
                 </layout>
             </gui>
@@ -34,7 +34,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
@@ -60,13 +60,13 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="::sight::module::ui::base::com::SSlotCaller">
+        <service uid="writeCalibrationAct" type="sight::module::ui::base::com::SSlotCaller">
             <slots>
                 <slot>calibrationWriterSrv/update</slot>
             </slots>
         </service>
 
-        <service uid="cameraLauncherAct" type="::sight::module::ui::qt::calibration::SCameraConfigLauncher">
+        <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
             <inout key="cameraSeries" uid="${cameraSeries}" />
             <inout key="activitySeries" uid="${AS_UID}" />
             <config>
@@ -84,7 +84,7 @@
             </config>
         </service>
 
-        <service uid="chessboardSizeAct" type="::sight::module::ui::qt::SPreferencesConfiguration">
+        <service uid="chessboardSizeAct" type="sight::module::ui::qt::SPreferencesConfiguration">
             <preference>
                 <type>int</type>
                 <name>Chessboard width</name>
@@ -111,24 +111,24 @@
             </preference>
         </service>
 
-        <service uid="exportAct" type="::sight::module::ui::base::series::SExport" autoConnect="yes">
+        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="::sight::module::ui::base::com::SSignal">
+        <service uid="previousAct" type="sight::module::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="::sight::module::ui::base::com::SSignal">
+        <service uid="nextAct" type="sight::module::ui::base::com::SSignal">
             <state visible="false" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="calibrationWriterSrv" type="::sight::module::io::vision::SOpenCVWriter">
+        <service uid="calibrationWriterSrv" type="sight::module::io::vision::SOpenCVWriter">
             <in key="data" uid="${cameraSeries}" />
         </service>
 

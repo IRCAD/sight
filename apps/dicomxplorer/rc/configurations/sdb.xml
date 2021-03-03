@@ -10,12 +10,12 @@
     </parameters>
     <config>
 
-        <object uid="${SERIESDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="selections" type="::sight::data::Vector" />
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="selections" type="sight::data::Vector" />
 
-        <service uid="mainview" type="::sight::module::ui::base::SView" >
+        <service uid="mainview" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
                     <view caption="Preview" align="bottom" minHeight="200" />
                 </layout>
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::sight::module::ui::base::SToolBar">
+        <service uid="toolBar" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
@@ -62,27 +62,27 @@
             </registry>
         </service>
 
-        <service uid="action_import" type="::sight::module::ui::base::series::SDBMerger">
+        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
-        <service uid="selector" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes">
+        <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="seriesViewer" type="::sight::module::ui::qt::series::SViewer" autoConnect="yes">
+        <service uid="seriesViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="yes">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DSimpleConfig2" type="::sight::data::ImageSeries">
+                <config id="2DSimpleConfig2" type="sight::data::ImageSeries">
                     <extract path="@image" pattern="imageID" />
                 </config>
-                <config id="3DSimpleConfig2" type="::sight::data::ModelSeries" />
+                <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />
             </configs>
         </service>
 
-        <service uid="action_newActivity" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_newActivity" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -100,7 +100,7 @@
             </config>
         </service>
 
-        <service uid="action_2DVisualization" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_2DVisualization" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -115,7 +115,7 @@
         </service>
 
 
-        <service uid="action_3DVisualization" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_3DVisualization" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -129,7 +129,7 @@
             </config>
         </service>
 
-        <service uid="action_volumeRendering" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_volumeRendering" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -143,7 +143,7 @@
             </config>
         </service>
 
-        <service uid="action_blend" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_blend" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -157,7 +157,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsReader" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_dicomPacsReader" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -172,7 +172,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsWriter" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_dicomPacsWriter" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -187,7 +187,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomFiltering" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_dicomFiltering" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -202,7 +202,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomWebReader" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_dicomWebReader" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -217,7 +217,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomWebWriter" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_dicomWebWriter" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -232,7 +232,7 @@
             </config>
         </service>
 
-        <service uid="action_exportSeries" type="::sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
+        <service uid="action_exportSeries" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes">
             <in key="series" uid="selections" />
             <config>
                 <mode>immediate</mode>

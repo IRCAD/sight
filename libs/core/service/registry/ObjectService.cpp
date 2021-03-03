@@ -29,6 +29,7 @@
 
 #include <core/LazyInstantiator.hpp>
 #include <core/LogicStamp.hpp>
+#include <core/runtime/Runtime.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <filesystem>
@@ -428,8 +429,9 @@ void ObjectService::removeFromContainer( service::IService::sptr service )
 
 //------------------------------------------------------------------------------
 
-ObjectService::ServiceVectorType ObjectService::getServices( const std::string& serviceType ) const
+ObjectService::ServiceVectorType ObjectService::getServices( const std::string& _serviceType ) const
 {
+    const std::string serviceType = core::runtime::filterID(_serviceType);
     ServiceVectorType services;
     core::mt::ReadLock lock(m_containerMutex);
 

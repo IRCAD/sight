@@ -38,7 +38,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service type="::sight::module::viz::scene3d::adaptor::STransform">
+    <service type="sight::module::viz::scene3d::adaptor::STransform">
         <inout key="transform" uid="..." />
         <config layer="default" transform="meshTFAdaptor" />
    </service>

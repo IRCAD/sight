@@ -51,7 +51,7 @@ namespace sight::module::io::dicomweb
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::io::dicomweb::SSeriesPuller">
+        <service type="sight::module::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesDB" uid="..." />
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" dicomReaderConfig="config" />

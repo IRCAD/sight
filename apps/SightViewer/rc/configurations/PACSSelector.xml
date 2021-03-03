@@ -12,23 +12,23 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${previewSeriesDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="${localSeriesDB}" type="::sight::data::SeriesDB" src="ref" />
-        <object uid="${image}" type="::sight::data::Image" src="ref" />
+        <object uid="${previewSeriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${localSeriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${image}" type="sight::data::Image" src="ref" />
 
-        <object uid="pacsConfiguration" type="::sight::io::dimse::data::PacsConfiguration" />
+        <object uid="pacsConfiguration" type="sight::io::dimse::data::PacsConfiguration" />
 
-        <object uid="previewSelections" type="::sight::data::Vector" />
-        <object uid="previewDicom" type="::sight::data::DicomSeries" />
-        <object uid="previewImage" type="::sight::data::Image" />
-        <object uid="previewImageReset" type="::sight::data::Image" />
+        <object uid="previewSelections" type="sight::data::Vector" />
+        <object uid="previewDicom" type="sight::data::DicomSeries" />
+        <object uid="previewImage" type="sight::data::Image" />
+        <object uid="previewImageReset" type="sight::data::Image" />
 
-        <object uid="localSelections" type="::sight::data::Vector" />
-        <object uid="localImage" type="::sight::data::Image" />
+        <object uid="localSelections" type="sight::data::Vector" />
+        <object uid="localImage" type="sight::data::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="::sight::module::ui::base::SFrame" >
+        <service uid="mainView" type="sight::module::ui::base::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -42,9 +42,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::module::ui::base::SView" >
+        <service uid="containerView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <view proportion="1" />
@@ -56,9 +56,9 @@
             </registry>
         </service>
 
-        <service uid="queryView" type="::sight::module::ui::base::SView" >
+        <service uid="queryView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -77,11 +77,11 @@
             </registry>
         </service>
 
-        <service uid="selectorsView" type="::sight::module::ui::base::SView" >
+        <service uid="selectorsView" type="sight::module::ui::base::SView" >
             <gui>
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" hOffset="50%" />
                 <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" />
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -95,9 +95,9 @@
             </registry>
         </service>
 
-        <service uid="advancedQueryEditorSliderView" type="::sight::module::ui::base::SView" >
+        <service uid="advancedQueryEditorSliderView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -108,9 +108,9 @@
             </registry>
         </service>
 
-        <service uid="configurePACSSliderView" type="::sight::module::ui::base::SView" >
+        <service uid="configurePACSSliderView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
                     <spacer />
@@ -121,9 +121,9 @@
             </registry>
         </service>
 
-        <service uid="previewView" type="::sight::module::ui::base::SView" >
+        <service uid="previewView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -135,9 +135,9 @@
             </registry>
         </service>
 
-        <service uid="previewSceneView" type="::sight::module::ui::base::SView" >
+        <service uid="previewSceneView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -149,9 +149,9 @@
             </registry>
         </service>
 
-        <service uid="previewSceneSliderView" type="::sight::module::ui::base::SView" >
+        <service uid="previewSceneSliderView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -162,9 +162,9 @@
             </registry>
         </service>
 
-        <service uid="previewDICOMSliderView" type="::sight::module::ui::base::SView" >
+        <service uid="previewDICOMSliderView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -178,9 +178,9 @@
             </registry>
         </service>
 
-        <service uid="localView" type="::sight::module::ui::base::SView" >
+        <service uid="localView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -192,9 +192,9 @@
             </registry>
         </service>
 
-        <service uid="localSceneView" type="::sight::module::ui::base::SView" >
+        <service uid="localSceneView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>
@@ -206,9 +206,9 @@
             </registry>
         </service>
 
-        <service uid="localSceneSliderView" type="::sight::module::ui::base::SView" >
+        <service uid="localSceneSliderView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -219,9 +219,9 @@
             </registry>
         </service>
 
-        <service uid="localSliderView" type="::sight::module::ui::base::SView" >
+        <service uid="localSliderView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <spacer />
                     <view proportion="0" />
@@ -234,7 +234,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericScenePreviewSrv" type="::sight::viz::scene3d::SRender" >
+        <service uid="genericScenePreviewSrv" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -244,19 +244,19 @@
             </scene>
         </service>
 
-        <service uid="pNegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
+        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="previewImage" />
             <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="pNegatoCameraAdp" type="::sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
+        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="previewImage" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneLocalSrv" type="::sight::viz::scene3d::SRender" >
+        <service uid="genericSceneLocalSrv" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -267,22 +267,22 @@
             </scene>
         </service>
 
-        <service uid="lNegatoAdp" type="::sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+        <service uid="lNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
             <inout key="image" uid="localImage" />
             <config layer="defaultLayer" priority="1" sliceIndex="axial" interactive="true" />
         </service>
 
-        <service uid="lNegatoCameraAdp" type="::sight::module::viz::scene3d::adaptor::STrackballCamera" >
+        <service uid="lNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
             <config layer="defaultLayer" priority="0" />
         </service>
 
-        <service uid="lTextAdp" type="::sight::module::viz::scene3d::adaptor::SText" >
+        <service uid="lTextAdp" type="sight::module::viz::scene3d::adaptor::SText" >
             <config layer="defaultLayer" x="0.025" y="0.025" hAlign="left" vAlign="top" color="#D25252" />
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="seriesPullerAct" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="seriesPullerAct" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>sight::module::ui::flaticons/YellowPull.svg</icon>
@@ -292,7 +292,7 @@
             </config>
         </service>
 
-        <service uid="waitAct" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="waitAct" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -303,7 +303,7 @@
             </config>
         </service>
 
-        <service uid="exportImageAct" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="exportImageAct" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <executable>false</executable>
@@ -316,7 +316,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="showAdvancedQueryEditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="showAdvancedQueryEditorSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>sight::module::ui::flaticons/YellowBottomChevron.svg</icon>
@@ -325,7 +325,7 @@
             </config>
         </service>
 
-        <service uid="hideAdvancedQueryEditorSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="hideAdvancedQueryEditorSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>sight::module::ui::flaticons/YellowTopChevron.svg</icon>
@@ -334,7 +334,7 @@
             </config>
         </service>
 
-        <service uid="showPACSConfigurationSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="showPACSConfigurationSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>sight::module::ui::flaticons/BlueParametersConnected.svg</icon>
@@ -343,7 +343,7 @@
             </config>
         </service>
 
-        <service uid="hidePACSConfigurationSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="hidePACSConfigurationSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <icon>sight::module::ui::flaticons/BlueParametersConnected.svg</icon>
@@ -353,7 +353,7 @@
         </service>
 
         <!-- SNotifier listens to all the connected services & displays queued notifications at the same place -->
-        <service uid="leftNotifierSrv" type="::sight::module::ui::qt::SNotifier" >
+        <service uid="leftNotifierSrv" type="sight::module::ui::qt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_LEFT</position>
@@ -361,7 +361,7 @@
             <duration>5000</duration>
         </service>
 
-        <service uid="rightNotifierSrv" type="::sight::module::ui::qt::SNotifier" >
+        <service uid="rightNotifierSrv" type="sight::module::ui::qt::SNotifier" >
             <parent uid="mainview" />
             <message>Default Message</message>
             <position>BOTTOM_RIGHT</position>
@@ -369,39 +369,39 @@
             <duration>5000</duration>
         </service>
 
-        <service uid="resetPreviewSrv" type="::sight::module::data::SCopy" >
+        <service uid="resetPreviewSrv" type="sight::module::data::SCopy" >
             <in key="source" uid="previewImageReset" />
             <inout key="target" uid="previewImage" />
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="resetLocalSrv" type="::sight::module::data::SCopy" >
+        <service uid="resetLocalSrv" type="sight::module::data::SCopy" >
             <in key="source" uid="previewImageReset" />
             <inout key="target" uid="localImage" />
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="previewNegatoStopperSrv" type="::sight::module::ui::base::com::SStarter" >
+        <service uid="previewNegatoStopperSrv" type="sight::module::ui::base::com::SStarter" >
             <stop uid="pNegatoAdp" />
         </service>
 
-        <service uid="previewNegatoStarterSrv" type="::sight::module::ui::base::com::SStarter" >
+        <service uid="previewNegatoStarterSrv" type="sight::module::ui::base::com::SStarter" >
             <start uid="pNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStopperSrv" type="::sight::module::ui::base::com::SStarter" >
+        <service uid="localNegatoStopperSrv" type="sight::module::ui::base::com::SStarter" >
             <stop uid="lNegatoAdp" />
         </service>
 
-        <service uid="localNegatoStarterSrv" type="::sight::module::ui::base::com::SStarter" >
+        <service uid="localNegatoStarterSrv" type="sight::module::ui::base::com::SStarter" >
             <start uid="lNegatoAdp" />
         </service>
 
-        <service uid="medicalImageSrv" type="::sight::module::data::MedicalImageSrv" autoConnect="yes" >
+        <service uid="medicalImageSrv" type="sight::module::data::MedicalImageSrv" autoConnect="yes" >
             <inout key="image" uid="localImage" />
         </service>
 
-        <service uid="configurePACSInitializerSrv" type="::sight::module::io::dimse::SPacsConfigurationInitializer" >
+        <service uid="configurePACSInitializerSrv" type="sight::module::io::dimse::SPacsConfigurationInitializer" >
             <inout key="config" uid="pacsConfiguration" autoConnect="yes" />
             <config
                 localApplicationTitle="SightViewer"
@@ -415,24 +415,24 @@
                 />
         </service>
 
-        <service uid="configurePACSEditorSrv" type="::sight::module::io::dimse::SPacsConfigurationEditor" >
+        <service uid="configurePACSEditorSrv" type="sight::module::io::dimse::SPacsConfigurationEditor" >
             <inout key="config" uid="pacsConfiguration" />
             <config showDialog="false" />
         </service>
 
-        <service uid="queryEditorSrv" type="::sight::module::io::dimse::SQueryEditor" >
+        <service uid="queryEditorSrv" type="sight::module::io::dimse::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <config icon="sight::module::ui::flaticons/BlueMagnifyingGlass.svg" advanced="false" />
         </service>
 
-        <service uid="advancedQueryEditorSrv" type="::sight::module::io::dimse::SQueryEditor" >
+        <service uid="advancedQueryEditorSrv" type="sight::module::io::dimse::SQueryEditor" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <config icon="sight::module::ui::flaticons/BlueMagnifyingGlass.svg" />
         </service>
 
-        <service uid="previewSelectorSrv" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes" >
+        <service uid="previewSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${previewSeriesDB}" />
             <inout key="selection" uid="previewSelections" />
             <icons>
@@ -441,7 +441,7 @@
             <config selectionMode="extended" allowedRemove="false" />
         </service>
 
-        <service uid="extractPreviewSrv" type="::sight::module::data::SCopy" >
+        <service uid="extractPreviewSrv" type="sight::module::data::SCopy" >
             <in key="source" uid="previewSelections" >
               <extract from="@values.0" />
             </in>
@@ -449,21 +449,21 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="sliderIndexDicomPullerEditorSrv" type="::sight::module::io::dimse::SSliceIndexDicomEditor" autoConnect="yes" >
+        <service uid="sliderIndexDicomPullerEditorSrv" type="sight::module::io::dimse::SSliceIndexDicomEditor" autoConnect="yes" >
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="series" uid="previewDicom" />
             <inout key="image" uid="previewImage" />
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" delay="500" />
         </service>
 
-        <service uid="seriesPullerSrv" type="::sight::module::io::dimse::SSeriesPuller" autoConnect="yes">
+        <service uid="seriesPullerSrv" type="sight::module::io::dimse::SSeriesPuller" autoConnect="yes">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <config dicomReader="::sight::module::io::dicom::SSeriesDBReader" />
         </service>
 
-        <service uid="localSelectorSrv" type="::sight::module::ui::qt::series::SSelector" autoConnect="yes" >
+        <service uid="localSelectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
             <inout key="seriesDB" uid="${localSeriesDB}" />
             <inout key="selection" uid="localSelections" />
             <icons>
@@ -474,7 +474,7 @@
                     removeSerieicon="sight::module::ui::flaticons/RemoveMedecine.svg" />
         </service>
 
-        <service uid="extractLocalSrv" type="::sight::module::data::SCopy" >
+        <service uid="extractLocalSrv" type="sight::module::data::SCopy" >
             <in key="source" uid="localSelections" >
               <extract from="@values.0.image" />
             </in>
@@ -482,7 +482,7 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="exportImageSrv" type="::sight::module::data::SCopy" >
+        <service uid="exportImageSrv" type="sight::module::data::SCopy" >
             <in key="source" uid="localImage" />
             <inout key="target" uid="${image}" />
             <mode>copyOnUpdate</mode>

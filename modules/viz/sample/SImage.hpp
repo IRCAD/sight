@@ -34,7 +34,7 @@ namespace sight::module::viz::sample
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="..." type="::sight::module::viz::sample::SImage" >
+   <service uid="..." type="sight::module::viz::sample::SImage" >
       <in key="image" uid="..." autoConnect="yes" />
    </service>
  *

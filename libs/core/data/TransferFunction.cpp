@@ -28,7 +28,7 @@
 #include <core/com/Signal.hxx>
 #include <core/tools/Type.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::data::TransferFunction )
+SIGHT_REGISTER_DATA( sight::data::TransferFunction )
 
 namespace sight::data
 {

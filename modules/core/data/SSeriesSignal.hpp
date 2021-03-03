@@ -54,7 +54,7 @@ namespace sight::module::data
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="action_newActivity" type="::sight::module::activity::action::SSeriesSignal" autoConnect="yes" >
+    <service uid="action_newActivity" type="sight::module::activity::action::SSeriesSignal" autoConnect="yes" >
         <in key="seriesDB" uid="..." />
         <!-- Filter mode 'include' allows all given types.
              Filter mode 'exclude' allows all series excepted given ones. -->

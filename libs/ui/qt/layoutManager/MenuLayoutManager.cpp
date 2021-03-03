@@ -34,8 +34,8 @@
 
 #include <functional>
 
-fwGuiRegisterMacro( ::sight::ui::qt::layoutManager::MenuLayoutManager,
-                    ::sight::ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
+fwGuiRegisterMacro( sight::ui::qt::layoutManager::MenuLayoutManager,
+                    sight::ui::base::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
 
 namespace sight::ui::qt
 {

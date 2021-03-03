@@ -38,7 +38,7 @@ namespace detail
 ExtensionPoint::ExtensionPoint( const std::shared_ptr< Module > bundle, const std::string& id,
                                 const std::filesystem::path& schema ) :
     ModuleElement( bundle ),
-    m_id( id ),
+    m_id( filterID(id) ),
     m_schema( schema )
 {
 }

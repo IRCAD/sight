@@ -34,7 +34,7 @@
 namespace sight::data
 {
 
-SIGHT_REGISTER_DATA( ::sight::data::CalibrationInfo );
+SIGHT_REGISTER_DATA( sight::data::CalibrationInfo );
 
 const core::com::Signals::SignalKeyType CalibrationInfo::s_ADDED_RECORD_SIG   = "addedRecord";
 const core::com::Signals::SignalKeyType CalibrationInfo::s_REMOVED_RECORD_SIG = "removedRecord";

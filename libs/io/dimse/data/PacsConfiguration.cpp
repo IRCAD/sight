@@ -25,7 +25,7 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-SIGHT_REGISTER_DATA( ::sight::io::dimse::data::PacsConfiguration );
+SIGHT_REGISTER_DATA( sight::io::dimse::data::PacsConfiguration );
 
 namespace sight::io::dimse
 {

@@ -31,6 +31,9 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
+#include <ui/base/GuiRegistry.hpp>
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/SRender.hpp>
 
@@ -38,12 +41,8 @@
 
 #include <QWidget>
 
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/qt/container/QtContainer.hpp>
-
 namespace sight::module::ui::viz
 {
-
 
 const core::com::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
 
@@ -117,15 +116,15 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::sight::module::viz::scene3d::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
                 /// Filter object types
                 const data::Object::csptr shaderObj =
                     adaptor->getInOut< data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT);
                 const auto& objType = shaderObj->getClassname();
 
-                if(objType == "::sight::data::Boolean" || objType == "::sight::data::Float" ||
-                   objType == "::sight::data::Integer")
+                if(objType == "sight::data::Boolean" || objType == "sight::data::Float" ||
+                   objType == "sight::data::Integer")
                 {
                     found = true;
                     break;
@@ -160,12 +159,12 @@ void SCompositorParameterEditor::updateCompositor(std::string /*_compositorName*
         for (const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if (adaptor->getClassname() == "::sight::module::viz::scene3d::adaptor::SCompositorParameter")
+            if (adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
                 auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicConstCast(adaptor);
                 auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(paramAdaptor,
-                                                                                            m_editorInfo.service.lock(),
-                                                                                            m_editorInfo.connections);
+                                                                                           m_editorInfo.service.lock(),
+                                                                                           m_editorInfo.connections);
 
                 if(!paramConfig.empty())
                 {

@@ -44,7 +44,7 @@ namespace sight::module::ui::qt::reconstruction
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::qt::reconstruction::SOrganMaterialEditor">
+   <service type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor">
        <inout key="reconstruction" uid="..." />
    </service>
    @endcode

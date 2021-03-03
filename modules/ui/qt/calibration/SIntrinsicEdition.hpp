@@ -47,7 +47,7 @@ namespace sight::module::ui::qt::calibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::sight::module::ui::qt::calibration::SIntrinsicEdition">
+   <service type="sight::module::ui::qt::calibration::SIntrinsicEdition">
        <inout key="camera" uid="..." />
    </service>
    @endcode

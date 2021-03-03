@@ -3,7 +3,7 @@ This config open a windows containing the editors to manage the ModelSeries: sho
 color, ...
 
 Example:
-<service uid="..." type="::sight::service::SConfigController">
+<service uid="..." type="sight::service::SConfigController">
     <appConfig id="ModelSeriesManagerWindow" />
     <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
     <parameter replace="ICON_PATH" by="my/icon/path.ico" />
@@ -25,10 +25,10 @@ With:
     <desc>Open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the color.</desc>
     <config>
 
-        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::sight::data::ModelSeries" src="ref" />
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::ModelSeries" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="::sight::module::ui::base::SFrame">
+        <service uid="organManagerFrame" type="sight::module::ui::base::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -42,7 +42,7 @@ With:
             </registry>
         </service>
 
-        <service uid="modelManager" type="::sight::service::SConfigController">
+        <service uid="modelManager" type="sight::service::SConfigController">
             <appConfig id="ModelSeriesManagerView" />
             <inout key="ORGAN_MANAGER_MODELSERIES" uid="${ORGAN_MANAGER_MODELSERIES}" />
             <parameter replace="WID_PARENT" uid="OrganManagerView" />

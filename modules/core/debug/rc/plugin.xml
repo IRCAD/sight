@@ -5,30 +5,30 @@
 
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::ui::base::IAction</type>
-         <service>::sight::module::debug::action::MemoryConsumption</service>
-         <object>::sight::data::Object</object>
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::debug::action::MemoryConsumption</service>
+         <object>sight::data::Object</object>
          <desc>Implements configuring method derived from IService. .</desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::ui::base::IAction</type>
-         <service>::sight::module::debug::action::MemoryInfo</service>
-         <object>::sight::data::Object</object>
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::debug::action::MemoryInfo</service>
+         <object>sight::data::Object</object>
          <desc></desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::ui::base::IAction</type>
-         <service>::sight::module::debug::action::SDumpAll</service>
-         <object>::sight::data::Object</object>
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::debug::action::SDumpAll</service>
+         <object>sight::data::Object</object>
          <desc></desc>
     </extension>
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::ui::base::IAction</type>
-         <service>::sight::module::debug::action::fwMetrics</service>
-         <object>::sight::data::Object</object>
+         <type>sight::ui::base::IAction</type>
+         <service>sight::module::debug::action::fwMetrics</service>
+         <object>sight::data::Object</object>
          <desc></desc>
     </extension>
 </plugin>

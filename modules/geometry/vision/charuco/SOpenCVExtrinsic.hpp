@@ -49,7 +49,7 @@ namespace sight::module::geometry::vision::charuco
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::sight::module::geometry::vision::charuco::SOpenCVExtrinsic">
+        <service type="sight::module::geometry::vision::charuco::SOpenCVExtrinsic">
             <in key="calibrationInfo1" uid="..." />
             <in key="calibrationInfo2" uid="..." />
             <inout key="cameraSeries" uid="..." />

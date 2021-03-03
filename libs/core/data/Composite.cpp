@@ -30,7 +30,7 @@
 
 #include <algorithm>
 
-SIGHT_REGISTER_DATA( ::sight::data::Composite );
+SIGHT_REGISTER_DATA( sight::data::Composite );
 
 namespace sight::data
 {

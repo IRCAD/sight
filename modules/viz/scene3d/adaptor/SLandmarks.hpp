@@ -59,7 +59,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SLandmarks">
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SLandmarks">
         <inout key="landmarks" uid="..." />
         <in key="image" uid="..." />
         <config layer="default" transform="transformUID" visible="true" priority="2" />

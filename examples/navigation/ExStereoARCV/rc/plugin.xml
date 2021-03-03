@@ -12,24 +12,24 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="::sight::data::CameraSeries" />
-            <object uid="camera1" type="::sight::data::Camera" src="deferred" />
-            <object uid="camera2" type="::sight::data::Camera" src="deferred" />
-            <object uid="frameTL1" type="::sight::data::FrameTL" />
-            <object uid="frameTL2" type="::sight::data::FrameTL" />
-            <object uid="tagTL1" type="::sight::data::MarkerTL" />
-            <object uid="tagTL2" type="::sight::data::MarkerTL" />
-            <object uid="videoImage1" type="::sight::data::Image" />
-            <object uid="videoImage2" type="::sight::data::Image" />
-            <object uid="matrixTL" type="::sight::data::MatrixTL" />
-            <object uid="matrix" type="::sight::data::Matrix4" />
-            <object uid="extrinsic" type="::sight::data::Matrix4" src="deferred" />
-            <object uid="inverseMat" type="::sight::data::Matrix4" />
-            <object uid="rightMat" type="::sight::data::Matrix4" />
+            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="camera1" type="sight::data::Camera" src="deferred" />
+            <object uid="camera2" type="sight::data::Camera" src="deferred" />
+            <object uid="frameTL1" type="sight::data::FrameTL" />
+            <object uid="frameTL2" type="sight::data::FrameTL" />
+            <object uid="tagTL1" type="sight::data::MarkerTL" />
+            <object uid="tagTL2" type="sight::data::MarkerTL" />
+            <object uid="videoImage1" type="sight::data::Image" />
+            <object uid="videoImage2" type="sight::data::Image" />
+            <object uid="matrixTL" type="sight::data::MatrixTL" />
+            <object uid="matrix" type="sight::data::Matrix4" />
+            <object uid="extrinsic" type="sight::data::Matrix4" src="deferred" />
+            <object uid="inverseMat" type="sight::data::Matrix4" />
+            <object uid="rightMat" type="sight::data::Matrix4" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="::sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Show settings" shortcut="Ctrl+H" style="check" />
@@ -71,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="::sight::module::ui::base::SMenu" >
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -82,7 +82,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="::sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -108,9 +108,9 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="::sight::module::ui::base::SView" >
+            <service uid="cameraView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -122,9 +122,9 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="::sight::module::ui::base::SView" >
+            <service uid="videoView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -136,9 +136,9 @@
                 </registry>
             </service>
 
-            <service uid="infoView" type="::sight::module::ui::base::SView" >
+            <service uid="infoView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -150,9 +150,9 @@
                 </registry>
             </service>
 
-            <service uid="stereoView" type="::sight::module::ui::base::SView" >
+            <service uid="stereoView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -164,9 +164,9 @@
                 </registry>
             </service>
 
-            <service uid="reprojectionInfoView" type="::sight::module::ui::base::SView" >
+            <service uid="reprojectionInfoView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -179,9 +179,9 @@
             </service>
 
 
-            <service uid="parametersView" type="::sight::module::ui::base::SView" >
+            <service uid="parametersView" type="sight::module::ui::base::SView" >
                 <gui>
-                    <layout type="::sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="vertical" />
                             <view proportion="3" />
                             <view proportion="2" />
@@ -199,10 +199,10 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="::sight::module::ui::qt::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -211,40 +211,40 @@
                 </preference>
             </service>
 
-            <service uid="showParametersAct" type="::sight::module::ui::base::SModifyLayout" >
+            <service uid="showParametersAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>calibrationReaderSrv/update</slot>
                 </slots>
             </service>
 
-            <service uid="startVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/startCamera</slot>
                     <slot>videoGrabber2Srv/startCamera</slot>
                 </slots>
             </service>
 
-            <service uid="stopVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/stopCamera</slot>
                     <slot>videoGrabber2Srv/stopCamera</slot>
                 </slots>
             </service>
 
-            <service uid="pauseVideoAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>videoGrabber1Srv/pauseCamera</slot>
                     <slot>videoGrabber2Srv/pauseCamera</slot>
                 </slots>
             </service>
 
-            <service uid="startRecordAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="startRecordAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <slots>
                     <slot>matricesWriterSrv/startRecord</slot>
                     <slot>startRecordAct/hide</slot>
@@ -252,7 +252,7 @@
                 </slots>
             </service>
 
-            <service uid="stopRecordAct" type="::sight::module::ui::base::com::SSlotCaller" >
+            <service uid="stopRecordAct" type="sight::module::ui::base::com::SSlotCaller" >
                 <state visible="false" />
                 <slots>
                     <slot>matricesWriterSrv/stopRecordAct</slot>
@@ -263,7 +263,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="leftGenericSceneSrv" type="::sight::viz::scene3d::SRender" >
+            <service uid="leftGenericSceneSrv" type="sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -274,16 +274,16 @@
                 </scene>
             </service>
 
-            <service uid="LVideoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="LVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage1" />
                 <config layer="video" />
             </service>
 
-            <service uid="LAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis" >
+            <service uid="LAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis" >
                 <config layer="default" length="30" origin="true" />
             </service>
 
-            <service uid="LCameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="LCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="camera1" />
                 <config layer="default" />
@@ -292,7 +292,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <!-- Scene in which the video and the 3D will be rendered -->           
-            <service uid="rightGenericSceneSrv" type="::sight::viz::scene3d::SRender" >
+            <service uid="rightGenericSceneSrv" type="sight::viz::scene3d::SRender" >
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -303,16 +303,16 @@
                 </scene>
             </service>
 
-            <service uid="RVideoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <service uid="RVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
                 <in key="image" uid="videoImage2" />
                 <config layer="video" />
             </service>
 
-            <service uid="RAxisAdp" type="::sight::module::viz::scene3d::adaptor::SAxis" >
+            <service uid="RAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis" >
                 <config layer="default" length="30" origin="true" />
             </service>
 
-            <service uid="RCameraAdp" type="::sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+            <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
                 <inout key="transform" uid="rightMat" />
                 <in key="calibration" uid="camera2" />
                 <config layer="default" />
@@ -321,12 +321,12 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="::sight::module::io::vision::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
                 <inout key="data" uid="cameraSeries" />
             </service>
 
             <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
-            <service uid="cameraExtractorSrv" type="::sight::module::data::SExtractObj" >
+            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
                 <inout key="source" uid="cameraSeries" >
                     <extract from="@cameras.0" />
                     <extract from="@cameras.1" />
@@ -340,12 +340,12 @@
             </service>
 
             <!-- save poses matrices in a file -->
-            <service uid="matricesWriterSrv" type="::sight::module::io::matrix::SMatrixWriter" >
+            <service uid="matricesWriterSrv" type="sight::module::io::matrix::SMatrixWriter" >
                 <in key="data" uid="matrixTL" autoConnect="no" />
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamsSrv" type="::sight::module::ui::qt::SParameters" >
+            <service uid="arucoParamsSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -399,32 +399,32 @@
                 </parameters>
             </service>
 
-            <service uid="reprojectionParamsSrv" type="::sight::module::ui::qt::SParameters" >
+            <service uid="reprojectionParamsSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
                     <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
                 </parameters>
             </service>
 
-            <service uid="synchroParamsSrv" type="::sight::module::ui::qt::SParameters" >
+            <service uid="synchroParamsSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <param type="int" name="Delay" key="frameDelay" defaultValue="0" min="0" max="2000" />
                 </parameters>
             </service>
 
             <!-- Gui Service to display a value in a QLabel -->
-            <service uid="errorLabelLeftSrv" type="::sight::module::ui::qt::STextStatus" >
+            <service uid="errorLabelLeftSrv" type="sight::module::ui::qt::STextStatus" >
                 <label>Reprojection Error Left (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
-            <service uid="errorLabelRightSrv" type="::sight::module::ui::qt::STextStatus" >
+            <service uid="errorLabelRightSrv" type="sight::module::ui::qt::STextStatus" >
                 <label>Reprojection Error Right (RMSE)</label>
                 <color>#D25252</color>
             </service>
 
             <!-- GUI to display a state -->
-            <service uid="reprojectionMatrixStatusSrv" type="::sight::module::ui::base::editor::SStatus" >
+            <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::base::editor::SStatus" >
                 <form>circle</form>
                 <labelStatus>Reprojection matrix computed</labelStatus>
                 <red>No reprojection matrix</red>
@@ -432,29 +432,29 @@
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelector1Srv" type="::sight::module::ui::qt::video::SCamera" >
+            <service uid="videoSelector1Srv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera1" />
                 <videoSupport>yes</videoSupport>
             </service>
 
-            <service uid="videoSelector2Srv" type="::sight::module::ui::qt::video::SCamera" >
+            <service uid="videoSelector2Srv" type="sight::module::ui::qt::video::SCamera" >
                 <inout key="camera" uid="camera2" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabber1Srv" type="::sight::module::io::video::SFrameGrabber" >
+            <service uid="videoGrabber1Srv" type="sight::module::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera1" />
                 <inout key="frameTL" uid="frameTL1" />
             </service>
 
-            <service uid="videoGrabber2Srv" type="::sight::module::io::video::SFrameGrabber" >
+            <service uid="videoGrabber2Srv" type="sight::module::io::video::SFrameGrabber" >
                 <in key="camera" uid="camera2" />
                 <inout key="frameTL" uid="frameTL2" />
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="arucoTracker1Srv" type="::sight::module::navigation::optics::SArucoTracker" worker="tracking1" >
+            <service uid="arucoTracker1Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking1" >
                 <in key="timeline" uid="frameTL1" autoConnect="yes" />
                 <in key="camera" uid="camera1" />
                 <inout group="tagTL" >
@@ -468,7 +468,7 @@
                 <debugMarkers>yes</debugMarkers>
             </service>
 
-            <service uid="arucoTracker2Srv" type="::sight::module::navigation::optics::SArucoTracker" worker="tracking2" >
+            <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking2" >
                 <in key="timeline" uid="frameTL2" autoConnect="yes" />
                 <in key="camera" uid="camera2" />
                 <inout group="tagTL" >
@@ -483,7 +483,7 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registrationSrv" type="::sight::module::geometry::vision::SPoseFrom2d" worker="registration" >
+            <service uid="registrationSrv" type="sight::module::geometry::vision::SPoseFrom2d" worker="registration" >
                 <in group="markerTL" autoConnect="yes" >
                     <key uid="tagTL1" />
                     <key uid="tagTL2" />
@@ -499,7 +499,7 @@
 
 
             <!-- This will compute the reprojection error Left -->
-            <service uid="leftReprojectionErrorSrv" type="::sight::module::geometry::vision::SReprojectionError" worker="error1" >
+            <service uid="leftReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error1" >
                 <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
                 <in key="camera" uid="camera1" />
                 <in key="markerTL" uid="tagTL1" />
@@ -507,7 +507,7 @@
                 <patternWidth>60</patternWidth>
             </service>
 
-            <service uid="rightReprojectionErrorSrv" type="::sight::module::geometry::vision::SReprojectionError" worker="error2" >
+            <service uid="rightReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error2" >
                 <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
                 <in key="extrinsic" uid="extrinsic" />
                 <in key="camera" uid="camera2" />
@@ -518,7 +518,7 @@
 
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameMatrixSynchronizerSrv" type="::sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+            <service uid="frameMatrixSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
                     <key uid="frameTL1" />
                     <key uid="frameTL2" />
@@ -538,7 +538,7 @@
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
-            <service uid="matrixReverserSrv" type="::sight::module::geometry::base::SConcatenateMatrices" >
+            <service uid="matrixReverserSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="matrix" autoConnect="yes" inverse="true" />
                 </in>
@@ -546,7 +546,7 @@
             </service>
 
             <!-- to multiply matrices -->
-            <service uid="concatenateSrv" type="::sight::module::geometry::base::SConcatenateMatrices" >
+            <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
                 <in group="matrix" >
                     <key uid="inverseMat" autoConnect="yes" inverse="false" />
                     <key uid="extrinsic" inverse="true" />
@@ -554,7 +554,7 @@
                 <inout key="output" uid="rightMat" />
             </service>
 
-            <service uid="hideAxisSrv" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
+            <service uid="hideAxisSrv" type="sight::module::ui::base::com::SBooleanSlotCaller" >
                 <slots>
                     <slot>LAxisAdp/updateVisibility</slot>
                     <slot>RAxisAdp/updateVisibility</slot>

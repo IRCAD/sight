@@ -43,7 +43,7 @@ namespace sight::module::ui::base::video
  * - \b getInteraction(data::tools::PickingInfo info): retrieves the 2d coordinates (z= 0) from picking info.
  *
  * @code{.xml}
-   <service uid="..." type="::sight::module::ui::base::video::SImagePicker" >
+   <service uid="..." type="sight::module::ui::base::video::SImagePicker" >
         <inout key="pointList" uid="..." />
         <inout key="pixelPointList" uid="..." />
         <config videoReference="center" />

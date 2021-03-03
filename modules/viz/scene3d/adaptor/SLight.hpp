@@ -51,7 +51,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="lightAdaptor" type="::sight::module::viz::scene3d::adaptor::SLight">
+    <service uid="lightAdaptor" type="sight::module::viz::scene3d::adaptor::SLight">
         <inout key="diffuseColor" uid="diffuseColorUid" />
         <inout key="specularColor" uid="specularColorUid" />
         <config name="sceneLight" transform="..." switchedOn="yes" thetaOffset="30.5" phiOffset="45" />

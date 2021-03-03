@@ -22,13 +22,13 @@
 
 #include "AcquisitionNumberSplitterTest.hpp"
 
-#include <utestData/Data.hpp>
-
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesDB.hpp>
+
+#include <utestData/Data.hpp>
 
 #include <filesystem>
 
@@ -81,7 +81,7 @@ void AcquisitionNumberSplitterTest::simpleApplication()
 
     // Apply filter
     filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
-        "::sight::filter::dicom::splitter::AcquisitionNumberSplitter");
+        "sight::filter::dicom::splitter::AcquisitionNumberSplitter");
     CPPUNIT_ASSERT(filter);
     filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(size_t(2), dicomSeriesContainer.size());

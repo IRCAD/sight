@@ -28,7 +28,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( ::sight::data::Landmarks );
+SIGHT_REGISTER_DATA( sight::data::Landmarks );
 
 namespace sight::data
 {

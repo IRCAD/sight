@@ -62,7 +62,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="::sight::module::viz::scene3d::adaptor::SPointList" >
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SPointList" >
         <in key="pointList" uid="..." />
         <config layer="..." transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>

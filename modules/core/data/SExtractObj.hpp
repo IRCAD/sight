@@ -41,7 +41,7 @@ namespace sight::module::data
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::sight::module::data::SExtractObj" >
+        <service uid="..." type="sight::module::data::SExtractObj" >
            <inout key="source" uid="...">
                <extract from="@values.myobject1" />
                <extract from="@values.myobject2" />

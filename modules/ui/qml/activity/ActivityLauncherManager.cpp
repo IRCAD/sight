@@ -26,9 +26,9 @@
 
 #include <data/SeriesDB.hpp>
 
+#include <service/extension/Config.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry/Proxy.hpp>
-#include <service/extension/Config.hpp>
 
 #include <ui/qml/IQmlEditor.hpp>
 
@@ -93,7 +93,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
     sight::ui::qml::IQmlEditor::sptr srv(obj.value< sight::ui::qml::IQmlEditor* >());
     if (srv)
     {
-        if (srv->isA("::sight::module::ui::qml::activity::SView"))
+        if (srv->isA("sight::module::ui::qml::activity::SView"))
         {
             srv->configure(m_activityViewConfig);
             // connect to launch the activity when it is created/updated.
@@ -104,7 +104,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 
             this->addService(srv, true);
         }
-        else if (srv->isA("::sight::module::ui::qml::activity::SSequencer"))
+        else if (srv->isA("sight::module::ui::qml::activity::SSequencer"))
         {
             // create the services;
             m_activitySequencer = srv;

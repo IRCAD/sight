@@ -14,7 +14,7 @@
         <desc>Activity to superimpose two images.</desc>
         <icon>sight::module::ui::icons/icon-blend.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::sight::data::ImageSeries" minOccurs="2" maxOccurs="2" >
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>
                 <validator>::sight::activity::validator::ImageProperties</validator>
                 <key>FrontImage</key>

@@ -39,7 +39,7 @@ namespace sight::module::ui::qt::calibration
  * @subsection Configuration XML
 
  * @code{.xml}
-    <service uid="..." type="::sight::module::ui::qt::calibration::SCameraSeriesEditor" >
+    <service uid="..." type="sight::module::ui::qt::calibration::SCameraSeriesEditor" >
         <in key="cameraSeries" uid="..." />
         <index>...</index>
     </service>

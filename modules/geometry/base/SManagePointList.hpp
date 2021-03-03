@@ -42,7 +42,7 @@ namespace sight::module::geometry::base
 
  * @section XML XML Configuration
  * @code{.xml}
-        <service uid="..." type="::sight::module::geometry::base::SManagePointList">
+        <service uid="..." type="sight::module::geometry::base::SManagePointList">
             <inout key="pointList" uid="..." />
             <in key="matrix" uid="..." />
             <config max="0" removable="true" label="false" tolerance="10.0" />

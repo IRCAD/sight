@@ -44,7 +44,7 @@ namespace layoutManager
 {
 //-----------------------------------------------------------------------------
 
-const IFrameLayoutManager::RegistryKeyType IFrameLayoutManager::REGISTRY_KEY = "::sight::ui::base::FrameLayoutManager";
+const IFrameLayoutManager::RegistryKeyType IFrameLayoutManager::REGISTRY_KEY = "sight::ui::base::FrameLayoutManager";
 
 const std::string IFrameLayoutManager::SOFTWARE_UI         = "SOFTWARE_UI";
 const std::string IFrameLayoutManager::FRAME_STATE_UI      = "FRAME_STATE_UI";

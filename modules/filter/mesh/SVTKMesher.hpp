@@ -36,7 +36,7 @@ namespace sight::module::filter::mesh
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::filter::mesh::SVTKMesher" >
+   <service type="sight::module::filter::mesh::SVTKMesher" >
        <in key="imageSeries" uid="..."/>
        <out key="modelSeries" uid="..." />
        <config>

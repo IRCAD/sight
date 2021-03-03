@@ -41,7 +41,7 @@ namespace sight::module::filter::image
  * @section XML XML Configuration
  *
  * @code{.xml}
-   <service type="::opITK::SAutomaticRegistration">
+   <service type="opITK::SAutomaticRegistration">
        <in key="target" uid="..." />
        <in key="reference" uid="..." />
        <inout key="transform" uid="..." />

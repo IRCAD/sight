@@ -4,21 +4,21 @@
     <requirement id="sight::module::ui::console" />
 
     <extension implements="::sight::service::extension::Factory" >
-        <type>::sight::service::IController</type>
-        <service>::Tuto05MultithreadConsoleCpp::SReadArray</service>
-        <object>::sight::data::Array</object>
+        <type>sight::service::IController</type>
+        <service>Tuto05MultithreadConsoleCpp::SReadArray</service>
+        <object>sight::data::Array</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory" >
-        <type>::sight::service::IController</type>
-        <service>::Tuto05MultithreadConsoleCpp::SShowArray</service>
-        <object>::sight::data::Array</object>
+        <type>sight::service::IController</type>
+        <service>Tuto05MultithreadConsoleCpp::SShowArray</service>
+        <object>sight::data::Array</object>
     </extension>
 
     <extension implements="::sight::service::extension::Factory" >
-        <type>::sight::service::IController</type>
-        <service>::Tuto05MultithreadConsoleCpp::SIncrementArray</service>
-        <object>::sight::data::Array</object>
+        <type>sight::service::IController</type>
+        <service>Tuto05MultithreadConsoleCpp::SIncrementArray</service>
+        <object>sight::data::Array</object>
     </extension>
 
     <extension implements="::sight::service::extension::AppConfig" >
@@ -29,22 +29,22 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="array" type="::sight::data::Array" />
+            <object uid="array" type="sight::data::Array" />
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Simulate the reading of an array of integers. It simply fills 10 values from 0 to 9. -->
-            <service uid="readArraySrv" type="::Tuto05MultithreadConsoleCpp::SReadArray" worker="worker1" >
+            <service uid="readArraySrv" type="Tuto05MultithreadConsoleCpp::SReadArray" worker="worker1" >
                 <inout key="array" uid="array" />
             </service>
 
             <!-- Increment each element of the array every 500ms. -->
-            <service uid="incrementArraySrv" type="::Tuto05MultithreadConsoleCpp::SIncrementArray" worker="worker2" >
+            <service uid="incrementArraySrv" type="Tuto05MultithreadConsoleCpp::SIncrementArray" worker="worker2" >
                 <inout key="array" uid="array" />
             </service>
 
             <!-- Display the content of the array. -->
-            <service uid="showArraySrv" type="::Tuto05MultithreadConsoleCpp::SShowArray" worker="worker3" >
+            <service uid="showArraySrv" type="Tuto05MultithreadConsoleCpp::SShowArray" worker="worker3" >
                 <in key="array" uid="array" />
             </service>
 

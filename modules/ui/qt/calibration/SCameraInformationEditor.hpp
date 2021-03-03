@@ -42,7 +42,7 @@ namespace sight::module::ui::qt::calibration
  *
  * @subsection Configuration XML
  * @code
-    <service uid="..." type="::sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
+    <service uid="..." type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="yes">
         <in key="camera" uid="..." />
     </service>
    @endcode

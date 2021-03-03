@@ -10,12 +10,12 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageId1}" src="ref" type="::sight::data::Image" />
-        <object uid="${pointListId1}" src="ref" type="::sight::data::PointList" />
+        <object uid="${imageId1}" src="ref" type="sight::data::Image" />
+        <object uid="${pointListId1}" src="ref" type="sight::data::PointList" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::module::ui::base::SFrame">
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -30,7 +30,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="::sight::viz::scene3d::SRender" >
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -39,7 +39,7 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="::sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
             <config layer="video" radius="0.75" color="#6997BB" fixedSize="true" textureName="circle.dds"/>

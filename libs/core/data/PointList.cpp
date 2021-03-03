@@ -29,7 +29,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
-SIGHT_REGISTER_DATA( ::sight::data::PointList );
+SIGHT_REGISTER_DATA( sight::data::PointList );
 
 namespace sight::data
 {

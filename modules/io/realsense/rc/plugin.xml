@@ -4,8 +4,8 @@
 <plugin id="sight::module::io::realsense" library="true" >
 
     <extension implements="::sight::service::extension::Factory">
-         <type>::sight::service::IRGBDGrabber</type>
-         <service>::sight::module::io::realsense::SScan</service>
+         <type>sight::service::IRGBDGrabber</type>
+         <service>sight::module::io::realsense::SScan</service>
          <object key="depthTL">sight::data::FrameTL</object>
          <object key="frameTL">sight::data::FrameTL</object>
          <object key="cameraSeries">sight::data::CameraSeries</object>

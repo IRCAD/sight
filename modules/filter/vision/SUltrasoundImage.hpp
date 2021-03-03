@@ -58,7 +58,7 @@ namespace sight::module::filter::vision
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service type="::sight::module::filter::vision::SUltrasoundImage">
+   <service type="sight::module::filter::vision::SUltrasoundImage">
        <in key="ultrasoundImage" uid="..." />
        <inout key="extractedUltrasoundBeam" uid="..." />
    </service>

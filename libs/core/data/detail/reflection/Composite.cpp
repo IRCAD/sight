@@ -35,6 +35,6 @@ SIGHT_IMPLEMENT_DATA_REFLECTION((sight)(data)(Composite))
     .tag("object_version", "1")
     .tag("lib_name", "::sight::data")
     .base< ::sight::data::Object>()
-    .property("values", &::sight::data::Composite::m_container)
+    .property("values", &sight::data::Composite::m_container)
     ;
 }

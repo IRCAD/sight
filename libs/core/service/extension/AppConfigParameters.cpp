@@ -55,12 +55,11 @@ AppConfigParameters::~AppConfigParameters()
 
 void AppConfigParameters::parseBundleInformation()
 {
-    std::vector< std::shared_ptr< core::runtime::Extension > >  extensions = core::runtime::getAllExtensionsForPoint(
-        "::sight::service::extension::AppConfigParameters");
+    auto extensions = core::runtime::getAllExtensionsForPoint("sight::service::extension::AppConfigParameters");
     for( std::shared_ptr< core::runtime::Extension > ext :  extensions )
     {
         // Get id
-        std::string extensionId = ext->findConfigurationElement("id")->getValue();
+        const std::string extensionId = core::runtime::filterID(ext->findConfigurationElement("id")->getValue());
 
         FieldAdaptorType parameters;
 
@@ -103,7 +102,7 @@ void AppConfigParameters::clearRegistry()
 const FieldAdaptorType& AppConfigParameters::getParameters( const std::string& extensionId ) const
 {
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find( extensionId );
+    Registry::const_iterator iter = m_reg.find( core::runtime::filterID(extensionId) );
     SIGHT_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
                  iter != m_reg.end());
     return iter->second;

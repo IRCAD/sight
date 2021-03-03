@@ -10,7 +10,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="text" type="::sight::data::String" >
+        <object uid="text" type="sight::data::String" >
             <value>
             <![CDATA[
                 This is a STextStatus
@@ -20,7 +20,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="::sight::module::ui::base::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
             <gui>
                 <menuBar />
                 <toolBar >
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="::sight::module::ui::base::SMenuBar" >
+        <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="My Menu" />
@@ -53,7 +53,7 @@
             </registry>
         </service>
 
-        <service uid="menu1View" type="::sight::module::ui::base::SMenu" >
+        <service uid="menu1View" type="sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" shortcut="1" style="check" />
@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <service uid="menu2View" type="::sight::module::ui::base::SMenu" >
+        <service uid="menu2View" type="sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" style="check" />
@@ -93,7 +93,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -133,7 +133,7 @@
             </registry>
         </service>
 
-        <service uid="testHideShowView" type="::sight::module::ui::base::SMenu" >
+        <service uid="testHideShowView" type="sight::module::ui::base::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -148,9 +148,9 @@
             </registry>
         </service>
 
-        <service uid="backgroundView" type="::sight::module::ui::base::SView" >
+        <service uid="backgroundView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E2F30" />
                 </layout>
@@ -160,9 +160,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="::sight::module::ui::base::SView" >
+        <service uid="containerView" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="vertical" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -174,9 +174,9 @@
             </registry>
         </service>
 
-        <service uid="sub1View" type="::sight::module::ui::base::SView" >
+        <service uid="sub1View" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" toolTip="View with tabs inside" backgroundColor="#36393E" />
                     <view proportion="1" toolTip="Empty view" backgroundColor="#36393E" />
@@ -191,9 +191,9 @@
             </registry>
         </service>
 
-        <service uid="sub2View" type="::sight::module::ui::base::SView" >
+        <service uid="sub2View" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::CardinalLayoutManager" >
+                <layout type="sight::ui::base::CardinalLayoutManager" >
                     <view align="center" backgroundColor="#36393E" />
                     <view caption="CardinalView2" align="right" minWidth="400" />
                     <view caption="CardinalView3" align="right" minWidth="400" />
@@ -204,9 +204,9 @@
             </registry>
         </service>
 
-        <service uid="sub3View" type="::sight::module::ui::base::SView" >
+        <service uid="sub3View" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::TabLayoutManager" >
+                <layout type="sight::ui::base::TabLayoutManager" >
                     <view caption="TabView1"  />
                     <view caption="TabView2" selected="yes" />
                     <view caption="TabView3" />
@@ -215,9 +215,9 @@
             <registry/>
         </service>
 
-        <service uid="sub4View" type="::sight::module::ui::base::SView" >
+        <service uid="sub4View" type="sight::module::ui::base::SView" >
         <gui>
-            <layout type="::sight::ui::base::LineLayoutManager" >
+            <layout type="sight::ui::base::LineLayoutManager" >
                 <orientation value="horizontal" />
                 <spacer/>
                 <view proportion="0" />
@@ -229,9 +229,9 @@
         </registry>
         </service>
 
-        <service uid="sub5View" type="::sight::module::ui::base::SView" >
+        <service uid="sub5View" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <spacer/>
                     <view proportion="0" />
@@ -243,9 +243,9 @@
             </registry>
         </service>
 
-        <service uid="view12" type="::sight::module::ui::base::SView" >
+        <service uid="view12" type="sight::module::ui::base::SView" >
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view toolTip="This is a nice tooltip"  />
                     <view toolTip="You can put some useful information here"  />
@@ -261,7 +261,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar2View" type="::sight::module::ui::base::SToolBar" >
+        <service uid="toolbar2View" type="sight::module::ui::base::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Item 2" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
@@ -281,25 +281,25 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="item1Act" type="::sight::module::ui::base::SDefaultAction" >
+        <service uid="item1Act" type="sight::module::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="item2Act" type="::sight::module::ui::base::SDefaultAction" >
+        <service uid="item2Act" type="sight::module::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="item3Act" type="::sight::module::ui::base::SDefaultAction" />
+        <service uid="item3Act" type="sight::module::ui::base::SDefaultAction" />
 
-        <service uid="item4Act" type="::sight::module::ui::base::SDefaultAction" >
+        <service uid="item4Act" type="sight::module::ui::base::SDefaultAction" >
             <state active="false" />
         </service>
 
-        <service uid="item5Act" type="::sight::module::ui::base::SDefaultAction" >
+        <service uid="item5Act" type="sight::module::ui::base::SDefaultAction" >
             <state active="true" />
         </service>
 
-        <service uid="startAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="startAct" type="sight::module::ui::base::com::SSlotCaller" >
             <slots>
                 <slot>startAct/hide</slot>
                 <slot>stopAct/setExecutable</slot>
@@ -307,7 +307,7 @@
             </slots>
         </service>
 
-        <service uid="stopAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="stopAct" type="sight::module::ui::base::com::SSlotCaller" >
             <state executable="false" />
             <slots>
                 <slot>startAct/show</slot>
@@ -316,7 +316,7 @@
             </slots>
         </service>
 
-        <service uid="pauseAct" type="::sight::module::ui::base::com::SSlotCaller" >
+        <service uid="pauseAct" type="sight::module::ui::base::com::SSlotCaller" >
             <state active="true" visible="false" />
             <slots>
                 <slot>startAct/show</slot>
@@ -324,14 +324,14 @@
             </slots>
         </service>
 
-        <service uid="view5VisibilityAct" type="::sight::module::ui::base::com::SBooleanSlotCaller" >
+        <service uid="view5VisibilityAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
             <state active="true" inverse="true" />
             <slots>
                 <slot>sub5View/setVisible</slot>
             </slots>
         </service>
 
-        <service uid="item16Act" type="::sight::module::ui::base::com::SStarter" >
+        <service uid="item16Act" type="sight::module::ui::base::com::SStarter" >
             <state active="true" />
             <start uid="item2Act" />
             <start uid="item3Act" />
@@ -339,7 +339,7 @@
             <stop uid="item5Act" />
         </service>
 
-        <service uid="item17Act" type="::sight::module::ui::base::com::SStarter" >
+        <service uid="item17Act" type="sight::module::ui::base::com::SStarter" >
             <stop uid="item2Act" />
             <stop uid="item3Act" />
             <start uid="item4Act" />
@@ -348,19 +348,19 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="clickSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="clickSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <text>Click</text>
             </config>
         </service>
 
-        <service uid="meSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="meSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <text>Me</text>
             </config>
         </service>
 
-        <service uid="checkableSrv" type="::sight::module::ui::qt::com::SSignalButton" >
+        <service uid="checkableSrv" type="sight::module::ui::qt::com::SSignalButton" >
             <config>
                 <checkable>true</checkable>
                 <icon>sight::module::ui::flaticons/GreenStart.svg</icon>
@@ -369,18 +369,18 @@
             </config>
         </service>
 
-        <service uid="ircadIHULogoSrv" type="::sight::module::ui::qt::image::SImage" >
+        <service uid="ircadIHULogoSrv" type="sight::module::ui::qt::image::SImage" >
             <path>flaticons/IrcadIHU.svg</path>
             <height>70</height>
         </service>
 
-        <service uid="textStatusSrv" type="::sight::module::ui::qt::STextStatus" >
+        <service uid="textStatusSrv" type="sight::module::ui::qt::STextStatus" >
              <in key="string" uid="text" />
              <label>Text status</label>
              <color>#6997BB</color>
          </service>
 
-        <service uid="quitAct" type="::sight::module::ui::base::SQuit" />
+        <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
         <!-- ******************************* Connections ***************************************** -->
 

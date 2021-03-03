@@ -50,7 +50,7 @@ namespace sight::module::geometry::vision
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="::sight::module::geometry::vision::SDistortion">
+    <service type="sight::module::geometry::vision::SDistortion">
         <in key="camera" uid="..." />
         <in key="input" uid="..." />
         <inout key="output" uid="..." />
@@ -59,7 +59,7 @@ namespace sight::module::geometry::vision
    @endcode
  * Or
  * @code{.xml}
-    <service type="::sight::module::geometry::vision::SDistortion">
+    <service type="sight::module::geometry::vision::SDistortion">
         <in key="camera" uid="..." />
         <inout key="map" uid="..." />
         <mode>distort</mode>

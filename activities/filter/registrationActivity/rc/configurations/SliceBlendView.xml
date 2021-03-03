@@ -14,21 +14,21 @@
     </parameters>
     <config>
 
-        <object uid="${referenceImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${targetImageUid}" type="::sight::data::Image" src="ref" />
-        <object uid="${transformUid}" type="::sight::data::Matrix4" src="ref" />
+        <object uid="${referenceImageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${targetImageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${transformUid}" type="sight::data::Matrix4" src="ref" />
 
-        <object uid="${targetTransferFunction}" type="::sight::data::TransferFunction" src="ref" />
-        <object uid="${referenceTransferFunction}" type="::sight::data::TransferFunction" src="deferred" />
+        <object uid="${targetTransferFunction}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${referenceTransferFunction}" type="sight::data::TransferFunction" src="deferred" />
 
-        <object uid="targetSlice" type="::sight::data::Image" />
-        <object uid="transformedSlice" type="::sight::data::Image" />
+        <object uid="targetSlice" type="sight::data::Image" />
+        <object uid="transformedSlice" type="sight::data::Image" />
 
-        <object uid="identity" type="::sight::data::Matrix4" />
+        <object uid="identity" type="sight::data::Matrix4" />
 
-        <service uid="blendSceneView" type="::sight::module::ui::base::SView">
+        <service uid="blendSceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="::sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -43,7 +43,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="blendScene" type="::fwRenderVTK::SRender">
+        <service uid="blendScene" type="fwRenderVTK::SRender">
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -58,30 +58,30 @@
             </scene>
         </service>
 
-        <service uid="blendNegatoMPR" type="::visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="blendNegatoMPR" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
             <inout key="image" uid="targetSlice" />
             <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
         </service>
 
-        <service uid="blendInteractorStyle" type="::visuVTKAdaptor::SInteractorStyle">
+        <service uid="blendInteractorStyle" type="visuVTKAdaptor::SInteractorStyle">
             <config renderer="default" style="InteractorStyle2DForNegato" />
         </service>
 
-        <service uid="blendPickerInteractor" type="::visuVTKAdaptor::SPickerInteractor">
+        <service uid="blendPickerInteractor" type="visuVTKAdaptor::SPickerInteractor">
             <config renderer="default" picker="picker" event="MOUSE_LEFT_UP;MOUSE_MOVE;MOUSE_LEFT_DOWN" abortOnPick="true" />
         </service>
 
-        <service uid="2DWheel" type="::visuVTKAdaptor::S2DWheel">
+        <service uid="2DWheel" type="visuVTKAdaptor::S2DWheel">
             <config renderer="default" />
         </service>
 
-        <service uid="transformFromWheel" type="::visuVTKAdaptor::STransformFromWheel" >
+        <service uid="transformFromWheel" type="visuVTKAdaptor::STransformFromWheel" >
             <inout key="transform" uid="${transformUid}" />
             <config renderer="default" picker="picker" mode="2d" orientation="${orientation}" />
         </service>
 
         <!-- Adaptor to show background and front image merge in the same view. -->
-        <service uid="slicerImageAdaptor" type="::visuVTKAdaptor::SImagesBlend">
+        <service uid="slicerImageAdaptor" type="visuVTKAdaptor::SImagesBlend">
             <inout group="image" autoConnect="yes">
                 <key uid="targetSlice" tfalpha="no" />
                 <key uid="transformedSlice" tfalpha="no" opacity="0.5"/>
@@ -95,7 +95,7 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <service uid="targetPlaneSlice" type="::sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
+        <service uid="targetPlaneSlice" type="sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${targetImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
             <in key="axes" uid="identity" />
@@ -103,7 +103,7 @@
             <config orientation="${orientation}" />
         </service>
 
-        <service uid="transformedPlaneSlice" type="::sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
+        <service uid="transformedPlaneSlice" type="sight::module::filter::image::SPlaneSlicer" autoConnect="yes">
             <in key="image" uid="${referenceImageUid}" />
             <in key="imageExtent" uid="${targetImageUid}" />
             <in key="axes" uid="${transformUid}" />
@@ -111,7 +111,7 @@
             <config orientation="${orientation}" />
         </service>
 
-        <service uid="negatoSliceSelector" type="::sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
+        <service uid="negatoSliceSelector" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${targetImageUid}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
