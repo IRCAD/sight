@@ -13,7 +13,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_viz_scene3d
                  module_viz_scene3dQt
                  module_ui_icons
-                 fwlauncher
+                 sightrun
 )
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

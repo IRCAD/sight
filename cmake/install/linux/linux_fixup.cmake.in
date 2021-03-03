@@ -52,7 +52,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
             file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/bin/")
         endforeach()
 
-        #Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
+        #Call fixup bundle on the sightrun and on all 'plugins' libraries (like bundle, plugins and share)
         fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${LIBS_MODULES_DIRECTORIES}")
     endif()
 

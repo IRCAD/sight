@@ -10,8 +10,8 @@ macro(linux_install PRJ_NAME)
 
     if("$TARGET_TYPE}" STREQUAL  "APP")
 
-        set(LAUNCHER_PATH "bin/fwlauncher.bin-${fwlauncher_VERSION}")
-        set(LAUNCHER "fwlauncher.bin-${fwlauncher_VERSION}")
+        set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")
+        set(LAUNCHER "sightrun.bin-${sightrun_VERSION}")
         set(PROFILE_PATH "${PRJ_NAME}-${PROJECT_VERSION}/profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
@@ -49,7 +49,7 @@ macro(linux_install PRJ_NAME)
     if(VCPKG_TARGET_TRIPLET)
         if(${PRJ_NAME} STREQUAL "sight")
             # Needed for fixup_bundle first argument
-            set(LAUNCHER_PATH "bin/fwlauncher.bin-${fwlauncher_VERSION}")
+            set(LAUNCHER_PATH "bin/sightrun.bin-${sightrun_VERSION}")
         endif()
 
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)

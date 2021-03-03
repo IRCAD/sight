@@ -1,7 +1,7 @@
 sight_add_target( Tuto06SceneQt3DCpp TYPE APP START ON )
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_ui_base
                  module_ui_qt
                  module_viz_qt3d

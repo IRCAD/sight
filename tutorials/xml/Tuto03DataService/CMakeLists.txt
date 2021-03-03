@@ -1,7 +1,7 @@
 sight_add_target( Tuto03DataService TYPE APP )
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_qt
                  data

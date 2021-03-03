@@ -9,7 +9,7 @@ macro(win_install PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        set(LAUNCHER "fwlauncher.exe")
+        set(LAUNCHER "sightrun.exe")
         set(LAUNCHER_PATH "bin/${LAUNCHER}") # For windows_fixup.cmake.in
         set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
         set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${FWPROJECT_NAME}\\\\profile.xml")

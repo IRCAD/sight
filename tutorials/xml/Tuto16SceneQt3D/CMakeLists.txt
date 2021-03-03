@@ -2,7 +2,7 @@ sight_add_target( Tuto16SceneQt3D TYPE APP UNIQUE ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_qt
                  data

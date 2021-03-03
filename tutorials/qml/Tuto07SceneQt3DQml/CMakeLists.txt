@@ -11,7 +11,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_vtk
                  module_ui_base
                  module_service
-                 fwlauncher
+                 sightrun
                  module_viz_qt3d
 )
 

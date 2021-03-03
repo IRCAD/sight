@@ -10,7 +10,7 @@ file(DOWNLOAD https://owncloud.ircad.fr/index.php/s/oyo3mDMObZcRpQM/download "${
       EXPECTED_HASH SHA256=92ffe4f0f89380985980a5c1c2fb7536543dee237cddd21922ead2c4e83ecbe2)
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_base
                  module_ui_qt

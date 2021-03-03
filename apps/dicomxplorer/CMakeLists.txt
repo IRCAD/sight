@@ -9,7 +9,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_activity
                  module_appXml
                  module_memory
-                 fwlauncher
+                 sightrun
                  module_io_atoms
                  module_io_itk
                  module_io_vtk

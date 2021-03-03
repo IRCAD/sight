@@ -133,8 +133,8 @@ int main(int argc, char* argv[])
     PathType profileFile;
     sight::core::runtime::Profile::ParamsContainer profileArgs;
 
-    // Launcher options
-    po::options_description options("Launcher options");
+    // Runner options
+    po::options_description options("Sight application launcher options");
     options.add_options()
         ("help,h", "Show help message")
         ("module-path,B", "Adds a module path")
@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
     if (vm.count("help"))
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
-        std::cout << "  use '--' to stop processing args for fwlauncher" << std::endl  << std::endl;
+        std::cout << "  use '--' to stop processing args for sightrun" << std::endl  << std::endl;
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
     }

@@ -9,7 +9,7 @@ add_dependencies(${FWPROJECT_NAME}
                  data
                  module_service
                  module_ui_qml
-                 fwlauncher
+                 sightrun
 )
 
 target_link_libraries(${FWPROJECT_NAME} PUBLIC 

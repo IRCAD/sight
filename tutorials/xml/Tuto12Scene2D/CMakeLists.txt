@@ -3,7 +3,7 @@ sight_add_target( Tuto12Scene2D TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_qt
                  module_service

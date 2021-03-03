@@ -650,7 +650,7 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
 
         if(MSVC_IDE)
             # create the launch config for the current app
-            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/sightrun.exe")
             set(PROFILE "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
@@ -668,7 +668,7 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
-            set(LAUNCHER "fwlauncher.bin")
+            set(LAUNCHER "sightrun.bin")
             set(PROFILE_PATH "${FWPROJECT_NAME}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}")
@@ -693,7 +693,7 @@ macro(fwModule FWPROJECT_NAME TARGET_TYPE)
             # Install shortcut
             string(TOLOWER ${FWPROJECT_NAME} APP_NAME)
 
-            set(LAUNCHER "fwlauncher.exe")
+            set(LAUNCHER "sightrun.exe")
             set(PROFILE_PATH "${FWPROJECT_NAME}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}\\${LAUNCHER}")

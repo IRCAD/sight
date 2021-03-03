@@ -4,7 +4,7 @@ find_package(Boost QUIET COMPONENTS log REQUIRED)
 target_link_libraries(${FWPROJECT_NAME} PRIVATE ${Boost_LOG_LIBRARY})
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  data
                  module_service

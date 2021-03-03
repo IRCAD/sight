@@ -2,7 +2,7 @@ sight_add_target( Tuto01DataServiceBasicCpp TYPE APP START ON WARNINGS_AS_ERRORS
 
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_ui_qt
                  module_service
                  module_ui_base

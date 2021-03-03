@@ -38,7 +38,7 @@
         dataReg
         servicesReg
         guiQt # it will be automatically started when the application launches
-        fwlauncher
+        sightrun
         appXml # it will be automatically started when the application launches
     )
     moduleParam(appXml PARAM_LIST config PARAM_VALUES tutoBasicConfig)

@@ -2,7 +2,7 @@ sight_add_target( Tuto07GenericScene TYPE APP UNIQUE ON )
 
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_base
                  module_ui_qt

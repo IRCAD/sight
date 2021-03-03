@@ -5,7 +5,7 @@ if(UNIX)
 endif()
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_base
                  module_viz_scene3d

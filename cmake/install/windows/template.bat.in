@@ -15,7 +15,7 @@ SET "BINDIR=%~dp0"
 SET "ROOTDIR=%BINDIR%\.."
 SET "MODULEDIR=%ROOTDIR%\@SIGHT_MODULE_RC_PREFIX@"
 
-REM Use CMAKE Variable of fwlauncher and Profile.xml path
+REM Use CMAKE Variable of sightrun and Profile.xml path
 @LAUNCHER_PATH@ "%MODULEDIR%\@PROFILE_PATH@" %*
 
 ENDLOCAL

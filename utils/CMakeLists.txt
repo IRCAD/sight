@@ -1,5 +1,5 @@
 add_subdirectory(DicomAnonymizer)
-add_subdirectory(fwlauncher)
+add_subdirectory(sightrun)
 add_subdirectory(arucoMarker)
 add_subdirectory(charucoBoard)
 add_subdirectory(NetworkProxy)

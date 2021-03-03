@@ -3,7 +3,7 @@ sight_add_target( Tuto09MatrixTransformInGS TYPE APP )
 
 
 add_dependencies(${FWPROJECT_NAME} 
-                 fwlauncher
+                 sightrun
                  module_appXml
                  module_ui_base
                  module_ui_qt
