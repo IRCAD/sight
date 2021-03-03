@@ -25,8 +25,6 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMaterial.hpp"
 
-#include <fwData/Mesh.hpp>
-
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 

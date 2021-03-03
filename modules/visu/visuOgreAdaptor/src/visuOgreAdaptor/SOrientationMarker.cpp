@@ -22,15 +22,9 @@
 
 #include "visuOgreAdaptor/SOrientationMarker.hpp"
 
-#include "fwDataTools/TransformationMatrix3D.hpp"
+#include <fwDataTools/TransformationMatrix3D.hpp>
 
-#include "fwIO/IReader.hpp"
-
-#include "fwRenderOgre/Layer.hpp"
-
-#include "fwServices/IService.hpp"
-
-#include "visuOgreAdaptor/STransform.hpp"
+#include <fwRenderOgre/Layer.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -69,7 +63,7 @@ void SOrientationMarker::configuring()
     this->setTransformId(this->getID() + "_transform");
 
     // Set the resource this use, if it has been set via xml
-    m_patientMeshRc = config.get<std::string>("resource", "human.mesh");
+    m_patientMeshRc = config.get<std::string>("resource", m_patientMeshRc);
 
     m_markerDepth = config.get< float > ("depth", m_markerDepth);
 }
@@ -104,7 +98,7 @@ void SOrientationMarker::starting()
     materialAdaptor->update();
 
     // Loads and attaches the marker
-    m_patientMesh = sceneMgr->createEntity("human.mesh");
+    m_patientMesh = sceneMgr->createEntity(m_patientMeshRc);
     m_patientMesh->setMaterialName(materialAdaptor->getMaterialName());
     m_sceneNode->attachObject(m_patientMesh);
 
@@ -130,12 +124,12 @@ void SOrientationMarker::updateCameraMatrix()
     {
         const auto transform = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
-        // Received input line and column data from Sight transformation matrix
+        // Fill the ogreMatrix.
         for (size_t lt = 0; lt < 4; lt++)
         {
             for (size_t ct = 0; ct < 4; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMatrix[ct][lt] = static_cast< ::Ogre::Real >(transform->getCoefficient(ct, lt));
             }
         }
     }
@@ -152,7 +146,7 @@ void SOrientationMarker::updateCameraMatrix()
 
     const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
 
-    // Reset the camera position
+    // Reset the camera position & orientation, since s_MATRIX_INOUT is a global transform.
     transformNode->setPosition(0, 0, 0);
     // Reverse X axis.
     transformNode->setOrientation(rotateX);
