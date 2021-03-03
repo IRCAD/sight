@@ -80,6 +80,7 @@ void Activater::apply()
         SIGHT_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == 0);
     }
     SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == 0);
+    // TEMP_FB: useless now since all moduled are now enabled by default
     module->setEnable( true );
 
     // Managment of parameter configuration

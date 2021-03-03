@@ -68,9 +68,6 @@ macro(profile_setup PROJECT)
                 endforeach()
 
                 list(APPEND XML_ACTIVATE "    </activate>")
-            # else simply set the activate tag
-            else()
-                list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" />")
             endif()
         endif()
     endforeach()

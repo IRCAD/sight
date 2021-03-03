@@ -405,7 +405,7 @@ private:
     SPTR( dl::Library ) m_library;                      ///< library that is part of the module
     ParameterContainer m_parameters;                    ///< all parameters
 
-    bool m_enabled { false };                           ///< a boolean telling if the module is enabled or not
+    bool m_enabled { true };                           ///< a boolean telling if the module is enabled or not
     bool m_started { false };
     bool m_initialized { false };
 
