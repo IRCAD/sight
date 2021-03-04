@@ -33,3 +33,6 @@ FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/tra
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/vr
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/frag
 FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/compositors/postFX
+
+[Meshes]
+FileSystem=./@SIGHT_MODULE_RC_PREFIX@/@FWPROJECT_FULLNAME@/Media/meshes
