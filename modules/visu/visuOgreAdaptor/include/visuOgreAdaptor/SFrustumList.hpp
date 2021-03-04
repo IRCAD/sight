@@ -80,7 +80,7 @@ public:
     /// Creates slots.
     VISUOGREADAPTOR_API SFrustumList() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SFrustumList() noexcept override;
 
 protected:

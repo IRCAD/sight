@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,6 +47,7 @@ fwServicesRegisterMacro( ::fwIO::IWriter, ::videoOpenCV::SVideoWriter, ::arData:
 static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME = "saveFrame";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
+static const ::fwCom::Slots::SlotKeyType s_RECORD       = "record";
 
 const std::string SVideoWriter::s_MP4_EXTENSION = ".mp4";
 const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
@@ -58,6 +59,7 @@ SVideoWriter::SVideoWriter() noexcept
     newSlot(s_SAVE_FRAME, &SVideoWriter::saveFrame, this);
     newSlot(s_START_RECORD, &SVideoWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SVideoWriter::stopRecord, this);
+    newSlot(s_RECORD, &SVideoWriter::record, this);
 }
 
 //------------------------------------------------------------------------------
@@ -311,6 +313,20 @@ void SVideoWriter::stopRecord()
         m_writer->release();
         m_writer.reset();
         this->clearLocations();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoWriter::record(bool state)
+{
+    if (state)
+    {
+        this->startRecord();
+    }
+    else
+    {
+        this->stopRecord();
     }
 }
 

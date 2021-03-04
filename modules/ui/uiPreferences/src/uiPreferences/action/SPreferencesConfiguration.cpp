@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,6 @@
 #include <fwData/Integer.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwData/String.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -39,6 +38,7 @@
 
 #include <boost/tokenizer.hpp>
 
+#include <QApplication>
 #include <QDialog>
 #include <QDoubleValidator>
 #include <QGridLayout>
@@ -55,8 +55,6 @@ namespace action
 
 const ::fwCom::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPreferences::action::SPreferencesConfiguration, ::fwData::Object )
-
 //-----------------------------------------------------------------------------
 
 SPreferencesConfiguration::SPreferencesConfiguration() noexcept
@@ -68,39 +66,6 @@ SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 
 SPreferencesConfiguration::~SPreferencesConfiguration() noexcept
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SPreferencesConfiguration::starting()
-{
-    this->actionServiceStarting();
-
-    // Check preferences
-    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
-    if(prefs)
-    {
-        for(PreferenceElt& pref : m_preferences)
-        {
-            pref.m_dataPreference                      = ::fwData::String::New(pref.m_defaultValue);
-            ::fwData::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
-            if ( iterPref != prefs->end() )
-            {
-                pref.m_dataPreference = ::fwData::String::dynamicCast(iterPref->second);
-            }
-            else
-            {
-                (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SPreferencesConfiguration::stopping()
-{
-    this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -139,10 +104,34 @@ void SPreferencesConfiguration::configuring()
         else if(typeCfg->getValue() == "double")
         {
             pref.m_type = PreferenceType::DOUBLE;
+
+            ConfigurationType keyCfg = elt->findConfigurationElement("min");
+            if(keyCfg)
+            {
+                pref.m_dMinMax.first = std::stod(keyCfg->getValue());
+            }
+
+            keyCfg = elt->findConfigurationElement("max");
+            if(keyCfg)
+            {
+                pref.m_dMinMax.second = std::stod(keyCfg->getValue());
+            }
         }
         else if(typeCfg->getValue() == "int")
         {
             pref.m_type = PreferenceType::U_INT;
+
+            ConfigurationType keyCfg = elt->findConfigurationElement("min");
+            if(keyCfg)
+            {
+                pref.m_iMinMax.first = std::stoi(keyCfg->getValue());
+            }
+
+            keyCfg = elt->findConfigurationElement("max");
+            if(keyCfg)
+            {
+                pref.m_iMinMax.second = std::stoi(keyCfg->getValue());
+            }
         }
         else
         {
@@ -174,12 +163,12 @@ void SPreferencesConfiguration::configuring()
         else if(pref.m_type == PreferenceType::U_INT)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
-            pref.m_lineEdit->setValidator( new QIntValidator( 0, 999999));
+            pref.m_lineEdit->setValidator(new QIntValidator(pref.m_iMinMax.first, pref.m_iMinMax.second));
         }
         else if(pref.m_type == PreferenceType::DOUBLE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
-            pref.m_lineEdit->setValidator( new QDoubleValidator( -1000000.0, 1000000.0, 6));
+            pref.m_lineEdit->setValidator(new QDoubleValidator(pref.m_dMinMax.first, pref.m_dMinMax.second, 6));
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
@@ -197,6 +186,34 @@ void SPreferencesConfiguration::configuring()
             }
         }
         m_preferences.push_back(pref);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SPreferencesConfiguration::starting()
+{
+    this->actionServiceStarting();
+
+    // Check preferences
+
+    // Get Preference Data through SPreferences::getInOut
+    ::fwData::Composite::sptr prefs = ::fwPreferences::getPreferences();
+    if(prefs)
+    {
+        for(PreferenceElt& pref : m_preferences)
+        {
+            ::fwData::Composite::IteratorType iterPref = prefs->find( pref.m_preferenceKey );
+            if ( iterPref != prefs->end() )
+            {
+                pref.m_dataPreference = ::fwData::String::dynamicCast(iterPref->second);
+            }
+            else
+            {
+                pref.m_dataPreference          = ::fwData::String::New(pref.m_defaultValue);
+                (*prefs)[pref.m_preferenceKey] = pref.m_dataPreference;
+            }
+        }
     }
 }
 
@@ -227,6 +244,30 @@ void SPreferencesConfiguration::updating()
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_dataPreference->value()));
             layout->addWidget(pref.m_lineEdit, index, 1);
+            QObject::connect(pref.m_lineEdit, &QLineEdit::textEdited, [&]()
+                    {
+                        int pos               = 0;
+                        QLineEdit* const edit = pref.m_lineEdit;
+                        QString text          = edit->text();
+                        const bool isValid    = edit->validator()->validate(text, pos) == QValidator::State::Acceptable;
+
+                        if(qApp->styleSheet().isEmpty())
+                        {
+                            static const QColor defaultTextColor = QLineEdit().palette().color(QPalette::Text);
+
+                            QPalette palette   = edit->palette();
+                            const QColor color = isValid ? defaultTextColor : QColorConstants::Red;
+                            palette.setColor(QPalette::Text, color);
+                            edit->setPalette(palette);
+                        }
+                        else
+                        {
+                            edit->setProperty("type", isValid ? "" : "error");
+                            edit->style()->unpolish(edit);
+                            edit->style()->polish(edit);
+                        }
+                    });
+
         }
         else if(pref.m_type == PreferenceType::PATH)
         {
@@ -292,6 +333,7 @@ void SPreferencesConfiguration::updating()
                 pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
                 pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+
             }
             else if(pref.m_type == PreferenceType::CHECKBOX)
             {
@@ -299,7 +341,29 @@ void SPreferencesConfiguration::updating()
             }
             else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
             {
-                pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+                int pos               = 0;
+                QLineEdit* const edit = pref.m_lineEdit;
+                QString text          = edit->text();
+                const bool isValid    = edit->validator()->validate(text, pos) == QValidator::State::Acceptable;
+
+                if(isValid)
+                {
+                    pref.m_dataPreference->value() = pref.m_lineEdit->text().toStdString();
+                }
+
+                if(qApp->styleSheet().isEmpty())
+                {
+                    static const QColor defaultTextColor = QLineEdit().palette().color(QPalette::Text);
+
+                    QPalette palette = edit->palette();
+                    palette.setColor(QPalette::Text, defaultTextColor);
+                }
+                else
+                {
+                    edit->setProperty("type", "");
+                    edit->style()->unpolish(edit);
+                    edit->style()->polish(edit);
+                }
             }
             else if(pref.m_type == PreferenceType::COMBOBOX)
             {
@@ -307,7 +371,16 @@ void SPreferencesConfiguration::updating()
             }
         }
         m_sigParametersModified->asyncEmit();
+
+        ::fwPreferences::savePreferences();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SPreferencesConfiguration::stopping()
+{
+    this->actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------
@@ -354,17 +427,6 @@ void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::swapping()
-{
-}
+} // namespace action.
 
-//------------------------------------------------------------------------------
-
-void SPreferencesConfiguration::info( std::ostream& _sstream )
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace action
-} // namespace uiPreferences
+} // namespace uiPreferences.

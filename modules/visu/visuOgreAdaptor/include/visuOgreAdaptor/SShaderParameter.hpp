@@ -73,7 +73,7 @@ public:
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SShaderParameter() noexcept;
 
-    /// Does nothing
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SShaderParameter() noexcept override;
 
 protected:

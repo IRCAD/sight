@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -58,85 +58,77 @@ namespace uiVisuOgre
  * @code{.xml}
  *  <service uid="SLightSelectorUid" type="::uiVisuOgre::SLightSelector" />
  */
-class UIVISUOGRE_CLASS_API SLightSelector : public QObject,
-                                            public ::fwGui::editor::IEditor
+class UIVISUOGRE_CLASS_API SLightSelector final :
+    public QObject,
+    public ::fwGui::editor::IEditor
 {
+
 Q_OBJECT
 
 public:
 
-    fwCoreServiceMacro(SLightSelector, ::fwGui::editor::IEditor);
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    UIVISUOGRE_API static const ::fwCom::Signals::SignalKeyType s_LIGHT_SELECTED_SIG;
-    typedef ::fwCom::Signal<void (::fwRenderOgre::ILight::sptr)> LightSelectedSignalType;
-    /** @} */
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_INIT_LIGHT_LIST_SLOT;
-    /** @} */
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SLightSelector, ::fwGui::editor::IEditor)
 
     /// Initializes signals and slots.
     UIVISUOGRE_API SLightSelector() noexcept;
+
+    /// Destroys the service.
     UIVISUOGRE_API virtual ~SLightSelector() noexcept;
 
 protected:
 
-    /// Configure the service.
-    UIVISUOGRE_API virtual void configuring() override;
+    /// Configures the service.
+    UIVISUOGRE_API void configuring() override;
 
     /// Sets the connections and the UI elements.
-    UIVISUOGRE_API virtual void starting() override;
-
-    /// Destroys the connections and cleans the container.
-    UIVISUOGRE_API virtual void stopping() override;
+    UIVISUOGRE_API void starting() override;
 
     /// Does nothing.
-    UIVISUOGRE_API virtual void updating() override;
+    UIVISUOGRE_API void updating() override;
 
-protected Q_SLOTS:
+    /// Destroys the connections and cleans the container.
+    UIVISUOGRE_API void stopping() override;
 
-    /// Slot: called when a layer is selected.
+private Q_SLOTS:
+
+    /// SLOT: called when a layer is selected.
     /// Sets the current layer and initializes the light adaptors list.
     void onSelectedLayerItem(int _index);
 
-    /// Slot: called when a light is selected.
+    /// SLOT: called when a light is selected.
     /// Loads the selected light parameters in the light editor.
     void onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous);
 
-    /// Slot: called when a light is checked.
+    /// SLOT: called when a light is checked.
     /// Switched on or off the light according to its current state.
     void onCheckedLightItem(QListWidgetItem* _item);
 
-    /// Slot: called when the add light button is clicked.
+    /// SLOT: called when the add light button is clicked.
     /// Adds a new light to the current scene.
-    void onAddLight(bool _checked);
+    void onAddLight(bool);
 
-    /// Slot: called when the remove light button is clicked.
+    /// SLOT: called when the remove light button is clicked.
     /// Removes the selected light.
-    void onRemoveLight(bool _checked);
+    void onRemoveLight(bool);
 
-    /// Slot: called when the scene ambient color button is clicked.
+    /// SLOT: called when the scene ambient color button is clicked.
     /// Opens a color picker and lets the user choose a new ambient color.
-    void onEditAmbientColor(bool _checked);
+    void onEditAmbientColor(bool);
 
-    /// Slot: called when the "check all" button is clicked.
+    /// SLOT: called when the "check all" button is clicked.
     /// Call onCheckAllBoxes(true).
     void onCheckAllCheckBox();
 
-    /// Slot: called when the "uncheck all" button is clicked.
+    /// SLOT: called when the "uncheck all" button is clicked.
     /// Call onCheckAllBoxes(false).
     void onUnCheckAllCheckBox();
 
 private:
 
-    /// check or uncheck all item in m_lightsList
+    typedef ::fwCom::Signal<void (::fwRenderOgre::ILight::sptr)> LightSelectedSignalType;
+
+    /// Checks or unchecks all item in m_lightsList.
     void onCheckAllBoxes(bool visible);
 
     void initLightList(::fwRenderOgre::Layer::sptr _layer);
@@ -154,49 +146,69 @@ private:
     ::fwRenderOgre::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
 
     QPointer<QComboBox>   m_layersBox;
+
     QPointer<QListWidget> m_lightsList;
+
     QPointer<QPushButton> m_checkAllButton;
+
     QPointer<QPushButton> m_unCheckAllButton;
 
     QPointer<QPushButton> m_addLightBtn;
+
     QPointer<QPushButton> m_removeLightBtn;
+
     QPointer<QPushButton> m_ambientColorBtn;
 
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
 
-    /// List of all light adaptors (existing in the configuration and those created by this editor)
+    /// Stores all light adaptors (existing in the configuration and those created by this editor).
     std::vector< ::fwRenderOgre::ILight::sptr > m_lightAdaptors;
 
-    /// List of adaptors managed by this editor
-    std::vector< ::fwRenderOgre::ILight::sptr > m_managedLightAdaptors;
+    /// Stores a light adaptor and it's data to keep a reference on them.
+    struct Light
+    {
+        ::fwRenderOgre::ILight::sptr m_light;
+        ::fwData::Color::sptr m_diffuse;
+        ::fwData::Color::sptr m_specular;
+    };
 
-    /// Currently selected light
+    /// Stores adaptors managed by this editor.
+    std::vector< Light > m_managedLightAdaptors;
+
+    /// Defines the current selected light.
     ::fwRenderOgre::ILight::sptr m_currentLight;
 
-    /// Connection service, needed for slot/signal association
+    /// Handles connections with the layer.
     ::fwCom::helper::SigSlotConnection m_connections;
+
 };
 
 //------------------------------------------------------------------------------
 
-class NewLightDialog : public QDialog
+class NewLightDialog final : public QDialog
 {
+
 Q_OBJECT
 
 public:
 
     NewLightDialog(QWidget* parent = 0);
+
     ~NewLightDialog();
 
-protected Q_SLOTS:
+private Q_SLOTS:
+
     void onOkBtn(bool _checked);
 
 private:
 
     QPointer<QLabel> m_lightNameLbl;
+
     QPointer<QLineEdit> m_lightNameEdit;
+
     QPointer<QPushButton> m_okBtn;
+
 };
 
-} // namespace uiVisuOgre
+} // namespace uiVisuOgre.

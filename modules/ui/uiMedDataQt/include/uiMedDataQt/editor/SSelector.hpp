@@ -52,13 +52,12 @@ namespace editor
     <service uid="..." type="::uiMedDataQt::editor::SSelector">
         <inout key="seriesDB" uid="..." />
         <inout key="selection" uid="..." />
-        <selectionMode>single|extended</selectionMode>
-        <allowedRemove>yes|no</allowedRemove>
-        <insertMode>yes|no</insertMode>
         <icons>
             <icon series="..." icon="..." />
             <icon series="..." icon="..." />
         </icons>
+        <config removeStudyIcon="..." removeSerieIcon="..." selectionMode="extended"
+            allowedRemove="true" insertMode="false" />
     </service>
    @endcode
  *
@@ -69,8 +68,10 @@ namespace editor
  * @subsection Configuration Configuration
  * - \b selectionMode (optional, single/extended, default=extended): defines the selection mode for the series, where
  *                    extended means "multiple".
- * - \b allowedRemove (optional, yes/no, default=yes): allows user to remove series.
- * - \b insertMode (optional, yes/no, default=no): only allows selection of uiMedDataQt::InsertSeries.
+ * - \b allowedRemove (optional, bool, default=true): allows user to remove series.
+ * - \b insertMode (optional, bool, default=false): only allows selection of uiMedDataQt::InsertSeries.
+ * - \b removeStudyIcon (optional, string, default=""): remove study button icon.
+ * - \b removeSerieIcon (optional, string, default=""): remove serie button icon.
  * - \b icons (optional): defines the icon to associate for a series.
  *     - \b series (mandatory, string): series name, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}.
  *     - \b icon (mandatory, string): icon path.
@@ -84,6 +85,7 @@ Q_OBJECT
 
 public:
 
+    /// Generates default methods as New, dynamicCast, ...
     fwCoreServiceMacro(SSelector, ::fwGui::editor::IEditor)
 
     /// Creates the signal and slots.
@@ -141,6 +143,7 @@ protected Q_SLOTS:
 private:
 
     typedef ::fwCom::Slot<void (::fwMedData::SeriesDB::ContainerType)> RemoveSeriesSlotType;
+
     typedef ::fwCom::Signal< void ( SPTR( ::fwMedData::Series ) ) > SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
@@ -149,14 +152,8 @@ private:
     /// SLOT: removes series from the selector.
     void removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries);
 
-    /// Returns the current selection vector given by its ID m_selectionId.
-    ::fwData::Vector::sptr getSelection();
-
     /// Contains the slot used to remove series from the selector.
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;
-
-    /// Defines the ID of the vector of selections.
-    std::string m_selectionId;
 
     /// Contains the selector widget.
     QPointer< ::uiMedDataQt::widget::Selector > m_selectorWidget { nullptr };
@@ -175,6 +172,12 @@ private:
 
     /// Allows selection of uiMedDataQt::InsertSeries only.
     bool m_insertMode { false };
+
+    /// Defines the path of the remove study button icon.
+    std::filesystem::path m_removeStudyIcon;
+
+    /// Defines the path of the remove serie button icon.
+    std::filesystem::path m_removeSerieIcon;
 
 };
 } // namespace editor.

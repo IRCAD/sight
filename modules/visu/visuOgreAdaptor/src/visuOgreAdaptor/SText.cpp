@@ -205,12 +205,14 @@ void SText::updatePositionFromAlignment()
 
 void SText::updateText()
 {
-    ::fwData::Object::csptr obj = this->getInput< ::fwData::Object >(s_OBJECT_INPUT);
     std::string textString = m_textString;
+
+    const auto objW = this->getWeakInput< ::fwData::Object >(s_OBJECT_INPUT);
+    const auto obj  = objW.lock();
 
     if(obj)
     {
-        const ::fwData::GenericFieldBase::csptr field = ::fwData::GenericFieldBase::dynamicCast(obj);
+        const ::fwData::GenericFieldBase::csptr field = ::fwData::GenericFieldBase::dynamicCast(obj.get_shared());
 
         if(field)
         {

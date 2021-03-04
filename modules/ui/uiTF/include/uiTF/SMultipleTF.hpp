@@ -43,7 +43,6 @@ namespace uiTF
  * @brief Editor to select a transfer function pool.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
    <service type="::uiTF::SMultipleTF">
        <in key="currentTFPool" uid="..." optional="yes" />

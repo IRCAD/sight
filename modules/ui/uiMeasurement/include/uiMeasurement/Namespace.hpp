@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2015 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,18 +20,9 @@
  *
  ***********************************************************************/
 
-#ifndef __UIMEASUREMENT_NAMESPACE_HPP__
-#define __UIMEASUREMENT_NAMESPACE_HPP__
+#pragma once
 
-/**
- * @brief       The namespace uiMeasurement contains actions to add/show/remove distances and landmarks.
- * @namespace   uiMeasurement
- *
- * @date        2009-2010.
- *
- */
+/// The namespace uiMeasurement contains actions to add, show and remove distances.
 namespace uiMeasurement
 {
-
 }
-#endif /* __UIMEASUREMENT_NAMESPACE_HPP__ */

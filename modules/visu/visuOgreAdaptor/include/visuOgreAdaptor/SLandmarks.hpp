@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2020 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -27,6 +27,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <fwData/Landmarks.hpp>
+
 #include <fwDataTools/helper/MedicalImage.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
@@ -41,17 +43,35 @@ namespace visuOgreAdaptor
 /**
  * @brief This adaptor displays landmarks.
  *
+ * @section Slots Slots
+ * - \b removeGroup(std::string): removes an entire group.
+ * - \b modifyGroup(std::string): removes an entire group and re-create it.
+ * - \b addPoint(std::string): adds the last point of a landmarks group.
+ * - \b removePoint(std::string, size_t): removes a point.
+ * - \b insertPoint(std::string, size_t): inserts a point.
+ * - \b selectPoint(std::string, size_t) hightlights the selected landmark.
+ * - \b deselectPoint(std::string, size_t): resets the hightlighting of the selected landmark.
+ * - \b initializeImage(): initializes image slices index if there is one.
+ * - \b changeSliceType(int, int): updates the image slice type.
+ * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
+ * - \b updateVisibility(bool): shows or hides the landmarks.
+ * - \b toggleVisibility(): toggles whether the landmarks are shown or not.
+ * - \b show(): shows the landmarks.
+ * - \b hide(): hides the landmarks.
+ *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SLandmarks">
-        <in key="landmarks" uid="..." />
+        <inout key="landmarks" uid="..." />
         <in key="image" uid="..." />
-        <config layer="default" transform="transformUID" />
+        <config layer="default" transform="transformUID" visible="true" priority="2" />
     </service>
    @endcode
  *
- * @subsection Input Input:
+ * @subsection In-Out In-Out:
  * - \b landmarks [::fwData::Landmarks]: landmarks to display.
+ *
+ * @subsection Input Input:
  * - \b image [::fwData::Image] (optional): if the image is used, each landmark will be displayed only if the
  *      image slice is on it.
  *
@@ -63,10 +83,17 @@ namespace visuOgreAdaptor
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b label (optional, bool, default=true): display label.
  * - \b orientation (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
+ * - \b visible (optional, default=true): the visibility of the landmarks.
+ * - \b interactive (optional, bool, default=true): enables interactions with landmarks.
+ * - \b priority (optional, int, default=2): priority of the interactor.
+ * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
+ *      snapped.
+ * - \b landmarksQueryFlags (optional, uint32, default=0x40000000): mask applied to landmarks.
  */
 class VISUOGREADAPTOR_CLASS_API SLandmarks final :
     public ::fwRenderOgre::IAdaptor,
-    public ::fwRenderOgre::ITransformable
+    public ::fwRenderOgre::ITransformable,
+    public ::fwRenderOgre::interactor::IInteractor
 {
 
 public:
@@ -77,8 +104,38 @@ public:
     /// Creates the adaptor.
     VISUOGREADAPTOR_API SLandmarks() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SLandmarks() noexcept override;
+
+    /**
+     * @brief Retrieves the picked landmark and stores the result in m_pickedData.
+     * @param _button pressed mouse button.
+     * @param _mod keyboard modifiers.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    VISUOGREADAPTOR_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+
+    /**
+     * @brief Moves a landmark stored in m_pickedData.
+     * @param _button pressed mouse button.
+     * @param _mod keyboard modifiers.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     * @param _dx width displacement of the mouse since the last event.
+     * @param _dx height displacement of the mouse since the last event.
+     */
+    VISUOGREADAPTOR_API void mouseMoveEvent(MouseButton _button, Modifier _mod,
+                                            int _x, int _y, int _dx, int _dy) override;
+
+    /**
+     * @brief Resets m_pickedData.
+     * @param _button pressed mouse button.
+     * @param _mod keyboard modifiers.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    VISUOGREADAPTOR_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
 
 protected:
 
@@ -110,6 +167,12 @@ protected:
 
     /// Destroys Ogre's resources.
     VISUOGREADAPTOR_API void stopping() override;
+
+    /**
+     * @brief Sets the landmarks visibility.
+     * @param _visible the visibility status of the landmarks.
+     */
+    VISUOGREADAPTOR_API void setVisible(bool _visible) override;
 
 private:
 
@@ -153,6 +216,13 @@ private:
     typedef ::fwDataTools::helper::MedicalImage::Orientation OrientationMode;
 
     /**
+     * @brief Gets the normalized camera direction vector.
+     * @param _cam camera from which to extract the direction vector.
+     * @return A vector representing the camera direction
+     */
+    static ::Ogre::Vector3 getCamDirection(const ::Ogre::Camera* const _cam);
+
+    /**
      * @brief SLOT: removes an entire group.
      * @param _groupName name of the group to remove.
      */
@@ -163,6 +233,13 @@ private:
      * @param _groupName name of the group to update.
      */
     void modifyGroup(std::string _groupName);
+
+    /**
+     * @brief SLOT: removes a point group and update it.
+     * @param _groupName name of the group to update.
+     * @param _index index of the point relative to the group.
+     */
+    void modifyPoint(std::string _groupName, size_t _index);
 
     /**
      * @brief SLOT: adds the last point of a landmarks group.
@@ -181,8 +258,17 @@ private:
      * @brief SLOT: inserts a point.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
+     * @param _data landmarks data in which the point will be inserted.
      */
-    void insertPoint(std::string _groupName, size_t _index);
+    void insertPoint(std::string _groupName, size_t _index, const ::fwData::Landmarks::csptr& _data = nullptr);
+
+    /**
+     * @brief inserts a point.
+     * @param _groupName group name of the landmark.
+     * @param _index index of the point relative to the group.
+     * @param _landmarks landmarks data in which the point will be inserted.
+     */
+    void insertMyPoint(std::string _groupName, size_t _index, ::fwData::Landmarks::csptr _landmarks);
 
     /**
      * @brief SLOT: hightlights the selected landmark.
@@ -229,10 +315,29 @@ private:
     void hideLandmarks();
 
     /**
+     * @brief Gets the nearest picked position if there is one.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     * @return The picked world coordinates.
+     */
+    std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
+
+    /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
+     * @param _data landmarks data in which the landmarks should be hidden.
      */
-    void hideLandmark(std::shared_ptr< Landmark > _landmark);
+    void hideLandmark(std::shared_ptr< Landmark > _landmark, const ::fwData::Landmarks::csptr& _data = nullptr);
+
+    /**
+     * @brief Hides the landmark if it's not on the current image slice index (if one is given).
+     * @param _landmark the landmark to hide.
+     * @param imageLock boolean to know if the image is present and locked.
+     * @param _landmarks landmarks data in which the landmarks should be hidden.
+     */
+    void hideMyLandmark(std::shared_ptr<Landmark> _landmark,
+                        const bool imageLock,
+                        ::fwData::Landmarks::csptr _landmarks);
 
     /// Contains the root scene node.
     ::Ogre::SceneNode* m_transNode { nullptr };
@@ -266,6 +371,21 @@ private:
 
     /// Stores the current position index for each axis.
     std::array<float, 3> m_currentSlicePos { 0.f, 0.f, 0.f };
+
+    /// Defines whether or not interactions are enabled with distances.
+    bool m_interactive { true };
+
+    /// Defines the priority of the interactor.
+    int m_priority { 2 };
+
+    /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
+    std::shared_ptr< Landmark > m_pickedData { nullptr };
+
+    /// Defines the mask used to filter out entities when the distance is auto snapped.
+    std::uint32_t m_queryMask { 0xFFFFFFFF };
+
+    /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
+    std::uint32_t m_landmarksQueryFlag { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 
 };
 

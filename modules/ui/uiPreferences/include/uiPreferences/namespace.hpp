@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,20 +19,16 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __UIPREFERENCES_NAMESPACE_HPP__
-#define __UIPREFERENCES_NAMESPACE_HPP__
 
-/**
- * @brief       The namespace uiPreferences contains editors to manage the preferences configuration.
- */
+#pragma once
+
+/// The namespace uiPreferences contains editors to manage the preferences configuration.
 namespace uiPreferences
 {
 
-/**
- * @brief       The namespace action contains action to open dialog box with preferences to set.
- */
+/// The namespace action contains action to open dialog box with preferences to set.
 namespace action
 {
 }
+
 }
-#endif /* __UIPREFERENCES_NAMESPACE_HPP__ */

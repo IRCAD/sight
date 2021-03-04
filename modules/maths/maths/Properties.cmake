@@ -5,10 +5,10 @@ set( DEPENDENCIES
     fwRuntime
     fwData
     fwDataTools
-    fwTools
     fwCore
     fwCom
     fwServices
+    fwGui
 )
 set( REQUIREMENTS fwData servicesReg)
 

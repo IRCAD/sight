@@ -212,6 +212,9 @@ void ModelSeriesWriterTest::testWriteMeshes()
             ::fwData::Mesh::csptr refMesh  = (*itRef)->getMesh();
             ::fwData::Mesh::csptr readMesh = (*itRead)->getMesh();
 
+            const auto reflock      = refMesh->lock();
+            const auto readMeshLock = readMesh->lock();
+
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of Points.",
                                          refMesh->getNumberOfPoints(), readMesh->getNumberOfPoints());
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of Cells.",

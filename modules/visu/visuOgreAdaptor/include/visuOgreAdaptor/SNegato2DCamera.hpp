@@ -85,8 +85,56 @@ public:
     /// Creates the service and initializes slots.
     VISUOGREADAPTOR_API SNegato2DCamera() noexcept;
 
-    /// Destroyes the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SNegato2DCamera() noexcept override;
+
+    /**
+     * @brief Zooms in the scene at the current cursor position.
+     * @param _delta distance that the wheel is rotated.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    VISUOGREADAPTOR_API void wheelEvent(Modifier, int _delta, int _x, int _y) override;
+
+    /**
+     * @brief Interacts with the negato if it was picked by pressing any mouse button.
+     *
+     * Interactions will take place while holding down the button. The following actions are available:
+     * - Middle mouse click: moves the camera along the projection plane.
+     * - Right mouse click: adjust the transfer function level and window by moving
+     *                      the mouse up/down and left/right respectively.
+     *
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    VISUOGREADAPTOR_API void mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx,
+                                            int _dy) override;
+
+    /**
+     * @brief Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the
+     * case.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    VISUOGREADAPTOR_API void buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
+
+    /**
+     * @brief Disables mouse movements.
+     * @param _button mouse button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    VISUOGREADAPTOR_API void buttonReleaseEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
+
+    /**
+     * @brief Resets the camera when the 'R' key is pressed.
+     * @param _key key button pressed.
+     * @param _x current width coordinate of the mouse cursor.
+     * @param _y current height coordinate of the mouse cursor.
+     */
+    VISUOGREADAPTOR_API void keyPressEvent(int _key, Modifier, int _x, int _y) override;
 
 protected:
 
@@ -121,53 +169,6 @@ protected:
 private:
 
     using Orientation = ::fwDataTools::helper::MedicalImage::Orientation;
-
-    /**
-     * @brief Zooms in the scene at the current cursor position.
-     * @param _delta distance that the wheel is rotated.
-     * @param _x current width coordinate of the mouse cursor.
-     * @param _y current height coordinate of the mouse cursor.
-     */
-    void wheelEvent(Modifier, int _delta, int _x, int _y) override;
-
-    /**
-     * @brief Interacts with the negato if it was picked by pressing any mouse button.
-     *
-     * Interactions will take place while holding down the button. The following actions are available:
-     * - Middle mouse click: moves the camera along the projection plane.
-     * - Right mouse click: adjust the transfer function level and window by moving
-     *                      the mouse up/down and left/right respectively.
-     *
-     * @param _button mouse button pressed.
-     * @param _x current width coordinate of the mouse cursor.
-     * @param _y current height coordinate of the mouse cursor.
-     */
-    void mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy) override;
-
-    /**
-     * @brief Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the
-     * case.
-     * @param _button mouse button pressed.
-     * @param _x current width coordinate of the mouse cursor.
-     * @param _y current height coordinate of the mouse cursor.
-     */
-    void buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
-
-    /**
-     * @brief Disables mouse movements.
-     * @param _button mouse button pressed.
-     * @param _x current width coordinate of the mouse cursor.
-     * @param _y current height coordinate of the mouse cursor.
-     */
-    void buttonReleaseEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y) override;
-
-    /**
-     * @brief Resets the camera when the 'R' key is pressed.
-     * @param _key key button pressed.
-     * @param _x current width coordinate of the mouse cursor.
-     * @param _y current height coordinate of the mouse cursor.
-     */
-    void keyPressEvent(int _key, Modifier, int _x, int _y) override;
 
     /// SLOT: resets the camera's zoom.
     void resetCamera();

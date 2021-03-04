@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2019 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2017-2020 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,8 @@ namespace colourSegmentation
 
 /**
  * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
- * image using an Eexpectation Maximization algorithm
+ * image using an Expectation Maximization algorithm
+ * @deprecated: will be removed in sight 22.0
  *
  * @see ::fwServices::IOperator
  *
@@ -51,7 +52,7 @@ namespace colourSegmentation
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." type="::colourSegmentaion::SColourImageMasking" >
+        <service uid="..." type="::colourSegmentation::SColourImageMasking" >
             <in key="videoTL" uid="..." autoConnect="yes" />
             <inout key="mask" uid="..." />
             <inout key="videoMaskTL" uid="..." />
@@ -85,7 +86,7 @@ namespace colourSegmentation
 class COLOURSEGMENTATION_CLASS_API SColourImageMasking : public ::fwServices::IOperator
 {
 public:
-    fwCoreServiceMacro(SColourImageMasking, ::fwServices::IOperator);
+    fwCoreServiceMacro(SColourImageMasking, ::fwServices::IOperator)
 
     /**
      * @name Slots API
@@ -100,7 +101,7 @@ public:
 
     COLOURSEGMENTATION_API static const ::fwCom::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT;
     ///@}
-
+    [[deprecated("moved to ::cvSegmentation::SColourImageMasking.")]]
     ///Constructor
     COLOURSEGMENTATION_API SColourImageMasking() noexcept;
 

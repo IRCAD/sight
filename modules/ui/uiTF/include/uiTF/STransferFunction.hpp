@@ -47,7 +47,6 @@ namespace uiTF
  * transfert function, this service will read transfer function from the given pathes.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
    <service type="::uiTF::STransferFunction">
        <in key="currentTF" uid="..." optional="yes" />
@@ -66,11 +65,14 @@ namespace uiTF
  *      should be the same TF as the output.
  *      If it is not set, the default GreyLevel will be selected at start and the editor will not listen the change of
  *      TF in another service. Don't forget to set 'optional="yes"' when you use this input, otherwise the service will
+ *
  *      not start if a TF is not previously defined.
  * @subsection In-Out In-Out
  * - \b tfPool [::fwData::Composite]: composite containing the transfer function.
+ *
  * @subsection Output Output
  * - \b tf [::fwData::TransferFunction]: selected transfer function.
+ *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
@@ -145,7 +147,7 @@ private:
      * @param _name the name used to search the TF.
      * @return True if the TF named _sName is found.
      */
-    bool hasTransferFunctionName(const std::string& _name) const;
+    bool hasTransferFunctionName(const std::string& _name, const ::fwData::Composite::csptr _poolTF = nullptr) const;
 
     /**
      * @brief Create a string that represents a TF name not already present in the composite.

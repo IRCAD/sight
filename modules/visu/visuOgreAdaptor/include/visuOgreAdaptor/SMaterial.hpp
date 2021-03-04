@@ -113,7 +113,7 @@ public:
     /// Initializes slots.
     VISUOGREADAPTOR_API SMaterial() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SMaterial() noexcept override;
 
     /// Gets Ogre associated material.

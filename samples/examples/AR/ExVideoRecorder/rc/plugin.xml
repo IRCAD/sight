@@ -4,7 +4,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -115,9 +114,17 @@
                 <state executable="false" />
             </service>
 
-            <service uid="frameRecordingAct" type="::gui::action::SDefault" />
+            <service uid="frameRecordingAct" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>frameWriterSrv/record</slot>
+                </slots>
+            </service>
 
-            <service uid="videoRecordingAct" type="::gui::action::SDefault" />
+            <service uid="videoRecordingAct" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>videoWriterSrv/record</slot>
+                </slots>
+            </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -141,7 +148,6 @@
                 <parameters>
                     <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="frameWriterSrv" type="::videoOpenCV::SFrameWriter" worker="videoRecordingActWorker" >
@@ -210,27 +216,6 @@
                 <signal>parametersSrv/enumChanged</signal>
                 <slot>frameWriterSrv/setFormatParameter</slot>
             </connect>
-
-            <connect>
-                <signal>frameRecordingAct/checked</signal>
-                <slot>frameWriterSrv/startRecord</slot>
-            </connect>
-
-            <connect>
-                <signal>frameRecordingAct/unchecked</signal>
-                <slot>frameWriterSrv/stopRecord</slot>
-            </connect>
-
-            <connect>
-                <signal>videoRecordingAct/checked</signal>
-                <slot>videoWriterSrv/startRecord</slot>
-            </connect>
-
-            <connect>
-                <signal>videoRecordingAct/unchecked</signal>
-                <slot>videoWriterSrv/stopRecord</slot>
-            </connect>
-
 
             <!-- ******************************* Start services ***************************************** -->
 

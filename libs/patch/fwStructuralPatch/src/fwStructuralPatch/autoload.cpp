@@ -31,6 +31,8 @@
 #include "fwStructuralPatch/fwData/Mesh/V1ToV2.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V1ToV3.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V2ToV3.hpp"
+#include "fwStructuralPatch/fwData/Mesh/V3ToV4.hpp"
+#include "fwStructuralPatch/fwData/Mesh/V4ToV3.hpp"
 #include "fwStructuralPatch/fwData/Patient/V1ToFwMedDataPatientV1.hpp"
 #include "fwStructuralPatch/fwData/Reconstruction/V1ToV2.hpp"
 #include "fwStructuralPatch/fwData/Reconstruction/V2ToV3.hpp"
@@ -81,6 +83,8 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V3ToV4::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V4ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::TransformationMatrix3D::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ActivitySeries::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwMedData::ActivitySeries::V2ToV1::New());

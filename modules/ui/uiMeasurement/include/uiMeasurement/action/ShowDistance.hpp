@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,26 +34,29 @@ namespace action
 {
 
 /**
- * @brief   This action allows to show/hide image distances.
+ * @deprecated This service is deprecated and will be remove in sight 22.0,
+ *             please use ::uiMeasurement::action::SShowDistance.
+ *
+ * @brief This action allows to show/hide image distances.
  *
  * @section Slots Slots
  * - \b showDistance(bool): slot called to check/uncheck the action when the distance are visible or not.
  *
  * @section XML XML Configuration
- *
  * @code{.xml}
    <service type="::uiMeasurement::action::ShowDistance">
        <inout key="image" uid="..." />
    </service>
    @endcode
+ *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: image containing the distances.
  */
-class UIMEASUREMENT_CLASS_API ShowDistance : public ::fwGui::IActionSrv
+class UIMEASUREMENT_DEPRECATED_CLASS_API ShowDistance : public ::fwGui::IActionSrv
 {
 
 public:
-    fwCoreServiceMacro(ShowDistance,  ::fwGui::IActionSrv);
+    fwCoreServiceMacro(ShowDistance,  ::fwGui::IActionSrv)
 
     UIMEASUREMENT_API ShowDistance() noexcept;
 

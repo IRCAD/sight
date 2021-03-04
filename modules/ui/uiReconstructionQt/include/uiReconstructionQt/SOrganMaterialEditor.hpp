@@ -75,7 +75,7 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect ::fwData::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to ::visuOgreAdaptor::SLight::s_UPDATE_SLOT
+     * Connect ::fwData::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to s_UPDATE_SLOT
      */
     virtual KeyConnectionsMap getAutoConnections() const override;
 

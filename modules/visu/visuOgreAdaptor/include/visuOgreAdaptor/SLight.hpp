@@ -84,7 +84,7 @@ public:
     /// Creates the service.
     VISUOGREADAPTOR_API SLight(::fwRenderOgre::ILight::Key key);
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SLight() noexcept override;
 
     /**
@@ -174,17 +174,6 @@ public:
     VISUOGREADAPTOR_API void setPhiOffset(float _phiOffset) override;
 
     /**
-     * @brief Indicates if the light is attached to a parent node or not.
-     * @return True if the light is attached.
-     */
-    [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API bool isOrphanNode() const override;
-
-    /// Parent tranform id setter.
-    [[deprecated("Deprecated method. Removed in sight 21.0")]]
-    VISUOGREADAPTOR_API void setParentTransformName(const fwRenderOgre::SRender::OgreObjectIdType&) override;
-
-    /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
@@ -230,12 +219,6 @@ private:
 
     /// Sets the type of the associated Ogre light.
     ::Ogre::Light::LightTypes m_lightType { ::Ogre::Light::LT_DIRECTIONAL };
-
-    /// Containes the diffuse color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightDiffuseColor { nullptr };
-
-    /// Contains the specular color of the associated Ogre light.
-    ::fwData::Color::sptr m_lightSpecularColor { nullptr };
 
     /// Enables the light.
     bool m_switchedOn { true };
@@ -302,14 +285,6 @@ inline ::Ogre::ColourValue SLight::getSpecularColor() const
 
 //------------------------------------------------------------------------------
 
-inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _id)
-{
-    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
-    this->setTransformId(_id);
-}
-
-//------------------------------------------------------------------------------
-
 inline bool SLight::isSwitchedOn() const
 {
     return m_switchedOn;
@@ -327,14 +302,6 @@ inline float SLight::getThetaOffset() const
 inline float SLight::getPhiOffset() const
 {
     return m_phiOffset;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool SLight::isOrphanNode() const
-{
-    FW_DEPRECATED_MSG("This method is no longer supported", "21.0");
-    return false;
 }
 
 //------------------------------------------------------------------------------

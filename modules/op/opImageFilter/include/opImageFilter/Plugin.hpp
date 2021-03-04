@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2020 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -28,22 +28,19 @@ namespace opImageFilter
 {
 
 /**
- * @brief   Implements a plugin for the opImageFilter module.
+ * @brief Implements a plugin for the opImageFilter module.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
-
-    /**
-     * @brief   destructor
-     */
+    /// Destroys the plugin.
     ~Plugin() noexcept;
 
-    // Overrides
+    /// Does nothing.
     void start();
 
-    // Overrides
+    // Does nothing.
     void stop() noexcept;
 
 };
 
-} // namespace opImageFilter
+} // namespace opImageFilter.

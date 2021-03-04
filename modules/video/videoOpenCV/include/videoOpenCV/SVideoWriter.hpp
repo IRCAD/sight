@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2020 IRCAD France
- * Copyright (C) 2016-2020 IHU Strasbourg
+ * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -106,6 +106,9 @@ private:
 
     /// SLOT: Stop recording
     void stopRecord();
+
+    /// SLOT: Starts/stops recording, according to the parameter value
+    void record(bool);
 
     /// opencv video writer
     UPTR(::cv::VideoWriter) m_writer;

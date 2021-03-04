@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -140,7 +140,8 @@ void Server::start (std::uint16_t port)
     }
 
     const int result = m_serverSocket->CreateServer(port);
-    m_port = port;
+    // Ask m_serverSocket to give us the real port number (ex: if port is 0, it will use the first available port).
+    m_port = m_serverSocket->GetServerPort();
 
     if (result != Server::s_SUCCESS)
     {

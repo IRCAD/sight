@@ -25,8 +25,6 @@
 #include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-
 #include <fwRenderOgre/helper/Technique.hpp>
 
 #include <fwServices/macros.hpp>
@@ -138,7 +136,6 @@ void SFragmentsInfo::starting()
     // Fixed size.
     if(m_fixedSize)
     {
-
         this->createCompositor(m_width, m_height);
     }
     // If not listen to the resize event of the layer.
@@ -160,47 +157,46 @@ void SFragmentsInfo::starting()
 
 void SFragmentsInfo::updating() noexcept
 {
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-
-    if(image)
+    const auto imageW = this->getWeakInOut< ::fwData::Image >(s_IMAGE_INOUT);
     {
-        const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
+        const auto image = imageW.lock();
+        if(image)
         {
-            ::fwData::mt::ObjectWriteLock lock(image);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(text, image, m_flipImage);
-        }
+            const ::Ogre::TexturePtr text = m_compositor->getTextureInstance(m_targetName, 0);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(text, image.get_shared(), m_flipImage);
 
-        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+            const auto sig =
+                image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
+        }
     }
 
-    const ::fwData::Image::sptr depth = this->getInOut< ::fwData::Image >(s_DEPTH_INOUT);
-
-    if(depth)
+    const auto depthW = this->getWeakInOut< ::fwData::Image >(s_DEPTH_INOUT);
     {
-        const ::Ogre::TexturePtr depthText = m_compositor->getTextureInstance(m_targetName, 1);
+        const auto depth = depthW.lock();
+        if(depth)
         {
-            ::fwData::mt::ObjectWriteLock lock(depth);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth, m_flipImage);
-        }
+            const ::Ogre::TexturePtr depthText = m_compositor->getTextureInstance(m_targetName, 1);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(depthText, depth.get_shared(), m_flipImage);
 
-        auto depthSig = depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        depthSig->asyncEmit();
+            const auto depthSig =
+                depth->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            depthSig->asyncEmit();
+        }
     }
 
-    const ::fwData::Image::sptr primitiveID = this->getInOut< ::fwData::Image>(s_PRIMITIVE_ID_INOUT);
-
-    if(primitiveID)
+    const auto primitiveIDW = this->getWeakInOut< ::fwData::Image>(s_PRIMITIVE_ID_INOUT);
     {
-        const ::Ogre::TexturePtr primitiveIDText = m_compositor->getTextureInstance(m_targetPrimitiveIDName, 0);
+        const auto primitiveID = primitiveIDW.lock();
+        if(primitiveID)
         {
-            ::fwData::mt::ObjectWriteLock lock(primitiveID);
-            ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID, m_flipImage);
-        }
+            const ::Ogre::TexturePtr primitiveIDText = m_compositor->getTextureInstance(m_targetPrimitiveIDName, 0);
+            ::fwRenderOgre::Utils::convertFromOgreTexture(primitiveIDText, primitiveID.get_shared(), m_flipImage);
 
-        auto primitiveIDSig = primitiveID->signal< ::fwData::Object::ModifiedSignalType >(
-            ::fwData::Object::s_MODIFIED_SIG);
-        primitiveIDSig->asyncEmit();
+            const auto primitiveIDSig =
+                primitiveID->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            primitiveIDSig->asyncEmit();
+        }
     }
 }
 
@@ -267,9 +263,11 @@ void SFragmentsInfo::createCompositor(int _width, int _height)
             }
        }*/
 
-    const bool retrieveDepth = this->getInOut< ::fwData::Image>(s_DEPTH_INOUT) != nullptr;
+    const bool retrieveDepth =
+        this->getWeakInOut< ::fwData::Image >(s_DEPTH_INOUT).lock().operator bool();
 
-    const bool retrievePrimitiveID = this->getInOut< ::fwData::Image>(s_PRIMITIVE_ID_INOUT) != nullptr;
+    const bool retrievePrimitiveID =
+        this->getWeakInOut< ::fwData::Image >(s_PRIMITIVE_ID_INOUT).lock().operator bool();
 
     ::Ogre::CompositorManager& cmpMngr = ::Ogre::CompositorManager::getSingleton();
 
@@ -391,4 +389,4 @@ void SFragmentsInfo::postRenderTargetUpdate(const ::Ogre::RenderTargetEvent&)
 
 //-----------------------------------------------------------------------------
 
-} //namespace visuOgreAdaptor
+} // namespace visuOgreAdaptor.

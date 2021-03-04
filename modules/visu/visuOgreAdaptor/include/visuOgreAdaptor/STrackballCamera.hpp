@@ -62,7 +62,7 @@ public:
     /// Constructor.
     VISUOGREADAPTOR_API STrackballCamera() noexcept;
 
-    /// Destructor.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~STrackballCamera() noexcept override;
 
 protected:

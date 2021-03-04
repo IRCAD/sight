@@ -14,6 +14,7 @@
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
         <param name="modelSeries" />
@@ -40,6 +41,8 @@
             <value>#2E3034</value>
         </object>
         <object uid="snapshot" type="::fwData::Image" />
+        <!-- Camera matrix -->
+        <object uid="globalCamera" type="::fwData::TransformationMatrix3D" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -153,6 +156,14 @@
             </registry>
         </service>
 
+        <service uid="notifierSrv" type="::guiQt::SNotifier" >
+            <parent uid="mainview"/>
+            <message>Default message</message>
+            <maxNotifications>3</maxNotifications>
+            <position>BOTTOM_LEFT</position>
+            <duration>3000</duration>
+        </service>
+
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="::fwRenderOgre::SRender" >
@@ -160,6 +171,7 @@
                 <background topColor="#36393E" bottomColor="#36393E" />
 
                 <layer id="defaultLayer" order="1" transparency="DepthPeeling" numPeels="4" />
+                <adaptor uid="globalCameraAdp" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -224,7 +236,19 @@
                 <adaptor uid="frontalNegatoResizeViewportAdp" />
                 <adaptor uid="frontalPickerInteractorAdp" />
                 <adaptor uid="frontalLandmarksAdp" />
+
+                <layer id="orientationMarkerLayer" order="8" >
+                    <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
+                </layer>
+                <adaptor uid="orientationMarkerAdp" />
+
             </scene>
+        </service>
+
+        <!-- Camera for the 3D layer -->
+        <service uid="globalCameraAdp" type="::visuOgreAdaptor::SCamera" >
+            <inout key="transform" uid="globalCamera" />
+            <config layer="defaultLayer" />
         </service>
 
         <service uid="trackballInteractorAdp" type="::visuOgreAdaptor::STrackballCamera">
@@ -232,7 +256,7 @@
         </service>
 
         <service uid="pickerInteractorAdp" type="::visuOgreAdaptor::SPicker">
-            <config layer="defaultLayer" queryMask="0x40000000" />
+            <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
         </service>
 
         <service uid="modeSeriesAdp" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes" >
@@ -255,17 +279,17 @@
         <service uid="3DNegatoAdp" type="::visuOgreAdaptor::SNegato3D" >
             <inout key="image" uid="${image}" autoConnect="yes" />
             <inout key="tf" uid="${volumeTF}" />
-            <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" />
+            <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
         <service uid="landmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
-            <config layer="defaultLayer" />
+            <inout key="landmarks" uid="${landmarks}" />
+            <config layer="defaultLayer" priority="4" />
         </service>
 
         <service uid="multiDistancesAdp" type="::visuOgreAdaptor::SImageMultiDistances" autoConnect="yes" >
             <inout key="image" uid="${image}" />
-            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" />
+            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
         <service uid="axisAdp" type="::visuOgreAdaptor::SAxis" >
@@ -291,8 +315,12 @@
             <config layer="defaultLayer" flip="true" />
         </service>
 
-        <!-- Axial -->
+        <service uid="orientationMarkerAdp" type="::visuOgreAdaptor::SOrientationMarker" autoConnect="yes">
+            <in key="matrix" uid="globalCamera" />
+            <config layer="orientationMarkerLayer" />
+        </service>
 
+        <!-- Axial -->
         <service uid="axialBackgroundAdp" type="::visuOgreAdaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="axialBackgroundNegatoLayer" />
@@ -333,9 +361,9 @@
         </service>
 
         <service uid="axialLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
-            <config layer="axialNegatoLayer" label="false" orientation="axial" />
+            <config layer="axialNegatoLayer" label="false" orientation="axial" priority="4" />
         </service>
 
         <!-- Sagittal -->
@@ -380,9 +408,9 @@
         </service>
 
         <service uid="sagittalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
-            <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" />
+            <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" priority="4" />
         </service>
 
         <!-- Frontal -->
@@ -427,9 +455,9 @@
         </service>
 
         <service uid="frontalLandmarksAdp" type="::visuOgreAdaptor::SLandmarks" autoConnect="yes" >
-            <in key="landmarks" uid="${landmarks}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <in key="image" uid="${image}" />
-            <config layer="frontalNegatoLayer" label="false" orientation="frontal" />
+            <config layer="frontalNegatoLayer" label="false" orientation="frontal" priority="4" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
@@ -567,6 +595,10 @@
             <signal>shapeExtruderAdp/toolDisabled</signal>
         </connect>
 
+        <connect channel="${SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL}" >
+            <slot>shapeExtruderAdp/deleteLastMesh</slot>
+        </connect>
+
         <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}" >
             <slot>axisAdp/updateVisibility</slot>
         </connect>
@@ -608,6 +640,16 @@
             <slot>pickedVoxelTextAdp/setText</slot>
         </connect>
 
+        <connect>
+            <signal>shapeExtruderAdp/infoNotified</signal>
+            <slot>notifierSrv/popInfo</slot>
+        </connect>
+
+        <connect>
+            <signal>shapeExtruderAdp/failureNotified</signal>
+            <slot>notifierSrv/popFailure</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -615,7 +657,9 @@
         <start uid="backgroundReaderSrv" />
         <start uid="imageWriterSrv" />
         <start uid="imageExtruderSrv" />
+        <start uid="notifierSrv" />
 
+        <start uid="globalCameraAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="modeSeriesAdp" />
@@ -629,6 +673,8 @@
         <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
         <start uid="snapshotAdp" />
+        <start uid="orientationMarkerAdp" />
+
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />

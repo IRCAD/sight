@@ -4,7 +4,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -194,7 +193,6 @@
                     <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
                     <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >

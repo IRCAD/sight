@@ -92,13 +92,14 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             cellTexCoords = vtkFloatArray::SafeDownCast(polyData->GetCellData()->GetTCoords());
         }
 
-        mesh->reserve(static_cast< ::fwData::Mesh::Id>(numberOfPoints), static_cast< ::fwData::Mesh::Id>(numberOfCells),
-                      ::fwData::Mesh::CellType::TRIANGLE, attributes);
-
         const auto dumpLock = mesh->lock();
 
+        mesh->reserve(static_cast< ::fwData::Mesh::Size>(numberOfPoints),
+                      static_cast< ::fwData::Mesh::Size>(numberOfCells),
+                      ::fwData::Mesh::CellType::TRIANGLE, attributes);
+
         const double* point;
-        mesh->setNumberOfPoints(static_cast< ::fwData::Mesh::Id>(numberOfPoints));
+        mesh->setNumberOfPoints(static_cast< ::fwData::Mesh::Size>(numberOfPoints));
         auto pointIter = mesh->begin< ::fwData::iterator::PointIterator >();
         for (vtkIdType i = 0; i < numberOfPoints; ++i)
         {
@@ -153,34 +154,34 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             {
                 case VTK_VERTEX:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(0)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(0)));
                     break;
                 case VTK_LINE:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)));
                     break;
                 case VTK_TRIANGLE:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(2)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(2)));
                     break;
                 case VTK_QUAD:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         2)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(3)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              2)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(3)));
                     break;
                 case VTK_POLY_VERTEX:
                     for(vtkIdType j = 0; j < idList->GetNumberOfIds(); ++j)
                     {
-                        mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(j)));
+                        mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(j)));
                     }
                     break;
                 default:
@@ -283,13 +284,14 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
             cellTexCoords = vtkFloatArray::SafeDownCast(grid->GetCellData()->GetTCoords());
         }
 
-        mesh->reserve(static_cast< ::fwData::Mesh::Id>(numberOfPoints), static_cast< ::fwData::Mesh::Id>(numberOfCells),
+        mesh->reserve(static_cast< ::fwData::Mesh::Size>(numberOfPoints),
+                      static_cast< ::fwData::Mesh::Size>(numberOfCells),
                       ::fwData::Mesh::CellType::TRIANGLE, attributes);
 
         const auto dumpLock = mesh->lock();
 
         const double* point;
-        mesh->setNumberOfPoints(static_cast< ::fwData::Mesh::Id>(numberOfPoints));
+        mesh->setNumberOfPoints(static_cast< ::fwData::Mesh::Size>(numberOfPoints));
         auto pointIter = mesh->begin< ::fwData::iterator::PointIterator >();
         for (vtkIdType i = 0; i < numberOfPoints; ++i)
         {
@@ -344,37 +346,37 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
             {
                 case VTK_VERTEX:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(0)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(0)));
                     break;
                 case VTK_LINE:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)));
                     break;
                 case VTK_TRIANGLE:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(2)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(2)));
                     break;
                 case VTK_QUAD:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         2)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(3)));
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              2)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(3)));
                     break;
                 case VTK_TETRA:
-                    mesh->pushCell(static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         0)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(1)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(
-                                                                         2)),
-                                   static_cast< ::fwData::Mesh::Id >(idList->GetId(3)),
+                    mesh->pushCell(static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              0)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(1)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(
+                                                                              2)),
+                                   static_cast< ::fwData::Mesh::PointId >(idList->GetId(3)),
                                    ::fwData::Mesh::CellType::TETRA);
                     break;
                 default:

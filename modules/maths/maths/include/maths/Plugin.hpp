@@ -30,21 +30,18 @@ namespace maths
 {
 
 /**
- * @brief   This class is started when the module is loaded.
+ * @brief This class is started when the module is loaded.
  */
-struct MATHS_CLASS_API Plugin : public ::fwRuntime::Plugin
+struct MATHS_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
-    /// Destructor. Do nothing.
-    MATHS_API ~Plugin() noexcept;
+    /// Destroys the plugin.
+    MATHS_API ~Plugin() noexcept override;
 
-    /**
-     * @brief Overrides start method. Object declarations.
-     * @todo All data are not register in this method, what data must be registered ?
-     */
-    MATHS_API void start();
+    /// Starts the plugin, does nothing here.
+    MATHS_API void start() override;
 
-    /// Overrides stop method. Do nothing
-    MATHS_API void stop() noexcept;
+    /// Stops the plugin, does nothing here.
+    MATHS_API void stop() noexcept override;
 
 };
 

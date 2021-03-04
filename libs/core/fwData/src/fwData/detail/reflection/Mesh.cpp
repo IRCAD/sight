@@ -29,7 +29,7 @@
 fwCampImplementDataMacro((fwData)(Mesh))
 {
     builder
-    .tag("object_version", "3")
+    .tag("object_version", "4")
     .tag("lib_name", "fwData")
     .base< ::fwData::Object>()
     .property("nb_points", &::fwData::Mesh::m_nbPoints)
@@ -46,5 +46,7 @@ fwCampImplementDataMacro((fwData)(Mesh))
     .property("point_tex_coords", &::fwData::Mesh::m_pointTexCoords)
     .property("cell_tex_coords", &::fwData::Mesh::m_cellTexCoords)
     .property("array_map", &::fwData::Mesh::m_arrayMap)
+    //.property("attributes", &::fwData::Mesh::m_attributes) // It uses a mapper to convert attributes property.
     ;
+
 }

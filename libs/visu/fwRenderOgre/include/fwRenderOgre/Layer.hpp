@@ -28,8 +28,6 @@
 #include "fwRenderOgre/compositor/types.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
-#include "fwRenderOgre/interactor/IMovementInteractor.hpp"
-#include "fwRenderOgre/interactor/IPickerInteractor.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 
 #include <fwCom/HasSignals.hpp>
@@ -186,20 +184,6 @@ public:
     /// Resets the camera clipping range (near and far).
     FWRENDEROGRE_API void resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
 
-    /**
-     * @brief set the movement interactor.
-     * @deprecated Use @see Layer::addInteractor() instead. Removed in sight 21.0
-     */
-    [[deprecated("Use Layer::addInteractor() instead.")]]
-    FWRENDEROGRE_API virtual void setMoveInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& interactor);
-
-    /**
-     * @brief set Ogre Select interactor.
-     * @deprecated use \b addInteractor instead.
-     */
-    [[deprecated("Use Layer::addInteractor instead.")]]
-    FWRENDEROGRE_API virtual void setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor);
-
     /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
     FWRENDEROGRE_API void addInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor,
                                         int _priority = 0);
@@ -207,36 +191,8 @@ public:
     /// Removes the given interactor.
     FWRENDEROGRE_API void removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor);
 
-    /**
-     * @brief get Ogre Movement interactor.
-     * @deprecated Will be removed in sight 21.0
-     */
-    [[deprecated("Removed in sight 21.0.")]]
-    FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IInteractor::sptr getMoveInteractor();
-
-    /**
-     * @brief get Ogre Select interactor.
-     * @deprecated Will be removed in sight 21.0
-     */
-    [[deprecated("Removed in sight 21.0.")]]
-    FWRENDEROGRE_API virtual ::fwRenderOgre::interactor::IPickerInteractor::sptr getSelectInteractor();
-
-    /**
-     * @return the depth of the layer.
-     * @deprecated Will be removed in sight 21.0
-     */
-    [[deprecated("Removed in sight 22.0.")]]
-    FWRENDEROGRE_API int getDepth() const;
-
     /// @return the order of the layer.
     FWRENDEROGRE_API int getOrder() const;
-
-    /**
-     * @return Sets the depth of the layer.
-     * @deprecated Will be removed in sight 21.0
-     */
-    [[deprecated("Removed in sight 21.0.")]]
-    FWRENDEROGRE_API void setDepth(int _order);
 
     /// Sets the order of the layer.
     FWRENDEROGRE_API void setOrder(int _order);
@@ -411,10 +367,6 @@ private:
 
     /// Contains the Ogre camera.
     ::Ogre::Camera* m_camera { nullptr };
-
-    /// Contains the Ogre movement interactor.
-    [[deprecated("will be removed in sight 21.0")]]
-    ::fwRenderOgre::interactor::IInteractor::sptr m_moveInteractor { nullptr };
 
     /// Stores the list of interactors, sorted by priority.
     std::multimap< int, ::fwRenderOgre::interactor::IInteractor::wptr, std::greater<int> > m_interactors;

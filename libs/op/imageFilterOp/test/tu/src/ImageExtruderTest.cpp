@@ -64,6 +64,7 @@ void ImageExtruderTest::extrudeTriangleMesh()
 {
     // Create a cube.
     const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto lock                 = mesh->lock();
     mesh->resize(8, 12, ::fwData::Mesh::CellType::TRIANGLE);
 
     {
@@ -164,6 +165,8 @@ void ImageExtruderTest::extrudeQuadMesh()
 {
     // Create a cube.
     const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    const auto lock                 = mesh->lock();
+
     mesh->resize(8, 6, ::fwData::Mesh::CellType::QUAD);
 
     {

@@ -30,7 +30,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwThread/ActiveWorkers.hpp>
 
@@ -75,7 +74,6 @@ TransferFunction::~TransferFunction()
 
 void TransferFunction::createTransferFunction( ::fwData::Image::sptr image )
 {
-    ::fwData::mt::ObjectWriteLock tfLock(image);
     ::fwData::Composite::sptr tfPool =
         image->setDefaultField(::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId,
                                ::fwData::Composite::New());

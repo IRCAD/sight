@@ -42,9 +42,8 @@ namespace visuOgreAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
 
-static const std::string s_COLOR_CONFIG   = "color";
-static const std::string s_LENGTH_CONFIG  = "length";
-static const std::string s_VISIBLE_CONFIG = "visible";
+static const std::string s_COLOR_CONFIG  = "color";
+static const std::string s_LENGTH_CONFIG = "length";
 
 //-----------------------------------------------------------------------------
 
@@ -80,8 +79,6 @@ void SVector::configuring()
             m_color[0] == '#'
             && ( m_color.length() == 7 || m_color.length() == 9)
         );
-
-    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,6 +124,8 @@ void SVector::updating()
 
     this->deleteVector();
     this->createVector();
+
+    this->setVisible(m_isVisible);
 
     this->requestRender();
 }

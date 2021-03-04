@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2020 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -226,7 +226,7 @@ void CameraTest::convertPixelToWorldSpace()
         // Unproject the projected point
         const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
         const ::Ogre::Vector3 unprojectedPoint =
-            ::fwRenderOgre::helper::Camera::convertFromScreenToViewSpace(*camera, point);
+            ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
     }
@@ -246,7 +246,7 @@ void CameraTest::convertPixelToWorldSpace()
         // Unproject the projected point
         const ::Ogre::Vector3 point(viewportPoint[0], viewportPoint[1], viewportPoint[2]);
         const ::Ogre::Vector3 unprojectedPoint =
-            ::fwRenderOgre::helper::Camera::convertFromScreenToViewSpace(*camera, point);
+            ::fwRenderOgre::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
     }

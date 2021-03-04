@@ -27,8 +27,6 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwDataTools/fieldHelper/Image.hpp>
@@ -292,9 +290,7 @@ void SImageMultiDistances::addDistances()
 {
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::Image::sptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectReadLock lock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const ::fwData::Vector::sptr distanceField = image->getField< ::fwData::Vector >(
         ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
@@ -335,9 +331,7 @@ void SImageMultiDistances::removeDistances()
 {
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-    const ::fwData::mt::ObjectReadLock lock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const ::fwData::Vector::csptr distanceField
         = image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
@@ -374,15 +368,11 @@ void SImageMultiDistances::updateVisibilityFromField()
 {
     this->getRenderService()->makeCurrent();
 
-    const ::fwData::Image::csptr image = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("inout '" + s_IMAGE_INOUT + "' does not exist.", image);
-    ::fwData::mt::ObjectReadLock lock(image);
+    const auto image = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
     const bool visibility = image->getField(::fwDataTools::fieldHelper::Image::m_distanceVisibility, ::fwData::Boolean::New(
                                                 true))->value();
     m_isVisible = visibility;
-
-    lock.unlock();
 
     for(const auto& distance : m_distances)
     {
@@ -447,7 +437,7 @@ std::optional< ::Ogre::Vector3 > SImageMultiDistances::getNearestPickedPosition(
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
+void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
 {
     if(_button == LEFT)
     {
@@ -525,7 +515,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, int _x, int _y)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
+void SImageMultiDistances::mouseMoveEvent(MouseButton, Modifier, int _x, int _y, int, int)
 {
     if(m_pickedData.m_data != nullptr)
     {
@@ -600,7 +590,7 @@ void SImageMultiDistances::mouseMoveEvent(MouseButton, int _x, int _y, int, int)
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonReleaseEvent(MouseButton, int, int)
+void SImageMultiDistances::buttonReleaseEvent(MouseButton, Modifier, int, int)
 {
     if(m_pickedData.m_data != nullptr)
     {
@@ -739,7 +729,7 @@ void SImageMultiDistances::updateDistance(const DistanceData* const _data,
     SImageMultiDistances::generateDashedLine(dashedLine, _begin, _end, m_distanceSphereRadius);
 
     // Update the field data.
-    const ::fwData::mt::ObjectWriteLock lock(_data->m_pointList);
+    const ::fwData::mt::locked_ptr lock(_data->m_pointList);
     _data->m_pointList->getPoints().front()->setCoord({_begin[0], _begin[1], _begin[2]});
     _data->m_pointList->getPoints().back()->setCoord({_end[0], _end[1], _end[2]});
 

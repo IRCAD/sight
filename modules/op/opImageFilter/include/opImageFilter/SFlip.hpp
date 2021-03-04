@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2019 IRCAD France
- * Copyright (C) 2018-2019 IHU Strasbourg
+ * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -57,31 +57,32 @@ class OPIMAGEFILTER_CLASS_API SFlip : public ::fwServices::IOperator
 {
 public:
 
-    fwCoreServiceMacro(SFlip, ::fwServices::IOperator);
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SFlip, ::fwServices::IOperator)
 
     OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISX_SLOT;
     OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISY_SLOT;
     OPIMAGEFILTER_API static const ::fwCom::Slots::SlotKeyType s_FLIP_AXISZ_SLOT;
 
-    /// Constructor, does nothing.
+    /// Initializes slots.
     OPIMAGEFILTER_API SFlip();
 
-    /// Destructor, does nothing.
-    OPIMAGEFILTER_API ~SFlip();
+    /// Destroys the service.
+    OPIMAGEFILTER_API ~SFlip() override;
 
 protected:
 
     /// Configures the service.
-    OPIMAGEFILTER_API virtual void configuring() override;
+    OPIMAGEFILTER_API void configuring() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API virtual void starting() override;
+    OPIMAGEFILTER_API void starting() override;
 
     /// Does nothing.
-    OPIMAGEFILTER_API virtual void stopping() override;
+    OPIMAGEFILTER_API void stopping() override;
 
-    /// Apply the flip operator.
-    OPIMAGEFILTER_API virtual void updating() override;
+    /// Applies the flip operator.
+    OPIMAGEFILTER_API void updating() override;
 
     /**
      * @brief Signal-slot auto-connection proposals
@@ -89,19 +90,19 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    OPIMAGEFILTER_API virtual KeyConnectionsMap getAutoConnections() const override;
+    OPIMAGEFILTER_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 
-    /// Slot: flip the first axis
+    /// SLOT: flips the first axis
     void flipAxisX();
-    /// Slot: flip the second axis
+    /// SLOT: flips the second axis
     void flipAxisY();
-    /// Slot: flip the third axis
+    /// SLOT: flips the third axis
     void flipAxisZ();
 
-    // Store whether to flip or not one of the 3 axis
+    // Stores whether to flip or not one of the 3 axis
     std::array<bool, 3> m_flipAxes {{false, false, false}};
 };
 
-} // namespace opImageFilter
+} // namespace opImageFilter.

@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2019 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -121,24 +121,5 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 }
 
 } // namespace lightFactory
-
-namespace interactorFactory
-{
-
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
-
-[[deprecated("Removed in sight 21.0")]]
-FWRENDEROGRE_API SPTR( ::fwRenderOgre::interactor::IInteractor ) New(
-    const ::fwRenderOgre::registry::KeyType& classname, const std::string&);
-
-template<class CLASSNAME >
-[[deprecated("Removed in sight 21.0")]]
-SPTR( CLASSNAME )  New()
-{
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( );
-    return obj;
-}
-
-} // namespace interactorFactory
 
 } // namespace fwRenderOgre

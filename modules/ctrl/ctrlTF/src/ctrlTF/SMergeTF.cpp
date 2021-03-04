@@ -25,9 +25,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
 namespace ctrlTF
 {
 
@@ -80,11 +77,8 @@ void SMergeTF::updating()
     m_connections.disconnect();
 
     // Iterates over each TF to create connections.
-    const ::fwData::Composite::csptr tfPool = this->getInput< ::fwData::Composite >(s_TF_POOL_INPUT);
-    SLM_ASSERT("input '" + s_TF_POOL_INPUT + "' does not exist.", tfPool);
     {
-        const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
-
+        const auto tfPool = this->getLockedInput< ::fwData::Composite >(s_TF_POOL_INPUT);
         SLM_ASSERT("input '" + s_TF_POOL_INPUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
         for(::fwData::Composite::value_type poolElt : *tfPool)
@@ -114,16 +108,11 @@ void SMergeTF::stopping()
 void SMergeTF::merge() const
 {
     // Get the TF pool.
-    const ::fwData::Composite::csptr tfPool = this->getInput< ::fwData::Composite >(s_TF_POOL_INPUT);
-    SLM_ASSERT("input '" + s_TF_POOL_INPUT + "' does not exist.", tfPool);
-    const ::fwData::mt::ObjectReadLock tfPoolLock(tfPool);
-
+    const auto tfPool = this->getLockedInput< ::fwData::Composite >(s_TF_POOL_INPUT);
     SLM_ASSERT("input '" + s_TF_POOL_INPUT + "' must have at least on TF inside.", tfPool->size() > 0);
 
     // Clear the output TF.
-    const ::fwData::TransferFunction::sptr outTF = this->getInOut< ::fwData::TransferFunction >(s_TF_INOUT);
-    SLM_ASSERT("inout '" + s_TF_INOUT + "' does not exist.", outTF);
-    const ::fwData::mt::ObjectWriteLock outTFLock(outTF);
+    const auto outTF = this->getLockedInOut< ::fwData::TransferFunction >(s_TF_INOUT);
     outTF->clear();
 
     // Iterates over each TF to merge them in the output one.
@@ -133,9 +122,9 @@ void SMergeTF::merge() const
     for(::fwData::Composite::value_type poolElt : *tfPool)
     {
         // Checks if the composite element is a TF.
-        const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+        const ::fwData::TransferFunction::csptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::locked_ptr tfLock(tf);
 
         const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();
         const ::fwData::TransferFunction::TFValueType minWL            = tf->getWLMinMax().first;
@@ -149,7 +138,7 @@ void SMergeTF::merge() const
                                     value  = value * window + minWL;
                                     value += _delta;
 
-                                    outTF->addTFColor(value, this->mergeColors(tfPool, value));
+                                    outTF->addTFColor(value, this->mergeColors(tfPool.get_shared(), value));
                                     if(value < min)
                                     {
                                         min = value;
@@ -232,9 +221,9 @@ void SMergeTF::merge() const
     for(::fwData::Composite::value_type poolElt : *_tfPool)
     {
         // Checks if the composite element is a TF.
-        const ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
+        const ::fwData::TransferFunction::csptr tf = ::fwData::TransferFunction::dynamicCast(poolElt.second);
         SLM_ASSERT("inout '" + s_TF_POOL_INPUT + "' must contain only TF.", tf);
-        const ::fwData::mt::ObjectReadLock tfLock(tf);
+        const ::fwData::mt::locked_ptr tfLock(tf);
 
         // Gets window/level informations to change TF value from window/level space to TF space .
         const ::fwData::TransferFunction::TFValuePairType minMaxValues = tf->getMinMaxTFValues();

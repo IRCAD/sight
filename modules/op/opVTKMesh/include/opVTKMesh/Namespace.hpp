@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2018 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -23,17 +23,17 @@
 #pragma once
 
 /**
- * @brief       The namespace opVTKMesh contains an implementation of a VTK mesher.
+ * @brief The namespace opVTKMesh contains an implementation of a VTK mesher.
  */
 namespace opVTKMesh
 {
 
 /**
- * @brief       The namespace opVTKMesh::action contains operator to create mesh with VTK .
+ * @brief The namespace opVTKMesh::action contains operator to create mesh with VTK .
  */
 namespace action
 {
 
-} // namespace action
+} // namespace action.
 
-} // namespace opVTKMesh
+} // namespace opVTKMesh.

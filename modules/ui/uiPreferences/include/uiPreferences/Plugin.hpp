@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2016 IRCAD France
- * Copyright (C) 2014-2016 IHU Strasbourg
+ * Copyright (C) 2014-2020 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,34 +19,29 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-#ifndef __UIPREFERENCES_PLUGIN_HPP__
-#define __UIPREFERENCES_PLUGIN_HPP__
+
+#pragma once
+
+#include "uiPreferences/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
 namespace uiPreferences
 {
 
-struct Plugin : public ::fwRuntime::Plugin
+/// This class is started when the module is loaded.
+struct UIPREFERENCES_CLASS_API Plugin final : public ::fwRuntime::Plugin
 {
-    /**
-     * @brief   destructor
-     */
-    ~Plugin() noexcept
-    {
-    }
 
-    // Overrides
-    void start()
-    {
-    }
+    /// Destroys the plugin.
+    UIPREFERENCES_API ~Plugin() noexcept override;
 
-    // Overrides
-    void stop() noexcept
-    {
-    }
+    /// Starts the plugin, does nothing here.
+    UIPREFERENCES_API void start() override;
+
+    /// Stops the plugin, does nothing here.
+    UIPREFERENCES_API void stop() noexcept override;
+
 };
 
-} // namespace uiPreferences
-
-#endif //__UIPREFERENCES_PLUGIN_HPP__
+} // namespace uiPreferences.

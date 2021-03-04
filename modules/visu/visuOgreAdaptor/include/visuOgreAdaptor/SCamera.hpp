@@ -84,7 +84,7 @@ public:
     /// Creates the adaptor and initialize slots.
     VISUOGREADAPTOR_API SCamera() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SCamera() noexcept override;
 
 protected:

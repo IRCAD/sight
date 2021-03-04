@@ -257,21 +257,83 @@ void LockTest::testDumpLock()
         // check if the image is properly locked for dump
         CPPUNIT_ASSERT_NO_THROW(image->getBuffer());
     }
-    CPPUNIT_ASSERT_THROW(image->getBuffer(), ::fwData::Exception);
+
+    bool exceptionReceived = false;
+
+    for(int i = 3; --i > 0 && !exceptionReceived;)
+    {
+        try
+        {
+            image->getBuffer();
+        }
+        catch(::fwData::Exception&)
+        {
+            exceptionReceived = true;
+        }
+
+        if(!exceptionReceived)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+
+    CPPUNIT_ASSERT(exceptionReceived);
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-
-    ::fwTest::generator::Mesh::generateTriangleQuadMesh(mesh);
 
     lockedService->registerInput(mesh, ::fwServices::ut::LockedService::s_INPUT);
 
     {
         auto sharedInput = lockedService->getLockedInput< ::fwData::Mesh >(::fwServices::ut::LockedService::s_INPUT);
+
+        mesh->reserve(3, 1, ::fwData::Mesh::CellType::TRIANGLE, ::fwData::Mesh::Attributes::POINT_COLORS);
+
+        ::fwData::Mesh::PointValueType A[3] = {0., 0., 0. };
+        ::fwData::Mesh::PointValueType B[3] = {1., 0., 0. };
+        ::fwData::Mesh::PointValueType C[3] = {1., 1., 0. };
+
+        ::fwData::Mesh::PointId ids[3];
+
+        ids[0] = mesh->pushPoint(A);
+        ids[1] = mesh->pushPoint(B);
+        ids[2] = mesh->pushPoint(C);
+
         CPPUNIT_ASSERT(mesh == sharedInput.get_shared());
         // check if the image is properly locked for dump
-        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(0.f, 0.f, 0.f));
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(A));
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(B));
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushPoint(C));
+
+        CPPUNIT_ASSERT_NO_THROW(mesh->pushCell(::fwData::Mesh::CellType::TRIANGLE, ids, 3));
+
+        const std::array< ::fwData::Mesh::ColorValueType, 4>  color = {255, 0, 0, 255};
+
+        // This are not locked since they didn't exists when creating the mesh the first time.
+        CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[0], color));
+        CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[1], color));
+        CPPUNIT_ASSERT_NO_THROW(mesh->setPointColor(ids[2], color));
     }
-    CPPUNIT_ASSERT_THROW(mesh->pushPoint(0.f, 0.f, 0.f), ::fwData::Exception);
+
+    exceptionReceived = false;
+
+    for(int i = 3; --i > 0 && !exceptionReceived;)
+    {
+        try
+        {
+            mesh->pushPoint(0.f, 0.f, 0.f);
+        }
+        catch(::fwData::Exception&)
+        {
+            exceptionReceived = true;
+        }
+
+        if(!exceptionReceived)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+
+    CPPUNIT_ASSERT(exceptionReceived);
 }
 
 //------------------------------------------------------------------------------

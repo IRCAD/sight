@@ -22,9 +22,6 @@
 
 #include "material/Plugin.hpp"
 
-#include <fwRenderOgre/Utils.hpp>
-
-#include <fwRuntime/operations.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 namespace material
@@ -42,7 +39,7 @@ Plugin::~Plugin() noexcept
 
 void Plugin::start()
 {
-    ::fwRenderOgre::Utils::addResourcesPath( ::fwRuntime::getModuleResourceFilePath("material", "resources.cfg" ) );
+    FW_DEPRECATED_MSG("This module is no longer supported", "23.0");
 }
 
 //-----------------------------------------------------------------------------
@@ -51,4 +48,4 @@ void Plugin::stop() noexcept
 {
 }
 
-} // namespace material
+} // namespace material.

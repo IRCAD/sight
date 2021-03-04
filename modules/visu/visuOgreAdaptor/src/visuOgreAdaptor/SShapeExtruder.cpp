@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,8 +26,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwDataTools/Color.hpp>
@@ -40,7 +38,8 @@ namespace visuOgreAdaptor
 
 static const std::string s_EXTRUDED_MESHES_INOUT = "extrudedMeshes";
 
-static const ::fwCom::Slots::SlotKeyType s_ENABLE_TOOL_SLOT = "enableTool";
+static const ::fwCom::Slots::SlotKeyType s_ENABLE_TOOL_SLOT      = "enableTool";
+static const ::fwCom::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT = "deleteLastMesh";
 
 static const ::fwCom::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
@@ -152,6 +151,7 @@ bool SShapeExtruder::Edge::intersect(Edge _edge) const
 SShapeExtruder::SShapeExtruder() noexcept
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
+    newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
     m_toolDisabledSig = this->newSignal< ::fwCom::Signal< void()> >(s_TOOL_DISABLED_SIG);
 }
 
@@ -285,6 +285,38 @@ void SShapeExtruder::enableTool(bool _enable)
 
 //-----------------------------------------------------------------------------
 
+void SShapeExtruder::deleteLastMesh()
+{
+    // Get the reconstruction list.
+    const auto extrudedMeshes = this->getLockedInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
+
+    ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
+
+    if (reconstructions.size() > 0)
+    {
+        reconstructions.pop_back();
+        extrudedMeshes->setReconstructionDB(reconstructions);
+
+        // Send notification
+        const auto notif = this->signal< ::fwServices::IService::InfoNotifiedSignalType >(
+            ::fwServices::IService::s_INFO_NOTIFIED_SIG);
+        notif->asyncEmit("Last extrusion deleted.");
+
+        // Send the signal.
+        auto sig = extrudedMeshes->signal< ::fwMedData::ModelSeries::ReconstructionsRemovedSignalType >(
+            ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG);
+        sig->asyncEmit(::fwMedData::ModelSeries::ReconstructionVectorType{reconstructions});
+    }
+    else
+    {
+        const auto notif = this->signal< ::fwServices::IService::FailureNotifiedSignalType >(
+            ::fwServices::IService::s_FAILURE_NOTIFIED_SIG);
+        notif->asyncEmit("No extrusion to delete.");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 std::tuple< ::Ogre::Vector3, ::Ogre::Vector3, ::Ogre::Vector3 > SShapeExtruder::getNearFarRayPositions(int _x,
                                                                                                        int _y) const
 {
@@ -355,7 +387,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
             m_interactionEnableState = true;
 
             // Compute the plane where the tool will work.
-            // This plane allows to generate all points of the lasso on the same plane to simplify futhers algorithm.
+            // This plane allows to generate all points of the lasso on the same plane to simplify further algorithms.
             const ::Ogre::Camera* const camera = layer->getDefaultCamera();
             const ::Ogre::Vector3 direction    = this->getCamDirection(camera);
 
@@ -666,63 +698,65 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 {
     // Creates the mesh from a list a 3D triangles.
     const ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-
-    // 3 points per triangles and one cell per triangles.
-    mesh->resize(_triangulation.size()*3, _triangulation.size(), ::fwData::Mesh::CellType::TRIANGLE);
-
-    // Fill points.
     {
-        auto it = mesh->begin< ::fwData::iterator::PointIterator >();
+        const auto lock = mesh->lock();
 
-        for(const Triangle3D& triangle : _triangulation)
+        // 3 points per triangle and one cell per triangle.
+        mesh->resize(static_cast< ::fwData::Mesh::Size >( _triangulation.size() * 3 ),
+                     static_cast< ::fwData::Mesh::Size >( _triangulation.size() ), ::fwData::Mesh::CellType::TRIANGLE,
+                     ::fwData::Mesh::Attributes::POINT_NORMALS);
+
+        // Fill points.
         {
-            it->point->x = triangle.a.x;
-            it->point->y = triangle.a.y;
-            it->point->z = triangle.a.z;
-            ++it;
-            it->point->x = triangle.b.x;
-            it->point->y = triangle.b.y;
-            it->point->z = triangle.b.z;
-            ++it;
-            it->point->x = triangle.c.x;
-            it->point->y = triangle.c.y;
-            it->point->z = triangle.c.z;
-            ++it;
-        }
-    }
+            auto it = mesh->begin< ::fwData::iterator::PointIterator >();
 
-    // Fill cell coordinates.
-    {
-        auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
-        const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
-        const auto itPrevEnd = itEnd-1;
-
-        for(size_t index = 0; index < _triangulation.size()*3; index += 3)
-        {
-            *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
-            *it->offset = index;
-
-            if(it != itPrevEnd)
+            for(const Triangle3D& triangle : _triangulation)
             {
-                (*(it+1)->offset) = index+3;
+                it->point->x = triangle.a.x;
+                it->point->y = triangle.a.y;
+                it->point->z = triangle.a.z;
+                ++it;
+                it->point->x = triangle.b.x;
+                it->point->y = triangle.b.y;
+                it->point->z = triangle.b.z;
+                ++it;
+                it->point->x = triangle.c.x;
+                it->point->y = triangle.c.y;
+                it->point->z = triangle.c.z;
+                ++it;
             }
-
-            it->pointIdx[0] = index;
-            it->pointIdx[1] = index+1;
-            it->pointIdx[2] = index+2;
-
-            ++it;
         }
-    }
 
-    // Generate normals.
-    ::fwDataTools::Mesh::generatePointNormals(mesh);
+        // Fill cell coordinates.
+        {
+            auto it              = mesh->begin< ::fwData::iterator::CellIterator >();
+            const auto itEnd     = mesh->end< ::fwData::iterator::CellIterator >();
+            const auto itPrevEnd = itEnd-1;
+
+            for(::fwData::Mesh::Size index = 0; index < _triangulation.size()*3; index += 3)
+            {
+                *it->type   = ::fwData::Mesh::CellType::TRIANGLE;
+                *it->offset = index;
+
+                if(it != itPrevEnd)
+                {
+                    (*(it+1)->offset) = index+3;
+                }
+
+                it->pointIdx[0] = index;
+                it->pointIdx[1] = index+1;
+                it->pointIdx[2] = index+2;
+
+                ++it;
+            }
+        }
+
+        // Generate normals.
+        ::fwDataTools::Mesh::generatePointNormals(mesh);
+    }
 
     // Get the reconstruction list.
-    const ::fwMedData::ModelSeries::sptr extrudedMeshes
-        = this->getInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
-    SLM_ASSERT("inout '" + s_EXTRUDED_MESHES_INOUT + "' does not exist.", extrudedMeshes);
-    ::fwData::mt::ObjectWriteLock lock(extrudedMeshes);
+    const auto extrudedMeshes = this->getLockedInOut< ::fwMedData::ModelSeries >(s_EXTRUDED_MESHES_INOUT);
 
     ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
@@ -796,7 +830,7 @@ void SShapeExtruder::generateDelaunayTriangulation(const std::vector< ::Ogre::Ve
     }
 
     // Some input segment are missing from the triangulation, we insert them.
-    // Add missing segments while new constraintes are added to the previous iteration.
+    // Add missing segments while new constraints are added to the previous iteration.
     std::vector< ::Ogre::Vector2 > oldPoints = points;
     std::vector< ::Ogre::Vector2 > newPoints = points;
     const int maxIteration                   = 3;

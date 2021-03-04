@@ -58,13 +58,6 @@ IPicker::~IPicker()
 
 //------------------------------------------------------------------------------
 
-bool IPicker::executeRaySceneQuery(int _x, int _y, int, int, std::uint32_t _queryMask)
-{
-    return executeRaySceneQuery(_x, _y, _queryMask);
-}
-
-//------------------------------------------------------------------------------
-
 bool IPicker::executeRaySceneQuery(int _x, int _y, std::uint32_t _queryMask)
 {
     const auto* const camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::s_DEFAULT_CAMERA_NAME);

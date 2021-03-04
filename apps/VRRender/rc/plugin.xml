@@ -2,6 +2,7 @@
 
     <requirement id="servicesReg" />
     <requirement id="patchMedicalData" />
+    <requirement id="arPatchMedicalData" />
     <requirement id="filterUnknownSeries" />
     <requirement id="activities" />
     <requirement id="preferences" />

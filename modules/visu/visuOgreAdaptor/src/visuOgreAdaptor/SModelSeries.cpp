@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2020 IRCAD France
- * Copyright (C) 2014-2020 IHU Strasbourg
+ * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,6 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -59,7 +58,6 @@ static const std::string s_QUERY_CONFIG            = "queryFlags";
 SModelSeries::SModelSeries() noexcept
 {
     newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
-    newSlot("showReconstructions", &SModelSeries::showReconstructionsDeprecatedSlot, this);
 }
 
 //------------------------------------------------------------------------------
@@ -96,6 +94,10 @@ void SModelSeries::configuring()
             hexaMask.substr(0, 2) == "0x");
         m_queryFlags = static_cast< std::uint32_t >(std::stoul(hexaMask, nullptr, 16));
     }
+    if(config.get_optional<bool>("visible"))
+    {
+        m_isVisibleTag = true;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -126,12 +128,9 @@ void SModelSeries::starting()
 void SModelSeries::updating()
 {
     // Retrieves the associated Sight ModelSeries object
-    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("input '" + s_MODEL_INPUT + "' does not exist.", modelSeries);
+    const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     this->stopping();
-
-    ::fwData::mt::ObjectReadLock lock(modelSeries);
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -152,7 +151,15 @@ void SModelSeries::updating()
         adaptor->setQueryFlags(m_queryFlags);
 
         adaptor->start();
-        adaptor->updateVisibility(!showRec);
+        if(m_isVisibleTag)
+        {
+            adaptor->updateVisibility(!m_isVisible);
+            SLM_WARN("The value of the modelSeries field will not be taken into account");
+        }
+        else
+        {
+            adaptor->updateVisibility(!showRec);
+        }
 
         ::visuOgreAdaptor::SMesh::sptr meshAdaptor = adaptor->getMeshAdaptor();
         meshAdaptor->setDynamic(m_isDynamic);
@@ -181,20 +188,9 @@ void SModelSeries::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::showReconstructionsDeprecatedSlot(bool _show)
-{
-    FW_DEPRECATED_MSG("::visuOgreAdaptor::SModelSeries::showReconstructions is no longer supported", "21.0")
-    this->setVisible(_show);
-}
-
-//------------------------------------------------------------------------------
-
 void SModelSeries::showReconstructionsOnFieldChanged()
 {
-    const auto modelSeries = this->getInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
-    SLM_ASSERT("input '" + s_MODEL_INPUT + "' does not exist.", modelSeries);
-
-    ::fwData::mt::ObjectReadLock lock(modelSeries);
+    const auto modelSeries = this->getLockedInput< ::fwMedData::ModelSeries >(s_MODEL_INPUT);
 
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 

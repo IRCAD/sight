@@ -4,7 +4,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -244,7 +243,6 @@
                     <!-- Distance between chess in millimeter-->
                     <param type="double" name="Chess interval" key="chessInterval" defaultValue="4.0" min="0.0" max="100.0" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="videoSelectorSrv" type="::videoQt::editor::SCamera" >

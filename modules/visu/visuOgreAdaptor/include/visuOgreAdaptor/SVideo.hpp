@@ -85,7 +85,7 @@ public:
     /// Creates the adaptor an initialize slots.
     VISUOGREADAPTOR_API SVideo() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SVideo() noexcept override;
 
 protected:

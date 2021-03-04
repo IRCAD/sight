@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2020 IRCAD France
- * Copyright (C) 2019-2020 IHU Strasbourg
+ * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -86,8 +86,26 @@ public:
     /// Initialize slots.
     VISUOGREADAPTOR_API SImageMultiDistances() noexcept;
 
-    /// Destroys the service.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SImageMultiDistances() noexcept override;
+
+    /**
+     * @brief Retrieves the picked distance and stores the result in m_pickedData.
+     * @param _button mouse modifier.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    VISUOGREADAPTOR_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+
+    /**
+     * @brief Moves a distance stored in m_pickedData.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    VISUOGREADAPTOR_API void mouseMoveEvent(MouseButton, Modifier _mod, int _x, int _y, int, int) override;
+
+    /// Resets m_pickedData.
+    VISUOGREADAPTOR_API void buttonReleaseEvent(MouseButton, Modifier _mod, int, int) override;
 
 protected:
 
@@ -198,24 +216,6 @@ private:
     std::optional< ::Ogre::Vector3 > getNearestPickedPosition(int _x, int _y);
 
     /**
-     * @brief Retrieves the picked distance and stores the result in m_pickedData.
-     * @param _button mouse modifier.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    virtual void buttonPressEvent(MouseButton _button, int _x, int _y) override;
-
-    /**
-     * @brief Moves a distance stores in m_pickedData.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     */
-    virtual void mouseMoveEvent(MouseButton, int _x, int _y, int, int) override;
-
-    /// Resets m_pickedData.
-    virtual void buttonReleaseEvent(MouseButton, int, int) override;
-
-    /**
      * @brief Creates a distance and add it into m_distances.
      * @param _pl The point list used to create the distance.
      */
@@ -256,7 +256,7 @@ private:
     /// Defines the mask used to filter out entities when the distance is auto snapped.
     std::uint32_t m_queryMask { 0xFFFFFFFF };
 
-    /// Defines the mask used to filter distances, it optimizes the ray launched to retrive the picked distance.
+    /// Defines the mask used to filter distances, it optimizes the ray launched to retrieve the picked distance.
     std::uint32_t m_distanceQueryFlag { ::Ogre::SceneManager::ENTITY_TYPE_MASK };
 
     /// Defines the material name with no depth check for spheres.

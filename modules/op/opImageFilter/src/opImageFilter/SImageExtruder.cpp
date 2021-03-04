@@ -25,8 +25,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -89,31 +87,22 @@ void SImageExtruder::starting()
 
 void SImageExtruder::updating()
 {
-    const ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_INPUT);
-    SLM_ASSERT("Input '" + s_IMAGE_INPUT + "' does not exist.", image);
-    ::fwData::mt::ObjectReadLock imageLock(image);
+    const auto image = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image.get_shared()))
     {
         // Copy the image into the output.
-        const ::fwData::Image::sptr imageOut = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-        SLM_ASSERT("Inout '" + s_IMAGE_INOUT + "' does not exist.", imageOut);
         {
-            const ::fwData::mt::ObjectWriteLock imageOutLock(imageOut);
-
+            const auto imageOut = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
             SLM_ASSERT("The image must be in 3 dimensions", image->getNumberOfDimensions() == 3);
 
-            imageOut->deepCopy(image);
+            imageOut->deepCopy(image.get_shared());
 
             const auto sig = imageOut->signal< ::fwData::Image::ModifiedSignalType>(::fwData::Image::s_MODIFIED_SIG);
             sig->asyncEmit();
         }
 
-        imageLock.unlock();
-
-        const ::fwMedData::ModelSeries::csptr meshes = this->getInput< ::fwMedData::ModelSeries >(s_MESHES_INPUT);
-        SLM_ASSERT("Input '" + s_MESHES_INPUT + "' does not exist.", meshes);
-        ::fwData::mt::ObjectReadLock meshLock(meshes);
+        const auto meshes = this->getLockedInput< ::fwMedData::ModelSeries >(s_MESHES_INPUT);
 
         ::fwMedData::ModelSeries::ReconstructionVectorType reconstructions = meshes->getReconstructionDB();
 
@@ -131,39 +120,33 @@ void SImageExtruder::stopping()
 
 void SImageExtruder::addReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _reconstructions) const
 {
-    const ::fwData::Image::csptr imageOut = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Inout '" + s_IMAGE_INOUT + "' does not exist.", imageOut);
-    ::fwData::mt::ObjectReadLock imageOutLock(imageOut);
+    const auto imageOut = this->getLockedInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
-    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(imageOut.get_shared()))
     {
-        imageOutLock.unlock();
-
         for(const ::fwData::Reconstruction::csptr reconstruction : _reconstructions)
         {
-            ::fwData::mt::ObjectReadLock reconstructionLock(reconstruction);
+            ::fwData::mt::locked_ptr lockedReconstruction(reconstruction);
 
-            const ::fwData::Mesh::csptr mesh = reconstruction->getMesh();
-            ::fwData::mt::ObjectReadLock meshLock(mesh);
-            this->extrudeMesh(mesh);
+            const ::fwData::Mesh::csptr mesh = lockedReconstruction->getMesh();
+
+            ::fwData::mt::locked_ptr lockedMesh(mesh);
+
+            this->extrudeMesh(lockedMesh.get_shared(), imageOut.get_shared());
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SImageExtruder::extrudeMesh(const ::fwData::Mesh::csptr _mesh) const
+void SImageExtruder::extrudeMesh(const ::fwData::Mesh::csptr _mesh, const fwData::Image::sptr _image) const
 {
-    const ::fwData::Image::sptr imageOut = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
-    SLM_ASSERT("Inout '" + s_IMAGE_INOUT + "' does not exist.", imageOut);
-    const ::fwData::mt::ObjectWriteLock imageOutLock(imageOut);
-
     // Extrude the image.
-    ::imageFilterOp::ImageExtruder::extrude(imageOut, _mesh);
+    ::imageFilterOp::ImageExtruder::extrude(_image, _mesh);
 
     // Send signals.
     const auto sig =
-        imageOut->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        _image->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();

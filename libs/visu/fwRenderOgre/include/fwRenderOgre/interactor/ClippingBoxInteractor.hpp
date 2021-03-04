@@ -38,7 +38,7 @@ namespace interactor
 {
 
 /// Picks VR widgets and updates clipping cube.
-class FWRENDEROGRE_CLASS_API ClippingBoxInteractor : public IInteractor
+class FWRENDEROGRE_CLASS_API ClippingBoxInteractor final : public IInteractor
 {
 
 public:
@@ -54,16 +54,16 @@ public:
                                            const std::string& _handleMtlName) noexcept;
 
     /// Destroys the widget.
-    FWRENDEROGRE_API virtual ~ClippingBoxInteractor() noexcept final;
+    FWRENDEROGRE_API ~ClippingBoxInteractor() noexcept override;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
-    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton, Modifier, int, int, int, int) final;
+    FWRENDEROGRE_API void mouseMoveEvent(MouseButton, Modifier, int, int, int, int) override;
 
     /// Ends all interactions with the widget.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton, Modifier, int, int) final;
+    FWRENDEROGRE_API void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
 
     /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
-    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton, Modifier, int, int) final;
+    FWRENDEROGRE_API void buttonPressEvent(MouseButton, Modifier, int, int) override;
 
     /// Sets the visibility of the box widget.
     FWRENDEROGRE_API void setBoxVisibility(bool _visibility);

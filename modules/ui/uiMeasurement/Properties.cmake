@@ -1,10 +1,8 @@
-
 set( NAME uiMeasurement )
 set( VERSION 0.1 )
 set( TYPE MODULE )
 set( DEPENDENCIES
     fwCom
-    fwTools
     fwCore
     fwData
     fwDataTools
@@ -12,5 +10,5 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
 )
-set( REQUIREMENTS ioAtoms )
+set( REQUIREMENTS )
 

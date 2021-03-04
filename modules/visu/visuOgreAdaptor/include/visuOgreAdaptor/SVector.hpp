@@ -78,7 +78,7 @@ public:
     /// Initialise slots.
     VISUOGREADAPTOR_API SVector() noexcept;
 
-    /// Does nothing.
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SVector() noexcept override;
 
 protected:
@@ -120,9 +120,6 @@ private:
 
     /// Defines the axis length (in mm).
     float m_length {1.f};
-
-    /// Defines the axis visibility.
-    bool m_isVisible {true};
 
     /// Defines the color of the vector.
     std::string m_color {"#FFFFFF"};

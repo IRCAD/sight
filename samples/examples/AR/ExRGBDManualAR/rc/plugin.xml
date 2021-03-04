@@ -4,7 +4,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuOgre" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig" >
@@ -362,28 +361,24 @@
                 <parameters>
                     <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="noiseLevelSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="bgComponentsSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <service uid="fgComponentsSrv" type="::guiQt::editor::SParameters" >
                 <parameters>
                     <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>
-                <config sendAtStart="false" />
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->

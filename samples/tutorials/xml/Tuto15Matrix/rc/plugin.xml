@@ -2,7 +2,6 @@
 
     <requirement id="preferences" />
     <requirement id="visuOgre" />
-    <requirement id="material" />
     <requirement id="guiQt" />
     <requirement id="servicesReg" />
 
@@ -231,7 +230,6 @@
              <parameters>
                  <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
              </parameters>
-             <config sendAtStart="false" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

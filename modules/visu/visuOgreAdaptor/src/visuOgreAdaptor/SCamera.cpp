@@ -24,8 +24,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/helper/Camera.hpp>
@@ -130,14 +128,10 @@ void SCamera::starting()
 void SCamera::updating()
 {
     ::Ogre::Affine3 ogreMatrix;
-
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", transform);
-
     {
-        ::fwData::mt::ObjectReadLock lock(transform);
+        const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
-        // Received input lign and column data from Sight transformation matrix
+        // Received input line and column data from Sight transformation matrix
         for (size_t lt = 0; lt < 4; lt++)
         {
             for (size_t ct = 0; ct < 4; ct++)
@@ -239,19 +233,14 @@ void SCamera::updateTF3D()
 
     newTransMat = newTransMat * ::Ogre::Matrix4(rotate);
 
-    auto transform = this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
-    SLM_ASSERT("inout '" + s_TRANSFORM_INOUT + "' does not exist.", transform);
+    const auto transform = this->getLockedInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
 
+    // Received input line and column data from Sight transformation matrix
+    for (size_t lt = 0; lt < 4; lt++)
     {
-        ::fwData::mt::ObjectWriteLock lock(transform);
-
-        // Received input lign and column data from Sight transformation matrix
-        for (size_t lt = 0; lt < 4; lt++)
+        for (size_t ct = 0; ct < 4; ct++)
         {
-            for (size_t ct = 0; ct < 4; ct++)
-            {
-                transform->setCoefficient(ct, lt, static_cast<double>(newTransMat[ct][lt]));
-            }
+            transform->setCoefficient(ct, lt, static_cast<double>(newTransMat[ct][lt]));
         }
     }
 
@@ -294,19 +283,22 @@ void SCamera::setAspectRatio(::Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    const auto cameraSeries      = this->getInput< ::arData::CameraSeries >(s_CAMERA_SERIES_INPUT);
-    const auto cameraCalibration = this->getInput< ::arData::Camera >(s_CALIBRATION_INPUT);
+    const auto cameraSeriesW      = this->getWeakInput< ::arData::CameraSeries >(s_CAMERA_SERIES_INPUT);
+    const auto cameraCalibrationW = this->getWeakInput< ::arData::Camera >(s_CALIBRATION_INPUT);
+
+    const auto cameraSeries      = cameraSeriesW.lock();
+    const auto cameraCalibration = cameraCalibrationW.lock();
 
     SLM_WARN_IF("A '" + s_CALIBRATION_INPUT +"' input was set but will not be used because a '"
                 + s_CAMERA_SERIES_INPUT + "' was defined as well", cameraSeries && cameraCalibration);
 
     if(cameraSeries)
     {
-        this->calibrateCameraSeries(cameraSeries);
+        this->calibrateCameraSeries(cameraSeries.get_shared());
     }
     else if (cameraCalibration)
     {
-        this->calibrateMonoCamera(cameraCalibration);
+        this->calibrateMonoCamera(cameraCalibration.get_shared());
     }
     else
     {

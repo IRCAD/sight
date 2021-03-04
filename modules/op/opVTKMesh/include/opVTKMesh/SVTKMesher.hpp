@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -47,36 +47,46 @@ namespace opVTKMesh
  *
  * @subsection Input Input
  * - \b imageSeries [::fwMedData::ImageSeries] : image used to generate the output mesh
+ *
  * @subsection Output Output
  * - \b modelSeries [::fwMedData::ModelSeries]: mesh generated from ImageSeries
+ *
  * @subsection Configuration Configuration
  * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
  */
-class OPVTKMESH_CLASS_API SVTKMesher : public ::fwServices::IOperator
+class OPVTKMESH_CLASS_API SVTKMesher final : public ::fwServices::IOperator
 {
 
 public:
 
-    fwCoreServiceMacro(SVTKMesher, ::fwServices::IOperator);
+    /// Generates default methods as New, dynamicCast, ...
+    fwCoreServiceMacro(SVTKMesher, ::fwServices::IOperator)
 
+    /// Registers input and output objects.
     OPVTKMESH_API SVTKMesher() noexcept;
 
-    OPVTKMESH_API virtual ~SVTKMesher() noexcept;
+    /// Destroys the service.
+    OPVTKMESH_API ~SVTKMesher() noexcept override;
 
 protected:
 
-    OPVTKMESH_API virtual void starting() override;
+    /// Does nothing.
+    OPVTKMESH_API void starting() override;
 
-    OPVTKMESH_API virtual void stopping() override;
+    /// Does nothing.
+    OPVTKMESH_API void stopping() override;
 
-    OPVTKMESH_API virtual void configuring() override;
+    /// Configures the services.
+    OPVTKMESH_API void configuring() override;
 
-    OPVTKMESH_API virtual void updating() override;
+    /// Processes the mesh creation from the image series.
+    OPVTKMESH_API void updating() override;
 
 private:
 
+    /// image size reduction value.
     unsigned int m_reduction;
 };
 
-} // namespace opVTKMesh
+} // namespace opVTKMesh.

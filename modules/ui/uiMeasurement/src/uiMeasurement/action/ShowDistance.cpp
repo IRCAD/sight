@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2009-2020 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,11 +22,7 @@
 
 #include "uiMeasurement/action/ShowDistance.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
@@ -57,6 +53,7 @@ static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "image";
 
 ShowDistance::ShowDistance( ) noexcept
 {
+    FW_DEPRECATED("::uiMeasurement::action::ShowDistance", "::uiMeasurement::action::SShowDistance", "22.0");
     newSlot(s_SHOW_DISTANCE_SLOT, &ShowDistance::showDistance, this);
 }
 

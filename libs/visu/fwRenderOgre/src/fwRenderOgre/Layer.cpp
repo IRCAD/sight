@@ -441,10 +441,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
-                { // Remove this loop in sight 21.0
-                    _i->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
-                });
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->mouseMoveEvent(info.button, info.modifiers, info.x, info.y, info.dx, info.dy);
                 });
@@ -452,10 +448,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
-                { // Remove this loop in sight 21.0
-                    _i->wheelEvent(info.delta, info.x, info.y);
-                });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->wheelEvent(info.modifiers, info.delta, info.x, info.y);
@@ -492,10 +484,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
-                { // Remove this loop in sight 21.0
-                    _i->keyPressEvent(info.key);
-                });
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->keyPressEvent(info.key, info.modifiers, info.x, info.y);
                 });
@@ -503,10 +491,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYRELEASE:
         {
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
-                { // Remove this loop in sight 21.0
-                    _i->keyReleaseEvent(info.key);
-                });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->keyReleaseEvent(info.key, info.modifiers, info.x, info.y);
@@ -516,10 +500,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
-                { // Remove this loop in sight 21.0
-                    _i->buttonReleaseEvent(info.button, info.x, info.y);
-                });
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->buttonReleaseEvent(info.button, info.modifiers, info.x, info.y);
                 });
@@ -527,10 +507,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
         {
-            this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
-                { // Remove this loop in sight 21.0
-                    _i->buttonPressEvent(info.button, info.x, info.y);
-                });
             this->forAllInteractors([&info](const interactor::IInteractor::sptr& _i)
                 {
                     _i->buttonPressEvent(info.button, info.modifiers, info.x, info.y);
@@ -548,20 +524,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     }
 
     m_cancelFurtherInteraction = false;
-}
-
-// ----------------------------------------------------------------------------
-
-int Layer::getDepth() const
-{
-    return m_order;
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::setDepth(int _order)
-{
-    m_order = _order;
 }
 
 // ----------------------------------------------------------------------------
@@ -603,23 +565,6 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
 
 // ----------------------------------------------------------------------------
 
-void Layer::setMoveInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor)
-{
-    FW_DEPRECATED_MSG("Use addInteractor instead.", "21.0");
-    m_moveInteractor = _interactor;
-    this->addInteractor(m_moveInteractor);
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::setSelectInteractor(::fwRenderOgre::interactor::IInteractor::sptr _interactor)
-{
-    FW_DEPRECATED("Layer::setSelectInteractor", "Layer::addInteractor", "21.0");
-    m_interactors.insert(std::make_pair(0, _interactor));
-}
-
-// ----------------------------------------------------------------------------
-
 void Layer::addInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr& _interactor, int _priority)
 {
     using PairType = typename decltype(m_interactors)::value_type;
@@ -652,32 +597,6 @@ void Layer::removeInteractor(const ::fwRenderOgre::interactor::IInteractor::sptr
     {
         m_interactors.erase(it);
     }
-}
-
-// ----------------------------------------------------------------------------
-
-::fwRenderOgre::interactor::IInteractor::sptr Layer::getMoveInteractor()
-{
-    FW_DEPRECATED_MSG("Removed in sight 21.0.", "21.0");
-    return m_moveInteractor;
-}
-
-// ----------------------------------------------------------------------------
-
-::fwRenderOgre::interactor::IPickerInteractor::sptr Layer::getSelectInteractor()
-{
-    FW_DEPRECATED_MSG("Layer::getSelectInteractor", "21.0");
-    for(auto& [priority, interactor] : m_interactors)
-    {
-        // This function is only kept to maintain compatibility with SInteractorStyle which will be removed soon
-        // We return the first select interactor found
-        const auto selectInteractor = ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor.lock());
-        if(selectInteractor)
-        {
-            return selectInteractor;
-        }
-    }
-    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

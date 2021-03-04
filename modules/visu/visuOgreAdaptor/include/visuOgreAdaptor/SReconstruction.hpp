@@ -80,16 +80,8 @@ public:
     /// Initialise slots.
     VISUOGREADAPTOR_API SReconstruction() noexcept;
 
-    /// Does nothing
+    /// Destroys the adaptor.
     VISUOGREADAPTOR_API ~SReconstruction() noexcept override;
-
-    /**
-     * @brief Forces the reconstruction to be hidden or not.
-     * @param _hide use true to force the reconstruction to be hidden.
-     * @deprecated use updateVisibility(bool)
-     */
-    [[deprecated("will be removed in sight 21.0")]]
-    VISUOGREADAPTOR_API void setForceHide(bool _hide);
 
     /**
      * @brief Actives/deactives automatic reset on camera.

@@ -24,7 +24,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
@@ -114,10 +113,9 @@ void SVideo::starting()
 {
     this->initialize();
 
-    const ::fwData::mt::weak_ptr< const ::fwData::PointList > plWeak =
-        this->getWeakInput< ::fwData::PointList >(s_PL_INPUT);
+    const auto plW = this->getWeakInput< ::fwData::PointList >(s_PL_INPUT);
 
-    if(plWeak.lock())
+    if(plW.lock())
     {
         m_pointList = ::fwData::PointList::New();
 
@@ -208,8 +206,7 @@ void SVideo::updating()
     this->getRenderService()->makeCurrent();
 
     // Getting Sight Image
-    const ::fwData::mt::locked_ptr< const ::fwData::Image > imageSight =
-        this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto imageSight = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
 
     auto type = imageSight->getType();
 
@@ -227,11 +224,9 @@ void SVideo::updating()
             m_texture = ::Ogre::dynamic_pointer_cast< ::Ogre::Texture>( texture );
         }
 
-        auto& mtlMgr =
-            ::Ogre::MaterialManager::getSingleton();
-        const ::fwData::mt::weak_ptr< const ::fwData::TransferFunction > tfWeak =
-            this->getWeakInput< ::fwData::TransferFunction >(s_TF_INPUT);
-        const ::fwData::mt::locked_ptr< const ::fwData::TransferFunction > tf = tfWeak.lock();
+        auto& mtlMgr   = ::Ogre::MaterialManager::getSingleton();
+        const auto tfW = this->getWeakInput< ::fwData::TransferFunction >(s_TF_INPUT);
+        const auto tf  = tfW.lock();
 
         ::Ogre::MaterialPtr defaultMat;
         if(tf)
@@ -361,9 +356,8 @@ void SVideo::setVisible(bool _visible)
 
 void SVideo::updateTF()
 {
-    const ::fwData::mt::weak_ptr< const ::fwData::TransferFunction > tfWeak =
-        this->getWeakInput< ::fwData::TransferFunction >(s_TF_INPUT);
-    const ::fwData::mt::locked_ptr< const ::fwData::TransferFunction > tf = tfWeak.lock();
+    const auto tfW = this->getWeakInput< ::fwData::TransferFunction >(s_TF_INPUT);
+    const auto tf  = tfW.lock();
 
     m_gpuTF->updateTexture(tf.get_shared());
 
@@ -377,12 +371,9 @@ void SVideo::updateTF()
 
 void SVideo::updatePL()
 {
-    const ::fwData::mt::locked_ptr< const ::fwData::Image > image =
-        this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
+    const auto image = this->getLockedInput< ::fwData::Image >(s_IMAGE_INPUT);
 
-    const ::fwData::mt::weak_ptr< const ::fwData::PointList > plWeak =
-        this->getWeakInput< ::fwData::PointList >(s_PL_INPUT);
-    const ::fwData::mt::locked_ptr< const ::fwData::PointList > pl = plWeak.lock();
+    const auto pl = this->getLockedInput< ::fwData::PointList >(s_PL_INPUT);
 
     const ::fwData::PointList::PointListContainer& inPoints = pl->getPoints();
 

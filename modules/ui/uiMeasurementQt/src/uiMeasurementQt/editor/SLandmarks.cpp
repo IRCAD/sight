@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2020 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,9 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -57,8 +60,10 @@ namespace editor
 //------------------------------------------------------------------------------
 
 static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
-static const char* s_GROUP_PROPERTY_NAME                       = "group";
-static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
+static const ::fwServices::IService::KeyType s_MATRIX_IN       = "matrix";
+
+static const char* s_GROUP_PROPERTY_NAME = "group";
+static const int s_GROUP_NAME_ROLE       = ::Qt::UserRole + 1;
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const ::fwCom::Slots::SlotKeyType s_PICK_SLOT             = "pick";
@@ -674,8 +679,22 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
         // Adds a new landmark.
         if(_info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
-            const double* const pickedPos                 = _info.m_worldPos;
-            const ::fwData::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
+            const double* const pickedPos = _info.m_worldPos;
+            ::fwData::Landmarks::PointType newPoint = {{ pickedPos[0], pickedPos[1], pickedPos[2] }};
+
+            const auto matrixWeak = this->getWeakInput< ::fwData::TransformationMatrix3D >(s_MATRIX_IN);
+            const auto matrix     = matrixWeak.lock();
+            if(matrix)
+            {
+                const auto pickedPoint = ::glm::dvec4 {pickedPos[0], pickedPos[1], pickedPos[2], 1.0};
+                const auto mat         = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(matrix.get_shared());
+
+                const auto modifiedPoint = mat*pickedPoint;
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    newPoint[i] = modifiedPoint[i];
+                }
+            }
 
             const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
             SLM_ASSERT("inout '" + s_LANDMARKS_INOUT + "' does not exist.", landmarks);
@@ -763,7 +782,7 @@ void SLandmarks::pick(::fwDataTools::PickingInfo _info)
             // 10.0 is an acceptable delta to remove a landmark.
             if(!foundGroupname.empty() && closest < 10.)
             {
-                // If the groupd contains only one point, we remove it.
+                // If the group contains only one point, we remove it.
                 if(landmarks->getNumberOfPoints(foundGroupname) == 1)
                 {
                     this->removeGroup(foundGroupname);
