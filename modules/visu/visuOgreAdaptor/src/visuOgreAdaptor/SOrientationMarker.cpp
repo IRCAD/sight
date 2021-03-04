@@ -119,15 +119,15 @@ void SOrientationMarker::updating()
 
 void SOrientationMarker::updateCameraMatrix()
 {
-
-    ::Ogre::Affine3 ogreMatrix;
+    // Copy orientation matrix to Ogre.
+    ::Ogre::Matrix3 ogreMatrix;
     {
         const auto transform = this->getLockedInput< ::fwData::TransformationMatrix3D >(s_MATRIX_INOUT);
 
         // Fill the ogreMatrix.
-        for (size_t lt = 0; lt < 4; lt++)
+        for (size_t lt = 0; lt < 3; lt++)
         {
-            for (size_t ct = 0; ct < 4; ct++)
+            for (size_t ct = 0; ct < 3; ct++)
             {
                 ogreMatrix[ct][lt] = static_cast< ::Ogre::Real >(transform->getCoefficient(ct, lt));
             }
@@ -138,11 +138,8 @@ void SOrientationMarker::updateCameraMatrix()
     ::Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
     ::Ogre::SceneNode* const transformNode = this->getTransformNode(rootSceneNode);
 
-    // Decompose the matrix
-    ::Ogre::Vector3 position;
-    ::Ogre::Vector3 scale;
-    ::Ogre::Quaternion orientation;
-    ogreMatrix.decomposition(position, scale, orientation);
+    // Convert to quaterion.
+    ::Ogre::Quaternion orientation(ogreMatrix);
 
     const ::Ogre::Quaternion rotateX(::Ogre::Degree(180), ::Ogre::Vector3(1, 0, 0));
 

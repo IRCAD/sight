@@ -41,7 +41,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="..." type="::visuOgreAdaptor::SOrientationMarker" autoConnect="yes">
         <in key="matrix" uid="..." />
-        <config layer="default" ressource="..." depth="-32.0" />
+        <config layer="default" resource="..." depth="-32.0" />
     </service>
    @endcode
  *
