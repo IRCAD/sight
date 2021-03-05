@@ -1,1 +1,3 @@
-add_subdirectory(openvslam)
+if(SIGHT_ENABLE_OPENVSLAM)
+    add_subdirectory(openvslam)
+endif()

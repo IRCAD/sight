@@ -82,6 +82,9 @@ set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
+# Make openvslam optional
+option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
+
 ########################################################################################################################
 # Warn user of install dir isn't empty
 ########################################################################################################################
@@ -121,7 +124,8 @@ if(NOT VCPKG_TARGET_TRIPLET)
     mark_as_advanced(EXTERNAL_LIBRARIES)
 
     # Use directly EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
-    if(NOT EXTERNAL_LIBRARIES)
+    # OpenVSLAM is the only package provided by sight-deps
+    if(NOT EXTERNAL_LIBRARIES AND SIGHT_ENABLE_OPENVSLAM)
         # Set sight deps root directory (where the sight deps packages will be installed ) 
         set(SIGHT_DEPS_ROOT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.sight-deps" CACHE PATH "Sight deps root directory")
         mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
