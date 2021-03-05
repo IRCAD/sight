@@ -2,7 +2,7 @@ sight_add_target( activity_io_dicom TYPE MODULE )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(activity_io_dicom 
                  data
                  io_dimse
                  module_activity

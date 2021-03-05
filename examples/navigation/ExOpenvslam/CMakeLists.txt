@@ -4,7 +4,7 @@ sight_add_target( ExOpenvslam TYPE APP )
 if(UNIX)
 endif()
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExOpenvslam 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -39,4 +39,4 @@ moduleParam(
         ExOpenvslam_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExOpenvslam)

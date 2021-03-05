@@ -1,7 +1,7 @@
 sight_add_target( Tuto16SceneQt3D TYPE APP UNIQUE ON )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto16SceneQt3D 
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -22,4 +22,4 @@ moduleParam(module_ui_qt
         sight::module::ui::qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto16SceneQt3D)

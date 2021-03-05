@@ -2,7 +2,7 @@ sight_add_target( registrationActivity TYPE MODULE )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(registrationActivity 
                  data
                  module_service
                  module_activity

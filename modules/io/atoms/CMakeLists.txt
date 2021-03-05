@@ -4,11 +4,11 @@ sight_add_target( module_io_atoms TYPE MODULE )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(module_io_atoms 
                  module_service
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(module_io_atoms PUBLIC 
                       atoms
                       io_atoms
                       io_patch

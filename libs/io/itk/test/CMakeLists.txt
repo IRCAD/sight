@@ -1,7 +1,7 @@
 sight_add_target( io_itkTest TYPE TEST )
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(io_itkTest PUBLIC 
                       core
                       utestData
                       data

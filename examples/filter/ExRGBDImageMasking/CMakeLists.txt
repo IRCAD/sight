@@ -1,7 +1,7 @@
 sight_add_target( ExRGBDImageMasking TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExRGBDImageMasking 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -39,4 +39,4 @@ moduleParam(
         ExRGBDImageMasking_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExRGBDImageMasking)

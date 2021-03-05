@@ -2,7 +2,7 @@ sight_add_target( blendActivity TYPE MODULE )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(blendActivity 
                  module_ui_base
                  module_ui_qt
                  module_memory

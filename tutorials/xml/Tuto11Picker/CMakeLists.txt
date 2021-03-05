@@ -2,7 +2,7 @@ sight_add_target( Tuto11Picker TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto11Picker 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -29,4 +29,4 @@ moduleParam(module_ui_qt
 ) # Allow dark theme via module_ui_qt
 moduleParam(module_appXml PARAM_LIST config PARAM_VALUES Tuto11Picker_AppCfg)
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto11Picker)

@@ -2,21 +2,21 @@ sight_add_target( module_activity TYPE MODULE )
 
 
 find_package(Qt5 QUIET COMPONENTS Core Gui REQUIRED)
-target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Core Qt5::Gui)
+target_link_libraries(module_activity PUBLIC Qt5::Core Qt5::Gui)
 
 if(NOT ${ENABLE_QML_APPLICATION})
     find_package(Qt5 QUIET COMPONENTS Widgets REQUIRED)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC Qt5::Widgets)
+    target_link_libraries(module_activity PUBLIC Qt5::Widgets)
 endif()
 
-set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+set_target_properties(module_activity PROPERTIES AUTOMOC TRUE)
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(module_activity 
                  data
                  module_service
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(module_activity PUBLIC 
                       core
                       data
                       ui_base

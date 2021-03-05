@@ -3,9 +3,9 @@ sight_add_target( filter_vision TYPE LIBRARY )
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_ml opencv_imgproc)
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC opencv_ml opencv_imgproc)
+target_link_libraries(filter_vision PUBLIC opencv_ml opencv_imgproc)
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(filter_vision PUBLIC 
                       core
 )
 

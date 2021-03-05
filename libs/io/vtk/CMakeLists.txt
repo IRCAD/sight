@@ -16,7 +16,7 @@ find_package(VTK QUIET REQUIRED COMPONENTS
 
 if(VCPKG_TARGET_TRIPLET)
     # VTK9
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC
+    target_link_libraries(io_vtk PUBLIC
         VTK::FiltersGeometry
         VTK::FiltersModeling
         VTK::IOExport
@@ -33,8 +33,8 @@ else()
 # Necessary for all related unit-tests and utilities
     find_package(GLEW)
     # VTK7
-    target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC  
+    target_include_directories(io_vtk SYSTEM PUBLIC ${VTK_INCLUDE_DIRS})
+    target_link_libraries(io_vtk PUBLIC  
         vtkFiltersGeometry
         vtkFiltersModeling
         vtkIOExport
@@ -51,9 +51,9 @@ else()
 endif()
 
 #add vtk definitions instead of include(${VTK_USE_FILE})
-target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${VTK_DEFINITIONS})
+target_compile_definitions(io_vtk PRIVATE ${VTK_DEFINITIONS})
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC core data io_base geometry_data)
+target_link_libraries(io_vtk PUBLIC core data io_base geometry_data)
 
 if(BUILD_TESTS)
     add_subdirectory(test)

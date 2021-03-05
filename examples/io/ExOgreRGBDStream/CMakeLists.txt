@@ -1,6 +1,6 @@
 sight_add_target( ExOgreRGBDStream TYPE APP UNIQUE ON )
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExOgreRGBDStream 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -33,4 +33,4 @@ moduleParam(
         ExOgreRGBDStream_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExOgreRGBDStream)

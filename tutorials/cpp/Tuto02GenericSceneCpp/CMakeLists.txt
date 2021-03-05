@@ -1,7 +1,7 @@
 sight_add_target( Tuto02GenericSceneCpp TYPE APP START ON WARNINGS_AS_ERRORS ON )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto02GenericSceneCpp 
                  module_ui_base
                  module_ui_qt
                  module_viz_scene3d
@@ -14,7 +14,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_atoms
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(Tuto02GenericSceneCpp PUBLIC 
                       data
                       service
 )
@@ -28,4 +28,4 @@ moduleParam(module_ui_qt
         sight::module::ui::qt/flatdark.qss
 ) # Allow dark theme via module_ui_qt
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto02GenericSceneCpp)

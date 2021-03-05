@@ -2,7 +2,7 @@ sight_add_target( Tuto12Scene2D TYPE APP )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto12Scene2D 
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -27,4 +27,4 @@ moduleParam(
         Tuto12Scene2D_AppCfg
    ) # Allow dark theme via module_ui_qt
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto12Scene2D)

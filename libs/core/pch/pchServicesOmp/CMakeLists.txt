@@ -4,8 +4,8 @@ sight_add_target( pchServicesOmp TYPE LIBRARY )
 find_package(OpenMP QUIET)
 
 if (OPENMP_CXX_FOUND)
-    target_compile_options(${FWPROJECT_NAME} PUBLIC ${OpenMP_CXX_FLAGS})
+    target_compile_options(pchServicesOmp PUBLIC ${OpenMP_CXX_FLAGS})
 endif()
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC service)
+target_link_libraries(pchServicesOmp PUBLIC service)

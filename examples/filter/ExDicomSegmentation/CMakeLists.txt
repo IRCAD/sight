@@ -2,7 +2,7 @@ sight_add_target( ExDicomSegmentation TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExDicomSegmentation 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -42,4 +42,4 @@ moduleParam(
         ExDicomSegmentation_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExDicomSegmentation)

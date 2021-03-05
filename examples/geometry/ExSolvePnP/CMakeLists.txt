@@ -1,7 +1,7 @@
 sight_add_target( ExSolvePnP TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExSolvePnP 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -37,4 +37,4 @@ moduleParam(
         ExSolvePnP_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExSolvePnP)

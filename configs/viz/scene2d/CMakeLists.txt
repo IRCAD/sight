@@ -1,7 +1,7 @@
 sight_add_target( config_viz_scene2d TYPE MODULE )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(config_viz_scene2d 
                  data
                  module_service
                  module_ui_base

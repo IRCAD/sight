@@ -1,6 +1,6 @@
 sight_add_target( ExNotifications TYPE APP )
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExNotifications 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -9,7 +9,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_ui_base
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC ui_base)
+target_link_libraries(ExNotifications PUBLIC ui_base)
 
 moduleParam(module_ui_qt
     PARAM_LIST
@@ -28,4 +28,4 @@ moduleParam(
         ExNotifications_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExNotifications)

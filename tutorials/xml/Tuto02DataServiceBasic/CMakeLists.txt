@@ -1,6 +1,6 @@
 sight_add_target( Tuto02DataServiceBasic TYPE APP )
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto02DataServiceBasic 
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -19,4 +19,4 @@ moduleParam(
         TutoDataServiceBasic_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto02DataServiceBasic)

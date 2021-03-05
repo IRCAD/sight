@@ -7,7 +7,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(module_debug PUBLIC 
                       core
                       data
                       ui_base

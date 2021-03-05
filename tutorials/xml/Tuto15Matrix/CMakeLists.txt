@@ -2,7 +2,7 @@ sight_add_target( Tuto15Matrix TYPE APP )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto15Matrix 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -34,4 +34,4 @@ moduleParam(
         Tuto15Matrix_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto15Matrix)

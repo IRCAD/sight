@@ -1,7 +1,7 @@
 sight_add_target( ExRGBDManualAR TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExRGBDManualAR 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -39,4 +39,4 @@ moduleParam(
         ExRGBDManualAR_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExRGBDManualAR)

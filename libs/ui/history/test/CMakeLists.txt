@@ -5,7 +5,7 @@ sight_add_target( ui_historyTest TYPE TEST )
 
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(ui_historyTest PUBLIC 
                       core
                       ui_history
                       utestData

@@ -5,18 +5,18 @@ find_package(VTK QUIET COMPONENTS vtkFiltersSources REQUIRED)
 
 if(WIN32)
     # VTK9
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE VTK::FiltersSources)
+    target_link_libraries(io_vtkTest PRIVATE VTK::FiltersSources)
 else()
     # VTK7
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE vtkFiltersSources)
+    target_link_libraries(io_vtkTest PRIVATE vtkFiltersSources)
 
     if(UNIX)
         find_package(GLEW)
-        target_link_libraries(${FWPROJECT_NAME} PRIVATE ${GLEW_LIBRARIES})
+        target_link_libraries(io_vtkTest PRIVATE ${GLEW_LIBRARIES})
     endif()
 endif()
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(io_vtkTest PUBLIC 
                       core
                       utestData
                       data

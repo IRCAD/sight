@@ -1,6 +1,6 @@
 sight_add_target( ExImageSubstraction TYPE APP )
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExImageSubstraction 
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -32,4 +32,4 @@ moduleParam(
         ExImageSubstraction_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExImageSubstraction)

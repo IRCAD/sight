@@ -1,7 +1,7 @@
 sight_add_target( ExActivities TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExActivities 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -36,4 +36,4 @@ moduleParam(
         ExActivities_Base_AppCfg ExActivities_AppCfgParam
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExActivities)

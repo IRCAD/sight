@@ -3,7 +3,7 @@ sight_add_target( volumeRenderingActivity TYPE MODULE )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(volumeRenderingActivity 
                  2DVisualizationActivity
                  3DVisualizationActivity
                  data

@@ -772,12 +772,12 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 
 void SVolumeRender::createWidget()
 {
-    const auto clippingMatrix = this->getLockedInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-
     auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
 
     ::Ogre::Matrix4 ogreClippingMx = ::Ogre::Matrix4::IDENTITY;
 
+    const auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+    const auto clippingMatrix = wClippingMatrix.lock();
     if(clippingMatrix)
     {
         ogreClippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
@@ -902,16 +902,19 @@ void SVolumeRender::updateClippingBox()
 {
     if(m_widget)
     {
-        this->getRenderService()->makeCurrent();
-
-        ::Ogre::Matrix4 clippingMx;
+        const auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+        const auto clippingMatrix = wClippingMatrix.lock();
+        if(clippingMatrix)
         {
-            const auto clippingMatrix =
-                this->getLockedInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-            clippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
-        }
+                this->getRenderService()->makeCurrent();
 
-        m_widget->updateFromTransform(clippingMx);
+            ::Ogre::Matrix4 clippingMx;
+            {
+                clippingMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(clippingMatrix.get_shared());
+            }
+
+            m_widget->updateFromTransform(clippingMx);
+        }
     }
 }
 
@@ -919,8 +922,8 @@ void SVolumeRender::updateClippingBox()
 
 void SVolumeRender::updateClippingTM3D()
 {
-    const auto clippingMatrix = this->getLockedInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
-
+    auto wClippingMatrix = this->getWeakInOut< data::Matrix4>(s_CLIPPING_MATRIX_INOUT);
+    auto clippingMatrix = wClippingMatrix.lock();
     if(clippingMatrix)
     {
         sight::viz::scene3d::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix.get_shared());

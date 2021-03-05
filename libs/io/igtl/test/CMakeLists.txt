@@ -7,7 +7,7 @@ sight_add_target( io_igtlTest TYPE TEST )
 
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(io_igtlTest PUBLIC 
                       core
                       data
                       utestData

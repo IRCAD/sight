@@ -1,6 +1,6 @@
 sight_add_target( SightCalibrator TYPE APP )
 
-add_dependencies(${FWPROJECT_NAME}
+add_dependencies(SightCalibrator
                  sightrun
                  module_appXml
                  module_ui_base
@@ -42,4 +42,4 @@ moduleParam(
         SightCalibrator_AppCfg SightCalibrator_AppCfgParam
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(SightCalibrator)

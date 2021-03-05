@@ -1,7 +1,7 @@
 sight_add_target( Tuto03MesherWithGenericSceneCpp TYPE APP START ON )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto03MesherWithGenericSceneCpp 
                  module_data
                  data
                  module_ui_base
@@ -16,9 +16,9 @@ add_dependencies(${FWPROJECT_NAME}
                  sightrun
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(Tuto03MesherWithGenericSceneCpp PUBLIC 
                       data
                       service
 )
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto03MesherWithGenericSceneCpp)

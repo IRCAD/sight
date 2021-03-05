@@ -1,7 +1,7 @@
 sight_add_target( ExDetectCamMotion TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExDetectCamMotion 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -31,4 +31,4 @@ moduleParam(
         ExDetectCamMotion_AppCgf
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExDetectCamMotion)

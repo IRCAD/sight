@@ -1,6 +1,6 @@
 sight_add_target( Tuto04SignalSlot TYPE APP )
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto04SignalSlot 
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -27,4 +27,4 @@ moduleParam(
         Tuto04SignalSlot_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto04SignalSlot)

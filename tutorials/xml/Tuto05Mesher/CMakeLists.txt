@@ -1,6 +1,6 @@
 sight_add_target( Tuto05Mesher TYPE APP )
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto05Mesher 
                  sightrun
                  module_appXml
                  module_ui_qt
@@ -28,4 +28,4 @@ moduleParam(
         Tuto05Mesher_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto05Mesher)

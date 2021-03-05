@@ -2,7 +2,7 @@ sight_add_target( 3DVisualizationActivity TYPE MODULE )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(3DVisualizationActivity 
                  module_activity
                  module_data
                  module_ui_base

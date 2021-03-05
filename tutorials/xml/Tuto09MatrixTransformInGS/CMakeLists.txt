@@ -2,7 +2,7 @@ sight_add_target( Tuto09MatrixTransformInGS TYPE APP )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto09MatrixTransformInGS 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -33,4 +33,4 @@ moduleParam(
         Tuto09MatrixTransformInGS_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto09MatrixTransformInGS)

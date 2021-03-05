@@ -1,7 +1,7 @@
 sight_add_target( activity_navigation_calibration TYPE MODULE )
 
 
-add_dependencies(${FWPROJECT_NAME}
+add_dependencies(activity_navigation_calibration
                  module_ui_base
                  module_viz_scene3d
                  module_viz_scene3dQt

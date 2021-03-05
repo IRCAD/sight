@@ -1,9 +1,6 @@
 sight_add_target( config_ui_activity TYPE MODULE )
 
-
-
-
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(config_ui_activity 
                  data
                  module_activity
                  module_data

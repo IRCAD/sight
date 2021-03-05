@@ -1,3 +1,3 @@
 sight_add_target( pchCamp TYPE LIBRARY )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC data)
+target_link_libraries(pchCamp PUBLIC data)

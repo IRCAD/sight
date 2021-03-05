@@ -14,17 +14,17 @@ find_package(VTK QUIET COMPONENTS
 
 if(VCPKG_TARGET_TRIPLET)
     # VTK9
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+    target_link_libraries(module_filter_image PUBLIC 
         VTK::ImagingCore
     )
 
 else()
     include(${VTK_USE_FILE})
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC
+    target_link_libraries(module_filter_image PUBLIC
         vtkImagingCore
     )
 endif()
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(module_filter_image PUBLIC 
                       data
                       service
                       filter_image

@@ -2,7 +2,7 @@ sight_add_target( Tuto04MeshGeneratorCpp TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto04MeshGeneratorCpp 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -14,7 +14,7 @@ add_dependencies(${FWPROJECT_NAME}
                  module_io_vtk
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(Tuto04MeshGeneratorCpp PUBLIC 
                       data
                       geometry_data
                       service
@@ -37,4 +37,4 @@ moduleParam(
         Tuto04MeshGeneratorCpp_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto04MeshGeneratorCpp)

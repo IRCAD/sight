@@ -1,7 +1,7 @@
 sight_add_target( dicomxplorer TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(dicomxplorer 
                  module_service
                  data
                  module_ui_base
@@ -25,4 +25,4 @@ add_dependencies(${FWPROJECT_NAME}
 
 moduleParam(module_appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(dicomxplorer)

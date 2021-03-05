@@ -2,7 +2,7 @@ sight_add_target( Tuto08MesherWithGenericScene TYPE APP UNIQUE ON )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto08MesherWithGenericScene 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -36,4 +36,4 @@ moduleParam(
         Tuto08MesherWithGenericScene_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto08MesherWithGenericScene)

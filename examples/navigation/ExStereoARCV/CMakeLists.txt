@@ -1,7 +1,7 @@
 sight_add_target( ExStereoARCV TYPE APP )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(ExStereoARCV 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -39,4 +39,4 @@ moduleParam(
         ExStereoARCV_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(ExStereoARCV)

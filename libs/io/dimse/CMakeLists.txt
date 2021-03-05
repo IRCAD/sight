@@ -2,8 +2,8 @@ sight_add_target( io_dimse TYPE LIBRARY PCH pchData )
 
 
 find_package(DCMTK QUIET REQUIRED)
-target_include_directories(${FWPROJECT_NAME} PRIVATE ${DCMTK_INCLUDE_DIRS})
-target_link_libraries(${FWPROJECT_NAME} PUBLIC ${DCMTK_LIBRARIES})
+target_include_directories(io_dimse PRIVATE ${DCMTK_INCLUDE_DIRS})
+target_link_libraries(io_dimse PUBLIC ${DCMTK_LIBRARIES})
 
 # original system dcmtk resources path
 set(STORESCP "/etc/dcmtk/storescp.cfg")
@@ -25,12 +25,12 @@ endif()
 file(COPY
     "${STORESCP}"
     DESTINATION
-    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${FWPROJECT_NAME}"
+    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/io_dimse"
 )
 
 unset(STORESCP)
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(io_dimse PUBLIC 
                       core
                       data
 )

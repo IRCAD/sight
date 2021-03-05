@@ -2,7 +2,7 @@ sight_add_target( Tuto10LaunchBasicConfig TYPE APP )
 
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(Tuto10LaunchBasicConfig 
                  sightrun
                  module_appXml
                  module_ui_base
@@ -31,4 +31,4 @@ moduleParam(
     Tuto10LaunchBasicConfig_AppCfg
 ) # Main application's configuration to launch
 
-sight_generate_profile(${FWPROJECT_NAME})
+sight_generate_profile(Tuto10LaunchBasicConfig)

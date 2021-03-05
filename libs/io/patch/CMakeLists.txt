@@ -1,7 +1,7 @@
 sight_add_target( io_patch TYPE LIBRARY PCH pchData )
 
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(io_patch PUBLIC 
                       atoms
                       io_atoms
                       core

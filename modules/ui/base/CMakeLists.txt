@@ -1,11 +1,11 @@
 sight_add_target( module_ui_base TYPE MODULE )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(module_ui_base 
                  module_service
 )
 
-target_link_libraries(${FWPROJECT_NAME} PUBLIC 
+target_link_libraries(module_ui_base PUBLIC 
                       atoms
                       core
                       data

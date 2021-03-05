@@ -1,7 +1,7 @@
 sight_add_target( config_viz_image TYPE MODULE )
 
 
-add_dependencies(${FWPROJECT_NAME} 
+add_dependencies(config_viz_image 
                  2DVisualizationActivity
                  config_viz_scene2d
                  data
