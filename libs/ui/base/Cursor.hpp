@@ -48,10 +48,10 @@ public:
 
     // TODO : update API to reflect the cursor stack
     /// Set the cursor
-    UI_BASE_API virtual void setCursor( ui::base::ICursor::CursorType cursor) override;
+    UI_BASE_API void setCursor( ui::base::ICursor::CursorType cursor) override;
 
     /// Set the default cursor
-    UI_BASE_API virtual void setDefaultCursor() override;
+    UI_BASE_API void setDefaultCursor() override;
 
 protected:
 

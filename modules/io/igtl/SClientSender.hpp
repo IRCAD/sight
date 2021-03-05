@@ -68,17 +68,17 @@ public:
 protected:
 
     /// Configures the service.
-    MODULE_IO_IGTL_API virtual void configuring() override;
+    MODULE_IO_IGTL_API void configuring() override;
 
     /**
      * @brief start the client and try to connect to the server specify in configuration
      */
-    MODULE_IO_IGTL_API virtual void starting() override;
+    MODULE_IO_IGTL_API void starting() override;
 
     /**
      * @brief disconnect the client from the server
      */
-    MODULE_IO_IGTL_API virtual void stopping() override;
+    MODULE_IO_IGTL_API void stopping() override;
 
 private:
 

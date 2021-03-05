@@ -55,13 +55,13 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent toolBar must be instanced.
      */
-    UI_QT_API virtual void createToolBar( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createToolBar( ui::base::container::fwContainer::sptr parent ) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API virtual void destroyToolBar() override;
+    UI_QT_API void destroyToolBar() override;
 
 protected:
     ui::qt::container::QtContainer::sptr m_parent;

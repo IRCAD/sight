@@ -74,7 +74,7 @@ public:
     CORE_API virtual void restoreSuccess( BufferInfo& info,
                                           core::memory::BufferManager::ConstBufferPtrType buffer ) override;
 
-    CORE_API virtual void refresh() override;
+    CORE_API void refresh() override;
 
     //------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ public:
         return m_barrier;
     }
 
-    CORE_API virtual std::string getParam(const std::string& name, bool* ok = NULL ) const override;
+    CORE_API std::string getParam(const std::string& name, bool* ok = NULL ) const override;
     CORE_API bool setParam(const std::string& name, const std::string& value) override;
     CORE_API const core::memory::IPolicy::ParamNamesType& getParamNames() const override;
 

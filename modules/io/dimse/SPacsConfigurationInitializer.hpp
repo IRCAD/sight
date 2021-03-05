@@ -96,7 +96,7 @@ protected:
      * Connect sight::io::dimse::data::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
      *::module::io::dimse::SPacsConfigurationInitializer::s_UPDATE_SLOT.
      */
-    MODULE_IO_DIMSE_API service::IService::KeyConnectionsMap getAutoConnections() const override final;
+    MODULE_IO_DIMSE_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Stores the PACS configuration into preferences.
     MODULE_IO_DIMSE_API void updating() override;

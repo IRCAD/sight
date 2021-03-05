@@ -67,16 +67,16 @@ public:
 protected:
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /// Apply the transform and resample.
-    MODULE_FILTER_IMAGE_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /**
      * @brief Auto connections
@@ -85,7 +85,7 @@ protected:
      * - Update service when the transform matrix is modified.
      * - Update service when the target image is modified.
      */
-    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 
 };
 

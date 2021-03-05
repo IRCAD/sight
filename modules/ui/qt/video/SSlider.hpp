@@ -85,16 +85,16 @@ protected:
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Installs the layout
-    virtual void starting() override;
+    void starting() override;
 
     /// Destroys the layout
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    virtual void updating() override;
+    void updating() override;
 
     /// Does nothing
-    virtual void swapping() override;
+    void swapping() override;
 
     /**
      * @brief Configure the service
@@ -104,7 +104,7 @@ protected:
      * autoConnect="no"/>
        @endcode
      */
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Signal when the position os the slider changed
     PositionChangedSignalType::sptr m_sigPositionChanged;

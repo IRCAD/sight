@@ -106,7 +106,7 @@ protected:
     /// Switch to Matrix "index"
     MODULE_GEOMETRY_BASE_API void switchToMatrix(size_t index);
 
-    MODULE_GEOMETRY_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

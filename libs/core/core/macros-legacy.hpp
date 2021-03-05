@@ -267,7 +267,7 @@
     __FWCORE_DEPRECATED_MACRO(                                                     \
         "fwCoreIsTypeOfMacro is no longer supported and will be removed in 22.0 ") \
     __FWCOREISTYPEOFMACRO(_classinfo_)                                             \
-    virtual bool isA(const std::string& type) const override                       \
+    bool isA(const std::string& type) const override                       \
     {                                                                              \
         return __FWCORE_TYPEDEF_SELF_NAME::isTypeOf(type);                         \
     }

@@ -70,16 +70,16 @@ public:
 private:
 
     /// Configures the service.
-    MODULE_UI_VIZ_API virtual void configuring() override final;
+    MODULE_UI_VIZ_API void configuring() final;
 
     /// Sets the connections and the UI elements.
-    MODULE_UI_VIZ_API virtual void starting() override final;
+    MODULE_UI_VIZ_API void starting() final;
 
     /// Does nothing.
-    MODULE_UI_VIZ_API virtual void updating() override final;
+    MODULE_UI_VIZ_API void updating() final;
 
     /// Destroys the connections and cleans the container.
-    MODULE_UI_VIZ_API virtual void stopping() override final;
+    MODULE_UI_VIZ_API void stopping() final;
 
     /**
      * @brief Gets the current light node.

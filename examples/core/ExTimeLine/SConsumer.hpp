@@ -70,16 +70,16 @@ public:
 protected:
 
     /// Configure the service
-    virtual void configuring() final override;
+    void configuring() final;
 
     /// Start the timer if a period is defined.
-    virtual void starting() final override;
+    void starting() final;
 
     /// Stop the timer.
-    virtual void stopping() final override;
+    void stopping() final;
 
     /// Called by the timer to consume a message periodically
-    virtual void updating() final override;
+    void updating() final;
 
     /// Called by a signal to consume a message
     void consume(sight::core::HiResClock::HiResClockType timestamp);

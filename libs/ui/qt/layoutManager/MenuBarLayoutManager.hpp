@@ -55,23 +55,23 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_QT_API virtual void createLayout( ui::base::container::fwMenuBar::sptr parent ) override;
+    UI_QT_API void createLayout( ui::base::container::fwMenuBar::sptr parent ) override;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this menus must be stopped before.
      */
-    UI_QT_API virtual void destroyLayout() override;
+    UI_QT_API void destroyLayout() override;
 
     /**
      * @brief Set the menu visibility.
      */
-    UI_QT_API virtual void menuIsVisible(ui::base::container::fwMenu::sptr fwMenu, bool isVisible) override;
+    UI_QT_API void menuIsVisible(ui::base::container::fwMenu::sptr fwMenu, bool isVisible) override;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_QT_API virtual void menuIsEnabled(ui::base::container::fwMenu::sptr fwMenu, bool isEnabled) override;
+    UI_QT_API void menuIsEnabled(ui::base::container::fwMenu::sptr fwMenu, bool isEnabled) override;
 
 protected:
     ui::qt::container::QtMenuBarContainer::sptr m_parent;

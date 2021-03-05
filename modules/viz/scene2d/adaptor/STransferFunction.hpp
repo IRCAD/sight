@@ -171,7 +171,7 @@ private:
      *                      to manage multiple actions which are 'clamp' or 'linear'.
      * - Wheel move: updates the whole current TF opacity.
      */
-    virtual void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
 
     /**
      * @brief Sets @ref m_capturedTFPoint and highlight the captured clicked point.

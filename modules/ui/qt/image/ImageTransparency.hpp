@@ -70,18 +70,18 @@ public:
 
 protected:
     /// Starts editor.
-    virtual void starting() override;
+    void starting() override;
 
     /// Stops editor.
-    virtual void stopping() override;
+    void stopping() override;
 
-    virtual void updating() override;
+    void updating() override;
 
-    virtual void swapping() override;
+    void swapping() override;
 
-    virtual void configuring() override;
+    void configuring() override;
 
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -92,7 +92,7 @@ protected:
      * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
 protected Q_SLOTS:
 

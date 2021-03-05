@@ -61,10 +61,10 @@ protected:
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
     void updating() override;
 
@@ -73,7 +73,7 @@ protected:
     void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 private:
 

@@ -74,34 +74,34 @@ public:
     MODULE_IO_MATRIX_API virtual ~SMatrixWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_MATRIX_API virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_MATRIX_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Display a location dialog allowing to select the video file to save
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_MATRIX_API virtual void configureWithIHM() override;
+    MODULE_IO_MATRIX_API void configureWithIHM() override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_MATRIX_API virtual void openLocationDialog() override;
+    MODULE_IO_MATRIX_API void openLocationDialog() override;
 
     /// Return file type (io::base::service::FOLDER)
-    MODULE_IO_MATRIX_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_MATRIX_API virtual void configuring() override;
+    MODULE_IO_MATRIX_API void configuring() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API virtual void starting() override;
+    MODULE_IO_MATRIX_API void starting() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API virtual void stopping() override;
+    MODULE_IO_MATRIX_API void stopping() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API virtual void updating() override;
+    MODULE_IO_MATRIX_API void updating() override;
 
 private:
 

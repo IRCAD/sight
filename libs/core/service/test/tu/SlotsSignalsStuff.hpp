@@ -101,13 +101,13 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
-    virtual void starting() override;
-    virtual void stopping() override;
-    virtual void swapping(const KeyType& key) override;
-    virtual void updating() override;
+    void starting() override;
+    void stopping() override;
+    void swapping(const KeyType& key) override;
+    void updating() override;
 };
 
 //------------------------------------------------------------------------------
@@ -126,25 +126,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() override
+    void swapping() override
     {
     }
-    virtual void updating() override;
+    void updating() override;
 };
 
 //------------------------------------------------------------------------------
@@ -165,25 +165,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() override
+    void swapping() override
     {
     }
-    virtual void updating() override;
+    void updating() override;
 
     ChangedSignalType::sptr m_sigChanged;
 };
@@ -211,27 +211,27 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() override
+    void swapping() override
     {
     }
-    virtual void updating() override;
+    void updating() override;
 
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     ChangeSlotType::sptr m_slotChange;
 
@@ -257,25 +257,25 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void swapping() override
+    void swapping() override
     {
     }
-    virtual void updating() override;
+    void updating() override;
 
     /// Slot to receive update
     void updateBuffer();

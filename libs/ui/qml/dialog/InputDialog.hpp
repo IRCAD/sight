@@ -64,16 +64,16 @@ public:
     UI_QML_API virtual ~InputDialog();
 
     /// Set the title of the message box
-    UI_QML_API virtual void setTitle( const std::string& title ) override;
+    UI_QML_API void setTitle( const std::string& title ) override;
 
     /// Set the message
-    UI_QML_API virtual void setMessage( const std::string& msg ) override;
+    UI_QML_API void setMessage( const std::string& msg ) override;
 
     /// Set the input text in the input field
-    UI_QML_API virtual void setInput(const std::string& text) override;
+    UI_QML_API void setInput(const std::string& text) override;
 
     /// Get the input text in the input field
-    UI_QML_API virtual std::string getInput() override;
+    UI_QML_API std::string getInput() override;
 
 Q_SIGNALS:
     /// notify the qml of property change

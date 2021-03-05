@@ -76,13 +76,13 @@ public:
 protected:
 
     /// Starts the config
-    virtual void starting() override;
+    void starting() override;
 
     /// Stops the config
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    virtual void updating() override;
+    void updating() override;
 
     /**
      * @brief Declare the configuration to associate with an operator type and a view config
@@ -104,13 +104,13 @@ protected:
         @endcode
      * It MUST have at least one key node and at least one replace node.
      */
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Swaps the config
-    virtual void swapping() override;
+    void swapping() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 private:
 

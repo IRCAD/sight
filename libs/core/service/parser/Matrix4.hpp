@@ -65,7 +65,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    SERVICE_API virtual void updating( ) override;
+    SERVICE_API void updating( ) override;
 
 };
 

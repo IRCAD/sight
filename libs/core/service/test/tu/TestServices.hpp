@@ -58,27 +58,27 @@ public:
 protected:
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void updating() override
+    void updating() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void info( std::ostream& _sstream ) override
+    void info( std::ostream& _sstream ) override
     {
         _sstream << "TestConfigService";
     }
@@ -103,22 +103,22 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void updating() override
+    void updating() override
     {
         m_isUpdated = true;
     }

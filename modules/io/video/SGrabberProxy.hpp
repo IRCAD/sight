@@ -153,13 +153,13 @@ protected:
     MODULE_IO_VIDEO_API virtual void setPosition(std::int64_t position) final;
 
     /// Get the previous image in frame by frame mode.
-    MODULE_IO_VIDEO_API virtual void previousImage() override;
+    MODULE_IO_VIDEO_API void previousImage() override;
 
     /// Get the next image in frame by frame mode.
-    MODULE_IO_VIDEO_API virtual void nextImage() override;
+    MODULE_IO_VIDEO_API void nextImage() override;
 
     /// Set step used on readPrevious/readNext slots.
-    MODULE_IO_VIDEO_API virtual void setStep(int step, std::string key) override;
+    MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
     /** @} */
 
 private:

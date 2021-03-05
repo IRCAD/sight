@@ -101,7 +101,7 @@ public:
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QML_API virtual ~SSequencer() override;
+    MODULE_UI_QML_API ~SSequencer() override;
 
     /**
      * @name Signals API
@@ -127,13 +127,13 @@ public Q_SLOTS:
 protected:
 
     /// Do nothing
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Parse the Activity ids list
-    virtual void starting() override;
+    void starting() override;
 
     /// Do nothing
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Analyse the series contained in the current seriesDB.
@@ -142,10 +142,10 @@ protected:
      * - else, the activity data is stored in m_requirements
      * - the last activity is launched
      */
-    virtual void updating() override;
+    void updating() override;
 
     /// Connect the service to the SeriesDB signals
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

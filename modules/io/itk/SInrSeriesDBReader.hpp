@@ -77,20 +77,20 @@ public:
 protected:
 
     /// Does nothing.
-    virtual void starting() override
+    void starting() override
     {
     }
 
     /// Does nothing.
-    virtual void stopping() override
+    void stopping() override
     {
     }
 
     /// Calls base class implementation
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Reads inr files specified by user (configure or openLocationDialog) and pushes them into SeriesDB.
-    MODULE_IO_ITK_API virtual void updating() override;
+    MODULE_IO_ITK_API void updating() override;
 
     /**
      * @brief Configure the inr files path.
@@ -99,14 +99,14 @@ protected:
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_ITK_API virtual void configureWithIHM() override;
+    MODULE_IO_ITK_API void configureWithIHM() override;
 
     /**
      * @brief Configure the inr files path.
      *
      * This method is used to find the inr files path using a files selector.
      */
-    MODULE_IO_ITK_API virtual void openLocationDialog() override;
+    MODULE_IO_ITK_API void openLocationDialog() override;
 
     /// Returns managed file type, here FILES
     MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;

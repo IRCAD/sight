@@ -66,7 +66,7 @@ public:
 
     MODULE_FILTER_IMAGE_API SThreshold() noexcept;
 
-    MODULE_FILTER_IMAGE_API virtual ~SThreshold() noexcept override;
+    MODULE_FILTER_IMAGE_API ~SThreshold() noexcept override;
 
 protected:
 

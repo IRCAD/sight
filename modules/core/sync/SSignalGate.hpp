@@ -69,7 +69,7 @@ public:
     MODULE_SYNC_API SSignalGate();
 
     /// Destructor
-    MODULE_SYNC_API virtual ~SSignalGate() override;
+    MODULE_SYNC_API ~SSignalGate() override;
 
     /// Slot: called when one of the signals is called
     void received(size_t _index);
@@ -77,16 +77,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_SYNC_API virtual void configuring() override;
+    MODULE_SYNC_API void configuring() override;
 
     /// Does nothing
-    MODULE_SYNC_API virtual void starting() override;
+    MODULE_SYNC_API void starting() override;
 
     /// Does nothing
-    MODULE_SYNC_API virtual void stopping() override;
+    MODULE_SYNC_API void stopping() override;
 
     /// Does nothing
-    MODULE_SYNC_API virtual void updating() override;
+    MODULE_SYNC_API void updating() override;
 
 private:
 

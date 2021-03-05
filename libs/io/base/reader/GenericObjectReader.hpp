@@ -58,7 +58,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual std::string extension() override
+    std::string extension() override
     {
         return ("");
     }
@@ -74,7 +74,7 @@ public:
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */
-    virtual void setObject( core::tools::Object::sptr obj ) override
+    void setObject( core::tools::Object::sptr obj ) override
     {
         assert( std::dynamic_pointer_cast< DataType >( obj ) );
         m_object = obj;

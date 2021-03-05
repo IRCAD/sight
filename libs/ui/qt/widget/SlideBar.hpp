@@ -102,7 +102,7 @@ public:
     UI_QT_API void updatePosition();
 
     /// Sets the widget visibility.
-    UI_QT_API virtual void setVisible(bool _visible) override;
+    UI_QT_API void setVisible(bool _visible) override;
 
     /// Gets if the widget is shown.
     inline bool isShown() const;

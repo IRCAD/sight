@@ -60,7 +60,7 @@ public:
     Window(QWindow* _parent = nullptr);
 
     /// Destroys associated pointers by calling @ref destroy().
-    virtual ~Window() override;
+    ~Window() override;
 
     /**
      * @brief Does nothing.
@@ -108,34 +108,34 @@ Q_SIGNALS:
 private:
 
     /// Manages keyboard action.
-    virtual void keyPressEvent(QKeyEvent* _e) override;
+    void keyPressEvent(QKeyEvent* _e) override;
 
     /// Nanage keyboard action.
-    virtual void keyReleaseEvent(QKeyEvent* _e) override;
+    void keyReleaseEvent(QKeyEvent* _e) override;
 
     /// Manages mouse move.
-    virtual void mouseMoveEvent(QMouseEvent* _e) override;
+    void mouseMoveEvent(QMouseEvent* _e) override;
 
     /// Manages wheel action.
-    virtual void wheelEvent(QWheelEvent* _e) override;
+    void wheelEvent(QWheelEvent* _e) override;
 
     /// Manages mouse click.
-    virtual void mousePressEvent(QMouseEvent* _e) override;
+    void mousePressEvent(QMouseEvent* _e) override;
 
     /// Manages mouse double click.
-    virtual void mouseDoubleClickEvent(QMouseEvent* e ) override;
+    void mouseDoubleClickEvent(QMouseEvent* e ) override;
 
     /// Manages mouse click on release.
-    virtual void mouseReleaseEvent(QMouseEvent* _e) override;
+    void mouseReleaseEvent(QMouseEvent* _e) override;
 
     /// Manages when window visibility in the windowing system changes.
-    virtual void exposeEvent(QExposeEvent*) override;
+    void exposeEvent(QExposeEvent*) override;
 
     /// Manages when window is moved.
-    virtual void moveEvent(QMoveEvent*) override;
+    void moveEvent(QMoveEvent*) override;
 
     /// Manages generic events.
-    virtual bool event(QEvent* _event) override;
+    bool event(QEvent* _event) override;
 
     using InteractionInfo = sight::viz::scene3d::IWindowInteractor::InteractionInfo;
 

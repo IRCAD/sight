@@ -59,12 +59,12 @@ public:
     /**
      * @brief Instantiate frame.
      */
-    UI_QT_API virtual void createFrame() override;
+    UI_QT_API void createFrame() override;
 
     /**
      * @brief Destroy local frame with sub containers.
      */
-    UI_QT_API virtual void destroyFrame() override;
+    UI_QT_API void destroyFrame() override;
 
 private Q_SLOTS:
     void onCloseFrame();

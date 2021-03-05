@@ -39,7 +39,7 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    virtual void Initialize(void) override
+    void Initialize(void) override
     {
     }
 
@@ -52,21 +52,21 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    virtual void SetParameters( ParametersType& params ) override
+    void SetParameters( ParametersType& params ) override
     {
         m_parameters = params;
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual NumberOfParametersType GetNumberOfParameters() const override
+    NumberOfParametersType GetNumberOfParameters() const override
     {
         return static_cast< NumberOfParametersType >(m_parameters.size());
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual MeasureType GetValue() const override
+    MeasureType GetValue() const override
     {
         m_Value = m_function(m_parameters);
         return m_Value;
@@ -74,41 +74,41 @@ public:
 
     //-----------------------------------------------------------------------------
 
-    virtual void GetDerivative( DerivativeType& ) const override
+    void GetDerivative( DerivativeType& ) const override
     {
         // Unused in Powell's method.
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual void GetValueAndDerivative( MeasureType&, DerivativeType& ) const override
+    void GetValueAndDerivative( MeasureType&, DerivativeType& ) const override
     {
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual NumberOfParametersType GetNumberOfLocalParameters() const override
+    NumberOfParametersType GetNumberOfLocalParameters() const override
     {
         return 0;
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual const ParametersType& GetParameters() const override
+    const ParametersType& GetParameters() const override
     {
         return m_parameters;
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual bool HasLocalSupport() const override
+    bool HasLocalSupport() const override
     {
         return false;
     }
 
     //-----------------------------------------------------------------------------
 
-    virtual void UpdateTransformParameters( const DerivativeType&, ParametersValueType ) override
+    void UpdateTransformParameters( const DerivativeType&, ParametersValueType ) override
     {
     }
 

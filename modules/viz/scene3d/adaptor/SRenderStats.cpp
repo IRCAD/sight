@@ -49,7 +49,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) override
+    void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) override
     {
         // update text every 100th frame
         if(m_frameCount++ > 100)

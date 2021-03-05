@@ -72,18 +72,18 @@ protected:
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Does nothing
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /**
      * @brief Configure the service
      */
-    MODULE_UI_BASE_API virtual void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
     /// Does nothing
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /// This method run the specified slots.
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
     /// vector representing slots
     SlotInfoContainerType m_slotInfos;

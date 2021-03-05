@@ -78,7 +78,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_VIZ_SCENE2D_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 

@@ -57,23 +57,23 @@ public:
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    UI_QML_API virtual void setSelections(std::vector< std::string > _selections) override;
+    UI_QML_API void setSelections(std::vector< std::string > _selections) override;
 
     /**
      * @brief Sets the selector title.
      */
-    UI_QML_API virtual void setTitle(std::string _title) override;
+    UI_QML_API void setTitle(std::string _title) override;
 
     /**
      * @brief Show the selector and return the selection.
      */
-    UI_QML_API virtual std::string show() override;
+    UI_QML_API std::string show() override;
 
     /// Set the message
-    UI_QML_API virtual void setMessage(const std::string& msg) override;
+    UI_QML_API void setMessage(const std::string& msg) override;
 
     /// uninplemented
-    UI_QML_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_QML_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
 Q_SIGNALS:
     /// notify the qml of property change

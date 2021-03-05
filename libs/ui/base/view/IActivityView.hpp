@@ -87,10 +87,10 @@ protected:
     UI_BASE_API IActivityView();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IActivityView() override;
+    UI_BASE_API ~IActivityView() override;
 
     /// Parse the configuration
-    UI_BASE_API virtual void configuring() override;
+    UI_BASE_API void configuring() override;
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
@@ -111,7 +111,7 @@ protected:
     UI_BASE_API virtual bool validateActivity(data::ActivitySeries::sptr activitySeries) const;
 
     /// Create the activity series given in 'mainActivity' configuration
-    UI_BASE_API virtual data::ActivitySeries::sptr createMainActivity() const override;
+    UI_BASE_API data::ActivitySeries::sptr createMainActivity() const override;
 
 };
 

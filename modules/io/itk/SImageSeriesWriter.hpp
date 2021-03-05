@@ -62,13 +62,13 @@ public:
 protected:
 
     /// Override
-    MODULE_IO_ITK_API virtual void starting() override;
+    MODULE_IO_ITK_API void starting() override;
 
     /// Override
-    MODULE_IO_ITK_API virtual void stopping() override;
+    MODULE_IO_ITK_API void stopping() override;
 
     /// Override
-    MODULE_IO_ITK_API virtual void configuring() override;
+    MODULE_IO_ITK_API void configuring() override;
 
     /// Override
     MODULE_IO_ITK_API void updating() override;
@@ -81,10 +81,10 @@ protected:
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_ITK_API virtual void configureWithIHM() override;
+    MODULE_IO_ITK_API void configureWithIHM() override;
 
     /// Configure using GUI.
-    MODULE_IO_ITK_API virtual void openLocationDialog() override;
+    MODULE_IO_ITK_API void openLocationDialog() override;
 
     /// Return managed file type, here FILE
     MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;

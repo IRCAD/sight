@@ -81,13 +81,13 @@ public:
 protected:
 
     /// Calls updating on starting.
-    virtual void starting() override;
+    void starting() override;
 
     /// Stops the config if it is running.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Configures the service.
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Launch the config on the object if possible.
@@ -97,7 +97,7 @@ protected:
      * no configuration are launched if there is no selection, a multiple selection or if there is no configuration
      * associated with the selected object.
      */
-    virtual void updating() override;
+    void updating() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -106,9 +106,9 @@ protected:
      * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 private:
 

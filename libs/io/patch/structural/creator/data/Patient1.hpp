@@ -51,7 +51,7 @@ public:
     IO_PATCH_API Patient1( const Patient1& cpy );
 
     /// Creates the specified object (sets 'name', 'patient_id', 'birth_date' and 'sex' attributes).
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

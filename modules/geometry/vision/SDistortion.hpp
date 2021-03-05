@@ -104,16 +104,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_GEOMETRY_VISION_API virtual void configuring() override;
+    MODULE_GEOMETRY_VISION_API void configuring() override;
 
     /// Retrieve the camera.
-    MODULE_GEOMETRY_VISION_API virtual void starting() override;
+    MODULE_GEOMETRY_VISION_API void starting() override;
 
     /// Do nothing.
-    MODULE_GEOMETRY_VISION_API virtual void stopping() override;
+    MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Distort the image.
-    MODULE_GEOMETRY_VISION_API virtual void updating() override;
+    MODULE_GEOMETRY_VISION_API void updating() override;
 
 private:
 

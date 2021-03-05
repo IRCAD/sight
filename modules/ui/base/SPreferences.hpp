@@ -64,15 +64,15 @@ public:
 protected:
 
     /// Starts service and loads preferences if exists.
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /// Stops service and saves preferences.
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /// Updates service and saves preferences.
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
-    MODULE_UI_BASE_API virtual void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
     /// preference file
     std::filesystem::path m_prefFile;

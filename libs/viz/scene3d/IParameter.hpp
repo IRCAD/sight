@@ -82,13 +82,13 @@ public:
 protected:
 
     /// Configure the adaptor
-    VIZ_SCENE3D_API virtual void configuring() override;
+    VIZ_SCENE3D_API void configuring() override;
 
     /// Updates the shader parameter values and requests a render of the scene.
-    VIZ_SCENE3D_API virtual void updating() override;
+    VIZ_SCENE3D_API void updating() override;
 
     /// Clear the mesh pointer.
-    VIZ_SCENE3D_API virtual void stopping() override;
+    VIZ_SCENE3D_API void stopping() override;
 
     /// Set the parameter for a given technique
     VIZ_SCENE3D_API virtual bool setParameter(::Ogre::Technique& technique);

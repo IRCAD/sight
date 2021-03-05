@@ -87,16 +87,16 @@ public:
     UI_BASE_API virtual ~InputDialog();
 
     /// Set the title of the input dialog
-    UI_BASE_API virtual void setTitle(const std::string& title) override;
+    UI_BASE_API void setTitle(const std::string& title) override;
 
     /// Set the message
-    UI_BASE_API virtual void setMessage(const std::string& msg) override;
+    UI_BASE_API void setMessage(const std::string& msg) override;
 
     /// Set the input text in the input field
-    UI_BASE_API virtual void setInput(const std::string& text) override;
+    UI_BASE_API void setInput(const std::string& text) override;
 
     /// Get the input text in the input field
-    UI_BASE_API virtual std::string getInput() override;
+    UI_BASE_API std::string getInput() override;
 
 protected:
 

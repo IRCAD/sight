@@ -58,7 +58,7 @@ public:
     DATA_API ImageSeries(data::Object::Key _key);
 
     /// Destroys the series.
-    DATA_API virtual ~ImageSeries() override;
+    DATA_API ~ImageSeries() override;
 
     /**
      * @brief Defines shallow copy.

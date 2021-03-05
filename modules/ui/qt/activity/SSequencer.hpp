@@ -118,7 +118,7 @@ public:
     MODULE_UI_QT_API SSequencer() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SSequencer() noexcept override;
+    MODULE_UI_QT_API ~SSequencer() noexcept override;
 
     /**
      * @name Signals API
@@ -140,13 +140,13 @@ public Q_SLOTS:
 protected:
 
     /// Parse the configuration
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Create the sequencer widgets: launch Qml file
-    virtual void starting() override;
+    void starting() override;
 
     /// Destroy the container
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Analyse the series contained in the current seriesDB.
@@ -155,10 +155,10 @@ protected:
      * - else, the activity data is stored in m_requirements
      * - the last activity is launched
      */
-    virtual void updating() override;
+    void updating() override;
 
     /// Connect the service to the SeriesDB signals
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

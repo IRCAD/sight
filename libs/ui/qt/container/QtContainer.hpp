@@ -55,7 +55,7 @@ public:
 
     UI_QT_API QtContainer(ui::base::GuiBaseObject::Key key) noexcept;
 
-    UI_QT_API virtual ~QtContainer() noexcept override;
+    UI_QT_API ~QtContainer() noexcept override;
 
     UI_QT_API virtual void setQtContainer(QWidget* container);
     UI_QT_API virtual QWidget* getQtContainer() const;
@@ -68,12 +68,12 @@ public:
      */
     UI_QT_API virtual void setLayout(QLayout* const layout);
 
-    UI_QT_API virtual void clean() override;
-    UI_QT_API virtual void destroyContainer() override;
-    UI_QT_API virtual bool isShownOnScreen() override;
+    UI_QT_API void clean() override;
+    UI_QT_API void destroyContainer() override;
+    UI_QT_API bool isShownOnScreen() override;
 
-    UI_QT_API virtual void setVisible(bool isVisible) override;
-    UI_QT_API virtual void setEnabled(bool isEnabled) override;
+    UI_QT_API void setVisible(bool isVisible) override;
+    UI_QT_API void setEnabled(bool isEnabled) override;
 
 private:
 

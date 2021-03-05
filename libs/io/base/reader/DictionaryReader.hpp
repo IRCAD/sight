@@ -66,7 +66,7 @@ public:
     IO_BASE_API virtual ~DictionaryReader();
 
     /// Read the file with standard iostream API.
-    IO_BASE_API virtual void read() override;
+    IO_BASE_API void read() override;
 
     IO_BASE_API std::string extension() override;
 

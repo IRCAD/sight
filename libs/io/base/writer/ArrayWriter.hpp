@@ -55,10 +55,10 @@ public:
     IO_BASE_API virtual ~ArrayWriter();
 
     /// Read the file with zlib API.
-    IO_BASE_API virtual void write() override;
+    IO_BASE_API void write() override;
 
     /// Defines extension supported by this writer ".raw"
-    IO_BASE_API virtual std::string extension() override;
+    IO_BASE_API std::string extension() override;
 
 };
 

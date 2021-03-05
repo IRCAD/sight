@@ -65,7 +65,7 @@ public:
     DATA_API ModelSeries(data::Object::Key _key);
 
     /// Destroys the models series.
-    DATA_API virtual ~ModelSeries() override;
+    DATA_API ~ModelSeries() override;
 
     /**
      * @brief Defines shallow copy.

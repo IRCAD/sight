@@ -240,7 +240,7 @@ protected:
     VIZ_SCENE3D_API void stopping() override;
 
     /// Configures the adaptor.
-    VIZ_SCENE3D_API virtual void configuring() override;
+    VIZ_SCENE3D_API void configuring() override;
 
     /// Does nothing.
     VIZ_SCENE3D_API void updating() override;

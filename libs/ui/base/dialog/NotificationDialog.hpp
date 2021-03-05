@@ -84,43 +84,43 @@ public:
                                     INotificationDialog::Position _pos = INotificationDialog::Position::DEFAULT);
 
     /// Destructor. Does nothing
-    UI_BASE_API virtual ~NotificationDialog() override;
+    UI_BASE_API ~NotificationDialog() override;
 
     /// Shows the message box and return the clicked button.
-    UI_BASE_API virtual void show() override;
+    UI_BASE_API void show() override;
 
     /// Sets the message.
-    UI_BASE_API virtual void setMessage(const std::string& _msg) override;
+    UI_BASE_API void setMessage(const std::string& _msg) override;
 
     /// Sets the notification type.
-    UI_BASE_API virtual void setType( Type _type) override;
+    UI_BASE_API void setType( Type _type) override;
 
     /// Sets the position.
-    UI_BASE_API virtual void setPosition( Position _position) override;
+    UI_BASE_API void setPosition( Position _position) override;
 
     /// Sets the size
-    UI_BASE_API virtual void setSize(unsigned int _width, unsigned int _height) override;
+    UI_BASE_API void setSize(unsigned int _width, unsigned int _height) override;
 
     /// Sets the index
-    UI_BASE_API virtual void setIndex(unsigned int _index) override;
+    UI_BASE_API void setIndex(unsigned int _index) override;
 
     /// Sets the duration in ms.
-    UI_BASE_API virtual void setDuration(int _durationInMs) override;
+    UI_BASE_API void setDuration(int _durationInMs) override;
 
     /**
      * @brief Gets the visibility
      * @return Visibility, true = visible.
      */
-    UI_BASE_API virtual bool isVisible() const override;
+    UI_BASE_API bool isVisible() const override;
 
     /// Closes the notification.
-    UI_BASE_API virtual void close() const override;
+    UI_BASE_API void close() const override;
 
     /**
      * @brief Sets the parent container.
      * @param _container const pointer to a ui::base::container::fwContainer.
      */
-    UI_BASE_API virtual void setContainer(ui::base::container::fwContainer::csptr _container) override;
+    UI_BASE_API void setContainer(ui::base::container::fwContainer::csptr _container) override;
 
 protected:
 

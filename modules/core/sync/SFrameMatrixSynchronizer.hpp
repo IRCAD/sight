@@ -162,7 +162,7 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_SYNC_API virtual ~SFrameMatrixSynchronizer() noexcept override;
+    MODULE_SYNC_API ~SFrameMatrixSynchronizer() noexcept override;
 
     /**
      * @brief Return proposals to connect service slots to associated object signals,

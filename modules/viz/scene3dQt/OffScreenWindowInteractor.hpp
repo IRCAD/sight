@@ -57,41 +57,41 @@ public:
     MODULE_VIZ_SCENE3DQT_API virtual ~OffScreenWindowInteractor() final;
 
     /// Renders immediately the frame in the render window.
-    MODULE_VIZ_SCENE3DQT_API virtual void renderNow() override;
+    MODULE_VIZ_SCENE3DQT_API void renderNow() override;
 
     /// Renders immediately the frame in the render window.
-    MODULE_VIZ_SCENE3DQT_API virtual void requestRender() override;
+    MODULE_VIZ_SCENE3DQT_API void requestRender() override;
 
     /// Creates the render window in the global OpenGL context, @see module::viz::scene3dQt::OpenGLContext.
-    MODULE_VIZ_SCENE3DQT_API virtual void createContainer(ui::base::container::fwContainer::sptr, bool, bool) override;
+    MODULE_VIZ_SCENE3DQT_API void createContainer(ui::base::container::fwContainer::sptr, bool, bool) override;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3DQT_API virtual void connectToContainer() override;
+    MODULE_VIZ_SCENE3DQT_API void connectToContainer() override;
 
     /// Deletes the render window and the render texture.
-    MODULE_VIZ_SCENE3DQT_API virtual void disconnectInteractor() override;
+    MODULE_VIZ_SCENE3DQT_API void disconnectInteractor() override;
 
     /// Returns the unique identifier of the widget.
-    MODULE_VIZ_SCENE3DQT_API virtual int getWidgetId() const override;
+    MODULE_VIZ_SCENE3DQT_API int getWidgetId() const override;
 
     /// Returns current frame number of the render window.
-    MODULE_VIZ_SCENE3DQT_API virtual int getFrameId() const override;
+    MODULE_VIZ_SCENE3DQT_API int getFrameId() const override;
 
     /// Makes the OpenGL context as current one on this thread against this window.
-    MODULE_VIZ_SCENE3DQT_API virtual void makeCurrent() override;
+    MODULE_VIZ_SCENE3DQT_API void makeCurrent() override;
 
     /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3DQT_API virtual ::Ogre::RenderTarget* getRenderTarget() override;
+    MODULE_VIZ_SCENE3DQT_API ::Ogre::RenderTarget* getRenderTarget() override;
 
     /// Gets the Ogre render texture attached to the render target.
-    MODULE_VIZ_SCENE3DQT_API virtual ::Ogre::TexturePtr getRenderTexture() override;
+    MODULE_VIZ_SCENE3DQT_API ::Ogre::TexturePtr getRenderTexture() override;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
     MODULE_VIZ_SCENE3DQT_API sight::viz::scene3d::IGraphicsWorker* createGraphicsWorker() override;
 
     /// Returns a DPI of 220 to permit offscreen font rendering.
     /// @warning Doesn't make much sense when not rendering on a screen.
-    MODULE_VIZ_SCENE3DQT_API virtual float getLogicalDotsPerInch() const override
+    MODULE_VIZ_SCENE3DQT_API float getLogicalDotsPerInch() const override
     {
         // Return this value which is kind of common for HiDPI monitors.
         return 220;

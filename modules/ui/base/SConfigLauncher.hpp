@@ -84,7 +84,7 @@ public:
     MODULE_UI_BASE_API virtual ~SConfigLauncher() noexcept;
 
     /// Set the action service is activated/disable.
-    MODULE_UI_BASE_API virtual void setIsActive(bool isActive) override;
+    MODULE_UI_BASE_API void setIsActive(bool isActive) override;
 
     // Launched signal key
     MODULE_UI_BASE_API static const core::com::Signals::SignalKeyType s_LAUNCHED_SIG;
@@ -99,15 +99,15 @@ protected:
     /**  @} */
 
     ///This method launches the IAction::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Starts the view and initialize the operator.
      */
-    virtual void updating() override;
+    void updating() override;
 
     /**
      * @brief Declare the configuration to associate with an operator type and a view config
@@ -128,7 +128,7 @@ protected:
        </service>
         @endcode
      */
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @name Slots

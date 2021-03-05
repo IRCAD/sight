@@ -57,10 +57,10 @@ protected:
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Starts action
-    virtual void starting() override;
+    void starting() override;
 
     /// Stops action
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Notifies message to change cross type
     void updating() override;
@@ -79,7 +79,7 @@ protected:
      */
     void configuring() override;
 
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 private:
 

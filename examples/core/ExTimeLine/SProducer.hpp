@@ -63,16 +63,16 @@ public:
 protected:
 
     /// Configure the service
-    virtual void configuring() final override;
+    void configuring() final;
 
     /// Starts the timer.
-    virtual void starting() final override;
+    void starting() final;
 
     /// Stops the timer.
-    virtual void stopping() final override;
+    void stopping() final;
 
     /// Called by the timer to send messages periodically
-    virtual void updating() final override;
+    void updating() final;
 
 private:
 

@@ -55,8 +55,8 @@ public:
 
     UI_QT_API virtual ~QtMenuContainer() noexcept;
 
-    UI_QT_API virtual void clean() override;
-    UI_QT_API virtual void destroyContainer() override;
+    UI_QT_API void clean() override;
+    UI_QT_API void destroyContainer() override;
 
     UI_QT_API virtual void setQtMenu(QMenu* menu);
     UI_QT_API virtual QMenu* getQtMenu();

@@ -71,22 +71,22 @@ protected:
      */
 
     /// This method configures the service
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /**
      * @brief This method enables the eventFilter
      */
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /**
      * @brief This method deletes the eventFilter
      */
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /**
      * @brief This method does nothing.
      */
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
 private Q_SLOTS:
     void onActivation();

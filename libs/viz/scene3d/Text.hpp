@@ -111,20 +111,20 @@ public:
                                           const ::Ogre::GuiVerticalAlignment _vAlignment = ::Ogre::GVA_TOP);
 
     /// Returns this MovableObject's type as a string.
-    VIZ_SCENE3D_API virtual const ::Ogre::String& getMovableType() const override;
+    VIZ_SCENE3D_API const ::Ogre::String& getMovableType() const override;
 
     /// MovableObject interface. Unused here, always returns an empty bounding box.
-    VIZ_SCENE3D_API virtual const ::Ogre::AxisAlignedBox& getBoundingBox() const override;
+    VIZ_SCENE3D_API const ::Ogre::AxisAlignedBox& getBoundingBox() const override;
 
     /// MovableObject interface. Unused here, always returns 0.
-    VIZ_SCENE3D_API virtual ::Ogre::Real getBoundingRadius() const override;
+    VIZ_SCENE3D_API ::Ogre::Real getBoundingRadius() const override;
 
     /**
      * @brief function called before rendering a frame
      *
      * We use it to update the text's position from its parent node (if it has one).
      */
-    VIZ_SCENE3D_API virtual void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
+    VIZ_SCENE3D_API void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
 
     /// MovableObject interface. Not used here.
     VIZ_SCENE3D_API virtual void visitRenderables(::Ogre::Renderable::Visitor* _visitor,

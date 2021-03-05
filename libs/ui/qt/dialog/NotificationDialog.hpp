@@ -71,7 +71,7 @@ public:
      * @param _event event type, only care about QEvent::Move and QEvent::Resize
      * @return
      */
-    virtual bool eventFilter(QObject* _object, QEvent* _event) override
+    bool eventFilter(QObject* _object, QEvent* _event) override
     {
         if(_event->type() == QEvent::Move || _event->type() == QEvent::Resize)
         {
@@ -189,19 +189,19 @@ public:
     UI_QT_API NotificationDialog(ui::base::GuiBaseObject::Key key);
 
     /// Destroys the dialog.
-    UI_QT_API virtual ~NotificationDialog() override;
+    UI_QT_API ~NotificationDialog() override;
 
     /// Shows the notification relative to the active window.
-    UI_QT_API virtual void show() override;
+    UI_QT_API void show() override;
 
     /**
      * @brief Returns whether the popup is displayed or not.
      * @return boolean (true is visible, false otherwise).
      */
-    UI_QT_API virtual bool isVisible() const override;
+    UI_QT_API bool isVisible() const override;
 
     /// Closes the popup (use a fadeout effect).
-    UI_QT_API virtual void close() const override;
+    UI_QT_API void close() const override;
 
 private:
 

@@ -99,14 +99,14 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    MODULE_IO_DOCUMENT_API virtual void starting() override;
+    MODULE_IO_DOCUMENT_API void starting() override;
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_DOCUMENT_API virtual void stopping() override;
+    MODULE_IO_DOCUMENT_API void stopping() override;
 
     /**
      * @brief Configure service. This method is called by configure() from base service ( service::IService )
@@ -114,7 +114,7 @@ protected:
      * Gets the images or containers from their IDs.
      *
      */
-    MODULE_IO_DOCUMENT_API virtual void configuring( ) override;
+    MODULE_IO_DOCUMENT_API void configuring( ) override;
 
     /**
      * @brief Configure the image path.
@@ -150,7 +150,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    MODULE_IO_DOCUMENT_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_IO_DOCUMENT_API void info(std::ostream& _sstream ) override;
     /// @}
 
     /// Returns managed path type, here service manages only single file

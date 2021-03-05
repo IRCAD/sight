@@ -70,7 +70,7 @@ public:
     UI_BASE_API INotificationDialog();
 
     /// Destructor. Does nothing.
-    UI_BASE_API virtual ~INotificationDialog() override;
+    UI_BASE_API ~INotificationDialog() override;
 
     typedef std::string FactoryRegistryKeyType;
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;

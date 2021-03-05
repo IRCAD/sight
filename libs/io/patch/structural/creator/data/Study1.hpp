@@ -55,7 +55,7 @@ public:
      *
      * Sets 'instance_uid', 'date', 'time', 'referring_physician_name', 'description' and 'patient_age' attributes.
      */
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

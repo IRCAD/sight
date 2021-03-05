@@ -66,22 +66,22 @@ class TestEmptyService : public service::IService
 public:
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override
+    void stopping() override
     {
     }
     //------------------------------------------------------------------------------
 
-    virtual void updating() override
+    void updating() override
     {
     }
 };

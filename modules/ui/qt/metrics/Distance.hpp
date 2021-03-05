@@ -67,7 +67,7 @@ public:
     MODULE_UI_QT_API Distance() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~Distance() noexcept override;
+    MODULE_UI_QT_API ~Distance() noexcept override;
 
     /**
      * @name Signal
@@ -87,20 +87,20 @@ protected:
      *
      * This method launches the IEditor::starting method.
      */
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Destroy the layout.
      *
      * This method launches the IEditor::stopping method.
      */
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    virtual void updating() override;
+    void updating() override;
 
     /// Initialize the widget
-    virtual void configuring() override;
+    void configuring() override;
 
 protected Q_SLOTS:
     /**

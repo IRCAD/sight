@@ -94,7 +94,7 @@ protected:
     ///@brief ITracker destructor. Do nothing.
     SERVICE_API virtual ~ITracker();
 
-    SERVICE_API virtual void configuring() override;
+    SERVICE_API void configuring() override;
 
     /**
      * @brief This method calls tracking.

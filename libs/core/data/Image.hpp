@@ -214,7 +214,7 @@ public:
     /**
      * @brief Destructor
      */
-    DATA_API virtual ~Image() noexcept override;
+    DATA_API ~Image() noexcept override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy( const Object::csptr& _source ) override;

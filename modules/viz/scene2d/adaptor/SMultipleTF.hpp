@@ -251,7 +251,7 @@ private:
      *                      to manage multiple actions which are 'delete', 'add ramp', 'clamp' or 'linear'.
      * - Wheel move: updates the whole current TF opacity.
      */
-    virtual void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
 
     /**
      * @brief Finds the nearest subTF and set it a the current one.

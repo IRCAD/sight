@@ -49,28 +49,28 @@ public:
 
     UI_QT_API MessageDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~MessageDialog() override;
+    UI_QT_API ~MessageDialog() override;
 
     /// Set the title of the message box
-    UI_QT_API virtual void setTitle( const std::string& title ) override;
+    UI_QT_API void setTitle( const std::string& title ) override;
 
     /// Set the message
-    UI_QT_API virtual void setMessage( const std::string& msg ) override;
+    UI_QT_API void setMessage( const std::string& msg ) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QT_API virtual void setIcon( IMessageDialog::Icons icon) override;
+    UI_QT_API void setIcon( IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QT_API virtual void addButton( IMessageDialog::Buttons button ) override;
+    UI_QT_API void addButton( IMessageDialog::Buttons button ) override;
 
     /// Add a custom button to this dialog
-    UI_QT_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_QT_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
     /// Set the default buttons
-    UI_QT_API virtual void setDefaultButton( IMessageDialog::Buttons button ) override;
+    UI_QT_API void setDefaultButton( IMessageDialog::Buttons button ) override;
 
     /// Show the message box and return the clicked button.
-    UI_QT_API virtual Buttons show() override;
+    UI_QT_API Buttons show() override;
 
 protected:
 

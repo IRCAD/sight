@@ -83,16 +83,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API virtual void configuring() override;
+    MODULE_FILTER_VISION_CLASS_API void configuring() override;
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API virtual void starting() override;
+    MODULE_FILTER_VISION_CLASS_API void starting() override;
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API virtual void stopping() override;
+    MODULE_FILTER_VISION_CLASS_API void stopping() override;
 
     /// Performs difference on depth images and fills foreground image
-    MODULE_FILTER_VISION_CLASS_API virtual void updating() override;
+    MODULE_FILTER_VISION_CLASS_API void updating() override;
 
 private:
 

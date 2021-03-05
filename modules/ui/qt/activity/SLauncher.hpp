@@ -140,7 +140,7 @@ public:
     MODULE_UI_QT_API SLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SLauncher() noexcept override;
+    MODULE_UI_QT_API ~SLauncher() noexcept override;
 
     /**
      * @name Slot API
@@ -170,24 +170,24 @@ protected:
      * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
      * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     ///This method launches the IAction::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     ///This method launches the IAction::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Show activity selector.
      */
-    virtual void updating() override;
+    void updating() override;
 
     /**
      * @brief Initialize the action.
      * @see sight::ui::base::IAction::initialize()
      */
-    virtual void configuring() override;
+    void configuring() override;
 
     typedef sight::activity::extension::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 

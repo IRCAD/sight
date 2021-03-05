@@ -54,28 +54,28 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menu must be instanced.
      */
-    UI_QT_API virtual void createLayout( ui::base::container::fwMenu::sptr parent ) override;
+    UI_QT_API void createLayout( ui::base::container::fwMenu::sptr parent ) override;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this actions must be stopped before.
      */
-    UI_QT_API virtual void destroyLayout() override;
+    UI_QT_API void destroyLayout() override;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_QT_API virtual void menuItemSetVisible(ui::base::container::fwMenuItem::sptr menuItem, bool isVisible) override;
+    UI_QT_API void menuItemSetVisible(ui::base::container::fwMenuItem::sptr menuItem, bool isVisible) override;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_QT_API virtual void menuItemSetEnabled(ui::base::container::fwMenuItem::sptr menuItem, bool isEnabled) override;
+    UI_QT_API void menuItemSetEnabled(ui::base::container::fwMenuItem::sptr menuItem, bool isEnabled) override;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_QT_API virtual void menuItemSetChecked(ui::base::container::fwMenuItem::sptr, bool isChecked) override;
+    UI_QT_API void menuItemSetChecked(ui::base::container::fwMenuItem::sptr, bool isChecked) override;
 
 protected:
     ui::qt::container::QtMenuContainer::sptr m_parent;

@@ -79,10 +79,10 @@ public:
 private:
 
     /// Does nothing.
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Starts the service.
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -94,13 +94,13 @@ private:
      * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT.
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Extrudes all mesh of the model series from the image.
-    virtual void updating() override;
+    void updating() override;
 
     /// Stops the services.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// SLOT: called when reconstructions are added to the model series.
     void addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const;

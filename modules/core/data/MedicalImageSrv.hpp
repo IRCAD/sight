@@ -57,25 +57,25 @@ public:
 protected:
 
     /// Implements starting method derived from IService. Convert the image.
-    MODULE_DATA_API virtual void starting() override;
+    MODULE_DATA_API void starting() override;
 
     /// Implements stopping method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void stopping() override;
+    MODULE_DATA_API void stopping() override;
 
     /// Implements swapping method derived from IService. Convert the image.
-    MODULE_DATA_API virtual void swapping() override;
+    MODULE_DATA_API void swapping() override;
 
     /// Implements configuring method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void configuring() override;
+    MODULE_DATA_API void configuring() override;
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void reconfiguring() override;
+    MODULE_DATA_API void reconfiguring() override;
 
     /// Implements updating method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void updating() override;
+    MODULE_DATA_API void updating() override;
 
     /// Implements info method derived from IService. Print classname.
-    MODULE_DATA_API virtual void info( std::ostream& _sstream ) override;
+    MODULE_DATA_API void info( std::ostream& _sstream ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -84,7 +84,7 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_DATA_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_DATA_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

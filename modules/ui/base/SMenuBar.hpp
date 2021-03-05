@@ -84,22 +84,22 @@ protected:
      *  @see sight::ui::base::IMenuBar::initialize(),
      * sight::ui::base::layoutManager::IMenuBarLayoutManager::initialize()
      */
-    MODULE_UI_BASE_API virtual void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
     /**
      * @brief Create the menus and start the managed services.
      * @see sight::ui::base::IMenuBar::create()
      */
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /**
      * @brief Stop all menu of this menuBar and destroy MenuBar
      * @see sight::ui::base::IMenuBar::destroy()
      */
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /// Updating service, do nothing.
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
     ///@}
 };

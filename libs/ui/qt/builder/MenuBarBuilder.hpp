@@ -54,13 +54,13 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_QT_API virtual void createMenuBar( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createMenuBar( ui::base::container::fwContainer::sptr parent ) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API virtual void destroyMenuBar() override;
+    UI_QT_API void destroyMenuBar() override;
 
 protected:
     ui::qt::container::QtContainer::sptr m_parent;

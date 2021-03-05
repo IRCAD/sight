@@ -92,13 +92,13 @@ public:
 protected:
 
     /// Gets the configuration.
-    MODULE_IO_DICOMWEB_API virtual void configuring() override;
+    MODULE_IO_DICOMWEB_API void configuring() override;
 
     /// Registers the DICOM reader.
-    MODULE_IO_DICOMWEB_API virtual void starting() override;
+    MODULE_IO_DICOMWEB_API void starting() override;
 
     /// Stops the DICOM reader.
-    MODULE_IO_DICOMWEB_API virtual void stopping() override;
+    MODULE_IO_DICOMWEB_API void stopping() override;
 
     /// Checks the configuration and pull the series.
     MODULE_IO_DICOMWEB_API void updating() override;

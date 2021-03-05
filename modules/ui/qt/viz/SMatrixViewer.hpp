@@ -75,21 +75,21 @@ public:
      *
      * Connect Matrix4::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Configures the title of the matrix viewer
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /// Initializes the layout of the matrix viewer
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /// Destroys the layout
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /// Updates the matrix values to display
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
 private:
 

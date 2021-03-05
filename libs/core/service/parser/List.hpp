@@ -76,7 +76,7 @@ protected:
      *
      * Parse the List configuration element to configure and add its objects.
      */
-    SERVICE_API virtual void updating( ) override;
+    SERVICE_API void updating( ) override;
 
 private:
 

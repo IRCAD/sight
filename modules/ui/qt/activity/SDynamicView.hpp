@@ -128,33 +128,33 @@ protected:
     /**
      * @brief Install the container.
      */
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Destroy the container.
      */
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Update
      *
      */
-    virtual void updating() override;
+    void updating() override;
 
     /**
      * @brief Swap
      *
      * Update the editors.
      */
-    virtual void swapping() override;
+    void swapping() override;
 
     /**
      * @brief Configure the view
      * @see sight::ui::base::IGuiContainer::initialize()
      */
-    virtual void configuring() override;
+    void configuring() override;
 
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 private:
 
@@ -186,7 +186,7 @@ private:
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity series cannot be launched in two different tabs.
      */
-    virtual void launchActivity(data::ActivitySeries::sptr activitySeries) override;
+    void launchActivity(data::ActivitySeries::sptr activitySeries) override;
 
     /// launch a new tab according to the receiving msg
     void createTab(sight::activity::ActivityMsg info);

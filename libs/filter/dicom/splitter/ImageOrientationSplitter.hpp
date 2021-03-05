@@ -45,13 +45,13 @@ public:
     FILTER_DICOM_API virtual ~ImageOrientationSplitter();
 
     /// Return the name of the filter
-    FILTER_DICOM_API virtual std::string getName() const override;
+    FILTER_DICOM_API std::string getName() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API virtual std::string getDescription() const override;
+    FILTER_DICOM_API std::string getDescription() const override;
 
     /// Return true if a configuration is required
-    FILTER_DICOM_API virtual bool isConfigurationRequired() const override;
+    FILTER_DICOM_API bool isConfigurationRequired() const override;
 
 protected:
     /// Filter name

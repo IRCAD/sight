@@ -52,7 +52,7 @@ public:
     UI_BASE_API void setTitle(std::string title) override;
 
     /// Set the string list that can be chosen by the selector.
-    UI_BASE_API virtual void setSelections(Selections _selections) override;
+    UI_BASE_API void setSelections(Selections _selections) override;
 
     /**
      * @brief Show the selector and return the selection.
@@ -60,7 +60,7 @@ public:
     UI_BASE_API Selections show() override;
 
     /// Set the message
-    UI_BASE_API virtual void setMessage(const std::string& msg) override;
+    UI_BASE_API void setMessage(const std::string& msg) override;
 
 protected:
 

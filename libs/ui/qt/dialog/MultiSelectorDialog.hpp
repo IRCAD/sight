@@ -57,19 +57,19 @@ public:
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    UI_QT_API virtual void setSelections(Selections _selections) override;
+    UI_QT_API void setSelections(Selections _selections) override;
 
     /**
      * @brief Sets the selector title.
      */
-    UI_QT_API virtual void setTitle(std::string _title) override;
+    UI_QT_API void setTitle(std::string _title) override;
 
     /**
      * @brief Show the selector and return the selection.
      */
-    UI_QT_API virtual Selections show() override;
+    UI_QT_API Selections show() override;
 
-    UI_QT_API virtual void setMessage(const std::string& msg) override;
+    UI_QT_API void setMessage(const std::string& msg) override;
 
 private:
 

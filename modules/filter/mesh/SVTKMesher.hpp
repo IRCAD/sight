@@ -66,13 +66,13 @@ public:
 
 protected:
 
-    MODULE_FILTER_MESH_API virtual void starting() override;
+    MODULE_FILTER_MESH_API void starting() override;
 
-    MODULE_FILTER_MESH_API virtual void stopping() override;
+    MODULE_FILTER_MESH_API void stopping() override;
 
-    MODULE_FILTER_MESH_API virtual void configuring() override;
+    MODULE_FILTER_MESH_API void configuring() override;
 
-    MODULE_FILTER_MESH_API virtual void updating() override;
+    MODULE_FILTER_MESH_API void updating() override;
 
 private:
 

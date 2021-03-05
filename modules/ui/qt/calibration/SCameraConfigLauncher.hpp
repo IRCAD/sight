@@ -97,17 +97,17 @@ public:
 
 protected:
 
-    virtual void configuring() override;
+    void configuring() override;
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
-    virtual void updating() override;
+    void updating() override;
 
-    virtual void swapping() override;
+    void swapping() override;
 
 private Q_SLOTS:
     void onAddClicked();

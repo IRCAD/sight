@@ -56,7 +56,7 @@ public:
     IO_BASE_API virtual ~ArrayReader();
 
     /// Read the file with zlib API.
-    IO_BASE_API virtual void read() override;
+    IO_BASE_API void read() override;
 
     /// Defines extension supported by this reader ".raw"
     IO_BASE_API std::string extension() override;

@@ -55,7 +55,7 @@ public:
     /**
      * @brief vtkCommand::Execute implementation
      */
-    IO_VTK_API virtual void Execute(vtkObject* caller, unsigned long eid, void* callData) override;
+    IO_VTK_API void Execute(vtkObject* caller, unsigned long eid, void* callData) override;
 
     /**
      * @brief Sets callback

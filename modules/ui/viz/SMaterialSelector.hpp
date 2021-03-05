@@ -91,18 +91,18 @@ protected:
         </service>
        @endcode
      */
-    MODULE_UI_VIZ_API virtual void configuring() override;
+    MODULE_UI_VIZ_API void configuring() override;
 
     /// Start the service. Create UI
-    MODULE_UI_VIZ_API virtual void starting() override;
+    MODULE_UI_VIZ_API void starting() override;
 
     /// Stop the service. Delete UI
-    MODULE_UI_VIZ_API virtual void stopping() override;
+    MODULE_UI_VIZ_API void stopping() override;
 
     /// Update UI depending on current reconstruction
-    MODULE_UI_VIZ_API virtual void updating() override;
+    MODULE_UI_VIZ_API void updating() override;
 
-    MODULE_UI_VIZ_API virtual void swapping() override;
+    MODULE_UI_VIZ_API void swapping() override;
 
 protected Q_SLOTS:
 

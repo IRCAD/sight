@@ -50,7 +50,7 @@ public:
     /**
      * @brief  Called method when callback is executed.
      */
-    UI_BASE_API virtual void execute() override;
+    UI_BASE_API void execute() override;
 
     /**
      * @brief  Called method when callback is checked.

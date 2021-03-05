@@ -57,19 +57,19 @@ public:
        </service>
        @endcode
      * */
-    MODULE_MEMORY_API virtual void configuring() override;
+    MODULE_MEMORY_API void configuring() override;
 
     /// Overrides
-    MODULE_MEMORY_API virtual void starting() override;
+    MODULE_MEMORY_API void starting() override;
 
     /// Overrides
-    MODULE_MEMORY_API virtual void stopping() override;
+    MODULE_MEMORY_API void stopping() override;
 
     /// Overrides
-    MODULE_MEMORY_API virtual void updating() override;
+    MODULE_MEMORY_API void updating() override;
 
     /// Overrides
-    MODULE_MEMORY_API virtual void swapping() override;
+    MODULE_MEMORY_API void swapping() override;
 
 protected:
 

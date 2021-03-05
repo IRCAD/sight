@@ -59,19 +59,19 @@ protected:
      */
     MODULE_UI_BASE_API void configuring() override;
 
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /**
      * @brief This method tries to close the window and reset root object.
      */
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
     /*
      * @brief This method gives information about the class.
      */
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
 
 };
 

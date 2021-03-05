@@ -135,16 +135,16 @@ public:
 protected:
 
     /// Configures the service.
-    MODULE_DATA_API virtual void configuring() override;
+    MODULE_DATA_API void configuring() override;
 
     /// Implements starting method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void starting() override;
+    MODULE_DATA_API void starting() override;
 
     /// Implements stopping method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void stopping() override;
+    MODULE_DATA_API void stopping() override;
 
     /// Implements updating method derived from IService. Do nothing.
-    MODULE_DATA_API virtual void updating() override;
+    MODULE_DATA_API void updating() override;
 
     /**
      * @name Slots

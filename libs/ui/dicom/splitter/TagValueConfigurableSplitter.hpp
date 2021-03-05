@@ -49,19 +49,19 @@ public:
     UI_DICOM_API virtual ~TagValueConfigurableSplitter();
 
     /// Return the name of the filter
-    UI_DICOM_API virtual std::string getName() const override;
+    UI_DICOM_API std::string getName() const override;
 
     /// Return the description of the filter
-    UI_DICOM_API virtual std::string getDescription() const override;
+    UI_DICOM_API std::string getDescription() const override;
 
     /// Return true if a configuration is required
-    UI_DICOM_API virtual bool isConfigurationRequired() const override;
+    UI_DICOM_API bool isConfigurationRequired() const override;
 
     /// Return true if the filter is configurable using GUI
-    UI_DICOM_API virtual bool isConfigurableWithGUI() const override;
+    UI_DICOM_API bool isConfigurableWithGUI() const override;
 
     /// Configure the filter using GUI dialog
-    UI_DICOM_API virtual void configureWithGUI() override;
+    UI_DICOM_API void configureWithGUI() override;
 
 protected:
     /// Filter name

@@ -147,7 +147,7 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_NAVIGATION_OPTICS_API virtual ~SArucoTracker() noexcept override;
+    MODULE_NAVIGATION_OPTICS_API ~SArucoTracker() noexcept override;
 
 protected:
     /// Depending on the configuration this connects:
@@ -176,7 +176,7 @@ protected:
     MODULE_NAVIGATION_OPTICS_API void stopping() override;
 
     /// Detect marker
-    MODULE_NAVIGATION_OPTICS_API virtual void tracking(core::HiResClock::HiResClockType& timestamp) override;
+    MODULE_NAVIGATION_OPTICS_API void tracking(core::HiResClock::HiResClockType& timestamp) override;
 
 private:
 

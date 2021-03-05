@@ -74,12 +74,12 @@ public:
 
 protected:
 
-    MODULE_UI_QT_API virtual void configuring() override;
-    MODULE_UI_QT_API virtual void starting() override;
-    MODULE_UI_QT_API virtual void stopping() override;
-    MODULE_UI_QT_API virtual void swapping() override;
-    MODULE_UI_QT_API virtual void updating() override;
-    MODULE_UI_QT_API virtual void info( ::std::ostream& stream ) override;
+    MODULE_UI_QT_API void configuring() override;
+    MODULE_UI_QT_API void starting() override;
+    MODULE_UI_QT_API void stopping() override;
+    MODULE_UI_QT_API void swapping() override;
+    MODULE_UI_QT_API void updating() override;
+    MODULE_UI_QT_API void info( ::std::ostream& stream ) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -93,7 +93,7 @@ protected:
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
     void onReconstructionCheck(QListWidgetItem* currentItem);

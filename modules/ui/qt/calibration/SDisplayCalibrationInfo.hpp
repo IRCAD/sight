@@ -81,16 +81,16 @@ public:
 protected:
 
     /// Starts the config
-    virtual void starting() override;
+    void starting() override;
 
     /// Stops the config
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    virtual void updating() override;
+    void updating() override;
 
     /// Does nothing
-    virtual void configuring() override;
+    void configuring() override;
 
 private:
 

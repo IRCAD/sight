@@ -72,16 +72,16 @@ public:
 protected:
 
     /// Configures the service.
-    MODULE_FILTER_IMAGE_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /// Apply the flip operator.
-    MODULE_FILTER_IMAGE_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /**
      * @brief Signal-slot auto-connection proposals
@@ -89,7 +89,7 @@ protected:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

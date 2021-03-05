@@ -89,28 +89,28 @@ protected:
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_VISION_API virtual void starting() override;
+    MODULE_FILTER_VISION_API void starting() override;
 
     /**
      * @brief Stops the service
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_VISION_API virtual void stopping() override;
+    MODULE_FILTER_VISION_API void stopping() override;
 
     /**
      * @brief Configures the service
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_VISION_API virtual void configuring() override;
+    MODULE_FILTER_VISION_API void configuring() override;
 
     /**
      * @brief Does nothing
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_VISION_API virtual void updating() override;
+    MODULE_FILTER_VISION_API void updating() override;
 
 private:
 

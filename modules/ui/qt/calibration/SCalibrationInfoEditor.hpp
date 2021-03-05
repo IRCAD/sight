@@ -123,7 +123,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
     /**

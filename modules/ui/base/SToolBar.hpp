@@ -61,18 +61,18 @@ protected:
      * @brief Create the toolBar
      * @see sight::ui::base::IToolBar::create()
      */
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
      * @see sight::ui::base::IToolBar::destroy()
      */
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
     /**
      * @brief Configuring method allows to create a toolBar with several actions.
@@ -120,12 +120,12 @@ protected:
      *  @see sight::ui::base::IToolBar::initialize(),
      * sight::ui::base::layoutManager::IToolBarLayoutManager::initialize()
      */
-    MODULE_UI_BASE_API virtual void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
     ///@}
 
 };

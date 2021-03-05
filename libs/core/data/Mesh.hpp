@@ -342,7 +342,7 @@ public:
     DATA_API Mesh(data::Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Mesh() override;
+    DATA_API ~Mesh() override;
 
     /// Defines shallow copy
     DATA_API void shallowCopy( const Object::csptr& _source ) override;

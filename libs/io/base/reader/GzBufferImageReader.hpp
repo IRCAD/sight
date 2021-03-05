@@ -59,7 +59,7 @@ public:
     IO_BASE_API virtual ~GzBufferImageReader();
 
     /// Read the file with zlib API.
-    IO_BASE_API virtual void read() override;
+    IO_BASE_API void read() override;
 
     /// Defines extension supported by this reader ".raw.gz"
     IO_BASE_API std::string extension() override;

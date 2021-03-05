@@ -77,16 +77,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    MODULE_UI_VIZ_API virtual void configuring() override;
+    MODULE_UI_VIZ_API void configuring() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API virtual void starting() override;
+    MODULE_UI_VIZ_API void starting() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API virtual void stopping() override;
+    MODULE_UI_VIZ_API void stopping() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API virtual void updating() override;
+    MODULE_UI_VIZ_API void updating() override;
 
     /// FILL ME.
     MODULE_UI_VIZ_API void refreshRenderers();

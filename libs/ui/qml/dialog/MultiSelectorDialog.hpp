@@ -61,22 +61,22 @@ public:
     /**
      * @brief The string list that can be chosen by the selector.
      */
-    UI_QML_API virtual void setSelections(Selections _selections) override;
+    UI_QML_API void setSelections(Selections _selections) override;
 
     /**
      * @brief Sets the selector title.
      */
-    UI_QML_API virtual void setTitle(std::string _title) override;
+    UI_QML_API void setTitle(std::string _title) override;
 
     /**
      * @brief Show the selector and return the selection.
      */
-    UI_QML_API virtual Selections show() override;
+    UI_QML_API Selections show() override;
 
     /**
      * @brief Sets the selector message.
      */
-    UI_QML_API virtual void setMessage(const std::string& msg) override;
+    UI_QML_API void setMessage(const std::string& msg) override;
 
 Q_SIGNALS:
     /// notify the qml of property change

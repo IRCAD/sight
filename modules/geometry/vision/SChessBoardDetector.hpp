@@ -89,24 +89,24 @@ public:
     MODULE_GEOMETRY_VISION_API SChessBoardDetector() noexcept;
 
     /// Destructor
-    MODULE_GEOMETRY_VISION_API virtual ~SChessBoardDetector() noexcept override;
+    MODULE_GEOMETRY_VISION_API ~SChessBoardDetector() noexcept override;
 
 protected:
 
     /// Configures the service.
-    MODULE_GEOMETRY_VISION_API virtual void configuring() override;
+    MODULE_GEOMETRY_VISION_API void configuring() override;
 
     /// Initializes the chessboard size from the preferences.
-    MODULE_GEOMETRY_VISION_API virtual void starting() override;
+    MODULE_GEOMETRY_VISION_API void starting() override;
 
     /// Tries to detect chessboards in all input images.
-    MODULE_GEOMETRY_VISION_API virtual void updating() override;
+    MODULE_GEOMETRY_VISION_API void updating() override;
 
     /// Clears the detected points.
-    MODULE_GEOMETRY_VISION_API virtual void stopping() override;
+    MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Returns proposals to update the service when the input image is modified.
-    MODULE_GEOMETRY_VISION_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_VISION_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

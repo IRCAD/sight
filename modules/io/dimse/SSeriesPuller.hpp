@@ -104,7 +104,7 @@ private:
      *
      * Connects data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
      */
-    MODULE_IO_DIMSE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_DIMSE_API KeyConnectionsMap getAutoConnections() const override;
 
     typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef core::com::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;

@@ -78,23 +78,23 @@ public:
      * Connect data::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
      * Connect data::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
      */
-    MODULE_UI_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// This method is used to configure the service parameters
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
-    virtual void starting() override;
+    void starting() override;
 
     /// Stops service. Does nothing.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Adds the series specified by m_seriesId in the SeriesDB.
-    virtual void updating() override;
+    void updating() override;
 
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 private:
 

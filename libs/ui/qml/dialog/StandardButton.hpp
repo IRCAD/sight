@@ -72,7 +72,7 @@ public:
 
     UI_QML_API StandardButton();
 
-    UI_QML_API virtual ~StandardButton() override;
+    UI_QML_API ~StandardButton() override;
 
     /// Set the button mask
     UI_QML_API void setButton(ButtonList button);

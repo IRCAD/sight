@@ -57,15 +57,15 @@ protected:
      * @{
      */
 
-    MODULE_UI_BASE_API virtual void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
 
     ///@}
 

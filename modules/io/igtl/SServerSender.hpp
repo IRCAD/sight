@@ -73,13 +73,13 @@ public:
 protected:
 
     /// Configure port and device name
-    MODULE_IO_IGTL_API virtual void configuring() override;
+    MODULE_IO_IGTL_API void configuring() override;
 
     /// Start the server.
-    MODULE_IO_IGTL_API virtual void starting() override;
+    MODULE_IO_IGTL_API void starting() override;
 
     /// Stop the server
-    MODULE_IO_IGTL_API virtual void stopping() override;
+    MODULE_IO_IGTL_API void stopping() override;
 
 private:
 

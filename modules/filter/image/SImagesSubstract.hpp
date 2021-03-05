@@ -59,19 +59,19 @@ public:
 
 protected:
 
-    MODULE_FILTER_IMAGE_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API virtual void swapping() override;
+    MODULE_FILTER_IMAGE_API void swapping() override;
 };
 
 } // namespace sight::module::filter::image

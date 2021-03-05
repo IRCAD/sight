@@ -37,10 +37,10 @@ public:
 
     static Pointer New();
 
-    virtual void DisplayText(const char* _txt) override;
-    virtual void DisplayErrorText(const char* _txt) override;
-    virtual void DisplayWarningText(const char* _txt) override;
-    virtual void DisplayDebugText(const char* _txt) override;
+    void DisplayText(const char* _txt) override;
+    void DisplayErrorText(const char* _txt) override;
+    void DisplayWarningText(const char* _txt) override;
+    void DisplayDebugText(const char* _txt) override;
 
 private:
     ItkLogger();

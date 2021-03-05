@@ -60,10 +60,10 @@ public:
     IO_BASE_API virtual ~Matrix4Writer();
 
     /// Write the file with standard iostream API.
-    IO_BASE_API virtual void write() override;
+    IO_BASE_API void write() override;
 
     /// Defines extension supported by this writer ".trf"
-    IO_BASE_API virtual std::string  extension() override;
+    IO_BASE_API std::string  extension() override;
 
 };
 

@@ -146,7 +146,7 @@ public:
     MODULE_NAVIGATION_OPENVSLAM_API SOpenvslam() noexcept;
 
     /// Destructor. Stops the service if started.
-    MODULE_NAVIGATION_OPENVSLAM_API virtual ~SOpenvslam() noexcept override final;
+    MODULE_NAVIGATION_OPENVSLAM_API ~SOpenvslam() noexcept final;
 
     /**
      * @name Tracking Mode : Openvslam can be used with 3 mode.
@@ -164,16 +164,16 @@ public:
 protected:
 
     /// Configures the service by parsing XML.
-    MODULE_NAVIGATION_OPENVSLAM_API virtual void configuring() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API void configuring() final;
 
     /// Retrieves input data.
-    MODULE_NAVIGATION_OPENVSLAM_API virtual void starting() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API void starting() final;
 
     /// Shutdown the openvslam system & reset output.
-    MODULE_NAVIGATION_OPENVSLAM_API virtual void stopping() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API void stopping() final;
 
     /// Does nothing.
-    MODULE_NAVIGATION_OPENVSLAM_API virtual void updating() override final;
+    MODULE_NAVIGATION_OPENVSLAM_API void updating() final;
 
 private:
 
@@ -183,10 +183,10 @@ private:
      * @{
      */
     /// Slot: called to start the tracking.
-    virtual void startTracking() override final;
+    void startTracking() final;
 
     /// Slot: called to stop the tracking.
-    virtual void stopTracking() override final;
+    void stopTracking() final;
 
     /// Slot: called to enable/disable localization mode (stop/(re)start mapping thread).
     void enableLocalization(bool);
@@ -225,7 +225,7 @@ private:
     void resetPointCloud();
 
     /// Slot: call openvslam with the new frame.
-    void virtual tracking(core::HiResClock::HiResClockType&) override final;
+    void  tracking(core::HiResClock::HiResClockType&) final;
     /** @} */
 
     /**

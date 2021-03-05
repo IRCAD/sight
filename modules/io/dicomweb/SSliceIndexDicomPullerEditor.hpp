@@ -89,13 +89,13 @@ private Q_SLOTS:
 protected:
 
     /// Gets the configurations and creates a timer on a worker.
-    MODULE_IO_DICOMWEB_API virtual void configuring() override;
+    MODULE_IO_DICOMWEB_API void configuring() override;
 
     /// Creates the wigdets, connect the signal, register the DICOM reader and starts the callback timer.
-    MODULE_IO_DICOMWEB_API virtual void starting() override;
+    MODULE_IO_DICOMWEB_API void starting() override;
 
     /// Stops the timer, unregister the DICOM reader and destroy the created widgets.
-    MODULE_IO_DICOMWEB_API virtual void stopping() override;
+    MODULE_IO_DICOMWEB_API void stopping() override;
 
     /// Does nothing.
     MODULE_IO_DICOMWEB_API void updating() override;

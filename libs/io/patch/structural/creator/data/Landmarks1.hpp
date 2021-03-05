@@ -49,7 +49,7 @@ public:
     IO_PATCH_API Landmarks1( const Landmarks1& cpy );
 
     /// Create the specified object (sets 'landmarks' attribute).
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

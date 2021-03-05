@@ -67,16 +67,16 @@ public:
 protected:
 
     /// Configure registration parameters.
-    MODULE_FILTER_IMAGE_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /// Do the registration.
-    MODULE_FILTER_IMAGE_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /**
      * @brief Auto connections
@@ -84,7 +84,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 
 };
 

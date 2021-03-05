@@ -70,7 +70,7 @@ public:
     CORE_API virtual void restoreSuccess( BufferInfo& info,
                                           core::memory::BufferManager::ConstBufferPtrType buffer ) override;
 
-    CORE_API virtual void refresh() override;
+    CORE_API void refresh() override;
 
     //------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ public:
         return false;
     }
 
-    CORE_API virtual std::string getParam(const std::string& name, bool* ok = NULL ) const override;
+    CORE_API std::string getParam(const std::string& name, bool* ok = NULL ) const override;
 
     //------------------------------------------------------------------------------
 

@@ -84,16 +84,16 @@ public:
 protected:
 
     /// Call the IQmlEditor::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     /// Call the IQmlEditor::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Update the list model with the modelSeries items
-    virtual void updating() override;
+    void updating() override;
 
     /// Do nothing
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -103,7 +103,7 @@ protected:
      * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
      * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
     typedef core::com::Signal< void (data::Object::sptr) > ReconstructionSelectedSignalType;

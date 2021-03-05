@@ -116,16 +116,16 @@ protected:
     using data::helper::MedicalImage::Orientation;
 
     /// Update the infromation from the image
-    MODULE_UI_QML_QT_API virtual void starting() override;
+    MODULE_UI_QML_QT_API void starting() override;
 
     /// Do nothing
-    MODULE_UI_QML_QT_API virtual void stopping() override;
+    MODULE_UI_QML_QT_API void stopping() override;
 
     /// Update editor information from the image
-    MODULE_UI_QML_QT_API virtual void updating() override;
+    MODULE_UI_QML_QT_API void updating() override;
 
     /// Do nothing
-    MODULE_UI_QML_QT_API virtual void configuring() override;
+    MODULE_UI_QML_QT_API void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -136,7 +136,7 @@ protected:
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QML_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QML_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Update the editor slider from the image slice index.
     MODULE_UI_QML_QT_API void updateSliceIndexFromImg();

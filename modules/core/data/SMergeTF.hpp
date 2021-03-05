@@ -70,10 +70,10 @@ public:
 private:
 
     /// Does nothing.
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Calls @ref updating().
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -83,13 +83,13 @@ private:
      * Connect data::Composite::s_ADDED_OBJECTS_SIG of s_TF_POOL_INPUT to module::data::SMergeTF::s_UPDATE_SLOT.
      * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INPUT to module::data::SMergeTF::s_UPDATE_SLOT.
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Creates connection between all TF from the composite, and this service.
-    virtual void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Merges all TF from the input composite to the output TF.
     void merge() const;

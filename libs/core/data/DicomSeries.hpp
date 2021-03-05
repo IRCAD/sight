@@ -62,7 +62,7 @@ public:
     DATA_API DicomSeries(data::Object::Key _key);
 
     /// Destroys the DICOM series.
-    DATA_API virtual ~DicomSeries() override;
+    DATA_API ~DicomSeries() override;
 
     /**
      * @brief Defines shallow copy.

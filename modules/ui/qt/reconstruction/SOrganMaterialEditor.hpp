@@ -77,19 +77,19 @@ private:
      *
      * Connect data::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Configures the service.
-    virtual void configuring() override final;
+    void configuring() final;
 
     /// Sets the connections and the UI elements.
-    virtual void starting() override final;
+    void starting() final;
 
     /// Updates the UI according to the material (color and transparency widgets).
-    virtual void updating() override final;
+    void updating() final;
 
     /// Destroys the connections and cleans the container.
-    virtual void stopping() override final;
+    void stopping() final;
 
     /// Updates the UI according to the material (color and transparency widgets)
     void refreshMaterial( );

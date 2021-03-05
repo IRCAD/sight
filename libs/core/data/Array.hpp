@@ -174,7 +174,7 @@ public:
      */
     DATA_API Array( data::Object::Key key );
 
-    DATA_API virtual ~Array() override;
+    DATA_API ~Array() override;
 
     /// Defines deep copy
     DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;

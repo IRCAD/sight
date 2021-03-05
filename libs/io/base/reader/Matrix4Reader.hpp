@@ -58,10 +58,10 @@ public:
     IO_BASE_API virtual ~Matrix4Reader();
 
     /// Read the file with standard iostream API.
-    IO_BASE_API virtual void read() override;
+    IO_BASE_API void read() override;
 
     /// Defines extension supported by this reader ".trf"
-    IO_BASE_API virtual std::string extension() override;
+    IO_BASE_API std::string extension() override;
 
 };
 

@@ -65,10 +65,10 @@ Q_SIGNALS:
 protected:
 
     /// call updating and emit 'started' qt signal
-    UI_QML_QT_API virtual void starting() override;
+    UI_QML_QT_API void starting() override;
 
     /// emit 'stopped' qt signal
-    UI_QML_QT_API virtual void stopping() override;
+    UI_QML_QT_API void stopping() override;
 
 };
 

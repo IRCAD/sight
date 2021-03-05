@@ -54,7 +54,7 @@ public:
     /**
      * @brief Creates the specified object.
      */
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

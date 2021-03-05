@@ -116,7 +116,7 @@ public:
      *   - \b expanded  {true | yes | false | no} : define if the view is expanded or not.
      *   - \b useScrollBar  {true | yes | false | no} : define if the view use scrollbar or not.
      */
-    UI_BASE_API virtual void initialize( ConfigurationType configuration) override;
+    UI_BASE_API void initialize( ConfigurationType configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 

@@ -76,16 +76,16 @@ public:
     DATA_API virtual void clearTimeline();
 
     /// Push a buffer to the timeline
-    DATA_API virtual void pushObject(const SPTR(data::timeline::Object)& obj) override;
+    DATA_API void pushObject(const SPTR(data::timeline::Object)& obj) override;
 
     /// Remove a buffer to the timeline
-    DATA_API virtual SPTR(data::timeline::Object) popObject(TimestampType timestamp) override;
+    DATA_API SPTR(data::timeline::Object) popObject(TimestampType timestamp) override;
 
     /// Change a buffer timestamp to the timeline
-    DATA_API virtual void modifyTime(TimestampType timestamp, TimestampType newTimestamp) override;
+    DATA_API void modifyTime(TimestampType timestamp, TimestampType newTimestamp) override;
 
     /// Change a buffer object to the specified timestamp
-    DATA_API virtual void setObject(TimestampType timestamp, const SPTR(data::timeline::Object)& obj) override;
+    DATA_API void setObject(TimestampType timestamp, const SPTR(data::timeline::Object)& obj) override;
 
     /// Return the last object in the timeline
     DATA_API CSPTR(data::timeline::Object) getNewerObject() const;

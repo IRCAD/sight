@@ -74,16 +74,16 @@ public:
 protected:
 
     /// Do nothing
-    MODULE_FILTER_VISION_API virtual void starting() override;
+    MODULE_FILTER_VISION_API void starting() override;
 
     /// Do nothing
-    MODULE_FILTER_VISION_API virtual void stopping() override;
+    MODULE_FILTER_VISION_API void stopping() override;
 
     /// Do nothing
-    MODULE_FILTER_VISION_API virtual void configuring() override;
+    MODULE_FILTER_VISION_API void configuring() override;
 
     /// Do nothing
-    MODULE_FILTER_VISION_API virtual void updating() override;
+    MODULE_FILTER_VISION_API void updating() override;
 
     /// Defines the auto-connection between the depth timeline and the 'compute' slot
     MODULE_FILTER_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;

@@ -73,19 +73,19 @@ public:
 protected:
 
     /// This method is used to configure the service parameters:
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     ///This method launches the sight::ui::base::IGuiContainer::create method.
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     ///This method launches the sight::ui::base::IGuiContainer::destroy method.
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /// Updates Slider value
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
     // Connect data::Matrix4::s_MODIFIED_SIG to update slot
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
 private Q_SLOTS:
 

@@ -60,7 +60,7 @@ public:
     IO_DICOM_API virtual ~ComprehensiveSRIOD();
 
     /// Write DICOM file
-    IO_DICOM_API virtual void write(const data::Series::csptr& series) override;
+    IO_DICOM_API void write(const data::Series::csptr& series) override;
 
 protected:
     /// True if we must use 3DSR

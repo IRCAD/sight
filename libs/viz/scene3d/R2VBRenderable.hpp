@@ -68,19 +68,19 @@ public:
                                            bool _hasNormals = true);
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
-    VIZ_SCENE3D_API virtual void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
+    VIZ_SCENE3D_API void _updateRenderQueue(::Ogre::RenderQueue* _queue) override;
 
     /** @copydoc SimpleRenderable::getMovableType. */
-    VIZ_SCENE3D_API virtual const ::Ogre::String& getMovableType(void) const override;
+    VIZ_SCENE3D_API const ::Ogre::String& getMovableType(void) const override;
 
     /** @copydoc SimpleRenderable::getRenderOperation. */
-    VIZ_SCENE3D_API virtual void getRenderOperation(::Ogre::RenderOperation& _op) override;
+    VIZ_SCENE3D_API void getRenderOperation(::Ogre::RenderOperation& _op) override;
 
     /// Delegate to the subentity.
-    VIZ_SCENE3D_API virtual ::Ogre::Real getBoundingRadius(void) const override;
+    VIZ_SCENE3D_API ::Ogre::Real getBoundingRadius(void) const override;
 
     /// @copydoc Renderable::getSquaredViewDepth
-    VIZ_SCENE3D_API virtual ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
+    VIZ_SCENE3D_API ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Return the parent mesh.
     VIZ_SCENE3D_API virtual const ::Ogre::MeshPtr& getMesh(void) const;

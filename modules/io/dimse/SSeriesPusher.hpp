@@ -98,13 +98,13 @@ public:
 protected:
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API virtual void configuring() override;
+    MODULE_IO_DIMSE_API void configuring() override;
 
     /// Override
-    MODULE_IO_DIMSE_API virtual void starting() override;
+    MODULE_IO_DIMSE_API void starting() override;
 
     /// Override
-    MODULE_IO_DIMSE_API virtual void stopping() override;
+    MODULE_IO_DIMSE_API void stopping() override;
 
     /// Override
     MODULE_IO_DIMSE_API void updating() override;

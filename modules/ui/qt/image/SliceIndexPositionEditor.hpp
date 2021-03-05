@@ -76,18 +76,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Update editor information from the image
-    virtual void updating() override;
+    void updating() override;
 
     /// Swap of image
-    virtual void swapping() override;
+    void swapping() override;
 
     /**
      * @brief Configure the editor.
@@ -100,7 +100,7 @@ protected:
        @endcode
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -111,10 +111,10 @@ protected:
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Overrides
-    MODULE_UI_QT_API virtual void info( std::ostream& _sstream ) override;
+    MODULE_UI_QT_API void info( std::ostream& _sstream ) override;
 
     /// Update the editor slider from the image slice index.
     MODULE_UI_QT_API void updateSliceIndexFromImg();

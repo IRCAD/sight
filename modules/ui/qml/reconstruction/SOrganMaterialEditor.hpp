@@ -91,16 +91,16 @@ protected:
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Call IQmlEditor::starting
-    virtual void starting() override;
+    void starting() override;
 
     /// Call IQmlEditor::stopping
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Emit a signal to update the Qml ui with the material information
-    virtual void updating() override;
+    void updating() override;
 
     /// Do nothing
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -108,7 +108,7 @@ protected:
      *
      * Connect Reconstruction::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
 protected Q_SLOTS:
 

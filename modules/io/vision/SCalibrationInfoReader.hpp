@@ -61,34 +61,34 @@ public:
     MODULE_IO_VISION_API SCalibrationInfoReader() noexcept;
 
     /// Destructor.
-    MODULE_IO_VISION_API virtual ~SCalibrationInfoReader() noexcept override;
+    MODULE_IO_VISION_API ~SCalibrationInfoReader() noexcept override;
 
     /**
      * @brief Configures the folder path.
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VISION_API virtual void configureWithIHM() override;
+    MODULE_IO_VISION_API void configureWithIHM() override;
 
     /// Configures the folder path.
-    MODULE_IO_VISION_API virtual void openLocationDialog() override;
+    MODULE_IO_VISION_API void openLocationDialog() override;
 
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
 
     /// Configures the output file format and the chessboard preference keys.
-    MODULE_IO_VISION_API virtual void configuring() override;
+    MODULE_IO_VISION_API void configuring() override;
 
     /// Updates the chessboard parameters from the preferences.
-    MODULE_IO_VISION_API virtual void starting() override;
+    MODULE_IO_VISION_API void starting() override;
 
     /// Loads the images and attempts to detect a chessboard.
-    MODULE_IO_VISION_API virtual void updating() override;
+    MODULE_IO_VISION_API void updating() override;
 
     /// Does nothing.
-    MODULE_IO_VISION_API virtual void stopping() override;
+    MODULE_IO_VISION_API void stopping() override;
 
 private:
 

@@ -200,14 +200,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual ::std::string toString() const override
+    ::std::string toString() const override
     {
         return ::boost::lexical_cast< ::std::string >(this->m_value);
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void fromString(const ::std::string& _value) override
+    void fromString(const ::std::string& _value) override
     {
         this->m_value = ::boost::lexical_cast< T >(_value);
     }
@@ -237,7 +237,7 @@ protected:
 
     //------------------------------------------------------------------------------
 
-    virtual std::ostream& toOStream( std::ostream& _os ) const override
+    std::ostream& toOStream( std::ostream& _os ) const override
     {
         return _os << this->value();
     }

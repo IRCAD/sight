@@ -789,7 +789,7 @@ protected:
      *
      * This destructor does nothing.
      */
-    SERVICE_API virtual ~IService() override;
+    SERVICE_API ~IService() override;
 
     //@}
 

@@ -54,16 +54,16 @@ Q_SIGNALS:
 protected:
 
     /// Do nothing
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Call the IQmlEditor::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     /// Call the IQmlEditor::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Update the displayed string
-    virtual void updating() override;
+    void updating() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -71,7 +71,7 @@ protected:
      *
      * Connect String::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
 protected Q_SLOTS:
 

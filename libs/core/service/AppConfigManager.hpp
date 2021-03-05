@@ -88,28 +88,28 @@ public:
      * @brief Get the configuraton root.
      * @return The configuration root.
      */
-    SERVICE_API virtual data::Object::sptr getConfigRoot() const override;
+    SERVICE_API data::Object::sptr getConfigRoot() const override;
 
     /// Calls methods : create, start then update.
-    SERVICE_API virtual void launch() override;
+    SERVICE_API void launch() override;
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
-    SERVICE_API virtual void stopAndDestroy() override;
+    SERVICE_API void stopAndDestroy() override;
 
     /// Creates objects and services from config.
-    SERVICE_API virtual void create() override;
+    SERVICE_API void create() override;
 
     /// Starts services specified in config.
-    SERVICE_API virtual void start() override;
+    SERVICE_API void start() override;
 
     /// Updates services specified in config.
-    SERVICE_API virtual void update() override;
+    SERVICE_API void update() override;
 
     /// Stops services specified in config.
-    SERVICE_API virtual void stop() override;
+    SERVICE_API void stop() override;
 
     /// Destroys services specified in config.
-    SERVICE_API virtual void destroy() override;
+    SERVICE_API void destroy() override;
 
     /**
      * @brief Sets if we are testing the class.

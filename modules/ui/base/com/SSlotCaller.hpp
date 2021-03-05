@@ -73,7 +73,7 @@ public:
 protected:
 
     /// This method gives information about the class.
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
 
     /// This method run the specified slots.
     MODULE_UI_BASE_API void updating() override;
@@ -81,9 +81,9 @@ protected:
     ///  This method is used to configure the service parameters: specifies which slots must be called.
     MODULE_UI_BASE_API void configuring() override;
 
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     // Vector representing slots
     SlotInfoContainerType m_slotInfos;

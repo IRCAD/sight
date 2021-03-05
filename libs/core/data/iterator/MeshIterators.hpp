@@ -273,7 +273,7 @@ public:
     DATA_API PointIterator(Mesh* mesh);
     DATA_API PointIterator(const PointIterator& other) = default;
     DATA_API PointIterator(const PointIteratorBase& other);
-    DATA_API virtual ~PointIterator() override;
+    DATA_API ~PointIterator() override;
 
     DATA_API PointIterator& operator=(const PointIterator& other) = default;
     DATA_API PointIterator& operator=(const PointIteratorBase& other) override;

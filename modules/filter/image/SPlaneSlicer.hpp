@@ -84,10 +84,10 @@ public:
 
 protected:
 
-    MODULE_FILTER_IMAGE_API virtual void configuring() override;
-    MODULE_FILTER_IMAGE_API virtual void starting() override;
-    MODULE_FILTER_IMAGE_API virtual void updating() override;
-    MODULE_FILTER_IMAGE_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
@@ -99,7 +99,7 @@ protected:
      * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect axes::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_FILTER_IMAGE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 
 private:
 

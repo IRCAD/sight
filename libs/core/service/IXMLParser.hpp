@@ -85,24 +85,24 @@ protected:
     /**
      * @brief Does nothing
      */
-    SERVICE_API virtual void starting() override;
+    SERVICE_API void starting() override;
 
     /**
      * @brief Does nothing
      */
-    SERVICE_API virtual void stopping() override;
+    SERVICE_API void stopping() override;
 
     /**
      * @brief Does nothing
      */
-    SERVICE_API virtual void configuring() override;
+    SERVICE_API void configuring() override;
 
     /**
      * @brief Parse the XML configuration
      * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both
      *       specific compositions and this generic one
      */
-    SERVICE_API virtual void updating() override;
+    SERVICE_API void updating() override;
 };
 
 }

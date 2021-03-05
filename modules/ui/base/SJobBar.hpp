@@ -77,7 +77,7 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
 
     /**
      * @brief This method emit a signal.
@@ -89,9 +89,9 @@ protected:
      */
     MODULE_UI_BASE_API void configuring() override;
 
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /**
      * @brief showJob slot's method

@@ -195,21 +195,21 @@ public:
     MODULE_IO_REALSENSE_API SScan() noexcept;
 
     /// Destructor. Calls stopCamera()
-    MODULE_IO_REALSENSE_API virtual ~SScan() noexcept override;
+    MODULE_IO_REALSENSE_API ~SScan() noexcept override;
 
 protected:
 
     /// Starts the service, get the timelines and set the outputs.
-    MODULE_IO_REALSENSE_API virtual void starting() override;
+    MODULE_IO_REALSENSE_API void starting() override;
 
     /// Shutdowns the streams by calling stopCamera().
-    MODULE_IO_REALSENSE_API virtual void stopping() override;
+    MODULE_IO_REALSENSE_API void stopping() override;
 
     /// Restarts the service (stopCamera() & startCamera()).
-    MODULE_IO_REALSENSE_API virtual void updating() override;
+    MODULE_IO_REALSENSE_API void updating() override;
 
     /// Parses the configuration.
-    MODULE_IO_REALSENSE_API virtual void configuring() override;
+    MODULE_IO_REALSENSE_API void configuring() override;
 
 private:
 
@@ -302,19 +302,19 @@ private:
     // Overriden functions/slots
 
     /// SLOT : Initializes and starts the streams. Restarts the streams if already started.
-    virtual void startCamera() override;
+    void startCamera() override;
     /// SLOT : Stops to grab frames.
-    virtual void stopCamera() override;
+    void stopCamera() override;
     /// SLOT : Pause the grabbing
-    virtual void pauseCamera() override;
+    void pauseCamera() override;
 
     /// Does nothing (re-implemented from IGrabber)
-    virtual void toggleLoopMode() override
+    void toggleLoopMode() override
     {
 
     }
     /// Does nothing (re-implemented from IGrabber)
-    virtual void setPosition(int64_t) override
+    void setPosition(int64_t) override
     {
 
     }

@@ -111,7 +111,7 @@ public:
      *   - \b minHeight : minimal height of the view.
      *   - \b selected  {yes | no}: define if the tab is the current one.
      */
-    UI_BASE_API virtual void initialize( ConfigurationType configuration) override;
+    UI_BASE_API void initialize( ConfigurationType configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 

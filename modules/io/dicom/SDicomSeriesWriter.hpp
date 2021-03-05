@@ -75,28 +75,28 @@ public:
     /**
      * @brief   destructor
      */
-    MODULE_IO_DICOM_API virtual ~SDicomSeriesWriter() noexcept override;
+    MODULE_IO_DICOM_API ~SDicomSeriesWriter() noexcept override;
 
     /**
      * @brief Propose select a directory where to save the DICOM files.
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_DICOM_API virtual void configureWithIHM() override;
+    MODULE_IO_DICOM_API void configureWithIHM() override;
 
     /// Propose select a directory where to save the DICOM files.
-    MODULE_IO_DICOM_API virtual void openLocationDialog() override;
+    MODULE_IO_DICOM_API void openLocationDialog() override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_DICOM_API virtual void starting() override;
+    MODULE_IO_DICOM_API void starting() override;
 
     /// Does nothing
-    MODULE_IO_DICOM_API virtual void stopping() override;
+    MODULE_IO_DICOM_API void stopping() override;
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_IO_DICOM_API virtual void configuring() override;
+    MODULE_IO_DICOM_API void configuring() override;
 
     /// Write the DicomSeries in DICOM format.
     MODULE_IO_DICOM_API void updating() override;

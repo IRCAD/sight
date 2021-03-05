@@ -99,19 +99,19 @@ protected:
     }RegistrationModeType;
 
     /// Configures the service
-    MODULE_FILTER_POINT_API virtual void configuring() override;
+    MODULE_FILTER_POINT_API void configuring() override;
 
     /// Do nothing
-    MODULE_FILTER_POINT_API virtual void starting() override;
+    MODULE_FILTER_POINT_API void starting() override;
 
     /// Do nothing
-    MODULE_FILTER_POINT_API virtual void stopping() override;
+    MODULE_FILTER_POINT_API void stopping() override;
 
     /// Perform the registration
-    MODULE_FILTER_POINT_API virtual void updating() override;
+    MODULE_FILTER_POINT_API void updating() override;
 
     /// Do nothing
-    MODULE_FILTER_POINT_API virtual void swapping() override;
+    MODULE_FILTER_POINT_API void swapping() override;
 
 private:
 

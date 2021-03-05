@@ -118,40 +118,40 @@ public:
 protected:
 
     /// Initialize the layout and the camera.
-    MODULE_IO_VIDEO_API virtual void starting() override;
+    MODULE_IO_VIDEO_API void starting() override;
 
     /// Destroy the layout.
-    MODULE_IO_VIDEO_API virtual void stopping() override;
+    MODULE_IO_VIDEO_API void stopping() override;
 
     /// Do nothing.
-    MODULE_IO_VIDEO_API virtual void updating() override;
+    MODULE_IO_VIDEO_API void updating() override;
 
     /// Do nothing.
-    MODULE_IO_VIDEO_API virtual void configuring() override;
+    MODULE_IO_VIDEO_API void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started).
-    virtual void startCamera() override;
+    void startCamera() override;
 
     /// SLOT : Stop camera.
-    virtual void stopCamera() override;
+    void stopCamera() override;
 
     /// SLOT : Pause camera.
-    virtual void pauseCamera() override;
+    void pauseCamera() override;
 
     /// SLOT : enable/disable loop in video.
-    virtual void toggleLoopMode() override;
+    void toggleLoopMode() override;
 
     /// SLOT : set the new position in the video.
-    virtual void setPosition(int64_t position) override;
+    void setPosition(int64_t position) override;
 
     /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled).
-    virtual void nextImage() override;
+    void nextImage() override;
 
     /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled).
-    virtual void previousImage() override;
+    void previousImage() override;
 
     /// SLOT: Set step used on readPrevious/readNext slots
-    virtual void setStep(int step, std::string key) override;
+    void setStep(int step, std::string key) override;
 
 private:
 

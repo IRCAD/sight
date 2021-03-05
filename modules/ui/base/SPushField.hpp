@@ -66,21 +66,21 @@ public:
      * Connect source Composite::s_ADDED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      * Connect source Composite::s_REMOVED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      */
-    MODULE_UI_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_BASE_API KeyConnectionsMap getAutoConnections() const override;
 
 protected:
 
     /// Configure the service.
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Register the action and check if the action is executable.
-    virtual void starting() override;
+    void starting() override;
 
     /// Unregister the action.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Extract the object.
-    virtual void updating() override;
+    void updating() override;
 
 private:
 

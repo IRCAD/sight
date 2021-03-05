@@ -72,16 +72,16 @@ public:
     UI_BASE_API void setTitle(std::string title) override;
 
     /// Set the string list that can be chosen by the selector.
-    UI_BASE_API virtual void setSelections(std::vector< std::string > _selections) override;
+    UI_BASE_API void setSelections(std::vector< std::string > _selections) override;
 
     /// Show the selector and return the selection.
     UI_BASE_API std::string show() override;
 
     /// Set the message
-    UI_BASE_API virtual void setMessage(const std::string& msg) override;
+    UI_BASE_API void setMessage(const std::string& msg) override;
 
     /// Add a custom button to this dialog
-    UI_BASE_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_BASE_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
 protected:
 

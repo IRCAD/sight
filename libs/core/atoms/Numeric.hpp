@@ -80,7 +80,7 @@ public:
     /**
      * @brief Returns a clone object
      */
-    ATOMS_API virtual Base::sptr clone() const override;
+    ATOMS_API Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type
@@ -111,7 +111,7 @@ public:
     /**
      * @brief Returns a string representing the currently held numeric value
      */
-    ATOMS_API virtual std::string getString() const override;
+    ATOMS_API std::string getString() const override;
 
     /**
      * @brief Sets Numeric's value from given string, using Numeric::valueFromString

@@ -82,13 +82,13 @@ public:
 protected:
 
     /// Gets the configurations.
-    MODULE_IO_DICOMWEB_API virtual void configuring() override;
+    MODULE_IO_DICOMWEB_API void configuring() override;
 
     /// Creates the widgets & connect the signals.
-    MODULE_IO_DICOMWEB_API virtual void starting() override;
+    MODULE_IO_DICOMWEB_API void starting() override;
 
     /// Disconnect the signals and destroy the widgets.
-    MODULE_IO_DICOMWEB_API virtual void stopping() override;
+    MODULE_IO_DICOMWEB_API void stopping() override;
 
     /// Does nothing.
     MODULE_IO_DICOMWEB_API void updating() override;

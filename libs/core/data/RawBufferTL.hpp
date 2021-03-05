@@ -53,7 +53,7 @@ public:
     DATA_API virtual ~RawBufferTL();
 
     /// Defines deep copy
-    DATA_API virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Return the closest buffer to the given timestamp
@@ -85,7 +85,7 @@ public:
     DATA_API SPTR(data::timeline::RawBuffer) createBuffer(core::HiResClock::HiResClockType timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API virtual bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const override;
+    DATA_API bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const override;
 
 }; // class RawBufferTL
 

@@ -114,7 +114,7 @@ public:
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QML_API virtual ~SView() override;
+    MODULE_UI_QML_API ~SView() override;
 
     /// Signal emited when the activity is launched
     typedef core::com::Signal< void () > ActivityLaunchedSignalType;
@@ -130,16 +130,16 @@ public Q_SLOTS:
 protected:
 
     /// Parse the configuration (set the parameters to replace in the activities to launch
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Do nothing
-    virtual void starting() override;
+    void starting() override;
 
     /// Do nothing
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    virtual void updating() override;
+    void updating() override;
 
 private:
 

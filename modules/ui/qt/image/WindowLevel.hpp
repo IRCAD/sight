@@ -99,19 +99,19 @@ public:
 protected:
 
     /// Configures the service.
-    virtual void configuring() override final;
+    void configuring() final;
 
     /// Installs the layout.
-    virtual void starting() override final;
+    void starting() final;
 
     /// Updates editor information from the image.
-    virtual void updating() override final;
+    void updating() final;
 
     /// Destroys the layout.
-    virtual void stopping() override final;
+    void stopping() final;
 
     /// Selects the current tf.
-    virtual void swapping(const KeyType&) override final;
+    void swapping(const KeyType&) final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -120,13 +120,13 @@ protected:
      * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::WindowLevel::s_UPDATE_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::WindowLevel::s_UPDATE_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override final;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const final;
 
     /**
      * @brief Adds informations about this service into the stream.
      * @param _sstream Stream where stores information.
      */
-    MODULE_UI_QT_API virtual void info(std::ostream& _sstream) override final;
+    MODULE_UI_QT_API void info(std::ostream& _sstream) final;
 
     /// Slot: Updates the slider position
     MODULE_UI_QT_API virtual void updateTF();

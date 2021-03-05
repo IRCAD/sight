@@ -63,21 +63,21 @@ public:
     MODULE_UI_VIZ_API SStereoToggler();
 
     /// Destructor.
-    MODULE_UI_VIZ_API virtual ~SStereoToggler() override;
+    MODULE_UI_VIZ_API ~SStereoToggler() override;
 
 protected:
 
     /// Configures the service.
-    MODULE_UI_VIZ_API virtual void configuring() override;
+    MODULE_UI_VIZ_API void configuring() override;
 
     /// Starts the action service.
-    MODULE_UI_VIZ_API virtual void starting() override;
+    MODULE_UI_VIZ_API void starting() override;
 
     /// Enables stereo if active, disables it otherwise.
-    MODULE_UI_VIZ_API virtual void updating() override;
+    MODULE_UI_VIZ_API void updating() override;
 
     /// Stops the action service.
-    MODULE_UI_VIZ_API virtual void stopping() override;
+    MODULE_UI_VIZ_API void stopping() override;
 
 private:
 

@@ -73,24 +73,24 @@ public:
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_BASE_API virtual void setTitle(const std::string& title) override;
+    UI_BASE_API void setTitle(const std::string& title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_BASE_API virtual void setMessage(const std::string& message) override;
+    UI_BASE_API void setMessage(const std::string& message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_BASE_API virtual void setLogger(const core::log::Logger::sptr& logger) override;
+    UI_BASE_API void setLogger(const core::log::Logger::sptr& logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
      */
-    UI_BASE_API virtual bool show() override;
+    UI_BASE_API bool show() override;
 
 protected:
 

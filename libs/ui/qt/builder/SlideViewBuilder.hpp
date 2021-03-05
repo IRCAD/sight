@@ -52,10 +52,10 @@ public:
     UI_QT_API virtual ~SlideViewBuilder();
 
     /// Create the Qt container @ref ui::qt::widget::SlideBar.
-    UI_QT_API virtual void createContainer( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createContainer( ui::base::container::fwContainer::sptr parent ) override;
 
     /// Destroyes the container.
-    UI_QT_API virtual void destroyContainer() override;
+    UI_QT_API void destroyContainer() override;
 
 protected:
 

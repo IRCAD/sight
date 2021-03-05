@@ -106,13 +106,13 @@ protected:
     void configuring() final;
 
     /// Install the container.
-    virtual void starting() override;
+    void starting() override;
 
     /// Destroy the container.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    virtual void updating() override;
+    void updating() override;
 
 private:
 

@@ -67,18 +67,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    virtual void updating() override;
+    void updating() override;
 
     /// Do nothing
-    virtual void swapping() override;
+    void swapping() override;
 
     /**
      * @brief Configure the editor.
@@ -88,10 +88,10 @@ protected:
        <service uid="snapshotEditor" type="sight::module::ui::qt::viz::SnapshotEditor" autoConnect="no" />
        @endcode
      */
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Overrides
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
 protected Q_SLOTS:
     /**

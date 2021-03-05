@@ -69,7 +69,7 @@ public:
     VIZ_SCENE3D_API GridProxyGeometry(const ::Ogre::String& name);
 
     /// Destructor, frees resources if they have been allocated.
-    VIZ_SCENE3D_API virtual ~GridProxyGeometry() override;
+    VIZ_SCENE3D_API ~GridProxyGeometry() override;
 
     /// Function to be called when the volume changed and its size too. Recomputes texture and geometry.
     VIZ_SCENE3D_API void updateGridSize();
@@ -82,7 +82,7 @@ public:
     VIZ_SCENE3D_API void clipGrid(const ::Ogre::AxisAlignedBox& _clippingBox);
 
     /// Get the object's type as a string.
-    VIZ_SCENE3D_API virtual const ::Ogre::String& getMovableType(void) const override;
+    VIZ_SCENE3D_API const ::Ogre::String& getMovableType(void) const override;
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
     VIZ_SCENE3D_API void set3DImageTexture(const ::Ogre::TexturePtr& _texture);
@@ -150,7 +150,7 @@ public:
     }
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API virtual ~GridProxyGeometryFactory() override
+    VIZ_SCENE3D_API ~GridProxyGeometryFactory() override
     {
     }
 
@@ -158,7 +158,7 @@ public:
     static ::Ogre::String FACTORY_TYPE_NAME;
 
     /// Returns the object type name.
-    VIZ_SCENE3D_API virtual const ::Ogre::String& getType(void) const override
+    VIZ_SCENE3D_API const ::Ogre::String& getType(void) const override
     {
         return FACTORY_TYPE_NAME;
     }
@@ -166,7 +166,7 @@ public:
 #if OGRE_VERSION_PATCH < 9
     //------------------------------------------------------------------------------
 
-    VIZ_SCENE3D_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override
+    VIZ_SCENE3D_API void destroyInstance( ::Ogre::MovableObject* obj) override
     {
         delete obj;
     }

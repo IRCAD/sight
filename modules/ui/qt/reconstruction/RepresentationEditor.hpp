@@ -76,16 +76,16 @@ protected:
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Initialize the UI
-    virtual void starting() override;
+    void starting() override;
 
     /// Clean the UI
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Update the UI according to the reconstruction
-    virtual void updating() override;
+    void updating() override;
 
     /// Do nothing.
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -93,7 +93,7 @@ protected:
      *
      * Connect Reconstruction::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
-    virtual KeyConnectionsMap getAutoConnections() const override;
+    KeyConnectionsMap getAutoConnections() const override;
 
     /// Notify the changes
     void notifyMaterial();

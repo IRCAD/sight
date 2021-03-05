@@ -80,17 +80,17 @@ public:
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
-    MODULE_GEOMETRY_VISION_API virtual void computeRegistration(core::HiResClock::HiResClockType _timestamp) override;
+    MODULE_GEOMETRY_VISION_API void computeRegistration(core::HiResClock::HiResClockType _timestamp) override;
 
 protected:
     /// configures the service
-    MODULE_GEOMETRY_VISION_API virtual void configuring() override;
+    MODULE_GEOMETRY_VISION_API void configuring() override;
     /// starts the service and call initialize()
-    MODULE_GEOMETRY_VISION_API virtual void starting() override;
+    MODULE_GEOMETRY_VISION_API void starting() override;
     /// does nothing
-    MODULE_GEOMETRY_VISION_API virtual void stopping() override;
+    MODULE_GEOMETRY_VISION_API void stopping() override;
     /// calls computeRegistration with fake timestamp.
-    MODULE_GEOMETRY_VISION_API virtual void updating() override;
+    MODULE_GEOMETRY_VISION_API void updating() override;
 
 private:
 

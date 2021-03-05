@@ -49,9 +49,9 @@ public:
 
     VIZ_SCENE3D_API static ::Ogre::String FACTORY_TYPE_NAME;
 
-    VIZ_SCENE3D_API virtual const ::Ogre::String& getType(void) const override;
+    VIZ_SCENE3D_API const ::Ogre::String& getType(void) const override;
 #if OGRE_VERSION_PATCH < 9
-    VIZ_SCENE3D_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override;
+    VIZ_SCENE3D_API void destroyInstance( ::Ogre::MovableObject* obj) override;
 #endif
 
 protected:

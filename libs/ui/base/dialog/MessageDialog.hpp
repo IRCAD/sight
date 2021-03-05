@@ -84,25 +84,25 @@ public:
     UI_BASE_API virtual ~MessageDialog();
 
     /// Set the title of the message box
-    UI_BASE_API virtual void setTitle(const std::string& title) override;
+    UI_BASE_API void setTitle(const std::string& title) override;
 
     /// Set the message
-    UI_BASE_API virtual void setMessage(const std::string& msg) override;
+    UI_BASE_API void setMessage(const std::string& msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_BASE_API virtual void setIcon( IMessageDialog::Icons icon) override;
+    UI_BASE_API void setIcon( IMessageDialog::Icons icon) override;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    UI_BASE_API virtual void addButton(IMessageDialog::Buttons button ) override;
+    UI_BASE_API void addButton(IMessageDialog::Buttons button ) override;
 
     /// Set the default button
-    UI_BASE_API virtual void setDefaultButton(IMessageDialog::Buttons button ) override;
+    UI_BASE_API void setDefaultButton(IMessageDialog::Buttons button ) override;
 
     /// Add a custom button to this dialog
-    UI_BASE_API virtual void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
+    UI_BASE_API void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
     /// Show the message box and return the clicked button.
-    UI_BASE_API virtual IMessageDialog::Buttons show() override;
+    UI_BASE_API IMessageDialog::Buttons show() override;
 
 protected:
 

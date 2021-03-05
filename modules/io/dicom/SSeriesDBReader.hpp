@@ -131,7 +131,7 @@ public:
     /**
      * @brief   destructor
      */
-    MODULE_IO_DICOM_API virtual ~SSeriesDBReader() noexcept override;
+    MODULE_IO_DICOM_API ~SSeriesDBReader() noexcept override;
 
 protected:
 
@@ -146,13 +146,13 @@ protected:
     };
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_IO_DICOM_API virtual void configuring() override;
+    MODULE_IO_DICOM_API void configuring() override;
 
     /// Override
-    MODULE_IO_DICOM_API virtual void starting() override;
+    MODULE_IO_DICOM_API void starting() override;
 
     /// Override
-    MODULE_IO_DICOM_API virtual void stopping() override;
+    MODULE_IO_DICOM_API void stopping() override;
 
     /// Override
     MODULE_IO_DICOM_API void updating() override;
@@ -161,17 +161,17 @@ protected:
     MODULE_IO_DICOM_API void info(std::ostream& _sstream ) override;
 
     /// Override
-    MODULE_IO_DICOM_API virtual std::string getSelectorDialogTitle() override;
+    MODULE_IO_DICOM_API std::string getSelectorDialogTitle() override;
 
     /**
      * @brief Configure using GUI.
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_DICOM_API virtual void configureWithIHM() override;
+    MODULE_IO_DICOM_API void configureWithIHM() override;
 
     /// Configure using GUI.
-    MODULE_IO_DICOM_API virtual void openLocationDialog() override;
+    MODULE_IO_DICOM_API void openLocationDialog() override;
 
     /// Return managed file type, here FOLDER
     MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;

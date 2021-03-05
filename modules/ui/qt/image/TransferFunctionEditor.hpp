@@ -95,16 +95,16 @@ public:
 protected:
 
     /// Configure the transfer function editor.
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /// Update the TransferFunctionEditor, do nothing.
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /// Selects the current transfer function
     MODULE_UI_QT_API void swapping(const KeyType& key) override;
@@ -117,7 +117,7 @@ protected:
      * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Initialize the transfer functions.

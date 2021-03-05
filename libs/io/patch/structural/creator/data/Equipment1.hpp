@@ -49,7 +49,7 @@ public:
     IO_PATCH_API Equipment1( const Equipment1& cpy );
 
     /// Create the specified object (sets 'institution_name' attribute).
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

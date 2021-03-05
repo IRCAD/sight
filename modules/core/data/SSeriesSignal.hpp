@@ -94,16 +94,16 @@ public:
 protected:
 
     /// Do nothing
-    virtual void starting() override;
+    void starting() override;
 
     /// Do nothing
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    virtual void updating() override;
+    void updating() override;
 
     /// Parse XML configuration
-    virtual void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,

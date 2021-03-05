@@ -93,16 +93,16 @@ public:
 protected:
 
     /// Configure the editor.
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /// Initialize the widgets.
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /// destroy the widgets.
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /// FILL ME.
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
 protected:
 

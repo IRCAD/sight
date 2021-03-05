@@ -78,16 +78,16 @@ public:
 protected:
 
     /// Set memory and command boundaries.
-    MODULE_UI_HISTORY_API virtual void configuring() override;
+    MODULE_UI_HISTORY_API void configuring() override;
 
     /// Notify if undo or redo are possible.
-    MODULE_UI_HISTORY_API virtual void starting() override;
+    MODULE_UI_HISTORY_API void starting() override;
 
     /// Notify if undo or redo are possible.
-    MODULE_UI_HISTORY_API virtual void updating() override;
+    MODULE_UI_HISTORY_API void updating() override;
 
     /// Clears the history.
-    MODULE_UI_HISTORY_API virtual void stopping() override;
+    MODULE_UI_HISTORY_API void stopping() override;
 
 private:
 

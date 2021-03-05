@@ -83,7 +83,7 @@ public:
     MODULE_UI_QT_API SSelector() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SSelector() noexcept override;
+    MODULE_UI_QT_API ~SSelector() noexcept override;
 
     /**
      * @name Signals API
@@ -99,16 +99,16 @@ public:
 protected:
 
     /// Initialize the editor.
-    virtual void configuring() override;
+    void configuring() override;
 
     /// This method launches the IEditor::starting method.
-    virtual void starting() override;
+    void starting() override;
 
     /// This method launches the IEditor::stopping method.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Show activity selector.
-    virtual void updating() override;
+    void updating() override;
 
     typedef std::vector< std::string > KeysType;
 

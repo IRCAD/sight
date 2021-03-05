@@ -64,7 +64,7 @@ public:
     MODULE_UI_QT_API SImage() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SImage() noexcept override;
+    MODULE_UI_QT_API ~SImage() noexcept override;
 
 protected:
 
@@ -74,20 +74,20 @@ protected:
     /**
      * @brief This method launches the IEditor::starting method.
      */
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /**
      * @brief This method launches the IEditor::stopping method.
      */
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
     /// This method is used to configure the class parameters.
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /** @} */
 private:

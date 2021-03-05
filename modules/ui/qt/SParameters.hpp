@@ -232,7 +232,7 @@ private:
      * @param _event Event type, only care about ::QEvent::EnabledChange
      * @return False.
      */
-    virtual bool eventFilter(QObject* _watched, QEvent* _event) override;
+    bool eventFilter(QObject* _watched, QEvent* _event) override;
 
     /// Snippet to create the reset button
     QPushButton* createResetButton();

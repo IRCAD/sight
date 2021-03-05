@@ -78,33 +78,33 @@ protected:
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_IMAGE_API virtual void starting() override;
+    MODULE_FILTER_IMAGE_API void starting() override;
 
     /**
      * @brief Stops the service.
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_IMAGE_API virtual void stopping() override;
+    MODULE_FILTER_IMAGE_API void stopping() override;
 
     /**
      * @brief Configures the service.
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_IMAGE_API virtual void configuring() override;
+    MODULE_FILTER_IMAGE_API void configuring() override;
 
     /**
      * @brief Compute the registration.
      *
      * @throw core::tools::Failed
      */
-    MODULE_FILTER_IMAGE_API virtual void updating() override;
+    MODULE_FILTER_IMAGE_API void updating() override;
 
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    MODULE_FILTER_IMAGE_API virtual void computeRegistration (core::HiResClock::HiResClockType timestamp) override;
+    MODULE_FILTER_IMAGE_API void computeRegistration (core::HiResClock::HiResClockType timestamp) override;
 
 private:
 };

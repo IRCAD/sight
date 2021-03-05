@@ -142,16 +142,16 @@ public:
 protected:
 
     ///This method creates the editor gui.
-    virtual void starting() override;
+    void starting() override;
 
     ///This method destroys the editor gui.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Update the activity if it is defined in the configuration, else does nothing.
-    virtual void updating() override;
+    void updating() override;
 
     /// Initialize the editor.
-    virtual void configuring() override;
+    void configuring() override;
 
 private:
 

@@ -50,7 +50,7 @@ public:
     IO_PATCH_API ModelSeries1( const ModelSeries1& cpy );
 
     /// Creates the specified object (sets 'reconstruction_db' attribute) and calls creator 'Series1'.
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

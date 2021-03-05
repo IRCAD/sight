@@ -176,7 +176,7 @@
     /** @name Demangling methods */                                                             \
     /** @{ */                                                                                   \
     /** @brief return object's classname without its namespace, i.e. BaseObject */              \
-    virtual const std::string& getLeafClassname() const override                                \
+    const std::string& getLeafClassname() const override                                \
     {                                                                                           \
         __FWCORE_STATIC_CACHE(::sight::core::Demangler(*this).getLeafClassname());                   \
     }                                                                                           \
@@ -185,7 +185,7 @@
         __FWCORE_STATIC_CACHE(::sight::core::getLeafClassname<SelfType>());                          \
     }                                                                                           \
     /** @brief return full object's classname with its namespace, i.e. core::BaseObject */  \
-    virtual const std::string& getClassname() const override                                    \
+    const std::string& getClassname() const override                                    \
     {                                                                                           \
         __FWCORE_STATIC_CACHE(::sight::core::getClassname<SelfType>());                              \
     }                                                                                           \
@@ -226,7 +226,7 @@
             return BaseClass::isTypeOf( type );               \
         }                                                     \
     }                                                         \
-    virtual bool isA(const std::string& type) const override  \
+    bool isA(const std::string& type) const override  \
     {                                                         \
         return SelfType::isTypeOf(type);                      \
     }

@@ -91,7 +91,7 @@ protected:
      *
      * Connect Object::s_MODIFIED_SIG to s_UPDATE_SLOT
      */
-    MODULE_GEOMETRY_BASE_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 };
 
 } //namespace sight::module::geometry::base

@@ -82,7 +82,7 @@ public:
     MODULE_UI_QT_API SNotifier() noexcept;
 
     /// Destructor, clears the position map.
-    MODULE_UI_QT_API virtual ~SNotifier() noexcept override;
+    MODULE_UI_QT_API ~SNotifier() noexcept override;
 
 protected:
 
@@ -91,22 +91,22 @@ protected:
      */
 
     /// This method configures the service
-    MODULE_UI_QT_API virtual void configuring() override;
+    MODULE_UI_QT_API void configuring() override;
 
     /**
      * @brief Starts and setups the service optionnaly gets the parent container SID/WID if set.
      */
-    MODULE_UI_QT_API virtual void starting() override;
+    MODULE_UI_QT_API void starting() override;
 
     /**
      * @brief Stops & clears the service
      */
-    MODULE_UI_QT_API virtual void stopping() override;
+    MODULE_UI_QT_API void stopping() override;
 
     /**
      * @brief This method does nothing.
      */
-    MODULE_UI_QT_API virtual void updating() override;
+    MODULE_UI_QT_API void updating() override;
 
 private:
 

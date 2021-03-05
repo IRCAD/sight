@@ -74,18 +74,18 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOM_API virtual ~SDicomSeriesConverter() noexcept override;
+    MODULE_IO_DICOM_API ~SDicomSeriesConverter() noexcept override;
 
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_IO_DICOM_API virtual void configuring() override;
+    MODULE_IO_DICOM_API void configuring() override;
 
     /// Override
-    MODULE_IO_DICOM_API virtual void starting() override;
+    MODULE_IO_DICOM_API void starting() override;
 
     /// Override
-    MODULE_IO_DICOM_API virtual void stopping() override;
+    MODULE_IO_DICOM_API void stopping() override;
 
     /// Override
     MODULE_IO_DICOM_API void updating() override;

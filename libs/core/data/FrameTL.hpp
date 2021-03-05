@@ -66,7 +66,7 @@ public:
     DATA_API virtual ~FrameTL();
 
     /// Defines deep copy
-    DATA_API virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Initializes the size of the pool buffer.
@@ -116,7 +116,7 @@ public:
 private:
 
     /// Forbid the use of this inherited method.
-    DATA_API virtual void initPoolSize(unsigned int maxElementNum) override;
+    DATA_API void initPoolSize(unsigned int maxElementNum) override;
 
     /// frame width
     size_t m_width;

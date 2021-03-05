@@ -80,7 +80,7 @@ public:
     /**
      * @brief Returns a clone object
      */
-    ATOMS_API virtual Base::sptr clone() const override;
+    ATOMS_API Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type

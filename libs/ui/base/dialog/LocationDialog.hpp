@@ -77,7 +77,7 @@ public:
     UI_BASE_API const std::string& getTitle() override;
 
     /// Set the initial location for the dialog
-    UI_BASE_API virtual void setDefaultLocation( data::location::ILocation::sptr loc) override;
+    UI_BASE_API void setDefaultLocation( data::location::ILocation::sptr loc) override;
 
     /// Gets the default location for the dialog (from preferences or specified by user)
     UI_BASE_API const std::filesystem::path getDefaultLocation() override;

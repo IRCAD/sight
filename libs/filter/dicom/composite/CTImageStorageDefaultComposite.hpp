@@ -48,10 +48,10 @@ public:
     FILTER_DICOM_API virtual ~CTImageStorageDefaultComposite();
 
     /// Return the name of the filter
-    FILTER_DICOM_API virtual std::string getName() const override;
+    FILTER_DICOM_API std::string getName() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API virtual std::string getDescription() const override;
+    FILTER_DICOM_API std::string getDescription() const override;
 
 protected:
 

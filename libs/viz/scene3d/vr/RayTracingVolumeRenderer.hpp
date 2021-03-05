@@ -86,10 +86,10 @@ public:
                                              const data::TransferFunction::sptr tf) override;
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API virtual void updateVolumeTF() override;
+    VIZ_SCENE3D_API void updateVolumeTF() override;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API virtual void setSampling(uint16_t nbSamples) override;
+    VIZ_SCENE3D_API void setSampling(uint16_t nbSamples) override;
 
     /// Sets the opacity correction factor.
     VIZ_SCENE3D_API void setOpacityCorrection(int opacityCorrection);
@@ -107,7 +107,7 @@ public:
     VIZ_SCENE3D_API virtual void setAmbientOcclusionSAT(IllumAmbientOcclusionSAT::sptr _ambientOcclusionSAT);
 
     /// Sets pre-integrated mode.
-    VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) override;
+    VIZ_SCENE3D_API void setPreIntegratedRendering(bool preIntegratedRendering) override;
 
     /// Sets ambient occlusion usage.
     VIZ_SCENE3D_API virtual void setAmbientOcclusion(bool ambientOcclusion);
@@ -123,7 +123,7 @@ public:
     VIZ_SCENE3D_API void setFocalLength(float focalLength);
 
     /// Computes image positions, updates the proxy geometry.
-    VIZ_SCENE3D_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox) override;
+    VIZ_SCENE3D_API void clipImage(const ::Ogre::AxisAlignedBox& clippingBox) override;
 
     /// IllumVolume getter.
     VIZ_SCENE3D_API IllumAmbientOcclusionSAT::sptr getIllumVolume();

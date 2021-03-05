@@ -80,10 +80,10 @@ public:
 private:
 
     /// Configures the adaptor.
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Initializes the layer and the font.
-    virtual void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -94,19 +94,19 @@ private:
      * Connect data::Histogram::s_MODIFIED_SIG of s_HISTOGRAM_INPUT to
      * module::viz::scene2d::adaptor::SHistogramValue::s_UPDATE_SLOT.
      */
-    virtual service::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::IService::KeyConnectionsMap getAutoConnections() const override;
 
     /// Draws the text at the clicked position.
-    virtual void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    virtual void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
-    virtual void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
+    void processInteraction(sight::viz::scene2d::data::Event& _event ) override;
 
     /// Defines the color used for graphic item's inner color.
     QPen m_color;

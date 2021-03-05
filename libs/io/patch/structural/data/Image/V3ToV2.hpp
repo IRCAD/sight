@@ -45,7 +45,7 @@ public:
     IO_PATCH_API V3ToV2();
 
     /// Destructor
-    IO_PATCH_API virtual ~V3ToV2() override;
+    IO_PATCH_API ~V3ToV2() override;
 
     /// Copy constructor
     IO_PATCH_API V3ToV2( const V3ToV2& cpy );

@@ -60,22 +60,22 @@ public:
 protected:
 
     /// Uses data::ObjectLock to dump lock the associated data
-    MODULE_MEMORY_API virtual void starting() override;
+    MODULE_MEMORY_API void starting() override;
 
     /// Dump unlock the associated data
-    MODULE_MEMORY_API virtual void stopping() override;
+    MODULE_MEMORY_API void stopping() override;
 
     /// Does nothing
-    MODULE_MEMORY_API virtual void reconfiguring() override;
+    MODULE_MEMORY_API void reconfiguring() override;
 
     /// Does nothing
-    MODULE_MEMORY_API virtual void updating() override;
+    MODULE_MEMORY_API void updating() override;
 
     /// Does nothing
-    MODULE_MEMORY_API virtual void info( std::ostream& _sstream ) override;
+    MODULE_MEMORY_API void info( std::ostream& _sstream ) override;
 
     /// Does nothing
-    MODULE_MEMORY_API virtual void configuring() override;
+    MODULE_MEMORY_API void configuring() override;
 
 private:
 

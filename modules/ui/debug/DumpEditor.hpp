@@ -73,22 +73,22 @@ protected:
     typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /// Install the layout and call updating() method
-    virtual void starting() override;
+    void starting() override;
 
     /// Stop the layout.
-    virtual void stopping() override;
+    void stopping() override;
 
     /// Update the choice selection
-    virtual void updating() override;
+    void updating() override;
 
     /// Call updating() method
-    virtual void swapping() override;
+    void swapping() override;
 
     /// Calls classic IAction methods to configure
-    virtual void configuring() override;
+    void configuring() override;
 
     /// Overrides. Does nothing.
-    virtual void info( std::ostream& _sstream ) override;
+    void info( std::ostream& _sstream ) override;
 
     /// Start m_updateTimer, call on buffManager signal emit ( see m_refreshSignal )
     void onUpdate();

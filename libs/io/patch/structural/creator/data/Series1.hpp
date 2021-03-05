@@ -55,7 +55,7 @@ public:
      *
      * Calls creators for 'patient', 'study' and 'equipment' attributes and sets remaining attributes.
      */
-    IO_PATCH_API virtual sight::atoms::Object::sptr create() override;
+    IO_PATCH_API sight::atoms::Object::sptr create() override;
 
 };
 

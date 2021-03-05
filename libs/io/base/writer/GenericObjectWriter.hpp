@@ -66,7 +66,7 @@ public:
      *
      * This method overload setObject to ensure that given object correspond to DATATYPE
      */
-    virtual void setObject( core::tools::Object::csptr obj) override
+    void setObject( core::tools::Object::csptr obj) override
     {
         SIGHT_ASSERT("Object type: '" << std::string(typeid(obj).name())
                                       << "' is not a '" << typeid(DataType()).name()<<"'",

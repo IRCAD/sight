@@ -67,7 +67,7 @@ public:
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_MATRIX_API virtual void configureWithIHM() override;
+    MODULE_IO_MATRIX_API void configureWithIHM() override;
 
     /**
      * @brief Configure the image path.
@@ -75,16 +75,16 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    MODULE_IO_MATRIX_API virtual void openLocationDialog() override;
+    MODULE_IO_MATRIX_API void openLocationDialog() override;
 
     /**
      * @brief   returns  (filename) extension
      */
-    MODULE_IO_MATRIX_API virtual std::vector< std::string > getSupportedExtensions() override;
+    MODULE_IO_MATRIX_API std::vector< std::string > getSupportedExtensions() override;
     /// @}
 
     /// Return path type managed by the service, here FILE
-    MODULE_IO_MATRIX_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::base::service::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -97,19 +97,19 @@ protected:
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
-    MODULE_IO_MATRIX_API virtual void starting( ) override;
+    MODULE_IO_MATRIX_API void starting( ) override;
 
     /**
      * @brief Stopping method. This method is called by stop() from base service ( service::IService )
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_MATRIX_API virtual void stopping( ) override;
+    MODULE_IO_MATRIX_API void stopping( ) override;
 
     /**
      * @brief Configuring method : calls implementation from `io::IReader`
      */
-    MODULE_IO_MATRIX_API virtual void configuring() override;
+    MODULE_IO_MATRIX_API void configuring() override;
 
     /**
      * @brief Updating method. This method is called by update() from base service ( service::IService )
@@ -128,7 +128,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    MODULE_IO_MATRIX_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_IO_MATRIX_API void info(std::ostream& _sstream ) override;
     /// @}
 
 };

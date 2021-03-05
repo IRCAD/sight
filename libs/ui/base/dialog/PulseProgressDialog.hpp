@@ -63,7 +63,7 @@ public:
     UI_BASE_API void setMessage(const std::string& message) override;
 
     ///show the pulse progress dialog
-    UI_BASE_API virtual void show() override;
+    UI_BASE_API void show() override;
 
 protected:
 

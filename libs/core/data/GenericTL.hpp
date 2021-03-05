@@ -50,7 +50,7 @@ public:
     virtual ~GenericTL();
 
     /// Defines deep copy
-    virtual void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 
     /**
      * @brief Returns the closest buffer to the given timestamp
@@ -81,7 +81,7 @@ public:
     SPTR(BufferType) createBuffer(core::HiResClock::HiResClockType timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    virtual bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const override;
+    bool isObjectValid(const CSPTR(data::timeline::Object)& obj) const override;
 
     /// Get/set the maximum number of objects inside a single buffer
     unsigned int getMaxElementNum() const;

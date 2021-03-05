@@ -41,10 +41,10 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Numerical test
-    IO_ATOMS_API virtual bool test(sight::atoms::Base::sptr old, sight::atoms::Base::sptr newValue) override;
+    IO_ATOMS_API bool test(sight::atoms::Base::sptr old, sight::atoms::Base::sptr newValue) override;
 
     /// Numerical test
-    IO_ATOMS_API virtual bool test(sight::atoms::Base::sptr old) override;
+    IO_ATOMS_API bool test(sight::atoms::Base::sptr old) override;
 
     /// Set the maximum treshold
     IO_ATOMS_API virtual void setTreshold(sight::atoms::Numeric::sptr treshold);

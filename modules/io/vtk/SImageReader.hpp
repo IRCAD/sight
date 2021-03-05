@@ -85,14 +85,14 @@ public:
      * @deprecated Will be removed in sight 22.0. Use openLocationDialog() instead.
      */
     [[deprecated("Will be removed in sight 22.0. Use openLocationDialog() instead.")]]
-    MODULE_IO_VTK_API virtual void configureWithIHM() override;
+    MODULE_IO_VTK_API void configureWithIHM() override;
 
     /**
      * @brief Configure the image path with a dialogBox.
      *
      * This method is used to find the file path using a file selector.
      */
-    MODULE_IO_VTK_API virtual void openLocationDialog() override;
+    MODULE_IO_VTK_API void openLocationDialog() override;
 
     /**
      * @brief Constructor. Do nothing.
@@ -111,16 +111,16 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API virtual sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::base::service::IOPathType getIOPathType() const override;
 
     /// Method called when the service is started, does nothing.
-    MODULE_IO_VTK_API virtual void starting() override;
+    MODULE_IO_VTK_API void starting() override;
 
     /// Method called when the service is stopped, does nothing.
-    MODULE_IO_VTK_API virtual void stopping() override;
+    MODULE_IO_VTK_API void stopping() override;
 
     /// Method called when the service is stopped, does nothing.
-    MODULE_IO_VTK_API virtual void configuring() override;
+    MODULE_IO_VTK_API void configuring() override;
 
     /**
      * @brief Updating method execute the read process.

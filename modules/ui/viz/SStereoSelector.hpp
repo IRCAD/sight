@@ -67,16 +67,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    MODULE_UI_VIZ_API virtual void configuring() override;
+    MODULE_UI_VIZ_API void configuring() override;
 
     /// Sets the connections and the UI elements
-    MODULE_UI_VIZ_API virtual void starting() override;
+    MODULE_UI_VIZ_API void starting() override;
 
     /// Destroys the connections and cleans the container
-    MODULE_UI_VIZ_API virtual void stopping() override;
+    MODULE_UI_VIZ_API void stopping() override;
 
     /// Does nothing
-    MODULE_UI_VIZ_API virtual void updating() override;
+    MODULE_UI_VIZ_API void updating() override;
 
 private Q_SLOTS:
 

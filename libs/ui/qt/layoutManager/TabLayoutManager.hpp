@@ -58,13 +58,13 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API virtual void createLayout( ui::base::container::fwContainer::sptr parent ) override;
+    UI_QT_API void createLayout( ui::base::container::fwContainer::sptr parent ) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API virtual void destroyLayout() override;
+    UI_QT_API void destroyLayout() override;
 
 private:
 

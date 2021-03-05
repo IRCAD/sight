@@ -75,16 +75,16 @@ public:
 
 protected:
 
-    MODULE_UI_VIZ_API virtual void configuring() override;
+    MODULE_UI_VIZ_API void configuring() override;
 
     /// Does nothing
-    MODULE_UI_VIZ_API virtual void starting() override;
+    MODULE_UI_VIZ_API void starting() override;
 
     /// Does nothing
-    MODULE_UI_VIZ_API virtual void stopping() override;
+    MODULE_UI_VIZ_API void stopping() override;
 
     /// Does nothing
-    MODULE_UI_VIZ_API virtual void updating() override;
+    MODULE_UI_VIZ_API void updating() override;
 
 private:
 

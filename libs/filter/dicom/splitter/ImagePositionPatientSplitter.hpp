@@ -52,10 +52,10 @@ public:
     FILTER_DICOM_API virtual DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series, const core::log::Logger::sptr& logger) const override;
     /// Return the name of the filter
-    FILTER_DICOM_API virtual std::string getName() const override;
+    FILTER_DICOM_API std::string getName() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API virtual std::string getDescription() const override;
+    FILTER_DICOM_API std::string getDescription() const override;
 
 protected:
     /// Filter name

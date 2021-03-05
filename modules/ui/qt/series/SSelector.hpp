@@ -108,7 +108,7 @@ protected:
      * Connect data::SeriesDB::s_ADDED_SERIES_SIG of s_SERIES_DB_INOUT to s_ADD_SERIES_SLOT
      * Connect data::SeriesDB::s_REMOVED_SERIES_SIG of s_SERIES_DB_INOUT to s_REMOVE_SERIES_SLOT
      */
-    MODULE_UI_QT_API virtual KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Fills selector with the series contained in SeriesDB.
     MODULE_UI_QT_API void updating() override;

@@ -66,14 +66,14 @@ public:
 
         m_option = cfg.get(s_OPTION_KEY, s_NOT_DEFINED);
     }
-    virtual void starting() override;
+    void starting() override;
     //------------------------------------------------------------------------------
 
     virtual void stopping() final;
-    virtual void updating() override;
+    void updating() override;
     //------------------------------------------------------------------------------
 
-    virtual void info(std::ostream& _sstream ) override
+    void info(std::ostream& _sstream ) override
     {
         _sstream << "TestService";
     }
@@ -176,7 +176,7 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    virtual void updating() override
+    void updating() override
     {
         TestService::updating();
         m_isUpdated = true;
@@ -189,14 +189,14 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    virtual void swapping(const KeyType& key) override
+    void swapping(const KeyType& key) override
     {
         m_swappedObjectKey = key;
         m_swappedObject    = this->getInput< data::Object>(key);
     }
 
     //-------------------------------------------------------------------------
-    virtual KeyConnectionsMap getAutoConnections() const override
+    KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
         connections.push("data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
@@ -210,7 +210,7 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    virtual void info(std::ostream& _sstream ) override
+    void info(std::ostream& _sstream ) override
     {
         _sstream << "TestServiceImplementation";
     }
@@ -286,13 +286,13 @@ public:
     }
     //-------------------------------------------------------------------------
 
-    virtual void updating() override
+    void updating() override
     {
         m_isUpdated = true;
     }
     //-------------------------------------------------------------------------
 
-    virtual void info(std::ostream& _sstream ) override
+    void info(std::ostream& _sstream ) override
     {
         _sstream << "TestSrvAutoconnect";
     }
@@ -315,7 +315,7 @@ public:
     }
     //-------------------------------------------------------------------------
 
-    virtual IService::KeyConnectionsMap getAutoConnections() const override
+    IService::KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
         connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
@@ -364,20 +364,20 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual void configuring() override
+    void configuring() override
     {
     }
 
     //------------------------------------------------------------------------------
 
-    virtual void starting() override
+    void starting() override
     {
 
     }
     //------------------------------------------------------------------------------
 
-    virtual void stopping() override;
-    virtual void updating() override;
+    void stopping() override;
+    void updating() override;
 };
 
 } //namespace ut

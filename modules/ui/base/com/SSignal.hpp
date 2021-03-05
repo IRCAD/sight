@@ -75,16 +75,16 @@ protected:
     MODULE_UI_BASE_API void configuring() override;
 
     /// Register the action and check if the action is executable.
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /// Unregister the action.
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /// Emit the signal
     MODULE_UI_BASE_API void updating() override;
 
     /// Give information about the class. Do nothing.
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
 
     /// Signal trigerred when action has been triggered
     SPTR(TriggeredSignalType) m_sigTriggered;

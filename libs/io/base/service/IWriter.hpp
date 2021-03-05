@@ -203,7 +203,7 @@ protected:
        </service>
        @endcode
      */
-    IO_BASE_API virtual void configuring() override;
+    IO_BASE_API void configuring() override;
 
     /**
      * @brief Title of the window that will open when the `openLocationDialog` slot is called

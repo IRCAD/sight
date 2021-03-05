@@ -58,29 +58,29 @@ protected:
      * @brief This method is used to configure the class parameters.
      * @see sight::ui::base::IGuiContainer::initialize()
      */
-    MODULE_UI_BASE_API virtual void configuring() override;
+    MODULE_UI_BASE_API void configuring() override;
 
     /**
      * @brief Register a view with defined id.
      * @see sight::ui::base::IGuiContainer::create()
      */
-    MODULE_UI_BASE_API virtual void starting() override;
+    MODULE_UI_BASE_API void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
      * @see sight::ui::base::IGuiContainer::destroy()
      */
-    MODULE_UI_BASE_API virtual void stopping() override;
+    MODULE_UI_BASE_API void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    MODULE_UI_BASE_API virtual void updating() override;
+    MODULE_UI_BASE_API void updating() override;
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_BASE_API virtual void info(std::ostream& _sstream ) override;
+    MODULE_UI_BASE_API void info(std::ostream& _sstream ) override;
     ///@}
 
 };

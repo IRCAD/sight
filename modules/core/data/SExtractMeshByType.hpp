@@ -86,16 +86,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_DATA_API virtual void starting() override;
+    MODULE_DATA_API void starting() override;
 
     /// Configure the service
-    MODULE_DATA_API virtual void configuring() override;
+    MODULE_DATA_API void configuring() override;
 
     /// Does nothing
-    MODULE_DATA_API virtual void stopping() override;
+    MODULE_DATA_API void stopping() override;
 
     /// Does nothing
-    MODULE_DATA_API virtual void updating() override;
+    MODULE_DATA_API void updating() override;
 
 private:
 

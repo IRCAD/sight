@@ -56,7 +56,7 @@ public:
     {
     }
 
-    ATOMS_API virtual std::string getString() const override;
+    ATOMS_API std::string getString() const override;
 
     ATOMS_API virtual void setString(const std::string& value);
 
@@ -77,7 +77,7 @@ public:
     /**
      * @brief Returns a clone object
      */
-    ATOMS_API virtual Base::sptr clone() const override;
+    ATOMS_API Base::sptr clone() const override;
 
     /**
      * @brief returns Atom type

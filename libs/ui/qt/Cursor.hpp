@@ -46,10 +46,10 @@ public:
     UI_QT_API virtual ~Cursor();
 
     /// Set the cursor
-    UI_QT_API virtual void setCursor( ui::base::ICursor::CursorType cursor) override;
+    UI_QT_API void setCursor( ui::base::ICursor::CursorType cursor) override;
 
     /// Set the default cursor
-    UI_QT_API virtual void setDefaultCursor() override;
+    UI_QT_API void setDefaultCursor() override;
 
 };
 

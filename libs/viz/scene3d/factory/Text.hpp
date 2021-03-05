@@ -50,9 +50,9 @@ public:
     VIZ_SCENE3D_API static const ::Ogre::String FACTORY_TYPE_NAME;
 
     /// Get the produced object's type. Always returns 'Text'.
-    VIZ_SCENE3D_API virtual const ::Ogre::String& getType(void) const override;
+    VIZ_SCENE3D_API const ::Ogre::String& getType(void) const override;
 #if OGRE_VERSION_PATCH < 9
-    VIZ_SCENE3D_API virtual void destroyInstance( ::Ogre::MovableObject* obj) override;
+    VIZ_SCENE3D_API void destroyInstance( ::Ogre::MovableObject* obj) override;
 #endif
 
 protected:
