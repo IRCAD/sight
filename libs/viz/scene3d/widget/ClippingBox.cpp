@@ -43,8 +43,6 @@
 namespace sight::viz::scene3d::widget
 {
 
-const std::string s_VR_MATERIALS_GROUP = "VRMaterials";
-
 //-----------------------------------------------------------------------------
 
 ClippingBox::ClippingBox(const std::string& id,
@@ -188,19 +186,12 @@ void ClippingBox::initWidgets()
 {
     // Create widget materials
     {
-        // Put those materials in a separate group so that we can't propose them as a choice for user meshes
-        auto& resourceMgr = ::Ogre::ResourceGroupManager::getSingleton();
-        if(!resourceMgr.resourceGroupExists(s_VR_MATERIALS_GROUP))
-        {
-            resourceMgr.createResourceGroup(s_VR_MATERIALS_GROUP);
-        }
-
         m_handleMtl->setAmbient(0.1f, 0.1f, 0.1f);
         m_handleMtl->setDiffuse(1.f, 1.f, 1.f, 1.f);
         m_handleMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
         m_handleMtl->setShininess(1.f);
 
-        m_handleHightlightMtl = m_handleMtl->clone(m_id + "_SphereHighlight", true, s_VR_MATERIALS_GROUP);
+        m_handleHightlightMtl = m_handleMtl->clone(m_id + "_SphereHighlight", true, RESOURCE_GROUP);
         m_handleHightlightMtl->setAmbient(0.3f, 0.f, 0.f);
         m_handleHightlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
 
@@ -208,10 +199,10 @@ void ClippingBox::initWidgets()
         m_boxMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
         m_boxMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
 
-        m_boxHighlightMtl = m_boxMtl->clone(m_id + "_FrameHighlight", true, s_VR_MATERIALS_GROUP);
+        m_boxHighlightMtl = m_boxMtl->clone(m_id + "_FrameHighlight", true, RESOURCE_GROUP);
         m_boxHighlightMtl->setAmbient(0.f, 1.f, 0.f);
 
-        m_boxFaceMtl = m_boxMtl->clone(m_id + "_FaceHighlight", true, s_VR_MATERIALS_GROUP);
+        m_boxFaceMtl = m_boxMtl->clone(m_id + "_FaceHighlight", true, RESOURCE_GROUP);
         m_boxFaceMtl->setAmbient(1.f, 1.f, 0.f);
         m_boxFaceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
         m_boxFaceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
