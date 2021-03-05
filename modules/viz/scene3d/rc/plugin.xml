@@ -127,6 +127,13 @@
          <object key="tf">sight::data::TransferFunction</object>
          <desc>This adaptor displays a 3D negato.</desc>
     </extension>
+    
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SOrientationMarker</service>
+         <object key="matrix">sight::data::Matrix4</object>
+         <desc>This adaptor displays an orientation "marker", marker is represented by a human body mesh, its orientation follows camera movement.</desc>
+    </extension>
 
     <extension implements="::sight::service::extension::Factory">
          <type>sight::viz::scene3d::IAdaptor</type>

@@ -41,6 +41,8 @@
             <value>#2E3034</value>
         </object>
         <object uid="snapshot" type="sight::data::Image" />
+        <!-- Camera matrix -->
+        <object uid="globalCamera" type="sight::data::Matrix4" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -169,6 +171,7 @@
                 <background topColor="#36393E" bottomColor="#36393E" />
 
                 <layer id="defaultLayer" order="1" transparency="DepthPeeling" numPeels="4" />
+                <adaptor uid="globalCameraAdp" />
                 <adaptor uid="trackballInteractorAdp" />
                 <adaptor uid="pickerInteractorAdp" />
                 <adaptor uid="modeSeriesAdp" />
@@ -233,7 +236,18 @@
                 <adaptor uid="frontalNegatoResizeViewportAdp" />
                 <adaptor uid="frontalPickerInteractorAdp" />
                 <adaptor uid="frontalLandmarksAdp" />
+
+                <layer id="orientationMarkerLayer" order="8" >
+                    <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
+                </layer>
+                <adaptor uid="orientationMarkerAdp" />
             </scene>
+        </service>
+
+        <!-- Camera for the 3D layer -->
+        <service uid="globalCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
+            <inout key="transform" uid="globalCamera" />
+            <config layer="defaultLayer" />
         </service>
 
         <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
@@ -300,8 +314,12 @@
             <config layer="defaultLayer" flip="true" />
         </service>
 
-        <!-- Axial -->
+        <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="yes">
+            <in key="matrix" uid="globalCamera" />
+            <config layer="orientationMarkerLayer" />
+        </service>
 
+        <!-- Axial -->
         <service uid="axialBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
             <in key="image" uid="background" />
             <config layer="axialBackgroundNegatoLayer" />
@@ -640,6 +658,7 @@
         <start uid="imageExtruderSrv" />
         <start uid="notifierSrv" />
 
+        <start uid="globalCameraAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="modeSeriesAdp" />
@@ -653,6 +672,8 @@
         <start uid="shapeExtruderAdp" />
         <start uid="resizeViewportAdp" />
         <start uid="snapshotAdp" />
+        <start uid="orientationMarkerAdp" />
+        
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />

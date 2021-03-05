@@ -231,7 +231,7 @@ void SLandmarks::updating()
         const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
         for(size_t index = 0; index < group.m_points.size(); ++index)
         {
-            this->insertPoint(groupName, index, landmarks.get_shared());
+            this->insertMyPoint(groupName, index, landmarks.get_shared());
         }
     }
 }
@@ -273,7 +273,7 @@ void SLandmarks::stopping()
 
 void SLandmarks::removeGroup(std::string _groupName)
 {
-    // Make the context as current since we create data here.
+    // Make the context as current.
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
@@ -309,6 +309,9 @@ void SLandmarks::removeGroup(std::string _groupName)
 
 void SLandmarks::modifyGroup(std::string _groupName)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     // Get all selected point.
     std::vector< size_t > indexes;
     for(const std::shared_ptr<SelectedLandmark>& landmark : m_selectedLandmarks)
@@ -319,21 +322,18 @@ void SLandmarks::modifyGroup(std::string _groupName)
     // Remove the group.
     this->removeGroup(_groupName);
 
-    size_t groupSize = 0;
-    {
-        // Get landmarks.
-        const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+    // Get landmarks.
+    const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
 
-        // Retrieve group.
-        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+    // Retrieve group.
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
 
-        groupSize = group.m_points.size();
-    }
+    size_t groupSize = group.m_points.size();
 
     // Re-create the group.
     for(size_t index = 0; index < groupSize; ++index)
     {
-        this->insertPoint(_groupName, index);
+        this->insertMyPoint(_groupName, index, landmarks.get_shared());
     }
 
     // Re-run selected landmark threads
@@ -347,6 +347,9 @@ void SLandmarks::modifyGroup(std::string _groupName)
 
 void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     const auto landmarks                    = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
     const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
 
@@ -368,30 +371,29 @@ void SLandmarks::modifyPoint(std::string _groupName, size_t _index)
 
 void SLandmarks::addPoint(std::string _groupName)
 {
-    // Find the last index.
-    size_t index = 0;
-    {
-        // Get landmarks.
-        const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
 
-        // Retrieve group.
-        const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
-        SIGHT_ASSERT("They must have at least one point in the group `" << _groupName << "`",
-                     group.m_points.size() > 0);
+    // Get landmarks.
+    const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
 
-        // Get the last index.
-        index = group.m_points.size() - 1;
-    }
+    // Retrieve group.
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_groupName);
+    SIGHT_ASSERT("They must have at least one point in the group `" << _groupName << "`",
+                 group.m_points.size() > 0);
+
+    // Get the last index.
+    size_t index = group.m_points.size() - 1;
 
     // Add the new point.
-    this->insertPoint(_groupName, index);
+    this->insertMyPoint(_groupName, index, landmarks.get_shared());
 }
 
 //------------------------------------------------------------------------------
 
 void SLandmarks::removePoint(std::string _groupName, size_t _index)
 {
-    // Make the context as current since we create data here.
+    // Make the context as current.
     this->getRenderService()->makeCurrent();
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
@@ -436,21 +438,13 @@ void SLandmarks::removePoint(std::string _groupName, size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks)
+void SLandmarks::insertPoint(std::string _groupName, size_t _index)
 {
-    // Make the context as current since we create data here.
+    // Make the context as current
     this->getRenderService()->makeCurrent();
 
-    // Get landmarks.
-    if (_landmarks == nullptr)
-    {
-        const auto landmarks = this->getLockedInOut< const data::Landmarks >(s_LANDMARKS_INPUT);
-        insertMyPoint(_groupName, _index, landmarks.get_shared());
-    }
-    else
-    {
-        insertMyPoint(_groupName, _index, _landmarks);
-    }
+    const auto landmarks = this->getLockedInOut< const data::Landmarks >(s_LANDMARKS_INPUT);
+    insertMyPoint(_groupName, _index, landmarks.get_shared());
 }
 
 //------------------------------------------------------------------------------
@@ -518,7 +512,8 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
     m_manualObjects.push_back(std::make_shared< Landmark >(node, object, _groupName, _index, text));
 
     // Hide landmarks if an image is given to the service.
-    this->hideLandmark(m_manualObjects.back(), _landmarks);
+    const auto imageLock = this->getWeakInput< data::Image >(s_IMAGE_INPUT).lock();
+    this->hideMyLandmark(m_manualObjects.back(), (imageLock.operator bool()), _landmarks);
 
     // Request the rendering.
     this->requestRender();
@@ -528,6 +523,9 @@ void SLandmarks::insertMyPoint(std::string _groupName, size_t _index, const data
 
 void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     for(auto objectIt = m_manualObjects.begin(); objectIt != m_manualObjects.end(); ++objectIt)
     {
         const std::string& name = (*objectIt)->m_groupName;
@@ -565,6 +563,9 @@ void SLandmarks::selectPoint(std::string _groupName, size_t _index)
 
 void SLandmarks::deselectPoint(std::string _groupName, size_t _index)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     // This method must be synchronized with selectPoint(std::string, size_t).
     std::lock_guard<std::mutex> guard(m_selectedMutex);
 
@@ -591,6 +592,9 @@ void SLandmarks::deselectPoint(std::string _groupName, size_t _index)
 
 void SLandmarks::hightlight(std::shared_ptr< SelectedLandmark > _selectedLandmark)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     // Hightlight the selected landmark.
     this->hideLandmark(_selectedLandmark->m_landmark);
     if(_selectedLandmark->m_landmark->m_object->isVisible())
@@ -622,6 +626,9 @@ void SLandmarks::initializeImage()
 
 void SLandmarks::changeSliceType(int _from, int _to)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     const auto toOrientation   = static_cast<OrientationMode>(_to);
     const auto fromOrientation = static_cast<OrientationMode>(_from);
 
@@ -643,6 +650,9 @@ void SLandmarks::changeSliceType(int _from, int _to)
 
 void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
@@ -671,6 +681,9 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 void SLandmarks::hideLandmarks()
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
@@ -687,23 +700,18 @@ void SLandmarks::hideLandmarks()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark, const data::Landmarks::csptr& _data)
+void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 {
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
     // Get image.
     const auto image = this->getWeakInput< data::Image >(s_IMAGE_INPUT);
 
     const auto imageLock = image.lock();
 
-    if (_data == nullptr)
-    {
-        const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
-        hideMyLandmark(_landmark, (imageLock.operator bool()), landmarks.get_shared());
-    }
-    else
-    {
-        hideMyLandmark(_landmark, (imageLock.operator bool()), _data);
-    }
-
+    const auto landmarks = this->getLockedInOut< data::Landmarks >(s_LANDMARKS_INPUT);
+    hideMyLandmark(_landmark, (imageLock.operator bool()), landmarks.get_shared());
 }
 
 //------------------------------------------------------------------------------

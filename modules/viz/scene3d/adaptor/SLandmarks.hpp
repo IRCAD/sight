@@ -256,9 +256,8 @@ private:
      * @brief SLOT: inserts a point.
      * @param _groupName group name of the landmark.
      * @param _index index of the point relative to the group.
-     * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertPoint(std::string _groupName, size_t _index, const data::Landmarks::csptr& _landmarks = nullptr);
+    void insertPoint(std::string _groupName, size_t _index);
 
     /**
      * @brief inserts a point.
@@ -323,9 +322,8 @@ private:
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
-     * @param _data landmarks data in which the landmarks should be hidden.
      */
-    void hideLandmark(std::shared_ptr< Landmark > _landmark, const data::Landmarks::csptr& _data = nullptr);
+    void hideLandmark(std::shared_ptr< Landmark > _landmark);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
