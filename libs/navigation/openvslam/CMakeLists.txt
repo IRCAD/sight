@@ -7,10 +7,8 @@ find_package(OpenMP REQUIRED)
 find_package(openvslam QUIET REQUIRED COMPONENTS openvslam)
 target_link_libraries(navigation_openvslam PUBLIC openvslam::openvslam)
 
-target_link_libraries(navigation_openvslam PUBLIC
-    data
-)
+target_link_libraries(navigation_openvslam PUBLIC data)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

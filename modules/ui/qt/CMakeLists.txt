@@ -47,6 +47,6 @@ target_link_libraries(module_ui_qt PUBLIC
                       ui_qt
 )
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

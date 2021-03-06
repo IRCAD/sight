@@ -34,7 +34,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP)/")
         #Look for all directories containing '.so*' files
         findLibsAndModules(LIBS_MODULES_DIRECTORIES)
 
-        list(APPEND LIBS_MODULES_DIRECTORIES @FW_EXTERNAL_LIBRARIES_DIR@)
+        list(APPEND LIBS_MODULES_DIRECTORIES @FW_SIGHT_EXTERNAL_LIBRARIES_DIR@)
         list(APPEND LIBS_MODULES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
 
         if(@FW_BUILD_EXTERNAL@)

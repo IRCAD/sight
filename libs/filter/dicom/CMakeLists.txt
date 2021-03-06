@@ -5,6 +5,6 @@ target_link_libraries(filter_dicom PRIVATE ${DCMTK_LIBRARIES})
 
 target_link_libraries(filter_dicom PUBLIC core data geometry_data)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

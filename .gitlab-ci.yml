@@ -14,7 +14,7 @@ stages:
     CCACHE_NOHASHDIR: "1"
     CCACHE_DIR: "/cache/ccache"
     BUILD_TYPE: "Release"
-    BUILD_DOCUMENTATION: "ON"
+    SIGHT_BUILD_DOC: "ON"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
   before_script:
@@ -75,9 +75,9 @@ lint:sheldon:
       -G Ninja
       -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
       -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
-      -DBUILD_TESTS=ON
-      -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
-      -DENABLE_PCH=OFF
+      -DSIGHT_BUILD_TESTS=ON
+      -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
+      -DSIGHT_ENABLE_PCH=OFF
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
       -DSIGHT_ENABLE_OPENVSLAM=ON
     # Touch all generated files to improve CCache performance
@@ -93,7 +93,7 @@ lint:sheldon:
     - ctest --timeout 480 --output-on-failure -O ctest.log -j4
     # Build documentation if needed
     - >
-      if [ "${BUILD_DOCUMENTATION}" == "ON" ]; then
+      if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
         ninja doc
       fi
 
@@ -107,7 +107,7 @@ build:linux-debug-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
-    BUILD_DOCUMENTATION: "OFF"
+    SIGHT_BUILD_DOC: "OFF"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
 
@@ -115,7 +115,7 @@ build:linux-release-gcc:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
-    BUILD_DOCUMENTATION: "ON"
+    SIGHT_BUILD_DOC: "ON"
     CC: "/usr/lib/ccache/gcc-10"
     CXX: "/usr/lib/ccache/g++-10"
 
@@ -123,7 +123,7 @@ build:linux-debug-clang:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Debug"
-    BUILD_DOCUMENTATION: "OFF"
+    SIGHT_BUILD_DOC: "OFF"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 
@@ -131,7 +131,7 @@ build:linux-release-clang:
   extends: .linux_build
   variables:
     BUILD_TYPE: "Release"
-    BUILD_DOCUMENTATION: "OFF"
+    SIGHT_BUILD_DOC: "OFF"
     CC: "/usr/lib/ccache/clang-11"
     CXX: "/usr/lib/ccache/clang++-11"
 

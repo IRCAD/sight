@@ -18,6 +18,6 @@ target_link_libraries(module_ui_viz PUBLIC
                       ui_base
 )
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

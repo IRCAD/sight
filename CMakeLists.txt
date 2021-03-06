@@ -21,7 +21,7 @@ if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT CMAKE_BUILD_TYPE STREQUAL "Rele
     message(FATAL_ERROR "Invalid value for CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}' (required Debug, Release, RelWithDebInfo)")
 endif()
 
-project (sight)
+project(sight)
 
 set(SIGHT_REPOSITORY "sight")
 set(SIGHT_VERSION "21.0.0")
@@ -47,21 +47,20 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modu
 ########################################################################################################################
 
 # Tests build / run options
-set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
-set(TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
-mark_as_advanced(TESTS_XML_OUTPUT)
-set(TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
-mark_as_advanced(TESTS_FILTER)
+set(SIGHT_BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
+set(SIGHT_TESTS_XML_OUTPUT OFF CACHE BOOL "Tests will generate an xml output, suitable for CI integration")
+mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
+set(SIGHT_TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
+mark_as_advanced(SIGHT_TESTS_FILTER)
 
-option(ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
-option(VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
-mark_as_advanced(ENABLE_PCH)
-mark_as_advanced(VERBOSE_PCH)
+option(SIGHT_ENABLE_PCH "Use pre-compiled headers to speedup the compilation" ON)
+option(SIGHT_VERBOSE_PCH  "Display debug messages to help debugging PCH" OFF)
+mark_as_advanced(SIGHT_ENABLE_PCH)
+mark_as_advanced(SIGHT_VERBOSE_PCH )
 
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
-set( ENABLE_QML_APPLICATION OFF CACHE BOOL "Temporary Variable to set Qml or not in applications to kept old services working" )
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/PrecompiledHeader.cmake)
 
@@ -75,8 +74,6 @@ endif()
 if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
 endif()
-
-set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 
 # Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -120,12 +117,12 @@ if(NOT VCPKG_TARGET_TRIPLET)
         include("${LIB_CONFIG}")
     endforeach()
 
-    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
-    mark_as_advanced(EXTERNAL_LIBRARIES)
+    set(SIGHT_EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+    mark_as_advanced(SIGHT_EXTERNAL_LIBRARIES)
 
-    # Use directly EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
+    # Use directly SIGHT_EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
     # OpenVSLAM is the only package provided by sight-deps
-    if(NOT EXTERNAL_LIBRARIES AND SIGHT_ENABLE_OPENVSLAM)
+    if(NOT SIGHT_EXTERNAL_LIBRARIES AND SIGHT_ENABLE_OPENVSLAM)
         # Set sight deps root directory (where the sight deps packages will be installed ) 
         set(SIGHT_DEPS_ROOT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/.sight-deps" CACHE PATH "Sight deps root directory")
         mark_as_advanced(SIGHT_DEPS_ROOT_DIRECTORY)
@@ -169,8 +166,8 @@ if(NOT VCPKG_TARGET_TRIPLET)
         endif()
 
         # Use ${SIGHT_DEPS_PACKAGE_DIRECTORY} as external libraries
-        set(EXTERNAL_LIBRARIES ${SIGHT_DEPS_PACKAGE_DIRECTORY})
-        message("Using ${EXTERNAL_LIBRARIES} for Sight external libraries")
+        set(SIGHT_EXTERNAL_LIBRARIES ${SIGHT_DEPS_PACKAGE_DIRECTORY})
+        message("Using ${SIGHT_EXTERNAL_LIBRARIES} for Sight external libraries")
 
         unset(SIGHT_DEPS_PACKAGE_DIRECTORY)
         unset(SIGHT_DEPS_PACKAGE_HASH)
@@ -179,20 +176,20 @@ if(NOT VCPKG_TARGET_TRIPLET)
         unset(SIGHT_DEPS_PACKAGE)
     endif()
 
-    if(EXTERNAL_LIBRARIES)
-        get_filename_component(ABSOLUTE_EXTERNAL_LIBRARIES ${EXTERNAL_LIBRARIES} REALPATH)
-        set(EXTERNAL_LIBRARIES ${ABSOLUTE_EXTERNAL_LIBRARIES})
-        unset(ABSOLUTE_EXTERNAL_LIBRARIES)
+    if(SIGHT_EXTERNAL_LIBRARIES)
+        get_filename_component(ABSOLUTE_SIGHT_EXTERNAL_LIBRARIES ${SIGHT_EXTERNAL_LIBRARIES} REALPATH)
+        set(SIGHT_EXTERNAL_LIBRARIES ${ABSOLUTE_SIGHT_EXTERNAL_LIBRARIES})
+        unset(ABSOLUTE_SIGHT_EXTERNAL_LIBRARIES)
 
-        list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
-        list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES}/lib/cmake/)
-        list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+        list(APPEND CMAKE_PREFIX_PATH ${SIGHT_EXTERNAL_LIBRARIES})
+        list(APPEND CMAKE_MODULE_PATH ${SIGHT_EXTERNAL_LIBRARIES}/lib/cmake/)
+        list(APPEND CMAKE_FIND_ROOT_PATH ${SIGHT_EXTERNAL_LIBRARIES})
     endif()
 endif()
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     find_package(CppUnit QUIET REQUIRED)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)
 
 ########################################################################################################################
 # Default paths settings for libraries, modules and resources
@@ -226,7 +223,7 @@ add_subdirectory(apps)
 add_subdirectory(tutorials)
 add_subdirectory(examples)
 
-# Define the path 'FW_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
+# Define the path 'FW_SIGHT_EXTERNAL_LIBRARIES_DIR' used to find external libraries required by our applications
 setExternalLibrariesDir()
 
 ########################################################################################################################
@@ -373,21 +370,21 @@ endif()
 ########################################################################################################################
 
 # Doxygen documentation
-option(BUILD_DOCUMENTATION "Build the doxygen documentation" OFF)
-if(BUILD_DOCUMENTATION)
-    option(BUILD_DOCSET "Build a Dash/Zeal/XCode docset" OFF)
+option(SIGHT_BUILD_DOC "Build the doxygen documentation" OFF)
+if(SIGHT_BUILD_DOC)
+    option(SIGHT_BUILD_DOCSET "Build a Dash/Zeal/XCode docset" OFF)
     include(${FWCMAKE_RESOURCE_PATH}doxygen/doxygen_generator.cmake)
     doxygenGenerator(${PROJECT_LIST})
-    if(BUILD_DOCSET)
+    if(SIGHT_BUILD_DOCSET)
         docsetGenerator(${PROJECT_LIST})
     endif()
 else()
-    unset(BUILD_DOCSET CACHE)
+    unset(SIGHT_BUILD_DOCSET CACHE)
 endif()
 
 # VS Code project
-option(GENERATE_VSCODE_WS "Generate VS Code workspace" OFF)
-if(GENERATE_VSCODE_WS)
+option(SIGHT_GENERATE_VSCODE_WS "Generate VS Code workspace" OFF)
+if(SIGHT_GENERATE_VSCODE_WS)
     include(${FWCMAKE_RESOURCE_PATH}vscode/vscode_generator.cmake)
     vscodeGenerator(${PROJECT_LIST})
 endif()

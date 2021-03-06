@@ -17,6 +17,6 @@ target_link_libraries(module_viz_scene2d PUBLIC
 
 add_dependencies(module_viz_scene2d module_ui_qt)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

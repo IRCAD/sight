@@ -69,7 +69,7 @@ function(docsetGenerator)
         message(WARNING "A Python3 interpreter is required to build the Dash docset, but none was found.")
         return()
     else()
-        add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/build_docset.py
+        add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/SIGHT_BUILD_DOCSET.py
                           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset
                           DEPENDS docset_doxygen ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json
                           COMMENT "Generating dash docset"

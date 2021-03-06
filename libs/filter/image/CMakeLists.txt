@@ -13,6 +13,6 @@ target_include_directories(filter_image SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
 
 target_link_libraries(filter_image PUBLIC data geometry_data io_itk)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

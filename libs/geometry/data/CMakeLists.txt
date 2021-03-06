@@ -6,6 +6,6 @@ target_include_directories(geometry_data SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
 
 target_link_libraries(geometry_data PUBLIC core data)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

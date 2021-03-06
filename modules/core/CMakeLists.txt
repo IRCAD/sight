@@ -6,6 +6,6 @@ add_subdirectory(debug)
 add_subdirectory(service)
 add_subdirectory(data)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(utest)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

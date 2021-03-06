@@ -14,6 +14,6 @@ target_link_libraries(io_itk PUBLIC ITKCommon ITKIOImageBase ITKIOJPEG ITKMetaIO
 
 target_link_libraries(io_itk PUBLIC core data io_base)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

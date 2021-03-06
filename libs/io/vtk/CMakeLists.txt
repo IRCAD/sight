@@ -55,6 +55,6 @@ target_compile_definitions(io_vtk PRIVATE ${VTK_DEFINITIONS})
 
 target_link_libraries(io_vtk PUBLIC core data io_base geometry_data)
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

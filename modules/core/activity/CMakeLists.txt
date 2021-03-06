@@ -1,13 +1,7 @@
 sight_add_target( module_activity TYPE MODULE )
 
-
-find_package(Qt5 QUIET COMPONENTS Core Gui REQUIRED)
-target_link_libraries(module_activity PUBLIC Qt5::Core Qt5::Gui)
-
-if(NOT ${ENABLE_QML_APPLICATION})
-    find_package(Qt5 QUIET COMPONENTS Widgets REQUIRED)
-    target_link_libraries(module_activity PUBLIC Qt5::Widgets)
-endif()
+find_package(Qt5 QUIET COMPONENTS Core Gui Widgets REQUIRED)
+target_link_libraries(module_activity PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets)
 
 set_target_properties(module_activity PROPERTIES AUTOMOC TRUE)
 
@@ -23,6 +17,6 @@ target_link_libraries(module_activity PUBLIC
                       service
 )
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

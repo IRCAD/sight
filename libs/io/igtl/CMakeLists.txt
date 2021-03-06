@@ -25,6 +25,6 @@ target_link_libraries(io_igtl PUBLIC
                       io_atoms
 )
 
-if(BUILD_TESTS)
+if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)
-endif(BUILD_TESTS)
+endif(SIGHT_BUILD_TESTS)

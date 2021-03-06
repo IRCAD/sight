@@ -3149,7 +3149,7 @@ Add a slot which changes enumeration state based on the index and not on the lab
 *Add vs code generator.*
 
 - add VS Code support to build and debug Sight
-- to use VSCode with sight: run CMake configure with option GENERATE_VSCODE_WS, and open the workspace file "sight.code-workspace" (in build dir)
+- to use VSCode with sight: run CMake configure with option SIGHT_GENERATE_VSCODE_WS, and open the workspace file "sight.code-workspace" (in build dir)
 
 ### conan
 
