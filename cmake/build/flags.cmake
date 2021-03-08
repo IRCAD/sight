@@ -61,7 +61,7 @@ if(MSVC)
         set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
     endif()
 
-    if(ENABLE_PCH)
+    if(SIGHT_ENABLE_PCH)
         # Store debug information in the .obj file instead of a PDB.
         replace_flags("/Z[iI]" "/Z7")
     endif()
