@@ -14,8 +14,7 @@ while (( i < xvfb_display_max )); do
   if [ -f "/tmp/.X$i-lock" ]; then                # still avoid an obvious open display
     (( ++i )); continue
   fi
-  exec 5>"$xvfb_lockdir/$i" || continue           # open a lockfile
-  if flock -x -n 5; then                          # try to lock it
+  if flock -x -n $xvfb_lockdir/$i; then           # try to lock it
     exec xvfb-run --server-num="$i" "$@" || exit  # if locked, run xvfb-run
   fi
   (( i++ ))
