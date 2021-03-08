@@ -31,5 +31,5 @@ export LD_LIBRARY_PATH
 if xprop -root &> /dev/null || ! xvfb-run --help &>/dev/null ; then
     exec "$bindir/@PROJECT_EXECUTABLE@" $@
 else
-    exec xvfb-run -a "$bindir/@PROJECT_EXECUTABLE@" $@
+    exec "$bindir/safe-xvfb-run" "$bindir/@PROJECT_EXECUTABLE@" $@
 fi

@@ -254,6 +254,12 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
 )
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run 
+    ${CMAKE_CURRENT_BINARY_DIR}/bin/safe-xvfb-run
+    COPYONLY
+)
+
 # Install the sightConfig.cmake and sightConfigVersion.cmake
 install(
   FILES
@@ -355,6 +361,7 @@ elseif(UNIX)
 
     install(
       FILES
+        "${CMAKE_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run"
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
       DESTINATION
