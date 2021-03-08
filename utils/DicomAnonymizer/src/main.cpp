@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#include <fwGdcmIO/helper/DicomAnonymizer.hpp>
-
 #include <boost/program_options.hpp>
 
-#include <filesystem>
-#include <stdlib.h>
+#include <io/dicom/helper/DicomAnonymizer.hpp>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdlib.h>
 #include <string>
 
 /** \file DicomAnonymizer/src/main
@@ -98,8 +97,8 @@ int main(int argc, char** argv)
     }
 
     // Copy and anonymize
-    ::fwGdcmIO::helper::DicomAnonymizer::copyDirectory(input, output);
-    ::fwGdcmIO::helper::DicomAnonymizer anonymizer;
+    sight::io::dicom::helper::DicomAnonymizer::copyDirectory(input, output);
+    sight::io::dicom::helper::DicomAnonymizer anonymizer;
     anonymizer.anonymize(output);
 
     return EXIT_SUCCESS;

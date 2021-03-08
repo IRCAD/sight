@@ -1,0 +1,288 @@
+<plugin id="ExVideoTracking" >
+
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExVideoTracking_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="camera" type="sight::data::Camera" />
+            <object uid="frameTL" type="sight::data::FrameTL" >
+                <value>100</value>
+            </object>
+            <object uid="tagTL" type="sight::data::MarkerTL" />
+            <object uid="videoImage" type="sight::data::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>ExVideoTracking</name>
+                        <icon>ExVideoTracking/app.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <toolBar sid="toolbarView" start="yes" />
+                    <view sid="cameraView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout>
+                        <editor/>
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="videoSelectorSrv" start="yes" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="resumeVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="loopVideoAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="cameraView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericSceneSrv" start="yes" />
+                    <view sid="parametersSrv" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/startCamera</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="videoAdp" />
+                </scene>
+            </service>
+
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="videoImage" />
+                <config layer="default" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="parametersSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <!-- show marker or not -->
+                    <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
+                    <!--  do corner refinement or not. -->
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
+                    <!-- minimum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="Adp. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <!-- maximum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="Adp. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <!-- increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
+                    <param type="int" name="Adp. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <!-- constant for adaptive thresholding before finding contours -->
+                    <param type="double" name="Adp. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <!-- determine minimum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
+                    <!-- determine maximum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
+                    <!-- minimum accuracy during the polygonal approximation process to determine which contours are squares -->
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
+                    <!-- minimum distance between corners for detected markers relative to its perimeter -->
+                    <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- minimum distance of any corner to the image border for detected markers (in pixels) -->
+                    <param type="int" name="Min. Distance to Border" key="minDistanceToBorder" defaultValue="1" min="0" max="10" />
+                    <!-- minimum mean distance beetween two marker corners to be considered similar,
+                    so that the smaller one is removed. The rate is relative to the smaller perimeter of the two markers -->
+                    <param type="double" name="Min. Marker Distance Rate" key="minMarkerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- window size for the corner refinement process (in pixels) -->
+                    <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
+                    <!-- maximum number of iterations for stop criteria of the corner refinement process -->
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="0" max="10" />
+                    <!-- minimum error for the stop cristeria of the corner refinement process -->
+                    <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0." max="10." />
+                    <!-- number of bits of the marker border, i.e. marker border width -->
+                    <param type="int" name="Marker Border Bits" key="markerBorderBits" defaultValue="1" min="1" max="100" />
+                    <!-- number of bits (per dimension) for each cell of the marker when removing the perspective -->
+                    <param type="int" name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" defaultValue="8" min="1" max="32" />
+                    <!-- width of the margin of pixels on each cell not considered for the determination of the cell bit.
+                        Represents the rate respect to the total size of the cell,
+                        i.e. perpectiveRemovePixelPerCel -->
+                    <param type="double" name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" defaultValue="0.13" min="0." max="1." />
+                    <!-- maximum number of accepted erroneous bits in the border (i.e. number of allowed white bits in the border).
+                        Represented as a rate respect to the total number of bits per marker -->
+                    <param type="double" name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" defaultValue="0.35" min="0." max="1." />
+                    <!-- minimun standard deviation in pixels values during the decodification step to apply Otsu thresholding
+                        (otherwise, all the bits are set to 0 or 1 depending on mean higher than 128 or not) -->
+                    <param type="double" name="Min. Otsu Std. Dev." key="minOtsuStdDev" defaultValue="5.0" min="0." max="100." />
+                    <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
+                    <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
+                </parameters>
+            </service>
+
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+                <in group="frameTL" >
+                    <key uid="frameTL" />
+                </in>
+                <inout group="image" >
+                    <key uid="videoImage" />
+                </inout>
+                <framerate>30</framerate>
+            </service>
+
+            <service uid="trackerSrv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking" >
+                <in key="timeline" uid="frameTL" autoConnect="yes" />
+                <in key="camera" uid="camera" />
+                <inout group="tagTL" >
+                    <key uid="tagTL" />
+                </inout>
+                <track>
+                    <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>videoSelectorSrv/configuredCameras</signal>
+                <slot>videoGrabberSrv/reconfigure</slot>
+            </connect>
+
+            <connect>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/modified</signal>
+                <slot>startVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/boolChanged</signal>
+                <slot>trackerSrv/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/intChanged</signal>
+                <slot>trackerSrv/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/doubleChanged</signal>
+                <slot>trackerSrv/setDoubleParameter</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="videoGrabberSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="trackerSrv" />
+            <start uid="videoAdp" />
+
+        </config>
+    </extension>
+</plugin>

@@ -56,7 +56,7 @@
 
 include(CMakeParseArguments)
 
-if(ENABLE_PCH)
+if(SIGHT_ENABLE_PCH)
     if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         # We need 3.7 because of DEPFILE in add_custom_command
         cmake_minimum_required(VERSION 3.7)
@@ -136,9 +136,6 @@ function(assign_precompiled_header _target _pch _pch_header)
             endif()
 
             set(_pch_compile_flags "${_pch_compile_flags} -Winvalid-pch")
-            if(APPLE)
-                set(_pch_compile_flags "${_pch_compile_flags} --relocatable-pch")
-            endif()
 
             if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
                 set(_pch_compile_flags "${_pch_compile_flags} -include-pch \"${_pch}\"")
@@ -246,7 +243,7 @@ function(add_precompiled_header _target _input)
     get_filename_component(_name ${_input} NAME)
     set(_pch_header "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
     set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
-    set(_pchfile "${_pch_binary_dir}/${_input}")
+    set(_pchfile "${_pch_binary_dir}/include/${_target}/${_input}")
 
     if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         set(_outdir "${_pchfile}.pch")
@@ -280,17 +277,6 @@ function(add_precompiled_header _target _input)
 
     # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
     list(APPEND CXXFLAGS "-std=gnu++17" "-fPIC")
-
-    # Append macOS specific flags
-    if(APPLE)
-        if(EXISTS "${CMAKE_OSX_SYSROOT}")
-            list(APPEND CXXFLAGS "-isysroot" "${CMAKE_OSX_SYSROOT}")
-        endif()
-
-        if(NOT "${CMAKE_OSX_DEPLOYMENT_TARGET}" STREQUAL "")
-            list(APPEND CXXFLAGS "-mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET}")
-        endif()
-    endif()
 
     # Hacky custom command to remove the custom defines that would prevent from sharing the pch
     # and they should be useless anyway
@@ -335,12 +321,13 @@ endfunction()
 function(use_precompiled_header _target _input)
     cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
+    get_target_property(_pch_binary_dir ${_input} BINARY_DIR)
+
     if(MSVC)
         target_include_directories(${_target} PRIVATE "${${_input}_PROJECT_DIR}/include/${_input}" )
 
         set(_pch_header "${${_input}_PROJECT_DIR}/include/${_input}/pch.hpp")
-        set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
-        set(_cxx_path "${_pch_binary_dir}/${_input}/include/${_input}")
+        set(_cxx_path "${_pch_binary_dir}/include/${_input}")
         set(_pch_cxx_pch "${_cxx_path}/pch.pch")
 
         # Iterate over all source files and request pch usage
@@ -370,18 +357,16 @@ function(use_precompiled_header _target _input)
 
     if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         set(_pch_header "pch.hpp")
-        set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
-        set(_pchfile "${_pch_binary_dir}/${_input}/include/${_input}/pch.hpp")
+        set(_pchfile "${_pch_binary_dir}/include/${_input}/pch.hpp")
 
         if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-            set(_outdir "${_pchfile}.pch")
+            set(_output_cxx "${_pchfile}.pch")
         else()
-            set(_outdir "${_pchfile}.gch")
+            set(_output_cxx "${_pchfile}.gch")
 
             # Add the location of the pch as an include directory
-            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/${_input}/include/${_input} )
+            target_include_directories(${_target} PRIVATE ${_pch_binary_dir}/include/${_input} )
         endif()
-        set(_output_cxx "${_outdir}")
 
         assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})
 

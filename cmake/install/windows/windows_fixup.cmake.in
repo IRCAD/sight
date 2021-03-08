@@ -31,7 +31,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP|(NSIS.*))
     #Look for all directories containing '.dll' files
     findLibsAndModules(LIBS_MODULES_DIRECTORIES)
 
-    list(APPEND LIBS_MODULES_DIRECTORIES @FW_EXTERNAL_LIBRARIES_DIR@)
+    list(APPEND LIBS_MODULES_DIRECTORIES @FW_SIGHT_EXTERNAL_LIBRARIES_DIR@)
 
     if(@FW_BUILD_EXTERNAL@)
         list(APPEND LIBS_MODULES_DIRECTORIES @Sight_LIBRARY_DIR@)
@@ -40,7 +40,7 @@ if ( NOT ${CMAKE_INSTALL_PREFIX} MATCHES "/_CPack_Packages/.*/(TGZ|ZIP|(NSIS.*))
 
     # Ignore VLC dll to avoid "fatal error LNK1328: missing string table"
     set(IGNORE_VLC_DLL "videoVLC.dll;libvlc.dll;libvlccore.dll")
-    # Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like modules, plugins and share)
+    # Call fixup bundle on the sightrun and on all 'plugins' libraries (like modules, plugins and share)
     fixup_bundle("${LAUNCHER_PATH}" "${LIBS}" "${LIBS_MODULES_DIRECTORIES}" IGNORE_ITEM ${IGNORE_VLC_DLL})
 
 endif()

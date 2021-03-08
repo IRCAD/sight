@@ -1,40 +1,36 @@
 
 # Do not change the indentation of the activate list
-macro(profile_setup ${PROJECT})
+macro(profile_setup PROJECT)
     set(UNIQUE "false")
-    #Set the check-single-instance
-    if(${PROJECT}_UNIQUE)
-        string(TOLOWER "${${PROJECT}_UNIQUE}" UNIQUE)
-    endif()
 
-    #Clear last set
-    unset(XML_ACTIVATE)
-    # unset start for the current app
-    unset(START_MODULES)
-    unset(XML_START_MODULES)
+    #Set the check-single-instance
+    get_target_property(UNIQUE ${PROJECT} SIGHT_UNIQUE)
+    string(TOLOWER "${UNIQUE}" UNIQUE)
 
     # set a variable used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
 
-    # Add each requirements to the activate list
-    set(ALL_REQUIREMENTS "")
-    findRequirements(${PROJECT} ALL_REQUIREMENTS)
-    list(REMOVE_DUPLICATES ALL_REQUIREMENTS)
-    list(SORT ALL_REQUIREMENTS)
+    get_target_property(ALL_REQUIREMENTS ${PROJECT} MANUALLY_ADDED_DEPENDENCIES)
 
     # Manage module starting
-    if(${PROJECT}_START)
+    get_target_property(START ${PROJECT} SIGHT_START)
+    if(START)
         list(APPEND START_MODULES "${PROJECT}")
     endif()
 
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
         # get the start option of the current requirement if exists
-        if(${CURRENT_REQUIREMENT}_START)
+        get_target_property(START ${CURRENT_REQUIREMENT} SIGHT_START)
+        if(START)
             list(APPEND START_MODULES "${CURRENT_REQUIREMENT}")
         endif()
     endforeach()
 
     list(SORT START_MODULES)
+
+    list(APPEND ALL_REQUIREMENTS "${PROJECT}")
+
+    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY SIGHT_COMPONENTS)
 
     # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
@@ -48,16 +44,23 @@ macro(profile_setup ${PROJECT})
             endif()
         endforeach()
 
-        # to only consider modules and app
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
-            # check if a moduleParam macro had been use in the properties.cmake
+        get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
+        
+        if( "${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
+            
+            string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
+            if(${CURRENT_REQUIREMENT} IN_LIST SIGHT_COMPONENTS)
+                set(REQ "${SIGHT_REPOSITORY}::${REQ}")
+            endif()
+
+            # check if a moduleParam macro had been used in the CMakeLists.txt
             # if yes, get and set module param and values
             if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
                 set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
 
                 #set activate tag with parameters
-                list(APPEND XML_ACTIVATE "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" >")
+                list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" >")
                 foreach(CURRENT_PARAM ${CURRENT_PARAM_LIST})
                     list(FIND CURRENT_PARAM_LIST "${CURRENT_PARAM}" CURRENT_INDEX)
                     list(GET CURRENT_PARAM_VALUES "${CURRENT_INDEX}" CURRENT_VALUE)
@@ -65,50 +68,27 @@ macro(profile_setup ${PROJECT})
                 endforeach()
 
                 list(APPEND XML_ACTIVATE "    </activate>")
-            # else simply set the activate tag
-            else()
-                 list(APPEND XML_ACTIVATE "    <activate id=\"${CURRENT_REQUIREMENT}\" version=\"${${CURRENT_REQUIREMENT}_VERSION}\" />")
             endif()
         endif()
     endforeach()
     string(REPLACE ";" "\n" XML_ACTIVATE "${XML_ACTIVATE}")
 
     foreach(CURRENT_MODULE ${START_MODULES})
-        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${CURRENT_MODULE}\" />")
+        string(REPLACE "_" "::" MODULE ${CURRENT_MODULE})
+        if(${CURRENT_MODULE} IN_LIST SIGHT_COMPONENTS)
+            set(MODULE "${SIGHT_REPOSITORY}::${MODULE}")
+        endif()
+
+        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE}\" />")
     endforeach()
 
     configure_file( "${FWCMAKE_BUILD_FILES_DIR}/profile.xml.in"
-                    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}-${${PROJECT}_VERSION}/profile.xml")
-endmacro()
-
-function(findRequirements FWPROJECT_NAME)
-    list(APPEND ALL_REQUIREMENTS ${FWPROJECT_NAME})
-
-    set(CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS})
-    if(${FWPROJECT_NAME}_MODULE_DEPENDENCIES)
-        list(APPEND CURRENT_REQUIREMENTS ${${FWPROJECT_NAME}_MODULE_DEPENDENCIES})
-        list(REMOVE_DUPLICATES CURRENT_REQUIREMENTS)
-    endif()
-
-    foreach(CURRENT_REQUIREMENT ${CURRENT_REQUIREMENTS})
-        if( "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "MODULE" OR "${${CURRENT_REQUIREMENT}_TYPE}" STREQUAL "APP")
-            findRequirements(${CURRENT_REQUIREMENT})
-        endif()
-    endforeach()
-
-    set(ALL_REQUIREMENTS ${ALL_REQUIREMENTS} PARENT_SCOPE)
-endfunction()
-
-macro(bundleParam MODULE_NAME)
-    set(options)
-    set(oneValueArgs)
-    set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+                    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${PROJECT}/profile.xml")
 endmacro()
 
 macro(moduleParam MODULE_NAME)
     set(options)
     set(oneValueArgs)
     set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    cmake_parse_arguments("${FWPROJECT_NAME}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 endmacro()

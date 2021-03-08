@@ -74,9 +74,9 @@
         "cmake.generator": "@CMAKE_GENERATOR@",
         "cmake.configureSettings": {
             "CMAKE_BUILD_TYPE": "@CMAKE_BUILD_TYPE@",
-            "BUILD_TESTS": "@BUILD_TESTS@",
-            "BUILD_DOCUMENTATION": "@BUILD_DOCUMENTATION@",
-            "ENABLE_PCH": "@ENABLE_PCH@",
+            "SIGHT_BUILD_TESTS": "@SIGHT_BUILD_TESTS@",
+            "SIGHT_BUILD_DOC": "@SIGHT_BUILD_DOC@",
+            "SIGHT_ENABLE_PCH": "@SIGHT_ENABLE_PCH@",
             "BUILD_NONFREE": "@BUILD_NONFREE@"
         },
         "cmakeFormat.cwd": "@CMAKE_SOURCE_DIR@",

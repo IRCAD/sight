@@ -1,0 +1,46 @@
+<plugin id="sight::module::filter::vision" library="true" >
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IOperator</type>
+         <service>sight::module::filter::vision::SColourImageMasking</service>
+         <desc>Service that learns a foreground and background color model and allow to segment the foreground on a new</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IOperator</type>
+         <service>sight::module::filter::vision::SDepthImageMasking</service>
+         <desc>Service that learns a background depth image in a mask to perform a depth difference and output a foregroud</desc>
+    </extension>
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IController</type>
+         <service>sight::module::filter::vision::SOpticalFlow</service>
+         <object key="timeline">sight::data::FrameTL</object>
+         <desc>Service used to compute optical flow (Lukas-Kanade) to detect if camera is moving or not.</desc>
+    </extension>
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IOperator</type>
+         <service>sight::module::filter::vision::SPointCloudFromDepthMap</service>
+         <desc>Service to compute a point cloud from a depth map obtained from an RGBD camera. Optionally, combine it</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IOperator</type>
+         <service>sight::module::filter::vision::STransformDepthMap2mm</service>
+         <desc>This service applies a scale on a depth map image.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IOperator</type>
+         <service>sight::module::filter::vision::STransformDepthTL2mm</service>
+         <desc>This service applies a scale on a depth map buffer extracted from a timeline.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IOperator</type>
+         <service>sight::module::filter::vision::SUltrasoundImage</service>
+         <desc>Extract the ultrasound plane and its associated information from an ultrasound video.</desc>
+    </extension>
+</plugin>

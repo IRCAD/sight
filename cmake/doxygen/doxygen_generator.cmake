@@ -59,9 +59,6 @@ function(docsetGenerator)
     string(REGEX REPLACE "^[ ]*,[ ]*" "" BUNDLES_JSON "${BUNDLES_JSON}")
     string(REGEX REPLACE "^[ ]*,[ ]*" "" SRCLIBS_JSON "${SRCLIBS_JSON}")
     set(REPOSITORIES_JSON \"${CMAKE_SOURCE_DIR}\")
-    foreach(REPO ${ADDITIONAL_REPOSITORIES})
-        set(REPOSITORIES_JSON "${REPOSITORIES_JSON}, \"${REPO}\"")
-    endforeach()
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/doxygen/projects.json.in
                    ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json @ONLY)
@@ -72,7 +69,7 @@ function(docsetGenerator)
         message(WARNING "A Python3 interpreter is required to build the Dash docset, but none was found.")
         return()
     else()
-        add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/build_docset.py
+        add_custom_target(docset ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/doxygen/SIGHT_BUILD_DOCSET.py
                           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset
                           DEPENDS docset_doxygen ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Docset/projects.json
                           COMMENT "Generating dash docset"

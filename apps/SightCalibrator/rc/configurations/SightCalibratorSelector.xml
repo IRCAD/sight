@@ -1,0 +1,45 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>SightCalibrator_Selector_AppCfg</id>
+    <parameters>
+        <param name="SERIESDB" />
+        <param name="WID_PARENT" />
+        <param name="ICON_PATH" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref"/>
+        <object uid="selections" type="sight::data::Vector" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainview" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="selectorSrv" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="selection" uid="selections" />
+            <icons>
+                <icon series="::sight::data::CameraSeries" icon="sight::module::ui::icons/calibrationActivity.svg" />
+            </icons>
+        </service>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainview" />
+
+    </config>
+</extension>

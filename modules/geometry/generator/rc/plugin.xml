@@ -1,0 +1,16 @@
+<plugin id="sight::module::geometry::generator" library="true" >
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IGenerator</type>
+         <service>sight::module::geometry::generator::SNeedle</service>
+         <object>sight::data::Mesh</object>
+         <desc>Generates a cylinder shape into a data::Mesh using VTK.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IGenerator</type>
+         <service>sight::module::geometry::generator::SUltrasoundMesh</service>
+         <desc>Generate the mesh used to display the ultrasound image.</desc>
+    </extension>
+</plugin>

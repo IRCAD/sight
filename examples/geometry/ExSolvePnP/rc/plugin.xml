@@ -1,0 +1,424 @@
+<plugin id="ExSolvePnP" >
+
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExSolvePnP_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="camera" type="sight::data::Camera" src="deferred" />
+            <object uid="frameTL" type="sight::data::FrameTL" />
+            <object uid="videoImage" type="sight::data::Image" />
+
+            <object uid="cube" type="sight::data::Mesh" />
+
+            <object uid="registrationMatrix" type="sight::data::Matrix4" />
+
+            <object uid="2dPoints" type="sight::data::PointList" />
+            <object uid="2dPixels" type="sight::data::PointList" />
+            <object uid="3dPoints" type="sight::data::PointList" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>ExSolvePnP</name>
+                        <icon>ExSolvePnP/app.ico</icon>
+                    </frame>
+                    <menuBar/>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
+                    <view sid="cameraView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuPreferencesView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Video directory" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="videoDirAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                        <editor/>
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <editor />
+                        <menuItem name="Register" icon="sight::module::ui::flaticons/RegistrationPoints.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalibAct" start="yes" />
+                    <editor sid="videoSelectorSrv" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="resumeVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="loopVideoAct" start="yes" />
+                    <menuItem sid="registerAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="cameraView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sceneView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="sceneView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="3" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="ARSceneSrv" start="yes" />
+                    <view sid="VRSceneSrv" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>calibrationReaderSrv/update</slot>
+                </slots>
+            </service>
+
+            <!-- Start the frame grabber -->
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/startCamera</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Pause the frame grabber -->
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/show</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/pauseCamera</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/show</slot>
+                </slots>
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/stopCamera</slot>
+                    <slot>startVideoAct/show</slot>
+                    <slot>resumeVideoAct/hide</slot>
+                    <slot>pauseVideoAct/hide</slot>
+                    <slot>stopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/setInexecutable</slot>
+                    <slot>loopVideoAct/deactivate</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabberSrv/loopVideo</slot>
+                </slots>
+                <state executable="false" />
+            </service>
+
+            <service uid="registerAct" type="sight::module::ui::base::com::STimestampSlotCaller" >
+                <slots>
+                    <slot>solvePnPSrv/computeRegistration</slot>
+                </slots>
+            </service>
+
+            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
+            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="ARSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="video" order="1" />
+                    <adaptor uid="ARPickerAdp" />
+                    <adaptor uid="ARVideoAdp" />
+                    <adaptor uid="ARPointListAdp" />
+
+                    <layer id="default" order="2" />
+                    <adaptor uid="ARCameraAdp" />
+                    <adaptor uid="ARMeshAdp" />
+                    <adaptor uid="ARTrfAdp" />
+                </scene>
+            </service>
+
+            <service uid="ARPickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" >
+                <config layer="video" layerOrderDependant="false" />
+            </service>
+
+            <service uid="ARVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="videoImage" />
+                <config layer="video" />
+            </service>
+
+            <service uid="ARPointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+                <in key="pointList" uid="2dPoints" />
+                <config layer="video" color="#619647" radius="0.01" />
+            </service>
+
+            <service uid="ARCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+                <inout key="transform" uid="registrationMatrix" />
+                <in key="camera" uid="camera" />
+                <config layer="default" />
+            </service>
+
+            <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+                <inout key="mesh" uid="cube" />
+                <config layer="default" autoresetcamera="no" />
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="VRSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" transparency="DepthPeeling" numPeels="4" />
+                    <adaptor uid="VRTrackballInteractorAdp" />
+                    <adaptor uid="VRPickerAdp" />
+                    <adaptor uid="VRPointListAdp" />
+                    <adaptor uid="VRMeshAdp" />
+                    <adaptor uid="VRAxisAdp" />
+                </scene>
+            </service>
+
+            <service uid="VRTrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <service uid="VRPickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" >
+                <config layer="default" />
+            </service>
+
+            <service uid="VRAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis" >
+                <config layer="default" length="0.3" origin="false" label="false" />
+            </service>
+
+            <service uid="VRPointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="yes" >
+                <in key="pointList" uid="3dPoints" />
+                <config layer="default" color="#619647" radius="0.01" />
+            </service>
+
+            <service uid="VRMeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+                <inout key="mesh" uid="cube" />
+                <config layer="default"/>
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
+            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
+                <inout key="source" uid="cameraSeries" >
+                    <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+                </inout>
+                <out group="target" >
+                    <key uid="camera" /> <!-- destination -->
+                </out>
+            </service>
+
+            <service uid="meshReaderSrv" type="sight::module::io::vtk::SMeshReader" >
+                <inout key="data" uid="cube" />
+                <resource>ExSolvePnP/plane.vtk</resource>
+            </service>
+
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameUpdater" >
+                <in key="frameTL" uid="frameTL" autoConnect="yes" />
+                <inout key="frame" uid="videoImage" />
+            </service>
+
+            <service uid="solvePnPSrv" type="sight::module::geometry::vision::SSolvePnP" >
+                <in key="pointList2d" uid="2dPixels" />
+                <in key="pointList3d" uid="3dPoints" />
+                <in key="calibration" uid="camera" />
+                <inout key="matrix" uid="registrationMatrix" />
+                <config inverse="true" />
+            </service>
+
+            <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker" >
+                <in key="camera" uid="camera" />
+                <inout key="pointList" uid="2dPoints" />
+                <inout key="pixelPointList" uid="2dPixels" />
+                <config videoReference="center" />
+            </service>
+
+            <service uid="pointListVRManagerSrv" type="sight::module::geometry::base::SManagePointList" >
+                <inout key="pointList" uid="3dPoints" />
+                <config label="true" tolerance="0.1" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>videoSelectorSrv/configuredFile</signal>
+                <signal>videoSelectorSrv/configuredStream</signal>
+                <signal>videoSelectorSrv/configuredDevice</signal>
+                <slot>startVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>videoGrabberSrv/cameraStarted</signal>
+                <slot>pauseVideoAct/show</slot>
+                <slot>startVideoAct/hide</slot>
+                <slot>stopVideoAct/setExecutable</slot>
+                <slot>loopVideoAct/setExecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/modified</signal>
+                <slot>startVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/update</slot>
+            </connect>
+
+            <connect>
+                <signal>VRPickerAdp/picked</signal>
+                <slot>pointListVRManagerSrv/pick</slot>
+            </connect>
+
+            <connect>
+                <signal>ARPickerAdp/picked</signal>
+                <slot>imagePickerSrv/getInteraction</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSeries/addedCamera</signal>
+                <slot>cameraExtractorSrv/update</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="videoGrabberSrv" />
+            <start uid="calibrationReaderSrv" />
+            <start uid="videoSelectorSrv" />
+            <start uid="cameraExtractorSrv" />
+            <start uid="meshReaderSrv" />
+            <start uid="solvePnPSrv" />
+            <start uid="frameUpdaterSrv" />
+            <start uid="imagePickerSrv" />
+            <start uid="pointListVRManagerSrv" />
+            <start uid="ARPickerAdp" />
+            <start uid="ARVideoAdp" />
+            <start uid="ARCameraAdp" />
+            <start uid="ARMeshAdp" />
+            <start uid="ARPointListAdp" />
+            <start uid="VRTrackballInteractorAdp" />
+            <start uid="VRPickerAdp" />
+            <start uid="VRPointListAdp" />
+            <start uid="VRMeshAdp" />
+            <start uid="VRAxisAdp" />
+
+
+            <!-- ******************************* Update services ***************************************** -->
+
+            <update uid="meshReaderSrv" />
+
+        </config>
+    </extension>
+</plugin>
+

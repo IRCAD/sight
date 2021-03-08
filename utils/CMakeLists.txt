@@ -1,0 +1,7 @@
+add_subdirectory(DicomAnonymizer)
+add_subdirectory(sightrun)
+add_subdirectory(arucoMarker)
+add_subdirectory(charucoBoard)
+add_subdirectory(NetworkProxy)
+add_subdirectory(VersionGenerator)
+add_subdirectory(calDataGenerator)

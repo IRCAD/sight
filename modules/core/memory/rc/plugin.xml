@@ -1,12 +1,17 @@
-<plugin id="memory" class="memory::Plugin" version="@PROJECT_VERSION@" >
-
-    <library name="memory"/>
+<plugin id="sight::module::memory" library="true" >
 
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
-        <service>::memory::SDumpPolicy</service>
-        <object>::fwData::Object</object>
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IController</type>
+         <service>sight::module::memory::LockDumpSrv</service>
+         <object>sight::data::Object</object>
+         <desc>This services dump lock object. Unlock it on stopping.</desc>
     </extension>
 
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::service::IController</type>
+         <service>sight::module::memory::SDumpPolicy</service>
+         <object>sight::data::Object</object>
+         <desc></desc>
+    </extension>
 </plugin>

@@ -1,0 +1,4 @@
+add_subdirectory(Tuto07SceneQt3DQml)
+add_subdirectory(Tuto06GuiQml)
+add_subdirectory(Tuto01BasicQml)
+add_subdirectory(Tuto05EditorQml)

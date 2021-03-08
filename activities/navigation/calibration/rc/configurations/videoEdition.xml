@@ -1,0 +1,151 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>videoEdition</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="camera" />
+        <param name="videoGrabber" />
+        <param name="grabberProxyGuiTitle" default="ARCalibration" />
+        <param name="cameraModifiedChannel" default="cameraModified" />
+        <param name="videoPositionChangedChannel" default="videoPositionChanged" />
+        <param name="videoPositionModifiedChannel" default="videoPositionModified" />
+        <param name="videoDurationModifiedChannel" default="videoDurationModified" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${camera}" type="sight::data::Camera" src="ref" />
+        <object uid="timeLine" type="sight::data::FrameTL" />
+        <object uid="frame" type="sight::data::Image" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView">
+            <gui>
+                <toolBar/>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBarView" start="yes" />
+                <view sid="genericSceneSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+            <gui>
+                <layout>
+                    <editor/>
+                    <menuItem name="Edit" icon="sight::module::ui::flaticons/BlueParametersCamera.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="videoSelectorSrv" start="yes" />
+                <menuItem sid="editionAct" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="editionAct" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>intrinsicEditionSrv/update</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="frame" />
+            <config layer="default" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="${videoGrabber}" type="sight::module::io::video::SGrabberProxy">
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="timeLine" />
+            <config>
+                <gui title="${grabberProxyGuiTitle}" />
+            </config>
+        </service>
+
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameUpdater">
+            <in key="frameTL" uid="timeLine" autoConnect="yes" />
+            <inout key="frame" uid="frame" />
+        </service>
+
+        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
+            <inout key="camera" uid="${camera}" />
+            <videoSupport>yes</videoSupport>
+            <label></label>
+        </service>
+
+        <service uid="intrinsicEditionSrv" type="sight::module::ui::qt::calibration::SIntrinsicEdition">
+            <inout key="camera" uid="${camera}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+<connect>
+    <signal>videoSelectorSrv/configuredCameras</signal>
+    <slot>videoGrabberSrv/reconfigure</slot>
+</connect>
+
+<connect>
+    <signal>videoGrabberSrv/cameraStarted</signal>
+    <slot>pauseVideoAct/show</slot>
+    <slot>startVideoAct/hide</slot>
+    <slot>stopVideoAct/setExecutable</slot>
+    <slot>loopVideoAct/setExecutable</slot>
+</connect>
+
+<connect>
+    <signal>${camera}/idModified</signal>
+    <slot>videoGrabberSrv/stopCamera</slot>
+</connect>
+
+<connect>
+    <signal>${camera}/modified</signal>
+    <slot>startVideoAct/setExecutable</slot>
+    <slot>stopVideoAct/update</slot>
+</connect>
+
+        <connect channel="${cameraModifiedChannel}">
+            <slot>${videoGrabber}/stopCamera</slot>
+        </connect>
+
+        <connect channel="${videoPositionChangedChannel}">
+            <slot>${videoGrabber}/setPositionVideo</slot>
+        </connect>
+
+        <connect channel="${videoPositionModifiedChannel}">
+            <signal>${videoGrabber}/positionModified</signal>
+        </connect>
+
+        <connect channel="${videoDurationModifiedChannel}">
+            <signal>${videoGrabber}/durationModified</signal>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="${videoGrabber}" />
+        <start uid="frameSynchronizerSrv" />
+        <start uid="intrinsicEditionSrv" />
+        <start uid="videoAdp" />
+
+    </config>
+</extension>

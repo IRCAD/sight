@@ -1,0 +1,31 @@
+<plugin id="dicomxplorer">
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::io::atoms" />
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::ui::base" />
+
+    <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::sight::service::extension::AppConfigParameters">
+        <id>VRRenderAppBase</id>
+        <parameters>
+            <param name="appName" value="DicomXplorer 0.9.7" />
+            <param name="appIconPath" value="dicomxplorer/vrrender.ico" />
+            <param name="appVersion" value="@PROJECT_VERSION@" />
+        </parameters>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>SDBVRRender</id>
+        <title>SDB</title>
+        <desc>Series Selector</desc>
+        <icon>sight::module::ui::icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="SDBVRRender">
+            <parameters />
+        </appConfig>
+    </extension>
+
+</plugin>

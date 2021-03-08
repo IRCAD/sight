@@ -1,0 +1,21 @@
+<plugin id="AppConfigParametersTest" >
+
+    <requirement id="sight::module::service" />
+
+    <extension implements="::sight::service::extension::AppConfigParameters">
+        <id>id1</id>
+        <parameters>
+            <param name="param1" value="value1" />
+            <param name="param2" value="value2" />
+        </parameters>
+    </extension>
+    
+    <extension implements="::sight::service::extension::AppConfigParameters">
+        <id>id2</id>
+        <parameters>
+            <param name="param3" value="value3" />
+            <param name="param4" value="value4" />
+        </parameters>
+    </extension>
+
+</plugin>

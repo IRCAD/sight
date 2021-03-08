@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2019 IRCAD France
+ * Copyright (C) 2009-2021 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,15 +20,14 @@
  *
  ***********************************************************************/
 
-#include <fwAtomsPatch/VersionsManager.hpp>
-
 #include <boost/program_options.hpp>
 
-#include <filesystem>
-#include <stdlib.h>
+#include <io/atoms/patch/VersionsManager.hpp>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdlib.h>
 #include <string>
 
 /** \file VersionGenerator/src/main.cpp
@@ -86,8 +85,8 @@ int main(int argc, char** argv)
 
     // Generate the result
     std::filesystem::path versionFile(vm["output"].as< std::string >());
-    ::fwAtomsPatch::VersionsManager::generateNewFile(versionFile, vm["context"].as< std::string >(),
-                                                     vm["version"].as< std::string >());
+    sight::io::atoms::patch::VersionsManager::generateNewFile(versionFile, vm["context"].as< std::string >(),
+                                                              vm["version"].as< std::string >());
 
     return EXIT_SUCCESS;
 }

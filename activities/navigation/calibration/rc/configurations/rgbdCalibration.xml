@@ -1,0 +1,320 @@
+<extension implements="::sight::service::extension::AppConfig">
+    <id>RGBDCalibration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="frameTLColor" type="sight::data::FrameTL" />
+        <object uid="depthTL" type="sight::data::FrameTL" />
+        <object uid="exportTLColor" type="sight::data::FrameTL" />
+        <object uid="exportTLDepth" type="sight::data::FrameTL" />
+        <object uid="exportTLIR" type="sight::data::FrameTL" />
+        <object uid="imageDepth" type="sight::data::Image" />
+        <object uid="imageVideo" type="sight::data::Image" />
+        <object uid="snapshotDepth" type="sight::data::Image" />
+        <object uid="snapshotColor" type="sight::data::Image" />
+        <object uid="snapshotIR" type="sight::data::Image" />
+        <object uid="tfDepth" type="sight::data::TransferFunction">
+            <colors>
+                <step color="#000000ff" value="0" />
+                <step color="#ff0000ff" value="1" />
+                <step color="#ffff00ff" value="500" />
+                <step color="#00ff00ff" value="1000" />
+                <step color="#00ffffff" value="1500" />
+                <step color="#0000ffff" value="2000" />
+                <step color="#000000ff" value="4000" />
+            </colors>
+        </object>
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar/>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolbar" start="yes" />
+                <view sid="scanningView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::base::SToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="start" icon="sight::module::ui::icons/start-cam.svg" />
+                    <menuItem name="stop" icon="sight::module::ui::icons/stop-cam.svg" />
+                    <separator/>
+                    <menuItem name="configure depth record" icon="sight::module::ui::icons/configuration.svg" />
+                    <menuItem name="configure color record" icon="sight::module::ui::icons/configuration.svg" />
+                    <menuItem name="configure infrared record" icon="sight::module::ui::icons/configuration.svg" />
+                    <separator/>
+                    <menuItem name="start record" icon="sight::module::ui::icons/camera-photo.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="startVideo" start="yes" />
+                <menuItem sid="stopVideo" start="yes" />
+                <menuItem sid="configureDepthRecord" start="yes" />
+                <menuItem sid="configureColorRecord" start="yes" />
+                <menuItem sid="configureIRRecord" start="yes" />
+                <menuItem sid="takeSnapshot" start="yes" />
+            </registry>
+        </service>
+
+        <!-- Begin Scanning views -->
+        <service uid="scanningView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="RGBDView" start="yes" />
+                <view sid="snapshotView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="RGBDView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="gsDistanceMapSrv" start="yes" />
+                <view sid="gsVideoSrv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="snapshotView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="gsDepthSrv" start="yes" />
+                <view sid="gsColorSrv" start="yes" />
+                <view sid="gsInfraRedSrv" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="startVideo" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>startVideo/setInexecutable</slot>
+                <slot>scanner/startCamera</slot>
+                <slot>stopVideo/setExecutable</slot>
+                <slot>startSlots/update</slot>
+            </slots>
+        </service>
+
+        <service uid="stopVideo" type="sight::module::ui::base::com::SSlotCaller">
+            <state executable="false" />
+            <slots>
+                <slot>stopVideo/setInexecutable</slot>
+                <slot>scanner/stopCamera</slot>
+                <slot>startVideo/setExecutable</slot>
+                <slot>stopSlots/update</slot>
+            </slots>
+        </service>
+
+        <service uid="configureDepthRecord" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>depthRecorder/openLocationDialog</slot>
+            </slots>
+        </service>
+
+        <service uid="configureColorRecord" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>rgbRecorder/openLocationDialog</slot>
+            </slots>
+        </service>
+
+        <service uid="configureIRRecord" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>irRecorder/openLocationDialog</slot>
+            </slots>
+        </service>
+
+        <service uid="takeSnapshot" type="sight::module::ui::base::com::SSlotCaller">
+            <slots>
+                <slot>scanner/takeSnapshot</slot>
+                <slot>actionRecord/update</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (Distance map)******************************* -->
+
+        <service uid="gsDistanceMapSrv" type="sight::viz::scene3d::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoDMAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoDMAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="imageDepth" />
+            <in key="tf" uid="tfDepth" />
+            <config layer="default" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (Video) ******************************* -->
+
+        <service uid="gsVideoSrv" type="sight::viz::scene3d::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="imageVideo" />
+            <config layer="default" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (Depth) ******************************* -->
+
+        <service uid="gsDepthSrv" type="sight::viz::scene3d::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoDAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoDAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="snapshotDepth" />
+            <in key="tf" uid="tfDepth" />
+            <config layer="default" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (Color) ******************************* -->
+
+        <service uid="gsColorSrv" type="sight::viz::scene3d::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoCAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoCAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="snapshotColor" />
+            <config layer="default" />
+        </service>
+
+        <!-- ******************************* Begin Generic Scene (IR) ******************************* -->
+
+        <service uid="gsInfraRedSrv" type="sight::viz::scene3d::SRender" >
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="default" order="1" />
+                <adaptor uid="videoIRAdp" />
+            </scene>
+        </service>
+
+        <service uid="videoIRAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+            <in key="image" uid="snapshotIR" />
+            <config layer="default" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="synchronizer" type="sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer">
+            <in group="frameTL">
+                <key uid="frameTLColor" />
+                <key uid="depthTL" />
+            </in>
+            <inout group="image">
+                <key uid="imageVideo" />
+                <key uid="imageDepth" />
+            </inout>
+        </service>
+
+        <service uid="snapshotSynchronizer" type="sight::module::sync::SFrameMatrixSynchronizer" worker="synchronizer">
+            <in group="frameTL">
+                <key uid="exportTLDepth" />
+                <key uid="exportTLColor" />
+                <key uid="exportTLIR" />
+            </in>
+            <inout group="image">
+                <key uid="snapshotDepth" />
+                <key uid="snapshotColor" />
+                <key uid="snapshotIR" />
+            </inout>
+        </service>
+
+        <!-- Manages Sense camera configuration -->
+        <service uid="scanner" type="videoOpenni::SScan" worker="scanWorker">
+            <inout key="frameTL" uid="frameTLColor" />
+            <inout key="depthTL" uid="depthTL" />
+            <inout key="snapshotTLDepth" uid="exportTLDepth" />
+            <inout key="snapshotTLColors" uid="exportTLColor" />
+            <inout key="snapshotTLIR" uid="exportTLIR" />
+        </service>
+
+        <service uid="actionRecord" type="sight::module::ui::base::com::STimestampSlotCaller">
+            <slots>
+                <slot>depthRecorder/saveFrame</slot>
+                <slot>rgbRecorder/saveFrame</slot>
+                <slot>irRecorder/saveFrame</slot>
+            </slots>
+        </service>
+
+        <!-- Record Depth image -->
+        <service uid="depthRecorder" type="sight::module::io::video::SFrameWriter" worker="recorder">
+            <in key="data" uid="exportTLDepth" />
+        </service>
+
+        <!-- Record RGB image -->
+        <service uid="rgbRecorder" type="sight::module::io::video::SFrameWriter" worker="recorder">
+            <in key="data" uid="exportTLColor" />
+        </service>
+
+        <!-- Record IR image -->
+        <service uid="irRecorder" type="sight::module::io::video::SFrameWriter" worker="recorder">
+            <in key="data" uid="exportTLIR" />
+        </service>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="synchronizer" />
+        <start uid="snapshotSynchronizer" />
+        <start uid="scanner" />
+        <start uid="actionRecord" />
+        <start uid="depthRecorder" />
+        <start uid="rgbRecorder" />
+        <start uid="irRecorder" />
+        <start uid="videoDMAdp" />
+        <start uid="videoAdp" />
+        <start uid="videoDAdp" />
+        <start uid="videoCAdp" />
+        <start uid="videoIRAdp" />
+
+    </config>
+</extension>

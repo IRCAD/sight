@@ -1,0 +1,43 @@
+<plugin id="sight::activity::io::dicomweb" >
+
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene3dQt" />
+
+    <xi:include href="configurations/DicomWebReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/DicomWebWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DDicomWebPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>activity_io_dicomweb</id>
+        <title>DicomWeb Reader</title>
+        <desc>DicomWeb Reader activity</desc>
+        <icon>sight::module::ui::icons/Pull.svg</icon>
+        <requirements>
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="activity_io_dicomweb">
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::service::extension::Config">
+        <id>DicomWebReaderConfig</id>
+        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <config>
+            <config filtertype="sight::filter::dicom::custom::DefaultDicomFilter" />
+        </config>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>DicomWebWriterActivity</id>
+        <title>DicomWeb Writer</title>
+        <desc>DicomWeb Writer activity</desc>
+        <icon>sight::module::ui::icons/Push.svg</icon>
+        <requirements>
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="DicomWebWriterActivity">
+        </appConfig>
+    </extension>
+
+</plugin>

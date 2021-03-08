@@ -1,0 +1,181 @@
+<plugin id="tu_registry"  >
+
+    <extension-point id="::sight::activity::extension::Activity" schema="activity/activity.xsd"/>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry0</id>
+        <title>Title Test0</title>
+        <desc>Desc Test0</desc>
+        <icon>Icon Test0</icon>
+        <requirements>
+            <requirement name="param1" type="sight::data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="sight::data::Mesh" maxOccurs="8" >
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+            </requirement>
+            <requirement name="param3" type="sight::data::Mesh" maxOccurs="10" > <!-- '*' not managed right now -->
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+              <key>key9</key>
+              <key>key10</key>
+            </requirement>
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="0" maxOccurs="2" >
+              <key>key1</key>
+              <key>key2</key>
+            </requirement>
+            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <!--# ...-->
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg0">
+            <parameters>
+                <parameter replace="refImageUid" by="@values.param1"  />
+                <parameter replace="registeredImageUid" by="@values.param2" />
+                <parameter replace="orientation" by="frontal" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry1</id>
+        <title>Title Test1</title>
+        <desc>1 image</desc>
+        <icon>Icon Test1</icon>
+        <requirements>
+            <requirement name="param1" type="sight::data::Image" />
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg1" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry2</id>
+        <title>Title Test2</title>
+        <desc>1 image, 1 mesh</desc>
+        <icon>Icon Test2</icon>
+        <requirements>
+            <requirement name="img" type="sight::data::Image" />
+            <requirement name="mesh" type="sight::data::Mesh" />
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg2" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry3</id>
+        <title>Title Test3</title>
+        <desc>1-2 image</desc>
+        <icon>Icon Test3</icon>
+        <requirements>
+          <requirement name="param1" type="sight::data::Image" maxOccurs="2" >
+            <key>key1</key>
+            <key>key2</key>
+          </requirement>
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg3" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry4</id>
+        <title>Title Test4</title>
+        <desc>* image</desc>
+        <icon>Icon Test4</icon>
+        <requirements>
+            <requirement name="param1" type="sight::data::Image" maxOccurs="10" > <!-- '*' not managed right now -->
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+              <key>key9</key>
+              <key>key10</key>
+            </requirement>
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg4" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry5</id>
+        <title>Title Test5</title>
+        <desc>4-8 image</desc>
+        <icon>Icon Test5</icon>
+        <requirements>
+            <requirement name="param1" type="sight::data::Image" minOccurs="4" maxOccurs="8">
+              <key>key1</key>
+              <key>key2</key>
+              <key>key3</key>
+              <key>key4</key>
+              <key>key5</key>
+              <key>key6</key>
+              <key>key7</key>
+              <key>key8</key>
+            </requirement>
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg5" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry6</id>
+        <title>Title Test6</title>
+        <desc>2 image</desc>
+        <icon>Icon Test6</icon>
+        <requirements>
+            <requirement name="param1" type="sight::data::Image" />
+            <requirement name="param2" type="sight::data::Image" />
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg6" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+
+    <extension implements="::sight::activity::extension::Activity">
+        <id>TestRegistry7</id>
+        <title>Title Test7</title>
+        <desc>1 image, 0-1 mesh</desc>
+        <icon>Icon Test3</icon>
+        <requirements>
+            <requirement name="img" type="sight::data::Image" />
+            <requirement name="mesh" type="sight::data::Mesh" minOccurs="0" >
+              <key>key1</key>
+            </requirement>
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="TestRegistryCfg7" >
+            <parameters/>
+        </appConfig>
+    </extension>
+
+
+</plugin>
+

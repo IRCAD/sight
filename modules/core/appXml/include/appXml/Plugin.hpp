@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2020 IRCAD France
+ * Copyright (C) 2015-2021 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,41 +22,41 @@
 
 #pragma once
 
-#include "appXml/config.hpp"
+#include "module_appXml/config.hpp"
 
-#include <fwRuntime/Plugin.hpp>
+#include <core/runtime/Plugin.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 
-namespace appXml
+namespace sight::module::appXml
 {
 
 /**
  * @brief   This class is started when the module is loaded.
  */
-class APPXML_CLASS_API Plugin : public ::fwRuntime::Plugin
+class MODULE_APPXML_CLASS_API Plugin : public core::runtime::Plugin
 {
 public:
     /// Constructor.
-    APPXML_API Plugin() noexcept;
+    MODULE_APPXML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    APPXML_API ~Plugin() noexcept;
+    MODULE_APPXML_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    APPXML_API void start();
+    MODULE_APPXML_API void start();
 
     /// Overrides stop method. Do nothing
-    APPXML_API void stop() noexcept;
+    MODULE_APPXML_API void stop() noexcept;
 
-    APPXML_API void initialize();
+    MODULE_APPXML_API void initialize();
 
-    APPXML_API void uninitialize() noexcept;
+    MODULE_APPXML_API void uninitialize() noexcept;
 
 private:
     std::string m_configurationName;
     std::string m_parametersName;
-    ::fwServices::AppConfigManager::sptr m_appConfigMng;
+    service::AppConfigManager::sptr m_appConfigMng;
 };
 
-} // namespace appXml
+} // namespace sight::module::appXml

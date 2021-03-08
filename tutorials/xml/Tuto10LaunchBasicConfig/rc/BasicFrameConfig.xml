@@ -1,0 +1,53 @@
+<extension implements="::sight::service::extension::AppConfig" >
+    <id>Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg</id>
+    <parameters><!-- Declared the required parameters -->
+        <!--
+            CLOSE_CONFIG_CHANNEL is defined by SConfigLauncher. It allows to connect the frame signal "closed" to the
+            SConfigLauncher slot "stopConfig".
+            The default value "DummyChannel" is used if the paramter CLOSE_CONFIG_CHANNEL is not defined (for example if
+            the configuration is launched from another service.
+         -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <!-- imageUid is defined by the previous configuration that called the SConfigLauncher. -->
+        <param name="imageUid" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${imageUid}" type="sight::data::Image" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Basic frame config</name>
+                    <minSize width="900" height="600" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="imageRendereSrv" start="no" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="imageRendereSrv" type="sight::module::viz::sample::SImage" >
+            <in key="image" uid="${imageUid}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+            <signal>mainFrame/closed</signal>
+        </connect>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="imageRendereSrv" />
+
+    </config>
+</extension>

@@ -1,0 +1,214 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2012-2017 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "NumericTest.hpp"
+
+#include <atoms/Exception.hpp>
+#include <atoms/Numeric.hpp>
+#include <atoms/Numeric.hxx>
+
+#include <boost/lexical_cast.hpp>
+
+#include <limits>
+
+CPPUNIT_TEST_SUITE_REGISTRATION( sight::atoms::ut::NumericTest );
+
+namespace sight::atoms
+{
+namespace ut
+{
+
+//------------------------------------------------------------------------------
+
+void NumericTest::setUp()
+{
+    // Set up context before running a test.
+}
+
+//-----------------------------------------------------------------------------
+
+void NumericTest::tearDown()
+{
+    // Clean up after the test run.
+}
+
+//-----------------------------------------------------------------------------
+
+void NumericTest::emptyTest()
+{
+    atoms::Numeric::sptr numeric = atoms::Numeric::New();
+    CPPUNIT_ASSERT_THROW(numeric->getString(), atoms::Exception);
+}
+
+//-----------------------------------------------------------------------------
+
+void NumericTest::intTest()
+{
+    atoms::Numeric::sptr numeric;
+
+    numeric = atoms::Numeric::New(42);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(42), numeric->getString());
+
+    numeric = atoms::Numeric::New(1ULL<<63);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(1ULL<<63), numeric->getString());
+    CPPUNIT_ASSERT_THROW( numeric->getValue<int>(), boost::numeric::positive_overflow );
+
+    numeric = atoms::Numeric::New(-22);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(-22), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(static_cast<int>(-22), numeric->getValue<int>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue<unsigned int>(), boost::numeric::negative_overflow );
+
+    numeric = atoms::Numeric::New(true);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(true), numeric->getString());
+
+    numeric = atoms::Numeric::New('a');
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(static_cast<int>('a')), numeric->getString());
+
+    numeric = atoms::Numeric::New(std::string("42"));
+    CPPUNIT_ASSERT_EQUAL(std::string("42"), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(static_cast<char>(42), numeric->getValue<char>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned char>(42), numeric->getValue<unsigned char>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned short>(42), numeric->getValue<unsigned short>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned int>(42), numeric->getValue<unsigned int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned long int>(42), numeric->getValue<unsigned long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<unsigned long long int>(42), numeric->getValue<unsigned long long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<char>(42), numeric->getValue<char>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<short>(42), numeric->getValue<short>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<int>(42), numeric->getValue<int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<long int>(42), numeric->getValue<long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<long long int>(42), numeric->getValue<long long int>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<float>(42), numeric->getValue<float>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<double>(42), numeric->getValue<double>());
+
+    numeric = atoms::Numeric::New(std::string("422"));
+    CPPUNIT_ASSERT_EQUAL(422, numeric->getValue<int>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue<char>(), boost::numeric::positive_overflow );
+
+}
+
+//-----------------------------------------------------------------------------
+
+void NumericTest::floatingTest()
+{
+    atoms::Numeric::sptr numeric;
+
+    typedef boost::variant<float, double> VariantType;
+
+    double d1 = 0.234;
+    double d2 = std::numeric_limits< double >::max();
+    double d3 = -42.4;
+    float f1  = 4327.452359;
+
+    numeric = atoms::Numeric::New(d1);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d1)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(d1, numeric->getValue<double>());
+    CPPUNIT_ASSERT_EQUAL((float)d1, numeric->getValue<float>());
+
+    numeric = atoms::Numeric::New(d2);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d2)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(d2, numeric->getValue<double>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue< float >(), boost::numeric::positive_overflow );
+    CPPUNIT_ASSERT_THROW( numeric->getValue< std::uint64_t >(), boost::numeric::positive_overflow );
+
+    numeric = atoms::Numeric::New(d3);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d3)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(d3, numeric->getValue<double>());
+    CPPUNIT_ASSERT_EQUAL(static_cast<int>(d3), numeric->getValue<int>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue< unsigned int >(), boost::numeric::negative_overflow );
+
+    numeric = atoms::Numeric::New(f1);
+    CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(f1)), numeric->getString());
+    CPPUNIT_ASSERT_EQUAL(f1, numeric->getValue<float>());
+    CPPUNIT_ASSERT_EQUAL((double)f1, numeric->getValue<double>());
+    CPPUNIT_ASSERT_THROW( numeric->getValue< char >(), boost::numeric::positive_overflow );
+}
+
+//-----------------------------------------------------------------------------
+
+class variant_visitor : public boost::static_visitor<>
+{
+public:
+
+    //------------------------------------------------------------------------------
+
+    void operator()( ::boost::blank& ) const
+    {
+        CPPUNIT_ASSERT_MESSAGE("This shall not happen", 0);
+    }
+    //------------------------------------------------------------------------------
+
+    template <typename U>
+    void operator()( U& value ) const
+    {
+        atoms::Numeric::sptr numeric = atoms::Numeric::New(value);
+        CPPUNIT_ASSERT_EQUAL(U(value), numeric->getValue<U>());
+        CPPUNIT_ASSERT_EQUAL(
+            ::boost::lexical_cast<std::string>(atoms::Numeric::ValueType(value)),
+            numeric->getString()
+            );
+
+        CPPUNIT_ASSERT_EQUAL(typeid(U).name(), numeric->getVariant().type().name());
+    }
+};
+
+//------------------------------------------------------------------------------
+
+void NumericTest::mixedTest()
+{
+    atoms::Numeric::ValueType values[] = {
+        std::numeric_limits<  std::int64_t >::min(),
+        std::int64_t(-1234),
+        std::int64_t(0),
+        std::int64_t(1234),
+        std::numeric_limits<  std::int64_t >::max(),
+
+        std::numeric_limits<  std::uint64_t >::min(),
+        std::uint64_t(-1234),
+        std::uint64_t(0),
+        std::uint64_t(1234),
+        std::numeric_limits<  std::uint64_t >::max(),
+
+        -std::numeric_limits<  float >::max(),
+        float(-1234),
+        float(0),
+        std::numeric_limits<  float >::min(),
+        float(1234),
+        std::numeric_limits<  float >::max(),
+
+        -std::numeric_limits<  double >::max(),
+        double(-1234),
+        double(0),
+        std::numeric_limits<  double >::min(),
+        double(1234),
+        std::numeric_limits<  double >::max()
+
+    };
+
+    for( atoms::Numeric::ValueType& v : values )
+    {
+        boost::apply_visitor( variant_visitor(), v );
+    }
+
+}
+
+}  // namespace ut
+}  // namespace sight::atoms

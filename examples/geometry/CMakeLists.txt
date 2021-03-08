@@ -1,0 +1,2 @@
+add_subdirectory(ExRGBDManualAR)
+add_subdirectory(ExSolvePnP)

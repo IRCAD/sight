@@ -1,0 +1,239 @@
+<plugin id="sight::module::viz::scene3d" library="true" >
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SAxis</service>
+         <desc>This adaptor shows a simple coordinate system.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SCamera</service>
+         <object key="calibration">sight::data::Camera</object>
+         <object key="transform">sight::data::Matrix4</object>
+         <desc>This adaptor transforms a Sight camera to an Ogre camera.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IParameter</type>
+         <service>sight::module::viz::scene3d::adaptor::SCompositorParameter</service>
+         <object key="parameter">sight::data::Object</object>
+         <desc>This adaptor binds a Sight data to a shader uniform from a specific compositor.</desc>
+    </extension>
+
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SFragmentsInfo</service>
+         <desc>This adaptor takes a snapshot of layer fragments information and output it as a data::Image.</desc>
+    </extension>
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SFrustum</service>
+         <object key="camera">sight::data::Camera</object>
+         <desc>This adaptor displays the frustum of an data::Camera.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SFrustumList</service>
+         <object key="camera">sight::data::Camera</object>
+         <object key="transform">sight::data::Matrix4</object>
+         <desc>This adaptor displays a new Frustum each times the transform is updated.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SImageMultiDistances</service>
+         <object key="image">sight::data::Image</object>
+         <desc>This adaptor displays distances retrieved from an image fields.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SLandmarks</service>
+         <object key="landmarks">sight::data::Landmarks</object>
+         <object key="image">sight::data::Image</object>
+         <desc>This adaptor displays landmarks.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::ILight</type>
+         <service>sight::module::viz::scene3d::adaptor::SLight</service>
+         <object key="diffuseColor">sight::data::Color</object>
+         <object key="specularColor">sight::data::Color</object>
+         <desc>This adaptors adds a light to the scene manager.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SLine</service>
+         <desc>This adaptor shows a simple line.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SMaterial</service>
+         <object key="material">sight::data::Material</object>
+         <desc>This adaptor adapts a data::Material, allowing to tweak material parameters.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SMesh</service>
+         <object key="mesh">sight::data::Mesh</object>
+         <desc>This adaptor shows individual meshes.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SMeshList</service>
+         <object key="texture">sight::data::Image</object>
+         <object key="transform">sight::data::Matrix4</object>
+         <object key="mesh">sight::data::Mesh</object>
+         <desc>This adaptor shows a list of mesh.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SModelSeries</service>
+         <object key="model">sight::data::ModelSeries</object>
+         <desc>This adaptor shows a modelSeries. It creates an adaptor for each reconstruction in the model.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SNegato2D</service>
+         <object key="image">sight::data::Image</object>
+         <object key="tf">sight::data::TransferFunction</object>
+         <desc>This adaptor displays a 2D negato.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SNegato2DCamera</service>
+         <object key="image">sight::data::Image</object>
+         <object key="tf">sight::data::TransferFunction</object>
+         <desc>This adaptor lets the user move an orthographic camera to visualize medical images in 2D.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SNegato3D</service>
+         <object key="image">sight::data::Image</object>
+         <object key="tf">sight::data::TransferFunction</object>
+         <desc>This adaptor displays a 3D negato.</desc>
+    </extension>
+    
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SOrientationMarker</service>
+         <object key="matrix">sight::data::Matrix4</object>
+         <desc>This adaptor displays an orientation "marker", marker is represented by a human body mesh, its orientation follows camera movement.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SPicker</service>
+         <desc>This adaptor performs picking queries on mouse clicks and forwards the picked data through a signal.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SPointList</service>
+         <object key="pointList">sight::data::PointList</object>
+         <object key="mesh">sight::data::Mesh</object>
+         <desc>This adaptor shows a point lists using billboards generated by a geometry shader.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SReconstruction</service>
+         <object key="reconstruction">sight::data::Reconstruction</object>
+         <desc>This adaptor displays a reconstruction.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SRenderStats</service>
+         <desc>This adaptor displays rendering statistics in the window overlay.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SResizeViewport</service>
+         <desc>This adaptor resizes and moves viewports.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IParameter</type>
+         <service>sight::module::viz::scene3d::adaptor::SShaderParameter</service>
+         <object key="parameter">sight::data::Object</object>
+         <desc>This adaptor sends a Sight data as a shader parameter.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SShapeExtruder</service>
+         <object key="extrudedMeshes">sight::data::ModelSeries</object>
+         <desc>This adaptor allows to draw a 2D shape with a lasso tool, and create an extruded mesh from it.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SText</service>
+         <desc>This adaptor displays a text object in the center or along the window's borders.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::STexture</service>
+         <object key="image">sight::data::Image</object>
+         <desc>This adaptor maps a texture on a mesh. This is done via module::viz::scene3d::adaptor::SMaterial. In the</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::STrackballCamera</service>
+         <desc>This adaptor lets the user move the camera around a point of interest using the mouse and keyboard.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::STransform</service>
+         <object key="transform">sight::data::Matrix4</object>
+         <desc>This adaptor binds a data::Matrix4 to an Ogre scene node.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SVector</service>
+         <desc>This adaptor shows a simple vector.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SVideo</service>
+         <object key="image">sight::data::Image</object>
+         <object key="tf">sight::data::TransferFunction</object>
+         <object key="pointList">sight::data::PointList</object>
+         <desc>This adaptor renders a video frame from a 2D-image.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SVolumeRender</service>
+         <object key="image">sight::data::Image</object>
+         <object key="tf">sight::data::TransferFunction</object>
+         <object key="clippingMatrix">sight::data::Matrix4</object>
+         <desc>This adaptor displays a volume rendering.</desc>
+    </extension>
+
+    <extension implements="::sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SVoxelPicker</service>
+         <object key="image">sight::data::Image</object>
+         <desc>This adaptor performs picking queries on an image voxel using slices.</desc>
+    </extension>
+
+</plugin>

@@ -1,0 +1,147 @@
+﻿<extension implements="::sight::service::extension::AppConfig" >
+    <id>Tuto13Multithread_AppCfg</id>
+    <parameters>
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="mesh" type="sight::data::Mesh" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <gui>
+                <frame>
+                    <name>Tuto13Multithread</name>
+                    <icon>Tuto13Multithread/tuto.ico</icon>
+                    <minSize width="720" height="600" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBarView" start="yes" />
+                <view sid="containerView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Deformation" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFileView" start="yes" />
+                <menu sid="deformationMenuView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="containerView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="rendering1Srv" start="yes" />
+                <view sid="rendering2Srv" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Open mesh" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="openMeshAct" start="yes" />
+                <menuItem sid="quitAct" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="deformationMenuView" type="sight::module::ui::base::SMenu" >
+            <gui>
+                <layout>
+                    <menuItem name="Start deformation" shortcut="Ctrl+D" />
+                    <menuItem name="Stop deformation" shortcut="Ctrl+F" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="startDeformationAct" start="yes" />
+                <menuItem sid="stopDeformationAct" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter" >
+            <start uid="meshReaderSrv" />
+        </service>
+
+        <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+        <service uid="startDeformationAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <slots>
+                <slot>meshDeformationSrv/startDeformation</slot>
+            </slots>
+        </service>
+
+        <service uid="stopDeformationAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <slots>
+                <slot>meshDeformationSrv/stopDeformation</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <inout key="data" uid="mesh" />
+            <type mode="reader" />
+        </service>
+
+        <!-- Visualization service for the first window. -->
+        <service uid="rendering1Srv" type="sight::module::viz::sample::SMesh" autoConnect="yes" >
+            <in key="mesh" uid="mesh" autoresetcamera="no" />
+        </service>
+
+        <!-- Visualization service for the second window -->
+        <service uid="rendering2Srv" type="sight::module::viz::sample::SMesh" autoConnect="yes" >
+            <in key="mesh" uid="mesh" autoresetcamera="no" />
+        </service>
+
+        <!--
+            Mesh deformation service:
+            This service runs a deformation method in another worker.
+            This method is called every 200 milliseconds.
+        -->
+        <service uid="meshDeformationSrv" type="vtkSimpleMesh::SSimpleMeshDeformation" worker="DEFORMATION_WORKER" >
+            <inout key="mesh" uid="mesh" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- Connect the signal slot of the service to receive the updating of camera position -->
+        <connect>
+            <signal>rendering1Srv/camUpdated</signal>
+            <slot>rendering2Srv/updateCamPosition</slot>
+        </connect>
+
+        <connect>
+            <signal>rendering2Srv/camUpdated</signal>
+            <slot>rendering1Srv/updateCamPosition</slot>
+        </connect>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="meshDeformationSrv" />
+
+    </config>
+</extension>

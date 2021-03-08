@@ -1,0 +1,143 @@
+<extension implements="::sight::service::extension::AppConfig" >
+    <id>ExDicomSegmentation_Base_AppCfg</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="DYNAMICVIEW_SENDER_CHANNEL" default="channel" />
+        <param name="seriesDB" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="selection" type="sight::data::Vector" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="1" backgroundColor="#2E3034" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="containerView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="containerView" type="sight::module::ui::base::SView" >
+            <gui>
+                <toolBar/>
+                <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="1" backgroundColor="#36393E" />
+                    <view proportion="1" backgroundColor="#2E3034" border="5" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBarView" start="yes" />
+                <view sid="selectorSrv" start="yes" />
+                <view wid="previewView" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Import" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                    <menuItem name="Export" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <menuItem name="Threshold" icon="sight::module::ui::flaticons/YellowMenu.svg" />
+                    <menuItem name="Mesher" icon="sight::module::ui::flaticons/YellowMenu.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="importAct" start="yes" />
+                <menuItem sid="exportAct" start="yes" />
+                <menuItem sid="thresholdAct" start="yes" />
+                <menuItem sid="mesherAct" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="importAct" type="sight::module::ui::base::series::SDBMerger" >
+            <inout key="seriesDB" uid="${seriesDB}" />
+            <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
+        </service>
+
+        <service uid="exportAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+            <in key="series" uid="selection" />
+            <config>
+                <mode>immediate</mode>
+                <parameters>
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
+                    <id>DicomSegmentationSurfaceExport</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="mesherAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+            <in key="series" uid="selection" />
+            <config>
+                <parameters>
+                    <parameter replace="seriesDB" by="${seriesDB}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ExDicomSegmentation_VTKMesher_Activity</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="thresholdAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="yes" >
+            <in key="series" uid="selection" />
+            <config>
+                <parameters>
+                    <parameter replace="seriesDB" by="${seriesDB}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ExDicomSegmentation_Threshold_Activity</id>
+                </filter>
+            </config>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="yes" >
+            <inout key="seriesDB" uid="${seriesDB}" />
+            <inout key="selection" uid="selection" />
+        </service>
+
+        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::SViewer" autoConnect="yes" >
+            <in key="series" uid="selection" />
+            <parentView wid="previewView" />
+            <configs>
+                <config id="2DSimpleConfig2" type="sight::data::ImageSeries" >
+                    <extract path="@image" pattern="imageID" />
+                </config>
+                <config id="3DSimpleConfig2" type="sight::data::ModelSeries" />
+            </configs>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${DYNAMICVIEW_SENDER_CHANNEL}" >
+            <signal>thresholdAct/activityLaunched</signal>
+            <signal>mesherAct/activityLaunched</signal>
+        </connect>
+
+        <!-- ******************************* Start services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="seriesViewerSrv" />
+
+    </config>
+</extension>

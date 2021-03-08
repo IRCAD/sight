@@ -1,0 +1,6 @@
+<plugin id="Tuto03MesherWithGenericSceneCpp" library="true" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="visuVTKQt" />
+
+</plugin>

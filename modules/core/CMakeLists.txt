@@ -1,0 +1,11 @@
+add_subdirectory(memory)
+add_subdirectory(appXml)
+add_subdirectory(sync)
+add_subdirectory(activity)
+add_subdirectory(debug)
+add_subdirectory(service)
+add_subdirectory(data)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(utest)
+endif(SIGHT_BUILD_TESTS)

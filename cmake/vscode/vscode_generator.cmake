@@ -3,43 +3,21 @@
 function(vscodeGenerator)
 
     unset(REPO_FOLDERS)
-    foreach(REPOSITORY ${ADDITIONAL_REPOSITORIES_FILES})
-        file(READ ${REPOSITORY} REPO_RAW_NAME)
-        string(STRIP ${REPO_RAW_NAME} REPO_RAW_NAME)
-        string(TOUPPER ${REPO_RAW_NAME} REPO_NAME)
-        get_filename_component(REPO_DIR ${REPOSITORY} DIRECTORY)
-        get_filename_component(REPO_DIR ${REPO_DIR} ABSOLUTE)
-
-        if(${REPO_NAME} STREQUAL "SIGHT" OR BUILD_${REPO_NAME})
-            string(CONCAT REPO_FOLDER
-                "{\n"
-                "    \"name\": \"${REPO_RAW_NAME}\",\n"
-                "    \"path\": \"${REPO_DIR}\"\n"
-                "},\n"
-            )
-        endif()
-        string(APPEND REPO_FOLDERS ${REPO_FOLDER})
-    endforeach()
 
     if(WIN32)
         set(DBG_TYPE "cppvsdbg")
         set(ENV_NAME "PATH")
-        set(ENV_VALUE "${FW_EXTERNAL_LIBRARIES_DIR};%PATH%")
+        set(ENV_VALUE "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR};%PATH%")
         set(EXTERNAL_CONSOLE "true")
-    elseif(APPLE)
-        set(DBG_TYPE "cppdbg")
-        set(ENV_NAME "DYLD_FALLBACK_LIBRARY_PATH")
-        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
-        set(ENV_VALUE "${FW_EXTERNAL_LIBRARIES_DIRS}:$DYLD_FALLBACK_LIBRARY_PATH")
-        set(EXTERNAL_CONSOLE "false")
-        set(MI_MODE "\"MIMode\": \"lldb\",\n")
+        set(LAUNCHER "sightrun${CMAKE_EXECUTABLE_SUFFIX}")
     else()
         set(DBG_TYPE "cppdbg")
         set(ENV_NAME "LD_LIBRARY_PATH")
-        string(REPLACE ";" ":" FW_EXTERNAL_LIBRARIES_DIRS "${FW_EXTERNAL_LIBRARIES_DIR}")
-        set(ENV_VALUE "${FW_EXTERNAL_LIBRARIES_DIRS}:$LD_LIBRARY_PATH")
+        string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIRS "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
+        set(ENV_VALUE "${FW_SIGHT_EXTERNAL_LIBRARIES_DIRS}:$LD_LIBRARY_PATH")
         set(EXTERNAL_CONSOLE "false")
         set(MI_MODE "\"MIMode\": \"gdb\",\n")
+        set(LAUNCHER "sightrun.bin-${sightrun_VERSION}")
     endif()
     unset(CONFIG_LIST)
     foreach(PRJ_NAME ${ARGV})
@@ -92,7 +70,7 @@ function(vscodeGenerator)
                 "    \"name\": \"[app] ${PRJ_NAME}\",\n"
                 "    \"type\": \"${DBG_TYPE}\",\n"
                 "    \"request\": \"launch\",\n"
-                "    \"program\": \"${CMAKE_BINARY_DIR}/bin/fwlauncher${CMAKE_EXECUTABLE_SUFFIX}\",\n"
+                "    \"program\": \"${CMAKE_BINARY_DIR}/bin/${LAUNCHER}\",\n"
                 "    \"args\": [\"${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${${PRJ_NAME}_FULLNAME}/profile.xml\"],\n"
                 "    \"stopAtEntry\": false,\n"
                 "    \"cwd\": \"${CMAKE_BINARY_DIR}\",\n"

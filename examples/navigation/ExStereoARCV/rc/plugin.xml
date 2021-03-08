@@ -1,0 +1,688 @@
+<plugin id="ExStereoARCV" >
+
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExStereoARCV_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="camera1" type="sight::data::Camera" src="deferred" />
+            <object uid="camera2" type="sight::data::Camera" src="deferred" />
+            <object uid="frameTL1" type="sight::data::FrameTL" />
+            <object uid="frameTL2" type="sight::data::FrameTL" />
+            <object uid="tagTL1" type="sight::data::MarkerTL" />
+            <object uid="tagTL2" type="sight::data::MarkerTL" />
+            <object uid="videoImage1" type="sight::data::Image" />
+            <object uid="videoImage2" type="sight::data::Image" />
+            <object uid="matrixTL" type="sight::data::MatrixTL" />
+            <object uid="matrix" type="sight::data::Matrix4" />
+            <object uid="extrinsic" type="sight::data::Matrix4" src="deferred" />
+            <object uid="inverseMat" type="sight::data::Matrix4" />
+            <object uid="rightMat" type="sight::data::Matrix4" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>ExStereoARCV</name>
+                        <icon>ExStereoARCV/app.ico</icon>
+                    </frame>
+                    <menuBar/>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="yes" />
+                    <toolBar sid="toolbarView" start="yes" />
+                    <view sid="cameraView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                    <menu sid="menuPreferencesView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Show settings" shortcut="Ctrl+H" style="check" />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="showParametersAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Video directory" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="videoDirAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                        <editor/>
+                        <editor/>
+                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <separator/>
+                        <menuItem name="Start camera pose recording" icon="sight::module::ui::flaticons/RedCircle.svg" />
+                        <menuItem name="Stop camera pose recording" icon="sight::module::ui::flaticons/RedStop.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadCalibAct" start="yes" />
+                    <editor sid="videoSelector1Srv" />
+                    <editor sid="videoSelector2Srv" />
+                    <menuItem sid="startVideoAct" start="yes" />
+                    <menuItem sid="stopVideoAct" start="yes" />
+                    <menuItem sid="pauseVideoAct" start="yes" />
+                    <menuItem sid="startRecordAct" start="yes" />
+                    <menuItem sid="stopRecordAct" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="cameraView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="videoView" start="yes" />
+                    <view sid="parametersView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="videoView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="3" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="stereoView" start="yes" />
+                    <view sid="infoView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="infoView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="reprojectionInfoView" start="yes" />
+                    <view sid="reprojectionMatrixStatusSrv" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="stereoView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="leftGenericSceneSrv" />
+                    <view sid="rightGenericSceneSrv" />
+                </registry>
+            </service>
+
+            <service uid="reprojectionInfoView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="errorLabelLeftSrv" start="yes" />
+                    <view sid="errorLabelRightSrv" start="yes" />
+                </registry>
+            </service>
+
+
+            <service uid="parametersView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                            <view proportion="3" />
+                            <view proportion="2" />
+                            <view proportion="1" />
+                        <spacer/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="arucoParamsSrv" start="yes" />
+                    <view sid="reprojectionParamsSrv" start="yes" />
+                    <view sid="synchroParamsSrv" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
+            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
+
+            <service uid="showParametersAct" type="sight::module::ui::base::SModifyLayout" >
+                <config>
+                    <show_or_hide sid="parametersView" />
+                </config>
+            </service>
+
+            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>calibrationReaderSrv/update</slot>
+                </slots>
+            </service>
+
+            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabber1Srv/startCamera</slot>
+                    <slot>videoGrabber2Srv/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabber1Srv/stopCamera</slot>
+                    <slot>videoGrabber2Srv/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>videoGrabber1Srv/pauseCamera</slot>
+                    <slot>videoGrabber2Srv/pauseCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="startRecordAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <slots>
+                    <slot>matricesWriterSrv/startRecord</slot>
+                    <slot>startRecordAct/hide</slot>
+                    <slot>stopRecordAct/show</slot>
+                </slots>
+            </service>
+
+            <service uid="stopRecordAct" type="sight::module::ui::base::com::SSlotCaller" >
+                <state visible="false" />
+                <slots>
+                    <slot>matricesWriterSrv/stopRecordAct</slot>
+                    <slot>stopRecordAct/hide</slot>
+                    <slot>startRecordAct/show</slot>
+                </slots>
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <service uid="leftGenericSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="LVideoAdp" />
+                    <adaptor uid="LAxisAdp" />
+                    <adaptor uid="LCameraAdp" />
+                </scene>
+            </service>
+
+            <service uid="LVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="videoImage1" />
+                <config layer="video" />
+            </service>
+
+            <service uid="LAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis" >
+                <config layer="default" length="30" origin="true" />
+            </service>
+
+            <service uid="LCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+                <inout key="transform" uid="inverseMat" />
+                <in key="calibration" uid="camera1" />
+                <config layer="default" />
+            </service>
+
+            <!-- ******************************* Begin Generic Scene ******************************* -->
+
+            <!-- Scene in which the video and the 3D will be rendered -->           
+            <service uid="rightGenericSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="RVideoAdp" />
+                    <adaptor uid="RAxisAdp" />
+                    <adaptor uid="RCameraAdp" />
+                </scene>
+            </service>
+
+            <service uid="RVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="yes" >
+                <in key="image" uid="videoImage2" />
+                <config layer="video" />
+            </service>
+
+            <service uid="RAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis" >
+                <config layer="default" length="30" origin="true" />
+            </service>
+
+            <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="yes" >
+                <inout key="transform" uid="rightMat" />
+                <in key="calibration" uid="camera2" />
+                <config layer="default" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
+                <inout key="data" uid="cameraSeries" />
+            </service>
+
+            <!-- extract a ::sight::data::Camera from the ::sight::data::CameraSeries -->
+            <service uid="cameraExtractorSrv" type="sight::module::data::SExtractObj" >
+                <inout key="source" uid="cameraSeries" >
+                    <extract from="@cameras.0" />
+                    <extract from="@cameras.1" />
+                    <extract from="@extrinsic_matrices.1" />
+                </inout>
+                <out group="target" >
+                    <key uid="camera1" />
+                    <key uid="camera2" />
+                    <key uid="extrinsic" />
+                </out>
+            </service>
+
+            <!-- save poses matrices in a file -->
+            <service uid="matricesWriterSrv" type="sight::module::io::matrix::SMatrixWriter" >
+                <in key="data" uid="matrixTL" autoConnect="no" />
+            </service>
+
+            <!-- GUI to handle aruco tracking parameters -->
+            <service uid="arucoParamsSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <!-- show marker or not -->
+                    <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
+                    <!--  do corner refinement or not. -->
+                    <param type="bool" name="Corner refinement." key="corner" defaultValue="true" />
+                    <!-- minimum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="adpt. Threshold win size min" key="adaptiveThreshWinSizeMin" defaultValue="3" min="1" max="100" />
+                    <!-- maximum window size for adaptive thresholding before finding contours -->
+                    <param type="int" name="adpt. Threshold win size max" key="adaptiveThreshWinSizeMax" defaultValue="23" min="1" max="100" />
+                    <!-- increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
+                    <param type="int" name="adpt. Threshold win size step" key="adaptiveThreshWinSizeStep" defaultValue="10" min="1" max="100" />
+                    <!-- constant for adaptive thresholding before finding contours -->
+                    <param type="double" name="adpt. threshold constant" key="adaptiveThreshConstant" defaultValue="7." min="0." max="30." />
+                    <!-- determine minimum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Min. Marker Perimeter Rate" key="minMarkerPerimeterRate" defaultValue="0.03" min="0.01" max="1.0" />
+                    <!-- determine maximum perimeter for marker contour to be detected.
+                        This is defined as a rate respect to the maximum dimension of the input image -->
+                    <param type="double" name="Max. Marker Perimeter Rate" key="maxMarkerPerimeterRate" defaultValue="4.0" min="1." max="10." />
+                    <!-- minimum accuracy during the polygonal approximation process to determine which contours are squares -->
+                    <param type="double" name="Polygonal Approx. Accuracy Rate" key="polygonalApproxAccuracyRate" defaultValue="0.03" min="0.01" max="1." />
+                    <!-- minimum distance between corners for detected markers relative to its perimeter -->
+                    <param type="double" name="Min. Corner Distance Rate" key="minCornerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- minimum distance of any corner to the image border for detected markers (in pixels) -->
+                    <param type="int" name="Min. Distance to Border" key="minDistanceToBorder" defaultValue="1" min="0" max="10" />
+                    <!-- minimum mean distance beetween two marker corners to be considered similar,
+                    so that the smaller one is removed. The rate is relative to the smaller perimeter of the two markers -->
+                    <param type="double" name="Min. Marker Distance Rate" key="minMarkerDistanceRate" defaultValue="0.01" min="0." max="1." />
+                    <!-- window size for the corner refinement process (in pixels) -->
+                    <param type="int" name="Corner Refinement Win. Size" key="cornerRefinementWinSize" defaultValue="5" min="1" max="100" />
+                    <!-- maximum number of iterations for stop criteria of the corner refinement process -->
+                    <param type="int" name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" defaultValue="30" min="0" max="10" />
+                    <!-- minimum error for the stop cristeria of the corner refinement process -->
+                    <param type="double" name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" defaultValue="0.1" min="0." max="10." />
+                    <!-- number of bits of the marker border, i.e. marker border width -->
+                    <param type="int" name="Marker Border Bits" key="markerBorderBits" defaultValue="1" min="1" max="100" />
+                    <!-- number of bits (per dimension) for each cell of the marker when removing the perspective -->
+                    <param type="int" name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" defaultValue="8" min="1" max="32" />
+                    <!-- width of the margin of pixels on each cell not considered for the determination of the cell bit.
+                        Represents the rate respect to the total size of the cell,
+                        i.e. perpectiveRemovePixelPerCel -->
+                    <param type="double" name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" defaultValue="0.13" min="0." max="1." />
+                    <!-- maximum number of accepted erroneous bits in the border (i.e. number of allowed white bits in the border).
+                        Represented as a rate respect to the total number of bits per marker -->
+                    <param type="double" name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" defaultValue="0.35" min="0." max="1." />
+                    <!-- minimun standard deviation in pixels values during the decodification step to apply Otsu thresholding
+                        (otherwise, all the bits are set to 0 or 1 depending on mean higher than 128 or not) -->
+                    <param type="double" name="Min. Otsu Std. Dev." key="minOtsuStdDev" defaultValue="5.0" min="0." max="100." />
+                    <!-- error correction rate respect to the maximun error correction capability for each dictionary -->
+                    <param type="double" name="Error Correction Rate" key="errorCorrectionRate" defaultValue="0.6" min="0." max="1." />
+                </parameters>
+            </service>
+
+            <service uid="reprojectionParamsSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
+                    <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
+                </parameters>
+            </service>
+
+            <service uid="synchroParamsSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="int" name="Delay" key="frameDelay" defaultValue="0" min="0" max="2000" />
+                </parameters>
+            </service>
+
+            <!-- Gui Service to display a value in a QLabel -->
+            <service uid="errorLabelLeftSrv" type="sight::module::ui::qt::STextStatus" >
+                <label>Reprojection Error Left (RMSE)</label>
+                <color>#D25252</color>
+            </service>
+
+            <service uid="errorLabelRightSrv" type="sight::module::ui::qt::STextStatus" >
+                <label>Reprojection Error Right (RMSE)</label>
+                <color>#D25252</color>
+            </service>
+
+            <!-- GUI to display a state -->
+            <service uid="reprojectionMatrixStatusSrv" type="sight::module::ui::base::editor::SStatus" >
+                <form>circle</form>
+                <labelStatus>Reprojection matrix computed</labelStatus>
+                <red>No reprojection matrix</red>
+                <green>Reprojection matrix is present</green>
+            </service>
+
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="videoSelector1Srv" type="sight::module::ui::qt::video::SCamera" >
+                <inout key="camera" uid="camera1" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <service uid="videoSelector2Srv" type="sight::module::ui::qt::video::SCamera" >
+                <inout key="camera" uid="camera2" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="videoGrabber1Srv" type="sight::module::io::video::SFrameGrabber" >
+                <in key="camera" uid="camera1" />
+                <inout key="frameTL" uid="frameTL1" />
+            </service>
+
+            <service uid="videoGrabber2Srv" type="sight::module::io::video::SFrameGrabber" >
+                <in key="camera" uid="camera2" />
+                <inout key="frameTL" uid="frameTL2" />
+            </service>
+
+            <!-- Aruco tracker service -->
+            <service uid="arucoTracker1Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking1" >
+                <in key="timeline" uid="frameTL1" autoConnect="yes" />
+                <in key="camera" uid="camera1" />
+                <inout group="tagTL" >
+                    <!-- timeline of detected tag(s) -->
+                    <key uid="tagTL1" />
+                </inout>
+                <track>
+                    <!-- list of id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
+            </service>
+
+            <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking2" >
+                <in key="timeline" uid="frameTL2" autoConnect="yes" />
+                <in key="camera" uid="camera2" />
+                <inout group="tagTL" >
+                    <!-- timeline of detected tag(s) -->
+                    <key uid="tagTL2" />
+                </inout>
+                <track>
+                    <!-- list of id -->
+                    <marker id="101" />
+                </track>
+                <debugMarkers>yes</debugMarkers>
+            </service>
+
+            <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
+            <service uid="registrationSrv" type="sight::module::geometry::vision::SPoseFrom2d" worker="registration" >
+                <in group="markerTL" autoConnect="yes" >
+                    <key uid="tagTL1" />
+                    <key uid="tagTL2" />
+                </in>
+                <in group="camera" >
+                    <key uid="camera1" />
+                    <key uid="camera2" />
+                </in>
+                <in key="extrinsic" uid="extrinsic" />
+                <inout key="matrixTL" uid="matrixTL" />
+                <patternWidth>60</patternWidth>
+            </service>
+
+
+            <!-- This will compute the reprojection error Left -->
+            <service uid="leftReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error1" >
+                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+                <in key="camera" uid="camera1" />
+                <in key="markerTL" uid="tagTL1" />
+                <inout key="frameTL" uid="frameTL1" />
+                <patternWidth>60</patternWidth>
+            </service>
+
+            <service uid="rightReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error2" >
+                <in key="matrixTL" uid="matrixTL" autoConnect="yes" />
+                <in key="extrinsic" uid="extrinsic" />
+                <in key="camera" uid="camera2" />
+                <in key="markerTL" uid="tagTL2" />
+                <inout key="frameTL" uid="frameTL2" />
+                <patternWidth>60</patternWidth>
+            </service>
+
+
+            <!-- To synchronize matrix, frame and detection -->
+            <service uid="frameMatrixSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
+                <in group="frameTL" >
+                    <key uid="frameTL1" />
+                    <key uid="frameTL2" />
+                </in>
+                <inout group="image" >
+                    <key uid="videoImage1" />
+                    <key uid="videoImage2" />
+                </inout>
+                <in group="matrixTL" >
+                    <key uid="matrixTL" />
+                </in>
+                <inout group="matrices0" >
+                    <key uid="matrix" sendStatus="true" />
+                </inout>
+                <framerate>30</framerate>
+                <tolerance>100</tolerance>
+            </service>
+
+            <!-- to multiply matrices (here only used to inverse "matrix" )-->
+            <service uid="matrixReverserSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
+                <in group="matrix" >
+                    <key uid="matrix" autoConnect="yes" inverse="true" />
+                </in>
+                <inout key="output" uid="inverseMat" />
+            </service>
+
+            <!-- to multiply matrices -->
+            <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
+                <in group="matrix" >
+                    <key uid="inverseMat" autoConnect="yes" inverse="false" />
+                    <key uid="extrinsic" inverse="true" />
+                </in>
+                <inout key="output" uid="rightMat" />
+            </service>
+
+            <service uid="hideAxisSrv" type="sight::module::ui::base::com::SBooleanSlotCaller" >
+                <slots>
+                    <slot>LAxisAdp/updateVisibility</slot>
+                    <slot>RAxisAdp/updateVisibility</slot>
+                </slots>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>reprojectionParamsSrv/colorChanged</signal>
+                <slot>leftReprojectionErrorSrv/setColorParameter</slot>
+                <slot>rightReprojectionErrorSrv/setColorParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>reprojectionParamsSrv/boolChanged</signal>
+                <slot>leftReprojectionErrorSrv/setBoolParameter</slot>
+                <slot>rightReprojectionErrorSrv/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>leftReprojectionErrorSrv/errorComputed</signal>
+                <slot>errorLabelLeftSrv/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>rightReprojectionErrorSrv/errorComputed</signal>
+                 <slot>errorLabelRightSrv/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>frameMatrixSynchronizerSrv/matrixSynchronized</signal>
+                <slot>reprojectionMatrixStatusSrv/changeToGreen</slot>
+            </connect>
+
+            <connect>
+                <signal>frameMatrixSynchronizerSrv/matrixUnsynchronized</signal>
+                <slot>reprojectionMatrixStatusSrv/changeToRed</slot>
+            </connect>
+
+            <connect>
+                <signal>frameMatrixSynchronizerSrv/synchronizationDone</signal>
+                <slot>matricesWriterSrv/write</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParamsSrv/boolChanged</signal>
+                <slot>arucoTracker1Srv/setBoolParameter</slot>
+                <slot>arucoTracker2Srv/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParamsSrv/intChanged</signal>
+                <slot>arucoTracker1Srv/setIntParameter</slot>
+                <slot>arucoTracker2Srv/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoParamsSrv/doubleChanged</signal>
+                <slot>arucoTracker1Srv/setDoubleParameter</slot>
+                <slot>arucoTracker2Srv/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>cameraSeries/addedCamera</signal>
+                <slot>cameraExtractorSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>camera1/idModified</signal>
+                <slot>videoGrabber1Srv/stopCamera</slot>
+                <slot>videoGrabber2Srv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>camera2/idModified</signal>
+                <slot>videoGrabber1Srv/stopCamera</slot>
+                <slot>videoGrabber2Srv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoTracker1Srv/markerDetected</signal>
+                <slot>LAxisAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>arucoTracker2Srv/markerDetected</signal>
+                <slot>RAxisAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>synchroParamsSrv/intChanged</signal>
+                <slot>frameMatrixSynchronizerSrv/setFrameDelay</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="calibrationReaderSrv" />
+            <start uid="cameraExtractorSrv" />
+            <start uid="videoSelector1Srv" />
+            <start uid="videoSelector2Srv" />
+            <start uid="videoGrabber1Srv" />
+            <start uid="videoGrabber2Srv" />
+            <start uid="frameMatrixSynchronizerSrv" />
+            <start uid="matricesWriterSrv" />
+            <start uid="arucoTracker1Srv" />
+            <start uid="arucoTracker2Srv" />
+            <start uid="registrationSrv" />
+            <start uid="leftReprojectionErrorSrv" />
+            <start uid="rightReprojectionErrorSrv" />
+            <start uid="matrixReverserSrv" />
+            <start uid="concatenateSrv" />
+            <start uid="hideAxisSrv" />
+            <start uid="leftGenericSceneSrv" />
+            <start uid="rightGenericSceneSrv" />
+            <start uid="LVideoAdp" />
+            <start uid="LAxisAdp" />
+            <start uid="LCameraAdp" />
+            <start uid="RVideoAdp" />
+            <start uid="RAxisAdp" />
+            <start uid="RCameraAdp" />
+
+            <!-- ******************************* Update services ***************************************** -->
+
+            <update uid="showParametersAct" />
+            <update uid="hideAxisSrv" />
+
+        </config>
+    </extension>
+</plugin>

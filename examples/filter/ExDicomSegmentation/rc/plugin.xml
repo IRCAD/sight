@@ -1,0 +1,105 @@
+<plugin id="ExDicomSegmentation" >
+
+    <requirement id="sight::module::activity" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::ui::base" />
+
+    <xi:include href="ExDicomSegmentationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="Threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="VTKMesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::sight::activity::extension::Activity" >
+        <id>ExDicomSegmentation_VTKMesher_Activity</id>
+        <title>VTK mesher</title>
+        <desc>Mesher activity using VTK</desc>
+        <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
+        <requirements>
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg" >
+            <parameters>
+                <parameter replace="imageSeries" by="@values.imageSeries" />
+                <parameter replace="image" by="@values.imageSeries.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity" >
+        <id>ExDicomSegmentation_Threshold_Activity</id>
+        <title>Threshold</title>
+        <desc>Simple threshold activity</desc>
+        <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
+        <requirements>
+            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::activity::builder::ActivitySeries</builder>
+        <appConfig id="ExDicomSegmentation_Threshold_AppCfg" >
+            <parameters>
+                <parameter replace="imageSeries" by="@values.imageSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::activity::extension::Activity" >
+        <id>ExDicomSegmentation_Base_Activity</id>
+        <title>ExDicomSegmentation</title>
+        <desc>ExDicomSegmentation main activity</desc>
+        <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
+        <requirements />
+        <appConfig id="ExDicomSegmentation_Base_AppCfg" >
+            <parameters />
+        </appConfig>
+    </extension>
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>ExDicomSegmentation_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="seriesDB" type="sight::data::SeriesDB" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>ExDicomSegmentation</name>
+                        <icon>ExDicomSegmentation/app.ico</icon>
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="dynamicViewSrv" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView" >
+                <inout key="seriesDB" uid="seriesDB" />
+                <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
+                <parameters>
+                    <parameter replace="ICON_PATH" by="ExDicomSegmentation/tuto.ico" />
+                    <parameter replace="DYNAMICVIEW_SENDER_CHANNEL" by="DYNAMICVIEW_RECIEVER_CHANNEL" />
+                </parameters>
+                <config document="false" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect channel="DYNAMICVIEW_RECIEVER_CHANNEL" >
+                <slot>dynamicViewSrv/createTab</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+
+        </config>
+    </extension>
+
+</plugin>

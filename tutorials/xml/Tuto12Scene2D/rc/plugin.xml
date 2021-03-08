@@ -1,0 +1,130 @@
+<plugin id="Tuto12Scene2D" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene2d" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>Tuto12Scene2D_AppCfg</id>
+        <config>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>Tuto12Scene2D</name>
+                        <icon>Tuto12Scene2D/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericSceneSrv" start="no" />
+                    <view sid="editorView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="editorView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="spacingEditorSrv" start="no" />
+                    <view sid="depthRangeSliderSrv" start="no" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="genericSceneSrv" type="sight::viz::scene2d::SRender" >
+                <scene>
+                    <viewport x="-100" y="-100" width="200" height="200" />
+                    <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
+
+                    <adaptor uid="gridAdp" />
+                    <adaptor uid="square1Adp" />
+                    <adaptor uid="square2Adp" />
+                    <adaptor uid="abscissaAdp" />
+                    <adaptor uid="ordinateAdp" />
+                </scene>
+            </service>
+
+            <service uid="gridAdp" type="sight::module::viz::scene2d::adaptor::SGrid2D" >
+                <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="#619647" zValue="2" xAxis="axe1" yAxis="axe1" />
+            </service>
+
+            <service uid="square1Adp" type="sight::module::viz::scene2d::adaptor::SSquare" >
+                <config x="0" y="0" size="15" color="#D25252" zValue="4" />
+            </service>
+
+            <service uid="square2Adp" type="sight::module::viz::scene2d::adaptor::SSquare" >
+                <config x="20" y="20" size="30" color="#6997BB" zValue="4" />
+            </service>
+
+            <service uid="abscissaAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+                <config x1="-100" x2="100" y1="0" y2="0" color="#D25252" zValue="5" />
+            </service>
+
+            <service uid="ordinateAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+                <config x1="0" x2="0" y1="-100" y2="100" color="#D25252" zValue="6" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="spacingEditorSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="double2" name="Grid spacing" key="spacing" defaultValue="10." min="1." max="150." />
+                </parameters>
+            </service>
+
+            <service uid="depthRangeSliderSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="double" widget="slider" name="X" key="X" defaultValue="0." min="-100." max="100." />
+                    <param type="double" widget="slider" name="Y" key="Y" defaultValue="0." min="-100." max="100." />
+                </parameters>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>spacingEditorSrv/double2Changed</signal>
+                <slot>gridAdp/setGridSpacing</slot>
+            </connect>
+
+            <connect>
+                <signal>depthRangeSliderSrv/doubleChanged</signal>
+                <slot>square1Adp/setDoubleParameter</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="genericSceneSrv" />
+            <start uid="spacingEditorSrv" />
+            <start uid="depthRangeSliderSrv" />
+            <start uid="gridAdp" />
+            <start uid="square1Adp" />
+            <start uid="square2Adp" />
+            <start uid="abscissaAdp" />
+            <start uid="ordinateAdp" />
+
+        </config>
+    </extension>
+</plugin>

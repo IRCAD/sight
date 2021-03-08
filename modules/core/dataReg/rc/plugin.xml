@@ -1,5 +1,0 @@
-<plugin id="dataReg" class="::dataReg::Plugin" version="@PROJECT_VERSION@" >
-    
-    <library name="dataReg" />
-    
-</plugin>

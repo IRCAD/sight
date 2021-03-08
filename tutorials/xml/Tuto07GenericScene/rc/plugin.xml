@@ -1,0 +1,265 @@
+<!--
+    This tutorial shows a VTK scene containing a 3D image and a textured mesh.
+    To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
+-->
+<plugin id="Tuto07GenericScene" >
+
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3dQt" />
+
+    <extension implements="::sight::service::extension::AppConfig" >
+        <id>Tuto07GenericScene_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="image" type="sight::data::Image" />
+            <object uid="mesh" type="sight::data::Mesh" />
+            <object uid="texture" type="sight::data::Image" />
+            <object uid="snapshot" type="sight::data::Image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>Tuto07GenericScene</name>
+                        <icon>Tuto07GenericScene/tuto.ico</icon>
+                        <minSize width="720" height="480" />
+                    </frame>
+                    <menuBar/>
+                </gui>
+                <registry>
+                    <menuBar sid="menuBarView" start="yes" />
+                    <view sid="containerView" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Status bar used to display the progress bar for reading -->
+            <service uid="progressBarView" type="sight::module::ui::base::SJobBar" />
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+I" />
+                        <menuItem name="Open mesh" shortcut="Ctrl+M" />
+                        <menuItem name="Open texture" shortcut="Ctrl+T" />
+                        <separator/>
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openImageAct" start="yes" />
+                    <menuItem sid="openMeshAct" start="yes" />
+                    <menuItem sid="openTextureAct" start="yes" />
+                    <menuItem sid="quitAct" start="yes" />
+                </registry>
+            </service>
+
+            <!-- main view -->
+            <service uid="containerView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" minHeight="30" resizable="no" backgroundColor="#3E4453" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericSceneSrv" start="yes" />
+                    <view sid="editorsView" start="yes" />
+                </registry>
+            </service>
+
+            <!-- View for editors to update image visualization -->
+            <service uid="editorsView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="50" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="showNegatoSrv" start="yes" />
+                    <view sid="sliderIndexEditorSrv" start="yes" />
+                    <view sid="snapshotSrv" start="yes" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!-- This scene display a 3D image and a textured mesh -->
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default" order="1" />
+                    <adaptor uid="trackballInteractorAdp" />
+                    <adaptor uid="textureAdp" />
+                    <adaptor uid="meshAdp" />
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="snapshotAdp" />
+                </scene>
+            </service>
+
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
+                <config layer="default" priority="0" />
+            </service>
+
+            <!-- Texture adaptor, used by mesh adaptor -->
+            <service uid="textureAdp" type="sight::module::viz::scene3d::adaptor::STexture" autoConnect="yes" >
+                <in key="image" uid="texture" />
+                <config layer="default" textureName="ogreTexture" />
+            </service>
+
+            <!-- Mesh adaptor -->
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="yes" >
+                <inout key="mesh" uid="mesh" />
+                <config layer="default" textureName="ogreTexture" />
+            </service>
+
+            <!-- 3D image negatoscope adaptor -->
+            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="yes" >
+                <inout key="image" uid="image" />
+                <config layer="default" sliceIndex="axial" interactive="true" />
+            </service>
+
+            <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
+                <inout key="image" uid="snapshot" />
+                <config layer="default" flip="true" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <!-- Actions to call readers -->
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
+                <start uid="imageReaderSrv" />
+            </service>
+
+            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter" >
+                <start uid="meshReaderSrv" />
+            </service>
+
+            <service uid="openTextureAct" type="sight::module::ui::base::com::SStarter" >
+                <start uid="textureReaderSrv" />
+            </service>
+
+            <!-- Quit action -->
+            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Image displayed in the scene -->
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="image" />
+                <type mode="reader" />
+            </service>
+
+            <!-- Mesh reader -->
+            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="mesh" />
+                <type mode="reader" />
+            </service>
+
+            <!-- texture reader -->
+            <service uid="textureReaderSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="texture" />
+                <type mode="reader" />
+            </service>
+
+            <!--
+                Generic editor representing a simple button with an icon.
+                The button can be checkable. In this case it can have a second icon.
+                - It emits a signal "clicked" when it is clicked.
+                - It emits a signal "toggled" when it is checked/unchecked.
+
+                Here, this editor is used to show or hide the image. It is connected to the image adaptor.
+            -->
+            <service uid="showNegatoSrv" type="sight::module::ui::qt::com::SSignalButton" >
+                <config>
+                    <checkable>true</checkable>
+                    <icon>sight::module::ui::flaticons/RedCross.svg</icon>
+                    <icon2>sight::module::ui::flaticons/Layers.svg</icon2>
+                    <iconWidth>40</iconWidth>
+                    <iconHeight>16</iconHeight>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <!-- Editor representing a slider to navigate into image slices -->
+            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="yes" >
+                <inout key="image" uid="image" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <service uid="snapshotSrv" type="sight::module::ui::qt::com::SSignalButton" >
+                <config>
+                   <checkable>false</checkable>
+                   <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                </config>
+            </service>
+
+            <!-- Write the snapshot image -->
+            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
+                <inout key="data" uid="snapshot" />
+                <type mode="writer" />
+                <selection mode="exclude" />
+                <addSelection service="::sight::module::io::atoms::SWriter" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- Connects readers to status bar service -->
+            <connect>
+                <signal>meshReaderSrv/jobCreated</signal>
+                <signal>imageReaderSrv/jobCreated</signal>
+                <signal>textureReaderSrv/jobCreated</signal>
+                <slot>progressBarView/showJob</slot>
+            </connect>
+
+            <connect>
+                <signal>snapshotSrv/clicked</signal>
+                <slot>imageWriterSrv/update</slot>
+            </connect>
+
+            <!--
+                Connection for 3D image slice:
+                Connect the button (showNegatoSrv) signal "toggled" to the negato adaptor (SNegato3D)
+                slot "updateVisibility", this signals/slots contains a boolean.
+                The image slices will be show or hide when the button is checked/unchecked.
+            -->
+            <connect>
+                <signal>showNegatoSrv/toggled</signal>
+                <slot>negatoAdp/updateVisibility</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="progressBarView" />
+            <start uid="imageWriterSrv" />
+            <start uid="trackballInteractorAdp" />
+            <start uid="textureAdp" />
+            <start uid="meshAdp" />
+            <start uid="negatoAdp" />
+            <start uid="snapshotAdp" />
+
+        </config>
+    </extension>
+</plugin>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2020 IRCAD France
+ * Copyright (C) 2004-2021 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,16 +35,16 @@
 
 #include <filesystem>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
+#include <core/runtime/operations.hpp>
+#include <core/runtime/profile/Profile.hpp>
 
 class MiniLauncher
 {
 public:
     MiniLauncher( std::filesystem::path profilePath )
     {
-        ::fwRuntime::init();
-        const auto& runtime = ::fwRuntime::Runtime::get();
+        ::sight::core::runtime::init();
+        const auto& runtime = ::sight::core::runtime::Runtime::get();
 
         const std::filesystem::path cwd = runtime.getWorkingPath();
 
@@ -58,7 +58,7 @@ public:
             throw (std::invalid_argument("<" + profilePath.string() + "> not found." ));
         }
 
-        m_profile = ::fwRuntime::io::ProfileReader::createProfile(profilePath);
+        m_profile = ::sight::core::runtime::io::ProfileReader::createProfile(profilePath);
 
         m_profile->setParams(0, nullptr);
         m_profile->start();
@@ -73,7 +73,7 @@ public:
     }
 
 private:
-    ::fwRuntime::profile::Profile::sptr m_profile;
+    ::sight::core::runtime::Profile::sptr m_profile;
 
 };
 
@@ -203,16 +203,18 @@ int main( int argc, char* argv[] )
 
     CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
+    if( options.listTests )
+    {
+        for(int i = 0; i < testSuite->getChildTestCount(); ++i)
+        {
+            std::cout << testSuite->getChildTestAt(i)->getName() << std::endl;
+        }
+        return 0;
+    }
+
     // Add the top suite to the test runner
     CPPUNIT_NS::TestRunner runner;
     runner.addTest( testSuite );
-
-    if( options.listTests )
-    {
-        CPPUNIT_NS::TestResult result;
-        runner.run( result );
-        return 0;
-    }
 
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;

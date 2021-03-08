@@ -1,0 +1,6 @@
+<plugin id="Tuto01DataServiceBasicCpp" library="true" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+
+</plugin>

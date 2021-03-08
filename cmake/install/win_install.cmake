@@ -9,10 +9,10 @@ macro(win_install PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        set(LAUNCHER "fwlauncher.exe")
+        set(LAUNCHER "sightrun.exe")
         set(LAUNCHER_PATH "bin/${LAUNCHER}") # For windows_fixup.cmake.in
         set(CPACK_LAUNCHER_PATH "bin\\\\${LAUNCHER}")
-        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${${FWPROJECT_NAME}_FULLNAME}\\\\profile.xml")
+        set(CPACK_PROFILE_PATH "${SIGHT_MODULE_RC_PREFIX}\\\\${FWPROJECT_NAME}\\\\profile.xml")
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
@@ -38,9 +38,6 @@ macro(win_install PRJ_NAME)
         # install requirements
         foreach(REQUIREMENT ${PROJECT_LIST})
             if(${REQUIREMENT}_EXTERNAL)
-                # search and setup qt plugins for each modules
-                qt_plugins_setup(${REQUIREMENT})
-
                 if(EXISTS "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}")
                     install(DIRECTORY "${Sight_LIBRARY_DIR}/${REQUIREMENT}-${${REQUIREMENT}_VERSION}" DESTINATION "${SIGHT_MODULE_LIB_PREFIX}")
                 endif()
@@ -49,8 +46,6 @@ macro(win_install PRJ_NAME)
                 endif()
             endif()
         endforeach()
-
-        install_qt_plugins()
     endif()
 
     configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)

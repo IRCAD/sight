@@ -1,0 +1,6 @@
+add_subdirectory(Tuto02GenericSceneCpp)
+add_subdirectory(Tuto06SceneQt3DCpp)
+add_subdirectory(Tuto01DataServiceBasicCpp)
+add_subdirectory(Tuto03MesherWithGenericSceneCpp)
+add_subdirectory(Tuto05MultithreadConsoleCpp)
+add_subdirectory(Tuto04MeshGeneratorCpp)

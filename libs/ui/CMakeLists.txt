@@ -1,0 +1,5 @@
+add_subdirectory(history)
+add_subdirectory(base)
+add_subdirectory(dicom)
+add_subdirectory(qml)
+add_subdirectory(qt)
