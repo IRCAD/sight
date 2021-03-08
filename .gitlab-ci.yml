@@ -47,7 +47,7 @@ lint:sheldon:
   script:
     # Download sheldon.
     # TODO: use dev/master/tag branch
-    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b wip-massive-refactor $CI_PROJECT_DIR/.build/sight-git
+    - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b ${EXTRA_BRANCH} $CI_PROJECT_DIR/.build/sight-git
     # Stage all files from the merge to get them checked by sheldon.
     - git add *
     # Display modified files.
