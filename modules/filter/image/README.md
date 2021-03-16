@@ -3,16 +3,6 @@
 This module contains services for image processing. 
 In other words it contains services to operate on a `sight::data::Image`.
 
-## CMake
-
-```cmake
-
-add_dependencies(myTarget 
-                ...
-                 module_filter_image
-)
-
-```
 ## Services
 
 - **SAutomaticRegistration**
@@ -43,3 +33,14 @@ add_dependencies(myTarget
   Applies a transform to an image and outputting the resampled image.
 - **SThreshold**
   Applies a threshold on an image.
+
+## CMake
+
+```cmake
+
+add_dependencies(myTarget 
+                ...
+                 module_filter_image
+)
+
+```
