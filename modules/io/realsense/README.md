@@ -1,8 +1,13 @@
-# realsense module
+# sight::module::io::realsense
 
-The `realsense` module contains services related to the Intel Realsense cameras.
+The `realsense` module contains services to bring support for the Intel Realsense cameras.
 
-The plugin id is `::sight::module::io::realsense`.
+## Services
+
+- `sight::module::io::realsense::SScan`
+
+> This service grabs the depth, the color frame, and the point cloud from a compatible device (Realsense D400).
+
 
 ## CMake
 
@@ -12,18 +17,55 @@ add_dependencies(myTarget
                 ...
                  module_io_realsense
 )
-
 ```
-## List of available services
 
-- `::sight::module::io::realsense::SScan`
+## RealSense Presets
 
-## Service description
+For a complete documentation of the realsense presets please visit [this page](https://github.com/IntelRealSense/librealsense/wiki/D400-Series-Visual-Presets).
 
-### sight::module::io::realsense::SScan
+### How-to add a new preset
 
-This service grabs the depth, the color frame, and the poincloud from a compatible device (Realsense D400 cameras).
+#### 1. Generate a preset.json
 
-## Other
+The simplest way is to use the [realsense-viewer application](https://github.com/IntelRealSense/librealsense/tree/master/tools/realsense-viewer) and save your preset as a .json file.
 
-A dedicated documentation about the available presets is present in the [README.md](./rc/README.md) located in the rc folder.
+
+#### 2. Auto-load presets in videoRealSense module
+
+You need first copy the json file in the _rc/presets_ folder.
+To be loaded correclty the preset file should have a name like "NAMEPreset.json".
+
+The service parses the presets folder and generates a map with [Name, path].
+ex HandPreset.json will give: ["Hand", "rc/presets/HandPreset.json"].
+
+#### 3. Use the preset in videoRealsense::SScan
+
+You can achieve this in two different ways:
+
+1. In the xml configuration of the service by using the `preset` key. The name should be the _generated name_ i.e. **without** the "...Preset.json".
+
+```xml
+<service uid="videoGrabber" type ="sight::module::io::realsense::SScan" autoConnect="no">
+    <inout key="depthTL" uid="..." />
+    <inout key="frameTL" uid="..." />
+    <out key="pointcloud" uid="..." />
+    <inout key="cameraSeries" uid="..." />
+    <config preset="NAME" />
+</service>
+   ```
+
+
+2. By using a SParameter (see **ExRealSense** example for a real-case use)
+
+```xml
+<service uid="presets" type="sight::module::ui::qt::SParameters">
+    <parameters>
+        <param type="enum" name="Realsense presets" key="preset" defaultValue="Default" values="Default,HighResHighAccuracy, HighResHighDensity,HighResMidDensity,MidResHighAccuracy, MidResHighDensity,MidResMidDensity,LowResHighAccuracy, LowResHighDensity,LowResMidDensity,Hand,ShortRange,BodyScan,RemoveIR" />
+    </parameters>
+</service>          
+```
+
+
+
+
+

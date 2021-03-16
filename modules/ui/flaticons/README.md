@@ -1,22 +1,33 @@
-# flaticons module
+# sight::module::ui::flaticons
 
-`flaticons` module is a ressources modules that contains icons in "flat" style.
-
-Plugin id is `::sight::module::ui::flaticons`
+`flaticons` is a resource module that contains icons in "flat" style.
 
 ## How to use it
 
 ### XML
 
+Example in a toolbar:
+
 ```xml
-<menuItem name="Show parameters" icon="sight::module::ui::flaticons/YellowLeftChevron.svg" />
+
+<service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+    <gui>
+        <layout>
+            <menuItem name="Show parameters" icon="sight::module::ui::flaticons/YellowLeftChevron.svg" />
+            ...
+        </layout>
+    </gui>
+    <registry>
+        <menuItem sid="showParamAction" start="yes" />
+    </registry>
+</service>
 ```
 
-### Cmake
+### CMake
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(myTarget
                 ...
                  module_ui_flaticons
 )

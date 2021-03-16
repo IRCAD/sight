@@ -1,9 +1,7 @@
-# Image module
+# sight::module::filter::image
 
-The `image` module contains services for image processing. 
-In other words it contains services to operate on a "image" data type.
-
-Plugin id is `sight::module::filter::image`
+This module contains services for image processing. 
+In other words it contains services to operate on a `sight::data::Image`.
 
 ## CMake
 
@@ -15,77 +13,79 @@ add_dependencies(myTarget
 )
 
 ```
-## List of available services
+## Services
 
-- `::sight::module::filter::image::SAutomaticRegistration`
-- `::sight::module::filter::image::SBitwiseAnd`
-- `::sight::module::filter::image::SFlip`
-- `::sight::module::filter::image::SImageCenter`
-- `::sight::module::filter::image::SImageExtruder`
-- `::sight::module::filter::image::SImagesSubstract`
-- `::sight::module::filter::image::SLabelGeometryImage`
-- `::sight::module::filter::image::SLabelImageToBinaryImage`
-- `::sight::module::filter::image::SMatrixRegressor`
-- `::sight::module::filter::image::SMIPMatchingRegistration`
-- `::sight::module::filter::image::SPlaneSlicer`
-- `::sight::module::filter::image::SPropagator`
-- `::sight::module::filter::image::SResampler`
-- `::sight::module::filter::image::SThreshold`
+- **SAutomaticRegistration**
+  Computes a rigid transform, matching an image to another.
+- **SBitwiseAnd**
+  Implements the AND bitwise operator pixel-wise between two images. 
+- `sight::module::filter::image::SFlip`
+- `sight::module::filter::image::SImageCenter`
+- `sight::module::filter::image::SImageExtruder`
+- `sight::module::filter::image::SImagesSubstract`
+- `sight::module::filter::image::SLabelGeometryImage`
+- `sight::module::filter::image::SLabelImageToBinaryImage`
+- `sight::module::filter::image::SMatrixRegressor`
+- `sight::module::filter::image::SMIPMatchingRegistration`
+- `sight::module::filter::image::SPlaneSlicer`
+- `sight::module::filter::image::SPropagator`
+- `sight::module::filter::image::SResampler`
+- `sight::module::filter::image::SThreshold`
 
 ## Service description
 
-### ::sight::module::filter::image::SAutomaticRegistration
+- SAutomaticRegistration
 
-Service computing a rigid transform, matching an image to another.
+> Computes a rigid transform, matching an image to another.
 
-### ::sight::module::filter::image::SBitwiseAnd
+### SBitwiseAnd
 
-Service that implements the AND bitwise operator pixel-wise between two images.
+> Implements the AND bitwise operator pixel-wise between two images.
 
-### ::sight::module::filter::image::SFlip
+### SFlip
 
-Service that flips an input image along x or y or z axis.
+> Flips an input image along x or y or z axis.
 
-### ::sight::module::filter::image::SImageCenter
+### SImageCenter
 
-Service computing the center of a 3D image, it outputs the translation going from origin to the center.
+> Computes the center of a 3D image, it outputs the translation going from origin to the center.
 
-### ::sight::module::filter::image::SImageExtruder
+### SImageExtruder
 
-Service that sets all voxels of an image that are inside meshes to the lowest value of the image type.
+> Sets all voxels of an image that are inside meshes to the lowest value of the image type.
 
-### ::sight::module::filter::image::SImagesSubstract
+### SImagesSubstract
 
-Service that computes the difference of two images.
+> Computes the difference of two images.
 
-### ::sight::module::filter::image::SLabelGeometryImage
+### SLabelGeometryImage
 
-Service that computes centroids of shapes from labeled image and adds them as a 'landmark' field to it.
+> Computes centroids of shapes from labeled image and adds them as a 'landmark' field to it.
 
-### ::sight::module::filter::image::SLabelImageToBinaryImage
+### SLabelImageToBinaryImage
 
-Service extracting a binary mask from an image with labels.
+> Extracts a binary mask from an image with labels.
 
-### ::sight::module::filter::image::SMatrixRegressor
+### SMatrixRegressor
 
-Service computing the matrix that best fits a list of matrices.
+> Computes the matrix that best fits a list of matrices.
 
-### ::sight::module::filter::image::SMIPMatchingRegistration
+### SMIPMatchingRegistration
 
-service that uses a fast registration algorithm to quickly register two images together if the transform between both is pure translation.
+> Uses a fast registration algorithm to quickly register two images together if the transform between both is pure translation.
 
-### ::sight::module::filter::image::SPlaneSlicer
+### SPlaneSlicer
 
-Service computing a 2D slice from a 3D image.
+> Computes a 2D slice from a 3D image.
 
-### ::sight::module::filter::image::SPropagator
+### SPropagator
 
-Service placing seeds and propagating from them in an image.
+> Places seeds and propagating from them in an image.
 
-### ::sight::module::filter::image::SResampler
+### SResampler
 
-Service applying a transform to an image and outputting the resampled image.
+> Applies a transform to an image and outputting the resampled image.
 
-### ::sight::module::filter::image::SThreshold
+### SThreshold
 
-Service that applies a threshold on an image.
+> Applies a threshold on an image.

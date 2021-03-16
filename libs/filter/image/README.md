@@ -1,20 +1,21 @@
-# filter_image library
+# sight::filter::image
 
-`filter_image` library is a library related to 'filtering' : producing an output by 'filtering' an input. It includes registration, matrix optimization, image filtering, drawing functions, etc.
+Library containing functions producing an output by 'filtering' an input. This covers registration, 
+matrix optimization, image filtering, drawing functions, etc...
 
-The list of included classes:
+## Classes:
 
-- AutomaticRegistration
-  > Performs automatic image registration using ITKv4 registration framework.
+- **AutomaticRegistration**
+  Performs automatic image registration using ITKv4 registration framework.
 
-- BresenhamLine
-  > Draws a Bresenham line.
+- **BresenhamLine**
+  Draws a Bresenham line.
 
-- filters
-  > various image filters (threshold, median, ...).
+- **filters**
+  Various image filters (threshold, median, ...).
 
-- Flipper
-  > flips an image according to a given axis.
+- **Flipper**
+  Flips an image according to a given axis.
 
 - Image
   > Applies a mask to an image, zeroing data outside the mask.
@@ -26,7 +27,7 @@ The list of included classes:
   > Extrudes voxels from an image that are inside a given mesh.
 
 - ItkImageCaster
-  > Cast from/to different image type.
+  > Casts from/to different image type.
 
 - Labeling
   > Filters image using labels
@@ -44,7 +45,7 @@ The list of included classes:
   > Fast approximate registration, made of pure translation roughly matching two 3-dimensional images
 
 - Resampler
-  > transforms and resamples an image.
+  > Transforms and resamples an image.
 
 - SpheroidExtraction
   > Extracts spheres centers in an image with a given radius and above a given intensity value.
@@ -52,14 +53,11 @@ The list of included classes:
 
 ## How to use it
 
-### Cmake
+### CMake
 
 ```cmake
 
-add_tartarget_link_libraries( myTarget 
-    ...
-    filter_image
-)
+target_link_libraries( myTarget <PUBLIC|PRIVATE> filter_image)
 
 ```
 
