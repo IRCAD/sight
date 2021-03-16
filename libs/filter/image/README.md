@@ -17,38 +17,38 @@ matrix optimization, image filtering, drawing functions, etc...
 - **Flipper**
   Flips an image according to a given axis.
 
-- Image
-  > Applies a mask to an image, zeroing data outside the mask.
+- **Image**
+  Applies a mask to an image, zeroing data outside the mask.
 
-- ImageDiff
-  > Computes difference between two images.
+- **ImageDiff**
+  Computes difference between two images.
 
-- ImageExtruder
-  > Extrudes voxels from an image that are inside a given mesh.
+- **ImageExtruder**
+  Extrudes voxels from an image that are inside a given mesh.
 
-- ItkImageCaster
-  > Casts from/to different image type.
+- **ItkImageCaster**
+  Casts from/to different image type.
 
-- Labeling
-  > Filters image using labels
+- **Labeling**
+  Filters image using labels
 
-- LineDrawer
-  > Draws line.
+- **LineDrawer**
+  Draws line.
 
-- MatrixRegressor
-  > Computes an 'average' matrix from a matrix list. Uses PowellOptimizer.
+- **MatrixRegressor**
+  Computes an 'average' matrix from a matrix list. Uses PowellOptimizer.
 
-- MinMaxPropagation
-  > Flood fills an image as long as the neighboring voxels are greater than the smallest seed value.
+- **MinMaxPropagation**
+  Flood fills an image as long as the neighboring voxels are greater than the smallest seed value.
 
-- MIPMatchingRegistration
-  > Fast approximate registration, made of pure translation roughly matching two 3-dimensional images
+- **MIPMatchingRegistration**
+  Fast approximate registration, made of pure translation roughly matching two 3-dimensional images
 
-- Resampler
-  > Transforms and resamples an image.
+- **Resampler**
+  Transforms and resamples an image.
 
-- SpheroidExtraction
-  > Extracts spheres centers in an image with a given radius and above a given intensity value.
+- **SpheroidExtraction**
+  Extracts spheres centers in an image with a given radius and above a given intensity value.
 
 
 ## How to use it
