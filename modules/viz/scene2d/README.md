@@ -40,7 +40,7 @@ The services are implementations of the IAdaptor present in libs/viz/scene2D
 - **SViewportUpdater**
   Manages the camera on the view (by updating the viewport object)
 
-
+## How to use it
 
 ## CMake
 
@@ -52,3 +52,4 @@ add_dependencies(myTarget
 )
 
 ```
+
