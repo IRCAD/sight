@@ -33,6 +33,6 @@
 #endif // _WIN32
 
 #include <data/Image.hpp>
-#include <data/Object.hpp>
+#include <data/Mesh.hpp>
 
 #endif // __PCHDATA_PCH_HPP__

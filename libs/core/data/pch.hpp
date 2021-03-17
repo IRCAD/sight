@@ -20,18 +20,17 @@
  *
  ***********************************************************************/
 
-#ifndef __FWDATA_PCH_HPP__
-#define __FWDATA_PCH_HPP__
+#pragma once
 
 #include <core/base.hpp>
 #include <core/com/HasSignals.hpp>
 #include <core/com/Signal.hpp>
+#include <core/FactoryRegistry.hpp>
 #include <core/macros.hpp>
 #include <core/mt/types.hpp>
 #include <core/tools/Object.hpp>
-#include <core/FactoryRegistry.hpp>
+
+#include <camp/userobject.hpp>
 
 #include <string>
 #include <unordered_map>
-
-#endif // __FWDATA_PCH_HPP__
