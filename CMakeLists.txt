@@ -110,13 +110,6 @@ if(NOT VCPKG_TARGET_TRIPLET)
         list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
     endif()
 
-    # Parsing of 'fw-*.cmake' scripts. This should go away at some point if we use CMake properly
-    file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
-    foreach(LIB_CONFIG ${LIB_CONFIGS})
-        message(STATUS "include: ${LIB_CONFIG}")
-        include("${LIB_CONFIG}")
-    endforeach()
-
     set(SIGHT_EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
     mark_as_advanced(SIGHT_EXTERNAL_LIBRARIES)
 
@@ -267,6 +260,7 @@ install(
     "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
+    "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}
   COMPONENT
