@@ -299,6 +299,14 @@ install(
 if(WIN32)
     install(
       FILES
+        "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/build/windows
+      COMPONENT
+        dev
+    )
+    install(
+      FILES
         "${CMAKE_SOURCE_DIR}/cmake/install/win_install.cmake"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/install
