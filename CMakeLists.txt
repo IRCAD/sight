@@ -340,6 +340,7 @@ elseif(UNIX)
       FILES
       "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
       "${CMAKE_SOURCE_DIR}/cmake/build/linux/template_exe.sh.in"
+      "${CMAKE_SOURCE_DIR}/cmake/build/linux/template_test.sh.in"
       DESTINATION
         ${FWCONFIG_PACKAGE_LOCATION}/build/linux
       COMPONENT
