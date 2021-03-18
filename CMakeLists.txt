@@ -260,12 +260,19 @@ install(
     "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
-    "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake"
   DESTINATION
     ${FWCONFIG_PACKAGE_LOCATION}
   COMPONENT
     dev
 )
+
+# install CppUnitConfig.cmake in a modules folder.
+install( FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake"
+    DESTINATION
+      ${FWCONFIG_PACKAGE_LOCATION}/modules
+    COMPONENT
+      dev
+  )
 
 # Install some files needed for the build
 install(
