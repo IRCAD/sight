@@ -277,7 +277,7 @@ install(
 install(
   FILES
     "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
-    "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+    "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
     "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
     "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"

@@ -318,7 +318,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
     cmake_parse_arguments(fwCppunitTest "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
     configure_file(
-        "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+        "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
         "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
         IMMEDIATE @ONLY)
 
