@@ -372,8 +372,16 @@ elseif(UNIX)
     )
 
     install(
-      FILES
+      PROGRAMS
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run"
+      DESTINATION
+        ${FWCONFIG_PACKAGE_LOCATION}/install/linux
+      COMPONENT
+        dev
+    )
+
+    install(
+      FILES
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/template.sh.in"
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/template_exe.sh.in"
         "${CMAKE_SOURCE_DIR}/cmake/install/linux/linux_fixup.cmake.in"
