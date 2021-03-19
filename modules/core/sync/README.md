@@ -4,17 +4,13 @@ Contains services that control execution flow to synchronize various data stream
 
 ## Services
 
-* **SFrameMatrixSynchronizer**
- Synchronizes video frames from a (::data::FrameTL) and tracking matrix from a (::extData::MatrixTL) into groups of images (data::Image) and matrices (data::Matrix4) which are synchronized.
+* **SFrameMatrixSynchronizer**: synchronizes video frames from a frame (**::data::FrameTL**) and  matrix (**::extData::MatrixTL**) timelines into groups of images (**data::Image**) and matrices (**data::Matrix4**) which are synchronized.
 
-* **SFrameUpdater**
- Extract a frame from a timeline given a timestamp, or when timelines is updated
+* **SFrameUpdater**: extracts a frame from a timeline given a timestamp, or when timelines is updated.
 
-* **SMatrixSynchronizer**
- Reads the content of a Matrix timeline (::data::MatrixTL) into a ::sight::data::Matrix4.
+* **SMatrixSynchronizer**: reads the content of a Matrix timeline (**::data::MatrixTL**) into a **::sight::data::Matrix4**.
  
-* **SMatrixTLSynchronizer**
- Extract matrices from a Matrix timeline (::data::MatrixTL) into independent matrices (::data::Matrix4) which are synchronized
+* **SMatrixTLSynchronizer**: extracts matrices from a Matrix timeline (**::data::MatrixTL**) into independent matrices (**::data::Matrix4**) which are synchronized.
  
 
 
