@@ -1,18 +1,21 @@
 # sight::io::dimse
 
-Library containing classes to read DCMTK series from PACS.
+Library containing DIcom Message Service Element (DIMSE) classes to read DCMTK series from PACS.
 
 ## Classes:
 
 ### general
 
-- **SeriesEnquirer**: Reads DICOM series from PACS.
-- **SeriesRetriever**: Reads DICOM series from PACS.
+- **SeriesEnquirer**: connects to PACS server and retrieves Series with C-GET commands.
+- **SeriesRetriever**: listens to connexions requests from PACS, accepts them and once the C-STORE request is received, 
+the retriever will receive the Series.
 
 ### data
+
 - **PacsConfiguration**: defines a PACS configuration.
 
 ### exceptions
+
 - **Base**: defines Base Exceptions
 - **NegociateAssociationFailure**: defines association failure Exceptions
 - **NetworkInitializationFailure**: defines network initialization failure Exceptions
