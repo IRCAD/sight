@@ -23,4 +23,4 @@ add_dependencies(myTarget module_io_dicomweb ...)
 
 ### XML
 
-Please see doxygen of each service to know more about how to use it in xml configurations.
+Please consult the [doxygen](https://sight.pages.ircad.fr/sight) of each service to learn more about its use in xml configurations.
