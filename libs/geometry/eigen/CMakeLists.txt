@@ -1,7 +1,6 @@
 sight_add_target( geometry_eigen TYPE LIBRARY )
 
-
-find_package(Eigen3 QUIET REQUIRED)
+# find_package(Eigen3 QUIET REQUIRED) is performed in the Dependencies.cmake file
 
 target_link_libraries (geometry_eigen PUBLIC Eigen3::Eigen)
 
