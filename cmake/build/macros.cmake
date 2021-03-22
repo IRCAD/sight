@@ -4,6 +4,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 
+# Define global definitions for some external libraries
+
+# Boost
+
+add_definitions(
+    -DBOOST_ALL_DYN_LINK
+    -DBOOST_THREAD_DONT_PROVIDE_DEPRECATED_FEATURES_SINCE_V3_0_0
+    -DBOOST_THREAD_PROVIDES_FUTURE
+    -DBOOST_THREAD_VERSION=2
+    -DBOOST_SPIRIT_USE_PHOENIX_V3
+)
+# Qt
+
+#Fix error with BOOST_JOIN and qt moc
+set(CMAKE_AUTOMOC_MOC_OPTIONS "-DBOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION")
+
 # Define some paths whether we are building Sight or using it
 if(FW_BUILD_EXTERNAL)
     set(FWCMAKE_BUILD_FILES_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
@@ -55,7 +71,7 @@ endmacro()
 function(get_header_file_install_destination)
     # Paths for config files are:
     # activities -> activity/theme/project/
-    # apps -> project
+    # apps -> project
     # examples -> project
     # libs -> theme/project/ except for theme=core project
     # modules -> modules/theme/project/  except for theme=core modules/project
@@ -318,7 +334,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
     cmake_parse_arguments(fwCppunitTest "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
     configure_file(
-        "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+        "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
         "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
         IMMEDIATE @ONLY)
 
