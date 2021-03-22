@@ -1,7 +1,7 @@
 # sight::module::io::dicomweb
 
- Contains services use to deal with PACS through **HTTP** protocol.
- If your looking for **DIMSE** protocol please see **sight::module::io::dimse**.
+ Contains services used to deal with PACS through **HTTP** protocol.
+ If you are looking for **DIMSE** protocol please see **sight::module::io::dimse**.
 
 ## Services
 
@@ -9,9 +9,9 @@
 
 - **SSeriesPuller**: pulls DICOM series from a PACS (ex: Orthanc).
 
-- **SSeriesPusher**: pushes a DICOM series to a PACS.
+- **SSeriesPusher**: pushes a DICOM series to a PACS (ex: Orthanc).
 
-- **SSliceIndexDicomPullerEditor**: used to change slice index of the DICOM series to pull.
+- **SSliceIndexDicomPullerEditor**: requests to change slice index or slice view on the pulled DICOM series.
 
 ## How to use it
 
