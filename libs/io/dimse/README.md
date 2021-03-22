@@ -1,6 +1,6 @@
 # sight::io::dimse
 
-Library containing DIcom Message Service Element (DIMSE) classes to read DCMTK series from PACS.
+Library containing DIcom Message Service Element (DIMSE) classes to read DICOM series from PACS.
 
 ## Classes:
 
@@ -16,15 +16,15 @@ the retriever will receive the Series.
 
 ### exceptions
 
-- **Base**: defines Base Exceptions
-- **NegociateAssociationFailure**: defines association failure Exceptions
-- **NetworkInitializationFailure**: defines network initialization failure Exceptions
-- **PresentationContextMissing**: defines presentation context missing Exceptions
-- **RequestFailure**: defines request failure Exceptions
-- **RequestFailure**: defines tag missing Exceptions
+- **Base**: defines Base Exceptions.
+- **NegociateAssociationFailure**: defines association failure Exceptions.
+- **NetworkInitializationFailure**: defines network initialization failure Exceptions.
+- **PresentationContextMissing**: defines presentation context missing Exceptions.
+- **RequestFailure**: defines request failure Exceptions.
+- **RequestFailure**: defines tag missing Exceptions.
 
 ### helper
-- **Series**: helps converting DCMTK series into other formats 
+- **Series**: helps converting DICOM series into other formats. 
 
 ## How to use it
 
