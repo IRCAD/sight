@@ -1,14 +1,11 @@
 # sight::module::viz::sample
 
-Contains sample user interface widgets displaying sight data.
+Module containing sample user interface widgets displaying sight data.
 
 ## Services
 
-* **SImage**
-Renders a 3D negatoscope of a medical image.
-
-* **SMesh**
-Renders a 3D mesh.
+- **SImage**: renders a 3D negatoscope of a medical image.
+- **SMesh**: renders a 3D mesh.
 
 ## How to use it
 
