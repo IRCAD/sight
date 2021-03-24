@@ -24,34 +24,24 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="fwRenderVTK::SRender">
+        <service uid="gs" type="sight::viz::scene3d::SRender" >
             <scene>
-                <picker id="picker" vtkclass="fwVtkCellPicker" />
-                <renderer id="default" background="0.0" />
-                <adaptor uid="interactor4Negato" />
-                <adaptor uid="imageText" />
-                <adaptor uid="seriesAdaptor" />
-                <adaptor uid="nameAdaptor" />
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer" order="1" />
+                <adaptor uid="pNegatoAdp" />
+                <adaptor uid="pNegatoCameraAdp" />
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="visuVTKAdaptor::SInteractorStyle">
-            <config renderer="default" style="InteractorStyle2DForNegato" />
-        </service>
-
-        <service uid="imageText" type="visuVTKAdaptor::SImageText" autoConnect="yes">
+        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="yes" >
             <inout key="image" uid="image" />
-            <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+            <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="seriesAdaptor" type="visuVTKAdaptor::SNegatoMPR" autoConnect="yes">
+        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="yes" >
             <inout key="image" uid="image" />
-            <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
-        </service>
-
-        <service uid="nameAdaptor" type="visuVTKAdaptor::SText" autoConnect="yes">
-            <in key="object" uid="${objectID}" />
-            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+            <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
@@ -83,9 +73,7 @@
         <start uid="medicalImgConverter" />
         <start uid="imageDumpLocker" />
         <!-- VTK scene 'gs' -->
-        <start uid="interactor4Negato" />
-        <start uid="imageText" />
-        <start uid="seriesAdaptor" />
-        <start uid="nameAdaptor" />
+        <start uid="pNegatoAdp" />
+        <start uid="pNegatoCameraAdp" />
     </config>
 </extension>
